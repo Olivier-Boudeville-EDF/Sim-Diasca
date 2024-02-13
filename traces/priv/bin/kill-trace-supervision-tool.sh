@@ -47,4 +47,14 @@ for pid in ${pids}; do
 
 done
 
+pids=$(ps -u ${USER} -eo pid,cmd | grep logmx.jar | grep -v grep | awk '{print $1}')
+
+echo "Following LogMX PID(s) survived: ${pids}, killing them forcibly."
+for pid in ${pids}; do
+
+	#echo "  Killing ${tool} instance of PID ${pid}"
+	kill -9 ${pid}
+
+done
+
 echo " ${tool} not expected to run anymore for ${USER}@$(hostname)."

@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,6 +37,8 @@
 -opaque static_text_display() :: wxStaticText:wxStaticText().
 % A widget displaying a text; a text display behaves like a panel dedicated
 % to the rendering of a text.
+%
+% The current font applies to this display.
 
 
 -type static_display_option() ::
@@ -76,7 +78,9 @@
 
 
 % Operations related to static texts to display:
--export([ create_static_display/2, create_static_display/3,
+-export([ create_static_display/2, create_presized_static_display/3,
+		  create_static_display/3, create_presized_static_display/4,
+		  create_static_display_with_id/3,
 		  create_static_display/4,
 		  destruct_static_display/1 ]).
 
@@ -101,6 +105,9 @@
 
 -type id() :: gui_id:id().
 
+-type font() :: gui_font:font().
+-type precise_text_extent() :: gui_font:precise_text_extent().
+
 -type wx_opt_pair() :: gui_wx_backend:wx_opt_pair().
 
 
@@ -111,15 +118,100 @@
 % @doc Creates a static text display, based on the specified label.
 -spec create_static_display( label(), parent() ) -> static_text_display().
 create_static_display( Label, Parent ) ->
-	create_static_display( Label, gui_id:get_any_id(), Parent ).
+	create_static_display( Label, gui_id:get_any_id(), _Opts=[], Parent ).
+
+
+
+% @doc Creates a static text display, based on the specified label and on a
+% precomputed size, determined thanks to the specified font, which is associated
+% to it. Returns the created static display, together with its precise text
+% extent.
+%
+% This function may be useful as, in some cases, even the rendering if a
+% single-line label in a panel may be wrong, being cropped for some unknown
+% reason (presumably a wxWidgets bug).
+%
+-spec create_presized_static_display( label(), font(), parent() ) ->
+			{ static_text_display(), precise_text_extent() }.
+create_presized_static_display( Label, Font, Parent ) ->
+	% See explanation in create_presized_static_display/4.
+	PExtent = { W, H, _Descent, _ExtLeading } =
+		gui_font:get_precise_text_extent( Label, Font ),
+
+	LabelSize = { W, H },
+
+	Display = create_static_display( Label, gui_id:get_any_id(),
+		_Opts=[ { size, LabelSize } ], Parent ),
+
+	gui_widget:set_font( Display, Font ),
+	{ Display, PExtent }.
+
+
+
+% @doc Creates a static text display, based on the specified label and
+% option(s).
+%
+-spec create_static_display( label(), maybe_list( static_display_option() ),
+							 parent() ) -> static_text_display().
+create_static_display( Label, Options, Parent ) ->
+	create_static_display( Label, gui_id:get_any_id(), Options, Parent ).
+
+
+% @doc Creates a static text display, based on the specified label, (non-size)
+% option(s) and its precise text extent, determined thanks to the specified
+% font, which is associated to it.
+%
+% Note that the display height may be higher than the one of the actual text,
+% due to the margin taken for letters possibly going below the baseline (like
+% 'g').
+%
+% This function may be useful as, in some cases, even the rendering if a
+% single-line label in a panel may be wrong, being cropped or extended for some
+% unknown reason (presumably a wxWidgets bug).
+%
+-spec create_presized_static_display( label(),
+			maybe_list( static_display_option() ), font(), parent() ) ->
+				{ static_text_display(), precise_text_extent() }.
+create_presized_static_display( Label, Options, Font, Parent ) ->
+
+	PExtent = { W, H, _Descent, _ExtLeading } =
+		gui_font:get_precise_text_extent( Label, Font ),
+
+	LabelSize = { W, H },
+
+	% One may test it with (at least in our setting, size is wrong (seems to
+	% take into account the former font):
+	%
+	%FullOpts = list_utils:ensure_list( Options ),
+
+	FullOpts = [ { size, LabelSize } | list_utils:ensure_list( Options ) ],
+
+	%trace_utils:debug_fmt( "FullOpts = ~p for text static display of '~ts'.",
+	%                       [ FullOpts, Label ] ),
+
+	Display = create_static_display( Label, gui_id:get_any_id(), FullOpts,
+									 Parent ),
+
+	gui_widget:set_font( Display, Font ),
+
+	% The issue is that if no explicit size is set, they will still not match
+	% even after fit/layout:
+	%
+	%trace_utils:debug_fmt( "Display size = ~p, text extent = ~p.",
+	%   [ gui_widget:get_size( Display ),
+	%     gui_font:get_text_extent( Label, Font ) ] ),
+
+	{ Display, PExtent }.
+
 
 
 
 % @doc Creates a static text display, based on the specified label and
 % identifier.
 %
--spec create_static_display( label(), id(), parent() ) -> static_text_display().
-create_static_display( Label, Id, Parent ) ->
+-spec create_static_display_with_id( label(), id(), parent() ) ->
+											static_text_display().
+create_static_display_with_id( Label, Id, Parent ) ->
 	create_static_display( Label, Id, _Options=[], Parent ).
 
 
@@ -131,7 +223,12 @@ create_static_display( Label, Id, Parent ) ->
 	maybe_list( static_display_option() ), parent() ) -> static_text_display().
 create_static_display( Label, Id, Options, Parent ) ->
 	WxOpts = to_wx_static_display_opts( Options ),
+
+	%trace_utils:debug_fmt( "Options of static text display '~ts': ~p.",
+	%                       [ Label, WxOpts ] ),
+
 	wxStaticText:new( Parent, Id, Label, WxOpts ).
+
 
 
 % @doc Destructs the specified static text display.

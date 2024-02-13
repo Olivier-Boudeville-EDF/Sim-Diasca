@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2008-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,10 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: 2003.
+% Creation date: Saturday, July 12, 2008.
 
 
-% Unit tests for the <b>file_utils toolbox</b>.
+% @doc Unit tests for the <b>file_utils toolbox</b>.
 %
 % See the file_utils.erl tested module.
 %
@@ -50,8 +50,8 @@ run() ->
 	BeamExtension = ".beam",
 
 	test_facilities:display(
-	  "File elements in the current directory (~ts):~n~p",
-	  [ CurrentDir, Elements ] ),
+		"File elements in the current directory (~ts):~n~p",
+		[ CurrentDir, Elements ] ),
 
 	% Too many outputs:
 	%test_facilities:display( "Regular BEAM files in the current directory: "
@@ -98,14 +98,14 @@ run() ->
 	RelativePath = "my-local-dir/a-file",
 
 	test_facilities:display( "Ensuring '~ts' is absolute: ~ts", [ RelativePath,
-					file_utils:ensure_path_is_absolute( RelativePath ) ] ),
+		file_utils:ensure_path_is_absolute( RelativePath ) ] ),
 
 	BasePath ="/etc",
 
 	test_facilities:display(
-	  "Ensuring '~ts' is absolute with base path '~ts': '~ts'",
-	  [ RelativePath, BasePath,
-		file_utils:ensure_path_is_absolute( RelativePath, BasePath ) ] ),
+		"Ensuring '~ts' is absolute with base path '~ts': '~ts'",
+		[ RelativePath, BasePath,
+		  file_utils:ensure_path_is_absolute( RelativePath, BasePath ) ] ),
 
 
 	"/home/lisa/tube" =
@@ -157,8 +157,8 @@ run() ->
 	FirstFilename = "media/frame/1-23-2-98.oaf",
 
 	test_facilities:display(
-	  "Path '~ts', once transformed into a variable name, results in: ~ts",
-	  [ FirstFilename, file_utils:path_to_variable_name( FirstFilename ) ] ),
+		"Path '~ts', once transformed into a variable name, results in: ~ts",
+		[ FirstFilename, file_utils:path_to_variable_name( FirstFilename ) ] ),
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2023 EDF R&D
+% Copyright (C) 2012-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,6 +25,10 @@
 % on existing cases.
 %
 -module(sim_diasca).
+
+
+% Version-related functions.
+-export([ get_sim_diasca_version/0, get_sim_diasca_version_string/0 ]).
 
 
 -export([ init/1, init/2, init/3, get_simulation_name/1, is_running/0,
@@ -81,10 +85,29 @@
 
 % Shorthands:
 
+-type three_digit_version() :: basic_utils:three_digit_version().
+
 -type ustring() :: text_utils:ustring().
 
 -type simulation_name() :: class_DeploymentManager:simulation_name().
 -type deployment_settings() :: class_DeploymentManager:deployment_settings().
+
+
+
+% Version-related functions.
+
+
+% @doc Returns the version of the Sim-Diasca library being used.
+-spec get_sim_diasca_version() -> three_digit_version().
+get_sim_diasca_version() ->
+	basic_utils:parse_version( get_sim_diasca_version_string() ).
+
+
+% @doc Returns the version of the Sim-Diasca library being used, as a string.
+-spec get_sim_diasca_version_string() -> ustring().
+get_sim_diasca_version_string() ->
+	% As defined (uniquely) in GNUmakevars.inc:
+	?sim_diasca_version.
 
 
 
@@ -105,7 +128,7 @@ init( SimulationSettings ) ->
 % Returns the PID of the deployment manager.
 %
 -spec init( simulation_settings(), deployment_settings() ) ->
-					deployment_manager_pid().
+											deployment_manager_pid().
 init( SimulationSettings, DeploymentSettings ) ->
 	init( SimulationSettings, DeploymentSettings, #load_balancing_settings{} ).
 
@@ -155,7 +178,7 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 		++ system_utils:get_user_name() ++ "-" ++ SII ++ ?TraceExtension ),
 
 	TraceAggregatorPid = naming_utils:get_registered_pid_for(
-							?trace_aggregator_name, global ),
+		?trace_aggregator_name, global ),
 
 	% We have to rename the trace file (ex: to include the SII):
 	TraceAggregatorPid ! { renameTraceFile, [ NewTraceFilename ] },
@@ -292,7 +315,7 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings ) ->
 initialise_node_naming( SimulationName, SII ) ->
 
 	NodePrefix = class_DeploymentManager:get_node_name_prefix_from(
-					SimulationName, SII ),
+		SimulationName, SII ),
 
 	% We rename this user node accordingly:
 	UserNodeName = NodePrefix ++ "-user-node",
@@ -351,42 +374,48 @@ notify_conditional_settings() ->
 	DebugTopicStrs = [
 
 		"model behaviours " ++ cond_utils:if_defined(
-			simdiasca_debug_model_behaviours, "enabled", "disabled" ),
+			sim_diasca_debug_model_behaviours, "enabled", "disabled" ),
 
 		"user calls to engine API " ++ cond_utils:if_defined(
-			simdiasca_debug_user_api_calls, "enabled", "disabled" ),
+			sim_diasca_debug_user_api_calls, "enabled", "disabled" ),
 
 		"time-management " ++ cond_utils:if_defined(
-			simdiasca_debug_time_management, "enabled", "disabled" ),
+			sim_diasca_debug_time_management, "enabled", "disabled" ),
 
 		"initial actor creations " ++ cond_utils:if_defined(
-			simdiasca_debug_initial_creations, "enabled", "disabled" ),
+			sim_diasca_debug_initial_creations, "enabled", "disabled" ),
+
+		"instance loading " ++ cond_utils:if_defined(
+			sim_diasca_debug_instance_loading, "enabled", "disabled" ),
 
 		"runtime actor creations " ++ cond_utils:if_defined(
-			simdiasca_debug_runtime_creations, "enabled", "disabled" ),
+			sim_diasca_debug_runtime_creations, "enabled", "disabled" ),
 
 		"actor life cycles " ++ cond_utils:if_defined(
-			simdiasca_debug_life_cycles, "enabled", "disabled" ) ],
+			sim_diasca_debug_life_cycles, "enabled", "disabled" ) ],
 
 	CheckTopicStrs = [
 
 		"model behaviours " ++ cond_utils:if_defined(
-			simdiasca_check_model_behaviours, "enabled", "disabled" ),
+			sim_diasca_check_model_behaviours, "enabled", "disabled" ),
 
 		"user calls to engine API " ++ cond_utils:if_defined(
-			simdiasca_check_user_api_calls, "enabled", "disabled" ),
+			sim_diasca_check_user_api_calls, "enabled", "disabled" ),
 
 		"time-management " ++ cond_utils:if_defined(
-			simdiasca_check_time_management, "enabled", "disabled" ),
+			sim_diasca_check_time_management, "enabled", "disabled" ),
 
 		"initial actor creations " ++ cond_utils:if_defined(
-			simdiasca_check_initial_creations, "enabled", "disabled" ),
+			sim_diasca_check_initial_creations, "enabled", "disabled" ),
+
+		"instance loading " ++ cond_utils:if_defined(
+			sim_diasca_check_instance_loading, "enabled", "disabled" ),
 
 		"runtime actor creations " ++ cond_utils:if_defined(
-			simdiasca_check_runtime_creations, "enabled", "disabled" ),
+			sim_diasca_check_runtime_creations, "enabled", "disabled" ),
 
 		"actor life cycles " ++ cond_utils:if_defined(
-			simdiasca_check_life_cycles, "enabled", "disabled" ) ],
+			sim_diasca_check_life_cycles, "enabled", "disabled" ) ],
 
 	class_TraceEmitter:send_standalone( info, ExecStr ++ text_utils:format(
 		"~nRegarding the activation of engine-level conditional debug "
@@ -402,18 +431,9 @@ notify_conditional_settings() ->
 %
 -spec is_running() -> boolean().
 is_running() ->
-
 	% We rely on the registration of the case process for that:
-	case naming_utils:is_registered( ?case_main_process_name,
-									 ?registration_scope ) of
-
-		not_registered ->
-			false;
-
-		_ ->
-			true
-
-	end.
+	naming_utils:is_registered( ?case_main_process_name,
+								?registration_scope ) =/= not_registered.
 
 
 
@@ -495,7 +515,7 @@ shutdown() ->
 	% Stateless, hence resilience-friendly.
 
 	% Removes any simulation package archive lingering with the default, as
-	% expected not to be of interest:
+	% not expected to be of interest:
 	%
 	file_utils:remove_file_if_existing(
 		class_DeploymentManager:get_default_deployment_package_name() ),

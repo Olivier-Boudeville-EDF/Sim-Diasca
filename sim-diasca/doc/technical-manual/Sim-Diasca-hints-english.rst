@@ -134,7 +134,7 @@ Tips And Tricks
 
 then running a test as ``make my_test_run $BATCH`` will prevent any Sim-Diasca related window to pop up; this is quicker and more convenient when first debugging a new model: we generally have to focus first on runtime errors on the console. Then, only when these first mistakes are corrected, we can take advantage of the simulation traces and other information (with the usual ``make my_test_run``)
 
-- one may also define in one's shell settings (e.g. ``~/.bashrc``) an alias that points to the current check-out (clone) and branch one's is using: otherwise an absent-minded developer could operate directly in the trunk or in a wrong branch; for example one can use: ``alias tosim='cd $HOME/A_PATH`` (with GIT reusing lastly used branch is less a problem)
+- one may also define in one's shell settings (e.g. ``~/.bashrc``) an alias that points to the current check-out (clone) and branch one's is using: otherwise an absent-minded developer could operate directly in the trunk or in a wrong branch; for example one can use: ``alias tosim='cd $HOME/A_PATH`` (with Git reusing lastly used branch is less a problem)
 
 - simulation traces can be inspected without LogMX, see the `Simulation Traces`_ section
 

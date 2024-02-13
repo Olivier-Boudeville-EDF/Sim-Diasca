@@ -15,8 +15,8 @@ MYRIAD_TOP = ..
 # the root of this package has not been affected
 #
 %: %.template $(MYRIAD_TOP)/GNUmakevars.inc
-	@echo "  Generating $@ from $< (VERSION_FOR_REBAR being $(VERSION_FOR_REBAR))"
-	@cat $< | sed "s|\"VERSION_FOR_REBAR\"|\"$(VERSION_FOR_REBAR)\"|g" | sed "s|FIRST_FILES_FOR_REBAR|$(MYRIAD_REBAR_FIRST_FILES)|g" | sed "s|DEBUG_KEY_FOR_REBAR|$(DEBUG_INFO_KEY)|g"| sed "s|INCS_FOR_REBAR|$(MYRIAD_REBAR_INCS)|g" > $@
+	@echo "  Generating $@ from $< (VERSION_FOR_OTP being $(VERSION_FOR_OTP))"
+	@cat $< | sed "s|\"VERSION_FOR_OTP\"|\"$(VERSION_FOR_OTP)\"|g" | sed "s|FIRST_FILES_FOR_REBAR|$(MYRIAD_REBAR_FIRST_FILES)|g" | sed "s|DEBUG_KEY_FOR_REBAR|$(DEBUG_INFO_KEY)|g" | sed "s|INCS_FOR_REBAR|$(MYRIAD_REBAR_INCS)|g" > $@
 
 
 info-rebar:
@@ -25,7 +25,7 @@ info-rebar:
 
 
 info-replacements: info-rebar
-	@echo "VERSION_FOR_REBAR = $(VERSION_FOR_REBAR)"
+	@echo "VERSION_FOR_OTP = $(VERSION_FOR_OTP)"
 	@echo "DEBUG_INFO_KEY = $(DEBUG_INFO_KEY)"
 
 

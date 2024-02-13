@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -305,8 +305,7 @@
 % confuse it.
 
 
--type execution_pair() ::
-		{ bin_executable_path(), [ executable_argument() ] }.
+-type execution_pair() :: { bin_executable_path(), [ executable_argument() ] }.
 % A pair specifying a complete command-line ready to be executed by
 % run_executable/n (convenient to store once for all if needing to launch it
 % repeatedly). Generally more secure than command/1 as well.
@@ -354,7 +353,7 @@
 
 
 -type environment() :: [ { env_variable_name(), env_variable_value() } ].
-% Represents a shell environment (a set of variables).
+% Represents a shell environment (a set of variable names and values).
 
 
 -type working_dir() :: maybe( any_directory_path() ).
@@ -925,6 +924,8 @@ run_command( Command, Environment, MaybeWorkingDir ) ->
 % the end to trigger a background launch - this would just be interpreted as a
 % last argument. Use run_background_command/{1,2,3} in this module instead.
 %
+% This is the most complete function to run a command.
+%
 % Note: the run_executable/* functions shall be preferred (as being better
 % regarding encoding and security) to the run_command/* ones, which may be
 % considered available only for backward compatibility.
@@ -1006,7 +1007,7 @@ run_executable( ExecPath, Arguments ) ->
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with specified command-line arguments and
-% environment variable, from the current working directory, using the default
+% environment variables, from the current working directory, using the default
 % port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
@@ -1025,7 +1026,7 @@ run_executable( ExecPath, Arguments, Environment ) ->
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with specified command-line arguments and
-% environment variable, from any specified working directory, using the default
+% environment variables, from any specified working directory, using the default
 % port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
@@ -1043,7 +1044,7 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with specified command-line arguments and
-% environment variable, from any specified working directory and any extra port
+% environment variables, from any specified working directory and any extra port
 % options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
@@ -1129,7 +1130,7 @@ read_port( Port, Data ) ->
 					% always "\n":
 					%
 					Output = text_utils:remove_ending_carriage_return(
-								lists:flatten( lists:reverse( Data ) ) ),
+						lists:flatten( lists:reverse( Data ) ) ),
 
 					{ ExitStatus, Output }
 
@@ -1149,7 +1150,7 @@ read_port( Port, Data ) ->
 					port_close( Port ),
 
 					Output = text_utils:remove_ending_carriage_return(
-								lists:flatten( lists:reverse( Data ) ) ),
+						lists:flatten( lists:reverse( Data ) ) ),
 
 					{ ExitStatus, Output }
 
@@ -1230,7 +1231,6 @@ get_line_helper_script() ->
 	case file_utils:is_existing_file( GetLineScript ) of
 
 		true ->
-
 			case file_utils:is_user_executable( GetLineScript ) of
 
 				true ->
@@ -1241,7 +1241,7 @@ get_line_helper_script() ->
 
 			end;
 
-		false ->
+		_False ->
 			throw( { script_not_found, GetLineScript } )
 
 	end.
@@ -1295,7 +1295,7 @@ monitor_port( Port, Data ) ->
 
 		{ Port, eof } ->
 			%trace_utils:debug_fmt( "Port monitor ~p received eof (first).",
-			%					   [ self() ] ),
+			%                       [ self() ] ),
 
 			port_close( Port ),
 
@@ -1310,7 +1310,7 @@ monitor_port( Port, Data ) ->
 					% always "\n":
 					%
 					Output = text_utils:remove_ending_carriage_return(
-								lists:flatten( lists:reverse( Data ) ) ),
+						lists:flatten( lists:reverse( Data ) ) ),
 
 					{ ExitStatus, Output }
 
@@ -1458,6 +1458,8 @@ run_background_command( Command, Environment, MaybeWorkingDir ) ->
 % If this function is expected to be called many times, to avoid the process
 % leak, one should consider using evaluate_background_shell_expression/2
 % instead.
+%
+% This is the most complete function to run a background option.
 %
 -spec run_background_command( command(), environment(),
 						maybe( working_dir() ), [ port_option() ] ) -> void().
@@ -1803,7 +1805,6 @@ add_paths_for_executable_lookup( _Paths=[], Acc ) ->
 
 
 add_paths_for_executable_lookup( [ Path | T ], Acc ) ->
-
 	AbsPath = file_utils:ensure_path_is_absolute( Path ),
 
 	add_paths_for_executable_lookup( T, [ AbsPath | Acc ] ).
@@ -1834,7 +1835,6 @@ add_paths_for_library_lookup( Paths ) ->
 
 
 add_paths_for_library_lookup( _Paths=[], Acc ) ->
-
 	LibOptVarName = ?library_search_path_variable,
 
 	BaseLibOpt = case get_environment_variable( LibOptVarName ) of
@@ -1855,7 +1855,6 @@ add_paths_for_library_lookup( _Paths=[], Acc ) ->
 
 
 add_paths_for_library_lookup( [ Path | T ], Acc ) ->
-
 	AbsPath = file_utils:ensure_path_is_absolute( Path ),
 
 	add_paths_for_library_lookup( T, [ AbsPath | Acc ] ).
@@ -1865,7 +1864,6 @@ add_paths_for_library_lookup( [ Path | T ], Acc ) ->
 % @doc Returns the current shell environment, sorted by variable names.
 -spec get_environment() -> environment().
 get_environment() ->
-
 	StringEnv = lists:sort( os:getenv() ),
 
 	[ text_utils:split_at_first( $=, VarEqValue ) || VarEqValue <-StringEnv ].
@@ -1897,7 +1895,7 @@ environment_to_string( Environment ) ->
 		Environment ),
 
 	VariableStrings = [ text_utils:format( "~ts = ~ts", [ Name, Value ] )
-						|| { Name, Value } <- SetVars ],
+							|| { Name, Value } <- SetVars ],
 
 	FinalVariableStrings = case UnsetVars of
 
@@ -1908,7 +1906,7 @@ environment_to_string( Environment ) ->
 			UnsetNames = [ Name || { Name, _False } <- UnsetVars ],
 
 			UnsetString = "unset variables: "
-								++ text_utils:join( _Sep=", ", UnsetNames ),
+				++ text_utils:join( _Sep=", ", UnsetNames ),
 
 			list_utils:append_at_end( UnsetString, VariableStrings )
 
@@ -2262,12 +2260,12 @@ display_memory_summary() ->
 	Sum = SysSize + ProcSize,
 
 	io:format( "  - system size: ~ts (~ts)~n",
-			  [ interpret_byte_size_with_unit( SysSize ),
-				text_utils:percent_to_string( SysSize / Sum ) ] ),
+			   [ interpret_byte_size_with_unit( SysSize ),
+				 text_utils:percent_to_string( SysSize / Sum ) ] ),
 
 	io:format( "  - process size: ~ts (~ts)~n",
-			  [ interpret_byte_size_with_unit( ProcSize ),
-				text_utils:percent_to_string( ProcSize / Sum ) ] ).
+			   [ interpret_byte_size_with_unit( ProcSize ),
+				 text_utils:percent_to_string( ProcSize / Sum ) ] ).
 
 
 
@@ -2855,11 +2853,20 @@ get_cpu_usage_counters() ->
 
 
 
-% @doc Returns the current usage of disks, as a human-readable string.
+% @doc Returns the current usage of local disks, as a human-readable string.
+%
+% Limiting to disks that are local, otherwise, in the presence of a
+% network/configuration issue regarding a remote filesystem, the command may
+% freeze until a longer time-out (several minutes) kicks in.
+%
 -spec get_disk_usage() -> ustring().
 get_disk_usage() ->
 
-	case run_command( ?df "-h" ) of
+	% Options:
+	%   -h is --human-readable
+	%   -l is -local (limit listing to local file systems)
+	%
+	case run_executable( _ExecPath=?df, _Args=[ "-h", "-l" ] ) of
 
 		{ _ExitCode=0, Output } ->
 			Output;
@@ -3217,7 +3224,7 @@ get_operating_system_description() ->
 
 			end;
 
-		false ->
+		_False ->
 			get_operating_system_description_alternate()
 
 	end.
@@ -3235,9 +3242,9 @@ get_operating_system_description_alternate() ->
 		true ->
 			BinString = file_utils:read_whole( IdentifierPath ),
 			text_utils:trim_whitespaces(
-			  text_utils:binary_to_string( BinString ) );
+				text_utils:binary_to_string( BinString ) );
 
-		false ->
+		_False ->
 			"(unknown operating system)"
 
 	end.
@@ -3268,7 +3275,8 @@ get_operating_system_description_string() ->
 
 % @doc Returns a string describing the current state of the local system.
 %
-% Will not crash, even if some information could not be retrieved.
+% Designed not to crash or freeze, even if some information could not be
+% retrieved.
 %
 -spec get_system_description() -> ustring().
 get_system_description() ->

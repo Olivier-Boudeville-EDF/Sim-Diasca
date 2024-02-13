@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2023 Olivier Boudeville
+% Copyright (C) 2015-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -87,12 +87,12 @@
 
 
 -type open_option() ::
-		check_non_existing % 'H5F_ACC_EXCL'   (fail if file already exists)
-	  | read_write         % 'H5F_ACC_RDWR'   (otherwise read-only)
-	  | overwrite          % 'H5F_ACC_TRUNC'  (overwrite existing files)
-	  | debug              % 'H5F_ACC_DEBUG'  (print debug info)
-	  | create             % 'H5F_ACC_CREAT'  (create non-existing files)
-	  | read_only.         % 'H5F_ACC_RDONLY' (read-only)
+	'check_non_existing' % 'H5F_ACC_EXCL'   (fail if file already exists)
+  | 'read_write'         % 'H5F_ACC_RDWR'   (otherwise read-only)
+  | 'overwrite'          % 'H5F_ACC_TRUNC'  (overwrite existing files)
+  | 'debug'              % 'H5F_ACC_DEBUG'  (print debug info)
+  | 'create'             % 'H5F_ACC_CREAT'  (create non-existing files)
+  | 'read_only'.         % 'H5F_ACC_RDONLY' (read-only)
 % By default HDF5 files are opened as read-only and will not be overwritten.
 
 
@@ -123,10 +123,10 @@
 					| tuple().
 % Dimensions of a dataspace (number of elements of each dimension).
 %
-% Typically, for monodimensional data (ex: [4.0, 5.2]), we have dimensions ::
+% Typically, for monodimensional data (e.g. [4.0, 5.2]), we have dimensions ::
 % dimension(), which corresponds to the number of elements (here, 2).
 %
-% For bidimensional data (ex: [{1,2,3}, {4,5,6} ], we have Dimensions ::
+% For bidimensional data (e.g. [{1,2,3}, {4,5,6} ], we have Dimensions ::
 % {TupleCount :: dimension_size(), TupleSize :: dimension_size()} (corresponding
 % here to {2,3}).
 
@@ -203,7 +203,7 @@
 
 
 -type hdf5_predefined_datatype() :: atom().
-% Note: such a datatype is an atom here (ex: 'H5T_NATIVE_DOUBLE'), for actual
+% Note: such a datatype is an atom here (e.g. 'H5T_NATIVE_DOUBLE'), for actual
 % HDF5 use it must be translated into an integer (using convert_type, defined in
 % erlh5t.c).
 
@@ -281,7 +281,7 @@
 % libhdf5 ([http://www.hdfgroup.org/HDF5/]).
 %
 % Both are expected to be already built and installed, respectively in
-% ~/Software/erlhdf5 and in any location (ex: ~/Software/HDF/) that was found
+% ~/Software/erlhdf5 and in any location (e.g. ~/Software/HDF/) that was found
 % during the build of erlhdf5.
 %
 % There is no specific need to update the code path with regard to HDF5 (done
@@ -339,15 +339,8 @@ check_data( Data=[ H | _T ] ) when is_tuple( H )  ->
 
 	{ BindingElemType, MetaElemType } = get_types_of( FirstElement ),
 
-	case lists:member( BindingElemType, get_supported_datatypes() ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { invalid_data, unsupported_datatype, MetaElemType } )
-
-	end,
+	lists:member( BindingElemType, get_supported_datatypes() ) orelse
+		throw( { invalid_data, unsupported_datatype, MetaElemType } ),
 
 	% We use Data rather than T as we want to check the types of the elements of
 	% the first tuple as well:
@@ -362,15 +355,8 @@ check_data( Data=[ FirstElement | _T ] ) ->
 
 	{ BindingElemType, MetaElemType } = get_types_of( FirstElement ),
 
-	case lists:member( BindingElemType, get_supported_datatypes() ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { invalid_data, unsupported_datatype, MetaElemType } )
-
-	end,
+	lists:member( BindingElemType, get_supported_datatypes() ) orelse
+		throw( { invalid_data, unsupported_datatype, MetaElemType } ),
 
 	check_data_helper( Data, _TupleSize=1, BindingElemType, MetaElemType,
 					   _Count=0 );
@@ -395,16 +381,8 @@ check_data_helper( _Data=[], TupleSize, BindingElemType, _MetaElemType,
 check_data_helper( _Data=[ Tuple | T ], TupleSize, BindingElemType,
 				   MetaElemType, Count ) when is_tuple( Tuple ) ->
 
-	case size( Tuple ) of
-
-		TupleSize ->
-			ok;
-
-		_UnexpectedSize ->
-			throw( { invalid_data, heterogeneous_tuple_size, TupleSize,
-					 Tuple } )
-
-	end,
+	size( Tuple ) =:= TupleSize orelse
+		throw( { invalid_data, heterogeneous_tuple_size, TupleSize, Tuple } ),
 
 	case meta_utils:is_homogeneous( Tuple ) of
 
@@ -416,16 +394,9 @@ check_data_helper( _Data=[ Tuple | T ], TupleSize, BindingElemType,
 						andalso ( Types =:= { float, atom } orelse
 								  Types =:= { atom, float } ) ->
 
-			case is_tuple_of_doubles( Tuple ) of
-
-				true ->
-					ok;
-
-				false ->
-					throw( { invalid_data, non_double_tuple,
-								{ Tuple, Types }, { expected, MetaElemType } } )
-
-			end;
+			is_tuple_of_doubles( Tuple ) orelse
+				throw( { invalid_data, non_double_tuple,
+							{ Tuple, Types }, { expected, MetaElemType } } );
 
 		{ true, AnotherType } ->
 			throw( { invalid_data, heterogeneous_tuple_types,
@@ -437,21 +408,19 @@ check_data_helper( _Data=[ Tuple | T ], TupleSize, BindingElemType,
 
 	end,
 
-	check_data_helper( T, TupleSize, BindingElemType, MetaElemType, Count + 1 );
+	check_data_helper( T, TupleSize, BindingElemType, MetaElemType, Count+1 );
 
 
 % Accept special cased double values:
 check_data_helper( _Data=[ 'nan' | T ], TupleSize,
 				   BindingElemType=native_long_float,
 				   MetaElemType=float, Count ) ->
-	check_data_helper( T, TupleSize, BindingElemType, MetaElemType,
-					   Count + 1 );
+	check_data_helper( T, TupleSize, BindingElemType, MetaElemType, Count+1 );
 
 check_data_helper( _Data=[ 'inf' | T ], TupleSize,
 				   BindingElemType=native_long_float,
 				   MetaElemType=float, Count ) ->
-	check_data_helper( T, TupleSize, BindingElemType, MetaElemType,
-					   Count + 1 );
+	check_data_helper( T, TupleSize, BindingElemType, MetaElemType, Count+1 );
 
 check_data_helper( _Data=[ H | T ], TupleSize, BindingElemType,
 				   MetaElemType, Count ) ->
@@ -460,7 +429,7 @@ check_data_helper( _Data=[ H | T ], TupleSize, BindingElemType,
 
 		MetaElemType ->
 			check_data_helper( T, TupleSize, BindingElemType, MetaElemType,
-							   Count + 1 );
+							   Count+1 );
 
 		OtherType ->
 				throw( { invalid_data, heterogeneous_element_types,
@@ -559,15 +528,8 @@ start() ->
 		system_utils:get_user_home_directory(), "Software", "erlhdf5" ] ),
 
 	% We want to display a proper error message if necessary:
-	case file_utils:is_existing_directory( ExpectedBindingRoot ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { no_hdf5_support_found, base_root, ExpectedBindingRoot } )
-
-	end,
+	file_utils:is_existing_directory( ExpectedBindingRoot ) orelse
+		throw( { no_hdf5_support_found, base_root, ExpectedBindingRoot } ),
 
 	BinRoot = file_utils:join( ExpectedBindingRoot, "ebin" ),
 
@@ -575,28 +537,14 @@ start() ->
 
 	HDF5Beam = file_utils:join( BinRoot, "erlhdf5.beam" ),
 
-	case file_utils:is_existing_file( HDF5Beam ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { no_hdf5_support_found, lib, HDF5Beam } )
-
-	end,
+	file_utils:is_existing_file( HDF5Beam ) orelse
+		throw( { no_hdf5_support_found, lib, HDF5Beam } ),
 
 	HDF5Lib = file_utils:join(
-				[ ExpectedBindingRoot, "priv", "erlhdf5.so" ] ),
+		[ ExpectedBindingRoot, "priv", "erlhdf5.so" ] ),
 
-	case file_utils:is_existing_file( HDF5Lib ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { no_hd5_support_found, lib, HDF5Lib } )
-
-	end.
+	file_utils:is_existing_file( HDF5Lib ) orelse
+		throw( { no_hd5_support_found, lib, HDF5Lib } ).
 
 	% No specific checking here for the HDF5 library, as its (arbitrary)
 	% location is hardcoded in erlhdf5.so when it is built.
@@ -630,15 +578,8 @@ create_file( Filename ) ->
 create_file( Filename, CreateFlags ) ->
 
 	% To avoid an unclear error message:
-	case file_utils:is_existing_file( Filename ) of
-
-		true ->
-			throw( { file_already_exists, Filename } );
-
-		false ->
-			ok
-
-	end,
+	file_utils:is_existing_file( Filename ) andalso
+		throw( { file_already_exists, Filename } ),
 
 	% Binding would not work ("Cannot create file") if using Createflags=[
 	% check_non_existing, read_write, overwrite, create ] ).
@@ -669,15 +610,8 @@ open_file( Filename ) ->
 open_file( Filename, OpenFlags ) ->
 
 	% To avoid an unclear error message:
-	case file_utils:is_existing_file( Filename ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { file_not_found, Filename } )
-
-	end,
+	file_utils:is_existing_file( Filename ) orelse
+		throw( { file_not_found, Filename } ),
 
 	BindingFlags = convert_open_options( OpenFlags ),
 
@@ -725,8 +659,8 @@ close_file( HDF5File ) ->
 % @doc Creates specified dataspace, with specified dimensions of specified
 % maximum size, and opens it for access.
 %
-% Ex: to create a dataspace with two dimensions, of size 5 and 9 (hence with
-% 5x9=45 elements), use: hdf5_support:create_dataspace( { 5, 9 } ).
+% For example to create a dataspace with two dimensions, of size 5 and 9 (hence
+% with 5x9=45 elements), use: hdf5_support:create_dataspace({5, 9}).
 %
 % Single-dimension arrays can be declared directly, as in:
 % hdf5_support:create_dataspace( 20 ).
@@ -770,9 +704,7 @@ close_dataspace( Dataspace ) ->
 % @doc Returns the rank (dimensionality) of the specified dataspace.
 -spec get_rank( dataspace() ) -> rank().
 get_rank( Dataspace ) ->
-
 	{ ok, Rank } = erlhdf5:h5sget_simple_extent_ndims( Dataspace ),
-
 	Rank.
 
 
@@ -780,13 +712,11 @@ get_rank( Dataspace ) ->
 % @doc Returns, for specified dataspace, an ordered list of, for each dimension,
 % a pair of current and maximum size.
 %
-% Ex: may return, for a dataspace of dimension { 5, 9 }, [ {5,5}, {9,9} ].
+% For example may return, for a dataspace of dimension {5, 9}, [{5,5}, {9,9}].
 %
 -spec get_dimension_extensions( dataspace() ) -> [ dimension_extension() ].
 get_dimension_extensions( Dataspace ) ->
-
 	Rank = get_rank( Dataspace ),
-
 	get_dimension_extensions( Rank, Dataspace ).
 
 
@@ -794,8 +724,8 @@ get_dimension_extensions( Dataspace ) ->
 % @doc Returns, for specified dataspace of specified rank, an ordered list of,
 % for each dimension, a pair of current and maximum size.
 %
-% Ex: may return, for a dataspace of dimension { 5, 9 } (and thus rank 2), [
-% {5,5}, {9,9} ].
+% For example may return, for a dataspace of dimension {5, 9} (and thus rank 2),
+% [{5,5}, {9,9}].
 %
 -spec get_dimension_extensions( rank(), dataspace() ) ->
 										[ dimension_extension() ].
@@ -818,11 +748,8 @@ get_dimension_extensions( Rank, Dataspace ) ->
 % @doc Creates a property list for specified class.
 -spec create_property_list_for( class() ) -> property_list().
 create_property_list_for( Class ) ->
-
 	BindingClass = convert_class( Class ),
-
 	{ ok, PropertyList } = erlhdf5:h5pcreate( BindingClass ),
-
 	PropertyList.
 
 
@@ -900,8 +827,8 @@ get_size( DatatypeName ) when is_atom( DatatypeName ) ->
 	BindingDatatypeName = convert_datatype( DatatypeName ),
 
 	% From the binding atom to an handle:
-	{ ok, BindingDatatypeHandle } = erlhdf5:datatype_name_to_handle(
-								BindingDatatypeName ),
+	{ ok, BindingDatatypeHandle } =
+		erlhdf5:datatype_name_to_handle( BindingDatatypeName ),
 
 	get_size( BindingDatatypeHandle ).
 
@@ -983,9 +910,7 @@ get_allocation_status( Dataset ) ->
 % @doc Returns the size, in bytes, used to store specified dataset.
 -spec get_storage_size( dataset() ) -> system_utils:byte_size().
 get_storage_size( Dataset ) ->
-
 	{ ok, Res } = erlhdf5:h5d_get_storage_size( Dataset ),
-
 	Res.
 
 
@@ -1006,15 +931,7 @@ write( Data, Dataset ) ->
 -spec write( data(), dataset(), boolean() ) -> void().
 write( Data, Dataset, CheckData ) ->
 
-	case CheckData of
-
-		true ->
-			check_data( Data );
-
-		false ->
-			ok
-
-	end,
+	CheckData =:= true andalso check_data( Data ),
 
 	% We deem the reverse parameter order clearer:
 	ok = erlhdf5:h5dwrite( Dataset, Data ).
@@ -1036,6 +953,7 @@ update( Data, Index, Dataset ) ->
 		List=[ FirstTuple | _T ] ->
 			% We are in two dimensions here, with a (supposedly homogeneous)
 			% non-empty list of tuples to update:
+			%
 			{ Data, 2, length( List ), size( FirstTuple ) };
 
 		Tuple when is_tuple( Data ) ->
@@ -1156,29 +1074,29 @@ convert_open_options( _Opts=Other ) ->
 % Apparently OR'combining HDF5 options is not well supported by the binding:
 
 %% convert_open_options( Opts ) ->
-%%	convert_open_options( Opts, _Acc=[] ).
+%%  convert_open_options( Opts, _Acc=[] ).
 
 
 %% convert_open_options( _Opts=[], Acc ) ->
-%%	Acc;
+%%  Acc;
 
 %% convert_open_options( _Opts=[ check_non_existing | T ], Acc ) ->
-%%	convert_open_options( T, [ 'H5F_ACC_EXCL' | Acc ] );
+%%  convert_open_options( T, [ 'H5F_ACC_EXCL' | Acc ] );
 
 %% convert_open_options( _Opts=[ read_write | T ], Acc ) ->
-%%	convert_open_options( T, [ 'H5F_ACC_RDWR' | Acc ] );
+%%  convert_open_options( T, [ 'H5F_ACC_RDWR' | Acc ] );
 
 %% convert_open_options( _Opts=[ overwrite | T ], Acc ) ->
-%%	convert_open_options( T, [ 'H5F_ACC_TRUNC' | Acc ] );
+%%  convert_open_options( T, [ 'H5F_ACC_TRUNC' | Acc ] );
 
 %% convert_open_options( _Opts=[ debug | T ], Acc ) ->
-%%	convert_open_options( T, [ 'H5F_ACC_DEBUG' | Acc ] );
+%%  convert_open_options( T, [ 'H5F_ACC_DEBUG' | Acc ] );
 
 %% convert_open_options( _Opts=[ create | T ], Acc ) ->
-%%	convert_open_options( T, [ 'H5F_ACC_CREAT' | Acc ] );
+%%  convert_open_options( T, [ 'H5F_ACC_CREAT' | Acc ] );
 
 %% convert_open_options( _Opts=[ Other | _T ], _Acc ) ->
-%%	throw( { unsupported_open_option, Other } ).
+%%  throw( { unsupported_open_option, Other } ).
 
 
 

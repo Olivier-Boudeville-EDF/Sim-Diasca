@@ -31,11 +31,11 @@
 
 
 % As an hex-package dependency:
-%{deps, [ {wooper, "WOOPER_VERSION_FOR_REBAR"} ] }.
+%{deps, [ {wooper, "WOOPER_VERSION_FOR_OTP"} ] }.
 
 
 % Include directories found in INC:
-{erl_opts, [ {d,myriad_debug_mode}, {d,wooper_debug_mode}, {d,traces_debug_mode}, {d,tracing_activated}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,wooper_parse_transform}, INCS_FOR_REBAR ]}.
+{erl_opts, [ {traces_version,"VERSION_FOR_OTP"}, {d,myriad_debug_mode}, {d,wooper_debug_mode}, {d,traces_debug_mode}, {d,tracing_activated}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,wooper_parse_transform}, INCS_FOR_REBAR ]}.
 
 
 % Bootstrapped modules (from BOOTSTRAP_MODULES):
@@ -77,7 +77,7 @@
 %
 {relx, [
 
-  {release, {traces_release, "VERSION_FOR_REBAR"},
+  {release, {traces_release, "VERSION_FOR_OTP"},
 			% myriad and wooper thus implied:
 			[sasl, traces]},
 
@@ -103,7 +103,7 @@
 	% {d,wooper_debug_mode}, {d,traces_debug_mode} and {d,tracing_activated},
 	% and added {d,exec_target_is_production}:
 	%
-	{erl_opts, [ {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,wooper_parse_transform}, INCS_FOR_REBAR ]},
+	{erl_opts, [ {traces_version,"VERSION_FOR_OTP"}, {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,wooper_parse_transform}, INCS_FOR_REBAR ]},
 
 	% For the build makefiles:
 	{env, [ { 'REBAR_PROFILE', "prod" } ] },

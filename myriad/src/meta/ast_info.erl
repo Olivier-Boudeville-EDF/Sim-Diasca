@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -103,50 +103,50 @@
 
 -type section_marker() ::
 
-		% Marker designating the beginning of the AST stream / source file:
-		'begin_marker'
+	% Marker designating the beginning of the AST stream / source file:
+	'begin_marker'
 
 
-		% Marker designating a section starting just after the module
-		% declaration (i.e. '-module(my_module_name).'):
-		%
-	  | 'module_marker'
+	% Marker designating a section starting just after the module
+	% declaration (i.e. '-module(my_module_name).'):
+	%
+  | 'module_marker'
 
 
-		% Marker designating a section dedicated to the export of types
-		% (i.e. where '-import([ bar/n, ...]).' declarations may be gathered):
-		%
-	  | 'export_types_marker'
+	% Marker designating a section dedicated to the export of types
+	% (i.e. where '-import([ bar/n, ...]).' declarations may be gathered):
+	%
+  | 'export_types_marker'
 
 
-		% Marker designating a section dedicated to the export of functions
-		% (i.e. where '-export([ foo/n, ...]).' declarations may be gathered):
-		%
-	  | 'export_functions_marker'
+	% Marker designating a section dedicated to the export of functions
+	% (i.e. where '-export([ foo/n, ...]).' declarations may be gathered):
+	%
+  | 'export_functions_marker'
 
 
-		% Marker designating a section dedicated to the import of functions
-		% (i.e. where -import( Module, Funcitons ) declarations may be
-		% gathered):
-		%
-	  | 'import_functions_marker'
+	% Marker designating a section dedicated to the import of functions
+	% (i.e. where -import( Module, Funcitons ) declarations may be
+	% gathered):
+	%
+  | 'import_functions_marker'
 
-	  % Not relevant, as includes have already be inlined in an input AST:
-	  %| 'include_marker'    % Include declarations
-
-
-		% Marker designating a section dedicated to the definition of records:
-	  | 'definition_records_marker'
+	% Not relevant, as includes have already be inlined in an input AST:
+	%| 'include_marker'    % Include declarations
 
 
-		% Marker designating a section dedicated to the definition of types:
-	  | 'definition_types_marker'
+	% Marker designating a section dedicated to the definition of records:
+  | 'definition_records_marker'
 
 
-		% Marker designating a section dedicated to the definition of functions:
-	  | 'definition_functions_marker'
+	% Marker designating a section dedicated to the definition of types:
+  | 'definition_types_marker'
 
-	  | 'end_marker'.       % End of the AST stream / source file
+
+	% Marker designating a section dedicated to the definition of functions:
+  | 'definition_functions_marker'
+
+  | 'end_marker'.       % End of the AST stream / source file
 % Known section markers (insertion points), listed in their expected order of
 % appearance in an AST stream (e.g. a source file). All markers are expected to
 % be set (located) as soon as the scan of an AST into a module_info has been
@@ -185,8 +185,8 @@
 % As typically obtained from options fed to a parse-transform.
 
 
--type compile_option_table() :: ?table:?table( compile_option_name(),
-									maybe( [ compile_option_value() ] ) ).
+-type compile_option_table() ::
+	?table:?table( compile_option_name(), maybe( [ compile_option_value() ] ) ).
 % For easy access to compilation information:
 %
 % Note that an option specified without a value (e.g. -Dmy_token on the command
@@ -539,9 +539,9 @@ extract_module_info_from_ast( AST ) ->
 	% (thus additionally a given file may happen multiple times); a count is not
 	% useful here anyway.
 
-	% Finally we have not real freedom in terms of output, as we prefer to
-	% respect the native display format of the error messages so that tools (e.g.
-	% emacs, possible erlide and all) are still able to manage them.
+	% Finally we have no real freedom in terms of output, as we prefer to
+	% respect the native display format of the error messages so that tools
+	% (e.g. emacs, possibly erlide and all) are still able to manage them.
 
 	% Useless: would report pre-transform errors that would be solved after
 	% transformation (e.g. void() not existing)
@@ -856,7 +856,7 @@ recompose_ast_from_module_info( #module_info{
 
 
 	%ast_utils:display_debug( "Unordered located AST:~n~p~n",
-	%						  [ UnorderedLocatedAST ] ),
+	%                         [ UnorderedLocatedAST ] ),
 
 	OrderedAST = get_ordered_ast_from( UnorderedLocatedAST, MarkerTable ),
 
@@ -1489,7 +1489,7 @@ compilation_options_to_string( CompileTable, CompileOptDefs, DoIncludeForms,
 
 			CompStrings = [ text_utils:format( "for option '~ts': ~p",
 											   [ OptName, OptValue ] )
-							|| { OptName, OptValue } <- CompileOpts ],
+								|| { OptName, OptValue } <- CompileOpts ],
 
 			OptString = text_utils:format( "~B compile option(s) defined: ~ts",
 				[ length( CompileOpts ),
@@ -1700,7 +1700,7 @@ types_to_string( TypeTable, DoIncludeForms, IndentationLevel ) ->
 
 			TypeStrings = [ type_info_to_string( TypeInfo, DoIncludeForms,
 												 IndentationLevel )
-							|| TypeInfo <- TypeInfos ],
+								|| TypeInfo <- TypeInfos ],
 
 			text_utils:format( "~B type definition(s) specified: ~ts",
 				[ length( TypeInfos ),

@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2023 Olivier Boudeville
+% Copyright (C) 2020-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -45,6 +45,10 @@ run() ->
 	?test_start,
 
 	?test_debug( "Hello debug!" ),
+
+	test_facilities:display( "The version of this currently tested Traces "
+		"library is ~ts (i.e. ~w).", [ traces_utils:get_traces_version_string(),
+									   traces_utils:get_traces_version() ] ),
 
 	case executable_utils:is_batch() of
 

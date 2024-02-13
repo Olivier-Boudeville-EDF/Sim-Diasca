@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -49,6 +49,10 @@
 % to perform in a row), in which case they were to return an updated state,
 % however it proved too cumbersome to define and use.
 
+% Note that, apparently in some cases (notably crashes), text_ui may leave the
+% user terminal in an invalid state (not responsive, not displaying anything),
+% and running 'reset' will not fix that.
+
 
 % Basic UI operations.
 -export([ % No is_available/0, as text_ui is deemed always available.
@@ -75,6 +79,8 @@
 		  get_text_as_maybe_integer/1, get_text_as_maybe_integer/2,
 		  read_text_as_integer/1, read_text_as_integer/2,
 		  read_text_as_maybe_integer/1, read_text_as_maybe_integer/2,
+
+		  ask_yes_no/2, ask_yes_no/3,
 
 		  choose_designated_item/1, choose_designated_item/2,
 		  choose_designated_item/3,
@@ -147,7 +153,7 @@
 -type choice_index() :: ui:choice_index().
 %-type choice_text() :: ui:choice_text().
 -type choice_element() :: ui:choice_element().
-%-type binary_choice() :: ui:binary_choice().
+-type binary_choice() :: ui:binary_choice().
 
 
 
@@ -508,6 +514,36 @@ read_text_as_maybe_integer( Prompt, UIState ) ->
 					I
 
 			end
+
+	end.
+
+
+
+% @doc Displays the specified prompt, lets the user choose between two options,
+% "yes" and "no" (with specified default option), and returns that choice.
+%
+-spec ask_yes_no( prompt(), binary_choice() ) -> binary_choice().
+ask_yes_no( Prompt, BinaryDefault ) ->
+	ask_yes_no( Prompt, BinaryDefault, get_state() ).
+
+
+% @doc Displays the specified prompt, lets the user choose between two options,
+% "yes" and "no" (with specified default option), and returns that choice.
+%
+-spec ask_yes_no( prompt(), binary_choice(), ui_state() ) -> binary_choice().
+ask_yes_no( Prompt, BinaryDefault, UIState ) ->
+
+	case get_text( Prompt ++ " ", UIState ) of
+
+		"yes" ->
+			yes;
+
+		"no" ->
+			no;
+
+		_Res ->
+			%io:format( "Res: '~ts'~n", [ Res ] ),
+			BinaryDefault
 
 	end.
 

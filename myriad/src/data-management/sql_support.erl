@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2023 Olivier Boudeville
+% Copyright (C) 2016-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Wednesday, June 8, 2016
+% Creation date: Wednesday, June 8, 2016.
 
 
 % @doc Gathering of various facilities regarding the management of <b>SQL
@@ -56,7 +56,7 @@
 
 
 % Vocabulary section (the terms that we retain as canonical here are
-% emphasized):
+% emphasised):
 %
 % - a computer (*database host*) may host multiple clusters (on different ports)
 %
@@ -110,24 +110,24 @@
 
 -type database_host_name() :: net_utils:string_host_name().
 % Designates the hostname on which a target database server instance is running.
-% Ex: "baz.foobar.org."
+% For example "baz.foobar.org."
 
 
 -type database_port() :: net_utils:tcp_port().
 % The (TCP) port at which the target database server instance is running.
-% Ex: 5432.
+% For example 5432.
 
 
 % No database_server() of use.
 
 
 -type database_name() :: ustring().
-% The name of the target database instance. Ex: "acme_stock_db".
+% The name of the target database instance. For example "acme_stock_db".
 % A database instance is also designated as a catalog.
 
 
 -type bin_database_name() :: bin_string().
-% The name of the target database instance. Ex: `<<"acme_stock_db">>'.
+% The name of the target database instance. For example `<<"acme_stock_db">>'.
 % A database instance is also designated as a catalog.
 
 
@@ -138,13 +138,13 @@
 -type schema_name() :: ustring().
 % A schema describes the organisation of the tables of a database. It defines a
 % namespace of tables, and security boundaries.
-% Ex: "customer_schema".
+% For example "customer_schema".
 
 
 -type bin_schema_name() :: bin_string().
 % A schema describes the organisation of the tables of a database. It defines a
 % namespace of tables, and security boundaries.
-% Ex: `<<"customer_schema">>'.
+% For example `<<"customer_schema">>'.
 
 -type any_schema_name() :: schema_name() | bin_schema_name().
 
@@ -187,7 +187,7 @@
 
 
 -type database_user_name() :: ustring().
-% The name of a user of a database server. Ex: "john_smith".
+% The name of a user of a database server. For example "john_smith".
 
 -type database_user_password() :: ustring().
 % The password of a user of a database server.
@@ -213,7 +213,7 @@
 
 -type query_string() :: ustring().
 % A SQL query, as a string.
-% Ex: "select * from customers".
+% For example "select * from customers".
 
 
 -type query_format() :: text_utils:format_string().
@@ -259,7 +259,7 @@
 
 -type timestamp() :: ustring().
 % A database timestamp.
-% Ex: "2021-11-08 13:33:52.895374".
+% For example "2021-11-08 13:33:52.895374".
 
 
 -type query_result() :: select_result() | update_result() | insert_result()
@@ -408,7 +408,7 @@ start() ->
 
 		{ sqlite3,
 			% We have to secure the erlang-sqlite3 binding, nevertheless nothing
-			% special is needed (ex: finding ebin/sqlite3.beam results in
+			% special is needed (e.g. finding ebin/sqlite3.beam results in
 			% finding automatically priv/sqlite3_drv.so).
 
 			%trace_utils:debug( "Starting the SQL support, using SQLite3." )
@@ -609,7 +609,7 @@ list_database_names( Conn ) ->
 % @doc Returns a list of the names of all the existing schemas in the database
 % instance of the database server designated by the specified connection.
 %
-% Ex: `[<<"pg_catalog">>, <<"information_schema">>, <<"public">>]'.
+% For example `[<<"pg_catalog">>, <<"information_schema">>, <<"public">>]'.
 %
 -spec list_schema_names( connection(), any_database_name() ) ->
 											fallible( [ bin_schema_name() ] ).
@@ -673,8 +673,8 @@ list_table_names( Conn, DbInstanceName, SchemaName ) ->
 
 		{ sqlite3,
 			begin
-				basic_utils:ignore_unused( [ Conn, BinDbInstanceName,
-											 BinSchemaName ] ),
+				basic_utils:ignore_unused(
+					[ Conn, BinDbInstanceName, BinSchemaName ] ),
 				throw( to_do )
 			end },
 

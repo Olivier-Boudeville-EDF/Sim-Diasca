@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,8 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, February 3, 2018.
-
-
 
 
 % Describes the transformations to be applied onto an AST when scanning it.

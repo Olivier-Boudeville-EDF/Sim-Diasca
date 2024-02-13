@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -68,8 +68,6 @@
 -type registration_scope() :: naming_utils:registration_scope().
 
 
-
-
 % @doc Starts and links the Traces root supervisor, creating in turn a proper
 % supervision bridge.
 %
@@ -89,7 +87,6 @@ start_link( TraceInitArgs ) ->
 						   _Mod=?MODULE, TraceInitArgs ).
 
 
-
 % @doc Callback to initialise the Traces supervisor bridge (supervised by this
 % root supervisor), typically in answer to start_link/1 above being executed.
 %
@@ -100,13 +97,13 @@ init( { TraceSupervisorWanted, RegScope } ) ->
 	trace_utils:info_fmt( "Initialising the Traces root supervisor ~w "
 		"(trace supervisor wanted: ~ts).", [ self(), TraceSupervisorWanted ] ),
 
-	ExecTarget= wooper:get_execution_target(),
+	ExecTarget = traces:get_execution_target(),
 
 	% Restart only children that terminate.
 	% Never expected to fail, though:
 	%
 	SupSettings = otp_utils:get_supervisor_settings(
-		_RestartStrategy=one_for_one, traces:get_execution_target() ),
+		_RestartStrategy=one_for_one, ExecTarget ),
 
 	% One child, a supervisor bridge in charge of the trace aggregator:
 	BridgeChildSpec = #{

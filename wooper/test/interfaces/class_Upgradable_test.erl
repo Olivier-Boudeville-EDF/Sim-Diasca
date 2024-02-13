@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -54,7 +54,7 @@
 check_old_code() ->
 	Mod = class_TestUpgradable,
 	test_facilities:display( "Has '~ts' old code? ~ts.",
-		[ Mod, erlang:check_old_code( Mod ) ] ).
+							 [ Mod, erlang:check_old_code( Mod ) ] ).
 
 
 
@@ -232,7 +232,7 @@ run() ->
 							 [ TargetClass ] ),
 
 	DownFreezeInfos = class_Upgradable:freeze_instances( InstancesToUpdate,
-							InitialVersion, ExtraData ),
+		InitialVersion, ExtraData ),
 
 	test_facilities:display( "Downgrade freeze information received: ~p.",
 							 [ DownFreezeInfos ] ),
@@ -243,7 +243,7 @@ run() ->
 	%
 	% This will lead to the killing of instance C:
 	ok = class_Upgradable:update_class( TargetClass, DoForceRecompilation,
-									_NoDefines=[], KillAnyLingeringProcess ),
+		_NoDefines=[], KillAnyLingeringProcess ),
 
 	test_facilities:display( "After the class downgrade, checking which "
 		"instances are still alive (expected: A and B, not C anymore): ~ts",

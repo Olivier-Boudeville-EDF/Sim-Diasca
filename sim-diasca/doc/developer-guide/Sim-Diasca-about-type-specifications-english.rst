@@ -10,7 +10,7 @@ Type Specifications: What For?
 
 Adding a type specification (shorthand: *spec*) to the source code of a function means specifying what are its intended input and output parameters, in terms of number and types. This can be applied to records as well.
 
-Once all Sim-Diasca code (including prerequisites, like ``Myriad``, ``WOOPER`` and ``Traces``) and the one of user applications based on it (ex: ``Mock-Simulators`` or any actual simulator) have been instrumented with type specifications (i.e. when all exported functions and records of all modules have a proper spec), then:
+Once all Sim-Diasca code (including prerequisites, like ``Myriad``, ``WOOPER`` and ``Traces``) and the one of user applications based on it (e.g. ``Mock-Simulators`` or any actual simulator) have been instrumented with type specifications (i.e. when all exported functions and records of all modules have a proper spec), then:
 
 - static checkings can be done: `Dialyzer <http://www.it.uu.se/research/group/hipe/dialyzer>`_ is able to detect various discrepancies (such as type errors, unreachable code, unnecessary tests, etc.) at compile-time (therefore a lot earlier than at runtime, and allowing to examine *a priori* all code paths)
 
@@ -32,7 +32,7 @@ Prerequisites
 Taking Care of Erlang/OTP
 _________________________
 
-First of all, type information must have been already extracted from the Erlang/OTP files of the install that will be used, and stored in a PLT (for *Persistent Lookup Table*) file for later-reuse (this is a preprocessing stage). Such a file is preferably created one time for all for each Erlang environment being used. Therefore a PLT file is better produced as the last step of an Erlang installation (see the ``--generate-plt`` option of our ``install-erlang.sh`` script, which streamlines it). This operation is rather long (ex: one hour and a half).
+First of all, type information must have been already extracted from the Erlang/OTP files of the install that will be used, and stored in a PLT (for *Persistent Lookup Table*) file for later-reuse (this is a preprocessing stage). Such a file is preferably created one time for all for each Erlang environment being used. Therefore a PLT file is better produced as the last step of an Erlang installation (see the ``--generate-plt`` option of our ``install-erlang.sh`` script, which streamlines it). This operation is rather long (e.g. one hour and a half).
 
 
 We prefer to have Dialyzer operate on BEAM files (``*.beam``) rather than on source files (``*.hrl/*.erl``), as include paths, symbol definitions and parse transforms are better supported this way.
@@ -53,7 +53,7 @@ ___________________________
 
 Once a PLT is available for Erlang/OTP, PLTs are to be generated for the entire codebase of interest (typically Sim-Diasca and its prerequisites, and possibly user code as well).
 
-This can be achieved with the ``generate-all-plt`` make target, to be run from the root of either a check-out or an install. The script will climb our software stack layer by layer, and generate for each a custom PLT (ex: ``myriad.plt``).
+This can be achieved with the ``generate-all-plt`` make target, to be run from the root of either a check-out or an install. The script will climb our software stack layer by layer, and generate for each a custom PLT (e.g. ``myriad.plt``).
 
 
 If, for any reason, the PLT of a layer must be (re)generated, simply use the ``generate-local-plt`` make target from the root of this layer.
@@ -80,7 +80,7 @@ Following conventions are to respect:
 
 - these type specs are to be defined as soon as a new function or record is introduced
 
-- as soon as a data-structure is being used more than once (ex: let's suppose a timestamp is being defined as a triplet of positive integers), a user-specific type *must* be defined (ex: ``-type MyTimeStamp() :: {pos_integer(),pos_integer(),pos_integer()}.``) and re-used *everywhere applicable* (ex: ``-spec get_timestamp() -> MyTimeStamp().``)
+- as soon as a data-structure is being used more than once (e.g. let's suppose a timestamp is being defined as a triplet of positive integers), a user-specific type *must* be defined (e.g. ``-type MyTimeStamp() :: {pos_integer(),pos_integer(),pos_integer()}.``) and re-used *everywhere applicable* (e.g. ``-spec get_timestamp() -> MyTimeStamp().``)
 
 - all type definitions (opaque or not) must be declared in a relevant module (least astonishment principle), and must be gathered in a section near the top of the file
 
@@ -88,12 +88,12 @@ Following conventions are to respect:
 
 - type specs should include no extraneous whitespaces and should respect the usual 80 character wide lines (thus possibly being broken into multiple lines)
 
-- external data (ex: information input by the user) shall be validated, and the checking code must denote these input information as of type ``basic_utils:external_data()``, ``basic_utils:unchecked_data()`` or, if appropriate, as a more precise ``basic_utils:user_data()``; these types are all (opaque) aliases for ``term()``; data shall be tagged with their expected type only once they have been validated (as one should certainly not trust the user or more generally any program interface)
+- external data (e.g. information input by the user) shall be validated, and the checking code must denote these input information as of type ``basic_utils:external_data()``, ``basic_utils:unchecked_data()`` or, if appropriate, as a more precise ``basic_utils:user_data()``; these types are all (opaque) aliases for ``term()``; data shall be tagged with their expected type only once they have been validated (as one should certainly not trust the user or more generally any program interface)
 
 - Dialyzer should be run regularly against the codebase to check frequently whether the sources are correct
 
 
-For a larger codebase to instrument with type specs, it may be useful to start first with the specs that can be deduced by Dialyzer from the actual code of functions. This can be done thanks to our ``add-deduced-type-specs.escript`` script (in ``myriad/src/scripts``). One should note that these specs are not, in the general case, the ones that the developer would have written (as Dialyzer cannot guess the intent of the original developer), so at least some adaptation work remains (ex: to define reusable types).
+For a larger codebase to instrument with type specs, it may be useful to start first with the specs that can be deduced by Dialyzer from the actual code of functions. This can be done thanks to our ``add-deduced-type-specs.escript`` script (in ``myriad/src/scripts``). One should note that these specs are not, in the general case, the ones that the developer would have written (as Dialyzer cannot guess the intent of the original developer), so at least some adaptation work remains (e.g. to define reusable types).
 
 
 .. Note::
@@ -116,9 +116,9 @@ In the context of each layer, one may routinely run:
 
  $ make clean all generate-local-plt
 
-This allows to list all the types that are unknown (generally misspelled or not exported) and spot a few kinds of errors (ex: ``Call to missing or unexported function``).
+This allows to list all the types that are unknown (generally misspelled or not exported) and spot a few kinds of errors (e.g. ``Call to missing or unexported function``).
 
-For a layer ``foo`` (ex: ``Myriad``, ``WOOPER``, etc.), one should run from its root directory:
+For a layer ``foo`` (e.g. ``Myriad``, ``WOOPER``, etc.), one should run from its root directory:
 
 .. code:: bash
 

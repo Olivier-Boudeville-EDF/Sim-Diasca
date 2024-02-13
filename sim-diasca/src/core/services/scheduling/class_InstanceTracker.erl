@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -18,6 +18,7 @@
 
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
+
 
 % @doc The purpose of an instance tracker is mainly <b>to track some information
 % about all kinds of simulation-related instances</b>, typically of models
@@ -435,6 +436,11 @@ registerActor( State, ActorAai, ActorBinName, ActorPid, ActorClassname ) ->
 %
 -spec registerActor( wooper:state(), actor_pid(), actor_info() ) ->
 														oneway_return().
+% Only untracked (pseudo) actor:
+registerActor( State, _ActorPid,
+			   #actor_info{ classname=class_LoadBalancer } ) ->
+	wooper:const_return();
+
 registerActor( State, ActorPid, ActorInfo ) ->
 
 	%trace_utils:debug_fmt( "Declaring creation of actor ~w on tracker ~w.",
@@ -474,6 +480,10 @@ registerActor( State, ActorPid, ActorInfo ) ->
 %
 -spec unregisterActor( wooper:state(), actor_pid(), classname() ) ->
 													oneway_return().
+% Only untracked (pseudo) actor:
+unregisterActor( State, _ActorPid, _ActorClassname=class_LoadBalancer ) ->
+	wooper:const_return();
+
 unregisterActor( State, ActorPid, ActorClassname ) ->
 
 	%trace_utils:debug_fmt( "Declaring deletion of instance ~w on tracker ~w.",
@@ -573,8 +583,10 @@ unregisterAgent( State, AgentPid ) ->
 		true ->
 			% Find first the reference to remove:
 			AgentRef = table:get_value( AgentPid, AgentTable ),
+
 			ReverseTable =
 				table:remove_entry( AgentRef, ?getAttr(agent_ref_to_pid) ),
+
 			setAttribute( State, agent_ref_to_pid, ReverseTable );
 
 		false ->
@@ -606,8 +618,10 @@ registerResultProducer( State, ProducerRef ) ->
 	ReverseState = case ?getAttr(pid_resolution_enabled) of
 
 		true ->
+
 			NewReverseTable = table:add_entry( ProducerRef, ProducerPid,
 											   ?getAttr(producer_ref_to_pid) ),
+
 			setAttribute( State, producer_ref_to_pid, NewReverseTable );
 
 		false ->
@@ -962,7 +976,7 @@ getTrackedActors( State ) ->
 -spec get_registration_name() ->
 					static_return( naming_utils:registration_name() ).
 get_registration_name() ->
-	% Ex: sim_diasca_instance_tracker
+	% For example: sim_diasca_instance_tracker
 	wooper:return_static( ?instance_tracker_name ).
 
 
@@ -1402,6 +1416,7 @@ register_agent_helper( AgentClassname, AgentPid, State ) ->
 		true ->
 			NewReverseTable = table:add_entry( AgentRef, AgentPid,
 											   ?getAttr(agent_ref_to_pid) ),
+
 			setAttribute( State, agent_ref_to_pid, NewReverseTable );
 
 		false ->

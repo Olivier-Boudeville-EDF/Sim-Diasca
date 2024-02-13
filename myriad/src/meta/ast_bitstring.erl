@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 4, 2018.
-
 
 
 % @doc Module in charge of handling <b>bitstrings defined or used within an
@@ -71,7 +70,8 @@
 -type constructor( ContentType ) ::
 		{ 'bin', file_loc(), [ bin_element( ContentType ) ] }.
 % General form of a bitstring constructor, as a polymorphic type so that it can
-% be specialized for dedicated contexts (ex: in guards, expressions, etc).
+% be specialized for dedicated contexts (for example in guards, expressions,
+% etc.).
 
 
 
@@ -80,7 +80,7 @@
 
 
 -type bin_element( ContentType ) :: { 'bin_element', ast_base:file_loc(),
-					ContentType, maybe_size(), maybe_type_specifier_list() }.
+			ContentType, maybe_size(), maybe_type_specifier_list() }.
 % A binary element within a bitstring constructor, with a specific content type.
 
 
@@ -153,7 +153,7 @@ transform_bin_element(
 
 		_ ->
 			{ [ NewSizeElem ], NewSizeTransforms } =
-					ast_expression:transform_expression( Size, ElemTransforms ),
+				ast_expression:transform_expression( Size, ElemTransforms ),
 			{ NewSizeElem, NewSizeTransforms }
 
 	end,
@@ -177,15 +177,15 @@ transform_bin_element(
 
 
 transform_bin_element( Unexpected, Transforms )
-  when is_record( Transforms, ast_transforms )->
+						when is_record( Transforms, ast_transforms )->
 	ast_utils:raise_error( [ unexpected_bitstring_bin_element, Unexpected ] ).
 
 
 
 % @doc Transforms specified list of binary elements involved in a bitstring
 % expression, applying to each element the specified function to perform the
-% relevant transformations (that depends on the context; ex: if being in a
-% guard, in an expression, etc).
+% relevant transformations (that depends on the context; for example if being in
+% a guard, in an expression, etc.).
 %
 -spec transform_bin_elements( [ bin_element() ], ast_transforms(),
 		element_transform_fun() ) -> { [ bin_element() ], ast_transforms() }.
@@ -205,7 +205,7 @@ transform_bin_elements( BinElements, Transforms, TransformFun ) ?rec_guard ->
 % @doc Transforms specified binary element involved in a bitstring expression.
 %
 % Note: context-insensitive function, considering that any kind of expression
-% can be found here (ex: a guard test).
+% can be found here (for example a guard test).
 %
 -spec transform_bin_element( bin_element(), ast_transforms(),
 			element_transform_fun() ) -> { bin_element(), ast_transforms() }.
@@ -262,11 +262,11 @@ transform_bin_element( Unexpected, Transforms, _TransformFun )
 % Note: maybe the types there shall be transformed as well.
 %
 transform_type_specifier( TypeSpecifier, Transforms )
-  when is_atom( TypeSpecifier ) ->
+						when is_atom( TypeSpecifier ) ->
 	{ TypeSpecifier, Transforms };
 
 transform_type_specifier( TypeSpecifier={ A, Value }, Transforms )
-  when is_atom( A ) andalso is_integer( Value ) ->
+						when is_atom( A ) andalso is_integer( Value ) ->
 	{ TypeSpecifier, Transforms };
 
 transform_type_specifier( Unexpected, _Transforms ) ->

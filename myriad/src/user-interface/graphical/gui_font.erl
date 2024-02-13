@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -32,14 +32,27 @@
 
 -opaque font() :: wxFont:wxFont().
 % Designates a font object.
+%
+% It applies to text rendering, including the ones done from the gui_text
+% module; once created, use gui_widget:set_font/{2,3,4} or
+% gui_render:set_font/{3,4} to make use of it. Do not forget deallocating it
+% with destruct/1.
 
 
 -type font_size() :: gui:dimensions().
 % The dimensions, in pixels, of characters drawn from a font.
+%
+% Note that generally, due to capital letters, descent and other factors,
+% instead of relying on the size of a font, using the actual extent of a target
+% text (see get_precise_text_extent/2) is a lot more relevant.
 
 
 -type point_size() :: gui:length().
 % A font size, in pixels.
+%
+% Note that generally, due to capital letters, descent and other factors,
+% instead of relying on the point size of a font, using the actual extent of a
+% target text (see get_precise_text_extent/2) is a lot more relevant.
 
 
 -type font_family() :: 'default_font_family' | 'decorative' | 'roman'
@@ -72,14 +85,35 @@
 % A wx object.
 
 
+-type descent() :: length().
+% Length from the baseline of a font to the bottom of the descender.
+
+
+-type external_leading() :: length().
+% Any extra vertical space added to the font by the font designer (usually is
+% null).
+
+
+-type precise_text_extent() ::
+	{ width(), height(), descent(), external_leading() }.
+% A precise text extent.
+%
+% Useful for example so that texts are rendered at the same height.
+
+
 -export_type([ font/0, font_size/0, point_size/0, font_family/0, font_style/0,
-			   font_weight/0, text_encoding/0, font_option/0, font_data/0 ]).
+			   font_weight/0, text_encoding/0, font_option/0, font_data/0,
+			   descent/0, external_leading/0, precise_text_extent/0 ]).
 
 
-% Font-related operations.
+% Font-related instance-level operations.
 -export([ create/1, create/2, create/3, create/4, create/5, destruct/1,
 		  get_platform_dependent_description/1, get_user_friendly_description/1,
-		  get_text_extent/2 ]).
+		  get_text_extent/2, get_precise_text_extent/2 ]).
+
+
+% General font information.
+-export([ list_families/0, list_styles/0, list_weights/0 ]).
 
 
 % Exported helpers (and silencing):
@@ -107,21 +141,28 @@
 -type ustring() :: text_utils:ustring().
 -type any_string() :: text_utils:any_string().
 
+-type length() :: gui:length().
+-type width() :: gui:width().
+-type height() :: gui:height().
 -type dimensions() :: gui:dimensions().
 
 -type wx_enum() :: gui_wx_backend:wx_enum().
 
 
-% @doc Creates a font object from specified requirements, to determine the
-% appearance of rendered text.
+
+% Font-related instance-level operations.
+
+
+% @doc Creates a font object from the specified requirements, to determine the
+% appearance of rendered texts from now on.
 %
 -spec create( font_size() | point_size() ) -> font().
 create( FontSize ) ->
 	create( FontSize, _FontFamily=default_font_family ).
 
 
-% @doc Creates a font object from specified requirements, to determine the
-% appearance of rendered text.
+% @doc Creates a font object from the specified requirements, to determine the
+% appearance of rendered texts from now on.
 %
 -spec create( font_size() | point_size(), font_family() ) -> font().
 create( FontSize, FontFamily ) ->
@@ -181,7 +222,8 @@ destruct( Font ) ->
 
 
 
-% @doc Returns the platform-dependent complete description the specified font.
+% @doc Returns the platform-dependent complete description of the specified
+% font.
 %
 % For example, "Sans 10".
 %
@@ -202,6 +244,10 @@ get_user_friendly_description( Font ) ->
 
 % @doc Returns the extent used by the rendering of the specified single-line
 % text with the specified font.
+%
+% Note that the returned height may be larger than the actual one of the text,
+% due to the margin taken for letters possibly going though the baseline (like
+% 'g'), the descent.
 %
 -spec get_text_extent( ustring(), font() ) -> dimensions().
 get_text_extent( Text, Font ) ->
@@ -230,6 +276,62 @@ get_text_extent( Text, Font ) ->
 	wxBitmap:destroy( TmpBmp ),
 
 	Dims.
+
+
+
+% @doc Returns the precise extent used by the rendering of the specified
+% single-line text with the specified font.
+%
+-spec get_precise_text_extent( ustring(), font() ) -> precise_text_extent().
+get_precise_text_extent( Text, Font ) ->
+
+	cond_utils:if_defined( myriad_debug_gui_font, trace_utils:debug_fmt(
+		"Getting precise extent of text '~ts' for font ~p.", [ Text, Font ] ) ),
+
+	% We have to create dummy bitmap and device contexts in order to determine
+	% these information:
+
+	TmpBmp = wxBitmap:new( _W=200, _H=200 ),
+
+	cond_utils:if_defined( myriad_debug_gui_memory,
+						   true = wxBitmap:isOk( TmpBmp ) ),
+
+	TmpDC = wxMemoryDC:new( TmpBmp ),
+
+	cond_utils:if_defined( myriad_debug_gui_memory, true = wxDC:isOk( TmpDC ) ),
+
+	wxMemoryDC:setFont( TmpDC, Font ),
+
+	PExtent = wxDC:getTextExtent( TmpDC, Text, _Opts=[ { theFont, Font } ] ),
+
+	wxMemoryDC:destroy( TmpDC ),
+
+	wxBitmap:destroy( TmpBmp ),
+
+	PExtent.
+
+
+
+% General font information.
+
+
+% @doc Returns a list of the base font families.
+-spec list_families() -> [ font_family() ].
+list_families() ->
+	[ default_font_family, decorative, roman, script, swiss, modern, teletype ].
+
+
+% @doc Returns a list of the supported font styles.
+-spec list_styles() -> [ font_style() ].
+list_styles() ->
+	[ normal, italic, slant ].
+
+
+% @doc Returns a list of the supported font weights.
+-spec list_weights() -> [ font_weight() ].
+list_weights() ->
+	[ thin, extra_light, light, normal, medium, semi_bold, bold, extra_bold,
+	  heavy , extra_heavy ].
 
 
 

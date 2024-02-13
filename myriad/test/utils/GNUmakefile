@@ -18,7 +18,7 @@ test-local: prepare-otp-test
 
 
 prepare-otp-test:
-	@cd $(MYRIAD_TOP) && $(MAKE) -s rebar3-create-app-file
+	@cd $(MYRIAD_TOP) && $(MAKE) -s create-app-file
 
 
 test-distributions: clean-distribution-files

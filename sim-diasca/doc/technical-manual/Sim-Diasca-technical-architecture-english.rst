@@ -198,10 +198,10 @@ GNU make is open source.
 
 
 
-Version Control: GIT
+Version Control: Git
 --------------------
 
-`GIT <http://git-scm.com/>`_, is a free and open source distributed version control system. It allows to keep track of the changes of the Sim-Diasca source code, and to share it among developers.
+`Git <http://git-scm.com/>`_, is a free and open source distributed version control system. It allows to keep track of the changes of the Sim-Diasca source code, and to share it among developers.
 
 
 Docutils

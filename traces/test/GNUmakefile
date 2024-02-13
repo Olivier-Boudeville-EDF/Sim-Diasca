@@ -2,7 +2,7 @@ TRACES_TOP = ..
 
 .PHONY: all test-local prepare-otp-test
 
-# To allow local tests (ex: trace_bridging_test.erl) to depend on Myriad ones:
+# To allow local tests (e.g. trace_bridging_test.erl) to depend on Myriad ones:
 BEAM_DIRS += $(MYRIAD_TOP)/test/utils
 
 # So that traces_otp_application_test reads my-traces-test.config:
@@ -17,7 +17,7 @@ test-local: prepare-otp-test
 
 
 prepare-otp-test:
-	@cd $(TRACES_TOP) && $(MAKE) -s rebar3-create-app-file
+	@cd $(TRACES_TOP) && $(MAKE) -s create-app-file
 
 
 include $(TRACES_TOP)/GNUmakesettings.inc

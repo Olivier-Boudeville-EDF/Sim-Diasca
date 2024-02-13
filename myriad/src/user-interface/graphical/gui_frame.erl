@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -71,24 +71,26 @@
 % 'iconized' not kept (duplicate of 'minimize').
 -type frame_style() ::
 
-	% Corresponds to the following options: minimize_icon, maximize_icon,
-	% resize_border, system_menu, caption, close_icon and clip_children.
-	%
-	'default'
+	window_style()
 
-	% Displays a caption on the title bar of this frame (needed for icons).
+	% Corresponds to the following options: minimize_icon, maximize_icon,
+	% resize_border, system_menu, caption, close_icon and clip_children:
+	%
+  | 'default'
+
+	% Displays a caption on the title bar of this frame (needed for icons):
   | 'caption'
 
-	% Displays a minimize icon on the title bar of this frame.
+	% Displays a minimize icon on the title bar of this frame:
   | 'minimize_icon'
 
-	% Displays a maximize icon on the title bar of this frame.
+	% Displays a maximize icon on the title bar of this frame:
   | 'maximize_icon'
 
-	% Displays a close icon on the title bar of this frame.
+	% Displays a close icon on the title bar of this frame:
   | 'close_icon'
 
-	% Stays on top of all other windows.
+	% Stays on top of all other windows (see also 'float_on_parent'):
   | 'stay_on_top'
 
 	% Displays a system menu containing the list of various windows commands
@@ -105,15 +107,15 @@
 	% Requests that this frame does not appear in the taskbar:
   | 'no_taskbar'
 
-	% Stays on top of (only) its parent:
+	% Stays on top of (only) its parent (see also 'stay_on_top'):
   | 'float_on_parent'
 
 	% Allows this frame to have its shape changed:
   | 'shaped'.
 % A style element for frames.
 %
-% Note that specifying an empty option list does not enable any option,; one may
-% use 'default' instead.
+% Note that specifying an empty option list does not enable any option; one may
+% specify 'default' instead.
 %
 % See also [http://docs.wxwidgets.org/stable/classwx_frame.html].
 
@@ -124,11 +126,13 @@
 % For frames:
 -export([ create/0, create/1, create/2, create/3, create/4, create/6,
 		  destruct/1,
-		  show/1 ]).
+		  set_menu_bar/2, show/1 ]).
 
 
 % For top-level frames:
 -export([ create_top_level/1, create_top_level/2, create_top_level/4,
+		  set_icon/2, center_on_screen/1, center_on_screen/2,
+		  is_maximised/1, maximize/1,
 		  is_fullscreen/1, set_fullscreen/2 ]).
 
 
@@ -142,10 +146,17 @@
 
 -type bit_mask() :: basic_utils:bit_mask().
 
+-type any_file_path() :: file_utils:any_file_path().
+
 -type size() :: gui:size().
+-type sizing() :: gui:sizing().
 -type position() :: gui:position().
+-type orientation() :: gui:orientation().
 -type parent() :: gui:parent().
 -type title() :: gui:title().
+
+-type window_style() :: gui_window:window_style().
+-type menu_bar() :: gui_menu:menu_bar().
 
 -type id() :: gui_id:id().
 
@@ -195,7 +206,7 @@ create( Title, Size ) ->
 
 
 
-% @doc Creates a frame, with default position, size and style.
+% @doc Creates a frame, with default position, size and styles.
 -spec create( title(), id(), maybe( parent() ) ) -> frame().
 create( Title, Id, MaybeParent ) ->
 	wxFrame:new( gui_wx_backend:to_wx_parent( MaybeParent ),
@@ -203,33 +214,37 @@ create( Title, Id, MaybeParent ) ->
 
 
 
-% @doc Creates a frame, with the specified title, position, size and style, and
+% @doc Creates a frame, with the specified title, position, size and styles, and
 % with a default parent.
 %
--spec create( title(), position(), size(), [ frame_style() ] ) -> frame().
-create( Title, Position, Size, Styles ) ->
+-spec create( title(), position(), sizing(), [ frame_style() ] ) -> frame().
+create( Title, Position, Sizing, Styles ) ->
 
 	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
-				gui_wx_backend:to_wx_size( Size ),
+				gui_wx_backend:to_wx_size( Sizing ),
 				{ style, frame_styles_to_bitmask( Styles ) } ],
 
-	%trace_utils:debug_fmt( "create_frame options: ~p.", [ WxOpts ] ),
+	%trace_utils:debug_fmt( "Creating a frame with WxOpts = ~w "
+	%                       "(styles: ~w).", [ WxOpts, Styles ] ),
 
 	wxFrame:new( gui_wx_backend:to_wx_parent( undefined ),
 				 gui_id:declare_any_id( undefined ), Title, WxOpts ).
 
 
 
-% @doc Creates a frame, with the specified title, position, size and style, and
+% @doc Creates a frame, with the specified title, position, size and styles, and
 % with the specified parent.
 %
--spec create( title(), position(), size(), [ frame_style() ], id(),
+-spec create( title(), position(), sizing(), [ frame_style() ], id(),
 			  maybe( parent() ) ) -> frame().
-create( Title, Position, Size, Styles, Id, MaybeParent ) ->
+create( Title, Position, Sizing, Styles, Id, MaybeParent ) ->
 
 	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
-				gui_wx_backend:to_wx_size( Size ),
-				{ style, frame_styles_to_bitmask( Styles ) } ],
+			   gui_wx_backend:to_wx_size( Sizing ),
+			   { style, frame_styles_to_bitmask( Styles ) } ],
+
+	%trace_utils:debug_fmt( "Creating a frame with WxOpts = ~w "
+	%                       "(styles: ~w).", [ WxOpts, Styles ] ),
 
 	ActualId = gui_id:declare_any_id( Id ),
 
@@ -243,6 +258,13 @@ create( Title, Position, Size, Styles, Id, MaybeParent ) ->
 -spec destruct( frame() ) -> void().
 destruct( Frame  ) ->
 	wxFrame:destroy( Frame ).
+
+
+
+% @doc Assigns the specified menu bar to the specified frame.
+-spec set_menu_bar( frame(), menu_bar() ) -> void().
+set_menu_bar( Frame, MenuBar ) ->
+	wxFrame:setMenuBar( Frame, MenuBar ).
 
 
 
@@ -309,6 +331,41 @@ create_top_level( Title, Position, Size, Style ) ->
 	Frame = create( Title, Position, Size, Style ),
 	gui_window:record_as_top_level( Frame ),
 	Frame.
+
+
+
+% @doc Sets the icon of the specified top-level frame.
+-spec set_icon( top_level_frame(), any_file_path() ) -> void().
+set_icon( TopLevelFrame, IconPath ) ->
+	gui_window:set_icon( TopLevelFrame, IconPath ).
+
+
+
+% @doc Centers the specified top-level frame on screen.
+-spec center_on_screen( top_level_frame() ) -> void().
+center_on_screen( TopLevelFrame ) ->
+	gui_window:center_on_screen( TopLevelFrame ).
+
+
+% @doc Centers the specified top-level frame on screen, along the specified
+% orientation(s).
+%
+-spec center_on_screen( top_level_frame(), orientation() ) -> void().
+center_on_screen( TopLevelFrame, Orientation ) ->
+	gui_window:center_on_screen( TopLevelFrame, Orientation ).
+
+
+
+% @doc Tells whether the specified top-level frame is maximised.
+-spec is_maximised( top_level_frame() ) -> boolean().
+is_maximised( TopLevelFrame ) ->
+	gui_window:is_maximised( TopLevelFrame ).
+
+
+% @doc Maximises the specified top-level frame.
+-spec maximize( top_level_frame() ) -> void().
+maximize( TopLevelFrame ) ->
+	gui_window:maximize( TopLevelFrame ).
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2023 Olivier Boudeville
+% Copyright (C) 2020-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -26,7 +26,7 @@
 % Creation date: Wednesday, October 21, 2020.
 
 
-% Testing the <b>actual use of a trace bridge</b>, in the context of
+% @doc Testing the <b>actual use of a trace bridge</b>, in the context of
 % Ceylan-Traces.
 %
 % See also, in Ceylan-Myriad, trace_bridge_test.erl for a similar test when no

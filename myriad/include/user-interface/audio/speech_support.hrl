@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -98,10 +98,10 @@
 	secondary_locales :: [ locale_utils:bin_locale() ],
 
 
-	% The name for simple display (ex: <<"Hoda">>):
+	% The name for simple display (e.g. <<"Hoda">>):
 	display_name :: text_utils:bin_string(),
 
-	% The name according to its locale (ex: <<"هدى">>):
+	% The name according to its locale (e.g. <<"هدى">>):
 	local_name :: text_utils:bin_string(),
 
 	% The sample rate of the rendering of this voice:
@@ -141,9 +141,9 @@
 	%
 	id :: speech_support:speech_id(),
 
-	% A short name to designate this logical speech (ex: as a prefix of its
-	% filename); ex: <<"welcome-new-recruits">>). Depending on user choice, this
-	% may or may not be also an identifier.
+	% A short name to designate this logical speech (e.g. as a prefix of its
+	% filename); e.g. <<"welcome-new-recruits">>). Depending on user choice,
+	% this may or may not be also an identifier.
 	%
 	base_name :: speech_support:speech_base_name(),
 
@@ -165,7 +165,7 @@
 	% The SSML corresponding to this actual speech:
 	ssml_text :: speech_support:ssml_text(),
 
-	% Identifies the speech settings (ex: which voice) for this actual speech:
+	% Identifies the speech settings (e.g. which voice) for this actual speech:
 	speech_settings_id :: speech_support:speech_settings_id(),
 
 	% The filename, relative to the base directory of the underlying speech

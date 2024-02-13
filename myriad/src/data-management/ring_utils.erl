@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -99,7 +99,7 @@ head( _Ring={ _WorkingList=[ H | T ], ReferenceList } ) ->
 % @doc Returns a list of the Count popped elements (in their order in the ring),
 % and the corresponding updated ring.
 %
-% Ex: for a new ring based on [a, b, c, d], if Count=6 then
+% Example: for a new ring based on [a, b, c, d], if Count=6 then
 % [a, b, c, d, a, b] will be returned.
 %
 -spec get_next( count(), ring() ) -> { [ term() ], ring() }.
@@ -145,7 +145,7 @@ to_string( Ring ) ->
 		Elements ->
 
 			ElemString = text_utils:strings_to_string( [
-					text_utils:format( "~p", [ E ] ) || E <- Elements ] ),
+				text_utils:format( "~p", [ E ] ) || E <- Elements ] ),
 
 			text_utils:format( "ring with following ~B elements: ~ts",
 							   [ length( Elements ), ElemString ] )

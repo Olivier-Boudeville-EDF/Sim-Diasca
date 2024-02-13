@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2023 Olivier Boudeville
+% Copyright (C) 2017-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -618,7 +618,8 @@
 -type indexed_face() :: mesh:indexed_face().
 -type face_type() :: mesh:face_type().
 
--type window() :: gui:window().
+-type widget() :: gui_widget:widget().
+
 -type buffer() :: gui:buffer().
 
 -type render_rgb_color() :: gui_color:render_rgb_color().
@@ -1597,8 +1598,13 @@ get_glxinfo_strings() ->
 %
 -spec get_default_canvas_attributes() -> [ device_context_attribute() ].
 get_default_canvas_attributes() ->
-	[ rgba, double_buffer, { min_red_size, 8 }, { min_green_size, 8 },
-	  { min_blue_size, 8 }, { depth_buffer_size, 24 } ].
+
+	% At least this number of bits per RGB component:
+	MinSize = 8,
+
+	[ rgba, double_buffer, { min_red_size, MinSize },
+	  { min_green_size, MinSize }, { min_blue_size, MinSize },
+	  { depth_buffer_size, 24 } ].
 
 
 
@@ -1608,11 +1614,14 @@ get_default_canvas_attributes() ->
 % Note: not to be mixed up with gui:create_canvas/1, which creates a basic
 % (non-OpenGL) canvas.
 %
--spec create_canvas( window() ) -> gl_canvas().
+-spec create_canvas( widget() ) -> gl_canvas().
 create_canvas( Parent ) ->
+
 	% Might be added: the {style, full_repaint_on_resize} option.
-	create_canvas( Parent,
-		_Opts=[ { gl_attributes, get_default_canvas_attributes() } ] ).
+	CanvasOpts = [ { gl_attributes, get_default_canvas_attributes() } ],
+
+	create_canvas( CanvasOpts, Parent ).
+
 
 
 % @doc Creates and returns an OpenGL canvas with the specified parent widget and
@@ -1627,18 +1636,18 @@ create_canvas( Parent ) ->
 % Note also that using the use_core_profile attribute will result in also
 % requesting OpenGL at least version 3.0.
 %
--spec create_canvas( window(), [ gl_canvas_option() ] ) -> gl_canvas().
-create_canvas( Parent, Opts ) ->
+-spec create_canvas( [ gl_canvas_option() ], widget() ) -> gl_canvas().
+create_canvas( CanvasOpts, Parent ) ->
 
 	cond_utils:if_defined( myriad_debug_opengl,
 		trace_utils:debug_fmt( "Creating a GL canvas from user options:~n ~p.",
-							   [ Opts ] ) ),
+							   [ CanvasOpts ] ) ),
 
 	% Not using list_table:extract_entry_with_default/3, as Opts may contain
 	% single atoms:
 	%
 	{ Attrs, OtherOpts } = list_utils:extract_pair_with_default(
-		_K=gl_attributes, _Def=[ rgba, double_buffer ], Opts ),
+		_K=gl_attributes, _Def=[ rgba, double_buffer ], CanvasOpts ),
 
 	%trace_utils:debug_fmt( "Creating a GL canvas from options:~n ~p,~n "
 	%   "hence with Attrs = ~p~n and OtherOpts = ~p.",
@@ -1783,19 +1792,19 @@ render_mesh( #mesh{ vertices=Vertices,
 
 
 
-% @doc Enters in 2D mode for the specified window (typically an OpenGL canvas):
+% @doc Enters in 2D mode for the specified widget (typically an OpenGL canvas):
 % applies relevant general state changes, and specific to modelview (which is
 % reset) and to projection (a projection matrix relevant for 2D operations is
 % applied).
 %
 % Refer to https://myriad.esperide.org/#2d-referential for more details.
 %
--spec enter_2d_mode( window() ) -> void().
-enter_2d_mode( Window ) ->
+-spec enter_2d_mode( widget() ) -> void().
+enter_2d_mode( Widget ) ->
 
 	% Directly deriving from lib/wx/examples/demo/ex_gl.erl:
 
-	{ Width, Height } = wxWindow:getClientSize( Window ),
+	{ Width, Height } = wxWindow:getClientSize( Widget ),
 
 	% General state changes; depending on the current OpenGL state, other
 	% elements may have to be updated:

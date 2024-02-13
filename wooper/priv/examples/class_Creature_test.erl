@@ -1,13 +1,14 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Unit tests for the Creature class implementation.
+% @doc Unit tests for the Creature class implementation.
 % See the class_Creature.erl tested module.
 %
 -module(class_Creature_test).

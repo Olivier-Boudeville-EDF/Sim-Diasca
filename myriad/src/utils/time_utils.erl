@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2023 Olivier Boudeville
+% Copyright (C) 2015-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -203,7 +203,7 @@
 % for example, if T1={{2019,8,26},{17,1,16}} and T2={{2019,8,26},{17,2,5}}, then
 % T1 < T2 ("T1 is before T2") is true.
 %
--export([ get_timestamp/0,
+-export([ get_timestamp/0, get_current_year/0,
 		  get_epoch_timestamp/0, get_epoch_milliseconds_since_year_0/0,
 		  is_timestamp/1, is_date/1, is_time/1,
 		  check_timestamp/1, check_maybe_timestamp/1,
@@ -1262,6 +1262,16 @@ get_timestamp() ->
 	% (see also http://erlang.org/doc/apps/erts/time_correction.html)
 	%
 	erlang:localtime().
+
+
+% @doc Returns the current year.
+%
+% Useful for example for copyright notices.
+%
+-spec get_current_year() -> year().
+get_current_year() ->
+	{ Y, _M, _D } = erlang:date(),
+	Y.
 
 
 

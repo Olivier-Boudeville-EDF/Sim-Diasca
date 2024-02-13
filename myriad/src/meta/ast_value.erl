@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 4, 2018.
-
 
 
 % @doc Module in charge of handling <b>values defined within an AST</b>,
@@ -58,7 +57,7 @@
 % The description of an immediate value (atomic literal) in an AST, with in-file
 % location information (line/column).
 %
-% Ex: nil, in {nil,{33,2}} for [] at column 2 of line #33.
+% For example: nil, in {nil,{33,2}} for [] at column 2 of line #33.
 
 
 -type ast_compound_literal() :: { 'nil', file_loc() }.
@@ -131,7 +130,7 @@ transform_value( Literal={ string, _FileLoc, _String },
 	{ Literal, Transforms };
 
 transform_value( UnexpectedLiteral, Transforms )
-  when is_record( Transforms, ast_transforms ) ->
+						when is_record( Transforms, ast_transforms ) ->
 	throw( { unexpected_literal, UnexpectedLiteral } ).
 
 
@@ -159,7 +158,7 @@ get_immediate_value( Other ) ->
 % @doc Returns an AST-compliant value designating specified boolean, defined at
 % column 0 of line #0 of the current source file.
 %
-% Ex: forge_boolean_value(true) returns: {boolean,{0,1},true}.
+% For example: forge_boolean_value(true) returns: {boolean,{0,1},true}.
 %
 -spec forge_boolean_value( boolean() ) -> ast_element().
 forge_boolean_value( BooleanValue ) ->
@@ -169,7 +168,8 @@ forge_boolean_value( BooleanValue ) ->
 % @doc Returns an AST-compliant value designating specified boolean, defined at
 % specified location of the current source file.
 %
-% Ex: forge_boolean_value(false, {43,1}) returns: {boolean, {43,1}, false}.
+% For example: forge_boolean_value(false, {43,1}) returns: {boolean, {43,1},
+% false}.
 %
 -spec forge_boolean_value( boolean(), file_loc() ) -> ast_element().
 forge_boolean_value( BooleanValue, FileLoc ) ->
@@ -180,7 +180,7 @@ forge_boolean_value( BooleanValue, FileLoc ) ->
 % @doc Returns an AST-compliant value designating specified atom, defined at
 % column 0 of line #0 of the current source file.
 %
-% Ex: forge_atom_value(basic_utils) returns: {atom,{0,1},basic_utils}.
+% For example: forge_atom_value(basic_utils) returns: {atom,{0,1},basic_utils}.
 %
 -spec forge_atom_value( atom() ) -> ast_element().
 forge_atom_value( AtomValue ) ->
@@ -190,7 +190,8 @@ forge_atom_value( AtomValue ) ->
 % @doc Returns an AST-compliant value designating specified atom, defined at
 % specified location of the current source file.
 %
-% Ex: forge_atom_value(basic_utils, {4,1}) returns: {atom,{4,1},basic_utils}.
+% For example: forge_atom_value(basic_utils, {4,1}) returns:
+% {atom,{4,1},basic_utils}.
 %
 -spec forge_atom_value( atom(), file_loc() ) -> ast_element().
 forge_atom_value( AtomValue, FileLoc ) ->

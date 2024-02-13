@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2017-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Sunday, December 24, 2017.
 
 
-% Unit tests for the management of identifiers.
+% @doc Unit tests for the management of identifiers.
 %
 % See the id_utils.erl tested module.
 %
@@ -82,8 +83,8 @@ run() ->
 
 	test_facilities:display( "Identifier table ~ts, once updated for elements "
 		"~w, with known identifiers ~w, is: ~ts",
-	  [ id_utils:identifier_table_to_string( IdentifierTable ),
-		ElementsToIdentify, KnownIds,
-		id_utils:identifier_table_to_string( NewIdentifierTable ) ] ),
+		[ id_utils:identifier_table_to_string( IdentifierTable ),
+		  ElementsToIdentify, KnownIds,
+		  id_utils:identifier_table_to_string( NewIdentifierTable ) ] ),
 
 	test_facilities:stop().

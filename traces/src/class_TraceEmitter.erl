@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -73,8 +73,14 @@
 % Helper functions:
 -export([ init/1, register_bridge/1,
 		  get_categorization/1, set_categorization/2,
+
 		  send/3, send_safe/3, send/4, send_safe/4, send/5, send_safe/5,
+
 		  send_synchronised/3, send_synchronised/4, send_synchronised/5,
+
+		  send_synchronisable/3, send_synchronisable/4, send_synchronisable/5,
+		  wait_for_aggregator_synchronisation/0,
+
 		  send_categorized_emitter/4, send_named_emitter/4,
 		  get_trace_timestamp/1, get_trace_timestamp_as_binary/1,
 		  get_plain_name/1, get_short_description/1,
@@ -100,7 +106,7 @@
 
 -type emitter_init() :: emitter_name()
 					  | { emitter_name(), emitter_categorization() }.
-% Initializing a trace emitter is specifying its name to the constructor of its
+% Initialising a trace emitter is specifying its name to the constructor of its
 % actual class, which will augment that information with the correspond
 % class-specific emitter categorization. Then, the pair resulting from this
 % one-shot, initial operation will climb up the class hierarchy until reaching
@@ -532,6 +538,21 @@ register_as_bridge( TraceEmitterName, TraceCategory, TraceAggregatorPid ) ->
 		text_utils:ensure_binary( TraceCategory ), TraceAggregatorPid } ),
 
 	wooper:return_static_void().
+
+
+
+% @doc Returns the name of the trace emitter corresponding to the specified
+% constructor-level information.
+%
+% Supersedes for the best the trace_name/1 macro.
+%
+-spec get_trace_name( emitter_name() | emitter_info()  ) ->
+											static_return( emitter_name() ).
+get_trace_name( { TraceName, _TraceCategorization } ) ->
+	wooper:return_static( TraceName );
+
+get_trace_name( TraceName ) ->
+	wooper:return_static( TraceName ).
 
 
 
@@ -1055,7 +1076,7 @@ send_standalone_safe( TraceSeverity, Message, EmitterName,
 		trace_utils:echo( Message, TraceSeverity, MessageCategorization,
 						  TimestampText ),
 
-	wait_aggregator_sync(),
+	wait_for_aggregator_synchronisation(),
 
 	wooper:return_static_void().
 
@@ -1225,11 +1246,11 @@ init( State ) ->
 % Myriad) that are called directly from this instance process, or helper
 % functions with no corresponding WOOPER state, to plug to the same trace
 % aggregator as used by this instance with mostly the same settings, through a
-% corresponding trace bridge.
+% corresponding trace bridge (refer to the trace_bridge module).
 %
-% See also: the register_as_bridge/{2,3} static methods, offered to normal
-% (non-TraceEmitter, probably not even non-WOOPER) processes that nevertheless
-% need to send traces.
+% See also: the register_as_bridge/{2,3} static methods, offered to extra,
+% plain (non-TraceEmitter, probably not even non-WOOPER) processes that
+% nevertheless need to send traces.
 %
 % (helper)
 %
@@ -1238,6 +1259,7 @@ register_bridge( State ) ->
 	trace_bridge:register( _BridgeSpec={ ?getAttr(name),
 		?getAttr(trace_emitter_categorization),
 		?getAttr(trace_aggregator_pid) } ).
+
 
 
 
@@ -1348,7 +1370,7 @@ send_safe( TraceSeverity, State, Message, MessageCategorization ) ->
 
 	trace_utils:echo( Message, TraceSeverity, MessageCategorization ),
 
-	wait_aggregator_sync().
+	wait_for_aggregator_synchronisation().
 
 
 
@@ -1553,6 +1575,32 @@ send_named_emitter( TraceSeverity, State, Message, EmitterName ) ->
 
 
 
+
+% @doc Sends the specified synchronisable trace message from this emitter.
+%
+% The synchronisation answer is requested yet not awaited here, to allow for any
+% interleaving.
+%
+-spec send_synchronisable( trace_severity(), wooper:state(), message() ) ->
+												void().
+send_synchronisable( TraceSeverity, State, Message ) ->
+	send_synchronisable( TraceSeverity, State, Message,
+						 _MessageCategorization=uncategorized ).
+
+
+
+% @doc Sends the specified synchronisable trace message from this emitter.
+%
+% The synchronisation answer is requested yet not awaited here, to allow for any
+% interleaving.
+%
+-spec send_synchronisable( trace_severity(), wooper:state(), message(),
+						   message_categorization() ) -> void().
+send_synchronisable( TraceSeverity, State, Message, MessageCategorization ) ->
+	send_synchronisable( TraceSeverity, State, Message, MessageCategorization,
+						 get_trace_timestamp( State ) ).
+
+
 % @doc Sends the specified synchronisable trace message from this emitter.
 %
 % The synchronisation answer is requested yet not awaited here, to allow for any
@@ -1632,7 +1680,7 @@ send_synchronised( TraceSeverity, State, Message, MessageCategorization,
 	send_synchronisable( TraceSeverity, State, Message, MessageCategorization,
 						 AppTimestamp ),
 
-	wait_aggregator_sync().
+	wait_for_aggregator_synchronisation().
 
 
 
@@ -1655,7 +1703,7 @@ send_safe( TraceSeverity, State, Message, MessageCategorization,
 	trace_utils:echo( Message, TraceSeverity, MessageCategorization,
 					  text_utils:term_to_string( AppTimestamp ) ),
 
-	wait_aggregator_sync().
+	wait_for_aggregator_synchronisation().
 
 
 
@@ -1664,8 +1712,8 @@ send_safe( TraceSeverity, State, Message, MessageCategorization,
 %
 % (helper)
 %
--spec wait_aggregator_sync() -> void().
-wait_aggregator_sync() ->
+-spec wait_for_aggregator_synchronisation() -> void().
+wait_for_aggregator_synchronisation() ->
 	receive
 
 		{ wooper_result, trace_aggregator_synchronised } ->

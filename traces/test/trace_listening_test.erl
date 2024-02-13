@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -26,7 +26,7 @@
 % Creation date: July 1, 2007.
 
 
-% Unit tests for the implementation of trace listening.
+% @doc Unit tests for the implementation of trace listening.
 %
 % See the following modules:
 %  - class_TraceListener
@@ -44,7 +44,7 @@
 % traces.
 %
 % One may check that the aggregator and the listener have exactly the same
-% messages (ex: at least counts must match of both interfaces).
+% messages (e.g. at least counts must match of both interfaces).
 %
 -module(trace_listening_test).
 
@@ -104,23 +104,20 @@ test_actual_body() ->
 	[ _TestModuleName, NodeSuffix ] = string:tokens( NodeStringName, "@" ),
 
 	TargetNodeName = text_utils:format( "trace_management_run-~ts@~ts",
-						[ system_utils:get_user_name(), NodeSuffix ] ),
+		[ system_utils:get_user_name(), NodeSuffix ] ),
 
 	test_facilities:display( "Connecting to node '~ts'.", [ TargetNodeName ] ),
 
-	case net_adm:ping( text_utils:string_to_atom( TargetNodeName ) ) of
+	net_adm:ping( text_utils:string_to_atom( TargetNodeName ) ) =:= pong orelse
+		begin
 
-		pong ->
-			ok;
-
-		pang ->
 			trace_utils:error( "The trace management test should already be "
 				"running. For example, execute 'make trace_management_run' "
 				"in another terminal before running this test." ),
 
 			throw( { no_trace_aggregator_to_listen, TargetNodeName } )
 
-	end,
+		end,
 
 	% Otherwise the remote node could not be known before use:
 	global:sync(),
@@ -150,7 +147,7 @@ test_actual_body() ->
 	test_facilities:display( "Creating now a test trace local listener." ),
 
 	MyTraceListener = class_TraceListener:synchronous_new_link( AggregatorPid,
-												_CloseListenerPid=undefined ),
+		_CloseListenerPid=undefined ),
 
 	send_timed_traces( _TimedCount=20 ),
 
@@ -213,7 +210,6 @@ run() ->
 
 			% Nothing was started here:
 			test_facilities:finished();
-
 
 		false ->
 			test_facilities:display( "Running in interactive mode, "

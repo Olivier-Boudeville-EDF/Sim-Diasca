@@ -1,7 +1,6 @@
 #!/bin/sh
 
-USAGE="
-Usage: $(basename $0) [ NODE_NAME | [-h|--help] ]
+usage="Usage: $(basename $0) [NODE_NAME | [-h|--help]]
 
 This script will reliably kill, on the host on which it is run, any lingering Erlang node named NODE_NAME and owned by the current user, regardless of its cookie."
 
@@ -20,7 +19,8 @@ This script will reliably kill, on the host on which it is run, any lingering Er
 
 if [ -z "$1" ] ; then
 
-	echo "Error, no argument specified. $USAGE" 1>&2
+	echo "  Error, no argument specified.
+${usage}" 1>&2
 	exit 2
 
 fi
@@ -29,9 +29,10 @@ fi
 nodename="$1"
 
 
-if [ -z "$nodename" ] ; then
+if [ -z "${nodename}" ] ; then
 
-	echo "Error, node name not specified. $USAGE" 1>&2
+	echo "  Error, node name not specified.
+${usage}" 1>&2
 	exit 10
 
 fi
@@ -39,31 +40,35 @@ fi
 
 if [ ! $# -eq 1 ] ; then
 
-	echo "Error, exactly one parameter (the node name) expected. $USAGE" 1>&2
+	echo "  Error, exactly one parameter (the node name) expected.
+${usage}" 1>&2
 	exit 15
 
 fi
 
-if [ $nodename = "-h" ] ||  [ $nodename = "--help" ] ; then
+if [ ${nodename} = "-h" ] ||  [ ${nodename} = "--help" ] ; then
 
-	echo "$USAGE"
+	echo "${usage}"
 	exit 0
 
 fi
 
 
-echo "Will kill all lingering Erlang nodes on "$(hostname)", if owned by $USER, and having a node name matching '$nodename'."
+user="${USER}"
 
 
-for p in $(/bin/ps -o pid,cmd -u $USER | grep "$nodename" | grep beam | grep -v grep | awk '{ print $1 }') ; do
+echo "Will kill all lingering Erlang nodes on '$(hostname)', if owned by ${user}, and having a node name matching '${nodename}'."
+
+
+for p in $(/bin/ps -o pid,cmd -u ${user} | grep "${nodename}" | grep beam | grep -v grep | awk '{ print $1 }'); do
 
 	echo "  Killing process $p."
 	kill $p
 
 done
 
-
-for p in $(/bin/ps -o pid,cmd -u $USER | grep "$nodename" | grep beam | grep -v grep | awk '{ print $1 }') ; do
+# Again, brutally:
+for p in $(/bin/ps -o pid,cmd -u ${user} | grep "${nodename}" | grep beam | grep -v grep | awk '{ print $1 }'); do
 
 	echo "  Force-killing process $p."
 	kill -9 $p
@@ -72,7 +77,8 @@ done
 
 found=1
 
-for p in $(/bin/ps -o pid,cmd -u $USER| grep "$nodename" | grep beam | grep -v grep | awk '{ print $1 }') ; do
+# Checking:
+for p in $(/bin/ps -o pid,cmd -u ${user}| grep "${nodename}" | grep beam | grep -v grep | awk '{ print $1 }'); do
 
 	echo "  Unable to kill process $p."
 	found=0
@@ -81,11 +87,11 @@ done
 
 if [ $found -eq 1 ] ; then
 
-	echo "  No node '$nodename' exists anymore."
+	echo "  No node '${nodename}' exists anymore."
 
 else
 
-	echo "  Node '$nodename' could not be removed." 1>&2
+	echo "  Node '${nodename}' could not be removed." 1>&2
 
 fi
 
@@ -96,25 +102,26 @@ fi
 
 
 # To force the unregistering of a node name (outputs either NOEXIST or STOPPED):
-# (post-R14A)
+# (post-R14A):
 #
-# Seems to work even if -relaxed_command_check was not specified at epmd
-# creation (implicit automatic creation).
+# (seems to work even if -relaxed_command_check was not specified at epmd
+# creation - implicit automatic creation)
 #
 #
-epmd -stop "$nodename"
+epmd -stop "${nodename}"
 
 res="$?"
 
-echo "epmd stopped with return code $res."
+echo "epmd stopped with return code ${res}."
 
 # Killing epmd would solve the problem, but it would be a bad practise as any
-# other Erlang application running on the same node would be affected.
+# other Erlang application running on the same node would be affected:
+#
 # kill epmd
 
-# However there might be cases (ex: relaunching a simulation after a crash)
+# However there might be cases (e.g. relaunching a simulation after a crash)
 # where the previous VM died (and thus does not exist as a UNIX process anymore)
-# yet is still registered in epmd; ex:
+# yet is still registered in epmd, like in:
 #
 # $ epmd -port 4506 -names
 # epmd: up and running on port 4506 with data:

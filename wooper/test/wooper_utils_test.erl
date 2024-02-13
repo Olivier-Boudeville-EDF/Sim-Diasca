@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2008-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2008.
 
 
-% Basic testing of the wooper_utils module.
+% @doc Basic testing of the wooper_utils module.
 -module(wooper_utils_test).
 
 
@@ -42,10 +43,14 @@ run() ->
 	% Allows to support both OTP conventions and ad hoc, automatic ones:
 	wooper_utils:start_for_test(),
 
+	test_facilities:display( "The version of this currently tested WOOPER "
+		"library is ~ts (i.e. ~w).", [ wooper_utils:get_wooper_version_string(),
+									   wooper_utils:get_wooper_version() ] ),
+
 	FirstWOOPERClassname = 'class_BigPackage__MyPackage__MyExample',
 
 	FirstJavaFullClassname = wooper_utils:get_java_package_and_class_for(
-							   FirstWOOPERClassname   ),
+		FirstWOOPERClassname   ),
 
 	test_facilities:display( "To the WOOPER classname '~ts' corresponds "
 		"~p, i.e. ~ts.~n",
@@ -57,7 +62,7 @@ run() ->
 	SecondWOOPERClassname = 'class_MyPackage__MyExample',
 
 	SecondJavaFullClassname = wooper_utils:get_java_package_and_class_for(
-							   SecondWOOPERClassname   ),
+		SecondWOOPERClassname   ),
 
 	test_facilities:display( "To the WOOPER classname '~ts' corresponds "
 		"~p, i.e. ~ts.~n",
@@ -69,7 +74,7 @@ run() ->
 	ThirdWOOPERClassname = 'class_MyExample',
 
 	ThirdJavaFullClassname = wooper_utils:get_java_package_and_class_for(
-							   ThirdWOOPERClassname ),
+		ThirdWOOPERClassname ),
 
 	test_facilities:display( "To the WOOPER classname '~ts' corresponds "
 		"~p, i.e. ~ts.~n",

@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -156,6 +156,9 @@
 % information (vertex coordinates, or normals, or colors, or texture
 % coordinates, etc.) for each element of a series of vertices (a.k.a. vertex
 % stream).
+%
+% "VBO" designates buffer objects of all sorts - not only those storing vertex
+% coordinates.
 %
 % A VBO corresponds to an homogeneous chunk (an array) of data, sent from the
 % CPU-space, in order to be stored (possibly durably) in the GPU-space.
@@ -1628,8 +1631,10 @@ assign_new_vbo_from_attribute_series( ListOfVAttrSeries, StartVAttrIndex ) ->
 	% Tightly-packed buffer:
 	Buffer = merge_attribute_series( ListOfVAttrSeries, CompPairs ),
 	VBOId = assign_new_vbo( Buffer ),
+
 	declare_vertex_attributes_from( CompPairs, Stride, Offsets, StartVAttrIndex,
 									_DoEnable=true ),
+
 	VBOId.
 
 
@@ -1640,7 +1645,8 @@ assign_new_vbo_from_attribute_series( ListOfVAttrSeries, StartVAttrIndex ) ->
 %
 % Each series is usually homogeneous, that is it contains a single, specific
 % kind of data, like vertices, or normals, or colors, and semantically different
-% from the other series (e.g. one lists vertices, another one normals, etc.).
+% from the other series (e.g. one lists vertices, another one lists normals,
+% etc.).
 %
 % Each element of such series is a tuple of homogeneous components (of the same
 % type), of a series-dependent count (e.g. triplets for normal vectors).

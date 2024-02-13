@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,12 +38,12 @@
 % The description of a pattern in an AST, with in-file location
 % (line/column) information.
 %
-% Ex: {match,12,X,Y}.
+% For example: {match,12,X,Y}.
 %
 % Too many patterns to fully specify all (see "7.3 Patterns").
 %
 % Note: a pattern is different from an expression: even if they share at least
-% some types of forms, they are to be interpreted differently (ex: their
+% some types of forms, they are to be interpreted differently (e.g. their
 % sub-elements are of the same kind as they are, and at least some rules
 % differ).
 
@@ -54,7 +54,7 @@
 %
 % A pattern sequence is simply an (ordered) list of patterns.
 %
-% Ex: [{match,12,X,Y}].
+% For example: [{match,12,X,Y}].
 
 
 -export_type([ ast_pattern/0, ast_pattern_sequence/0 ]).
@@ -403,7 +403,7 @@ transform_pattern( _Clause={ 'var', FileLoc, VariableName },
 % (difficult to discriminate more at this level)
 %
 transform_pattern( Clause={ LiteralType, _FileLoc, _Value }, Transforms )
-  when is_atom( LiteralType ) ?andalso_rec_guard ->
+						when is_atom( LiteralType ) ?andalso_rec_guard ->
 
 	% Maybe Value could just be sent (or no transformation be considered):
 	ast_value:transform_value( Clause, Transforms );
@@ -439,7 +439,7 @@ transform_pattern( _Clause={ 'record_field', FileLoc, RecordName, FieldName,
 							 FieldValue }, Transforms ) ?rec_guard ->
 
 	{ NewRecordName, RecTransforms } = ast_expression:transform_expression(
-										 RecordName, Transforms ),
+		RecordName, Transforms ),
 
 	% (FieldName not specifically inspected by erl_trans_id for some reason)
 

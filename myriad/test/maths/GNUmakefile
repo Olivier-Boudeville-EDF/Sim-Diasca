@@ -8,7 +8,7 @@ all:
 clean: clean-local
 
 clean-local:
-	-@/bin/rm -f test-affin.dat
+	-@/bin/rm -f test-affin.dat *.png *.svg *.dat *.p
 
 
 include $(MYRIAD_TOP)/GNUmakesettings.inc

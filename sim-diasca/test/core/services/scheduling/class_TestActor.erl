@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -294,7 +294,7 @@ construct( State, ActorSettings, ActorName, SchedulingPolicy, CreationPolicy,
 			%                       [ RuntimeName ] ),
 
 			class_Actor:create_actor( class_TestCircularActor,
-								[ RuntimeName, "My Message" ], ActorState );
+				[ RuntimeName, "My Message" ], ActorState );
 
 		_ ->
 			ActorState

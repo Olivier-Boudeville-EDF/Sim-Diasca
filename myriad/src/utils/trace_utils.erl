@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2023 Olivier Boudeville
+% Copyright (C) 2013-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -27,8 +27,9 @@
 
 
 % @doc Gathering of various very <b>low-level trace-related facilities</b> on
-% the console. These are (runtime) logs; they are not related to the Erlang
-% tracing subsystem.
+% the console. These are (runtime) logs; they are by default not linked to the
+% Erlang logging subsystem; see the set_handler/0 function in the current module
+% so that they are integrated to the logger facilities.
 %
 % The API functions provided by the current module are mostly useful so that
 % their call can be replaced by calls to the far more advanced facilities of the
@@ -392,7 +393,7 @@ error_fmt( Format, Values ) ->
 
 % @doc Outputs specified error message, with specified message categorization.
 -spec error_categorized( trace_message(), trace_message_categorization() ) ->
-							void().
+											void().
 error_categorized( Message, _MessageCategorization=uncategorized ) ->
 	severe_display( "[error] ~ts", [ Message ] );
 
@@ -472,7 +473,7 @@ alert_fmt( Format, Values ) ->
 
 % @doc Outputs specified alert message, with specified message categorization.
 -spec alert_categorized( trace_message(), trace_message_categorization() ) ->
-							void().
+											void().
 alert_categorized( Message, _MessageCategorization=uncategorized ) ->
 	severe_display( "[alert] ~ts", [ Message ] );
 
@@ -551,7 +552,7 @@ void_fmt( _Format, _Values ) ->
 
 % @doc "Outputs" specified void message, with specified message categorization.
 -spec void_categorized( trace_message(), trace_message_categorization() ) ->
-							void().
+											void().
 void_categorized( _Message, _MessageCategorization ) ->
 	ok.
 
@@ -788,6 +789,11 @@ is_error_like( Severity ) ->
 % @doc Replaces the current (probably default) logger handler with this Myriad
 % one (registered as the 'default' handler).
 %
+% Note that Myriad logging defaults will then apply (see get_handler_config/0),
+% which is bound to imply a finer level of reported logs. As a result, after
+% this function is called (directly or not), new error-like log messages may
+% seem to appear.
+%
 -spec set_handler() -> void().
 set_handler() ->
 
@@ -840,13 +846,21 @@ add_handler() ->
 
 
 % @doc Returns the (initial) configuration of the Myriad logger handler.
+%
+% Note that Myriad opted for the finest log level, yet due to the primary log
+% level of logger (which is 'notice'), by default 'debug' and 'info' messages
+% will still be filtered out. See logger:set_primary_config/2 or refer to
+% trace_utils_test.erl for extra information.
+%
 -spec get_handler_config() -> logger:handler_config().
 get_handler_config() ->
 
 	#{ % No configuration needed here by our handler:
 	   config => undefined
-	   % Defaults:
+
+	   % Finest default level:
 	   % level => all,
+
 	   % filter_default => log | stop,
 	   % filters => [],
 	   % formatter => {logger_formatter, DefaultFormatterConfig}

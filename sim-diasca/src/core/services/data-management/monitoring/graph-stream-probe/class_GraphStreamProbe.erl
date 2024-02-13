@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 EDF R&D
+% Copyright (C) 2022-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,31 +25,20 @@
 % @doc Probe able to process and display <b>streams of graphs</b>, that is
 % graphs that may change over (simulation) time.
 %
+% A graph comprises nodes, edges and properties.
+%
+% Relies on the gephi_support Myriad module.
+%
 -module(class_GraphStreamProbe).
 
 
-
-% For Gephi-related troubleshooting:
-%
-% - use the Window -> Output menu item in order to display a log window
-%
-% - apparently in some cases a Gephi server can become unresponsive; use
-% 'killall java' to clear any prior instance thereof
-%
-% - command-line testing can be done for example with:
-%    $ wget --post-data "XXX" "localhost:8090/myproject?operation=updateGraph"
-
-
-
-% Implementation notes:
+% Usage notes:
 %
 % A graph stream probe will fail if its target Gephi server is not listening at
 % the target TCP port.
 %
-% A Gephi server could be detected and waited for, by polling its expected TCP
-% port (especially useful to wait for the launch of the tool).
-
-
+% The project path is typically defined among the deployment settings (rather
+% than for example when creating a graph stream probe).
 
 
 -define( class_description,
@@ -61,24 +50,13 @@
 
 -define( class_attributes, [
 
-	{ gephi_host, bin_fqdn(),
-	  "the host (possibly localhost) on which a suitable Gephi server is "
-	  "expected to run" },
-
-	{ gephi_port, tcp_port(),
-	  "the TCP port on which a suitable Gephi server is expected to run" },
-
-	{ update_url, bin_url(),
-	  "the preprocessed base URL used to trigger update calls to Gephi" },
+	{ graph_info, graph_info(),
+	  "all information necessary to interact with a graph server of interest" },
 
 	{ timestamp_table,
-	  table( app_service_pid(), { ins(), [ { timestamp(), time_factor() } ] } ),
+	  table( app_service_pid(), { ins(), [ { timestamp(), timestamp() } ] } ),
 	  "a table associating to the PID of each service its INS and time-related "
 	  "information, in reverse chronological order" } ] ).
-
-
-% Exported helpers:
--export([]).
 
 
 % Must be included before class_TraceEmitter header:
@@ -86,31 +64,14 @@
 		 "Core.Result management.GraphStreamProbe" ).
 
 
--type project_path() :: file_path().
-% A user-specified path to a (Gephi) project file, from which a project name may
-% be deduced.
-%
-% For example the '/tmp/foo/my_project.gephi' path is to correspond to the
-% 'my_project' project.
-%
-% The project path is typically defined in the deployment settings (rather than
-% for example when creating a graph stream probe).
 
+% Type names better not too tied to Gephi:
 
--type project_name() :: ustring().
-% The name of a (Gephi) project, typically one that shall be loaded. For
-% example, a "Foobar" project name would refer to a "Foobar.gephi" project file.
+-type project_path() :: gephi_support:project_path().
 
+-type workspace_name() :: gephi_support:workspace_name().
 
--type bin_project_name() :: bin_string().
-% The name of a (Gephi) project, typically one that shall be loaded. For
-% example, a <<"Foobar">> project name would refer to a "Foobar.gephi" project
-% file.
-
-
--type any_project_name() :: project_name() | bin_project_name().
-% The name of a (Gephi) project, typically one that shall be loaded.
-
+-type graph_info() :: gephi_support:gephi_server_info().
 
 -type graph_stream_probe_pid() :: class_ResultProducer:producer_pid().
 
@@ -119,50 +80,14 @@
 % A probe may not be a wanted result producer.
 
 
--type element_id() :: any_string().
-% The identifier of a graph element (e.g. node, edge).
+-type node_id() :: gephi_support:node_id().
+-type edge_id() :: gephi_support:edge_id().
 
 
--type node_id() :: element_id().
-% The identifier of a graph node.
-
--type edge_id() :: element_id().
-% The identifier of a graph edge.
-
--type property_id() :: element_id().
-
-
--type element_label() :: any_string().
-% A label that can be associated to a graph element (e.g. node, edge).
-
-
--type graph_value() :: float().
-% A value associated to a given timestamp in a graph.
-%
-% It would be interesting to determine whether other datatypes can be accepted
-% (e.g. booleans, integers, non-scalar types).
-
-
--type time_factor() :: float().
-% Typically in [0.0, 1.0].
-
-
--export_type([ project_path/0, project_name/0, bin_project_name/0,
+-export_type([ project_path/0, workspace_name/0, graph_info/0,
 			   graph_stream_probe_pid/0, graph_stream_probe_ref/0,
-			   element_id/0, node_id/0, edge_id/0, property_id/0,
-			   element_label/0,
-			   graph_value/0, time_factor/0 ]).
 
-
-
-
-% The default (non-priviledged) TCP port on which Gephi is to run:
--define( gephi_default_tcp_port, 8090 ).
-
-
-% The file extension of a Gephi project:
--define( gephi_project_extension, "gephi" ).
-
+			   node_id/0, edge_id/0 ]).
 
 
 % For getAttr/1, etc.:
@@ -171,72 +96,6 @@
 % For app_info*:
 -include_lib("traces/include/traces.hrl").
 
-
-
-% Gephi installation:
-%
-% Our convention is to have Gephi installed in GEPHI_ROOT=~/Software/gephi, in
-% which a 'gephi-current-install' symbolic link is to point to an actual sibling
-% installation directory with a version, like: 'gephi-0.9.7'; for example:
-%
-% $ tree -d -L 1 ~/Software/gephi/
-% ~/Software/gephi/
-% ├── gephi-0.9.5
-% ├── gephi-0.9.6
-% ├── gephi-0.9.7
-% └── gephi-current-install -> gephi-0.9.7
-%
-% Then, gephi can be run in all cases as
-% '~/Software/gephi/gephi-current-install/bin/gephi'.
-%
-% So the installation boils down to selecting the latest stable version of Gephi
-% from https://gephi.org/users/download/ (we recommend to avoid the 0.9.6
-% version), to download a corresponding gephi-x.y.z-linux-x64.tar.gz archive in
-% ~/Software/gephi/, to extract it (e.g. 'tar xvf
-% gephi-x.y.z-linux-x64.tar.gz'), and to create a sibling gephi-current-install
-% symbolic link pointing to it.
-%
-% The ~/Software/gephi/gephi-current-install/bin directory shall then preferably
-% be set in the PATH environment variable for good (e.g. in one's .bashrc).
-
-
-% Gephi configuration:
-%
-% The following steps are needed:
-%  - installing the 'Graph Streaming' plugin (listed in Tools -> Plugins ->
-%  'Available Plugins'), for example in version 1.0.3
-%  - configuring a correct TCP port to be listened to by the Gephi server (see
-%  the comments of run_gephi/0 for that)
-%  - defining and loading a suitable project file (e.g. 'foobar.gephi')
-
-
-% Gephi use:
-%
-% Refer to the comments in run_gephi/0.
-%
-% Launching a suitable Gephi server requires an host (by default the local one)
-% and a port (see the gephi_default_tcp_port define for defaults).
-%
-% At least currently, Gephi cannot be fully launched only from the command-line,
-% as a Gephi server must be started and a project file (typically bearing a
-% *.gephi extension) must be selected.
-%
-% The run_gephi/{0,1,2} static methods automate the launching as much as
-% currently possible.
-%
-% If a Gephi instance is already running, launching another one just sets the
-% focus on that initial instance; as a consequence, on a given host, the risk of
-% having conflicting instances is low (especially if they are to operate on the
-% same TCP port, as up to one can be started).
-%
-% See also: executable_utils:get_default_graph_stream_tool_{name,path}/0.
-
-
-
-% Data files
-%
-% We recommend the use of the GraphML graph format, and relying on the
-% '.graphml' file extension for that.
 
 
 % Feeding such probes:
@@ -254,22 +113,35 @@
 % To prevent such issues, each batch of operations (preferably, for efficiency
 % reasons, to each single operation) shall be synchronised; so each of the calls
 % in the series may be synchronous, or, better, only the last one (possibly
-% itself being a mere call to sync/1) can be synchronous (as they are guaranteed
-% to be evaluated in order). Then operations that are both safe and efficient
-% are implemented.
+% itself being a mere call to sync/1) can be synchronous (as they are already
+% guaranteed to be evaluated in order). Then operations that are both safe and
+% efficient are implemented.
+%
+% Note though that *sync operations are synchronous because a result is
+% returned; the asynchronous operations are still synchronous with the Gephi
+% server (due to the POST request being itself synchronous), but not synchronous
+% with the caller.
 
-
-% Method naming: alter* (e.g. alter{Node,Edge}) has been preferred to change*
-% (as clearer, cannot be taken for switch*).
+% Method naming: update* (e.g. update{Node,Edge}) has been preferred to the
+% original (Gephi) change* (as clearer, cannot be taken for switch*); alter*
+% would have been suitable too.
 
 
 
 % Implementation notes:
 %
-% This probe is based on a third-party graph stream tool, namely Gephi
-% (https://gephi.org/).
+% This probe is based on a third-party, free software graph stream tool, namely
+% Gephi (https://gephi.org/). See gephi_support.erl for all details.
 %
-% This probe is to communicate with a Gephi server.
+% The Gephi instance, local or on a remote host, is supposed to have a project
+% opened and a graph stream server launched. Only the workspace then is to be
+% specified by the probe, being the only degree of freedom left for a given
+% Gephi instance (host and port being set at the deployment step). At least in a
+% given simulation, most if not all graph stream probes are likely to target the
+% same workspace.
+%
+% This probe is to communicate directly over HTTP with the corresponding Gephi
+% server.
 %
 % This communication may be asynchronous (fastest, yet prone to race conditions)
 % or not.
@@ -281,19 +153,8 @@
 
 % Shorthands:
 
--type ustring() :: text_utils:ustring().
--type bin_string() :: text_utils:bin_string().
--type any_string() :: text_utils:any_string().
-
--type file_path() :: file_utils:file_path().
-
--type tcp_port() :: net_utils:tcp_port().
--type possibly_local_bin_hostname() :: net_utils:possibly_local_bin_hostname().
--type string_host_name() :: net_utils:string_host_name().
 
 -type bin_json() :: json_utils:bin_json().
-
--type status_code() :: rest_utils:status_code().
 
 -type probe_name_init() :: class_Probe:probe_name_init().
 -type probe_name() :: class_Probe:probe_name().
@@ -301,66 +162,32 @@
 -type producer_options() :: class_ResultProducer:producer_options().
 -type producer_result() :: class_ResultProducer:producer_result().
 
+-type timestamp() :: gephi_support:timestamp().
+%-type gephi_server_info() :: gephi_support:gephi_server_info().
 
-
-% TODO:
-%
-% - should we launch a Gephi server in batch mode?
-%
-% - create check_gephi_server( tcp_port() ) -> boolean() based on a no-op JSON
-% call testing the availability of that server
-%
-% - add a 'sync/1' request to force synchronisation of such a probe with its
-% target server
-%
-% - define synchronous counterparts to most/all operations
-%
-% - manage gracefully the ending timestamp
+-type graph_value() :: gephi_support:graph_value().
+-type graph_color() :: gephi_support:graph_color().
+-type node_id() :: gephi_support:node_id().
+-type edge_id() :: gephi_support:edge_id().
+-type property_id() :: gephi_support:property_id().
+-type property_table() :: gephi_support:property_table().
+-type element_label() :: gephi_support:element_label().
 
 
 
-% @doc Constructs a graph stream probe of the specified name, using a local
-% server running on a default TCP port, and that will send its samples based on
-% the specified project name.
+% @doc Constructs a graph stream probe of the specified name, using the
+% specified information about the graph stream server to act upon.
 %
--spec construct( wooper:state(), probe_name_init(), project_name() ) ->
+% Refer to declare_result_probe/1 for the actual creation API for actors and
+% cases.
+%
+-spec construct( wooper:state(), probe_name_init(), graph_info() ) ->
 									wooper:state().
-construct( State, NameInit, ProjectName ) ->
-	construct( State, NameInit, _Hostname="localhost", ProjectName ).
-
-
-
-% @doc Constructs a graph stream probe of the specified name, using a server
-% running on the specified host, on a default TCP port, and that will send its
-% samples based on the specified project name.
-%
--spec construct( wooper:state(), probe_name_init(), string_host_name(),
-				 project_name() ) -> wooper:state().
-construct( State, NameInit, Hostname, ProjectName ) ->
-	construct( State, NameInit, Hostname, ?gephi_default_tcp_port,
-			   ProjectName ).
-
-
-
-% @doc Constructs a graph stream probe of the specified name, using a server
-% running on the specified host and TCP port, and that will send its samples
-% based on the specified project name.
-%
-% Most complete constructor.
-%
--spec construct( wooper:state(), probe_name_init(),
-		possibly_local_bin_hostname(), tcp_port(), any_project_name() ) ->
-											wooper:state().
-construct( State, NameInit, _PossiblyHostname=localhost, TCPPort,
-		   AnyProjectName ) ->
-	construct( State, NameInit, <<"localhost">>, TCPPort, AnyProjectName );
-
-
-construct( State, NameInit, BinHostname, TCPPort, AnyProjectName )
-								when is_integer( TCPPort ) ->
+construct( State, NameInit, GraphInfo ) ->
 
 	ProbeName = class_Probe:get_actual_probe_name( NameInit ),
 
+	% Does *not* declare to the result manager:
 	ProducerState = class_ResultProducer:construct( State, ProbeName ),
 
 	% For an increased interleaving:
@@ -370,50 +197,30 @@ construct( State, NameInit, BinHostname, TCPPort, AnyProjectName )
 			_IsTrackedProducer=true ], self() },
 
 	?send_info_fmt( ProducerState, "Creating a Graph Stream probe, "
-		"expecting a Gephi server to run on ~ts, TCP port #~B, and to have "
-		"a relevant project already loaded.", [ BinHostname, TCPPort ] ),
+		"based on ~ts.", [ gephi_support:server_info_to_string( GraphInfo ) ] ),
 
-	BinHostname =:= <<"localhost">> orelse
-		begin
-			net_utils:ping( BinHostname ) orelse
-				?send_warning_fmt( ProducerState,
-					"Unable to ping Gephi host '~ts'.", [ BinHostname ] )
-		end,
-
-	% Runtime resolution of path:
-	{ JSONParserName, _JSONResolvablePath, JSONResolvedPath } =
-		json_utils:get_parser_name_paths(),
-
-	code_utils:declare_beam_directory( JSONResolvedPath ),
-
-	json_utils:start_parser( JSONParserName ),
-
-	web_utils:start(),
-
-	BinProjectName = text_utils:ensure_binary( AnyProjectName ),
-
-	% Determined once for all:
-	BinUpdateUrl = text_utils:bin_format(
-		"http://~ts:~B/~ts?operation=updateGraph",
-		[ BinHostname, TCPPort, BinProjectName ] ),
-
-	?send_debug_fmt( ProducerState, "Graph Stream probe created, "
-		"to perform updates with '~ts', and using the '~ts' JSON parser.",
-		[ BinUpdateUrl, JSONParserName ] ),
+	% We declare a trace bridge, so that we can collect the traces directly sent
+	% by Myriad's modules, notably gephi_support.
+	%
+	class_TraceEmitter:register_bridge( ProducerState ),
 
 	ReadyState = setAttributes( ProducerState, [
-		{ gephi_host, BinHostname },
-		{ gephi_port, TCPPort },
-		{ update_url, BinUpdateUrl },
+		{ graph_info, GraphInfo },
 
 		% At least currently, as a result producer, no specific element will be
 		% to report:
 		%
 		{ result_produced, true } ] ),
 
-	% After call to the declareGraphStreamProbe/4 request:
-	wait_result_declaration_outcome( ProbeName, ReadyState ).
+	% Needed even already done by the deployment manager (hence done by each
+	% instance of such probes), as most are likely to be created on the same
+	% node as the actors, hence on computing nodes (so starting this support on
+	% the user node would not be enough):
+	%
+	gephi_support:start(),
 
+	% After the call to the declareGraphStreamProbe/4 request:
+	wait_result_declaration_outcome( ProbeName, ReadyState ).
 
 
 
@@ -423,8 +230,10 @@ destruct( State ) ->
 
 	?info( "Deleting graph Stream probe." ),
 
-	web_utils:stop(),
-	json_utils:stop_parser(),
+	% Not desirable, as multiple instances of such probes may exist, and all the
+	% others would still rely on the services that would be shut down:
+	%
+	%gephi_support:stop(),
 
 	% No unregistering from the Gephi server needed.
 
@@ -432,112 +241,452 @@ destruct( State ) ->
 
 
 
+% Section for graph interaction.
+%
+% Each operation is available first as an asynchronous operation, then as a
+% synchronous one.
+
 
 % @doc Adds (asynchronously) the specified node to the graph.
+-spec addNode( wooper:state(), node_id() ) -> const_oneway_return().
+addNode( State, NodeId ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding asynchronously node '~ts'.", [ NodeId ] ) ),
+
+	gephi_support:add_node( NodeId, ?getAttr(graph_info) ),
+	wooper:const_return().
+
+
+% @doc Adds synchronously the specified node to the graph.
+-spec addNodeSync( wooper:state(), node_id() ) ->
+								const_request_return( 'node_added' ).
+addNodeSync( State, NodeId ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding synchronously node '~ts'.", [ NodeId ] ) ),
+
+	gephi_support:add_node( NodeId, ?getAttr(graph_info) ),
+	wooper:const_return_result( node_added ).
+
+
+
+% @doc Adds (asynchronously) the specified node, with the specified label, to
+% the graph.
+%
 -spec addNode( wooper:state(), node_id(), element_label() ) ->
-									const_oneway_return().
-addNode( State, NodeId, Label ) ->
+								const_oneway_return().
+addNode( State, NodeId, NodeLabel ) ->
 
-	Json = json_utils:to_json( #{ an => #{ NodeId => #{ label => Label } } } ),
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding asynchronously node '~ts', labelled '~ts'.",
+					[ NodeId, NodeLabel ] ) ),
 
-	_StatusCode = post_gephi( Json, State ),
+	gephi_support:add_node( NodeId, NodeLabel, ?getAttr(graph_info) ),
+	wooper:const_return().
+
+
+% @doc Adds synchronously the specified node, with the specified label, to
+% the graph.
+%
+-spec addNodeSync( wooper:state(), node_id(), element_label() ) ->
+								const_request_return( 'node_added' ).
+addNodeSync( State, NodeId, NodeLabel ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding synchronously node '~ts', labelled '~ts'.",
+					[ NodeId, NodeLabel ] ) ),
+
+	gephi_support:add_node( NodeId, NodeLabel, ?getAttr(graph_info) ),
+
+	wooper:const_return_result( node_added ).
+
+
+
+% @doc Adds (asynchronously) the specified node, with the specified label and
+% color, to the graph.
+%
+-spec addNode( wooper:state(), node_id(), element_label(), graph_color() ) ->
+								const_oneway_return().
+addNode( State, NodeId, NodeLabel, NodeColor ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding asynchronously node '~ts', labelled '~ts', "
+			"with color '~ts'.", [ NodeId, NodeLabel, NodeColor ] ) ),
+
+	gephi_support:add_node( NodeId, NodeLabel, NodeColor,
+							?getAttr(graph_info) ),
 
 	wooper:const_return().
 
 
-
-% @doc Adds (asynchronously) the specified directed edge between the two
-% specified nodes of the graph.
+% @doc Adds synchronously the specified node, with the specified label and
+% color, to the graph.
 %
--spec addDirectedEdge( wooper:state(), edge_id(), node_id(), node_id() ) ->
-									const_oneway_return().
-addDirectedEdge( State, EdgeId, SourceNodeId, TargetNodeId ) ->
+-spec addNodeSync( wooper:state(), node_id(), element_label(),
+				   graph_color() ) -> const_request_return( 'node_added' ).
+addNodeSync( State, NodeId, NodeLabel, NodeColor ) ->
 
-	Json = json_utils:to_json( #{ ae => #{ EdgeId=> #{ source => SourceNodeId,
-													   target => TargetNodeId,
-													   directed => true } } } ),
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding synchronously node '~ts', labelled '~ts', "
+			"with color '~ts'.", [ NodeId, NodeLabel, NodeColor ] ) ),
 
-	_StatusCode = post_gephi( Json, State ),
+	gephi_support:add_node( NodeId, NodeLabel, NodeColor,
+							?getAttr(graph_info) ),
+
+	wooper:const_return_result( node_added ).
+
+
+
+% @doc Updates (asynchronously) the specified property of the specified node to
+% the specified constant (timestamp-less) value.
+%
+-spec updateNodeProperty( wooper:state(), node_id(), property_id(),
+						  graph_value() ) -> const_oneway_return().
+updateNodeProperty( State, NodeId, PropertyId, PropertyValue ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating asynchronously for node '~ts' "
+			"property '~ts' to '~p'.",
+			[ NodeId, PropertyId, PropertyValue ] ) ),
+
+	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+										?getAttr(graph_info) ),
 
 	wooper:const_return().
 
 
-
-% @doc Modifies (asynchronously) the state of the specified node, by setting its
-% specified property to the specified JSON value.
+% @doc Updates synchronously the specified property of the specified node to
+% the specified constant (timestamp-less) value.
 %
--spec alterNode( wooper:state(), node_id(), property_id(), bin_json() ) ->
-							const_oneway_return().
-alterNode( State, NodeId, PropertyId, PropertyValue ) ->
+-spec updateNodePropertySync( wooper:state(), node_id(), property_id(),
+		graph_value() ) -> const_request_return( 'node_updated' ).
+updateNodePropertySync( State, NodeId, PropertyId, PropertyValue ) ->
 
-	_StatusCode = alter_node( NodeId, PropertyId, PropertyValue, State ),
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating synchronously for node '~ts' "
+			"property '~ts' to '~p'.",
+			[ NodeId, PropertyId, PropertyValue ] ) ),
+
+	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+										?getAttr(graph_info) ),
+
+	wooper:const_return_result( node_updated ).
+
+
+
+% @doc Updates (asynchronously) the specified properties of the specified node
+% to the specified constant (timestamp-less) values.
+%
+-spec updateNodeProperties( wooper:state(), node_id(), property_table() ) ->
+											const_oneway_return().
+updateNodeProperties( State, NodeId, PropertyTable ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating asynchronously for node '~ts' "
+			"the following property ~ts.",
+			[ NodeId, table:to_string( PropertyTable ) ] ) ),
+
+	gephi_support:update_node_properties( NodeId, PropertyTable,
+										  ?getAttr(graph_info) ),
 
 	wooper:const_return().
 
 
-
-% @doc Modifies synchronously the state of the specified node, by setting its
-% specified property to the specified JSON value.
+% @doc Updates synchronously the specified properties of the specified node
+% to the specified constant (timestamp-less) values.
 %
--spec alterNodeSync( wooper:state(), node_id(), property_id(), bin_json() ) ->
-							const_request_return( 'node_altered' ).
-alterNodeSync( State, NodeId, PropertyId, PropertyValue ) ->
+-spec updateNodePropertiesSync( wooper:state(), node_id(), property_table() ) ->
+									const_request_return( 'node_updated' ).
+updateNodePropertiesSync( State, NodeId, PropertyTable ) ->
 
-	_StatusCode = alter_node( NodeId, PropertyId, PropertyValue, State ),
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating asynchronously for node '~ts' "
+			"the following property ~ts.",
+			[ NodeId, table:to_string( PropertyTable ) ] ) ),
 
-	wooper:const_return_result( node_altered ).
+	gephi_support:update_node_properties( NodeId, PropertyTable,
+										  ?getAttr(graph_info) ),
 
-
-% (helper)
--spec alter_node( node_id(), property_id(), bin_json(), wooper:state() ) ->
-											status_code().
-alter_node( NodeId, PropertyId, PropertyValue, State ) ->
-
-	%trace_utils:debug_fmt( "alter_node: PropertyValue=~p", [ PropertyValue ] ),
-
-	Json = json_utils:to_json(
-		#{ cn => #{ NodeId => #{ PropertyId => PropertyValue } } } ),
-
-	post_gephi( Json, State ).
+	wooper:const_return_result( node_updated ).
 
 
-
-
-% @doc Modifies (asynchronously) the state of the specified edge, by setting its
-% specified property to the specified JSON value.
+% @doc Updates (asynchronously) the specified property of the specified node to
+% the specified value for the specified timestamp.
 %
--spec alterEdge( wooper:state(), edge_id(), property_id(), bin_json() ) ->
-									const_oneway_return().
-alterEdge( State, EdgeId, PropertyId, PropertyValue ) ->
+-spec updateNodeProperty( wooper:state(), node_id(), property_id(),
+						  graph_value(), timestamp() ) -> const_oneway_return().
+updateNodeProperty( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
 
-	_StatusCode = alter_edge( EdgeId, PropertyId, PropertyValue, State ),
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
+			"property '~ts' to '~p'.",
+			[ NodeId, Timestamp, PropertyId, PropertyValue ] ) ),
+
+	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+										Timestamp, ?getAttr(graph_info) ),
 
 	wooper:const_return().
 
 
-
-% @doc Modifies synchronously the state of the specified edge, by setting its
-% specified property to the specified JSON value.
+% @doc Updates synchronously the specified property of the specified node to
+% the specified value for the specified timestamp.
 %
--spec alterEdgeSync( wooper:state(), edge_id(), property_id(), bin_json() ) ->
-							const_request_return( 'edge_altered' ).
-alterEdgeSync( State, EdgeId, PropertyId, PropertyValue ) ->
+-spec updateNodePropertySync( wooper:state(), node_id(), property_id(),
+		graph_value(), timestamp() ) -> const_request_return( 'node_updated' ).
+updateNodePropertySync( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
 
-	_StatusCode = alter_edge( EdgeId, PropertyId, PropertyValue, State ),
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating synchronously for node '~ts' at ~w "
+			"property '~ts' to '~p'.",
+			[ NodeId, Timestamp, PropertyId, PropertyValue ] ) ),
 
-	wooper:const_return_result( edge_altered ).
+	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+										Timestamp, ?getAttr(graph_info) ),
+
+	wooper:const_return_result( node_updated ).
 
 
 
-% (helper)
--spec alter_edge( edge_id(), property_id(), bin_json(), wooper:state() ) ->
-											status_code().
-alter_edge( EdgeId, PropertyId, PropertyValue, State ) ->
+% @doc Updates (asynchronously) the specified properties of the specified node
+% to the specified values for the specified timestamp.
+%
+-spec updateNodeProperties( wooper:state(), node_id(), property_table(),
+							timestamp() ) -> const_oneway_return().
+updateNodeProperties( State, NodeId, PropertyTable, Timestamp ) ->
 
-	Json = json_utils:to_json(
-		#{ ce=> #{ EdgeId => #{ PropertyId => PropertyValue } } } ),
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
+			"the following property ~ts.",
+			[ NodeId, Timestamp, table:to_string( PropertyTable ) ] ) ),
 
-	post_gephi( Json, State ).
+	gephi_support:update_node_properties( NodeId, PropertyTable, Timestamp,
+										  ?getAttr(graph_info) ),
+
+	wooper:const_return().
+
+
+% @doc Updates synchronously the specified properties of the specified node to
+% the specified values for the specified timestamp.
+%
+-spec updateNodePropertiesSync( wooper:state(), node_id(), property_table(),
+		timestamp() ) -> const_request_return( 'node_updated' ).
+updateNodePropertiesSync( State, NodeId, PropertyTable, Timestamp ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
+			"the following property ~ts.",
+			[ NodeId, Timestamp, table:to_string( PropertyTable ) ] ) ),
+
+	gephi_support:update_node_properties( NodeId, PropertyTable, Timestamp,
+										  ?getAttr(graph_info) ),
+
+	wooper:const_return_result( node_updated ).
+
+
+
+% @doc Adds (asynchronously) an edge whose identifier is specified, together
+% with the identifiers of the first node and the second one, telling whether it
+% is a directed edge (from first node to second one).
+%
+-spec addEdge( wooper:state(), edge_id(), node_id(), node_id(), boolean() ) ->
+											const_oneway_return().
+addEdge( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
+			"to '~ts'.", [ EdgeId, FirstNodeId, SecondNodeId ] ) ),
+
+	gephi_support:add_edge( EdgeId, FirstNodeId, SecondNodeId,
+							IsDirected, ?getAttr(graph_info) ),
+
+	wooper:const_return().
+
+
+% @doc Adds synchronously an edge whose identifier is specified, together with
+% the identifiers of the first node and the second one, telling whether it is a
+% directed edge (from first node to second one).
+%
+-spec addEdgeSync( wooper:state(), edge_id(), node_id(), node_id(),
+				   boolean() ) -> const_request_return( 'edge_added' ).
+addEdgeSync( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
+			"to '~ts'.", [ EdgeId, FirstNodeId, SecondNodeId ] ) ),
+
+
+	gephi_support:add_edge( EdgeId, FirstNodeId, SecondNodeId, IsDirected,
+							?getAttr(graph_info) ),
+
+	wooper:const_return_result( edge_added ).
+
+
+
+% @doc Adds (asynchronously) an edge whose identifier is specified, together
+% with the identifiers of the first node and the second one, telling whether it
+% is a directed edge (from first node to second one) and what its color is.
+%
+-spec addEdge( wooper:state(), edge_id(), graph_color(), node_id(), node_id(),
+			   boolean() ) -> const_oneway_return().
+addEdge( State, EdgeId, EdgeColor, FirstNodeId, SecondNodeId, IsDirected ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
+			"to '~ts' (color: '~ts').",
+			[ EdgeId, FirstNodeId, SecondNodeId, EdgeColor ] ) ),
+
+	gephi_support:add_edge( EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
+							IsDirected, ?getAttr(graph_info) ),
+
+	wooper:const_return().
+
+
+% @doc Adds synchronously an edge whose identifier is specified, together with
+% the identifiers of the first node and the second one, telling whether it is a
+% directed edge (from first node to second one) and what its color is..
+%
+-spec addEdgeSync( wooper:state(), edge_id(), graph_color(),
+				   node_id(), node_id(), boolean() ) ->
+										const_request_return( 'edge_added' ).
+addEdgeSync( State, EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
+			 IsDirected ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
+			"to '~ts' (color: '~ts').",
+			[ EdgeId, FirstNodeId, SecondNodeId, EdgeColor ] ) ),
+
+	gephi_support:add_edge( EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
+							IsDirected, ?getAttr(graph_info) ),
+
+	wooper:const_return_result( edge_added ).
+
+
+
+% @doc Adds (asynchronously) an edge whose identifier is specified, together
+% with the identifiers of the first node and the second one, telling whether it
+% is a directed edge (from first node to second one) and what its label and
+% color are.
+%
+-spec addEdge( wooper:state(), edge_id(), element_label(), graph_color(),
+			   node_id(), node_id(), boolean() ) -> const_oneway_return().
+addEdge( State, EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
+		 IsDirected ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
+			"to '~ts' (label '~ts'; color: '~ts').",
+			[ EdgeId, FirstNodeId, SecondNodeId, EdgeLabel, EdgeColor ] ) ),
+
+	gephi_support:add_edge( EdgeId, EdgeLabel, EdgeColor,
+		FirstNodeId, SecondNodeId, IsDirected, ?getAttr(graph_info) ),
+
+	wooper:const_return().
+
+
+% @doc Adds synchronously an edge whose identifier is specified, together with
+% the identifiers of the first node and the second one, telling whether it is a
+% directed edge (from first node to second one) and what its color is..
+%
+-spec addEdgeSync( wooper:state(), edge_id(), element_label(), graph_color(),
+				   node_id(), node_id(), boolean() ) ->
+										const_request_return( 'edge_added' ).
+addEdgeSync( State, EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
+			 IsDirected ) ->
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
+			"to '~ts' (label '~ts'; color: '~ts').",
+			[ EdgeId, FirstNodeId, SecondNodeId, EdgeLabel, EdgeColor ] ) ),
+
+	gephi_support:add_edge( EdgeId, EdgeLabel, EdgeColor,
+		FirstNodeId, SecondNodeId, IsDirected, ?getAttr(graph_info) ),
+
+	wooper:const_return_result( edge_added ).
+
+
+
+
+
+% @doc Updates (asynchronously) the specified property of the specified edge to
+% the specified constant (timestamp-less) value.
+%
+-spec updateEdgeProperty( wooper:state(), edge_id(), property_id(),
+						  graph_value() ) -> const_oneway_return().
+updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue ) ->
+
+	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+										?getAttr(graph_info) ),
+
+	wooper:const_return().
+
+
+% @doc Updates synchronously the specified property of the specified edge to the
+% specified constant (timestamp-less) value.
+%
+-spec updateEdgePropertySync( wooper:state(), edge_id(), property_id(),
+		graph_value() ) -> const_request_return( 'edge_updated' ).
+updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue ) ->
+
+	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+										?getAttr(graph_info) ),
+
+	wooper:const_return_result( edge_updated ).
+
+
+
+% @doc Updates (asynchronously) the specified properties of the specified edge
+% to the specified constant (timestamp-less) values.
+%
+-spec updateEdgeProperties( wooper:state(), edge_id(), property_table() ) ->
+											const_oneway_return().
+updateEdgeProperties( State, EdgeId, PropertyTable ) ->
+
+	gephi_support:update_edge_properties( EdgeId, PropertyTable,
+										  ?getAttr(graph_info) ),
+
+	wooper:const_return().
+
+
+% @doc Updates synchronously the specified properties of the specified edge to
+% the specified constant (timestamp-less) values.
+%
+-spec updateEdgePropertiesSync( wooper:state(), edge_id(), property_table() ) ->
+									const_request_return( 'edge_updated' ).
+updateEdgePropertiesSync( State, EdgeId, PropertyTable ) ->
+
+	gephi_support:update_edge_properties( EdgeId, PropertyTable,
+										  ?getAttr(graph_info) ),
+
+	wooper:const_return_result( edge_updated ).
+
+
+
+% @doc Updates (asynchronously) the specified property of the specified edge to
+% the specified value for the specified timestamp.
+%
+-spec updateEdgeProperty( wooper:state(), edge_id(), property_id(),
+						  graph_value(), timestamp() ) -> const_oneway_return().
+updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
+
+	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+										Timestamp, ?getAttr(graph_info) ),
+
+	wooper:const_return().
+
+
+% @doc Updates synchronously the specified property of the specified edge to the
+% specified value for the specified timestamp.
+%
+-spec updateEdgePropertySync( wooper:state(), edge_id(), property_id(),
+		graph_value(), timestamp() ) -> const_request_return( 'edge_updated' ).
+updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
+
+	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+										Timestamp, ?getAttr(graph_info) ),
+
+	wooper:const_return_result( edge_updated ).
 
 
 
@@ -547,9 +696,17 @@ alter_edge( EdgeId, PropertyId, PropertyValue, State ) ->
 % Typically useful to close a series of asynchronous operations, in order to
 % avoid any race condition.
 %
--spec sync( wooper:state() ) -> const_request_return( 'graph_ready' ).
+-spec sync( wooper:state() ) -> const_request_return( 'graph_synchronised' ).
 sync( State ) ->
-	wooper:const_return_result( graph_ready ).
+
+	% No need to interact with the Gephi server, to which this probe is already
+	% synchronised. We just synchronise this probe with the caller, thanks to
+	% the use of a request (this one).
+
+	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+		?debug_fmt( "Syncronised with caller ~w.", [ ?getSender() ] ) ),
+
+	wooper:const_return_result( graph_synchronised ).
 
 
 
@@ -585,6 +742,11 @@ sendResults( State, _Options ) ->
 %
 % - or the 'non_wanted_probe' atom
 %
+% Note that the graph stream tool itself is to be launched by the deployment
+% manager, only based on whether the graph stream service is enabled and whether
+% the simulation is in batch mode (hence regardless of whether actual graph
+% stream probes are created).
+%
 -spec declare_result_probe( probe_name_init() ) ->
 								static_return( graph_stream_probe_ref() ).
 declare_result_probe( NameInit ) ->
@@ -605,7 +767,7 @@ declare_result_probe( NameInit ) ->
 			DeployManPid = class_DeploymentManager:get_deployment_manager(),
 
 			% In the future we could imagine using multiple, possibly per-probe,
-			% project names, on a same Gephi instance (still controlled by the
+			% workspaces, on a same Gephi instance (still controlled by the
 			% deployment manager).
 			%
 			DeployManPid ! { getGraphStreamInformation, [], self() },
@@ -620,20 +782,34 @@ declare_result_probe( NameInit ) ->
 
 			receive
 
-				{ wooper_result, _GraphInfos={ GephiPossiblyHostname,
-						GephiServerTCPPort, _GephiProjectPath,
-						GephiProjectName } } ->
-
-					synchronous_new_link( NameInit, GephiPossiblyHostname,
-						GephiServerTCPPort, GephiProjectName );
-
 				{ wooper_result, _MaybeGraphInfos=undefined } ->
-					non_wanted_probe
+
+					cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+						trace_utils:debug_fmt(
+							"Graph stream probe '~ts' wanted.",
+							[ ProbeName ] ) ),
+
+					non_wanted_probe;
+
+				{ wooper_result, GraphInfo } ->
+
+					cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+						trace_utils:debug_fmt(
+							"The graph stream probe '~ts' is wanted, "
+							"and is to use a ~ts.", [ ProbeName,
+								gephi_support:server_info_to_string( GraphInfo )
+													] ) ),
+
+					synchronous_new_link( NameInit, GraphInfo )
 
 			end;
 
 
 		{ wooper_result, false } ->
+			cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+				trace_utils:debug_fmt(
+					"Graph stream probe '~ts' not wanted.",
+					[ ProbeName ] ) ),
 			non_wanted_probe
 
 	end,
@@ -642,168 +818,19 @@ declare_result_probe( NameInit ) ->
 
 
 
-% @doc Returns the default TCP port expected to be used by a Gephi server.
--spec get_gephi_default_tcp_port() -> static_return( tcp_port() ).
-get_gephi_default_tcp_port() ->
-	wooper:return_static( ?gephi_default_tcp_port ).
-
-
-
-% @doc Returns the file extension that Gephi projects are expected to use.
--spec get_gephi_extension() -> static_return( file_utils:extension() ).
-get_gephi_extension() ->
-	wooper:return_static( ?gephi_project_extension ).
-
-
-
-% @doc Runs Gephi on the local host; the Gephi graphical interface will be run,
-% yet no Gephi project will be loaded, and no corresponding server will be
-% started (thus no TCP port applies here).
+% @doc Synchronises to the specified graph stream probe.
 %
-% Typically called by the deployment manager whenever the support of graph
-% streaming is enabled.
+% Prevents the overflowing of it by callers.
 %
-% To take care of these steps, the user may first select a project, thanks to
-% the File -> 'Open' or 'Open Recent' (a *.gephi file) menu item.
-%
-% Then the corresponding Gephi server must be started.
-%
-% Currently its TCP port cannot be set programatically. It can be assigned by
-% selecting first Window -> Streaming, then, on the 'Streaming' tab, by clicking
-% the 'Settings' button and, regarding the 'HTTP Server Settings' panel, setting
-% the 'Port' to the desired value (the gephi_default_tcp_port define is
-% recommended for that).
-%
-% To start a Gephi server, select in the 'Streaming' tab the 'Master' -> 'Master
-% Server' entry, and right-click on it to select 'Start'.
-%
-% The red point shall become green, and the corresponding TCP port shall be
-% listened to; for example: 'ss -an | grep 8090' ('ss' superseding 'netstat')
-% may now return information like: 'tcp6 0 0 :::8090 :::* LISTEN 1028/java'.
-%
-% Throws an exception on error.
-%
--spec run_gephi() -> static_void_return().
-run_gephi() ->
-	run_gephi( _MaybeGephiProjectPath=undefined ),
-	wooper:return_static_void().
+-spec wait_for( graph_stream_probe_pid() ) -> static_void_return().
+wait_for( GSPPid ) ->
+	GSPPid ! { sync, [], self() },
+	receive
 
+		{ wooper_result, graph_synchronised } ->
+			wooper:return_static_void()
 
-
-% @doc Runs Gephi on the local host, on the specified TCP port, loading the
-% specified project.
-%
-% Note: currently the project path and the TCP port are not taken into account,
-% and the corresponding server is not started automatically.
-%
-% For example, a "Foobar.gephi" project path would refer to a corresponding file
-% in the local directory, to be opened by the user.
-%
-% Refer to run_gephi/0 for further details.
-%
--spec run_gephi( maybe( project_path() ) ) -> static_void_return().
-run_gephi( MaybeGephiProjectPath ) ->
-	run_gephi( MaybeGephiProjectPath, ?gephi_default_tcp_port ),
-	wooper:return_static_void().
-
-
-
-% @doc Runs Gephi on the local host, on the specified TCP port, loading the
-% specified project.
-%
-% Note: currently the project path and the TCP port are not taken into account,
-% and the corresponding server is not started automatically.
-%
-% For example, a "Foobar.gephi" project path would refer to a corresponding file
-% in the local directory, to be opened by the user.
-%
-% Refer to run_gephi/0 for further details.
-%
--spec run_gephi( maybe( project_path() ), tcp_port() ) -> static_void_return().
-run_gephi( MaybeGephiProjectPath, TCPPort ) ->
-
-	case executable_utils:get_default_graph_stream_tool_name() of
-
-		"gephi" ->
-			ok;
-
-		Other ->
-			throw( { graph_stream_tool_not_gephi, Other } )
-
-	end,
-
-	GephiExecPath =
-			case executable_utils:get_default_graph_stream_tool_path() of
-
-		false ->
-			throw( no_gephi_executable_found );
-
-		Exec ->
-			Exec
-
-	end,
-
-
-	{ ProjOpt, MaybeProjPath } = case MaybeGephiProjectPath of
-
-		undefined ->
-			{ [], undefined };
-
-		ProjPath ->
-
-			AbsProjPath = file_utils:ensure_path_is_absolute( ProjPath ),
-
-			file_utils:is_existing_file_or_link( AbsProjPath ) orelse
-				begin
-
-					trace_utils:error_fmt( "The specified Gephi project path, "
-						"'~ts' (resolved as '~ts'), does not exist.",
-						[ ProjPath, AbsProjPath ] ),
-
-					throw( { gephi_project_file_not_found, ProjPath } )
-
-				end,
-
-			% To uncomment when ready:
-			%{ [ "--load-project-file", AbsProjPath ], AbsProjPath }
-			{ [], AbsProjPath }
-
-	end,
-
-	% To uncomment when ready:
-	%PortOpt = [ "--tcp-port", text_utils:integer_to_string( TCPPort ) ],
-	PortOpt = [],
-
-	%Args = [ "--nosplash", "--autostart-server" ] ++ ProjOpt ++ PortOpt,
-	Args = [ "--nosplash" ] ++ ProjOpt ++ PortOpt,
-
-	system_utils:run_background_executable( GephiExecPath, Args ),
-
-	% To comment when ready:
-	ProjStr = case MaybeProjPath of
-
-		undefined ->
-			"project file of interest (*.gephi)";
-
-		GephiProjPath ->
-			text_utils:format( "'~ts' project file", [ GephiProjPath ] )
-
-	end,
-
-	% For the user, directly on the console:
-	trace_utils:notice_fmt( "Supposing that Gephi is appropriately configured "
-		"(it is notably expected to use, on the local host, the TCP port #~B), "
-		"a relevant project must now be opened; "
-		"for that, in the 'File' menu, choose 'Open' or 'Open Recent' "
-		"and select the ~ts.~n"
-		"Then, in the 'Streaming' tab (if necessary obtained by selecting "
-		"the corresponding entry in the 'Window' menu, and providing that "
-		"the 'Graph Streaming' plugin has already been installed), "
-		"right-click on 'Master Server', and select 'Start'. "
-		"The point on its left shall then switch from red to green.",
-		[ TCPPort, ProjStr ] ),
-
-	wooper:return_static_void().
+	end.
 
 
 
@@ -830,24 +857,6 @@ append_term_to_json( BaseBinJson, Term ) ->
 	TermAsBinJson = json_utils:to_json( Term ),
 	Bin = text_utils:bin_concatenate( BaseBinJson, TermAsBinJson ),
 	wooper:return_static( Bin ).
-
-
-
-
-% @doc Deduces the Gephi project name from the path of the specified project
-% file.
-%
--spec get_project_name_from_path( project_path() ) ->
-											static_return( project_name() ).
-get_project_name_from_path( ProjectPath ) ->
-
-	ProjectFilename = file_utils:get_last_path_element( ProjectPath ),
-
-	ProjName = file_utils:remove_extension( ProjectFilename,
-											?gephi_project_extension ),
-
-	wooper:return_static( ProjName ).
-
 
 
 
@@ -886,45 +895,5 @@ wait_result_declaration_outcome( ProbeName, State ) ->
 					   "result.", [ ProbeName ] ),
 
 			State
-
-	end.
-
-
-
-% @doc Posts the specified JSON to the target Gephi server.
--spec post_gephi( bin_json(), wooper:state() ) -> web_utils:http_status_code().
-post_gephi( Json, State ) ->
-
-	Url = ?getAttr(update_url),
-
-	%trace_utils:debug_fmt( "Posting to '~ts' following JSON:~n ~p",
-	%                       [ Url, Json ] ),
-
-	case web_utils:post( Url, _Headers=[], _HttpOptions=[], Json ) of
-
-		{ StatusCode, _HeaderMap, _Body } ->
-			StatusCode;
-
-
-		{ error, { failed_connect, [ {to_address, { _Host="localhost", Port } },
-				{ inet, [ inet ], econnrefused } ] } } ->
-
-			?error_fmt( "Unable to connect to a local Gephi server "
-				"supposed to listen on TCP port #~B; none found.", [ Port ] ),
-
-			throw( { local_gephi_connection_failed, Port } );
-
-
-		{ error, { failed_connect, [ {to_address, { Host, Port } },
-				{ inet, [ inet ], econnrefused } ] } } ->
-
-			?error_fmt( "Unable to connect to host ~ts on TCP port #~B: "
-				"no Gephi server seems to be listening.", [ Host, Port ] ),
-
-			throw( { gephi_connection_failed, Host, Port } );
-
-
-		{ error, Reason } ->
-			throw( { gephi_post_failed, Reason } )
 
 	end.

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -48,7 +48,7 @@
 
 
 % For re-use by other tests:
--export([ get_test_image_directory/0 ]).
+-export([ get_test_image_directory/0, get_test_main_image_path/0 ]).
 
 
 

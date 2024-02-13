@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2023 Olivier Boudeville
+% Copyright (C) 2020-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -100,7 +100,7 @@ start_link( TraceSupervisorWanted, AggRegScope ) ->
 							| 'ignore' | { 'error', Error :: term() }.
 init( { TraceSupervisorWanted, AggRegScope } ) ->
 
-	trace_utils:info_fmt( "Initializing the Traces supervisor bridge ~w "
+	trace_utils:info_fmt( "Initialising the Traces supervisor bridge ~w "
 		"(trace supervisor wanted: ~ts).", [ self(), TraceSupervisorWanted ] ),
 
 	% This is an OTP blind start, the Traces application being started with no
@@ -125,7 +125,7 @@ init( { TraceSupervisorWanted, AggRegScope } ) ->
 
 	% Not initializing our trace supervisor (not OTP related, referring to
 	% class_TraceSupervisor here) now, as we may have to adopt a non-default
-	% trace filename afterwards (ex: after any parent applications read its own
+	% trace filename afterwards (e.g. after any parent applications read its own
 	% configuration file to select a specific name/path), and as mentioned above
 	% any already running trace supervisor would not be able to cope with it.
 	%

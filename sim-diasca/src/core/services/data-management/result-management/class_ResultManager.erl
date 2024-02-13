@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 EDF R&D
+% Copyright (C) 2010-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -354,8 +354,18 @@
 % referencing them or not, potentially disabling them (all depending on their
 % matching against the result specification)
 %
-% 3. on simulation successful termination, retrieve all referenced outputs on
+% 3. on simulation successful termination, the root manager sends to the result
+% manager a collectResults request, and it retrieves all referenced outputs on
 % the user's behalf
+%
+% Note that previously the result manager was a mere simulation listener, which
+% led its simulation_succeeded/1 to be called whereas the remaining actors were
+% still terminating concurrently. However some of them may need to update their
+% probes (for a last closing sample, as otherwise their graph would stop at
+% their last, possibly ancient, past sent sample), and the results could be
+% generated and collected before this synchronising probe update was processed.
+% Now the result manager subscribes specifically to the root time manager, which
+% allows a special management of it.
 
 
 % Once patterns are changed, resulting lists could be uniquified.
@@ -377,8 +387,8 @@
 % descriptors and/or RAM, or even the crash of the host.
 %
 % So currently each computing host is loaded as much as reasonably possible
-% (depending on its number of cores), pending tasks being requested as current
-% tasks are over.
+% (depending on its number of cores), pending tasks being requested only when
+% current ones are over.
 
 % Note: we reason by hosts rather than nodes, as an host may have for example
 % both a computing node and a user node: result producers created from the
@@ -397,9 +407,9 @@
 % the result queue that is in charge of it.
 
 
-% All autonomouns (instance-based) probes that are tracked will be deleted by
-% the result manager. The ones that are not tracked are to be specifically
-% managed by their creator.
+% All autonomous (instance-based) probes that are tracked will be deleted by the
+% result manager. The ones that are not tracked are to be specifically managed
+% by their creator.
 
 
 
@@ -413,8 +423,8 @@
 % - DataLoggerEnabled tells whether the data-logger is used
 %
 % - RootTimeManagerPid is the PID of the root time manager; this result manager
-% will subscribe to it as a listener, so that it can know when/if the simulation
-% ended on success
+% will subscribe to it, so that it can know when/if the simulation ended on
+% success
 %
 % - SimRunDir is the path (specified as a string) of the directory in which the
 % current simulation runs
@@ -451,7 +461,7 @@ construct( State, ResultSpecification, DataLoggerEnabled,
 	class_InstanceTracker:register_agent( RegistrationName ),
 
 	% We want to know when/if the simulation terminates on success:
-	RootTimeManagerPid ! { addSimulationListener, self() },
+	RootTimeManagerPid ! { declareResultManager, self() },
 
 	SimResultDirName =
 		file_utils:join( ResultBaseDirName, "simulation-results" ),
@@ -565,6 +575,8 @@ destruct( State ) ->
 	class_InstanceTracker:unregister_agent(),
 
 	naming_utils:unregister( get_registration_name(), ?registration_scope ),
+
+	?info( "Result manager deleted." ),
 
 	% Then allow chaining:
 	State.
@@ -1071,9 +1083,6 @@ isResultProducerWanted( State, ProducerName ) ->
 			const_request_return( 'false' | { 'true', meta_data() } ).
 isResultProducerWanted( State, ProducerName, Nature ) ->
 
-	%trace_utils:debug_fmt( "isResultProducerWanted for producer '~ts' "
-	%  "of nature ~p.", [ ProducerName, Nature ] ),
-
 	Res = case is_result_wanted( ProducerName, Nature, State ) of
 
 		false ->
@@ -1083,6 +1092,9 @@ isResultProducerWanted( State, ProducerName, Nature ) ->
 			{ true, ?getAttr(meta_data) }
 
 	end,
+
+	%trace_utils:debug_fmt( "isResultProducerWanted for producer '~ts' "
+	%  "of nature ~p:~n  ~p", [ ProducerName, Nature, Res ] ),
 
 	wooper:const_return_result( Res ).
 
@@ -1632,12 +1644,15 @@ get_virtual_probe_infos( _State ) ->
 
 
 
-% Simulation listener section.
+% Actions triggered by the (root) time manager.
 
 
-% @doc Optimises result tables and lists all known registered results.
--spec simulation_started( wooper:state() ) -> oneway_return().
-simulation_started( State ) ->
+% @doc Called by the (root) time manager when the simulation starts.
+%
+% Optimises the result tables and lists all known registered results.
+%
+-spec onSimulationStart( wooper:state() ) -> oneway_return().
+onSimulationStart( State ) ->
 
 	BasicProbeTable = ?getAttr(basic_probe_table),
 
@@ -1749,24 +1764,13 @@ simulation_started( State ) ->
 
 
 
-% @doc Notification ignored.
--spec simulation_suspended( wooper:state() ) -> const_oneway_return().
-simulation_suspended( State ) ->
-	wooper:const_return().
 
-
-% @doc Notification ignored.
--spec simulation_resumed( wooper:state() ) -> const_oneway_return().
-simulation_resumed( State ) ->
-	wooper:const_return().
-
-
-% @doc This corresponds to a message, interpreted as a oneway call, being sent
-% by the root time manager whenever the simulation succeeded, knowing this
-% result manager subscribed to it as a simulation listener.
+% @doc Called by the (root) time manager when the simulation ends with a
+% success.
 %
--spec simulation_succeeded( wooper:state() ) -> oneway_return().
-simulation_succeeded( State ) ->
+-spec onSimulationSuccess( wooper:state() ) ->
+								request_return( 'results_collected' ).
+onSimulationSuccess( State ) ->
 
 	?info( "Simulation succeeded, collecting results now." ),
 
@@ -1792,7 +1796,7 @@ simulation_succeeded( State ) ->
 		false ->
 			file_utils:create_directory( ResultBaseDirName );
 
-		true ->
+		_True ->
 			% At least the SII may have been used more than once:
 			?error_fmt( "Result directory ('~ts') is already existing, "
 				"which is both unlikely and abnormal.", [ ResultBaseDirName ] ),
@@ -1867,7 +1871,7 @@ simulation_succeeded( State ) ->
 
 	class_PluginManager:notify( on_result_gathering_stop ),
 
-	wooper:return_state( ProbeState ).
+	wooper:return_state_result( ProbeState, results_collected ).
 
 
 
@@ -2797,6 +2801,29 @@ compile( Pattern ) ->
 %
 -spec is_result_wanted( bin_producer_name(), producer_nature(),
 		wooper:state() ) -> 'false' | { 'true', maybe( producer_options() ) }.
+is_result_wanted( ProducerName, _Nature=graph_stream_probe, State ) ->
+	case executable_utils:is_batch() of
+
+		true ->
+			% Anyway the deployment manager must not have launched the overall
+			% graph stream tool:
+			%
+			false;
+
+		false ->
+			case ?getAttr(result_spec) of
+
+				{ TargetPatterns, BlacklistPatterns } ->
+					is_selected_with_options( ProducerName, TargetPatterns,
+											  BlacklistPatterns );
+
+				_ ->
+					{ true, undefined }
+
+			end
+
+	end;
+
 is_result_wanted( ProducerName, Nature, State ) ->
 
 	WantedInfos = case ?getAttr(result_spec) of
@@ -2887,7 +2914,6 @@ is_result_wanted( ProducerName, Nature, State ) ->
 					{ true, undefined }
 
 			end;
-
 
 		{ TargetPatterns, BlacklistPatterns } ->
 			is_selected_with_options( ProducerName, TargetPatterns,

@@ -19,7 +19,7 @@ test-local: prepare-otp-test
 
 
 prepare-otp-test:
-	@cd $(WOOPER_TOP) && $(MAKE) -s rebar3-create-app-file
+	@cd $(WOOPER_TOP) && $(MAKE) -s create-app-file
 
 
 info-test-options:

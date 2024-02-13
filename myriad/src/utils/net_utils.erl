@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -74,7 +74,8 @@
 
 
 % Server-related functions:
--export([ is_service_running_at/1 ]).
+-export([ is_local_service_running_at/1,
+		  is_service_running_at/2, is_service_running_at/3 ]).
 
 
 % Address-related functions:
@@ -246,6 +247,8 @@
 
 -type command() :: system_utils:command().
 -type environment() :: system_utils:environment().
+
+-type time_out() :: time_utils:time_out().
 
 
 
@@ -2034,16 +2037,18 @@ receive_file_chunk( DataSocket, OutputFile ) ->
 
 
 
-% @doc Tells whether a service (socket) is running on the local host at
+% @doc Tells whether a service (socket) is running on the local host at the
 % specified TCP port.
 %
--spec is_service_running_at( tcp_port() ) -> boolean().
-is_service_running_at( TCPPort ) ->
+-spec is_local_service_running_at( tcp_port() ) -> boolean().
+is_local_service_running_at( TCPPort ) ->
+
+	% Tries to detect such a server by creating a clashing socket:
 
 	%trace_utils:debug_fmt( "Testing local service availability at port #~B...",
 	%                       [ TCPPort ] ),
 
-	% Presumably a lot quicker than attempting to connect:
+	% Presumably a lot quicker than attempting to connect (no time-out):
 	case gen_tcp:listen( TCPPort, _Opts=[] ) of
 
 		{ ok, Socket } ->
@@ -2059,6 +2064,76 @@ is_service_running_at( TCPPort ) ->
 			throw( { unexpected_error, Error, TCPPort } )
 
 	end.
+
+
+
+% @doc Tells whether a service (socket) is running on the specified host, at the
+% specified TCP port, using a default time-out.
+%
+-spec is_service_running_at( any_host_name(), tcp_port() ) -> boolean().
+is_service_running_at( TargetHostname, TCPPort ) ->
+	is_service_running_at( TargetHostname, TCPPort, _DefTimeout=2000 ).
+
+
+% @doc Tells whether a service (socket) is running on the specified host, at the
+% specified TCP port, based on the specified time-out.
+%
+% Not that null or even very short time-outs (e.g. 1 ms) may trigger
+% econnrefused (and thus report that the service is not running) whereas a
+% suitable service exists. According to our tests, a 10-millisecond timeout
+% seems already reliable.
+%
+-spec is_service_running_at( any_host_name(), tcp_port(), time_out() ) ->
+											boolean().
+is_service_running_at( TargetHostname, TCPPort, Timeout ) ->
+
+	% Tries to detect such a server by connecting to a corresponding socket:
+
+	StartTime = time_utils:get_monotonic_time(),
+
+	cond_utils:if_defined( myriad_debug_network,
+		trace_utils:debug_fmt( "Testing service availability on '~ts' "
+			"at port #~B, using a ~ts...",
+			[ TargetHostname, TCPPort,
+			  time_utils:time_out_to_string( Timeout ) ] ) ),
+
+	case gen_tcp:connect( TargetHostname, TCPPort, _Opts=[], Timeout ) of
+
+		{ ok, Socket } ->
+			gen_tcp:close( Socket ),
+			true;
+
+		{ error, econnrefused } ->
+			% This may mean that the server is launched yet still initialising:
+			timer:sleep( _Ms=250 ),
+			StopTime = time_utils:get_monotonic_time(),
+			ElapsedDurationMs = StopTime - StartTime,
+			NewTimeout = Timeout - ElapsedDurationMs,
+			case NewTimeout > 0 of
+
+				true ->
+					is_service_running_at( TargetHostname, TCPPort,
+										   NewTimeout );
+
+				false ->
+					false
+
+			end;
+
+		% Typically Error=timeout:
+		{ error, Error } ->
+
+			cond_utils:if_defined( myriad_debug_network,
+				trace_utils:debug_fmt( "Error when testing service "
+					"availability on '~ts' at port #~B: '~p'; "
+					"service deemed not available.",
+				[ TargetHostname, TCPPort, Error ] ),
+				basic_utils:ignore_unused( Error ) ),
+
+			false
+
+	end.
+
 
 
 

@@ -15,8 +15,8 @@ WOOPER_TOP = ..
 # the root of this package has not been affected
 #
 %: %.template $(WOOPER_TOP)/GNUmakevars.inc
-	@echo "  Generating $@ from $< (VERSION_FOR_REBAR being $(VERSION_FOR_REBAR), MYRIAD_VERSION_FOR_REBAR being $(MYRIAD_VERSION)); this file should be copied to the root of this layer in order to be taken into account"
-	@cat $< | sed "s|\"MYRIAD_VERSION_FOR_REBAR\"|\"$(MYRIAD_VERSION)\"|g" | sed "s|\"VERSION_FOR_REBAR\"|\"$(VERSION_FOR_REBAR)\"|g" | sed "s|FIRST_FILES_FOR_REBAR|$(MYRIAD_REBAR_FIRST_FILES)|g" | sed "s|DEBUG_KEY_FOR_REBAR|$(DEBUG_INFO_KEY)|g"| sed "s|INCS_FOR_REBAR|$(MYRIAD_REBAR_INCS)|g" > $@
+	@echo "  Generating $@ from $< (VERSION_FOR_OTP being $(VERSION_FOR_OTP), MYRIAD_VERSION_FOR_OTP being $(MYRIAD_VERSION)); this file should be copied to the root of this layer in order to be taken into account"
+	@cat $< | sed "s|\"MYRIAD_VERSION_FOR_OTP\"|\"$(MYRIAD_VERSION)\"|g" | sed "s|\"VERSION_FOR_OTP\"|\"$(VERSION_FOR_OTP)\"|g" | sed "s|FIRST_FILES_FOR_REBAR|$(MYRIAD_REBAR_FIRST_FILES)|g" | sed "s|DEBUG_KEY_FOR_REBAR|$(DEBUG_INFO_KEY)|g" | sed "s|INCS_FOR_REBAR|$(MYRIAD_REBAR_INCS)|g" > $@
 
 
 info-rebar:

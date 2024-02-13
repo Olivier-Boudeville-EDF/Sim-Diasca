@@ -200,6 +200,25 @@ For Documentation Generation
 Refer now to our `dedicated HOW-TO <http://howtos.esperide.org/DocGeneration.html>`_.
 
 
+Release Conventions
+===================
+
+These conventions apply to the release of any Myriad-based package, i.e. either Myriad itself or packages depending, directly or not, from it.
+
+The recommended procedure is (while being at the root of a clone):
+
+#. merge all new developments in the ``master`` (or ``main``) branch
+#. in ``GNUmakevars.inc``:
+
+   - ensure that all debug/check flags (like ``MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_code_path``) are disabled, and that non-release elements (e.g. ``MYRIAD_LCO_OPT``) and optional ones are disabled as well
+   - bump the version of this local package (e.g. in ``MYRIAD_VERSION``)
+
+#. for packages having dependencies: upgrade their reference known of rebar3, with ``make rebar3-upgrade-lock``
+#. rebuild and test all from the root: ``make rebuild test``, fix any problem
+#. optional: perform `static code checking <#type-checking-myriad>`_
+#. if all went well, ensure that all files are committed (e.g. ``ebin/THIS_PACKAGE.app``)
+#. push them, it will trigger the CI/CD services; ensure everything is correct there as well
+#. go back to a development branch and merge/rebase the master one there
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2023 Olivier Boudeville
+% Copyright (C) 2016-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -67,7 +67,7 @@
 % Our default elected type of set:
 %
 % (ordsets may, perhaps in many cases, perform better, yet provide less
-% features; ex: no iterators)
+% features; e.g. no iterators)
 %
 % Apparently gb_sets are stored as tuples, whose first, top-level element is
 % their size (hence fetching the size of a set should be inexpensive)
@@ -149,7 +149,7 @@ new( ElementList ) ->
 %
 % Note: depending on set_impl, this function may or may not be useless, as
 % using the basic '==' term-level operator may be sufficient to compare some
-% types of sets (ex: ordsets).
+% types of sets (e.g. ordsets).
 %
 -spec are_equal( set(), set() ) -> boolean().
 are_equal( Set1, Set2 ) ->

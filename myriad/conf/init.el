@@ -97,7 +97,8 @@
 ;;(global-set-key [(shift mouse-3)] #'acme-search-backward)
 (global-set-key [(shift mouse-3)] #'isearch-backward)
 
-
+;; So to Ctrl-C then v is a prefix:
+(setq smerge-command-prefix "\C-cv")
 
 ;; Set foreground and background colors:
 
@@ -176,7 +177,7 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- ;;'(package-selected-packages '(flycheck yasnippet which-key lsp-origami helm-lsp erlang))
+ '(ignored-local-variable-values '((encoding . utf-8)))
  '(package-selected-packages '(flycheck which-key erlang))
  '(show-paren-mode t)
  ;; Not wanting this mostly useless graphical toolbar at the top:

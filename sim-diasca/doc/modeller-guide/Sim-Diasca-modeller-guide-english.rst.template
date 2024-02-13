@@ -107,7 +107,7 @@ Let's name that mock case the ``Soda-Example`` simulation case. We will introduc
 
 .. a simplified version of the waste collection system of a city. Let's name that mock case the ``City-Example`` case.
 
-We took on purpose a very simple example coming from the everyday life rather than any domain-specific one (ex: in terms of telecom, or urban planning, or electricity), so that the reader can get familiar here only with the topics directly related to the simulation field, without having them intermingled with additional specific domains.
+We took on purpose a very simple example coming from the everyday life rather than any domain-specific one (e.g. in terms of telecom, or urban planning, or electricity), so that the reader can get familiar here only with the topics directly related to the simulation field, without having them intermingled with additional specific domains.
 
 
 So, what does creating a simulation always entail?
@@ -149,16 +149,16 @@ The purpose of the simulation case is to **define all the settings of a virtual 
 
 This includes defining, for that targeted simulation:
 
-- technical settings, like the properties to be enforced for this simulation (ex: reproducibility), the time-step to be used or the list of the eligible computing hosts
+- technical settings, like the properties to be enforced for this simulation (e.g. reproducibility), the time-step to be used or the list of the eligible computing hosts
 
 - domain-specific settings, like the description of the initial state of the simulation (i.e. the model instances that exist when the simulation starts) and its various termination criteria
 
 - experiment settings, like the specification of the results that are expected from the simulation, i.e. what are the probes that shall be enabled, whether these results should displayed to the user, etc.
 
 
-Multiple experiments may apply to a given simulation (ex: the ``Soda-Example`` one), hence **multiple simulation cases are generally devised**. For example:
+Multiple experiments may apply to a given simulation (e.g. the ``Soda-Example`` one), hence **multiple simulation cases are generally devised**. For example:
 
-- there could be as many minimalist cases as there would be different models defined (ex: one case would perform a unit test of the soda vending machine, and each type of thirsty customer would have its own test case as well)
+- there could be as many minimalist cases as there would be different models defined (e.g. one case would perform a unit test of the soda vending machine, and each type of thirsty customer would have its own test case as well)
 - other simulation cases could serve to test the interactions between such a machine and a given type of customer
 - finally overall integrated cases could exist to provide the actual targeted simulation(s), with their final settings, scale, bells and whistles
 
@@ -173,7 +173,7 @@ If we were to define a test that would focus on the loading of initial instances
 
 The ``.erl`` file extension corresponds to `Erlang <http://erlang.org>`_ source files, knowing that Sim-Diasca uses this programming language for its implementation (one may refer to `Just A Bit of Computer Science To Better Understand The Whole`_ for more information on that topic).
 
-Now is the right time to have ``soda_loading_test.erl`` [#]_ opened in your favorite text editor (ex: Emacs, Eclipse, etc. - preferably with a support for the highlighting of the Erlang syntax).
+Now is the right time to have ``soda_loading_test.erl`` [#]_ opened in your favorite text editor (e.g. Emacs, Eclipse, etc. - preferably with a support for the highlighting of the Erlang syntax).
 
 .. [#] As mentioned earlier, this file is located in the ``Sim-diasca-x.y.z/mock-simulators/soda-test/src`` directory.
 
@@ -186,7 +186,7 @@ Most of the elements mentioned in a simulation case are to be specified in prede
 Three records play a central role in simulation cases and will have to be specified in order to initialise the engine:
 
 - the ``simulation_settings`` record, gathering information about the simulation itself (name, tick duration, etc.)
-- the ``deployment_settings`` record, gathering information about its context of deployment and execution, knowing that Sim-Diasca is a distributed engine (ex: computing hosts potentially involved, extra elements to deploy, extra services to activate)
+- the ``deployment_settings`` record, gathering information about its context of deployment and execution, knowing that Sim-Diasca is a distributed engine (e.g. computing hosts potentially involved, extra elements to deploy, extra services to activate)
 - the ``load_balancing_settings`` record, gathering information about how the computing resources shall be allocated to the various parts of the simulation
 
 
@@ -217,7 +217,7 @@ The models involved in a simulation have a temporality of their own (a model is 
 
 As a result, models are defined regardless of the actual frequency at which simulations incorporating them will be run, i.e. irrespective of the tick duration chosen by each simulation case. This offers much flexibility to the simulations, and removes one cause of interdependence between models.
 
-Of course an infinite leeway cannot be granted: ultimately, at runtime, these models will have to convert the high level durations they embed (ex: 2 hours) into a (positive) integer number of ticks, and of course the overall tick duration of the case must be fine enough in order that this quantification does not introduce too much inaccuracy [#]_.
+Of course an infinite leeway cannot be granted: ultimately, at runtime, these models will have to convert the high level durations they embed (e.g. 2 hours) into a (positive) integer number of ticks, and of course the overall tick duration of the case must be fine enough in order that this quantification does not introduce too much inaccuracy [#]_.
 
 .. [#] To anticipate a bit, the ``Actor`` class provides relevant primitives for that, including ``convert_seconds_to_ticks/2``; should, at execution time, the conversion lead to a relative error greater than the default threshold, the simulation will be stopped on error. ``convert_seconds_to_ticks/3`` allows the modeller to specify his own threshold, on a per-conversion basis.
 
@@ -273,7 +273,7 @@ That same ``deployment_settings`` record is also the place where we can define *
 .. [#] In a similar way as Java, Erlang sources (``*.erl`` files), possibly with their headers (``*.hrl``), are compiled into bytecodes (``*.beam`` files) that are to be executed by a virtual machine (the Erlang VM). So Sim-Diasca starts one virtual machine per computing host (that will federate all its CPUs and all their cores) and sends over the network a compressed archive containing notably the relevant BEAM files to each of these virtual machines.
 
 
-Our ``Soda-Example`` case involves only a few models (ex: model of the soda vending machine, or of a type of customer) - that will be defined in the same directory as this simulation case - and no specific data, thus setting the following field accordingly will be sufficient:
+Our ``Soda-Example`` case involves only a few models (e.g. model of the soda vending machine, or of a type of customer) - that will be defined in the same directory as this simulation case - and no specific data, thus setting the following field accordingly will be sufficient:
 
 .. code-block:: erlang
 
@@ -281,7 +281,7 @@ Our ``Soda-Example`` case involves only a few models (ex: model of the soda vend
 
 This means select all code (BEAM files) recursively found from the current directory (``"."``, i.e. ``mock-simulators/soda-test/src`` here) and add it to the deployment archive.
 
-Still in the ``deployment_settings`` record, other parameters can be set (ex: ``node_availability_tolerance``) and other services can be activated (ex: ``enable_data_exchanger``, ``enable_performance_tracker``), yet the ``Soda-Example`` case can do without them. So for this record, which we choose to store in a variable named ``DeploymentSettings``, we finally end up with the following definition:
+Still in the ``deployment_settings`` record, other parameters can be set (e.g. ``node_availability_tolerance``) and other services can be activated (e.g. ``enable_data_exchanger``, ``enable_performance_tracker``), yet the ``Soda-Example`` case can do without them. So for this record, which we choose to store in a variable named ``DeploymentSettings``, we finally end up with the following definition:
 
 .. code-block:: erlang
 
@@ -406,9 +406,9 @@ Construction Parameters for a Soda Vending Machine
 
 We will suppose here that a given soda vending machine instance can be created from following construction parameters:
 
-- its **name**, as a character string (ex: ``"My soda machine"``) [#]_ - a type designated as ``string()``
-- the **number of soda cans it stores initially**, as a positive integer (ex: 100), of type ``can_count()`` [#]_
-- the **unitary cost of the soda cans** that it sells, as a floating-point cost in euro (ex: 1.2 euro per can), of type ``amount()`` [#]_
+- its **name**, as a character string (e.g. ``"My soda machine"``) [#]_ - a type designated as ``string()``
+- the **number of soda cans it stores initially**, as a positive integer (e.g. 100), of type ``can_count()`` [#]_
+- the **unitary cost of the soda cans** that it sells, as a floating-point cost in euro (e.g. 1.2 euro per can), of type ``amount()`` [#]_
 
 
 .. [#] Naming instances is useful to help understanding the results and the simulation traces that they may produce.
@@ -427,16 +427,16 @@ Construction Parameters for a Thirsty Customer
 
 As for customers, we mentioned that in our simulation there were two kinds of them; indeed we consider that there are:
 
-- "deterministic" customers, which are thirsty again after a constant duration (ex: 15 minutes after having drunk)
-- "stochastic" customers, whose repletion duration is determined by a random law in order to illustrate their use (ex: the duration will be drawn from an exponential law of rate parameter ``lambda=2.2``)
+- "deterministic" customers, which are thirsty again after a constant duration (e.g. 15 minutes after having drunk)
+- "stochastic" customers, whose repletion duration is determined by a random law in order to illustrate their use (e.g. the duration will be drawn from an exponential law of rate parameter ``lambda=2.2``)
 
 
 So a **deterministic thirsty customer** instance can be defined from following construction parameters:
 
-- his **name**, as a character string (ex: ``"John"``) - a ``string()``
+- his **name**, as a character string (e.g. ``"John"``) - a ``string()``
 - the **vending machine he knows**, as an instance reference [#]_ - a type designated as ``class_Actor:actor_pid()``, which is actually an alias for ``pid()``; we see here that we consider that such a customer knows exactly one vending machine - neither none, nor multiple ones (we would have defined in this case a list of PIDs)
-- his **repletion duration**, i.e. how soon, after having drunk a soda can, he will feel thirsty again (ex: exactly 2 minutes - he is deterministic), of type ``duration()`` [#]_
-- his **budget**, i.e. how much money he initially has in his pocket (ex: ``35.0 euros``) - of type ``amount()``
+- his **repletion duration**, i.e. how soon, after having drunk a soda can, he will feel thirsty again (e.g. exactly 2 minutes - he is deterministic), of type ``duration()`` [#]_
+- his **budget**, i.e. how much money he initially has in his pocket (e.g. ``35.0 euros``) - of type ``amount()``
 
 
 .. [#] An instance must know another instance ("have a reference onto it") in order to interact with it ("send a message to it"). Technically, a reference onto another model instance is named here an ``Actor PID``, or ``PID`` (shorthand for *Process Identifier*, of type ``pid()``). Actually we have ``-type class_Actor:actor_pid() :: pid()``.
@@ -492,15 +492,15 @@ In a few words, an Erlang program is made of several (Erlang) processes that run
 WOOPER
 ......
 
-Erlang thus provides an excellent **multi-agent platform**, on top of which we added a thin layer named `WOOPER <http://ceylan.sourceforge.net/main/documentation/wooper/>`_, which provides the language with **object-oriented capabilities**: WOOPER allows to define *classes* that can inherit from others (ex: the ``Cat`` class is a specialisation of the ``Animal`` class), whose state is defined thanks to a set of attributes (ex: a cat may have an ``age`` attribute, of type positive integer, and a ``name`` attribute, of type string), and that can define methods (i.e. class-specific, parametrised signals that a class instance can receive and that will trigger operations based on its state ; ex: ``getAge/1``, ``meow/1``, ``declareBirthday/2``).
+Erlang thus provides an excellent **multi-agent platform**, on top of which we added a thin layer named `WOOPER <http://ceylan.sourceforge.net/main/documentation/wooper/>`_, which provides the language with **object-oriented capabilities**: WOOPER allows to define *classes* that can inherit from others (e.g. the ``Cat`` class is a specialisation of the ``Animal`` class), whose state is defined thanks to a set of attributes (e.g. a cat may have an ``age`` attribute, of type positive integer, and a ``name`` attribute, of type string), and that can define methods (i.e. class-specific, parametrised signals that a class instance can receive and that will trigger operations based on its state ; e.g. ``getAge/1``, ``meow/1``, ``declareBirthday/2``).
 
 
 Sim-Diasca
 ..........
 
-Sim-Diasca has then been added on top of WOOPER, turning a concurrent, object-oriented multi-agent platform into a **simulation engine** for complex systems: the general simulation infrastructure has been defined (ex: simulation cases, models, scenarios, probes), and key services have been implemented (like scheduling, interaction support, instance life cycle, loading of the initial state, trace management, result management, deployment, load-balancing).
+Sim-Diasca has then been added on top of WOOPER, turning a concurrent, object-oriented multi-agent platform into a **simulation engine** for complex systems: the general simulation infrastructure has been defined (e.g. simulation cases, models, scenarios, probes), and key services have been implemented (like scheduling, interaction support, instance life cycle, loading of the initial state, trace management, result management, deployment, load-balancing).
 
-The engine takes care of the full technical plumbing needed (ex: proper reordering of the actor messages so that simulation properties are respected), hence Sim-Diasca users just have to comply with the engine's conventions and define their domain-specific simulation elements.
+The engine takes care of the full technical plumbing needed (e.g. proper reordering of the actor messages so that simulation properties are respected), hence Sim-Diasca users just have to comply with the engine's conventions and define their domain-specific simulation elements.
 
 As a result, models can be defined based on a very small, simple subset of the Erlang language. Each model will be a child class [#]_ of the ``class_Actor`` abstract class. Typically each model will define the attributes that make up for its state, the actor methods it supports, and at least one constructor. Of course a given model can inherit from another, allowing for a flexible model hierarchy.
 
@@ -567,12 +567,12 @@ Actually, even if the implementation of the models is not known yet, we can alre
 
 We must just know that:
 
-- initial instances must be created by using the ``class_Actor:create_initial_actor/2`` static method, whose first parameter is the name of the class of the instance to create (ex: ``class_Incinerator``), and whose second one is the (ordered) list of the construction parameters for that upcoming instance
+- initial instances must be created by using the ``class_Actor:create_initial_actor/2`` static method, whose first parameter is the name of the class of the instance to create (e.g. ``class_Incinerator``), and whose second one is the (ordered) list of the construction parameters for that upcoming instance
 - in Erlang:
 
   - comments start with the ``%`` character
-  - as mentioned, a variable name starts with a capital letter (ex: ``MyVariable``) but prefixing it by an underscore (ex: ``_MyVariable``) makes it a mute variable, i.e. a variable that will be ignored by the compiler - so specifying it just serves documentation purposes
-  - a list is denoted by brackets, and may not be homogeneous (ex: ``MyList=["hello",42]``)
+  - as mentioned, a variable name starts with a capital letter (e.g. ``MyVariable``) but prefixing it by an underscore (e.g. ``_MyVariable``) makes it a mute variable, i.e. a variable that will be ignored by the compiler - so specifying it just serves documentation purposes
+  - a list is denoted by brackets, and may not be homogeneous (e.g. ``MyList=["hello",42]``)
 
 
 These programmatic creations translate as:
@@ -621,7 +621,7 @@ Thus a user knowing that by design a set of instances will be tightly coupled (f
 
 Here, at least another initial instance should be created with ``gimme_some_shelter`` for this hint to be useful.
 
-.. [#] An `atom <http://erlang.org/doc/reference_manual/data_types.html#id64703>`_ is an Erlang datatype that allows to define a symbolic constant. Typically an atom begins with a lower-case letter (as opposed to variables). Ex: ``hello`` and ``class_Cat`` are atoms.
+.. [#] An `atom <http://erlang.org/doc/reference_manual/data_types.html#id64703>`_ is an Erlang datatype that allows to define a symbolic constant. Typically an atom begins with a lower-case letter (as opposed to variables). For example ``hello`` and ``class_Cat`` are atoms.
 
 
 
@@ -690,17 +690,17 @@ Instance creation has been discussed, and we saw how actors (model instances) sh
 
 As mentioned in our mini-ontology about simulation (see chapter 3 of the *Sim-Diasca Technical Manual*), the overall simulated world is the union of the target system and of its context.
 
-While the target system as a whole (ex: a city) is described based on the various models involved (ex: buildings, roads, people), in a simulation this target system might have to be evaluated on par with a **context** that may interact with it (ex: the country surrounding that city, the weather system over its districts, the mayor and his team).
+While the target system as a whole (e.g. a city) is described based on the various models involved (e.g. buildings, roads, people), in a simulation this target system might have to be evaluated on par with a **context** that may interact with it (e.g. the country surrounding that city, the weather system over its districts, the mayor and his team).
 
 How shall this context be described, initialised and evaluated then? The good news is that if, semantically, the target system and its context are different, technically they have to be managed the same, notably to preserve simulation properties.
 
 Knowing that the context is made of **scenarios** exactly like the target system is made of models, creating the context (which, in the general case, can be disaggregated, can have a state, can interact with its parts and with the target system) is to be done exactly as shown previously with the models.
 
-So multiple scenarios may apply (ex: regarding weather, pollution, population) and multiple instances of them can coexist concurrently (ex: one weather cell per spatial subdivision of the city).
+So multiple scenarios may apply (e.g. regarding weather, pollution, population) and multiple instances of them can coexist concurrently (e.g. one weather cell per spatial subdivision of the city).
 
 For example, like we defined ``class_SodaVendingMachine`` we could define ``class_CanCostScenario``, an horrible scenario that would reproduce a creeping inflation and would make the price of soda cans steadily increase over time.
 
-An instance of such scenario would be created from two construction parameters, the (supposedly constant) monthly cost increase (ex: 7%, hence ``0.07``) and the list of the soda vending machines that would be affected by this inflation.
+An instance of such scenario would be created from two construction parameters, the (supposedly constant) monthly cost increase (e.g. 7%, hence ``0.07``) and the list of the soda vending machines that would be affected by this inflation.
 
 Then, taking a programmatic creation as an example, we could have:
 
@@ -810,7 +810,7 @@ The engine must of course have also some way of determining when the evaluation 
 
 Multiple criteria can be defined, the first that applies will be the one to actually end the simulation.
 
-Typically the models and scenarios may decide of the termination (ex: "stop when we reach this total cost or this level of pollution", or "stop when its combination of events happens").
+Typically the models and scenarios may decide of the termination (e.g. "stop when we reach this total cost or this level of pollution", or "stop when its combination of events happens").
 
 The simulation case can also define such a criterion, typically to mark an upper bound to the duration of the simulation.
 
@@ -845,11 +845,11 @@ The simulation can be started simply by requesting the root time manager to do s
 
 This message will therefore trigger the ``start/1`` oneway method of the root time manager.
 
-By the way, one may wonder why this call (i.e. the message sending) visibly does not involve any parameter (ex: we have ``BPid ! myMethod``, not ``BPid ! {myMethod,["hello",42]}``) yet triggers ``start/1`` (whereas we could expect it would trigger ``start/0``).
+By the way, one may wonder why this call (i.e. the message sending) visibly does not involve any parameter (e.g. we have ``BPid ! myMethod``, not ``BPid ! {myMethod,["hello",42]}``) yet triggers ``start/1`` (whereas we could expect it would trigger ``start/0``).
 
 The reason is that the Erlang process corresponding to a WOOPER instance keeps internally the state of this instance in a term (of type ``wooper:state()`` [#]_), and that this state is added as first argument when calling a method.
 
-.. [#] A ``wooper:state()`` variable is actually an associative table whose keys are the names of the attributes of the instances, and whose values are the corresponding values (ex: like a dictionary in Python).
+.. [#] A ``wooper:state()`` variable is actually an associative table whose keys are the names of the attributes of the instances, and whose values are the corresponding values (e.g. like a dictionary in Python).
 	   For example, if a cat instance is defined by his name and fur color, a cat state could comprise two name/value attribute pairs, such as ``{name,"Felix"}`` and ``{fur_color,black}``.
 
 
@@ -904,7 +904,7 @@ The corresponding process will then be notified if/when the simulation successfu
 
 Indeed, when the simulation stops, the root time manager notifies all simulation listeners of it by sending them a ``simulation_stopped`` message.
 
-The simulation case is not a WOOPER instance (ex: its module name, ``soda_loading_test``, is not prefixed with ``class_``), hence Erlang messages are not intercepted by WOOPER and managed as method calls. Therefore the case can performs a standard Erlang receive to block and wait for such a message to arrive and, here, send a trace message and continue with its execution.
+The simulation case is not a WOOPER instance (e.g. its module name, ``soda_loading_test``, is not prefixed with ``class_``), hence Erlang messages are not intercepted by WOOPER and managed as method calls. Therefore the case can performs a standard Erlang receive to block and wait for such a message to arrive and, here, send a trace message and continue with its execution.
 
 
 
@@ -946,7 +946,7 @@ What must be specifically defined for a given model?
 - its **probe usage**, i.e. how it should produce results
 
 
-State and behaviour are closely interdependent: the behaviour uses the state to decide what the instance is to do next (ex: if a cat is hungry, it may decide to meow), while the state is reciprocally necessary to implement the behaviour (ex: if a cat can remember where its food usually is, it may first get there to see whether there are some).
+State and behaviour are closely interdependent: the behaviour uses the state to decide what the instance is to do next (e.g. if a cat is hungry, it may decide to meow), while the state is reciprocally necessary to implement the behaviour (e.g. if a cat can remember where its food usually is, it may first get there to see whether there are some).
 
 As a result they must be defined mostly together.
 
@@ -986,7 +986,7 @@ The two models are interacting, thus the two FSMs will interact as well, based o
 
 No inter-customer exchange is shown here: as an exercise, we could imagine that an impoverished customer may try to borrow money from another he knows.
 
-So, from each of these FSMs, we can derive the behaviour of the corresponding model, from its initial logical state to all others. Transitions are clearly related to internal changes (ex: the thirst of a customer builds over time - a.k.a. spontaneous behaviour) and external changes (denoted as the receiving of an actor message, like when a customer is notified of the price of a can of the vending machine.
+So, from each of these FSMs, we can derive the behaviour of the corresponding model, from its initial logical state to all others. Transitions are clearly related to internal changes (e.g. the thirst of a customer builds over time - a.k.a. spontaneous behaviour) and external changes (denoted as the receiving of an actor message, like when a customer is notified of the price of a can of the vending machine.
 
 
 
@@ -1010,9 +1010,9 @@ Triggered Behaviour
 
 Regardless of its spontaneous behaviour, a model instance can also develop a triggered behaviour, i.e. one that is specifically activated by other model instances, i.e. by the receiving of a corresponding actor message.
 
-More precisely, any model (ex: a cat one) can declare any number of signals (named actor oneways) that it may understand.
+More precisely, any model (e.g. a cat one) can declare any number of signals (named actor oneways) that it may understand.
 
-For example, a cat may be stroked, brushed, yelled at, fed, etc. Each signal (ex: ``onBeingStroked``) will lead to an actor oneway to be defined, to determine what the cat would do in this occasion. A cat being stroked can meow, purr, age twice as fast, explode, etc. depending on how we model it.
+For example, a cat may be stroked, brushed, yelled at, fed, etc. Each signal (e.g. ``onBeingStroked``) will lead to an actor oneway to be defined, to determine what the cat would do in this occasion. A cat being stroked can meow, purr, age twice as fast, explode, etc. depending on how we model it.
 
 The definition of the function implementing an actor oneway includes at least two parameters: the first one specifies the state at which the instance receiving this message is, while the last parameter is a reference (a PID) onto the model instance which sent this signal. Between these two, any number of extra parameters can be listed (possibly none), so that that the signal can be fully described.
 
@@ -1060,7 +1060,7 @@ That's it!
 
 Let's explain a bit further each of these terms.
 
-Updating the state means having that ``actSpontaneous/1`` or the triggered actor oneway (ex: ``getCan/2``) change the value of any attribute set in the state.
+Updating the state means having that ``actSpontaneous/1`` or the triggered actor oneway (e.g. ``getCan/2``) change the value of any attribute set in the state.
 
 So a deterministic thirsty customer having succeeded in buying a can should have some way of keeping track of:
 
@@ -1136,7 +1136,7 @@ More real-life, complex examples can also be found in the ``City-Example`` case 
 
 .. [#] Located in ``mock-simulators/city-example/src``.
 
-These examples show how, in general (for spontaneous scheduling as well as for interactions) model-level durations can be expressed in their most general form (ex: as mere seconds) yet can be easily converted in actual simulation ticks, in order to implement any kind of scheduling.
+These examples show how, in general (for spontaneous scheduling as well as for interactions) model-level durations can be expressed in their most general form (e.g. as mere seconds) yet can be easily converted in actual simulation ticks, in order to implement any kind of scheduling.
 
 A special case is the request to schedule the next tick (``scheduleNextSpontaneousTick/1``), which may convey in some cases the notion of "immediate next step", rather than a duration as such.
 
@@ -1150,14 +1150,14 @@ Interaction
 
 Unless mentioned otherwise, we consider that an interaction is to obey a specific timing.
 
-For example, we can consider that communications (ex: a customer speaking to another) are instantaneous, perceptions (ex: a customer looking at a machine to read the cost of one of its cans, supposedly displayed on the machine) as well, but that other actions (ex: a machine processing a can order) last for some model-specific duration (ex: 800 ms of virtual time may elapse before a valid purchase results in a can being delivered to the corresponding customer).
+For example, we can consider that communications (e.g. a customer speaking to another) are instantaneous, perceptions (e.g. a customer looking at a machine to read the cost of one of its cans, supposedly displayed on the machine) as well, but that other actions (e.g. a machine processing a can order) last for some model-specific duration (e.g. 800 ms of virtual time may elapse before a valid purchase results in a can being delivered to the corresponding customer).
 
 The previous section showed how such timings should be expressed and used.
 
 .. Note::
   As a rule of thumb: in a model, one should avoid expressing durations directly in terms of ticks; models shall be defined irrespective of any simulation frequency, as they may be involved in various simulations with various temporalities (as dictated by simulation cases).
 
-  One should thus use higher-level durations (ex: expressed in seconds, or hours, etc.) and convert them in ticks only at runtime (possibly from constructors). All kinds of timings (for scheduling and interactions alike) can then be devised, knowing that, internally to models, ticks (as tick offsets) are the time units of choice for all processings.
+  One should thus use higher-level durations (e.g. expressed in seconds, or hours, etc.) and convert them in ticks only at runtime (possibly from constructors). All kinds of timings (for scheduling and interactions alike) can then be devised, knowing that, internally to models, ticks (as tick offsets) are the time units of choice for all processings.
 
 
 
@@ -1197,7 +1197,7 @@ Let's discuss of these elements in turn.
 Command Files
 =============
 
-They allow to store the most common commands that are issued by the user in the context of this case. Typically, rather than typing the full command to executed said simulation, the user relies on a makefile (that we prefer to name ``GNUmakefile``) that associated to a make target (ex: ``batch``) the actual command to be run (ex: ``make city_benchmarking_run CMD_LINE_OPT="--batch"``).
+They allow to store the most common commands that are issued by the user in the context of this case. Typically, rather than typing the full command to executed said simulation, the user relies on a makefile (that we prefer to name ``GNUmakefile``) that associated to a make target (e.g. ``batch``) the actual command to be run (e.g. ``make city_benchmarking_run CMD_LINE_OPT="--batch"``).
 
 As a result, the user may simply type from the command-line::
 
@@ -1249,7 +1249,7 @@ For example, spatialised simulations have many geographic operations to perform,
 These specific notions are not known of generic, lean and mean engines such as Sim-Diasca. Two main approaches allow to alleviate this issue:
 
 - a bit like for the custom probes, already-existing, third party software elements can be reused to provide lacking services; for a spatialised simulation it would typically involve integrating a `GIS <https://en.wikipedia.org/wiki/Geographic_information_system>`_ (*Geographic information system*), possibly accessed to thanks to REST calls made from the models
-- specialised layers can be defined between Sim-Diasca and the targeted models; for example, for the CLEVER project, a telecom layer was built on top of Sim-Diasca, providing base classes for all the related business-specific models (ex: the layer was comprising notions of communicating device, network interfaces, packet router, etc.); then the domain-specific models could be defined more easily by re-using that adaptation layer, and could then directly manipulate bandwith, latency, routing elements, etc.
+- specialised layers can be defined between Sim-Diasca and the targeted models; for example, for the CLEVER project, a telecom layer was built on top of Sim-Diasca, providing base classes for all the related business-specific models (e.g. the layer was comprising notions of communicating device, network interfaces, packet router, etc.); then the domain-specific models could be defined more easily by re-using that adaptation layer, and could then directly manipulate bandwith, latency, routing elements, etc.
 
 .. comment Was: `CLEVER project <http://cleveronline.org/>`
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -374,7 +374,7 @@ prepare_for_execution( AppNames, BaseDir, BlacklistedApps )
 %
 -spec prepare_for_exec( [ application_name() ], abs_directory_path(),
 			[ application_name() ], [ application_name() ], app_table() ) ->
-								{ [ application_name() ], app_table() }.
+				{ [ application_name() ], app_table() }.
 prepare_for_exec( _AppNames=[], _AbsBaseDir, _BlacklistedApps, AccDeps,
 				  AppTable ) ->
 	% Merges all prerequisites, in their (currently bottom-up) order (duplicates
@@ -661,7 +661,7 @@ try_last_locations( AppName, AppFilename, AbsBaseDir ) ->
 		{ error, bad_name } ->
 			trace_bridge:error_fmt( "Application '~ts' not found in any of "
 				"the supported locations.", [ AppName ] ),
-			throw( { application_not_found, AppName,
+			throw( { application_not_found, AppName, AppFilename,
 					 text_utils:ensure_string( AbsBaseDir ) } );
 
 		AbsStdPath ->
@@ -669,7 +669,7 @@ try_last_locations( AppName, AppFilename, AbsBaseDir ) ->
 
 			StdAppPath = file_utils:join( StdEbinDir, AppFilename ),
 
-			case file_utils:is_existing_file(StdAppPath ) of
+			case file_utils:is_existing_file( StdAppPath ) of
 
 				true ->
 					?info_fmt( "Using, for the application '~ts', "
@@ -688,7 +688,8 @@ try_last_locations( AppName, AppFilename, AbsBaseDir ) ->
 						"'make rebar3-compile' at the root of the ~ts source "
 						"tree for a more relevant testing).",
 						[ AppName, AbsBaseDir ] ),
-					throw( { otp_app_file_not_found, AppName, StdAppPath } )
+					throw( { otp_app_file_not_found, AppName, AppFilename,
+							 StdAppPath } )
 
 			end
 
@@ -977,7 +978,6 @@ start_application( AppName, RestartType, BlacklistedApps ) ->
 	case lists:member( AppName, BlacklistedApps ) of
 
 		false ->
-
 			case application:start( AppName, RestartType ) of
 
 				ok ->
@@ -1195,7 +1195,7 @@ get_supervisor_settings( RestartStrategy, _ExecutionTarget=production ) ->
 -spec get_child_supervisor_settings( supervisor_settings() ) ->
 												supervisor_settings().
 get_child_supervisor_settings(
-				ParentSupSettings=#{ intensity := ParentIntensity } ) ->
+		ParentSupSettings=#{ intensity := ParentIntensity } ) ->
 
 	ChildIntensity = max( ParentIntensity div 2, 1 ),
 

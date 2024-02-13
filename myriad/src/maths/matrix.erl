@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -349,7 +349,7 @@ set_element( R, C, Value, Matrix ) ->
 %
 -spec transpose( matrix() ) -> matrix().
 %transpose( _M=[ _FirstRow=[ FirstElem | OtherElems ] | OtherRows ] ) ->
-%	[ [ E | || E <- FirstRow ].
+%   [ [ E | || E <- FirstRow ].
 transpose( M ) ->
 	transpose( M, _AccTranspose=[] ).
 
@@ -565,8 +565,8 @@ compute_row_cofactors( M, _Row=[ _C | T ], CurrentRowIndex, CurrentColumnIndex,
 % invertible (that is iff its determinant is non-null), otherwise returns
 % undefined.
 %
-% Note: often the inverse can be obtained differently (ex: by applying reverse
-% operations starting from identity) or computed differently (ex: by Gaussian
+% Note: often the inverse can be obtained differently (e.g. by applying reverse
+% operations starting from identity) or computed differently (e.g. by Gaussian
 % elimination), or can be replaced by a mere lower–upper (LU) decomposition.
 %
 -spec inverse( square_matrix() ) -> maybe( square_matrix() ).
@@ -602,9 +602,9 @@ remove_row( RowIndex, Matrix ) ->
 -spec remove_column( column_index(), matrix() ) -> matrix().
 remove_column( ColumnIndex, Matrix ) ->
 	[ begin
-		  { _Coord, ShrunkRow } =
-				list_utils:extract_element_at( R, ColumnIndex ),
-		  ShrunkRow
+		{ _Coord, ShrunkRow } =
+			list_utils:extract_element_at( R, ColumnIndex ),
+		ShrunkRow
 	  end || R <- Matrix ].
 
 
@@ -706,8 +706,8 @@ check( M=[ FirstRow | OtherRows ] ) ->
 	vector:check( FirstRow ),
 	RowElemCount = length( FirstRow ),
 	[ begin
-			RowElemCount = length( R ),
-			vector:check( R )
+		RowElemCount = length( R ),
+		vector:check( R )
 	  end || R <- OtherRows ],
 	M.
 

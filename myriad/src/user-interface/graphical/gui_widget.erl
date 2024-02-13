@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -35,9 +35,6 @@
 -module(gui_widget).
 
 
-% Usage notes:
-%
-
 
 % Could include wx:null(), i.e. a #wx_ref{ref=0, type=wx}:
 % (probably cannot be opaque because of the union)
@@ -64,9 +61,10 @@
 
 
 
--export([ destruct/1, destruct/2,
+-export([ destruct/1, destruct/2, destruct_direct/1,
 
-		  set_sizer/2, fit_to_sizer/2, layout/1,
+		  set_sizer/2, fit_to_sizer/2, set_and_fit_to_sizer/2,
+		  layout/1,
 
 		  set_foreground_color/2, set_background_color/2,
 
@@ -140,8 +138,19 @@ destruct( Widget, GUIEnvPid ) ->
 
 	end,
 
-	wxWindow:destroy( Widget ).
+	destruct_direct( Widget ).
 
+
+
+% @doc Destructs the specified widget directly and basically, with no
+% synchronisation involved.
+%
+% Note however that this corresponds to the decrementing of its reference count,
+% so an actual destruction may not happen immediately.
+%
+-spec destruct_direct( widget() ) -> void().
+destruct_direct( Widget ) ->
+	wxWindow:destroy( Widget ).
 
 
 
@@ -171,6 +180,19 @@ set_sizer( Widget, Sizer ) ->
 -spec fit_to_sizer( widget(), sizer() ) -> void().
 fit_to_sizer( Widget, Sizer ) ->
 	wxSizer:fit( Sizer, Widget ).
+
+
+% @doc Associates the specified sizer to the specified window, and sets the size
+% and minimal size of the window accordingly.
+%
+-spec set_and_fit_to_sizer( widget(), sizer() ) -> void().
+set_and_fit_to_sizer( Canvas={ myriad_object_ref, myr_canvas, _CanvasId },
+					  Sizer ) ->
+	set_sizer( Canvas, Sizer ),
+	fit_to_sizer( Canvas, Sizer );
+
+set_and_fit_to_sizer( Widget, Sizer ) ->
+	wxWindow:setSizerAndFit( Widget, Sizer ).
 
 
 
@@ -242,9 +264,16 @@ set_font( Widget, Font, _DestructFont=false ) ->
 % wxWindow, wxPanel, etc.:
 set_font( Widget={ wx_ref, _Id, _AnyWxWidgetLike, _State }, Font, Color,
 		  _DestructFont=false ) ->
-	wxWindow:setFont( Widget, Font ),
-	wxWindow:setForegroundColour( Widget, gui_color:get_color( Color ) ).
 
+	%trace_utils:debug_fmt( "Setting for widget ~w font to ~w (color: ~w).",
+	%                       [ Widget, Font, Color ] ),
+
+	wxWindow:setFont( Widget, Font ),
+	wxWindow:setForegroundColour( Widget, gui_color:get_color( Color ) );
+
+set_font( Widget, Font, Color, _DestructFont=true ) ->
+	set_font( Widget, Font, Color, _DestructFnt=false ),
+	gui_font:destruct( Font ).
 
 
 % @doc Attaches a tooltip to the specified widget.
@@ -267,12 +296,14 @@ set_tooltip( Widget, Label ) ->
 
 
 
-% @doc Synchronises the specified widget with the MyriadGUI loop, to ensure that
+% @doc Synchronises the specified widget to the MyriadGUI loop, to ensure that
 % no past operation is still pending at its level.
 %
-% Useful if there exists some means of interacting with it directly (e.g. thanks
-% to an OpenGL NIF) that could create a race condition (e.g. presumably a
-% message-based resizing immediately followed by a direct OpenGL rendering).
+% Useful if there exists some means of interacting with the widget directly
+% (e.g. an OpenGL canvas, thanks to an OpenGL NIF) that could create a race
+% condition (e.g. presumably a message-based resizing immediately followed by a
+% direct OpenGL rendering: the rendering may actually happen before the
+% resizing).
 %
 % See gui_opengl_{minimal,2D}_test:on_main_frame_resize/1 for further details;
 % see also the synchroniseWithCaller message supported by the MyriadGUI loop.

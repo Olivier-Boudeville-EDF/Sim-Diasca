@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2023 Olivier Boudeville
+% Copyright (C) 2014-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -88,12 +88,16 @@
 
 % Local shorthands:
 
+-type file_name() :: file_utils:file_name().
+
 -type ast() :: ast_base:ast().
 -type file_loc() :: ast_base:file_loc().
 
 -type module_info() :: ast_info:module_info().
 -type module_name() :: basic_utils:module_name().
 -type ast_expression() :: ast_expression:ast_expression().
+-type ast_clause() :: ast_clause:ast_clause().
+
 -type ast_transforms() :: ast_transform:ast_transforms().
 
 -type ast_transform_table() :: ast_transform:ast_transform_table().
@@ -117,7 +121,7 @@
 % module
 %
 %     As a result, one's code source may include 'MyTable = table:new(), ...' or
-%     '-type my_type() :: [ { float(), table() } ].' and have them correctly
+%     '-type my_type() :: [{float(), table()}].' and have them correctly
 %     translated
 %
 % - replacing, in type specifications, any mention to a pseudo-builtin,
@@ -143,32 +147,48 @@
 -define( default_table_type, map_hashtable ).
 
 
--export([ run_standalone/1, parse_transform/2, apply_myriad_transform/2,
+-export([ run_standalone/1, run_standalone/2,
+		  parse_transform/2, apply_myriad_transform/2,
 		  transform_module_info/1 ]).
 
 
 
 % @doc Runs the Myriad parse transform defined here in a standalone way (that is
-% without being triggered by the usual, integrated compile process).
+% without being triggered by the usual, integrated compile process), with no
+% specific option.
 %
 % This allows to benefit from all compilation error and warning messages,
 % whereas they are seldom available from a code directly run as a parse
 % transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
 % a module is not found).
 %
--spec run_standalone( file_utils:file_name() ) -> { ast(), module_info() }.
+-spec run_standalone( file_name() ) -> { ast(), module_info() }.
 run_standalone( FileToTransform ) ->
+	run_standalone( FileToTransform, _Options=[] ).
 
+
+% @doc Runs the Myriad parse transform defined here in a standalone way (that is
+% without being triggered by the usual, integrated compile process), with the
+% specified options.
+%
+% This allows to benefit from all compilation error and warning messages,
+% whereas they are seldom available from a code directly run as a parse
+% transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
+% a module is not found).
+%
+-spec run_standalone( file_name(), parse_transform_options() ) ->
+										{ ast(), module_info() }.
+run_standalone( FileToTransform, Options ) ->
 	AST = ast_utils:erl_to_ast( FileToTransform ),
 
 	% Options like : report_warnings, {d,myriad_debug_mode}, beam,
 	% report_errors, {cwd,"X"}, {outdir,Y"}, {i,"A"},{i,"B"}, debug_info, etc.
-	% are probably not all set, but it is unlikely to be a problem here.
+	% may probably not all set, but it is unlikely to be a problem here.
 	%
 	% (anyway, for example defining a non-exported function in the target module
 	% leads to a "unused function" warning)
 	%
-	apply_myriad_transform( AST, _Options=[] ).
+	apply_myriad_transform( AST, Options ).
 
 
 
@@ -180,9 +200,9 @@ run_standalone( FileToTransform ) ->
 % like in:
 %
 % Options = [report_warnings, {d,myriad_debug_mode}, beam, report_errors,
-%			{cwd,"[...]/foo"}, {outdir,"[...]/foo"}, {i,"[...]/foo/../bar"},
+%           {cwd,"[...]/foo"}, {outdir,"[...]/foo"}, {i,"[...]/foo/../bar"},
 %           [...]
-%			{parse_transform,myriad_parse_transform}, debug_info,
+%           {parse_transform,myriad_parse_transform}, debug_info,
 %           warnings_as_errors, warn_unused_import, warn_obsolete_guards,
 %           warn_shadow_vars, warn_export_vars, warn_export_all,
 %           encrypt_debug_info, {debug_info_key,"Ceylan-Myriad"} ]
@@ -220,7 +240,7 @@ parse_transform( InputAST, Options ) ->
 apply_myriad_transform( InputAST, Options ) ->
 
 	%ast_utils:display_debug( "  (applying parse transform '~p')",
-	%						  [ ?MODULE ] ),
+	%                         [ ?MODULE ] ),
 
 	%ast_utils:display_debug(
 	%           "~n## INPUT ####################################" ),
@@ -241,6 +261,12 @@ apply_myriad_transform( InputAST, Options ) ->
 	BaseModuleInfo = ast_info:extract_module_info_from_ast( InputAST ),
 
 	WithOptsModuleInfo = ast_info:interpret_options( Options, BaseModuleInfo ),
+
+	%ast_utils:display_debug( "Compilation options are: ~ts.",
+	%   [ ast_info:compilation_options_to_string(
+	%		_CompileTable=WithOptsModuleInfo#module_info.compilation_options,
+	%		_CompOptDefs=WithOptsModuleInfo#module_info.compilation_option_defs,
+	%	   _DoIncludeForms=false ) ] ),
 
 	%ast_info:write_module_info_to_file( WithOptsModuleInfo,
 	%                                    "Input-module_info.txt" ),
@@ -280,7 +306,7 @@ apply_myriad_transform( InputAST, Options ) ->
 
 
 
-% @doc Transforms (at the Myriad level) specified module information.
+% @doc Transforms (at the Myriad level) the specified module information.
 -spec transform_module_info( module_info() ) ->
 								{ module_info(), ast_transforms() }.
 transform_module_info( ModuleInfo ) when is_record( ModuleInfo, module_info ) ->
@@ -366,16 +392,7 @@ get_myriad_ast_transforms_for(
 	LocalCallTransformTable = get_local_call_transforms(),
 	RemoteCallTransformTable = get_remote_call_transforms(),
 
-	ASTTransformTable = get_ast_global_transforms( DesiredTableType ),
-
-	% Finally, we want to read any tokens specified by the user in order to
-	% drive the activation of conditional code:
-	%
-	TokenTable = cond_utils:get_token_table_from( CompileOptTable ),
-
-	% Uncomment to see all known tokens:
-	%ast_utils:display_debug( "Token table:~n~ts",
-	%                         [ ?table:to_string( TokenTable ) ] ),
+	DisableLCO = shall_lco_be_disabled( CompileOptTable ),
 
 	TargetModuleName = case ModuleEntry of
 
@@ -386,6 +403,22 @@ get_myriad_ast_transforms_for(
 			ModName
 
 	end,
+
+	% Too serious consequences not to be advertised:
+	DisableLCO andalso ast_utils:display_warning(
+		"LCO will be disabled for this '~ts' module.", [ TargetModuleName ] ),
+
+	ASTTransformTable = get_ast_global_transforms( DesiredTableType,
+		_DisableLCO=shall_lco_be_disabled( CompileOptTable ) ),
+
+	% Finally, we want to read any tokens specified by the user in order to
+	% drive the activation of conditional code:
+	%
+	TokenTable = cond_utils:get_token_table_from( CompileOptTable ),
+
+	% Uncomment to see all known tokens:
+	%ast_utils:display_debug( "Token table:~n~ts",
+	%                         [ ?table:to_string( TokenTable ) ] ),
 
 	% Returns an overall description of these requested AST transformations:
 	#ast_transforms{ local_types=LocalTypeTransformTable,
@@ -431,11 +464,20 @@ get_actual_table_type( ParseAttributeTable ) ->
 
 
 
+% @doc Determines whether the disabling of Last Call Optimisation is requested.
+shall_lco_be_disabled( CompileOptTable ) ->
+
+	DebugDefines = ?table:get_value_with_default( _DefinesK='d', _Default=[],
+												  CompileOptTable ),
+
+	lists:member( myriad_disable_lco, DebugDefines ).
+
+
 % @doc Returns the table specifying the transformation of the local types.
 %
 % Regarding local types, we want to replace:
 %
-% - void() with basic_utils:void() (ie prefixed with basic_utils)
+% - void() with basic_utils:void() (i.e. prefixed with basic_utils)
 %
 % - maybe(T) with basic_utils:maybe(T)
 %
@@ -450,7 +492,7 @@ get_actual_table_type( ParseAttributeTable ) ->
 %
 % - table/N (e.g. table() or table(K,V)) with DesiredTableType/N (e.g.
 % DesiredTableType:DesiredTableType() or DesiredTableType:DesiredTableType(K,V))
-% (as if table() was a local, hence builtin, type)
+% (as if table() was a builtin type)
 %
 -spec get_local_type_transforms( module_name() ) ->
 									ast_transform:local_type_transform_table().
@@ -533,7 +575,11 @@ get_remote_call_transforms() ->
 
 
 
-% @doc Returns the table specifying the global transformations.
+% @doc Returns the table specifying the global transformations to be done on an
+% AST.
+%
+% If LCO is requested to be disabled, a corresponding (function
+% definition-level) transformation will be registered.
 %
 % We used to define a simple, direct transformation from 'table' to
 % DesiredTableType, however the addition of the cond_utils support led to have
@@ -543,8 +589,9 @@ get_remote_call_transforms() ->
 % the value of arguments (e.g. the specified token), since being just being
 % parametrised by an arity.
 %
--spec get_ast_global_transforms( module_name() ) -> ast_transform_table() .
-get_ast_global_transforms( DesiredTableType ) ->
+-spec get_ast_global_transforms( module_name(), boolean() ) ->
+										ast_transform_table().
+get_ast_global_transforms( DesiredTableType, DisableLCO ) ->
 
 	% Anonymous mute variables corresponding to in-file locations:
 	RemoteCallTransformFun = fun
@@ -888,15 +935,13 @@ get_ast_global_transforms( DesiredTableType ) ->
 					%ast_utils:display_debug( "Token '~p' defined, hence "
 					%    "injecting the 'production' expression ~p",
 					%    [ Token, ExprIfInDevMode ] ),
-					inject_expression( ExprIfProdMode, Transforms,
-									   FileLocFun );
+					inject_expression( ExprIfProdMode, Transforms, FileLocFun );
 
 				key_not_found ->
 					%ast_utils:display_debug( "Token '~p' not defined, hence "
 					%    "injecting the 'developement' expression ~p",
 					%    [ Token, ExprFormIfNotDef ] ),
-					inject_expression( ExprIfInDevMode, Transforms,
-									   FileLocFun )
+					inject_expression( ExprIfInDevMode, Transforms, FileLocFun )
 
 			end;
 
@@ -914,7 +959,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 		%
 		( _FileLocCall,
 		  _FunctionRef={ remote, _, {atom,_,cond_utils},
-						 {atom,_,switch_set_to} },
+							{atom,_,switch_set_to} },
 		  _Params=[ {atom,FileLocToken,Token}, TokenExprTableAsForm ],
 		  Transforms=#ast_transforms{ transformation_state=TokenTable } ) ->
 
@@ -973,7 +1018,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 		%
 		( _FileLocCall,
 		  _FunctionRef={ remote, _, {atom,_,cond_utils},
-						 {atom,_,switch_set_to} },
+							{atom,_,switch_set_to} },
 		  _Params=[ {atom,FileLocToken,Token}, TokenExprTableAsForm,
 					DefaultValueForm ],
 		  Transforms=#ast_transforms{ transformation_state=TokenTable } ) ->
@@ -982,7 +1027,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 
 			% Obtaining a list of {ValueForm, ExprForm}:
 			TokenExprTableAsList =
-						ast_generation:form_to_list( TokenExprTableAsForm ),
+				ast_generation:form_to_list( TokenExprTableAsForm ),
 
 			%ast_utils:display_debug( "Call to cond_utils:switch_set_to/3 "
 			%   "found, for token '~p', default value '~p' and "
@@ -1017,7 +1062,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 
 		( _FileLocCall,
 		  _FunctionRef={ remote, _, {atom,_,cond_utils},
-						 {atom,FileLocAssert,assert} },
+							{atom,FileLocAssert,assert} },
 		  _Params=[ ExpressionForm ],
 		  Transforms=#ast_transforms{ transformation_state=TokenTable } ) ->
 
@@ -1166,11 +1211,86 @@ get_ast_global_transforms( DesiredTableType ) ->
 	end,
 
 	% Returning a corresponding remote call transformation table:
-	?table:new( [ { _Trigger=call, RemoteCallTransformFun } ] ).
+	BaseTable = ?table:singleton( _FirstTrigger=call, RemoteCallTransformFun ),
+
+	case DisableLCO of
+
+		true ->
+			% We operate at the clause level (each ending with a call to an
+			% identity function):
+			%
+			?table:add_new_entry( _K=clause,
+				fun lco_disabling_clause_transform_fun/2, BaseTable );
+
+		false ->
+			BaseTable
+
+	end.
 
 
 
-% @doc Injects specified expression in AST.
+% @doc The transformation function in charge of disabling LCO (Last Call
+% Optimisation) by ending each local function call with a remote one to an
+% identity function.
+%
+-spec lco_disabling_clause_transform_fun( ast_clause(), ast_transforms() ) ->
+									{ ast_clause(), ast_transforms() }.
+% Not expected to happen:
+%lco_disabling_clause_transform_fun( _Clause={ 'clause', _FileLoc,
+%       _HeadPatternSequence, _GuardSequence, _BodyExprs=[] }, _Transforms ) ->
+%   throw( empty_body );
+
+lco_disabling_clause_transform_fun( _Clause={ 'clause', FileLoc,
+		HeadPatternSequence, GuardSequence, BodyExprs }, Transforms ) ->
+
+	% No list_utils:extract_last_element/1 available from here, so:
+	[ LastExpr | RevRestExprs ] = lists:reverse( BodyExprs ),
+
+	% Mere '_' are file locations:
+	NewBodyExprs = case LastExpr of
+
+		{ call, _, {remote, _, _ModExpr, _FunExpr}, _ArgsExpr } ->
+			%ast_utils:display_debug( "No change needed, clause already ends "
+			%   "with a remote call:~n ~p.~n", [ LastExpr ] ),
+			BodyExprs;
+
+		OtherExpr ->
+			% Not reusing FileLoc, as the beginning of that clause may be far
+			% before:
+			%
+			LastFileLoc = element( _Index=2, OtherExpr ),
+
+			NewLastExpr = { call, LastFileLoc, {remote, LastFileLoc,
+											{atom, LastFileLoc, basic_utils},
+											{atom, LastFileLoc, identity } },
+							[ OtherExpr ] },
+
+			%ast_utils:display_debug( "Clause not ending with a remote call, "
+			%   "adding one to an identity function:~n ~p.~n",
+			%   [ NewLastExpr ] ),
+
+			RevExprs = [ NewLastExpr | RevRestExprs ],
+
+			lists:reverse( RevExprs )
+
+	end,
+
+	NoLCOClause = { 'clause', FileLoc, HeadPatternSequence, GuardSequence,
+					NewBodyExprs },
+
+	% Now that LCO is disabled, let's apply the usual clause-level
+	% transformations:
+	%
+	ast_clause:transform_clause_default( NoLCOClause, Transforms ).
+
+% Not expected to happen:
+%lco_disabling_clause_transform_fun( UnmatchedClause, _Transforms ) ->
+%   throw( { unmatched_clause, UnmatchedClause } ).
+
+
+
+
+% @doc Injects the specified expression in AST.
 %
 % (helper)
 %
@@ -1236,13 +1356,7 @@ inject_match_expression( ExpressionForm, Transforms, FileLoc ) ->
 
 	% Now corresponds roughly to:
 	%
-	% case EXPR of
-	%	true ->
-	%		ok;
-	%	Other ->
-	%		throw( { assertion_failed, Other } )
-	% end.
-	%
+	% EXPR =:= true orelse throw( { assertion_failed, Other } )	%
 	% (no need to do more as the stacktrace with line numbers shall be output)
 
 	% We have to ensure that the name of the variable that we bind in the second
@@ -1268,8 +1382,8 @@ inject_match_expression( ExpressionForm, Transforms, FileLoc ) ->
 
 
 
-% @doc Finds in specified token-expression table the expression associated to
-% specified token value, and returns it.
+% @doc Finds in the specified token-expression table the expression associated
+% to the specified token value, and returns it.
 %
 find_expression_for( TokenValue, Token, FileLocToken,
 					 _TokenExprTableAsList=[] ) ->
@@ -1313,9 +1427,9 @@ find_expression_for( _TokenValue, Token, FileLocToken,
 
 
 
-% @doc Finds in specified token-expression table the expression associated to
-% specified token value (if referenced, otherwise tries with the specified
-% default value), and returns it.
+% @doc Finds in the specified token-expression table the expression associated
+% to the specified token value (if referenced, otherwise tries with the
+% specified default value), and returns it.
 %
 find_expression_for( TokenValue, DefaultValue, Token, FileLocToken,
 					 TokenExprTableAsList ) ->

@@ -27,7 +27,7 @@
 # unless the --daemon option is specified (in which case the log directory will
 # be the one from which this script is run):
 #
-# (then such VM may be stopped with echo "init:stop()." > "${write_pipe}")
+# (then such VM may be stopped with: echo "init:stop()." > "${write_pipe}")
 
 # Default is false (1):
 use_run_erl=1
@@ -58,7 +58,7 @@ asynch_thread_count=128
 
 
 usage="
-Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--config cfg_filename] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
+Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--config cfg_filename] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression|--run a_module_name a_function_name a_single_argument] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [--log-dir a_path] [--display-command] [--investigate-crashes] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
 
 Detailed options:
 	-v: be verbose
@@ -77,17 +77,23 @@ Detailed options:
 	--daemon: run the node as a daemon (relies on run_erl and implies --background)
 	--non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, e.g. on a cluster)
 	--eval 'an Erlang expression': start by evaluating this expression
+	--run a_module_name a_function_name a_single_argument: start by running the specified 1-arity function exported by the specified module, with the (single) specified argment
+
 	--no-auto-start: disable the automatic execution at VM start-up
 	-h or --help: display this help
 	--beam-dir a_path: adds specified directory to the path searched for beam files (multiple --beam-dir options can be specified)
 	--beam-paths first_path second_path ...: adds specified directories to the path searched for beam files (multiple paths can be specified; must be the last option)
 	--log-dir: specify the directory in which the VM logs (if using run_erl) shall be written
+	--display-command: displays on the console the actual, final command that is executed by this script (the corresponding printout starts then with 'Launcher executing')
+	--investigate-crashes: performs post-mortem investigations regarding any (OS-level) crash (typically core dump) of the Erlang VM process
 
 Other options will be passed 'as are' to the interpreter with a warning, except if they are listed after a '-start-verbatim-options' option, in which case they will passed with no warning.
 
 If neither '--sn' nor '--ln' is specified, then the node will not be a distributed one.
 
-Example: $(basename $0) -v --ln ceylan --eval 'class_TimeManager_test:run()'"
+Example: $(basename $0) -v --ln ceylan --eval 'class_TimeManager_test:run()'
+		 $(basename $0) -v --sn osdl --run basic_utils run class_TimeManager_test'
+"
 
 
 # Note that the BEAM dirs/paths are realpath'ed by this script, which may result
@@ -156,12 +162,13 @@ in_background=1
 #
 non_interactive=1
 
+display_command=1
 
 # Often left disabled (hence at 1), since most crashes require only Erlang-level
 # debugging:
 #
-#investigate_post_mortem=0
-investigate_post_mortem=1
+#investigate_crashes=0
+investigate_crashes=1
 
 
 # Erlang defaults (see http://erlang.org/doc/man/erl.html#+zdbbl):
@@ -341,6 +348,7 @@ while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 		token_eaten=0
 	fi
 
+
 	if [ "$1" = "--beam-paths" ]; then
 		# Keep --beam-paths if first position, as will be shifted in end of loop
 		while [ ! $# -eq 1 ]; do
@@ -372,8 +380,23 @@ while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 		token_eaten=0
 	fi
 
+	if [ "$1" = "--display-command" ]; then
+		display_command=0
+		token_eaten=0
+	fi
+
+	if [ "$1" = "--investigate-crashes" ]; then
+		investigate_crashes=0
+		token_eaten=0
+	fi
+
+
+
+	# We set the to_execute variable either according to -eval or to -run:
+
 	if [ "$1" = "--eval" ]; then
 		shift
+
 		# We can use -s instead, which would allow to send multiple commands
 		# in a row.
 
@@ -382,22 +405,35 @@ while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 			exit 12
 		fi
 
-		# Yes, these two versions (to_eval/to_eval_run_erl) *are* needed:
+		# Yes, these two versions (to_execute/to_execute_run_erl) *are* needed:
 
 		# Not relevant for example for the automatic make rules regarding tests
 		# nor if the module name contained a dash (prefer acting upon the
 		# escaping on the input expression, like in "--eval
 		# foobar_app:start()"):
 		#
-		#to_eval="-eval '$1'"
+		#to_execute="-eval '$1'"
 
 		# Found finally needed, with this form:
-		to_eval="-eval $1"
+		to_execute="-eval $1"
 
-		to_eval_run_erl="-eval '$1'"
+		to_execute_run_erl="-eval '$1'"
 
 		# Not used, as write pipe not used either anymore:
 		eval_content="$1"
+
+		token_eaten=0
+	fi
+
+	if [ "$1" = "--run" ]; then
+		shift
+		module="$1"
+		shift
+		function="$1"
+		shift
+		single_arg="$1"
+
+		to_execute="-run ${module} ${function} ${single_arg}"
 
 		token_eaten=0
 	fi
@@ -623,7 +659,7 @@ fi
 
 if [ ${autostart} -eq 1 ]; then
 	echo " ** No autostart wanted, but you can run manually: ${eval_content} **"
-	to_eval="-eval io:format(\"-->"${eval_content}".\")"
+	to_execute="-eval io:format(\"-->"${eval_content}".\")"
 fi
 
 
@@ -820,10 +856,10 @@ if [ $use_run_erl -eq 0 ]; then
 	# The '-daemon' option must be included (see
 	# http://www.erlang.org/doc/man/run_erl.html):
 
-	# We could not include to_eval here (i.e. no 'exec ${erl} ${to_eval}...')
-	# and write it in the pipe afterwards:
+	# We could not include to_execute here (i.e. no 'exec ${erl}
+	# ${to_execute}...')  and write it in the pipe afterwards:
 	#
-	final_command="${run_erl} -daemon ${run_pipe} ${log_dir} \"exec ${erl} ${to_eval_run_erl} ${command}\""
+	final_command="${run_erl} -daemon ${run_pipe} ${log_dir} \"exec ${erl} ${to_execute_run_erl} ${command}\""
 
 else
 
@@ -835,7 +871,7 @@ else
 	fi
 
 	#echo "Launching a VM, using direct command-line execution."
-	#final_command="${erl} ${to_eval} ${command}"
+	#final_command="${erl} ${to_execute} ${command}"
 
 fi
 
@@ -854,9 +890,9 @@ if [ $use_run_erl -eq 0 ]; then
 	# Log to console:
 	#echo; echo "##### $0 running final command with run_erl: '${final_command}', with use_run_erl = ${use_run_erl}"
 
-	if [ ${be_verbose} -eq 0 ]; then
+	if [ ${be_verbose} -eq 0 ] || [ ${display_command} -eq 0 ]; then
 
-		echo "Launching with run_erl: ${final_command}"
+		echo "Launcher executing with run_erl: ${final_command}"
 
 	fi
 
@@ -886,10 +922,10 @@ else
 	# Not using run_erl here, direct launch (the current default):
 
 	# Log to text file:
-	#echo "$0 running final command (directly with eval): ${command}" > launch-erl-command.txt
+	#echo "$0 running final command (with '${to_execute}'): ${command}" > launch-erl-command.txt
 
 	# Log to console:
-	#echo; echo "##### $0 running final command (directly with eval): '${command}'"
+	#echo; echo "##### $0 running final command (with '${to_execute}'): '${command}'"
 
 	# We used to define above a final_command variable that comprised ${erl},
 	# yet on Windows, no matter the quoting that we tried, we did not succeed in
@@ -899,13 +935,13 @@ else
 
 	#echo "direct command: ${command}"
 
-	if [ ${be_verbose} -eq 0 ]; then
+	if [ ${be_verbose} -eq 0 ] || [ ${display_command} -eq 0 ]; then
 
-		echo "Executing: ${erl} ${to_eval} ${command}"
+		echo "Launcher executing: ${erl} ${to_execute} ${command}"
 
 	fi
 
-	"${erl}" ${to_eval} ${command}
+	"${erl}" ${to_execute} ${command}
 
 	res=$?
 	#echo "Execution result: ${res}."
@@ -914,7 +950,7 @@ else
 
 		if [ $non_interactive -eq 1 ]; then
 
-			if [ $investigate_post_mortem -eq 0 ]; then
+			if [ $investigate_crashes -eq 0 ]; then
 
 				core_exec="$(which coredumpctl 2>/dev/null)"
 

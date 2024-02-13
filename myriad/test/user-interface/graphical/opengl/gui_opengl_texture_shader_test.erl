@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -357,9 +357,8 @@ init_test_gui() ->
 	GLCanvasAttrs =
 		[ use_core_profile | gui_opengl:get_default_canvas_attributes() ],
 
-	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame,
-										 [ { gl_attributes, GLCanvasAttrs } ] ),
-
+	GLCanvas = gui_opengl:create_canvas(
+		_CanvasOpts=[ { gl_attributes, GLCanvasAttrs } ], _Parent=MainFrame ),
 
 	% Created, yet not bound yet (must wait for the main frame to be shown):
 	GLContext = gui_opengl:create_context( GLCanvas ),

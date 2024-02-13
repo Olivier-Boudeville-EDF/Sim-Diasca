@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: July 1, 2007.
 
 
-% Unit tests for the basic utils toolbox.
+% @doc Unit tests for the basic utils toolbox.
 %
 % See the basic_utils.erl tested module.
 %
@@ -37,7 +38,7 @@
 
 
 % For myriad_spawn*:
--include("spawn_utils.hrl").
+-include_lib("myriad/include/spawn_utils.hrl").
 
 
 
@@ -59,8 +60,8 @@ check_process_specific_values( Min, Max ) ->
 		end,
 
 	[ test_facilities:display(
-				"Generating a process-specific value in [~B;~B[: ~p.",
-				[ Min, Max, G() ] ) || _Y <- lists:seq( 1, 10 ) ].
+		"Generating a process-specific value in [~B;~B[: ~p.",
+		[ Min, Max, G() ] ) || _Y <- lists:seq( 1, 10 ) ].
 
 
 
@@ -86,6 +87,10 @@ run() ->
 
 	basic_utils:display_error( "error display ~ts",
 							   [ "with a format string" ] ),
+
+	test_facilities:display( "The version of this currently tested Myriad "
+		"library is ~ts (i.e. ~w).", [ basic_utils:get_myriad_version_string(),
+									   basic_utils:get_myriad_version() ] ),
 
 	FirstVersion  = { 0, 0, 0 },
 	SecondVersion = { 0, 0, 1 },
@@ -150,7 +155,7 @@ run() ->
 	{ 4, 22, 11 } = basic_utils:parse_version( "4.22.11" ),
 
 	test_facilities:display( "Generating a process-specific value: ~w.",
-							 [ basic_utils:get_process_specific_value() ] ),
+		[ basic_utils:get_process_specific_value() ] ),
 
 	{ Min, Max } = { 3, 16 },
 	check_process_specific_values( Min, Max ),
@@ -170,10 +175,8 @@ run() ->
 							 [ ?myriad_spawn_info ] ),
 
 	?myriad_spawn( fun() ->
-
-					   % Closure:
-					   Self ! myriad_spawned
-
+						% Closure:
+						Self ! myriad_spawned
 				   end ),
 
 	receive
@@ -189,8 +192,8 @@ run() ->
 
 	?myriad_spawn_link( fun() ->
 
-					   % Closure:
-					   Self ! myriad_spawned_linked
+						% Closure:
+						Self ! myriad_spawned_linked
 
 						end ),
 

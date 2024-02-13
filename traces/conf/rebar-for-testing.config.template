@@ -21,10 +21,10 @@
 % As an hex-package dependency:
 %
 % Implied:
-% - {myriad, "MYRIAD_VERSION_FOR_REBAR"}
-% - {wooper, "WOOPER_VERSION_FOR_REBAR" }
+% - {myriad, "MYRIAD_VERSION_FOR_OTP"}
+% - {wooper, "WOOPER_VERSION_FOR_OTP" }
 %
-{deps, [ {traces, "VERSION_FOR_REBAR" } ] }.
+{deps, [ {traces, "VERSION_FOR_OTP" } ] }.
 
 
 % This testing just targets to trigger the build of Traces (and its Myriad and
@@ -53,7 +53,7 @@
 %
 {relx, [
 
-  {release, {traces_test_release, "VERSION_FOR_REBAR"},
+  {release, {traces_test_release, "VERSION_FOR_OTP"},
 			[sasl, traces]},
 
   %{sys_config, "conf/sys.config"},

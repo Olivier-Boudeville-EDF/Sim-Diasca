@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -252,7 +252,7 @@
 -type title() :: gui:title().
 -type widget() :: gui:widget().
 
--type frame() :: gui_window:frame().
+-type window() :: gui_window:window().
 
 -type help_info() :: gui_text:help_info().
 
@@ -504,17 +504,17 @@ remove_menu_item( Menu, MenuItemId ) ->
 
 % Menu bar subsection.
 
-% @doc Creates an empty menu bar, not yet specifically associated to a frame.
+% @doc Creates an empty menu bar, not yet specifically associated to a window.
 -spec create_bar() -> menu_bar().
 create_bar() ->
 	wxMenuBar:new().
 
 
-% @doc Creates an empty menu bar, associated to the specified frame.
--spec create_bar( frame() ) -> menu_bar().
-create_bar( Frame ) ->
+% @doc Creates an empty menu bar, associated to the specified window.
+-spec create_bar( window() ) -> menu_bar().
+create_bar( Window ) ->
 	MenuBar = wxMenuBar:new(),
-	set_menu_bar( Frame, MenuBar ),
+	gui_window:set_menu_bar( Window, MenuBar ),
 	MenuBar.
 
 
@@ -524,10 +524,14 @@ add_menu( MenuBar, Menu, MenuTitle ) ->
 	true = wxMenuBar:append( MenuBar, Menu, MenuTitle ).
 
 
-% @doc Assigns the specified menu bar to the specified frame.
--spec set_menu_bar( menu_bar(), frame() ) -> void().
-set_menu_bar( MenuBar, Frame ) ->
-	wxFrame:setMenuBar( Frame, MenuBar ).
+% @doc Assigns the specified menu bar to the specified window.
+%
+% Note: to be deprecated soon; use gui_window:set_menu_bar/2 instead.
+%
+-spec set_menu_bar( menu_bar(), window() ) -> void().
+set_menu_bar( MenuBar, Window ) ->
+	% More logical that way:
+	gui_window:set_menu_bar( Window, MenuBar ).
 
 
 
@@ -538,9 +542,11 @@ set_menu_bar( MenuBar, Frame ) ->
 %
 % Typically called on receiving of a onMouseRightButtonReleased event.
 %
--spec activate_as_popup( widget(), menu() ) -> void().
-activate_as_popup( Widget, Menu ) ->
-	% Meaning on returned boolean unclear:
+-spec activate_as_popup( menu(), widget() ) -> void().
+activate_as_popup( Menu, Widget ) ->
+	% Probably more logical to place it in gui_widget.
+
+	% Meaning of returned boolean unclear:
 	wxWindow:popupMenu( Widget, Menu ).
 
 

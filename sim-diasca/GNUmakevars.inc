@@ -35,6 +35,8 @@ else
 endif
 
 
+# Enforce default values:
+
 # Define the simdiasca_allow_reproducible_nested_initial_creations token if
 # wanting to enable fully-reproducible initial nested creations, i.e. initial
 # actors that create other actors from their constructors (the consequence is
@@ -44,7 +46,7 @@ endif
 # (refer to the design notes in instance_loading.erl for more details)
 #
 ifndef SIM_DIASCA_SETTINGS_FLAGS
-	SIM_DIASCA_SETTINGS_FLAGS += -Dsimdiasca_allow_reproducible_nested_initial_creations
+	SIM_DIASCA_SETTINGS_FLAGS += -Dsim_diasca_allow_reproducible_nested_initial_creations
 endif
 
 
@@ -58,37 +60,42 @@ endif
 #  - user_api_calls: the calls by the user code of the engine-provided services
 #  - time_management: the time management, as implemented by the engine itself
 #  - initial_creations: the creation of initial actors, from the case
-#  - instance_loading: the creation of initial actors from initialisation streams
-#	 (typically files)
+#  - instance_loading: the creation of initial actors from initialisation
+#    streams (typically files)
 #  - runtime_creations: the creation of actors in the course of the simulation
 #  - life_cycles: the life cycles, typically of actors
+#  - graph_streaming: the management of graph streaming, notably the related
+#    probes
 
 # Defining debug flags (at least the most verbose are by default commented-out):
 ifeq ($(ENABLE_DEBUG),true)
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_model_behaviours
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_user_api_calls
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_time_management
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_initial_creations
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_instance_loading
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_runtime_creations
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_life_cycles
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_model_behaviours
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_user_api_calls
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_time_management
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_initial_creations
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_instance_loading
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_runtime_creations
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_life_cycles
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_graph_streaming
 endif
 
 
 # Defining check flags:
 ifeq ($(EXECUTION_TARGET),development)
-	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_model_behaviours
-	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_user_api_calls
-	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_time_management
-	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_initial_creations
-	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_instance_loading
-	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_runtime_creations
-	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_life_cycles
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_model_behaviours
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_user_api_calls
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_time_management
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_initial_creations
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_instance_loading
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_runtime_creations
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_life_cycles
+	SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_check_graph_streaming
 endif
 
 
-ERLANG_COMPILER_OPT_BASE += $(SIM_DIASCA_SETTINGS_FLAGS) \
-							$(SIM_DIASCA_DEBUG_FLAGS)    \
+ERLANG_COMPILER_OPT_BASE += -Dsim_diasca_version=\"$(SIM_DIASCA_VERSION)\" \
+							$(SIM_DIASCA_SETTINGS_FLAGS)                   \
+							$(SIM_DIASCA_DEBUG_FLAGS)                      \
 							$(SIM_DIASCA_CHECK_FLAGS)
 
 
@@ -102,8 +109,11 @@ ifndef PROJECT_NAME
 endif
 
 
-SIM_DIASCA_BASE_VERSION := 2.4.6
+SIM_DIASCA_BASE_VERSION := 2.4.7
 
+# The uniquely-defined version of this layer, for all uses (including rebar, hex
+# and the code itself, see sim_diascas:get_sim_diasca_version{_string,}/0):
+#
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-beta-$(date '+%Y%m%d-%Hh%M')
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-for-foobar
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-rc1
@@ -118,7 +128,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Thursday, September 28, 2023"
+	PROJECT_RELEASE_DATE := "Tuesday, February 13, 2024"
 endif
 
 
@@ -403,6 +413,10 @@ ifndef BOOTSTRAP_MODULES
 	BOOTSTRAP_MODULES = $(GENERIC_SRC)/actor_info.beam
 
 endif
+
+
+# To be available from a Makefile despite not being in the user's PATH:
+KILL_SIM_INTERACT_TOOLS = $(SIM_DIASCA_TOP)/priv/bin/kill-simulation-interactive-tools.sh
 
 
 # To compile a module (ex: a plugin) using a behaviour (ex: sim_diasca_plugin),

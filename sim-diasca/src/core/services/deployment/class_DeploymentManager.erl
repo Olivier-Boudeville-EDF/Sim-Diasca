@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -120,7 +120,7 @@
 	{ result_manager_pid, result_manager_pid(),
 	  "the PID of the result manager" },
 
-	{ graph_infos, maybe( graph_infos() ),
+	{ graph_info, maybe( graph_info() ),
 	  "information regarding the graph stream service (if any)" },
 
 	{ web_manager_pid, maybe( web_manager_pid() ),
@@ -157,6 +157,9 @@
 -export([ get_hostname_for/2, get_username_for/2, halt_on_error/1,
 		  halt_on_error/2 ]).
 
+
+% For silencing:
+-export([ stop_raw/1, stop_ui/1 ]).
 
 
 % For deployment_settings:
@@ -252,20 +255,8 @@
 -type simulation_name() :: ustring().
 
 
-% Silencing:
--export_type([ graph_infos/0 ]).
-
-
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization, "Core.Deployment.Manager" ).
-
-
-% To retrieve the versions of most prerequisites:
-%
-% (header generated automatically by the 'all-pre-hook' make target of the root
-% makefile)
-%
--include("package-versions.hrl").
 
 
 % Allows to define WOOPER base variables and methods for that class:
@@ -365,12 +356,6 @@
 -type service_placement() :: #service_placement{}.
 
 
--type graph_infos() :: { GephiHost :: possibly_local_bin_hostname(),
-						 GephiServerPort :: tcp_port(),
-						 GephiProjectPath :: maybe( bin_file_path() ),
-						 GephiProjectName :: maybe( bin_project_name() ) }.
-% Deployment information regarding the (Gephi-based) graph stream probe service.
-
 
 % Typical BEAM file included in the build tree of an Erlang/OTP version (used in
 % order to detect when such an Erlang build tree is included by mistake in a
@@ -378,6 +363,12 @@
 %
 -define( typical_erlang_otp_beam_file, "gen_statem.beam" ).
 
+
+% Milliseconds before a looked up local Gephi server is considered not found:
+-define( local_gephi_server_timeout, 100 ).
+
+% Milliseconds before a looked up remote Gephi server is considered not found:
+-define( remote_gephi_server_timeout, 1000 ).
 
 
 % Shorthands:
@@ -392,7 +383,6 @@
 
 -type path() :: file_utils:path().
 -type file_path() :: file_utils:file_path().
--type bin_file_path() :: file_utils:bin_file_path().
 -type file_name() :: file_utils:file_name().
 
 -type directory_path() :: file_utils:directory_path().
@@ -400,7 +390,6 @@
 -type bin_directory_name() :: file_utils:bin_directory_name().
 
 -type string_host_name() :: net_utils:string_host_name().
--type possibly_local_bin_hostname() :: net_utils:possibly_local_bin_hostname().
 -type atom_host_name() :: net_utils:atom_host_name().
 -type string_node_name() :: net_utils:string_node_name().
 -type atom_node_name() :: net_utils:atom_node_name().
@@ -410,11 +399,13 @@
 -type tcp_port() :: net_utils:tcp_port().
 -type tcp_port_restriction() :: net_utils:tcp_port_restriction().
 
+-type project_path() :: class_GraphStreamProbe:project_path().
+-type workspace_name() :: class_GraphStreamProbe:workspace_name().
+-type graph_info() :: class_GraphStreamProbe:graph_info().
+
 -type host_manager_pid() :: class_ComputingHostManager:host_manager_pid().
 
 -type sii() :: sim_diasca:sii().
-
--type bin_project_name() :: class_GraphStreamProbe:bin_project_name().
 
 
 
@@ -523,6 +514,11 @@ construct( State,
 	TraceState =
 		setAttribute( InitialState, compute_scheduler_count, undefined ),
 
+	% As non-member, hence non-trace emitter functions (e.g. static ones), may
+	% be called and may have traces to send:
+	%
+	class_TraceEmitter:register_bridge( TraceState ),
+
 	% Plugins may have requested configuration changes:
 	ChangedState = apply_configuration_changes( PluginConfChanges, TraceState ),
 
@@ -534,7 +530,7 @@ construct( State,
 	TmpDir = determine_temporary_directory( DeploymentSettings ),
 
 	DeploymentBaseDir = get_deployment_base_directory_for( SimulationName,
-										TmpDir, StartTimestamp, SII ),
+		TmpDir, StartTimestamp, SII ),
 
 	EngineRootDir = determine_root_directory(),
 
@@ -548,7 +544,7 @@ construct( State,
 	UserSettings = { _SimulationName, _SimInteractivityMode,
 		_UIInteractivityMode, _TickDuration, _EvaluationMode,
 		TroubleShootingMode, NodeAvailabilityTolerance, _DataLoggerWanted,
-		_WebManagerInfos, _GraphStreamInfos, _DataExchangerSettings,
+		_WebManagerInfo, _GraphStreamInfo, _DataExchangerSettings,
 		_LanguageBindings, _PlacementPolicy, _InitialisationFiles,
 		_ResultSpecification, ResilienceLevel,
 		_FullSettings={ NewSimulationSettings,
@@ -693,7 +689,7 @@ construct( State,
 
 	% List of atoms (note that all failed computing hosts have been removed):
 	SelectedNodes = interpret_setup_outcome( AvailableHosts, FailedHosts,
-									NodeAvailabilityTolerance, CollectState ),
+		NodeAvailabilityTolerance, CollectState ),
 
 	trace_utils:notice_fmt( "Use cookie '~ts' to connect to the nodes "
 		"(user one, '~ts', or computing ones). EPMD port is ~ts.",
@@ -717,7 +713,7 @@ construct( State,
 	?send_info( CollectState, service_placement_to_string( ServicePlacement ) ),
 
 	RuntimeSettings = { EngineRootDir, StartTimestamp, VersionStrings,
-				AvailableHosts, SelectedNodes, BaseNodeName, ServicePlacement },
+		AvailableHosts, SelectedNodes, BaseNodeName, ServicePlacement },
 
 	% And then we actually create the right, well-placed simulation agents:
 	ServiceState = set_up_simulation_services( UserSettings, RuntimeSettings,
@@ -759,7 +755,7 @@ construct( State,
 	% instances; this would lead to a deadlock); so now the construction of this
 	% manager terminates directly, and it will notify sim_diasca:init/3 when its
 	% own onInitialInstancesCreatedFromFiles oneway will be triggered (by the
-	% load balancer:
+	% load balancer):
 	%
 	%receive
 	%
@@ -794,7 +790,7 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 					 _UIInteractivityMode, _TickDuration,
 					 _EvaluationMode, TroubleShootingMode,
 					 _NodeAvailabilityTolerance, DataLoggerWanted,
-					 _WebManagerInfos, DataExchangerSettings, _LanguageBindings,
+					 _WebManagerInfo, DataExchangerSettings, _LanguageBindings,
 					 _PlacementPolicy, _InitialisationFiles,
 					 _ResultSpecification, ResilienceLevel, _FullSettings } =
 		determine_user_settings( SimulationSettings, DeploymentSettings,
@@ -824,7 +820,7 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 
 
 	DeploymentBaseDir = get_deployment_base_directory_for( SimulationName,
-							TmpDir, StartTimestamp, SII ),
+		TmpDir, StartTimestamp, SII ),
 
 	% RootDir obtained here from context:
 	CleanUpSettings = get_clean_up_settings( DeploymentSettings, RootDir,
@@ -963,11 +959,12 @@ get_additional_beam_dirs( #deployment_settings{
 					   ++ language_utils:get_additional_beam_directories_for(
 							LanguagesWithoutCodePaths ) ],
 
+	%trace_utils:debug_fmt( "All dirs: ~p", [ Dirs ] ),
 
 	% The existence of listed directories will be checked when setting the local
 	% code path afterwards (on each node):
 	%
-	lists:foldl(
+	FinalDirs = lists:foldl(
 
 		fun( Dir, AccDirList ) ->
 
@@ -986,7 +983,11 @@ get_additional_beam_dirs( #deployment_settings{
 		end,
 		_Acc0=[],
 		% To preserve final order:
-		_List=lists:reverse( Dirs ) ).
+				  _List=lists:reverse( Dirs ) ),
+
+	%trace_utils:debug_fmt( "Final dirs: ~p", [ FinalDirs ] ),
+
+	FinalDirs.
 
 
 
@@ -1170,7 +1171,7 @@ set_up_simulation_services(
 		_UserSettings={ SimulationName, SimInteractivityMode,
 			UIInteractivityMode, TickDuration, EvaluationMode,
 			TroubleShootingMode, NodeAvailabilityTolerance, DataLoggerWanted,
-			WebManagerInfos, GraphStreamInfos, DataExchangeSettings,
+			WebManagerInfo, GraphStreamInfo, DataExchangeSettings,
 			LanguageBindings, PlacementPolicy, InitialisationFiles,
 			ResultSpecification, _ResilienceLevel,
 			FullSettings={ _SimulationSettings, DeploymentSettings,
@@ -1205,9 +1206,17 @@ set_up_simulation_services(
 
 	MaybeWebManagerPid =
 		set_up_web_management( SII, EngineRootDir, UIInteractivityMode,
-							   ResultManagerPid, ResultDir, WebManagerInfos ),
+							   ResultManagerPid, ResultDir, WebManagerInfo ),
 
-	GraphState = set_up_graph_streaming( GraphStreamInfos, State ),
+	GraphState = case executable_utils:is_batch() of
+
+		true ->
+			State;
+
+		false ->
+			set_up_graph_streaming( GraphStreamInfo, State )
+
+	end,
 
 	AllInstanceTrackers = [ RootInstanceTrackerPid | LocalInstanceTrackers ],
 
@@ -1300,6 +1309,8 @@ destruct( State ) ->
 % @doc Performs a global teardown of the simulation services: orderly shutdown.
 -spec shutdown_services( wooper:state() ) -> wooper:state().
 shutdown_services( State ) ->
+
+	?debug( "Shutting down simulation services." ),
 
 	% We shutdown services step-by-step, from the top-level (e.g. time manager)
 	% to the bottom-ones (e.g. data exchanger), avoiding to have in the same
@@ -1617,13 +1628,13 @@ getWebManager( State ) ->
 % This is typically useful for the creation of graph stream probes.
 %
 -spec getGraphStreamInformation( wooper:state() ) ->
-					const_request_return( maybe( graph_infos() ) ).
+					const_request_return( maybe( graph_info() ) ).
 getGraphStreamInformation( State ) ->
 
 	% Already in a relevant form:
-	GraphInfos = ?getAttr(graph_infos),
+	GraphInfo = ?getAttr(graph_info),
 
-	wooper:const_return_result( GraphInfos ).
+	wooper:const_return_result( GraphInfo ).
 
 
 
@@ -1737,13 +1748,30 @@ onWOOPERExitReceived( State, PidOrPort, ExitType ) ->
 			wooper:const_return();
 
 		false ->
+
 			% Short message wanted:
 			?emergency_fmt( "Error exit signal received ('~p'), performing "
 				"now an emergency simulation shutdown.", [ ExitType ] ),
 
-			% Sent here to avoid too much detail on the console:
-			?notice_fmt( "(the exit signal '~p' was sent by ~p)",
+			% Here only a ?notice_fmt/2 was used (to avoid too much detail on
+			% the console), but it was not synchronous (mere send, not a
+			% send_(synchronised|safe)), and the VM shutdown could happen before
+			% the actual underlying error was logged. So:
+
+			DetailedMsg = text_utils:format(
+				"(the exit signal '~p' was sent by ~p)",
 				[ ExitType, PidOrPort ] ),
+
+			% send_synchronised (as opposed to send_safe) are not echoed:
+			class_TraceEmitter:send_synchronised( notice, State, DetailedMsg ),
+
+			% Currently not used afterwards:
+			%text_ui:start(),
+
+			% So many safety measures, yet they are hardly sufficient:
+			system_utils:await_output_completion(),
+
+			StatusCode = 10,
 
 			% Would not be a good idea, as (exactly as the associated computing
 			% host manager) would attempt to interact with the now defunct
@@ -1755,12 +1783,80 @@ onWOOPERExitReceived( State, PidOrPort, ExitType ) ->
 			% the corresponding computing host manager has also its own
 			% onWOOPERExitReceived/3 triggered for the same reason.
 
-			basic_utils:stop_on_failure( 10 ),
+
+			% A delayed stop seems absolutely necessary, as otherwise at least
+			% some crash reports (notably the longer/most complex ones) would
+			% not be reported at all (neither on the console nor even in the
+			% trace aggregator).
+			%
+			% Hopefully sufficient (absolutely *not* a luxury) if halting just
+			% afterwards:
+			%
+			%timer:sleep( 2500 ),
+
+			% As an alternative, we might not stop by ourself and let the user
+			% do it when appropriate:
+
+			% In order the next printout(s) to be displayed after any error
+			% report:
+			%
+			timer:sleep( 500 ),
+
+			% A possibility (currently preferred to a UI-based one, as text_ui
+			% may leaver the user terminal in an invalid state):
+			%
+			stop_raw( StatusCode ),
+
+			%stop_ui( StatusCode ),
 
 			wooper:const_return()
 
 	end.
 
+
+stop_raw( _StatusCode ) ->
+	io:format( "(hit CTRL-C twice to halt the simulation)~n" ),
+	basic_utils:freeze().
+
+
+% A bit more flexible:
+stop_ui( StatusCode ) ->
+
+	Prompt = "Simulation crashed; a detailed error report should be "
+		"available above on the console and in the traces.~n"
+		"Do you want to halt the simulation nodes? (yes/no) [yes] ",
+
+	case ui:ask_yes_no( Prompt, _BinaryDefault=yes ) of
+
+		yes ->
+
+			% Would trigger halt/1, too brutal:
+			%basic_utils:stop_on_failure( StatusCode ),
+
+			% Less violent, yet apparently not blocking (at least not in
+			% all cases):
+
+			%trace_utils:debug( "Stopping with init:stop/1..." ),
+			init:stop( StatusCode ),
+			%trace_utils:debug( "...stopped with init:stop/1." ),
+
+			% Leaves some chance to init:stop/1 to operate:
+			timer:sleep( 1000 ),
+
+			% This time more brutal:
+			trace_utils:debug( "(halting now)" ),
+			basic_utils:stop_on_failure( StatusCode ),
+
+			% Not expecting to reach this point ever:
+			trace_utils:debug(
+			  "...stopped with halt/1, freezing now." ),
+
+			basic_utils:freeze();
+
+		no ->
+			stop_raw( StatusCode )
+
+	end.
 
 
 % @doc Triggers an (asynchronous) emergency shutdown.
@@ -1982,7 +2078,7 @@ get_registration_name() ->
 % user.
 %
 -spec get_node_name_prefix_from( simulation_name(), sii() ) ->
-							static_return( string_node_name() ).
+										static_return( string_node_name() ).
 get_node_name_prefix_from( SimulationName, SII ) ->
 
 	% Example: 'Sim-Diasca-Soda_Stochastic_Integration_Test-boudevil-55925800'.
@@ -2001,7 +2097,7 @@ get_node_name_prefix_from( SimulationName, SII ) ->
 % specified simulation name and SII, with the current user.
 %
 -spec get_user_node_name_from( simulation_name(), sii() ) ->
-									static_return( atom_node_name() ).
+										static_return( atom_node_name() ).
 get_user_node_name_from( SimulationName, SII ) ->
 	NodePrefix = get_node_name_prefix_from( SimulationName, SII ),
 	Name = text_utils:string_to_atom( NodePrefix ++ "-user-node" ),
@@ -2014,7 +2110,7 @@ get_user_node_name_from( SimulationName, SII ) ->
 % specified simulation name and SII, with the current user.
 %
 -spec get_computing_node_prefix_from( simulation_name(), sii() ) ->
-								static_return( string_node_name() ).
+										static_return( string_node_name() ).
 get_computing_node_prefix_from( SimulationName, SII ) ->
 
 	Name = get_node_name_prefix_from( SimulationName, SII )
@@ -2062,7 +2158,7 @@ shutdown( DeploymentManagerPid ) ->
 	% runs of the same case.
 
 	% To let any lingering deletion be notified beforehand:
-	%after ?synchronous_time_out + 1000 -> %+ 100000 ->
+	%after ?synchronous_time_out+1000 -> %+ 100000 ->
 	%
 	%       ?notify_warning( "Time-out waiting for the deployment shutdown, "
 	%                        "giving up." )
@@ -2249,7 +2345,7 @@ settings_to_string( _DeploymentSettings=#deployment_settings{
 			text_utils:format( "~B plugin directories specified: ~ts",
 				[ length( PluginDirectories ),
 				  text_utils:strings_to_string( PluginDirectories,
-												IndentationLevel + 1 ) ] )
+												IndentationLevel+1 ) ] )
 
 	end,
 
@@ -2262,8 +2358,12 @@ settings_to_string( _DeploymentSettings=#deployment_settings{
 		_ ->
 			text_utils:format( "~B additional BEAM directories specified: ~ts",
 				[ length( AddBeamDirectories ),
-				  text_utils:strings_to_string( AddBeamDirectories,
-												IndentationLevel + 1 ) ] )
+
+				  % Not strings_to_string/2, as possibly non-standard,
+				  % resolvable paths:
+				  %
+				  text_utils:terms_to_string( AddBeamDirectories,
+											  IndentationLevel+1 ) ] )
 
 	end,
 
@@ -2449,10 +2549,10 @@ get_basic_blacklisted_suffixes() ->
 -spec get_version_string() -> { ustring(), ustring(), ustring(), ustring() }.
 get_version_string() ->
 
-	MyriadVersionString = ?myriad_version,
-	WOOPERVersionString = ?wooper_version,
-	TracesVersionString = ?traces_version,
-	SimDiascaVersionString = ?sim_diasca_version,
+	MyriadVersionString = basic_utils:get_myriad_version_string(),
+	WOOPERVersionString = wooper_utils:get_wooper_version_string(),
+	TracesVersionString = traces_utils:get_traces_version_string(),
+	SimDiascaVersionString = sim_diasca:get_sim_diasca_version_string(),
 
 	{ MyriadVersionString, WOOPERVersionString, TracesVersionString,
 	  SimDiascaVersionString }.
@@ -2781,9 +2881,7 @@ get_host_info( ComputingHostManagerPid, State ) ->
 %
 -spec get_hostname_for( host_manager_pid(), wooper:state() ) -> bin_string().
 get_hostname_for( ComputingHostManagerPid, State ) ->
-
 	HostInfo = get_host_info( ComputingHostManagerPid, State ),
-
 	HostInfo#computing_host_info.host_name.
 
 
@@ -3859,9 +3957,9 @@ determine_user_settings( SimulationSettings, DeploymentSettings,
 
 	DataLoggerWanted = check_data_logger_wanted( DeploymentSettings ),
 
-	WebManagerInfos = check_webmanager_wanted( DeploymentSettings ),
+	WebManagerInfo = check_webmanager_wanted( DeploymentSettings ),
 
-	GraphStreamInfos = check_graph_streaming_wanted( DeploymentSettings ),
+	GraphStreamInfo = check_graph_streaming_wanted( DeploymentSettings ),
 
 	DataExchangerSettings = check_data_exchanger_settings( DeploymentSettings ),
 
@@ -3878,8 +3976,8 @@ determine_user_settings( SimulationSettings, DeploymentSettings,
 
 	% Adopts simpler, more tractable, canonical forms:
 	NewDeploymentSettings = DeploymentSettings#deployment_settings{
-		enable_webmanager=WebManagerInfos,
-		enable_graph_streaming=GraphStreamInfos },
+		enable_webmanager=WebManagerInfo,
+		enable_graph_streaming=GraphStreamInfo },
 
 	FullSettings = { SimulationSettings, NewDeploymentSettings,
 					 LoadBalancingSettings },
@@ -3887,7 +3985,7 @@ determine_user_settings( SimulationSettings, DeploymentSettings,
 	{ SimulationName, SimInteractivityMode, UIInteractivityMode,
 	  TickDuration, EvaluationMode, TroubleShootingMode,
 	  NodeAvailabilityTolerance, DataLoggerWanted,
-	  WebManagerInfos, GraphStreamInfos, DataExchangerSettings,
+	  WebManagerInfo, GraphStreamInfo, DataExchangerSettings,
 	  LanguageBindings, PlacementPolicy, InitialisationFiles,
 	  ResultSpecification, ResilienceLevel, FullSettings }.
 
@@ -4062,39 +4160,46 @@ check_webmanager_wanted( #deployment_settings{ enable_webmanager=Other } ) ->
 % @doc Early check of the user-specified graph streaming-related options
 % (detailed checking done later).
 %
-% Returns a more canonical form as these settings.
+% Returns a more canonical form of these settings, yet still type-correct.
 %
 % (helper)
 %
 -spec check_graph_streaming_wanted( deployment_settings() ) ->
-	maybe( { maybe( file_path() ), possibly_local_hostname(), tcp_port() } ).
+	'false' | { 'true', { maybe( project_path() ), workspace_name(),
+							   possibly_local_hostname(), tcp_port() } }.
 check_graph_streaming_wanted(
 		#deployment_settings{ enable_graph_streaming=false } ) ->
-	undefined;
+	false;
 
-check_graph_streaming_wanted(
-		#deployment_settings{ enable_graph_streaming=true } ) ->
-	{ _MaybeProjectPath=undefined, localhost,
-	  class_GraphStreamProbe:get_gephi_default_tcp_port() };
-
+% 2 actual parameters specified, localhost and default port implied:
 check_graph_streaming_wanted( #deployment_settings{
-			enable_graph_streaming={ true, ProjectPath } } )
-				when is_list( ProjectPath ) orelse ProjectPath =:= undefined ->
-	{ ProjectPath, localhost,
-	  class_GraphStreamProbe:get_gephi_default_tcp_port() };
+			enable_graph_streaming={ true, MaybeProjectPath, WorkspaceName } } )
+				when ( is_list( MaybeProjectPath )
+					   orelse MaybeProjectPath =:= undefined )
+					 andalso is_list( WorkspaceName ) ->
+	{ true, _Quad={ MaybeProjectPath, WorkspaceName, localhost,
+					gephi_support:get_server_default_tcp_port() } };
 
+% 3 actual parameters specified, localhost implied:
 check_graph_streaming_wanted( #deployment_settings{
-			enable_graph_streaming={ true, ProjectPath, TCPPort } } )
-				when ( is_list( ProjectPath ) orelse ProjectPath =:= undefined )
-					 andalso is_integer( TCPPort ) ->
-	{ ProjectPath, localhost, TCPPort };
+			enable_graph_streaming=
+				{ true, MaybeProjectPath, WorkspaceName, TCPPort } } )
+		when ( is_list( MaybeProjectPath )
+			   orelse MaybeProjectPath =:= undefined )
+			 andalso is_list( WorkspaceName )
+			 andalso is_integer( TCPPort ) ->
+	{ true, _Quad={ MaybeProjectPath, WorkspaceName, localhost, TCPPort } };
 
+% 4 actual parameters specified:
 check_graph_streaming_wanted( #deployment_settings{
-			enable_graph_streaming={ true, ProjectPath, Hostname, TCPPort } } )
-				when ( is_list( ProjectPath ) orelse ProjectPath =:= undefined )
-					 andalso is_list( Hostname )
-					 andalso is_integer( TCPPort ) ->
-	{ ProjectPath, Hostname, TCPPort };
+			enable_graph_streaming=
+				{ true, MaybeProjectPath, WorkspaceName, Hostname, TCPPort } } )
+		when ( is_list( MaybeProjectPath )
+				orelse MaybeProjectPath =:= undefined )
+			 andalso is_list( WorkspaceName )
+			 andalso ( is_list( Hostname ) orelse Hostname =:= localhost )
+			 andalso is_integer( TCPPort ) ->
+	{ MaybeProjectPath, WorkspaceName, Hostname, TCPPort };
 
 check_graph_streaming_wanted( #deployment_settings{
 			enable_graph_streaming=Other } ) ->
@@ -4356,7 +4461,7 @@ get_host_user_list( #deployment_settings{ computing_hosts=ComputingHosts },
 
 	?debug_fmt( "The following ~B host candidate(s) (with users) "
 		"were specified: ~ts", [ length( HostStrings ),
-							text_utils:strings_to_string( HostStrings ) ] ),
+			text_utils:strings_to_string( HostStrings ) ] ),
 
 	% No need to check for clashing nodes (prevented by design).
 
@@ -4529,7 +4634,6 @@ set_up_result_management_and_datalogging( SimulationName, StartTimestamp, SII,
 	RunDir = file_utils:get_current_directory(),
 
 	ResultDir = file_utils:join( RunDir, ResultDirName ),
-
 	case Context of
 
 		deploy_from_scratch ->
@@ -4602,7 +4706,7 @@ set_up_result_management_and_datalogging( SimulationName, StartTimestamp, SII,
 % (helper)
 %
 set_up_web_management( SII, EngineRootDir, InteractivityMode, ResultManagerPid,
-	 ResultDir, _WebManagerInfos={ true, _WebProbeClassnames, MaybeTCPPort,
+	 ResultDir, _WebManagerInfo={ true, _WebProbeClassnames, MaybeTCPPort,
 								   MaybeWebserverInstallRoot } ) ->
 
 	% Already partly in a canonical form; only created on the user node (as
@@ -4624,103 +4728,106 @@ set_up_web_management( SII, EngineRootDir, InteractivityMode, ResultManagerPid,
 
 
 set_up_web_management( _SII, _EngineRootDir, _InteractivityMode,
-		_ResultManagerPid, _ResultDir, _WebManagerInfos=false ) ->
+		_ResultManagerPid, _ResultDir, _WebManagerInfo=false ) ->
 	undefined.
 
 
 
-% @doc Sets up the graph streaming service.
+% @doc Sets up the graph streaming service, based on
+% check_graph_streaming_wanted/1.
+%
+% It is based on a Gephi server, which may be already launched, or shall be
+% launched.
 %
 % (helper)
 %
 % No service wanted here:
-set_up_graph_streaming( _MaybeGraphStreamInfos=undefined, State ) ->
-	setAttribute( State, graph_infos, undefined );
+set_up_graph_streaming( _MaybeGraphStreamQuadruplet=false, State ) ->
+	?debug( "No graph streaming enabled." ),
+	setAttribute( State, graph_info, undefined );
 
-% Local Gephi to launch, and no project specified here:
-set_up_graph_streaming( _GraphStreamInfos={ _MaybeProjectPath=undefined,
-		_PossiblyLocalHostname=localhost, TCPPort }, State ) ->
+% Full settings here (quadruplet); starting with clauses for localhost.
+%
+% No project, so a local Gephi server is expected to already be running:
+set_up_graph_streaming( { true, _Quad={ MaybeProjectPath=undefined,
+		WorkspaceName, Hostname=localhost, TCPPort } }, State ) ->
 
-	?notice_fmt( "Graph streaming service enabled, launching Gephi now "
-		"on the local host, expecting it to use the TCP port #~B "
-		"(with no project file to load specified).", [ TCPPort ] ),
+	SrvInfo = gephi_support:get_server_info( Hostname, TCPPort,
+											 MaybeProjectPath, WorkspaceName ),
 
-	class_GraphStreamProbe:run_gephi( undefined, TCPPort ),
+	% For any upcoming client on the user node:
+	gephi_support:start(),
 
-	setAttribute( State, graph_infos,
-		{ localhost, TCPPort, _Path=undefined, _ProjName=undefined } );
-
-
-% Local Gephi to launch, with a project specified here:
-set_up_graph_streaming( _GraphStreamInfos={ ProjectPath,
-		_PossiblyLocalHostname=localhost, TCPPort }, State ) ->
-
-	ExpectedExt = class_GraphStreamProbe:get_gephi_extension(),
-
-	file_utils:get_extension( ProjectPath ) =:= ExpectedExt orelse
-		throw( { no_gephi_file_extension, ProjectPath, ExpectedExt } ),
-
-	AbsProjectPath = file_utils:ensure_path_is_absolute( ProjectPath ),
-
-	file_utils:is_existing_file_or_link( AbsProjectPath ) orelse
+	gephi_support:wait_server( SrvInfo, ?local_gephi_server_timeout ) orelse
 		begin
-			?error_fmt( "The specified Gephi project file '~ts' does "
-						"not exist.", [ AbsProjectPath ] ),
-			throw( { gephi_project_file_not_found, AbsProjectPath } )
+			?error_fmt( "No local graph stream server found running "
+						"at port #B.", [ TCPPort ] ),
+
+			throw( { no_local_graph_stream_server, { port, TCPPort } } )
 		end,
 
-	% To be removed:
-	?notice_fmt( "Graph streaming service enabled, launching Gephi now "
-		"on the local host, expecting it to use the TCP port #~B; "
-		"please load the '~ts' project file from Gephi.",
-		[ TCPPort, AbsProjectPath ] ),
-
-	class_GraphStreamProbe:run_gephi( ProjectPath, TCPPort ),
-
-	ProjName = class_GraphStreamProbe:get_project_name_from_path( ProjectPath ),
-
-	setAttribute( State, graph_infos, { localhost, TCPPort,
-		text_utils:string_to_binary( AbsProjectPath ),
-		text_utils:string_to_binary( ProjName ) } );
+	setAttribute( State, graph_info, SrvInfo );
 
 
-% Remote Gephi expected to run already, with no project specified here:
-set_up_graph_streaming( _GraphStreamInfos={ _MaybeProjectPath=undefined,
-											Hostname, TCPPort }, State ) ->
+% A project, so a local Gephi server shall be specifically launched:
+set_up_graph_streaming( { true, _Quad={ ProjectPath, WorkspaceName,
+									Hostname=localhost, TCPPort } }, State ) ->
+
+	?notice_fmt( "Graph streaming service enabled, launching (if needed) "
+		"a local Gephi server to run on TCP port #~B, "
+		"with the '~ts' project file loaded, using workspace '~ts'.",
+		[ TCPPort, ProjectPath, WorkspaceName ] ),
+
+	SrvInfo = gephi_support:get_server_info( Hostname, TCPPort, ProjectPath,
+											 WorkspaceName ),
+
+	% Using the default user directory:
+	gephi_support:launch_server_if_needed( ProjectPath, SrvInfo ),
+
+	% For any upcoming client on the user node:
+	gephi_support:start(),
+
+	gephi_support:wait_server( SrvInfo ),
+
+	setAttribute( State, graph_info, SrvInfo );
+
+
+% From here targeting a remote host.
+%
+% A remote Gephi server is thus expected to run already (whether or not a
+% project is specified):
+%
+set_up_graph_streaming( { true, _Quad={ MaybeProjectPath, WorkspaceName,
+										Hostname, TCPPort } }, State ) ->
 
 	?notice_fmt( "Graph streaming service enabled, expecting a Gephi "
-		"server to already run on host '~ts' on TCP port #~B "
-		"(with no project file to load specified).",
+		"server to already run on remote host '~ts' on TCP port #~B.",
 		[ Hostname, TCPPort ] ),
 
 	net_utils:ping( Hostname ) orelse
 		?warning_fmt( "Unable to ping Gephi host '~ts'.", [ Hostname ] ),
 
+	% For any upcoming client on the user node:
+	gephi_support:start(),
 
-	setAttribute( State, graph_infos, {
-		text_utils:string_to_binary( Hostname ),
-		TCPPort,
-		_Path=undefined, _ProjName=undefined } );
+	SrvInfo = gephi_support:get_server_info( Hostname, TCPPort,
+											 MaybeProjectPath, WorkspaceName ),
 
+	gephi_support:wait_server( SrvInfo, ?remote_gephi_server_timeout ) orelse
+		begin
+			?error_fmt( "No graph stream server found running on host '~ts' "
+						"at port #B.", [ Hostname, TCPPort ] ),
 
-% Remote Gephi expected to run already, with a project specified here:
-set_up_graph_streaming(
-		_GraphStreamInfos={ ProjectPath, Hostname, TCPPort }, State ) ->
+			throw( { graph_stream_server_not_found, { host, Hostname },
+					 { port, TCPPort } } )
+		end,
 
-	?notice_fmt( "Graph streaming service enabled, expecting a Gephi "
-		"server to already run on host '~ts' on TCP port #~B, "
-		"with the '~ts' project file loaded.",
-		[ Hostname, TCPPort, ProjectPath ] ),
+	setAttribute( State, graph_info, SrvInfo );
 
-	net_utils:ping( Hostname ) orelse
-		?warning_fmt( "Unable to ping Gephi host '~ts'.", [ Hostname ] ),
+set_up_graph_streaming( Unexpected, State ) ->
+	?error_fmt( "Invalid graph stream setting: ~p.", [ Unexpected ] ),
+	throw( { invalid_graph_stream_setting, Unexpected } ).
 
-	ProjName = class_GraphStreamProbe:get_project_name_from_path( ProjectPath ),
-
-	setAttribute( State, graph_infos, {
-		text_utils:string_to_binary( Hostname ), TCPPort,
-		text_utils:string_to_binary( ProjectPath ),
-		text_utils:string_to_binary( ProjName ) } ).
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -21,7 +21,7 @@
 
 
 % @doc Agent in charge of managing all <b>creation requests</b> of simulation
-% actors.
+% actors, so that notably they can be instantiated evenly onto computing nodes.
 %
 -module(class_LoadBalancer).
 
@@ -51,7 +51,8 @@
 
 
 % Determines what are the direct mother classes of this class (if any):
--define( superclasses, [ class_BroadcastingActor ] ).
+%-define( superclasses, [ class_BroadcastingActor ] ).
+-define( superclasses, [ class_Actor ] ).
 
 
 % The attributes that are specific to a load balancer are:
@@ -227,6 +228,34 @@
 
 
 % Implementation notes.
+%
+% Initially, the load balancer was a classical actor, yet, for larger
+% simulations, the very first diasca lasted for a lot longer than the others due
+% the load balancer having many onFirstDiasca messages to send in order to
+% account for the very numerous initial actor creations.
+%
+% This drove the addition of the class_BroadcastingActor generic class, for all
+% actors having to send the same actor message to many actors: instead of
+% sending all these messages immediately (in the current diasca), a broadcasting
+% actor sends them by fixed-sized chunks (one chunk per diasca), over as many
+% diascas as needed.
+%
+% For the load balancer, that message was the 'onFirstDiasca' atom. In that case
+% there was a drawback though, in the case of initial actors knowing each other
+% (e.g. contributors and beneficiaries, parents and children, etc.) from the
+% start and interacting immediately.
+%
+% For example, from the simulation case an initial actor A1 could be created
+% first, its PID obtained and fed when creating another initial actor A2; when
+% the simulation started, due to the spreading over diascas, A2 could receive
+% its onFirstDiasca message first, at diasca D, and from it send an actor
+% message to A1 - which may receive its own onFirstDiasca message at a diasca
+% strictly higher than D.
+%
+% As it was breaking the semantics (the first actor message received by an actor
+% must be its onFirstDiasca - otherwise its logic becomes unnecessarily
+% complex), we reverted to the load balancer being a standard actor, instead of
+% a broadcasting one.
 
 
 
@@ -498,8 +527,9 @@ construct( State, PlacementPolicy, Nodes, NodeAvailabilityTolerance,
 										message_ordering_mode=OrderingMode },
 
 	% By convention the load balancer assigns to itself the first AAI, 1:
-	InitialState = class_BroadcastingActor:construct( State, BalancerSettings,
-										?trace_categorize("Load Balancer") ),
+	%InitialState = class_BroadcastingActor:construct(
+	InitialState = class_Actor:construct(
+		State, BalancerSettings, ?trace_categorize("Load Balancer") ),
 
 	% Then the class-specific actions:
 
@@ -680,7 +710,6 @@ createInitialInstancesFromFiles( State, DeploymentManagerPid, EngineRootDir ) ->
 								DeploymentManagerPid ),
 
 	LastState = case ?getAttr(initialisation_files) of
-
 
 		[] ->
 			% No need to create a useless instance loading process then:
@@ -1006,7 +1035,7 @@ check_nested_initial_creations( InstCreationSpecs, State ) ->
 	%
 	cond_utils:if_defined(
 
-		simdiasca_allow_reproducible_nested_initial_creations,
+		sim_diasca_allow_reproducible_nested_initial_creations,
 
 		% So here a single actor creator process is expected to exist, in order
 		% that initial creations remain reproducible:
@@ -1020,7 +1049,7 @@ check_nested_initial_creations( InstCreationSpecs, State ) ->
 			begin
 				?error_fmt( "A nested initial actor creation has been "
 					"detected, whereas the engine was no built with the "
-					"'simdiasca_allow_reproducible_nested_initial_creations' "
+					"'sim_diasca_allow_reproducible_nested_initial_creations' "
 					"token. The nested creation specification was:~n  ~p",
 					[ InstCreationSpecs ] ),
 				throw( nested_initial_actor_creations_not_enabled )
@@ -1436,11 +1465,13 @@ spawn_successful_helper( CreatedActorPid, State ) ->
 			%   "~w of the creation of runtime actor ~w (tag: ~p).",
 			%   [ InitiatorPid, CreatedActorPid, ActorTag ] ),
 
-			FirstSentState = class_BroadcastingActor:send_actor_message(
+			%FirstSentState = class_BroadcastingActor:send_actor_message(
+			FirstSentState = class_Actor:send_actor_message(
 				InitiatorPid, { onActorCreated, [ CreatedActorPid, ActorTag ] },
 				State ),
 
-			SecondSentState = class_BroadcastingActor:send_actor_message(
+			%SecondSentState = class_BroadcastingActor:send_actor_message(
+			SecondSentState = class_Actor:send_actor_message(
 				CreatedActorPid, onFirstDiasca, FirstSentState ),
 
 			{ NewReqList, SecondSentState }
@@ -1551,7 +1582,7 @@ getActorCreationInformation( State, _IdentifierInfo=none, LineNumber,
 	{ SelectedState, SelectedNode } = select_node_by_heuristic( State ),
 
 	{ LastState, ActorSettings } = register_created_instance( SelectedNode,
-										LineNumber, Classname, SelectedState ),
+		LineNumber, Classname, SelectedState ),
 
 	wooper:return_state_result( LastState, { SelectedNode, ActorSettings } );
 
@@ -1591,7 +1622,7 @@ getActorCreationInformationFromHint( State, PlacementHint, LineNumber,
 	SelectedNode = select_node_based_on_hint( PlacementHint, State ),
 
 	{ LastState, ActorSettings } = register_created_instance( SelectedNode,
-										LineNumber, Classname, State ),
+		LineNumber, Classname, State ),
 
 	wooper:return_state_result( LastState, { SelectedNode, ActorSettings } ).
 
@@ -1663,10 +1694,10 @@ register_created_instance( TargetNode, LineNumber, Classname, State ) ->
 	NewActorCount = ?getAttr(current_actor_count) + 1,
 
 	NewClassTable = record_creation_in_class_table( Classname,
-												?getAttr(instances_per_class) ),
+		?getAttr(instances_per_class) ),
 
 	NewNodeTable = record_creation_in_node_table( TargetNode,
-												?getAttr(instances_per_node) ),
+		?getAttr(instances_per_node) ),
 
 	% We have not the PID here, hence we cannot updated initial_actors.
 
@@ -1710,8 +1741,11 @@ actSpontaneous( State ) ->
 	%                       time_utils:get_textual_timestamp() ] ),
 
 	% Will ultimately exhaust the initial_actors list:
-	TriggeredState = class_BroadcastingActor:send_actor_messages_over_diascas(
-						initial_actors, onFirstDiasca, State ),
+	%TriggeredState = class_BroadcastingActor:send_actor_messages_over_diascas(
+	%   initial_actors, onFirstDiasca, State ),
+
+	TriggeredState = class_Actor:send_actor_messages( ?getAttr(initial_actors),
+		onFirstDiasca, State ),
 
 	?debug( "All initial actors just notified of their first diasca, "
 			"waiting for their processing." ),
@@ -1728,7 +1762,7 @@ actSpontaneous( State ) ->
 
 
 % @doc Allows to keep track of actor deletion as well, in this single,
-% centralized place.
+% centralised place.
 %
 -spec notifyDeletion( wooper:state(), actor_pid(), classname(),
 					  atom_node_name() ) -> oneway_return().
@@ -1740,10 +1774,10 @@ notifyDeletion( State, _ActorPid, ActorClassname, Node ) ->
 	NewActorCount = ?getAttr(current_actor_count) - 1,
 
 	NewClassTable = record_deletion_in_class_table( ActorClassname,
-										?getAttr(instances_per_class) ),
+		?getAttr(instances_per_class) ),
 
 	NewNodeTable = record_deletion_in_node_table( Node,
-										?getAttr(instances_per_node) ),
+		?getAttr(instances_per_node) ),
 
 	wooper:return_state( setAttributes( State, [
 		{ current_actor_count, NewActorCount },
@@ -2249,10 +2283,10 @@ create_initial_actor( ActorClassname, ActorConstructionParameters, Node,
 	%                       [ ActorPid, ActorClassname, Node ] ),
 
 	NewClassTable = record_creation_in_class_table( ActorClassname,
-									?getAttr(instances_per_class) ),
+		?getAttr(instances_per_class) ),
 
 	NewNodeTable = record_creation_in_node_table( Node,
-									?getAttr(instances_per_node) ),
+		?getAttr(instances_per_node) ),
 
 	%trace_utils:debug_fmt( "NewClassTable = ~ts",
 	%                       [ table:to_string( NewClassTable ) ] ),
@@ -2261,7 +2295,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters, Node,
 	%                       [ table:to_string( NewNodeTable ) ] ),
 
 	NewSpawnTable = table:add_entry( _K=ActorPid, _V=InitiatorPid,
-									?getAttr(spawn_table) ),
+		?getAttr(spawn_table) ),
 
 	InitiatorTable = ?getAttr(initiator_requests),
 
@@ -2355,10 +2389,10 @@ create_runtime_actor( ActorClassname, ActorConstructionParameters, ActorTag,
 	%                       [ ActorPid, ActorClassname, Node ] ),
 
 	NewClassTable = record_creation_in_class_table( ActorClassname,
-									?getAttr(instances_per_class) ),
+		?getAttr(instances_per_class) ),
 
 	NewNodeTable = record_creation_in_node_table( Node,
-									?getAttr(instances_per_node) ),
+		?getAttr(instances_per_node) ),
 
 	%trace_utils:debug_fmt( "NewClassTable = ~ts",
 	%                       [ table:to_string( NewClassTable ) ] ),
@@ -2367,7 +2401,7 @@ create_runtime_actor( ActorClassname, ActorConstructionParameters, ActorTag,
 	%                       [ table:to_string( NewNodeTable ) ] ),
 
 	NewSpawnTable = table:add_entry( _K=ActorPid, _V=InitiatorPid,
-									 ?getAttr(spawn_table) ),
+		?getAttr(spawn_table) ),
 
 	InitiatorTable = ?getAttr(initiator_requests),
 
@@ -2419,8 +2453,8 @@ handle_undef_creation( ActorClassname, Node, ActorSettings,
 
 		not_found ->
 
-			CodePathString = text_utils:strings_to_string(
-								code_utils:get_code_path() ),
+			CodePathString =
+				text_utils:strings_to_string( code_utils:get_code_path() ),
 
 			Filename = code_utils:get_beam_filename( ActorClassname ),
 
@@ -2711,7 +2745,7 @@ onPostDeserialisation( State, UserData ) ->
 	NewComputingNodes = nodes(),
 
 	NodeRecords = [ create_compute_node_record_for( NodeName )
-					|| NodeName <- NewComputingNodes ],
+						|| NodeName <- NewComputingNodes ],
 
 	ReadyState = setAttribute( State, compute_nodes, NodeRecords ),
 
@@ -2733,7 +2767,7 @@ trace_state( Label, State ) ->
 	SubBullet = "    * ",
 
 	SpawnString = text_utils:format( "spawn_table: ~ts",
-					[ table:to_string( ?getAttr(spawn_table), SubBullet ) ] ),
+		[ table:to_string( ?getAttr(spawn_table), SubBullet ) ] ),
 
 	InitiatorString = text_utils:format( "initiator_requests: ~ts",
 		[ table:to_string( ?getAttr(initiator_requests), SubBullet ) ] ),
@@ -2760,7 +2794,7 @@ trace_state( Label, State ) ->
 
 	InitialActors = ?getAttr(initial_actors),
 	InitialActorString = text_utils:format( "~B initial_actors: ~p",
-							[ length( InitialActors ), InitialActors ] ),
+		[ length( InitialActors ), InitialActors ] ),
 
 	SeedString = case ?getAttr(seed_table) of
 
@@ -2780,8 +2814,7 @@ trace_state( Label, State ) ->
 				text_utils:format( "base_actor_identifier: ~p",
 								   [ ?getAttr(base_actor_identifier) ] ),
 				text_utils:format( "current_actor_count (including this "
-					"load balancer): ~p",
-					[ ?getAttr(current_actor_count) ] ),
+					"load balancer): ~p", [ ?getAttr(current_actor_count) ] ),
 				PerClassString,
 				PerNodeString,
 				InitialActorString,

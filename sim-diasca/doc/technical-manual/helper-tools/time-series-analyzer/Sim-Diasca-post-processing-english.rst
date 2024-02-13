@@ -33,7 +33,7 @@ For a curve,  identified processings of interest are:
 
 - perform decimation, to reduce the number of samples
 
-- change scale (ex: switch to logarithmic, reshape to fit into a ``0..1`` interval, etc.)
+- change scale (e.g. switch to logarithmic, reshape to fit into a ``0..1`` interval, etc.)
 
 
 :raw-html:`<center><img src="xkcd-log_scale.png" id="responsive-image-medium"></img></center>`

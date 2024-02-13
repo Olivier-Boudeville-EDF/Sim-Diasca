@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -537,8 +537,8 @@ init( TraceFilename, TraceType, TraceAggregatorPid ) ->
 			maybe( pid() ) ) -> static_return( supervisor_outcome() ).
 init( TraceFilename, TraceType, TraceAggregatorPid, MaybeWaitingPid ) ->
 
-	%trace_utils:info_fmt( "Initializing trace supervisor for file '~ts' and "
-	%                      "trace type ~p.", [ TraceFilename, TraceType ] ),
+	%trace_utils:info_fmt( "Initialising the trace supervisor for file '~ts' "
+	%                      "and trace type ~p.", [ TraceFilename, TraceType ] ),
 
 	% By default (with no specific option) a synchronous supervisor is wanted
 	% (wait for its launch to complete):

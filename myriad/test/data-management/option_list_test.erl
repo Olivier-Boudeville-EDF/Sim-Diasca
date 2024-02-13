@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,7 +26,7 @@
 % Creation date: Saturday, February 20, 2010.
 
 
-% Unit tests for the option list implementation.
+% @doc Unit tests for the option list implementation.
 %
 % See the option_list.erl tested module.
 %
@@ -50,34 +50,34 @@ run() ->
 	SingleOptionList = option_list:set( {blue,2}, option_list:new() ),
 
 	InitialOptionList = [ {yellow,1}, {blue,1}, {red,1}, {green,1},
-						 {purple,1} ],
+						  {purple,1} ],
 
 	test_facilities:display( "Initial option list: ~w.",
-							[InitialOptionList] ),
+		[ InitialOptionList ] ),
 
 	BlackOptionList = option_list:set( {black,1}, InitialOptionList ),
 	test_facilities:display( "Option list with black entry added: ~w.",
-			   [BlackOptionList] ),
+		[ BlackOptionList ] ),
 
 	RedOptionList = option_list:set( {red,2}, BlackOptionList ),
 	test_facilities:display( "Option list with red entry incremented: ~w.",
-			   [RedOptionList] ),
+		[ RedOptionList ] ),
 
 	EndpointOptionList = option_list:set( {black,2},
 		option_list:set( {purple,2}, RedOptionList ) ),
 
 	test_facilities:display( "Option list with endpoints updated: ~w.",
-			   [EndpointOptionList] ),
+		[ EndpointOptionList ] ),
 
 	SecondOptionList = option_list:set( {magenta,1}, SingleOptionList ),
 	UpdatingOptionList = option_list:set( {black,3}, SecondOptionList ),
 
 	UpdatedOptionList = option_list:update_with(
-						EndpointOptionList, UpdatingOptionList),
+		EndpointOptionList, UpdatingOptionList ),
 
 	test_facilities:display( "Update of previous option list "
-			"with option_list ~w is: ~w.",
-			[ UpdatingOptionList, UpdatedOptionList ] ),
+		"with option_list ~w is: ~w.",
+		[ UpdatingOptionList, UpdatedOptionList ] ),
 
 	3 = option_list:get( black ,UpdatedOptionList ),
 

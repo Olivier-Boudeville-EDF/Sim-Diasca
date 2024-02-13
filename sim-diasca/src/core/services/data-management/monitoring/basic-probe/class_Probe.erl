@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -34,17 +34,7 @@
 
 % For an easier debugging/testing, see probe_rendering_test.erl and
 % class_Probe_test.erl.
-%
-% See http://www.gnuplot.info/docs/gnuplot.html for graph generation.
-%
-% Needs:
-%
-% - gnuplot version 5.0 or higher is preferred (and 4.2 or above is required);
-% see comments in get_probe_settings/4 (key_options) to support older gnuplot
-% versions
-%
-% - an image viewer, eog (eye of gnome); see the executable_utils module for
-% viewers
+
 
 
 % Regarding gnuplot:
@@ -62,42 +52,12 @@
 % useful. So we stick to a gnuplot host-local check at each probe creation -
 % even if no rendering may finally happen.
 
+% Defaults corresponding to zones are applied with fillsteps (see
+% apply_extra_settings/3).
+
 
 % Regarding zones:
-%
-% Zones are different from "stacked histograms" (see 'rowstacked') insofar as a
-% zone corresponds just to the filling of the area between two curves, whereas a
-% stacked histogram should stack (add) values read from columns; for example,
-% if, for a given abscissa, V1 can be read for column C1 and V2 for column C2,
-% then a zone would spread in [C1,C2] whereas a stacked histogram would
-% represent a first "zone" between the abscissa axis and C1, and a second zone
-% between C1 and C1+C2 (*not* C2).
-%
-% The simplest way (other options, such as using 'rowstacked' gnuplot histograms
-% or filledcurves, are considerably less convenient/more problematic) to display
-% with gnuplot such "stacked histograms" is to use our zone feature, and thus to
-% preprocess entries so that they stack additively; e.g. instead of having raw
-% samples like {Timestamp, C1, C2, C3}, the probe should be fed with {Timestamp,
-% C1, C1+C2, C1+C2+C3} samples, and curves shall be rendered from the topmost to
-% the bottom one (i.e. C1+C2+C3, C1+C2 and C1 here), so that the C1+C2 is drawn
-% over C1+C2+C3, and so on; refer to send_stacked_data/3 to have it done for
-% you.
-%
-% We however used filledcurves, an approach supposed to be more robust, yet it
-% does not (and probably cannot) render as the desired histograms: with
-% filledcurves two data points are linked by a line segment (which of course
-% gets filled), leading to unwanted filled triangles (picture a curve equal to
-% zero until being equal to 1 at timestamp T: the area delimited by the previous
-% timestamp and T will be an upright triangle raising from 0 to 1, whereas we
-% would want a step from 0 to 1 at T. So we now use normal curves drawn as
-% "boxes" (actually 'fillsteps').
-%
-% When rendering them, generally a fill style is needed (generally solid),
-% specific zone colors are specified, ordinates shall start at zero (no
-% autoscaling: y_range = {0,undefined}) and no zone based on abscissa_top is
-% requested. Corresponding defaults are applied with fillsteps (see
-% apply_extra_settings/3).
-%
+
 % Once a probe with zones has been defined, it can be fed:
 %
 % - either with data that has already been adequately summed by the user, so
@@ -120,8 +80,8 @@
 % See also probe_rendering_test.erl for a full, minimal example thereof.
 
 
-% A (basic, plain) probe aggregates a series of values for a series of ticks and
-% generates an appropriate data file for gnuplot.
+% A (basic, plain) probe aggregates a series of values for a series of ticks
+% and, thanks to plot_utils, generates an appropriate data file for gnuplot.
 %
 % Note: ticks are expected to arrive correctly ordered (increasing timestamps),
 % although gnuplot seems able to overcome it.
@@ -159,7 +119,7 @@
 % defined their first element (even if it is with the same value).
 
 % Note that samples are tuples (e.g. Sample={2, 1, undefined, 4}), even if there
-% is only one curve (e.g. Sample={7}, not Sample=7).
+% is only one curve (e.g. Sample={7}, not Sample=7), not tuploids.
 
 % Based on the enabled_producer attribute, a probe could decide not to perform
 % anything if deactivated, to avoid wasting resources.
@@ -192,43 +152,12 @@
 % ticks.
 
 
-% For the probe records:
+% For the probe_options record:
 -include("class_Probe.hrl").
 
--type probe_label() :: #probe_label{}.
-% Fully defines a label on a probe rendering.
 
-
--type label_location() :: gui:point().
-% Corresponds to the 2D integer coordinates of the label on the plot.
-
-
--type label_text() :: bin_string().
-% Actual text of the label.
-%
-% Note that texts can be "enhanced" (e.g. "for some {/:Bold important} text").
-
-
--type label_color() :: color().
-% Color of the text (default: "blue").
-
-
--type label_position() :: 'left' | 'center' | 'right'.
-% Describes the position of the text based on to the specified location for the
-% label.
-
-
--type label_orientation() :: 'upright' | int_degrees().
-% Describes whether the text of the label should be rendered with an angle, from
-% the abscissa axis.
-
-
--type curve_count() :: count().
-
-
--type gnuplot_version() :: basic_utils:two_digit_version().
-
-
+% For the plot defines:
+-include_lib("myriad/include/plot_utils.hrl").
 
 
 % Probes can be used as result producers (the usual case) or, in some specific
@@ -261,7 +190,7 @@
 % Attributes that are specific to a (basic) probe instance are:
 -define( class_attributes, [
 
-	{ settings, probe_settings(), "settings applying to that probe" },
+	{ settings, plot_settings(), "plot settings applying to that probe" },
 
 	{ command_file_up_to_date, boolean(), "tells whether the command file is "
 	  "considered as 'clean', i.e. as existing and up-to-date" },
@@ -273,7 +202,7 @@
 	  "thus involving slower I/O and many writings)" },
 
 	{ is_tracked_producer, boolean(), "tells whether this probe is a tracked "
-	  "result producer, i.e. a producer which will be requested by the result "
+	  "result producer, i.e. a producer that will be requested by the result "
 	  "manager to return actual simulation results" },
 
 	{ probe_dir, bin_directory_path(), "corresponds to the directory "
@@ -283,17 +212,6 @@
 	{ curve_count, curve_count(), "the number of curves carrying the "
 	  "data of the probe, corresponding to the number of sample data this "
 	  "probe is to be fed with (cached, precomputed value)" },
-
-	{ curve_entries, [ curve_entry() ],
-	  "an ordered list of {CurveIndex, BinCurveName, BinPlotSuffix} triplets, "
-	  "with CurveIndex keeping track of the order according to which the "
-	  "curves were declared and fed (so that, prior to generating a report, "
-	  "curves can be reordered while being still associated to their values), "
-	  "and with curve names being binaries; the order in this list dictates "
-	  "the actual rendering order of curves that will be performed" },
-
-	{ zone_entries, [ zone_entry() ],
-	  "a list of definitions of zones, between two curves in a 2D plot" },
 
 	{ tick_offset, probe_tick(), "a value, by default set to zero, that will "
 	  "be subtracted to all the ticks sent with sample data; for example, if "
@@ -335,9 +253,6 @@
 	{ data_file, maybe( file() ),
 	  "the file object (if any) in which sample data is written" },
 
-	{ row_format_string, maybe( ustring() ),
-	  "a precomputed format string (if any) used to write new samples" },
-
 	{ gnuplot_version, maybe( gnuplot_version() ), "version of gnuplot "
 	  "(if any) that will be used on this computer during this simulation" },
 
@@ -372,19 +287,16 @@
 
 
 % Helper functions.
--export([ wait_result_declaration_outcome/2, get_probe_settings/4,
+-export([ wait_result_declaration_outcome/2, get_plot_settings/4,
 		  format_row/4, write_row/3, write_row/4 ]).
 
 
 
 % Export to share code with the datalogger and al:
--export([ transform_curve_names/1, transform_declared_zones/2,
-		  add_probe_index_back/2, get_command_filename/1,
-		  generate_command_file/6, get_data_filename/1, get_report_filename/1,
-		  get_plot_command/5, check_probe_directory/1, get_basic_options/1,
-		  get_label_definitions/1, get_x_range_option/1, get_y_range_option/1,
-		  get_x_ticks_option/1, get_y_ticks_option/1,
-		  write_header/6, forge_format_string_for/1 ]).
+-export([ get_command_filename/1, generate_command_file/6,
+		  get_data_filename/1, get_report_filename/1,
+		  check_probe_directory/1,
+		  write_header/6 ]).
 
 
 
@@ -394,52 +306,7 @@
 
 
 
-% Type section of external interactions with a probe:
-
--type special_curve_names() :: 'abscissa_top' | 'abscissa_bottom'.
-% Identifiers of pseudo-curves (Ordinate = constant), corresponding respectively
-% to the highest ordinate value and lowest one.
-
-
-% (we use plain strings here, as opposed to the internal representation)
-
-
--type declared_curve_name() :: ustring().
--type declared_extended_curve_name() :: ustring() | special_curve_names().
-
--type declared_zone_name() :: ustring().
-% The name of a user-specified zone.
-
--type declared_zone() :: { declared_zone_name(),
-		{ declared_extended_curve_name(), declared_extended_curve_name() } }.
-% The definition of a user-specified zone.
-
-
--type plot_style() :: 'linespoints' % (default)
-					| 'lines'
-					| 'points'
-					| 'boxes'
-					| 'histograms'
-					| 'filledcurves'
-					| 'fillsteps'
-					| atom(). % As many others exist.
-% Plot style (default being 'linespoints'):
-%
-% (see http://gnuplot.sourceforge.net/docs_4.2/node145.html)
-
-
-
 % Type section for internal data:
-
-
--type extended_curve_name() :: curve_index() | special_curve_names().
-% Extended to allow for zone definitions.
-%
-% (knowing that the name of a curve is a binary)
-
-
--type point_size_factor() :: pos_integer().
-% The factor by which the default point size should be multiplied.
 
 
 -type name_options() :: probe_name() | { probe_name(), probe_options() }.
@@ -452,116 +319,14 @@
 % A probe may not be a wanted result producer.
 
 
--type string_curve_name() :: text_utils:ustring().
-% The external name for a curve.
-
-
--type curve_name() :: text_utils:bin_string().
-% The internal name for a curve.
-
-
--type curve_index() :: curve_count().
-% Curves are numbered internally, and correspond to the position of data in sent
-% samples.
-
-
--type curve_plot_suffix() :: bin_string().
-% A (binary string) suffix (e.g. <<"noenhanced with filledcurves">>, <<"with
-% boxes">> or <<"with boxes lt rgb '#f0f0f0'">>) to be added to the plot command
-% of the corresponding curve.
-
-
--type curve_entry() :: { curve_index(), curve_name(), curve_plot_suffix() }.
-% Information specific to the rendering of a curve.
-
-
--type curve_entries() :: [ curve_entry() ].
-
-
--type curve_offset() :: count().
-% Applies notably if using timestamps that account for more than one field in
-% data.
-
--type zone_name() :: bin_string().
-% Tne name of a zone.
-
-
--type zone_plot_suffix() :: bin_string().
-% A (binary string) suffix (e.g. <<"fillcolor red">>) to be added to the plot
-% command of the corresponding zone.
-
-
--type zone_entry() ::
-		{ zone_name(), { extended_curve_name(), extended_curve_name() },
-		  zone_plot_suffix() }.
-% Information specific to the rendering of a zone.
-
-
--type zone_entries()  :: [ zone_entry() ].
-
-
--type rgb_color_spec() :: ustring().
-% For example "3ab001" for lightgreen.
-
--type extra_curve_settings() :: rgb_color_spec().
-% The color of a given curve.
-
--type extra_zone_settings() :: rgb_color_spec().
-% The color of a given zone.
-
-
--type sample_data() :: tuple().
-% A tuple of data (numbers) to be sent as sample to a probe-like result
-% producer.
-
-
--type tick_option() :: maybe( 'rotate' ).
-% Option applying to label ticks.
-
-
--type ticks_option() :: maybe( ustring() ).
-% Option applying to ticks (e.g. axis, border, start, font, textcolor, etc.) for
-% a fine control of the major (labelled) tics on an axis.
-%
-% (e.g. see Xtics, in http://www.gnuplot.info/docs_4.2/node295.html)
-
-
--type timestamp_time_format() ::
-
-	% Time then date, on a single line:
-	'single_line'
-
-	% Time, newline, date, hence on two lines:
-  | 'double_line'.
-% The display time format to use for timestamped axes.
-
-
-
--type command_element() :: ustring().
-% Element of a gnuplot command.
-
-
--type timestamp_string() :: ustring().
-% String describing a simulated time (typically either a tick or a textual
-% timestamp).
-
-
--type timestamp_bin_string() :: bin_string().
-
-
-
--type probe_settings() :: #probe_settings{}.
-% Records the (rendering) settings of a probe.
-%
-% Used notably by plain probes and by the datalogger.
-
-
 -type probe_options() :: #probe_options{}.
-% Describes management (not rendering) options that apply to (basic) probes.
+% Describes the management (not rendering) options that apply to (basic) probes.
 
 -type setting_id() :: 'global_plot_style' | atom().
+% An identifier of a probe extra setting.
 
 -type setting_value() :: plot_style() | term().
+% A value associated to the identifier of a probe extra setting.
 
 
 -type settings_table() :: table( setting_id(), setting_value() ).
@@ -576,7 +341,7 @@
 %  options (see apply_extra_settings/3)
 %
 %  - canvas_size -> {W :: length(), H :: length()} (e.g. {1600, 1200})
-
+%/
 %  - curve_colors -> [color()] (e.g. colors like 'red' or "ff0000")
 %
 %  - zone_colors -> [color()] (e.g. colors like 'red' or "ff0000")
@@ -601,54 +366,19 @@
 %						 _DisabledColor="777777"]}]),
 
 
+-type sample_data() :: math_utils:sample_data().
+% A tuple of data (numbers) to be sent as sample to a probe-like result
+% producer.
+
 
 % Exported so that for example class_Actor can reference them:
 -export_type([ probe_name/0, bin_probe_name/0,
-			   probe_tick/0, probe_label/0,
-			   label_location/0, label_text/0, label_color/0, label_position/0,
-			   label_orientation/0,
-			   curve_count/0, gnuplot_version/0,
-			   probe_name_init/0, special_curve_names/0,
-			   declared_curve_name/0, declared_extended_curve_name/0,
-			   declared_zone_name/0, declared_zone/0,
-			   plot_style/0, extended_curve_name/0, point_size_factor/0,
-			   name_options/0,
+			   probe_tick/0,
+			   probe_name_init/0, name_options/0,
 			   probe_pid/0, probe_ref/0,
-			   string_curve_name/0, curve_name/0,
-			   curve_index/0, curve_plot_suffix/0,
-			   curve_entry/0, curve_entries/0, curve_offset/0,
-			   zone_name/0, zone_plot_suffix/0, zone_entry/0, zone_entries/0,
-			   rgb_color_spec/0, extra_curve_settings/0, extra_zone_settings/0,
-			   sample_data/0, tick_option/0, ticks_option/0,
-			   timestamp_time_format/0,
-			   timestamp_string/0, timestamp_bin_string/0,
-			   probe_settings/0, probe_options/0,
+			   sample_data/0,
+			   probe_options/0,
 			   settings_table/0, setting_id/0, setting_value/0 ]).
-
-
-
-% To have rotated tick labels:
-
-% Rotate clockwise (hence end of text below beginning):
--define( rotate_cw_tick_label_option, "rotate by - 45" ).
-
-% Rotate counter-clockwise (hence end of text above beginning):
-% (note the right alignment here, otherwise the labels run from the base of the
-% graph upwards)
-%
--define( rotate_ccw_tick_label_option, "rotate by 45 right" ).
-
-
-% To centralize basic open flags:
-%
-% (exclusive used to avoid that two probes bearing the same name by mistake end
-% up writing to the same files simultaneously)
-%
--define( base_open_flags, [ write, exclusive ] ).
-
-
-% Not all plot features are available in older gnuplot versions:
--define( gnuplot_reference_version, { 4, 2 } ).
 
 
 % Must be included before class_TraceEmitter header:
@@ -664,14 +394,15 @@
 
 % Shorthands:
 
--type count() :: basic_utils:count().
 -type user_data() :: basic_utils:user_data().
 
 -type ustring() :: text_utils:ustring().
--type bin_string() :: text_utils:bin_string().
+-type any_string() :: text_utils:any_string().
 -type format_string() :: text_utils:format_string().
 -type title() :: text_utils:title().
+-type any_title() :: text_utils:any_title().
 -type label() :: text_utils:label().
+-type any_label() :: text_utils:any_label().
 
 -type file_name() :: file_utils:file_name().
 -type directory_path() :: file_utils:directory_path().
@@ -679,12 +410,12 @@
 -type executable_path() :: file_utils:executable_path().
 -type file() :: file_utils:file().
 
--type int_degrees() :: unit_utils:int_degrees().
-
 -type point() :: gui:point().
--type color() :: gui_color:color().
 -type length() :: gui:length().
 -type coordinate() :: gui:coordinate().
+
+-type color() :: gui_color:color().
+-type rgb_hexastring() :: gui_color:rgb_hexastring().
 
 -type extra_data() :: class_Serialisable:extra_data().
 
@@ -695,6 +426,26 @@
 %
 % This includes basic engine-level information, such as layer versions,
 % simulation name, tick duration, etc.
+
+
+-type declared_curve_name() :: plot_utils:declared_curve_name().
+-type string_curve_name() :: plot_utils:string_curve_name().
+-type declared_zone() :: plot_utils:declared_zone().
+-type plot_style() :: plot_utils:plot_style().
+-type curve_entry() :: plot_utils:curve_entry().
+-type curve_index() :: plot_utils:curve_index().
+-type curve_count() :: plot_utils:curve_count().
+-type zone_entry() :: plot_utils:zone_entry().
+-type tick_option() :: plot_utils:tick_option().
+-type timestamp_bin_string() :: plot_utils:timestamp_bin_string().
+-type ticks_option() :: plot_utils:ticks_option().
+-type extra_curve_settings() :: plot_utils:extra_curve_settings().
+-type extra_zone_settings() :: plot_utils:extra_zone_settings().
+-type point_size_factor() :: plot_utils:point_size_factor().
+-type label_orientation() :: plot_utils:label_orientation().
+-type label_position() :: plot_utils:label_position().
+-type gnuplot_version() :: plot_utils:gnuplot_version().
+-type plot_settings() :: plot_utils:plot_settings().
 
 
 
@@ -840,12 +591,12 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 	% Then the class-specific actions:
 
 	% Results in [{curve_index(), curve_name(), curve_plot_suffix()}]:
-	CurveEntries = transform_curve_names( CurveNames ),
+	CurveEntries = plot_utils:transform_curve_names( CurveNames ),
 
 	%trace_utils:debug_fmt( "Initial curve entries: ~p.", [ CurveEntries ] ),
 
 	% Results in [zone_entry()]:
-	ZoneEntries = transform_declared_zones( Zones, CurveEntries ),
+	ZoneEntries = plot_utils:transform_declared_zones( Zones, CurveEntries ),
 
 	%trace_utils:debug_fmt( "Initial zone entries: ~p.", [ ZoneEntries ] ),
 
@@ -859,7 +610,7 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 		  MaybeBinProbeDir ], self() },
 
 	ProbeBaseSettings =
-		get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ),
+		get_plot_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ),
 
 	{ ProbeSettings, ExtraCurveSettings, ExtraZoneSettings } =
 		apply_extra_settings( MaybeExtraSettingsTable, ProbeBaseSettings,
@@ -919,7 +670,6 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 			CommandState;
 
 		 false ->
-
 			check_probe_directory( ProbeDir ),
 
 			file_utils:remove_file_if_existing( DataFilename ),
@@ -987,7 +737,6 @@ destruct( State ) ->
 			ok;
 
 		DataFile ->
-
 			case ?getAttr(deferred_data_writes) of
 
 				true ->
@@ -1076,8 +825,10 @@ setData( State, Tick, Samples ) ->
 
 		% Implied: using a proper "set timefmt", using two levels of quoting
 		TickDuration ->
+
 			Secs = class_Actor:convert_ticks_to_seconds_explicit( Tick,
-															TickDuration ),
+				TickDuration ),
+
 			IntegerSecs = round( Secs ),
 			Timestamp = calendar:gregorian_seconds_to_datetime( IntegerSecs ),
 
@@ -1096,10 +847,9 @@ setData( State, Tick, Samples ) ->
 	case ?getAttr(deferred_data_writes) of
 
 		true ->
-
 			% Watch out the memory footprint in long simulations!
 			wooper:return_state( appendToAttribute( TrackedState,
-					data_table, { TimestampBinStr, Samples } ) );
+				data_table, { TimestampBinStr, Samples } ) );
 
 		false ->
 			RowFormatStr = case ?getAttr(row_format_string) of
@@ -1125,14 +875,14 @@ setData( State, Tick, Samples ) ->
 
 
 
-% @doc Declares an additional curve, whose name is specified as a plain string.
+% @doc Declares an additional curve, whose name is specified.
 %
 % By default it will be rendered after the already declared curves.
 %
 % Note: all samples received afterwards are then expected to take it into
 % account (sending one more value, or the atom 'undefined', for that curve).
 %
--spec addCurve( wooper:state(), string_curve_name() ) -> oneway_return().
+-spec addCurve( wooper:state(), declared_curve_name() ) -> oneway_return().
 addCurve( State, CurveName ) ->
 
 	%trace_utils:debug_fmt( "addCurve '~ts' for probe '~ts'.",
@@ -1151,7 +901,7 @@ addCurve( State, CurveName ) ->
 
 
 
-% @doc Declares additional curves, whose names are specified as plain strings.
+% @doc Declares additional curves, whose names are specified.
 %
 % By default they will be rendered in their specified order, after the already
 % declared curves.
@@ -1160,7 +910,7 @@ addCurve( State, CurveName ) ->
 % account (sending as many additional values, or the atom 'undefined', for these
 % curves).
 %
--spec addCurves( wooper:state(), [ string_curve_name() ] ) -> oneway_return().
+-spec addCurves( wooper:state(), [ declared_curve_name() ] ) -> oneway_return().
 addCurves( State, CurveNames ) ->
 
 	%trace_utils:debug_fmt( "addCurves '~p' for probe '~ts'.",
@@ -1184,14 +934,14 @@ addCurves( State, CurveNames ) ->
 
 
 % (helper)
--spec add_curve( string_curve_name(), curve_count(), [ curve_entry() ] ) ->
+-spec add_curve( declared_curve_name(), curve_count(), [ curve_entry() ] ) ->
 						{ curve_count(), [ curve_entry() ] }.
 add_curve( CurveName, CurveCount, CurveEntries ) ->
 
 	NewCurveCount = CurveCount + 1,
 
-	NewCurveEntry = { NewCurveCount, text_utils:string_to_binary( CurveName ),
-					  get_default_curve_plot_suffix() },
+	NewCurveEntry = { NewCurveCount, text_utils:ensure_binary( CurveName ),
+					  plot_utils:get_default_curve_plot_suffix() },
 
 	NewCurveEntries = list_utils:append_at_end( NewCurveEntry, CurveEntries ),
 
@@ -1200,8 +950,8 @@ add_curve( CurveName, CurveCount, CurveEntries ) ->
 
 
 % @doc Sets the specified curve to the specified color.
--spec setCurveColor( wooper:state(), string_curve_name(), rgb_color_spec() ) ->
-			oneway_return().
+-spec setCurveColor( wooper:state(), declared_curve_name(),
+					 rgb_hexastring() ) -> oneway_return().
 setCurveColor( State, CurveName, RGBColorSpecStr ) ->
 
 	UpdateState = updateCurveEntry( State, CurveName,
@@ -1212,13 +962,13 @@ setCurveColor( State, CurveName, RGBColorSpecStr ) ->
 
 
 % @doc Updates the entry of the specified curve with the specified extra
-% settings (currently a RGB color specified as a plain string, like "FFC0CB").
+% settings (currently a RGB color specified as a plain string, like "ffc0cb").
 %
--spec updateCurveEntry( wooper:state(), string_curve_name(),
+-spec updateCurveEntry( wooper:state(), declared_curve_name(),
 						extra_curve_settings() ) -> oneway_return().
 updateCurveEntry( State, CurveName, ExtraCurveSettings ) ->
 
-	BinCurveName = text_utils:string_to_binary( CurveName ),
+	BinCurveName = text_utils:ensure_binary( CurveName ),
 
 	CurveEntries = ?getAttr(curve_entries),
 
@@ -1237,7 +987,8 @@ update_curve_entry_for( BinCurveName, _ExtraCurveSettings, _CurveEntries=[],
 	?error_fmt( "Requested to update curve '~ts' whereas it is not known "
 		"of this probe (known curves: ~ts).",
 		[ BinCurveName, text_utils:strings_to_string(
-		  [ CName || { _CIndex, CName, _CSuff } <- lists:reverse( Acc ) ] ) ] ),
+			[ CName || { _CIndex, CName, _CSuff }
+							<- lists:reverse( Acc ) ] ) ] ),
 
 	throw( { curve_not_known, text_utils:binary_to_string( BinCurveName ) } );
 
@@ -1247,12 +998,12 @@ update_curve_entry_for( BinCurveName, ExtraCurveSettings,
 		_CurveEntries=[ { CIndex, BinCurveName, CPlotSuffix } | T ], Acc,
 		_State ) ->
 
-	% Currently we expect only a color string:
+	% Currently we expect only a color (RGB) hexastring:
 	case is_list( ExtraCurveSettings ) of
 
 		true ->
-			NewCPlotSuffix = text_utils:bin_format( "~ts lt rgb \"#~ts\"",
-										[ CPlotSuffix, ExtraCurveSettings ] ),
+			NewCPlotSuffix = text_utils:bin_format( "~ts lt rgb \"~ts\"",
+				[ CPlotSuffix, ExtraCurveSettings ] ),
 
 			NewCurveEntry = { CIndex, BinCurveName, NewCPlotSuffix },
 
@@ -1288,7 +1039,7 @@ getCurveRenderOrder( State ) ->
 
 	% Extract the curve name (order preserved):
 	PlainNames = [ text_utils:binary_to_string( element( 2, CurveEntry ) )
-					|| CurveEntry <- CurveEntries ],
+						|| CurveEntry <- CurveEntries ],
 
 	%trace_utils:debug_fmt( "Returned curve render order: ~p", [ PlainNames ] ),
 
@@ -1299,10 +1050,10 @@ getCurveRenderOrder( State ) ->
 % @doc Sets the list of curve names, sorted according to the desired rendering
 % order.
 %
-% Names is a list of plain strings that must correspond to a permutation of the
-% list that would be returned by getCurveEntries/1.
+% Names is a list of (any kind of) strings that must correspond to a permutation
+% of the list that would be returned by getCurveEntries/1.
 %
--spec setCurveRenderOrder( wooper:state(), [ string_curve_name() ] ) ->
+-spec setCurveRenderOrder( wooper:state(), [ declared_curve_name() ] ) ->
 									oneway_return().
 setCurveRenderOrder( State, Names ) ->
 
@@ -1312,8 +1063,8 @@ setCurveRenderOrder( State, Names ) ->
 	case length( Names ) of
 
 		Len ->
-
-			NewCurveEntries = add_probe_index_back( Names, CurveEntries ),
+			NewCurveEntries =
+				plot_utils:add_plot_index_back( Names, CurveEntries ),
 
 			%trace_utils:debug_fmt( "Set curve render order: ~p.",
 			%                       [ NewCurveEntries ] ),
@@ -1332,37 +1083,38 @@ setCurveRenderOrder( State, Names ) ->
 
 
 
-% @doc Sets the plot settings to the ones specified as a plain string (e.g.
-% "histograms", "linespoints"; "lines" is the default).
+% @doc Sets the plot settings to the ones specified as any kind of string
+% (e.g.  "histograms", `<<"linespoints">>'; "lines" is the default).
 %
--spec setPlotStyle( wooper:state(), ustring() ) -> oneway_return().
+-spec setPlotStyle( wooper:state(), any_string() ) -> oneway_return().
 setPlotStyle( State, NewPlotStyle ) ->
 
 	Settings = ?getAttr(settings),
 
 	wooper:return_state( setAttributes( State, [
 
-		{ settings, Settings#probe_settings{
-			plot_style=text_utils:string_to_binary( NewPlotStyle ) } },
+		{ settings, Settings#plot_settings{
+			plot_style=text_utils:ensure_binary( NewPlotStyle ) } },
 
 		% Forcing a later re-creation:
 		{ command_file_up_to_date, false } ] ) ).
 
 
 
-% @doc Sets the plot settings to the ones specified as a plain string (e.g.
-% "histograms", "linespoints"; "lines" is the default) and determines whether
-% the command file shall be regenerated in order to take into account the new
-% settings.
+% @doc Sets the plot settings to the ones specified as any kind of string (e.g.
+% "histograms", `<<"linespoints">>'; "lines" is the default) and determines
+% whether the command file shall be regenerated in order to take into account
+% the new settings.
 %
--spec setPlotStyle( wooper:state(), ustring(), boolean() ) -> oneway_return().
+-spec setPlotStyle( wooper:state(), any_string(), boolean() ) ->
+								oneway_return().
 setPlotStyle( State, NewPlotStyle, GenerateFile ) ->
 
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings,
-		Settings#probe_settings{
-				plot_style=text_utils:string_to_binary( NewPlotStyle ) } ),
+		Settings#plot_settings{
+			plot_style=text_utils:ensure_binary( NewPlotStyle ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1371,36 +1123,37 @@ setPlotStyle( State, NewPlotStyle, GenerateFile ) ->
 
 
 
-% @doc Sets the fill settings, specified as a plain string (e.g. "solid 1.0
+% @doc Sets the fill settings, specified as any kind of string (e.g. "solid 1.0
 % border -1").
 %
--spec setFillStyle( wooper:state(), ustring() ) -> oneway_return().
+-spec setFillStyle( wooper:state(), any_string() ) -> oneway_return().
 setFillStyle( State, NewFillStyle ) ->
 
 	Settings = ?getAttr(settings),
 
 	wooper:return_state( setAttributes( State, [
 
-		{ settings, Settings#probe_settings{
-			fill_style=text_utils:string_to_binary( NewFillStyle ) } },
+		{ settings, Settings#plot_settings{
+			fill_style=text_utils:ensure_binary( NewFillStyle ) } },
 
 		% Forcing a later re-creation:
 		{ command_file_up_to_date, false } ] ) ).
 
 
 
-% @doc Sets the fill settings, specified as a plain string (e.g. "solid 1.0
+% @doc Sets the fill settings, specified as any kind of string (e.g. "solid 1.0
 % border -1") and determines whether the command file shall be regenerated in
 % order to take into account the new settings.
 %
--spec setFillStyle( wooper:state(), ustring(), boolean() ) -> oneway_return().
+-spec setFillStyle( wooper:state(), any_string(), boolean() ) ->
+											oneway_return().
 setFillStyle( State, NewFillStyle, GenerateFile ) ->
 
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings,
-		Settings#probe_settings{
-			fill_style=text_utils:string_to_binary( NewFillStyle ) } ),
+		Settings#plot_settings{
+			fill_style=text_utils:ensure_binary( NewFillStyle ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1417,8 +1170,8 @@ setCanvasSize( State, NewWidth, NewHeight ) ->
 
 	wooper:return_state( setAttributes( State, [
 
-		{ settings, Settings#probe_settings{ canvas_width=NewWidth,
-											 canvas_height=NewHeight } },
+		{ settings, Settings#plot_settings{ canvas_width=NewWidth,
+											canvas_height=NewHeight } },
 
 		% Forcing a later re-creation:
 		{ command_file_up_to_date, false } ] ) ).
@@ -1436,8 +1189,8 @@ setCanvasSize( State, NewWidth, NewHeight, GenerateFile ) ->
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings,
-		Settings#probe_settings{ canvas_width=NewWidth,
-								 canvas_height=NewHeight } ),
+		Settings#plot_settings{ canvas_width=NewWidth,
+								canvas_height=NewHeight } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1458,7 +1211,7 @@ setPointSize( State, PointSize ) ->
 
 	wooper:return_state( setAttributes( State, [
 
-		{ settings, Settings#probe_settings{ point_size=PointSize } },
+		{ settings, Settings#plot_settings{ point_size=PointSize } },
 
 		% Forcing a later re-creation:
 		{ command_file_up_to_date, false } ] ) ).
@@ -1478,7 +1231,7 @@ setPointSize( State, PointSize, GenerateFile ) ->
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings,
-		Settings#probe_settings{ point_size=PointSize } ),
+		Settings#plot_settings{ point_size=PointSize } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1487,32 +1240,33 @@ setPointSize( State, PointSize, GenerateFile ) ->
 
 
 
-% @doc Sets the key (legend) settings, specified as a plain string (e.g. "inside
-% left", "bottom center").
+% @doc Sets the key (legend) settings, specified as any kind of string
+% (e.g. "inside left", "bottom center").
 %
--spec setKeyOptions( wooper:state(), ustring() ) -> oneway_return().
+-spec setKeyOptions( wooper:state(), any_string() ) -> oneway_return().
 setKeyOptions( State, NewOptions ) ->
 
 	Settings = ?getAttr(settings),
 
 	wooper:return_state( setAttribute( State, settings,
-		Settings#probe_settings{
-			key_options=text_utils:string_to_binary( NewOptions ) } ) ).
+		Settings#plot_settings{
+			key_options=text_utils:ensure_binary( NewOptions ) } ) ).
 
 
 
-% @doc Sets the key (legend) settings, specified as a plain string (e.g. "inside
-% left", "bottom center") and forces to regenerate the command file for taking
-% into account the new settings, if requested.
+% @doc Sets the key (legend) settings, specified as any kind of string
+% (e.g. "inside left", "bottom center") and forces to regenerate the command
+% file for taking into account the new settings, if requested.
 %
--spec setKeyOptions( wooper:state(), ustring(), boolean() ) -> oneway_return().
+-spec setKeyOptions( wooper:state(), any_string(), boolean() ) ->
+											oneway_return().
 setKeyOptions( State, NewOptions, GenerateFile ) ->
 
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings,
-		Settings#probe_settings{
-			key_options=text_utils:string_to_binary( NewOptions ) } ),
+		Settings#plot_settings{
+			key_options=text_utils:ensure_binary( NewOptions ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1531,7 +1285,7 @@ setAbscissaRange( State, MinX, MaxX ) ->
 
 	Settings = ?getAttr(settings),
 	wooper:return_state( setAttribute( State, settings,
-		Settings#probe_settings{ x_range={ MinX, MaxX } } ) ).
+		Settings#plot_settings{ x_range={ MinX, MaxX } } ) ).
 
 
 
@@ -1547,7 +1301,7 @@ setAbscissaRange( State, MinX, MaxX, GenerateFile ) ->
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings,
-		Settings#probe_settings{ x_range={ MinX, MaxX } } ),
+		Settings#plot_settings{ x_range={ MinX, MaxX } } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1567,7 +1321,7 @@ setOrdinateRange( State, MinY, MaxY ) ->
 	Settings = ?getAttr(settings),
 
 	wooper:return_state( setAttribute( State, settings,
-		Settings#probe_settings{ y_range={ MinY, MaxY } } ) ).
+		Settings#plot_settings{ y_range={ MinY, MaxY } } ) ).
 
 
 
@@ -1583,7 +1337,7 @@ setOrdinateRange( State, MinY, MaxY, GenerateFile ) ->
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings,
-		Settings#probe_settings{ y_range={ MinY, MaxY } } ),
+		Settings#plot_settings{ y_range={ MinY, MaxY } } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1601,14 +1355,14 @@ setRotatedTickLabels( State ) ->
 	Settings = ?getAttr(settings),
 
 	%wooper:return_state( setAttribute( State, settings,
-	%   Settings#probe_settings{ x_tick=text_utils:string_to_binary(
+	%   Settings#plot_settings{ x_tick=text_utils:string_to_binary(
 	%          "format \"%.0f\" border out rotate by 90 offset 0,graph 0.05"
 
 	wooper:return_state( setAttributes( State, [
 
-		{ settings, Settings#probe_settings{
+		{ settings, Settings#plot_settings{
 			x_tick=text_utils:string_to_binary(
-					?rotate_cw_tick_label_option ) } },
+				?rotate_cw_tick_label_option ) } },
 
 		{ command_file_up_to_date, false } ] ) ).
 
@@ -1623,9 +1377,9 @@ setRotatedTickLabels( State, GenerateFile ) ->
 
 	Settings = ?getAttr(settings),
 
-	UpdatedState = setAttribute( State, settings, Settings#probe_settings{
+	UpdatedState = setAttribute( State, settings, Settings#plot_settings{
 			x_tick=text_utils:string_to_binary(
-						?rotate_cw_tick_label_option ) } ),
+				?rotate_cw_tick_label_option ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1634,114 +1388,113 @@ setRotatedTickLabels( State, GenerateFile ) ->
 
 
 
-% @doc Adds a specific text label, specified as a plain string, at the specified
-% location ({X,Y} integer coordinates).
+% @doc Adds a specific text label at the specified location ({X,Y} integer
+% coordinates).
 %
--spec addLabel( wooper:state(), ustring(), point() ) -> oneway_return().
-addLabel( State, Text, Location ) ->
+-spec addLabel( wooper:state(), any_label(), point() ) -> oneway_return().
+addLabel( State, AnyLabel, Location ) ->
 
 	Settings = ?getAttr(settings),
 
 	% Adds default values where none was specified:
-	NewLabel = #probe_label{ location=Location,
-							 text=text_utils:string_to_binary( Text ),
-							 color=blue,
-							 position=center,
-							 orientation=upright },
+	NewLabel = #plot_label{ location=Location,
+							text=text_utils:ensure_binary( AnyLabel ),
+							color=blue,
+							justification=center,
+							orientation=upright },
 
-	Labels = [ NewLabel | Settings#probe_settings.labels ],
+	Labels = [ NewLabel | Settings#plot_settings.labels ],
 
 	wooper:return_state( setAttribute( State, settings,
-		Settings#probe_settings{ labels=Labels } ) ).
+		Settings#plot_settings{ labels=Labels } ) ).
 
 
 
-% @doc Adds a specific text label, specified as a plain string, at specified
-% location ({X,Y} integer coordinates), with specified color (e.g. 'magenta', or
-% "#4B00820").
+% @doc Adds a specific text label at the specified location ({X,Y} integer
+% coordinates), with specified color (e.g. 'magenta', or "4B00820").
 %
--spec addLabel( wooper:state(), ustring(), point(), color() ) ->
+-spec addLabel( wooper:state(), any_label(), point(), color() ) ->
 														oneway_return().
-addLabel( State, Text, Location, Color ) ->
+addLabel( State, AnyLabel, Location, Color ) ->
 
 	Settings = ?getAttr(settings),
 
 	% Adds default values where none was specified:
-	NewLabel = #probe_label{ location=Location,
-							 text=text_utils:string_to_binary( Text ),
-							 color=Color,
-							 position=center,
-							 orientation=upright },
+	NewLabel = #plot_label{ location=Location,
+							text=text_utils:ensure_binary( AnyLabel ),
+							color=Color,
+							justification=center,
+							orientation=upright },
 
-	Labels = [ NewLabel | Settings#probe_settings.labels ],
-
-	wooper:return_state( setAttribute( State, settings,
-			Settings#probe_settings{ labels=Labels } ) ).
-
-
-
-% @doc Adds a specific text label, specified as a plain string, at specified
-% location ({X,Y} integer coordinates), with specified color (e.g. magenta, or
-% "#4B00820") and orientation, either 'upright' (the default), or {rotate,
-% Angle}, Angle being an angle in degrees (as a floating-point value).
-%
--spec addLabel( wooper:state(), ustring(), point(), color(),
-				label_orientation() ) -> oneway_return().
-addLabel( State, Text, Location, Color, Orientation ) ->
-
-	Settings = ?getAttr(settings),
-
-	% Adds default values where none was specified:
-	NewLabel = #probe_label{ location=Location,
-							 text=text_utils:string_to_binary( Text ),
-							 color=Color,
-							 position=center,
-							 orientation=Orientation },
-
-	Labels = [ NewLabel | Settings#probe_settings.labels ],
+	Labels = [ NewLabel | Settings#plot_settings.labels ],
 
 	wooper:return_state( setAttribute( State, settings,
-		Settings#probe_settings{ labels=Labels } ) ).
+		Settings#plot_settings{ labels=Labels } ) ).
 
 
 
-% @doc Adds a specific text label, specified as a plain string, at specified
-% Location ({X,Y} integer coordinates), with specified color (e.g. magenta),
+% @doc Adds a specific text label, at the specified location ({X,Y} integer
+% coordinates), with the specified color (e.g. magenta, or "4B00820") and
 % orientation, either 'upright' (the default), or {rotate, Angle}, Angle being
-% an angle in degrees (as a floating-point value) and position (an atom, either
-% left, center or right, the default being center).
+% an angle in degrees (as a floating-point value).
 %
--spec addLabel( wooper:state(), ustring(), point(), color(),
-				label_orientation(), label_position() ) -> oneway_return().
-addLabel( State, Text, Location, Color, Orientation, Position ) ->
+-spec addLabel( wooper:state(), any_label(), point(), color(),
+				label_orientation() ) -> oneway_return().
+addLabel( State, AnyLabel, Location, Color, Orientation ) ->
 
 	Settings = ?getAttr(settings),
 
 	% Adds default values where none was specified:
-	NewLabel = #probe_label{ location=Location,
-							 text=text_utils:string_to_binary( Text ),
-							 color=Color,
-							 position=Position,
-							 orientation=Orientation },
+	NewLabel = #plot_label{ location=Location,
+							text=text_utils:ensure_binary( AnyLabel ),
+							color=Color,
+							justification=center,
+							orientation=Orientation },
 
-	Labels = [ NewLabel | Settings#probe_settings.labels ],
+	Labels = [ NewLabel | Settings#plot_settings.labels ],
 
 	wooper:return_state( setAttribute( State, settings,
-		Settings#probe_settings{ labels=Labels } ) ).
+		Settings#plot_settings{ labels=Labels } ) ).
+
+
+
+% @doc Adds a specific text label at the specified Location ({X,Y} integer
+% coordinates), with the specified color (e.g. magenta), orientation, either
+% 'upright' (the default), or {rotate, Angle}, Angle being an angle in degrees
+% (as a floating-point value) and position (an atom, either left, center or
+% right, the default being center).
+%
+-spec addLabel( wooper:state(), any_label(), point(), color(),
+				label_orientation(), label_position() ) -> oneway_return().
+addLabel( State, AnyLabel, Location, Color, Orientation, Position ) ->
+
+	Settings = ?getAttr(settings),
+
+	% Adds default values where none was specified:
+	NewLabel = #plot_label{ location=Location,
+							text=text_utils:ensure_binary( AnyLabel ),
+							color=Color,
+							justification=Position,
+							orientation=Orientation },
+
+	Labels = [ NewLabel | Settings#plot_settings.labels ],
+
+	wooper:return_state( setAttribute( State, settings,
+		Settings#plot_settings{ labels=Labels } ) ).
 
 
 
 % @doc Sets the extra verbatim defines (e.g. ["set xlabel offset character
 % 15"]).
 %
--spec setExtraDefines( wooper:state(), [ustring()] ) -> oneway_return().
+-spec setExtraDefines( wooper:state(), [ ustring() ] ) -> oneway_return().
 setExtraDefines( State, ExtraDefs ) ->
 
 	BinExtraDefs = text_utils:strings_to_binaries( ExtraDefs ),
 
 	Settings = ?getAttr(settings),
 
-	NewSettings = Settings#probe_settings{ extra_defines=BinExtraDefs },
+	NewSettings = Settings#plot_settings{ extra_defines=BinExtraDefs },
 
 	wooper:return_state( setAttribute( State, settings, NewSettings ) ).
 
@@ -1750,16 +1503,16 @@ setExtraDefines( State, ExtraDefs ) ->
 % @doc Adds (appends at first position) the specified extra verbatim defines
 % (e.g. ["set xlabel offset character 15"]).
 %
--spec addExtraDefines( wooper:state(), [ustring()] ) -> oneway_return().
+-spec addExtraDefines( wooper:state(), [ ustring() ] ) -> oneway_return().
 addExtraDefines( State, ExtraDefs ) ->
 
 	BinExtraDefs = text_utils:strings_to_binaries( ExtraDefs ),
 
 	Settings = ?getAttr(settings),
 
-	NewExtraDefs = BinExtraDefs ++ Settings#probe_settings.extra_defines,
+	NewExtraDefs = BinExtraDefs ++ Settings#plot_settings.extra_defines,
 
-	NewSettings = Settings#probe_settings{ extra_defines=NewExtraDefs },
+	NewSettings = Settings#plot_settings{ extra_defines=NewExtraDefs },
 
 	wooper:return_state( setAttribute( State, settings, NewSettings ) ).
 
@@ -2432,8 +2185,8 @@ declare_case_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 			file_utils:create_directory( ProbeDir, create_parents ),
 
-			ProbePid ! { setDirectory,
-						 [ text_utils:string_to_binary( ProbeDir ) ] },
+			ProbePid !
+				{ setDirectory, [ text_utils:string_to_binary( ProbeDir ) ] },
 
 			ProbePid
 
@@ -2815,7 +2568,7 @@ generate_report_for( ProbePid ) ->
 
 % @doc Returns an actual, suitable probe name deriving from the specified one.
 -spec get_actual_probe_name( probe_name_init() ) ->
-			static_return( probe_name() ).
+											static_return( probe_name() ).
 get_actual_probe_name( { EmitterName, _EmitterCategorization } ) ->
 
 	% A preliminary version of the trace_categorize/1 macro: we extract the base
@@ -2879,14 +2632,17 @@ wait_result_declaration_outcome( ProbeName, State ) ->
 
 
 
-% @doc Returns a probe_settings record with specified information (expressed as
-% plain strings) and default values for the other fields.
+% @doc Returns a plot_settings record with specified information (expressed as
+% plain strings) and default values for the other fields, in the context of a
+% probe (e.g. with simulation information).
 %
--spec get_probe_settings( title(), label(), label(),
-		maybe( gnuplot_version() ) ) -> probe_settings().
-get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
+% Therefore better here than in plot_utils.
+%
+-spec get_plot_settings( any_title(), any_label(), any_label(),
+						 maybe( gnuplot_version() ) ) -> plot_settings().
+get_plot_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
 
-	{ Xtick, KeyOption } = get_basic_options( MaybeGnuplotVersion ),
+	{ Xtick, KeyOption } = plot_utils:get_basic_options( MaybeGnuplotVersion ),
 
 	ActualXLabel = case MaybeXLabel of
 
@@ -2898,121 +2654,18 @@ get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
 
 	end,
 
-	#probe_settings{
-		title=text_utils:string_to_binary( Title ),
+	#plot_settings{
+		title=text_utils:ensure_binary( Title ),
 		x_tick=Xtick,
 		key_options=KeyOption,
 		%image_format = <<"svg">>,
 		y_tick= <<"auto">>,
-		x_label=text_utils:string_to_binary( ActualXLabel ),
-		y_label=text_utils:string_to_binary( YLabel ),
+		x_label=text_utils:ensure_binary( ActualXLabel ),
+		y_label=text_utils:ensure_binary( YLabel ),
 		x_range=undefined,
 		y_range=undefined,
 		plot_style= <<"linespoints">>,
 		fill_style= <<"empty">> }.
-
-
-
-% @doc Returns some basic rendering options, depending on the current gnuplot
-% version.
-%
-% (helper, for code sharing)
-%
--spec get_basic_options( maybe( gnuplot_version() ) ) ->
-			{ bin_string(), bin_string() }.
-get_basic_options( _MaybeGnuplotVersion=undefined ) ->
-
-	% For an increased safety:
-	%trace_utils:warning( "Determining gnuplot options whereas its version "
-	%                     "is not known." ),
-
-	get_basic_options_for_older_gnuplot();
-
-
-get_basic_options( GnuplotVersion ) ->
-
-	% If using a very old version of gnuplot (e.g. prior to 4.2), these key
-	% options use default values:
-
-	case basic_utils:compare_versions( GnuplotVersion,
-									   get_gnuplot_reference_version() ) of
-
-		second_bigger ->
-			get_basic_options_for_older_gnuplot();
-
-		_ ->
-			% Here we have a recent enough gnuplot:
-			{
-
-			 % By default we prefer not having rotated ticks:
-
-			 %_Xtick = <<"rotate by - 45 auto">>,
-			 %
-			 % 'out' had been added to avoid that tick marks get hidden by any
-			 % filled area in the plot (e.g. boxes), yet it was wreaking havoc
-			 % on the layout and/or cropping done by gnuplot (leading to
-			 % overlapping legend and truncated timestamps).
-			 %
-			 %_Xtick = <<"axis out mirror font \"sans,8\" auto">>,
-			 _Xtick= <<"out mirror font \"sans,8\" auto">>,
-
-			 % Extra size for box, otherwise may collide with inner text:
-			 _KeyOption=
-				<<"bmargin center horizontal width 0.5 height 0.5">> }
-
-			%image_format = <<"svg">>;
-
-	end.
-
-
-
-% (helper)
-get_basic_options_for_older_gnuplot() ->
-	% As here we only have access to an older gnuplot:
-	{ _Xtick= <<"auto">>, _KeyOption= <<"">> }.
-
-
-
-
-% @doc Adds back the index in the Names list, as read from the CurveEntries
-% list, without changing the order of the Names list.
-%
-% Transforms plain strings in binaries as well.
-%
-% For example add_probe_index_back( [ "b", "c", "a" ], CurveEntries ) with
-% CurveEntries=[ {3,<<"a">>}, {2,<<"b">>}, {1,<<"c">>} ] should return:
-% [ {2,<<"b">>}, {1,<<"c">>}, {3,<<"a">>} ], i.e. the items of Names, in their
-% original order in Names, with their index added back.
-%
-% (helper function)
-%
--spec add_probe_index_back( [ string_curve_name() ], curve_entries() ) ->
-									curve_entries().
-add_probe_index_back( Names, CurveEntries ) ->
-	add_probe_index_back( Names, CurveEntries, _Acc=[] ).
-
-
-% (helper)
-add_probe_index_back( _Names=[], _CurveEntries, Acc ) ->
-	lists:reverse( Acc );
-
-add_probe_index_back( [ Name | T ], CurveEntries, Acc ) ->
-
-	BinName = text_utils:string_to_binary( Name ),
-
-	% We do not check for duplicated names and removed ones resulting in a
-	% correct length of the name list:
-	%
-	case lists:keyfind( BinName, 2, CurveEntries ) of
-
-		false ->
-			throw( { unknown_curve, Name } );
-
-		{ Index, _Name, PlotSuffix } ->
-			add_probe_index_back( T, CurveEntries,
-								  [ { Index, BinName, PlotSuffix } | Acc ] )
-
-	end.
 
 
 
@@ -3079,9 +2732,9 @@ switchToBoxes( State ) ->
 	ProbeSettings = ?getAttr(settings),
 
 	NewExtraDefs = [ text_utils:string_to_binary( "set style fill solid 0.5" )
-						| ProbeSettings#probe_settings.extra_defines ],
+						| ProbeSettings#plot_settings.extra_defines ],
 
-	NewProbeSettings = ProbeSettings#probe_settings{
+	NewProbeSettings = ProbeSettings#plot_settings{
 		plot_style= <<"boxes">>,
 		extra_defines=NewExtraDefs },
 
@@ -3092,9 +2745,9 @@ switchToBoxes( State ) ->
 
 
 % @doc Updates the specified probe settings with any extra settings specified.
--spec apply_extra_settings( maybe( settings_table() ), probe_settings(),
+-spec apply_extra_settings( maybe( settings_table() ), plot_settings(),
 							wooper:state() ) ->
-			{ probe_settings(), maybe( [ extra_curve_settings() ] ),
+			{ plot_settings(), maybe( [ extra_curve_settings() ] ),
 			  maybe( [ extra_zone_settings() ] ) }.
 apply_extra_settings( _MaybeExtraSettingsTable=undefined, ProbeSettings,
 					  _State ) ->
@@ -3114,9 +2767,9 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 		boxes ->
 
 			NewExtraDefs = [ <<"set style fill solid 0.5">>
-				| ProbeSettings#probe_settings.extra_defines ],
+				| ProbeSettings#plot_settings.extra_defines ],
 
-			ProbeSettings#probe_settings{
+			ProbeSettings#plot_settings{
 				plot_style= <<"boxes">>,
 				extra_defines=NewExtraDefs };
 
@@ -3133,15 +2786,15 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 							 % opposite):
 							 %
 							 %<<"set key reverse">>
-					| ProbeSettings#probe_settings.extra_defines ],
+					| ProbeSettings#plot_settings.extra_defines ],
 
-			ProbeSettings#probe_settings{
+			ProbeSettings#plot_settings{
 				plot_style= <<"fillsteps">>,
 				extra_defines=NewExtraDefs };
 
 
 		OtherPlotStyle ->
-			ProbeSettings#probe_settings{
+			ProbeSettings#plot_settings{
 				plot_style=text_utils:atom_to_binary( OtherPlotStyle ) }
 
 	end,
@@ -3158,7 +2811,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 		{ CWidth, CHeight } when is_integer( CWidth )
 								 andalso is_integer( CHeight ) ->
-			StyleProbeSettings#probe_settings{ canvas_width=CWidth,
+			StyleProbeSettings#plot_settings{ canvas_width=CWidth,
 											   canvas_height=CHeight };
 
 		OtherCSize ->
@@ -3217,7 +2870,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	TimeFmtProbeSettings = case is_atom( TimeFormatOpt ) of
 
 		true ->
-			TicksOptProbeSettings#probe_settings{
+			TicksOptProbeSettings#plot_settings{
 				x_ticks_timestamp_time_format=TimeFormatOpt };
 
 		false ->
@@ -3231,9 +2884,9 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 			_DefaultExtraDefs=[], TimeFmtShrunkTable ),
 
 	NewExtraDefines = text_utils:ensure_binaries( ExtraDefines ) ++
-		TimeFmtProbeSettings#probe_settings.extra_defines,
+		TimeFmtProbeSettings#plot_settings.extra_defines,
 
-	ExtraDefProbeSettings = TimeFmtProbeSettings#probe_settings{
+	ExtraDefProbeSettings = TimeFmtProbeSettings#plot_settings{
 		extra_defines=NewExtraDefines },
 
 	% Add any extra setting you want to support here.
@@ -3261,9 +2914,9 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 % @doc Updates the probe settings based on specified tick options.
 -spec update_tick_options( { tick_option(), tick_option() },
-						   probe_settings() ) -> probe_settings().
+						   plot_settings() ) -> plot_settings().
 update_tick_options( _TickOptions={ XtickOpt, YtickOpt },
-		ProbeSettings=#probe_settings{ x_tick=Xtick, y_tick=Ytick } ) ->
+		ProbeSettings=#plot_settings{ x_tick=Xtick, y_tick=Ytick } ) ->
 
 	NewXtick = text_utils:bin_format( "~ts ~ts",
 									  [ Xtick, get_tick_option( XtickOpt ) ] ),
@@ -3271,7 +2924,7 @@ update_tick_options( _TickOptions={ XtickOpt, YtickOpt },
 	NewYtick = text_utils:bin_format( "~ts ~ts",
 									  [ Ytick, get_tick_option( YtickOpt ) ] ),
 
-	ProbeSettings#probe_settings{ x_tick=NewXtick, y_tick=NewYtick };
+	ProbeSettings#plot_settings{ x_tick=NewXtick, y_tick=NewYtick };
 
 update_tick_options( TickOptions, _ProbeSettings ) ->
 	throw( { invalid_tick_options, TickOptions } ).
@@ -3296,14 +2949,14 @@ get_tick_option( OtherTickOption ) ->
 
 % @doc Updates the probe settings based on specified ticks options.
 -spec update_ticks_options( { ticks_option(), ticks_option() },
-							probe_settings() ) -> probe_settings().
+							plot_settings() ) -> plot_settings().
 update_ticks_options( _TicksOptions={ MaybeXticksOpt, MaybeYticksOpt },
 					  ProbeSettings ) ->
 
 	NewXticks = case MaybeXticksOpt of
 
 		undefined ->
-			ProbeSettings#probe_settings.x_ticks;
+			ProbeSettings#plot_settings.x_ticks;
 
 		XticksStr ->
 			text_utils:string_to_binary( XticksStr )
@@ -3313,14 +2966,14 @@ update_ticks_options( _TicksOptions={ MaybeXticksOpt, MaybeYticksOpt },
 	NewYticks = case MaybeYticksOpt of
 
 		undefined ->
-			ProbeSettings#probe_settings.y_ticks;
+			ProbeSettings#plot_settings.y_ticks;
 
 		YticksStr ->
 			text_utils:string_to_binary( YticksStr )
 
 	end,
 
-	ProbeSettings#probe_settings{ x_ticks=NewXticks, y_ticks=NewYticks }.
+	ProbeSettings#plot_settings{ x_ticks=NewXticks, y_ticks=NewYticks }.
 
 
 
@@ -3436,7 +3089,7 @@ check_is_boolean( Var, _VarName ) when is_boolean( Var ) ->
 	ok;
 
 check_is_boolean( Var, VarName ) ->
-	throw( { boolean_value_expected_for, VarName, Var } ).
+	throw( { boolean_valued_expected_for, VarName, Var } ).
 
 
 
@@ -3469,6 +3122,9 @@ generate_command_file( State ) ->
 
 			ZoneEntries = ?getAttr(zone_entries),
 
+			% Apparently may override the corresponding information in the
+			% plot_settings record:
+			%
 			IsTimestamped = ?getAttr(maybe_tick_duration) =/= undefined,
 
 			% Returned path ignored:
@@ -3487,29 +3143,30 @@ generate_command_file( State ) ->
 %
 % Helper function defined to be shared with the data-logger.
 %
--spec generate_command_file( ustring(), probe_settings(), curve_entries(),
-		zone_entries(), boolean(), directory_path() ) -> file_name().
+-spec generate_command_file( ustring(), plot_settings(), [ curve_entry() ],
+		[ zone_entry() ], boolean(), directory_path() ) -> file_name().
 generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
 					   IsTimestamped, ProbeDir ) ->
 
 	%trace_utils:debug_fmt( "generate_command_file for probe '~ts'; "
 	%   "zone entries:~n  ~p.", [ Name, ZoneEntries ] ),
 
-	LabelDefs = get_label_definitions( Settings#probe_settings.labels ),
+	LabelDefs =
+		plot_utils:get_label_definitions( Settings#plot_settings.labels ),
 
 	ExtraDefs = text_utils:join( _Sep="\n",
 		[ text_utils:binary_to_string( D )
-			|| D <- Settings#probe_settings.extra_defines ] ),
+			|| D <- Settings#plot_settings.extra_defines ] ),
 
 	DataFilename = get_data_filename( Name ),
 
-	XrangeOpt = get_x_range_option( Settings ),
+	XrangeOpt = plot_utils:get_x_range_option( Settings ),
 
-	YrangeOpt = get_y_range_option( Settings ),
+	YrangeOpt = plot_utils:get_y_range_option( Settings ),
 
 	% Corresponding to the '*ticks' counterparts, not the base '*tick' ones:
-	XticksOpt = get_xticks_option( Settings ),
-	YticksOpt = get_yticks_option( Settings ),
+	XticksOpt = plot_utils:get_xticks_option( Settings ),
+	YticksOpt = plot_utils:get_yticks_option( Settings ),
 
 	check_probe_directory( ProbeDir ),
 
@@ -3528,11 +3185,11 @@ generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
 
 	% Changes shall be applied if using timestamps rather than raw ticks:
 	{ PreambleStr, CurveOffset } =
-		get_timestamp_settings( Settings, IsTimestamped ),
+		plot_utils:get_timestamp_settings( Settings, IsTimestamped ),
 
 
-	PlotCommand = get_plot_command( Settings, CurveEntries, CurveOffset,
-									ZoneEntries, DataFilename ),
+	PlotCommand = plot_utils:get_plot_command( Settings, CurveEntries,
+		CurveOffset, ZoneEntries, DataFilename ),
 
 	% Use 'undefined' in sample if not having available data for an element.
 	% Set terminal png *transparent* could be used as well.
@@ -3574,22 +3231,22 @@ generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
 		"set output \"~ts\"~n"
 		"~ts",
 		[ PreambleStr,
-		  Settings#probe_settings.plot_style,
-		  Settings#probe_settings.fill_style,
-		  Settings#probe_settings.key_options,
-		  Settings#probe_settings.point_size,
-		  Settings#probe_settings.x_tick,
-		  Settings#probe_settings.y_tick,
+		  Settings#plot_settings.plot_style,
+		  Settings#plot_settings.fill_style,
+		  Settings#plot_settings.key_options,
+		  Settings#plot_settings.point_size,
+		  Settings#plot_settings.x_tick,
+		  Settings#plot_settings.y_tick,
 		  XticksOpt,
 		  YticksOpt,
 		  XrangeOpt,
 		  YrangeOpt,
-		  Settings#probe_settings.title,
-		  Settings#probe_settings.x_label,
-		  Settings#probe_settings.y_label,
-		  Settings#probe_settings.image_format,
-		  Settings#probe_settings.canvas_width,
-		  Settings#probe_settings.canvas_height,
+		  Settings#plot_settings.title,
+		  Settings#plot_settings.x_label,
+		  Settings#plot_settings.y_label,
+		  Settings#plot_settings.image_format,
+		  Settings#plot_settings.canvas_width,
+		  Settings#plot_settings.canvas_height,
 		  LabelDefs,
 		  ExtraDefs,
 		  PNGFilename,
@@ -3661,8 +3318,8 @@ generate_data_file( State ) ->
 
 
 % @doc Writes the probe header to the data file.
--spec write_header( file(), curve_entries(), zone_entries(),
-					probe_settings(), probe_name(), meta_data() ) -> void().
+-spec write_header( file(), [ curve_entry() ], [ zone_entry() ],
+					plot_settings(), probe_name(), meta_data() ) -> void().
 write_header( File, CurveEntries, ZoneEntries, Settings, Name, Metadata ) ->
 
 	{ { Year, Month, Day }, { Hour, Minute, Second } } =
@@ -3683,7 +3340,7 @@ write_header( File, CurveEntries, ZoneEntries, Settings, Name, Metadata ) ->
 
 	ZoneDescriptions = format_zone_info( ZoneEntries ),
 
-	Title = Settings#probe_settings.title,
+	Title = Settings#plot_settings.title,
 
 	MetadataAllStrings = [ text_utils:binary_to_string( BinText )
 							|| { _Key, BinText } <- Metadata ],
@@ -3871,8 +3528,8 @@ write_row( File, RowFormatString, TimestampBinString, DataTuple ) ->
 
 
 % @doc Creates or updates an entry for the specified curve.
--spec setFilledCurvesOptions( wooper:state(), ustring(), curve_index() ) ->
-									oneway_return().
+-spec setFilledCurvesOptions( wooper:state(), declared_curve_name(),
+							  curve_index() ) -> oneway_return().
 setFilledCurvesOptions( State, CurveName, ColumnSpecifier ) ->
 	NewState = setFilledCurvesOptions( State, CurveName, ColumnSpecifier,
 									   _GenerateFile=false ),
@@ -3881,9 +3538,12 @@ setFilledCurvesOptions( State, CurveName, ColumnSpecifier ) ->
 
 
 % @doc Creates or updates an entry for the specified curve.
--spec setFilledCurvesOptions( wooper:state(), ustring(), curve_index(),
-							  boolean() ) -> oneway_return().
+-spec setFilledCurvesOptions( wooper:state(), declared_curve_name(),
+							  curve_index(), boolean() ) -> oneway_return().
 setFilledCurvesOptions( State, CurveName, ColumnSpecifier, GenerateFile ) ->
+
+	% Note: is apparently obsolete (no 'filled_curve_list' attribute even
+	% defined).
 
 	SpecifiedFilledCurve = { CurveName,
 							 _PlotStyle="filledcurves",
@@ -3914,478 +3574,6 @@ setFilledCurvesOptions( State, CurveName, ColumnSpecifier, GenerateFile ) ->
 
 	wooper:return_state( CommandState ).
 
-
-
-% @doc Returns the Gnuplot command appropriate to render all registered labels.
--spec get_label_definitions( [ probe_label() ] ) -> command_element().
-get_label_definitions( Labels ) ->
-	text_utils:join( _Separator="\n",
-					 get_label_definitions( Labels, _Acc=[] ) ).
-
-
-% (helper)
-get_label_definitions( _Labels=[], Acc ) ->
-	% Nothing to reverse, labels will end up being rendered in the order they
-	% were specified:
-	Acc;
-
-get_label_definitions( [ #probe_label{ location={ X, Y }, text=BinText,
-		color=Color, position=Position, orientation=Orientation } | T ],
-					   Acc ) ->
-
-	% For a list of supported colors, see:
-	% www.uni-hamburg.de/Wiss/FB/15/Sustainability/schneider/gnuplot/colors.htm
-	%
-	ActualColor = gui_color:get_color_for_gnuplot( Color ),
-
-	LabelString = text_utils:format(
-		"set label \"~ts\" at ~p,~p ~ts ~ts textcolor rgbcolor \"~ts\"",
-		[ text_utils:binary_to_string( BinText ), X, Y, Position,
-		  get_formatted_orientation( Orientation ), ActualColor] ),
-
-	get_label_definitions( T, [ LabelString | Acc ] ).
-
-
-
-% @doc Returns the settings for fine control of the major (labeled) ticks on the
-% abscissa axis, as read from the specified settings.
-%
--spec get_xticks_option( probe_settings() ) -> command_element().
-get_xticks_option( #probe_settings{ x_ticks=undefined } ) ->
-	"# No x_ticks set.";
-
-get_xticks_option( #probe_settings{ x_ticks=XticksBinSpec } )
-										when is_binary( XticksBinSpec ) ->
-	text_utils:format( "set xtics ~ts~n", [ XticksBinSpec ] );
-
-get_xticks_option( #probe_settings{ x_ticks=Other } ) ->
-	throw( { invalid_x_ticks_option, Other } ).
-
-
-
-% @doc Returns the settings for fine control of the major (labeled) ticks on the
-% ordinate axis, as read from the specified settings.
-%
--spec get_yticks_option( probe_settings() ) -> command_element().
-get_yticks_option( #probe_settings{ y_ticks=undefined } ) ->
-	"# No y_ticks set.";
-
-get_yticks_option( #probe_settings{ y_ticks=YticksBinSpec } )
-  when is_binary( YticksBinSpec ) ->
-	text_utils:format( "set ytics ~ts~n", [ YticksBinSpec ] );
-
-get_yticks_option( #probe_settings{ y_ticks=Other } ) ->
-	throw( { invalid_y_ticks_option, Other } ).
-
-
-
-% @doc Returns the abscissa range options as read from the specified settings.
--spec get_x_range_option( probe_settings() ) -> command_element().
-get_x_range_option( Settings ) ->
-
-	case Settings#probe_settings.x_range of
-
-		undefined ->
-			"# No xrange set.";
-
-		{ _MaybeMinX=undefined, _MaybeMaxX=undefined } ->
-			"# No xrange set.";
-
-		{ _MaybeMinX=undefined, MaxX } when is_number( MaxX )->
-			text_utils:format( "set xrange [:~w]", [ MaxX ] );
-
-		{ MinX, _MaybeMaxX=undefined } when is_number( MinX ) ->
-			text_utils:format( "set xrange [~w:]", [ MinX ] );
-
-
-		{ MinX, MaxX } when is_number( MinX ) andalso is_number( MaxX ) ->
-			text_utils:format( "set xrange [~w:~w]", [ MinX, MaxX ] )
-
-	end.
-
-
-
-% @doc Returns the ordinate range options as read from the specified settings.
--spec get_y_range_option( probe_settings() ) -> command_element().
-get_y_range_option( Settings ) ->
-
-	case Settings#probe_settings.y_range of
-
-		undefined ->
-			"# No yrange set.";
-
-		{ _MaybeMinY=undefined, _MaybeMaxY=undefined } ->
-			"# No yrange set.";
-
-		{ _MaybeMinY=undefined, MaxY } when is_number( MaxY )->
-			text_utils:format( "set yrange [:~w]", [ MaxY ] );
-
-		{ MinY, _MaybeMaxY=undefined } when is_number( MinY ) ->
-			text_utils:format( "set yrange [~w:]", [ MinY ] );
-
-
-		{ MinY, MayY } when is_number( MinY ) andalso is_number( MayY ) ->
-			text_utils:format( "set yrange [~w:~w]", [ MinY, MayY ] )
-
-	end.
-
-
-
-% @doc Returns the option to control the labels of the major ticks on the x
-% axis, as read from the specified settings.
-%
--spec get_x_ticks_option( probe_settings() ) -> command_element().
-get_x_ticks_option( Settings ) ->
-
-	case Settings#probe_settings.x_ticks of
-
-		undefined ->
-			"# No label set for the major ticks on the x axis.";
-
-		XTicksInfo ->
-			text_utils:format( "set xtics ~ts", [ XTicksInfo ] )
-
-	end.
-
-
-
-% @doc Returns the option to control the labels of the major ticks on the y
-% axis, as read from the specified settings.
-%
--spec get_y_ticks_option( probe_settings() ) -> command_element().
-get_y_ticks_option( Settings ) ->
-
-	case Settings#probe_settings.y_ticks of
-
-		undefined ->
-			"# No label set for the major ticks on the y axis.";
-
-		YTicksInfo ->
-			text_utils:format( "set ytics ~ts", [ YTicksInfo ] )
-
-	end.
-
-
-
-% @doc Returns the appropriate settings, depending on whether the abscissa axis
-% gathers timestamps or not.
-%
-% Note: now curve offset is always zero as a timestamp occupies only one column
-% (thanks to quoting).
-%
--spec get_timestamp_settings( probe_settings(), boolean() ) ->
-									{ command_element(), curve_offset() }.
-get_timestamp_settings(
-		#probe_settings{ x_ticks_timestamp_time_format=TimeFmt },
-		_IsTimestamped=true ) ->
-
-	% Also a check:
-	UserTimeFormat = case TimeFmt of
-
-		undefined ->
-			_DefaultTimeFormat=double_line;
-
-		single_line ->
-			single_line;
-
-		double_line ->
-			double_line;
-
-		OtherTimeFormat ->
-			throw( { invalid_timestamp_time_format, OtherTimeFormat } )
-
-	end,
-
-	TimeFormatStr = case UserTimeFormat of
-
-		single_line ->
-			"\"%d %b %Y %H:%M:%S\"";
-
-		double_line ->
-			"\"%d %b %Y\\n\\n%H:%M:%S\""
-
-	end,
-
-	PreambleStr = text_utils:format(
-		"set xdata time~n"
-
-		% As read from the data (our standard format):
-		% (we have to add single quotes, so that gnuplot sees:
-		%   set timefmt '"%Y/%m/%d %H:%M:%S"'
-		% so that we can specify our timestamps as:
-		%   "2000/1/1 00:00:00"
-		% Indeed, should they be written as:
-		%   2000/1/1 00:00:00
-		% gnuplot would see two columns
-		% (another option is to set another separator than space)
-		%
-		"set timefmt '\"%Y/%m/%d %H:%M:%S\"'~n"
-
-		 % As shall be rendered across axes:
-		"set format x ~ts~n", [ TimeFormatStr ] ),
-
-	% No more curve offset, as now in all cases, thanks to quoting, time
-	% translates to exactly to the first column (not the first two columns, as
-	% when an unquoted timestamp would be read as a time and a date, not as a
-	% single value):
-	%
-	%{ PreambleStr, _CurveOffset=1 };
-	{ PreambleStr, _CurveOffset=0 };
-
-
-get_timestamp_settings( _Probe_settings, _IsTimestamped=false ) ->
-	{ _PreambleStr="", _CurveOffset=0 }.
-
-
-
-% @doc Returns the Gnuplot command appropriate to render that probe output.
-%
-% Defines one plot curve per declared curve, with current plot settings, and
-% defines as well any specified zone.
-%
--spec get_plot_command( probe_settings(), curve_entries(), curve_offset(),
-						zone_entries(), file_name() ) -> command_element().
-get_plot_command( _Settings, _CurveEntries=[], _CurveOffset, _ZoneEntries=[],
-				  _DataFilename ) ->
-	throw( no_curve_nor_zone_defined );
-
-get_plot_command( Settings, CurveEntries, CurveOffset, ZoneEntries,
-				  DataFilename ) ->
-
-	% Typical expected output:
-	%
-	% plot 'silver.dat' using 1:2 with lines, 'silver.dat' using 1:3 with lines,
-	% 'silver.dat' using 1:2:3 with filledcurves
-
-	% For us it is: "plot " ++ tl( join( _Prefix=", 'silver.dat' using 1:",
-	%  [ "2 with lines", "3 with lines", "2:3 with filledcurves" ]
-	%
-	% (knowing that tl is used to remove the prefix head (','), i.e. the first
-	% extra comma)
-	%
-	% So:
-
-	Prefix = text_utils:format( ", \"~ts\" using 1:", [ DataFilename ] ),
-
-	% We prefer not rendering curves that are used to delimit zones:
-	FilteredCurveEntries =
-		remove_zone_specific_curves( CurveEntries, ZoneEntries ),
-
-	CurvePlots = get_plot_commands_for_curves( FilteredCurveEntries,
-											   CurveOffset, Settings ),
-
-	ZonePlots = get_plot_commands_for_zones( ZoneEntries, CurveOffset,
-											 Settings ),
-
-	% Note that we specify the zones first, otherwise the curves would be hidden
-	% below:
-	%
-	JoinedCommand = text_utils:join( Prefix, ZonePlots ++ CurvePlots ),
-
-	% Two tl to remove prefix head (i.e. ", "):
-	text_utils:format( "plot ~ts~ts~n", [ tl( tl( Prefix ) ), JoinedCommand ] ).
-
-
-
-% @doc Returns a list of curve entries in which there are no more curves that
-% are used to define a zone among the ones specified.
-%
--spec remove_zone_specific_curves( curve_entries(), zone_entries() ) ->
-											curve_entries().
-remove_zone_specific_curves( CurveEntries, ZoneEntries ) ->
-
-	CurvesToRemove = select_curves( ZoneEntries, _Acc=[] ),
-
-	Selector = fun( { CurveIndex, _CurveName, _CurvePlotSuffix } ) ->
-						not lists:member( CurveIndex, CurvesToRemove ) end,
-
-	lists:filter( Selector, CurveEntries ).
-
-
-
-% @doc Selects all curve indexes that are mentioned in zones (possibly with
-% duplicates).
-%
-select_curves( _ZoneEntries=[], Acc ) ->
-	Acc;
-
-select_curves(
-		_ZoneEntries=[ { _ZoneName, { abscissa_top, C }, _ZPlotSuffix } | T ],
-		Acc ) ->
-	select_curves( T, [ C | Acc ] );
-
-select_curves( _ZoneEntries=[
-				{ _ZoneName, { abscissa_bottom, C }, _ZPlotSuffix } | T ],
-			   Acc ) ->
-	select_curves( T, [ C | Acc ] );
-
-select_curves( _ZoneEntries=[ { _ZoneName, { C1, C2 }, _ZPlotSuffix } | T ],
-			   Acc ) ->
-	select_curves( T, [ C1, C2 | Acc ] ).
-
-
-
-% @doc Returns the plot commands corresponding to specified curves.
--spec get_plot_commands_for_curves( curve_entries(), curve_offset(),
-									probe_settings() ) -> [ command_element() ].
-get_plot_commands_for_curves( CurveEntries, CurveOffset, Settings ) ->
-
-	% Curve entries are a list of:
-	%  { CurveIndex, BinCurveName, BinPlotSuffix }
-	%
-	% After some potential reordering, curve entries might be:
-	% [{3,<<"c">>}, {1,<<"a">>}, {2,<<"b">>}]
-	%
-	% We expect: ["4 title \"c\"", "2 title \"a\"", "3 title \"b\""]
-	%
-	% (note that each curve index is incremented, as the first column is the
-	% tick)
-	%
-	% We simply write them in-order, with an appropriate title:
-	[ get_curve_command( C, CurveOffset, Settings ) || C <- CurveEntries ].
-
-
-
-% @doc Returns a command element suitable to render specified curve.
-%
-% (helper)
-%
--spec get_curve_command( curve_entry(), curve_offset(), probe_settings() ) ->
-								command_element().
-get_curve_command( { CurveIndex, BinCurveName, BinPlotSuffix }, CurveOffset,
-				   _Settings ) ->
-
-	Title = text_utils:binary_to_string( BinCurveName ),
-
-	% +1 to account for the abscissa (time) first field.
-	text_utils:format( "~B title \"~ts\" ~ts",
-		[ CurveIndex + CurveOffset + 1, Title, BinPlotSuffix ] ).
-
-
-
-% @doc Returns command elements suitable to render specified zones.
-%
-% (helper)
-%
--spec get_plot_commands_for_zones( zone_entries(), curve_offset(),
-								   probe_settings() ) -> [ command_element() ].
-get_plot_commands_for_zones( ZoneEntries, CurveOffset,
-		Settings=#probe_settings{ plot_style=BinPlotStyle } ) ->
-
-	% Zone entries are a list of:
-	% {BinZoneName, {ExtendedCurveName1, ExtendedCurveName2}}
-	%
-	% We expect returned values to be either "3:5 with filledcurves" (for a zone
-	% between curves 2 and 4) or "3 with filledcurves x1" (for a zone between
-	% curve 2 and the abscissa axis).
-	%
-	% Apparently, in terms of order, for a proper rendering, filledcurves shall
-	% be rendered from top to bottom, whereas at least for fillsteps the
-	% opposite order shall be used (bottom to top); so:
-	%
-	OrderedZoneEntries = case BinPlotStyle of
-
-		<<"filledcurves">> ->
-			ZoneEntries;
-
-		% For example for fillsteps (side-effects: reverses key order):
-		_ ->
-			lists:reverse( ZoneEntries )
-
-	end,
-
-	[ get_zone_command( Z, CurveOffset, Settings ) || Z <- OrderedZoneEntries ].
-
-
-
-% @doc Returns a command element suitable to render specified zone.
-%
-% (helper)
-%
--spec get_zone_command( zone_entry(), curve_offset(), probe_settings() ) ->
-								command_element().
-get_zone_command(
-		_ZoneEntry={ BinZoneName, { FirstExtendedCurve, SecondExtendedCurve },
-					 ZonePlotSuffix },
-		CurveOffset,
-		_Settings=#probe_settings{ plot_style=BinPlotStyle } ) ->
-
-	%trace_utils:debug_fmt( "Zone command for entry ~p.", [ ZoneEntry ] ),
-
-	FirstPart = case FirstExtendedCurve of
-
-		'abscissa_top' ->
-			% The other curve is necessarily an index (+1, as the first column
-			% is the tick/timestamp):
-			%
-			ActualCurveIndex = SecondExtendedCurve + CurveOffset + 1,
-			case BinPlotStyle of
-
-				<<"filledcurves">> ->
-					text_utils:format( "~B with ~ts ~ts below x2",
-						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] );
-
-
-				_ ->
-					text_utils:format( "~B with ~ts ~ts",
-						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] )
-
-			end;
-
-
-		'abscissa_bottom' ->
-
-			% The other curve is necessarily an index (+1, as the first column
-			% is the tick/timestamp):
-			%
-			ActualCurveIndex = SecondExtendedCurve + CurveOffset + 1,
-
-			case BinPlotStyle of
-
-				<<"filledcurves">> ->
-					text_utils:format( "~B with ~ts ~ts above x1",
-						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] );
-
-				_ ->
-					text_utils:format( "~B with ~ts ~ts",
-						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] )
-
-			end;
-
-		_BinCurveName ->
-			ActualFirstCurveIndex = FirstExtendedCurve + 1,
-			ActualSecondCurveIndex = SecondExtendedCurve + 1,
-			case BinPlotStyle of
-
-				<<"filledcurves">> ->
-					text_utils:format( "~B:~B with ~ts ~ts",
-						[ ActualFirstCurveIndex, ActualSecondCurveIndex,
-						  BinPlotStyle, ZonePlotSuffix ] );
-
-				_ ->
-					text_utils:format( "~B with ~ts ~ts",
-						[ ActualSecondCurveIndex, BinPlotStyle,
-						  ZonePlotSuffix ] )
-
-			end
-
-	end,
-
-	FirstPart ++ text_utils:format( " title \"~ts\"",
-						[ text_utils:binary_to_string( BinZoneName ) ] ).
-
-
-
-% @doc Returns a Gnuplot-compatible rotation specification.
-%
-% (helper)
-%
--spec get_formatted_orientation( label_orientation() ) -> command_element().
-get_formatted_orientation( upright ) ->
-	"norotate";
-
-get_formatted_orientation( Angle ) when is_number( Angle ) ->
-	text_utils:format( "rotate by ~p", [ Angle ] ).
 
 
 
@@ -4560,13 +3748,6 @@ ensure_data_file_available( State ) ->
 
 
 
-% @doc Returns the Gnuplot reference version for us.
--spec get_gnuplot_reference_version() ->
-					static_return( gnuplot_version() ).
-get_gnuplot_reference_version() ->
-	wooper:return_static( ?gnuplot_reference_version ).
-
-
 
 % Serialisation section.
 %
@@ -4658,158 +3839,6 @@ onPostDeserialisation( _State, _UserData ) ->
 
 
 % Helper section.
-
-
-% @doc Returns the default per-curve plot suffix, as a binary.
--spec get_default_curve_plot_suffix() -> static_return( curve_plot_suffix() ).
-get_default_curve_plot_suffix() ->
-	% "noenhanced" to avoid that a name like 'foo_bar' gets displayed as foo
-	% with bar put as subscript.
-	%
-	wooper:return_static( <<"noenhanced">> ).
-
-
-
-% @doc Returns the default per-zone plot suffix, as a binary.
--spec get_default_zone_plot_suffix() -> static_return( curve_plot_suffix() ).
-get_default_zone_plot_suffix() ->
-	wooper:return_static( <<"">> ).
-
-
-
-% @doc Transforms a list of names into a list of {Number, Name, CurvePlotSuffix}
-% curve entries, where Number is the index of the name in the list (starting at
-% 1), Name is a binary name, and CurvePlotSuffix is the curve-specific default
-% plot suffix.
-%
-% Respects the order of specified names.
-%
-% For example transform_curve_names(["a", "b", "c"]) should result in: [
-%      {1,<<"a">>,DefaultBinPlotSuffix}, {2,<<"b">>,DefaultBinPlotSuffix},
-%      {3,<<"c">>,DefaultBinPlotSuffix} ].
-%
--spec transform_curve_names( [ declared_curve_name() ] ) -> curve_entries().
-transform_curve_names( NameList ) ->
-	transform_curve_names( NameList, get_default_curve_plot_suffix(), _Acc=[],
-						   _Count=1 ).
-
-
-% (helper)
-transform_curve_names( _NameList=[], _BinPlotSuffix, Acc, _Count ) ->
-	lists:reverse( Acc );
-
-transform_curve_names( _NameList=[ CurveName | T ], BinPlotSuffix, Acc,
-					   Count ) ->
-
-	CurveEntry = { Count, text_utils:string_to_binary( CurveName ),
-				   BinPlotSuffix },
-
-	transform_curve_names( T, BinPlotSuffix, [ CurveEntry| Acc ], Count+1 ).
-
-
-
-% @doc Transforms a list of zone declarations into actual zone entries, while
-% checking them against the curve names.
-%
--spec transform_declared_zones( [ declared_zone() ], curve_entries() ) ->
-										[ zone_entry() ].
-transform_declared_zones( DeclaredZones, CurveEntries ) ->
-	transform_declared_zones( DeclaredZones, CurveEntries, _Acc=[] ).
-
-
-transform_declared_zones( _DeclaredZones=[], _CurveEntries, Acc ) ->
-	% We preserve order here as well, otherwise zones will listed in the keys in
-	% reverse order:
-	%
-	lists:reverse( Acc );
-
-transform_declared_zones( [ Z={ ZoneName,
-								{ FirstCurveName, SecondCurveName } } | T ],
-						  CurveEntries, Acc ) ->
-
-	First = get_curve_index_for( FirstCurveName, CurveEntries ),
-	Second = get_curve_index_for( SecondCurveName, CurveEntries ),
-
-	% We want to ensure that:
-	%
-	%  1. at least one actual curve is referenced (not two 'abscissa_*' atoms)
-	%
-	%  2. if there is one 'abscissa_*' atom, it ends up in first position of the
-	%  returned pair
-	%
-	%  3. we preserve the input curve order (useful for plot styles requiring a
-	%  single value column, like fillsteps, rather than two, like linecurves:
-	%  they can always select the second curve of the pair):
-	%
-	NewBounds = case First of
-
-		_ when First == 'abscissa_top' orelse First == 'abscissa_bottom' ->
-
-			case Second of
-
-				_ when Second == 'abscissa_top'
-					   orelse Second == 'abscissa_bottom' ->
-					throw( { curveless_zone, Z } );
-
-				_ ->
-					{ First, Second }
-
-			end;
-
-		_ ->
-			% So that we are sure that any abscissa_* atom would end up in first
-			% position:
-			%
-			%{ Second, First }
-
-			% Now preserving input order of normal curves:
-			case Second == 'abscissa_top'
-					orelse Second == 'abscissa_bottom' of
-
-				true ->
-					{ Second, First };
-
-				false ->
-					{ First, Second }
-
-			end
-
-	end,
-
-	ZoneBinName = text_utils:string_to_binary( ZoneName ),
-
-	transform_declared_zones( T, CurveEntries,
-		[ { ZoneBinName, NewBounds, get_default_zone_plot_suffix() } | Acc ] );
-
-
-transform_declared_zones( [ Other | _T ], _CurveEntries, _Acc ) ->
-	throw( { invalid_zone_declaration, Other } ).
-
-
-
-% @doc Returns an appropriate curve index to define internally a zone.
--spec get_curve_index_for( declared_extended_curve_name(), curve_entries() ) ->
-									extended_curve_name().
-get_curve_index_for( CurveName='abscissa_top', _CurveEntries ) ->
-	CurveName;
-
-get_curve_index_for( CurveName='abscissa_bottom', _CurveEntries ) ->
-	CurveName;
-
-get_curve_index_for( CurveName, CurveEntries ) ->
-
-	BinCurveName = text_utils:string_to_binary( CurveName ),
-
-	case lists:keyfind( _Key=BinCurveName, _Index=2, CurveEntries ) of
-
-		false ->
-			throw( { zone_specified_unknown_curve, CurveName, CurveEntries } );
-
-		{ CurveIndex, _BinCurveName, _BinPlotSuffix } ->
-			CurveIndex
-
-	end.
-
 
 
 % @doc Checks that the (specified) probe directory is indeed existing.

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -151,7 +151,7 @@ run_gui_test() ->
 
 	NumMenu = create_numerical_ids_dropdown( MenuBar ),
 
-	gui_menu:set_menu_bar( MenuBar, Frame ),
+	gui_frame:set_menu_bar( Frame, MenuBar ),
 
 	{ PopupMenu, FirstSubMenu, SecondSubMenu } = create_popup_menu(),
 
@@ -182,7 +182,7 @@ test_main_loop( State={ Frame, PopupMenu } ) ->
 		{ onMouseRightButtonReleased, [ Frame, _FrameId, _Context ] } ->
 			%trace_utils:debug_fmt( "onMouseRightButtonReleased for frame ~w.",
 			%                       [ Frame ] ),
-			gui_menu:activate_as_popup( Frame, PopupMenu ),
+			gui_menu:activate_as_popup( PopupMenu, Frame ),
 			test_main_loop( State );
 
 		{ onItemSelected, [ _Menu, _ItemId=exit_menu_item, _Context ] } ->

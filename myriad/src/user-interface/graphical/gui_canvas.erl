@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -48,7 +48,8 @@
 %
 % Another option could be to use a panel as a canvas, like in: 'Canvas =
 % wxPanel:new(Panel, [{style, ?wxFULL_REPAINT_ON_RESIZE}])' and/or to create a
-% new "class" of widget, with the wx_object behaviour.
+% new "class" of widget, with the wx_object behaviour (refer to
+% https://www.erlang.org/doc/man/wx_object).
 %
 % In any case we emulate a basic canvas here, resulting notably in the fact that
 % a canvas object is not here a reference onto a wx object, but a stateful

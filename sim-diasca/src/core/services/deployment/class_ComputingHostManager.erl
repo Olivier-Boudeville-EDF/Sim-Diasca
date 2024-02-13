@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -826,8 +826,8 @@ is_already_too_late( State ) ->
 
 
 
-% @doc Connects to specified host, performs any required clean-up, and launch a
-% corresponding node.
+% @doc Connects to the specified host, performs any required clean-up, and
+% launches a corresponding computing node.
 %
 % (helper function)
 %
@@ -1195,9 +1195,9 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 		filename:join( UserHomeDirectory, RemoteCleanScriptName ),
 
 	% Like 'scp xx.sh joe@foo.org:/home/joe/yy.sh &&
-	% ssh joe@foo.org "/home/joe/yy.sh NODE ; /bin/rm -f /home/joe/yy.sh"':
+	% ssh joe@foo.org "/home/joe/yy.sh NODE; /bin/rm -f /home/joe/yy.sh"':
 	RemoteCommand = "\"" ++ TargetScriptName ++ " " ++ ?getAttr(node_name)
-		++ " ; /bin/rm -f " ++ TargetScriptName ++ "\"",
+		++ "; /bin/rm -f " ++ TargetScriptName ++ "\"",
 
 	text_utils:join( _Separator=" ", [
 		executable_utils:get_default_scp_executable_path(),
@@ -1219,7 +1219,7 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 
 
 
-% @doc Launches on the specfied host (remote or not, i.e. local) an
+% @doc Launches on the specified host (remote or not, i.e. local) an
 % appropriately configured Erlang node, on which first the deployment agent will
 % be run.
 %
@@ -1249,8 +1249,8 @@ launch_erlang_node( State ) ->
 	{ Command, Env, IsBackground } =
 		get_erlang_launch_command( NodeName, UserName, Hostname, State ),
 
-	?info_fmt( "Trying to launch computing node ~ts on host ~ts with user ~ts "
-		"(in the background: ~ts) based on following "
+	?info_fmt( "Trying to launch computing node '~ts' on host '~ts' "
+		"with user '~ts' (in the background: ~ts) based on the following "
 		"command: '~ts' and following environment: ~ts",
 		[ NodeName, Hostname, UserName, IsBackground, Command,
 		  system_utils:environment_to_string( Env ) ] ),
@@ -1386,7 +1386,7 @@ launch_erlang_node( State ) ->
 				  UserName, Hostname ] ),
 
 			Reason = interpret_launch_failure( ActualTimeOut, Duration,
-						NodeName, UserName, Hostname, Command, State ),
+				NodeName, UserName, Hostname, Command, State ),
 
 			{ failure, Reason }
 
@@ -1611,7 +1611,8 @@ onWOOPERDownNotified( State, MonitorReference, MonitoredType, MonitoredElement,
 		{ command(), system_utils:environment(), boolean() }.
 get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 
-	% We replicate the settings of the user node on all computer nodes:
+	% We automatically replicate the settings of the user node on all computing
+	% nodes:
 	%
 	% (see the --max-process-count and --async-thread-count options of
 	% myriad/src/scripts/launch-erl.sh)
@@ -1637,9 +1638,17 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 	% Apparently decreases the duration of at least some simulation runs, and
 	% makes the scalability curves considerably smoother.
 
+	% If computing hosts may not enjoy a proper monotonic time (e.g. if
+	% virtualised on top of at least some Windows platforms), time-warp may have
+	% to be disabled; the setting found for the user node (see TIME_OPTS in
+	% Myriad's GNUmakevars.inc) is automatically replicated here (see the +C
+	% option):
+	%
 	AdditionalOptions = text_utils:format(
-		" -noshell -smp auto +sbt tnnps ~ts +K true +A ~B +P ~B ",
-		[ SeqOption, AsynchThreadsCount, MaxProcesses ] ),
+		" -noshell -smp auto +sbt tnnps ~ts +K true +A ~B +P ~B +C ~ts",
+		[ SeqOption, AsynchThreadsCount, MaxProcesses,
+		  erlang:system_info( time_warp_mode ) ] ),
+
 
 	EpmdPort = ?getAttr(epmd_port),
 
@@ -1702,7 +1711,7 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 			%
 			Username = system_utils:get_user_name(),
 
-			{ BasicCommand ++ "2>/dev/null & ", BasicEnv, _IsBackground=true };
+			{ BasicCommand ++ " 2>/dev/null &", BasicEnv, _IsBackground=true };
 
 
 		_ ->

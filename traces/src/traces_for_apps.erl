@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -74,7 +74,7 @@
 % known for good, i.e. at its first renaming).
 %
 % Here we disable explicitly the trapping of EXIT signals, as a function run
-% through "erl -eval" (like our apps) or through "erl -run" will be executed in
+% through "erl -eval" or through "erl -run" (like our apps) will be executed in
 % a process that will silently trap EXIT signals, which would mean that the
 % crash of any process created from the app, even thanks to spawn_link, would
 % most probably remain unnoticed (just leading to an EXIT message happily
@@ -193,6 +193,8 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
 			end
 
 		end,
+
+	%trace_utils:debug( "(Ceylan-Traces started)" ),
 
 	TraceAggregatorPid.
 

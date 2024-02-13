@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -345,6 +345,8 @@
 						| 'frame'
 						| 'sizer'
 						| 'bitmap'
+						| 'menu'
+						| 'toolbar'
 						| 'memory_device_context'.
 % MyriadGUI-translated version of a native wx type, that is of the
 % wx_native_object_type(); for example 'window', instead of 'wxWindow'.
@@ -860,8 +862,12 @@ start() ->
 -spec start( [ service() ] | debug_level() ) -> gui_env_info().
 start( Services ) when is_list( Services ) ->
 
+	%trace_utils:debug_fmt( "Starting MyriadGUI with services ~w.",
+	%                       [ Services ] ),
+
 	% Now the identifier allocator is directly integrated in the MyriadGUI
-	% (gui_event) main loop:
+	% (gui_event) main loop, rather than being a separate process requiring
+	% extra message exchanges):
 	%
 	%IdAllocPid = ?myriad_spawn_link( fun gui_id:embody_as_id_allocator/0 ),
 
@@ -887,7 +893,7 @@ start( DebugLevel ) ->
 create_gui_environment( Services ) ->
 	% Now, at least currently, the MyriadGUI main loop process directly hosts
 	% the identifier allocation table (to avoid more messages having to be
-	% exchanged between the two); so no standalone id allocator is wanted:
+	% exchanged between the two); so no standalone id allocator is wanted here:
 	%
 	create_gui_environment( Services, _MaybeIdAllocPid=undefined ).
 
@@ -912,13 +918,22 @@ create_gui_environment( Services, MaybeIdAllocPid ) ->
 	{ OSFamily, OSName } = system_utils:get_operating_system_type(),
 
 	% Initialises the wx backend (no option relevant here):
+	%
+	% May, at least under some circumstances, issue the following trace:
+	% "[notice][erlang_logger] wx: GTK: State 0 for context 0x7f065424ed90
+	% doesn't match state 128 set via gtk_style_context_set_state ()" (possibly
+	% a wx bug; most probably harmless; seen only if the lower log levels
+	% are enabled)
+	%
+
 	WxServer = wx:new(),
+	%WxServer = wx:new( [ { debug, [ verbose, trace ] } ] ),
 
 	% The wx environment will be exported to the internal main loop process, so
 	% that both the user code (i.e. the current process) and that loop can make
 	% use of wx:
 	%
-	WxEnv = wx:get_env(),
+	WxEnv = get_backend_environment(),
 
 	% Needed both directly in the main event loop and in the GUI environment
 	% (e.g. for when creating a plain canvas with no specific context):
@@ -1277,7 +1292,7 @@ event_interception_callback( WxEventRecord=#wx{
 % type. See also https://howtos.esperide.org/Erlang.html#using-wx for more
 % clarifications about when trapping events is of use.
 %
-% Note: to be called from an event handler, i.e. at least from a process which
+% Note: to be called from an event handler, i.e. at least from a process that
 % set the wx environment.
 %
 % See propagate_event/1 for the opposite operation (forcing the propagation of
@@ -1418,14 +1433,16 @@ execute_instance_destruction( ObjectType, InstanceId ) ->
 % Section related to GUI objects in general.
 
 
-% @doc Sets the current process as the controller of the specified GUI object.
+% @doc Sets the current process as the controller of the specified GUI object
+% handle.
+%
 -spec set_as_controller( gui_object() ) -> gui_object().
 set_as_controller( Object ) ->
 	set_controller( Object, _ControllerPid=self() ).
 
 
 % @doc Sets the process of specified PID as the controller of the specified GUI
-% object.
+% object handle.
 %
 -spec set_controller( gui_object(), pid() ) -> gui_object().
 set_controller( Object, ControllerPid ) ->
@@ -1472,7 +1489,22 @@ object_key_to_string( { AnyObjectType, AnyInstanceId } ) ->
 %
 -spec get_backend_environment() -> backend_environment().
 get_backend_environment() ->
-	wx:get_env().
+
+	%cond_utils:if_defined( myriad_debug_gui_environments,
+	%  trace_utils:debug_fmt( "[~w] Getting wx backend environment.",
+	%                         [ self() ] ) ),
+
+	%trace_utils:debug_fmt( "Stacktrace: ~ts",
+	%                       [ code_utils:interpret_stacktrace() ] ),
+
+	% Just a lookup in the local process dictionary:
+	WxEnv = wx:get_env(),
+
+	cond_utils:if_defined( myriad_debug_gui_environments,
+		trace_utils:debug_fmt( "[~w] Got wx backend environment: ~w.",
+							   [ self(), WxEnv ] ) ),
+
+	WxEnv.
 
 
 % @doc Sets the specified backend environment for the calling process, so that
@@ -1483,6 +1515,9 @@ get_backend_environment() ->
 %
 -spec set_backend_environment( backend_environment() ) -> void().
 set_backend_environment( WxEnv ) ->
+	cond_utils:if_defined( myriad_debug_gui_environments,
+		trace_utils:debug_fmt( "[~w] Setting wx backend environment ~w.",
+							   [ self(), WxEnv ] ) ),
 	wx:set_env( WxEnv ).
 
 

@@ -1,13 +1,14 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Unit tests for the Cat class implementation.
+% @doc Unit tests for the Cat class implementation.
 %
 % See the class_Cat.erl tested module.
 %
@@ -261,22 +262,16 @@ run( IsDebug ) ->
 
 	18 = class_Cat:get_mean_life_expectancy(),
 
-	case IsDebug of
-
-		true ->
-
+	IsDebug andalso
+		begin
 			MyC ! { wooper_get_instance_description,[], self() },
 			receive
 
 				{ wooper_result, InspectString } ->
 					test_facilities:display( "Instance description: ~ts",
 											 [ InspectString ] )
-			end;
-
-		false ->
-			ok
-
-	end,
+			end
+		end,
 
 	% Some waiting could be needed in cases where the interpreter is to stop
 	% immediately afterwards, so that the actions performed in the destructor

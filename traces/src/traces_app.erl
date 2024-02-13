@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -64,7 +64,7 @@ start( RestartType, StartArgs ) ->
 	%
 	TraceSupervisorWanted = not executable_utils:is_batch(),
 
-	trace_utils:debug_fmt( "Starting Traces application (restart type: ~w, "
+	trace_utils:debug_fmt( "Starting the Traces application (restart type: ~w, "
 		"start arguments: ~w, supervisor wanted: ~ts).",
 		[ RestartType, StartArgs, TraceSupervisorWanted ] ),
 

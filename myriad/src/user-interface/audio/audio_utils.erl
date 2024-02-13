@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, November 30, 2021
+% Creation date: Tuesday, November 30, 2021.
 
 
 % @doc This module concentrates <b>audio-related elements</b>.
@@ -35,12 +35,12 @@
 
 
 -type sample_rate() :: unit_utils:integer_hertz() .
-% The sample rate of an audio content (ex: 16000 Hz).
+% The sample rate of an audio content (e.g. 16000 Hz).
 
 
 % Generally in [8, 16, 24, 48]:
 -type standard_sampling_rate() :: pos_integer().
-% A standard sample rate, in kHz (ex: 24 kHz).
+% A standard sample rate, in kHz (e.g. 24 kHz).
 
 
 -type channel_layout() :: 'mono' | 'stereo' | '5.1'.
@@ -51,13 +51,13 @@
 
 
 -type bit_rate() :: pos_integer().
-% The bit rate of an audio content, in kilobits per second (ex: 192 kbps).
+% The bit rate of an audio content, in kilobits per second (e.g. 192 kbps).
 
 
 -type bit_depth() :: pos_integer().
 % The number of bits to which each audio sample is quantized.
 %
-% Ex: 8-bit or 16-bit.
+% For example 8-bit or 16-bit.
 
 
 -type bit_level() :: { 'bit', bit_depth() } | { 'kbps', bit_rate() }.
@@ -90,8 +90,8 @@
 
 
 -type codec() :: bin_string().
-% An implementation in charge of coding/decoding an audio format (ex: the codecs
-% of FFmpeg).
+% An implementation in charge of coding/decoding an audio format (e.g. the
+% codecs of FFmpeg).
 
 
 -export_type([ sample_rate/0, standard_sampling_rate/0,

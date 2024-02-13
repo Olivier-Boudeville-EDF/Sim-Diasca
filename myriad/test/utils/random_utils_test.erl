@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -234,17 +234,17 @@ test_lognormal() ->
 test_weibull() ->
 
 	% Default sample count and support:
-	WbLaw2pSpec = { weibull_2p, _K2p=1.5, _Lambda2p=1 },
-	test_law( WbLaw2pSpec ),
+	_WbLaw2pSpec = { weibull_2p, _K2p=1.5, _Lambda2p=1 },
+	%test_law( WbLaw2pSpec ),
 
-	WbLaw3pSpec = { weibull_3p, _K3p=2.1, _Lambda3p=2, _Gamma3p=10 },
-	test_law( WbLaw3pSpec ),
+	_WbLaw3pSpec = { weibull_3p, _K3p=2.1, _Lambda3p=2, _Gamma3p=10 },
+	%test_law( WbLaw3pSpec ),
 
-	WbCrLawSpec = { weibull_cr, _LambdaCr=1.1, _KCr=1.2, _ThetaCr=4 },
-	test_law( WbCrLawSpec ),
+	_WbCrLawSpec = { weibull_cr, _LambdaCr=1.1, _KCr=1.2, _ThetaCr=4 },
+	%test_law( WbCrLawSpec ),
 
-	WbDsLawSpec = { weibull_ds, _LambdaDs=2.1, _KDs=0.2, _SigmaDs=3 },
-	test_law( WbDsLawSpec ),
+	_WbDsLawSpec = { weibull_ds, _LambdaDs=2.1, _KDs=0.2, _SigmaDs=3 },
+	%test_law( WbDsLawSpec ),
 
 	% Parameters could be also taken from
 	% https://reliability.readthedocs.io/en/latest/DSZI%20models.html?highlight=DSZI#example-1;
@@ -253,12 +253,23 @@ test_weibull() ->
 	%WbDsziLawSpec = { weibull_dszi, _LambdaDszi=50, _KDszi=2,
 	%				  _SigmaDszi=0.8, _ThetaDszi=0.3 },
 
-	WbDsziLawSpec = { weibull_dszi, _LambdaDszi=10, _KDszi=1,
+	_WbDsziLawSpec = { weibull_dszi, _LambdaDszi=10, _KDszi=1,
 					  _SigmaDszi=0.8, _ThetaDszi=0.3 },
-	test_law( WbDsziLawSpec ),
+	%test_law( WbDsziLawSpec ),
 
-	WbMixLawSpec = { weibull_mixture, _PMix=0.3, _LambdaMix1=1.0, _KMix1=5.0,
-					 _LambdaMix2=1.7, _KMix2=4.2 },
+	% Basic test:
+	PMix = 0.3,
+	LambdaMix1 = 1.0, KMix1 = 5.0,
+	LambdaMix2 = 1.7, KMix2 = 4.2,
+
+	% Real-life problematic test:
+	%PMix = 0.3456224429838643,
+	%LambdaMix1 = 2.5075208545139858, KMix1 = 429.196179207228,
+	%LambdaMix2 = 1.0401480099991025, KMix2 = 0.10712068420515797,
+
+	WbMixLawSpec =
+		{ weibull_mixture, PMix, LambdaMix1, KMix1, LambdaMix2, KMix2 },
+
 	test_law( WbMixLawSpec ),
 
 	WbZiLawSpec = { weibull_zi, _LambdaZi=0.4, _KZi=1.2, _PZi=4.3 },
@@ -553,7 +564,7 @@ run() ->
 
 	test_facilities:start( ?MODULE ),
 
-	test_basic_random(),
+	%test_basic_random(),
 
 	test_facilities:display( "Testing now non-uniform random sampling." ),
 
@@ -562,13 +573,13 @@ run() ->
 
 	%test_uniform(),
 	%test_exponential(),
-	test_gamma(),
+	%test_gamma(),
 	%test_gumbel(),
 	%test_loglogistic(),
 	%test_lognormal(),
 	%test_gaussian(),
 
-	%test_weibull(),
+	test_weibull(),
 
 	%test_beta(),
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -91,6 +91,7 @@
 		  roundify/1,
 		  get_center/2, get_integer_center/2,
 		  translate/2, scale/2, vectorize/2,
+		  add/2,
 		  are_close/2, are_equal/2, is_within/3, is_within_square/3,
 		  square_distance/2, distance/2,
 		  draw_integer_random/2, draw_integer_random/3,
@@ -245,6 +246,17 @@ scale( _P={X,Y}, Factor ) ->
 			   ( integer_point2(), integer_point2() ) -> integer_vector2().
 vectorize( _P1={X1,Y1}, _P2={X2,Y2} ) ->
 	[ X2-X1, Y2-Y1 ].
+
+
+
+% @doc Returns a point corresponding to the specified point translated of the
+% specified point, to be understood as a vector.
+%
+% May be useful to offset points by sizes.
+%
+-spec add( any_point2(), any_point2() ) -> any_point2().
+add( _P1={X1,Y1}, _P2={X2,Y2} ) ->
+	{ X1+X2, Y1+Y2 }.
 
 
 

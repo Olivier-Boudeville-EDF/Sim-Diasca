@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -936,7 +936,7 @@ start( Option ) ->
 
 				{ error, SSLReason } ->
 					trace_bridge:error_fmt( "Starting web_utils reported "
-						"following error: ~p.", [ SSLReason ] ),
+						"following error for SSL: ~p.", [ SSLReason ] ),
 					throw( { start_failed, ssl, SSLReason } )
 
 			end
@@ -1293,12 +1293,24 @@ download_file( Url, TargetDir, HttpOptions ) ->
 
 
 % @doc Stops the HTTP support.
+-spec stop() -> basic_utils:base_status().
 stop() ->
 
 	% Maybe not launched, hence not pattern matched:
 	ssl:stop(),
 
-	ok = inets:stop().
+	case inets:stop() of
+
+		ok ->
+			ok;
+
+		% Anyway we prefer not crashing on shutdown:
+		Error ->
+			cond_utils:if_defined( myriad_debug_web_exchanges,
+				throw( { inets_stop_failed, Error } ),
+				Error )
+
+	end.
 
 
 

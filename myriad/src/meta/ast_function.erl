@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -165,12 +165,12 @@ check_function_type( Type, FunctionArity ) ->
 									function_type().
 check_function_type( _FunctionType, _FunctionArity, _Context ) ->
 	%display_warning( "Function type ~p not checked (context: ~p).",
-	%				  [ FunctionType, Context ] ).
+	%                 [ FunctionType, Context ] ).
 	%raise_error( [ fixme_function_type ], Context ).
 	ok.
 
 %check_function_type( Other, _FunctionArity, Context ) ->
-%	raise_error( [ invalid_function_type, Other ], Context ).
+%   raise_error( [ invalid_function_type, Other ], Context ).
 
 
 
@@ -279,7 +279,7 @@ transform_function( FunctionInfo=#function_info{ clauses=ClauseDefs,
 transform_function_spec( { 'attribute', FileLoc, SpecType,
 						   { FunId, SpecList } }, Transforms ) ?rec_guard ->
 
-	% For example for '-spec f( type_a() ) -> type_b().':
+	% For example for '-spec f(type_a()) -> type_b().':
 
 	% SpecList = [ {type,652,'fun',
 	% [{type,652,product,[{user_type,652,type_a,[]}]},
@@ -335,7 +335,7 @@ transform_spec( OtherSpec, Transforms ) ?rec_guard ->
 % ..., Rep(T_n)]}, Rep(T_0)]}."
 %
 transform_function_type( { 'type', FileLocFirst, 'fun',
-	   [ { 'type', FileLocSecond, 'product', ParamTypes }, ResultType ] },
+		[ { 'type', FileLocSecond, 'product', ParamTypes }, ResultType ] },
 						 Transforms ) ?rec_guard ->
 
 	{ [ NewResultType | NewParamTypes ], NewTransforms } =
@@ -432,8 +432,8 @@ get_located_forms_for( FunctionExportTable, FunctionTable ) ->
 							% later, with its own error messages, so we still
 							% include that lone spec form:
 							%
-							LocSpecForm ->
-								[ LocSpecForm | AccLocDefs ]
+					LocSpecForm ->
+						[ LocSpecForm | AccLocDefs ]
 
 				end,
 				{ NewAccLocDefs, AccExportTable };
@@ -476,7 +476,7 @@ get_located_forms_for( FunctionExportTable, FunctionTable ) ->
 				% function is indeed exported there (auto-export):
 				%
 				NewAccExportTable = update_export_table( Name, Arity,
-											ExportLocs, AccExportTable ),
+					ExportLocs, AccExportTable ),
 
 				{ NewAccLocDefs, NewAccExportTable }
 

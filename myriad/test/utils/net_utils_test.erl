@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,10 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: July 1, 2007.
 
 
-
-% Unit tests for the net_utils toolbox.
+% @doc Unit tests for the net_utils toolbox.
 %
 % See the net_utils.erl tested module.
 %
@@ -58,7 +58,7 @@ run() ->
 			% own name:
 			% throw( could_not_ping_localhost )
 			test_facilities:display(
-			  "Warning: the local host is not able to ping itself.")
+				"Warning: the local host is not able to ping itself.")
 
 	end,
 
@@ -73,8 +73,8 @@ run() ->
 			% May happen in badly configured systems:
 			%throw( could_ping_non_existing_host );
 			trace_utils:warning_fmt(
-			  "Could ping a non-existing hostname (~ts), abnormal.",
-			  [ NonExistingHostname ] );
+				"Could ping a non-existing hostname (~ts), abnormal.",
+				[ NonExistingHostname ] );
 
 		false ->
 			test_facilities:display(
@@ -97,18 +97,11 @@ run() ->
 	test_facilities:display( "Naming mode for this node: ~w.", [ NamingMode ] ),
 
 	% As may be forcibly disabled, for example for continuous integration:
-	case NamingMode of
-
-		undefined ->
-			ok;
-
-		_ ->
-			test_facilities:display( "Naming-compliant hostname for '~ts' "
-				"is '~ts'.", [ Localhost,
-					net_utils:get_naming_compliant_hostname( Localhost,
-															 NamingMode ) ] )
-
-	end,
+	NamingMode =:= undefined orelse
+		test_facilities:display( "Naming-compliant hostname for '~ts' "
+			"is '~ts'.", [ Localhost,
+				net_utils:get_naming_compliant_hostname( Localhost,
+														 NamingMode ) ] ),
 
 	TestName = "I have \"<spaces>\" / \ & ~ # @ { } [ ] | $ * ? ! + , . ; :"
 		"(and also 'I have quotes')",
@@ -136,7 +129,7 @@ run() ->
 
 		undefined ->
 			test_facilities:display(
-			  "No DNS lookup tool found, no related test performed." );
+				"No DNS lookup tool found, no related test performed." );
 
 		LookupInfo ->
 
@@ -182,25 +175,25 @@ run() ->
 						   ExistingNodeName ],
 
 	[ test_facilities:display( "  + direct for ~p: ~p",
-			  [ N, net_utils:check_node_availability( N ) ] )
-	  || N <- CandidateNodeNames ],
+			[ N, net_utils:check_node_availability( N ) ] )
+		|| N <- CandidateNodeNames ],
 
 
 	[ test_facilities:display( "  + immediate for ~p: ~p",
-			  [ N, net_utils:check_node_availability( N, immediate ) ] )
-	  || N <- CandidateNodeNames ],
+			[ N, net_utils:check_node_availability( N, immediate ) ] )
+		|| N <- CandidateNodeNames ],
 
 
 	[ test_facilities:display( "  + with waiting for ~p: ~p",
-			  [ N, net_utils:check_node_availability( N, with_waiting ) ] )
-	  || N <- CandidateNodeNames ],
+			[ N, net_utils:check_node_availability( N, with_waiting ) ] )
+		|| N <- CandidateNodeNames ],
 
 
 	%Durations = [ 0, 1, 10, 100, 200, 510, 1000, 2050 ],
 	Durations = [ 0, 1, 10, 100, 200 ],
 
 	[ [ test_facilities:display( "  + with duration ~B for ~p: ~p",
-			  [ D, N, net_utils:check_node_availability( N, D ) ] )
+			[ D, N, net_utils:check_node_availability( N, D ) ] )
 		|| N <- CandidateNodeNames ] || D <- Durations ],
 
 	test_facilities:display( "To test send_file/2, receive_file/1, "
@@ -227,6 +220,5 @@ run() ->
 		"shell_b, global ), "
 		"net_utils:send_file( \"/home/joe/test-file.txt\","
 		" ShellB ).'" ),
-
 
 	test_facilities:stop().

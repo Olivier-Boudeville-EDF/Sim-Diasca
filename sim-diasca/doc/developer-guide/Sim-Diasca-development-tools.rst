@@ -16,11 +16,11 @@ Applied to the Sim-Diasca code, we can see that on the negative side:
 
 - all empty lines in function bodies are removed
 - only one empty line between functions is kept
-- calls to macros are protected (enclosed in parentheses), but too many parenthesis levels are used (ex: ``?wooper_return_state_result(State, ((?getAttr(initial_tick)) + (?getAttr(stop_tick_offset)))).``)
+- calls to macros are protected (enclosed in parentheses), but too many parenthesis levels are used (e.g. ``?wooper_return_state_result(State, ((?getAttr(initial_tick)) + (?getAttr(stop_tick_offset)))).``)
 - export declarations ``f/n`` may become ``f / n``
 - arguments could be listed more compactly
 - newly indented comments may go past the 80th character
-- code that used to compile sometimes does not compile anymore (ex: deployment_agent.erl)
+- code that used to compile sometimes does not compile anymore (e.g. deployment_agent.erl)
 
 
 On a positive side:

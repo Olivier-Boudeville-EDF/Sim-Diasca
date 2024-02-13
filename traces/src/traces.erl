@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -454,7 +454,9 @@ get_handler_config( AggregatorPid ) ->
 
 
 
-% @doc Unsets the Traces logger handler, returns to the base trace_utils one.
+% @doc Unsets the Traces logger handler, returns to the base (Myriad's)
+% trace_utils one.
+%
 -spec reset_handler() -> void().
 reset_handler() ->
 

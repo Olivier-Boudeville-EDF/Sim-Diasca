@@ -7,7 +7,7 @@ The operating system is supposed here to be GNU/Linux [#]_ (32 or, most probably
 (see the credits_ section about the comic strips)
 
 
-.. [#] This is the platform we use routinely, although other UNIX systems and possibly Windows platforms *could* be targeted. Sim-Diasca is also quite close to be able to run on Mac OS X, when a few perks will be ironed out (ex: ``/proc/cpuinfo`` replacement). Patches welcome!
+.. [#] This is the platform we use routinely, although other UNIX systems and possibly Windows platforms *could* be targeted. Sim-Diasca is also quite close to be able to run on Mac OS X, when a few perks will be ironed out (e.g. ``/proc/cpuinfo`` replacement). Patches welcome!
 
 Root access is not necessary, but recommended so that any lacking prerequisite can be installed directly and with little effort:
 
@@ -15,7 +15,7 @@ Root access is not necessary, but recommended so that any lacking prerequisite c
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-sandwich.png}`
 
 
-Some space on disk will be needed. 300 megabytes should be enough for the full Sim-Diasca install by itself, but, depending on your use, generated data (ex: frames for simulation videos, plots of simulation results) could need *a lot* more additional space.
+Some space on disk will be needed. 300 megabytes should be enough for the full Sim-Diasca install by itself, but, depending on your use, generated data (e.g. frames for simulation videos, plots of simulation results) could need *a lot* more additional space.
 
 Finally, in all cases, i.e. even in the context of simulations to be run on a single machine (rather than in a distributed mode), the network configuration (on all hosts involved) must be adequate (notably so that any switch to a distributed mode of operation is as painless as possible).
 
@@ -129,15 +129,15 @@ Some best-effort support is generally available by email (see contact address at
 
 We preferred to list below the widest possible range of tools here. This includes:
 
-- the **UNIX basics** (ex: ``grep``, ``awk``, ``sed``, etc.); your distribution is expected to provide them out of the box
+- the **UNIX basics** (e.g. ``grep``, ``awk``, ``sed``, etc.); your distribution is expected to provide them out of the box
 
-- the software of which **the simulation engine itself** is composed (ex: the ``Erlang`` runtime, the various intermediate layers)
+- the software of which **the simulation engine itself** is composed (e.g. the ``Erlang`` runtime, the various intermediate layers)
 
-- the **third-party tools** that most simulators may trigger for their own purpose (ex: ``LogMX`` to monitor and browse simulation traces, ``gnuplot`` to render plots - one should ensure that its PNG support is enabled, possibly thanks to ``libgd`` - or ``graphviz`` to render graphs)
+- the **third-party tools** that most simulators may trigger for their own purpose (e.g. ``LogMX`` to monitor and browse simulation traces, ``gnuplot`` to render plots - one should ensure that its PNG support is enabled, possibly thanks to ``libgd`` - or ``graphviz`` to render graphs)
 
-- the **other tools** that, depending on the use cases, may be relied upon in order to post-process or make use of the simulation results (ex: ``mplayer``, to display generated videos)
+- the **other tools** that, depending on the use cases, may be relied upon in order to post-process or make use of the simulation results (e.g. ``mplayer``, to display generated videos)
 
-- finally, the **toolchain** that can be used to *build* the simulation engine and its dependencies (ex: to recreate the Sim-Diasca trace parser based on ``LogMX``)
+- finally, the **toolchain** that can be used to *build* the simulation engine and its dependencies (e.g. to recreate the Sim-Diasca trace parser based on ``LogMX``)
 
 
 
@@ -166,7 +166,7 @@ Tool List For the Computing Nodes
 
 An host that is to run only a computing node needs only to have a recent-enough Erlang environment installed (according to the conventions detailed below).
 
-If additional distributed services are enabled (typically probes, whose result generation is by default itself parallel and distributed), then of course their prerequisites shall be available also on the computing nodes (ex: ``gnuplot`` being then needed on them also).
+If additional distributed services are enabled (typically probes, whose result generation is by default itself parallel and distributed), then of course their prerequisites shall be available also on the computing nodes (e.g. ``gnuplot`` being then needed on them also).
 
 As these needs form a subset of the needs of a user node, please refer to the next section.
 
@@ -211,7 +211,7 @@ Some hints about each tool are specified below the table. Afterwards, all instal
 +--------------+---------------------+-----------------+----------------------------------------------+
 | Gnuplot      | ``gnuplot``,        | Mandatory       | To generate plots of numerical data.         |
 |              | ``gnuplot-nox``     |                 |                                              |
-|              | and                 |                 |                                              |
+|              | or                  |                 |                                              |
 |              | ``gnuplot-x11``     |                 |                                              |
 +--------------+---------------------+-----------------+----------------------------------------------+
 | Dot          | ``graphviz``        | Strongly        | To generate graph renderings.                |
@@ -242,7 +242,7 @@ Some hints about each tool are specified below the table. Afterwards, all instal
 | Nedit        | ``nedit``           | Very optional   | To edit Sim-Diasca sources with a dedicated  |
 |              |                     |                 | WOOPER-aware syntax highlighting             |
 +--------------+---------------------+-----------------+----------------------------------------------+
-| GIT          | ``git``             | Optional        | To be able to read and modify Sim-Diasca     |
+| Git          | ``git``             | Optional        | To be able to read and modify Sim-Diasca     |
 |              |                     |                 | sources, depending on access options.        |
 +--------------+---------------------+-----------------+----------------------------------------------+
 | GCC          | ``gcc``             | Recommended     | Needed if building Erlang from sources (the  |
@@ -251,9 +251,9 @@ Some hints about each tool are specified below the table. Afterwards, all instal
 | Ant          | ``ant``             | Optional        | To build the Sim-Diasca Java Trace Parser    |
 |              |                     |                 | for LogMX (if ever needed - probably not).   |
 +--------------+---------------------+-----------------+----------------------------------------------+
-| Java (Oracle | ``sun-java6-jdk``   | Optional        | To be able to compile and run a              |
-| version or   | or                  |                 | Sim-Diasca-enabled LogMX parser.             |
-| OpenJDK)     | ``openjdk-7-jre``   |                 |                                              |
+| Java (Oracle | ``default-jdk``     | Optional        | To be able to compile and run a              |
+| version or   | or                  |                 | Sim-Diasca-enabled LogMX parser (JRE usually |
+| OpenJDK)     | ``default-jre``     |                 | sufficient, as the .class can be reused)     |
 +--------------+---------------------+-----------------+----------------------------------------------+
 | Docutils     |``python-docutils``  | Optional        | To generate documentation files from RST     |
 |              |                     |                 | (reStructuredText mark-up).                  |
@@ -275,7 +275,7 @@ Erlang and Sim-Diasca (including its `Myriad <https://olivier-boudeville.github.
 
 The use of a custom-built ``Erlang`` environment is *strongly* recommended, to be able to rely on an adequately-configured and up-to-date version [#]_. Thus no need to install any distribution-specific prebuilt Erlang package [#]_, however the ``GCC`` compiler (or any similar C compiler) must be available so that the build of Erlang can be performed.
 
-.. [#] In the past, some distributions shipped stripped-down versions of Erlang that happened to be incorrectly built (ex: lacking some components). Nowadays some include versions of Erlang that are way too ancient to be conveniently used. The last stable version of Erlang is always the best bet, and the Sim-Diasca developments tend to stick to it (possibly using bleeding edge additions, thus often *requiring* recent-enough versions of Erlang).
+.. [#] In the past, some distributions shipped stripped-down versions of Erlang that happened to be incorrectly built (e.g. lacking some components). Nowadays some include versions of Erlang that are way too ancient to be conveniently used. The last stable version of Erlang is always the best bet, and the Sim-Diasca developments tend to stick to it (possibly using bleeding edge additions, thus often *requiring* recent-enough versions of Erlang).
 
 .. [#] It is even safer not to have any *system-level* installation of Erlang, so that no version mismatch can ever happen, despite potential mistakes made in the user shell settings (note that a runtime checking of all the actual Erlang versions in use by each distributed host is performed). Thus one may only install first the dependencies of Erlang, i.e. the ones listed by the `"show dependencies" action <https://wiki.archlinux.org/index.php/Pacman/Rosetta#Querying_package_dependencies>`_ for your distribution of choice.
 
@@ -296,30 +296,28 @@ Depending on the version of the ``Java Runtime Environment`` (JRE) which is avai
 
 ``Docutils``, ``LaTeX`` and all are only useful if wanting to be able to generate the documentation of Sim-Diasca, or PDF-based trace reports.
 
-GIT is needed only if using a repository (either EDF-internal or public) in order to retrieve the Sim-Diasca sources; otherwise of course sources could come from a released archive instead.
+Git is needed only if using a repository (either EDF-internal or public) in order to retrieve the Sim-Diasca sources; otherwise of course sources could come from a released archive instead.
 
 
 .. Note::
-	If some actual development *on* Sim-Diasca, or *with* Sim-Diasca, was to be performed (beyond mere testing), then relying on a GIT clone rather than on a source archive should be preferred, so that Sim-Diasca can be updated accordingly (and in both directions) with little effort.
+	If some actual development *on* Sim-Diasca, or *with* Sim-Diasca, was to be performed (beyond mere testing), then relying on a Git clone rather than on a source archive should be preferred, so that Sim-Diasca can be updated accordingly (and in both directions) with little effort.
 
 The choice in terms of text editor is a matter of taste, any should be suitable (including ``Emacs`` or IDEs like `Erlide <https://erlide.org>`_, based on `Eclipse <http://www.eclipse.org/>`_).
 
 
-Finally, users of Debian-based distributions (Jeesie, Wheezy) could just start with the following command to install the main prerequisite packages:
+Finally, users of Debian-based distributions (e.g. Debian 12 Bookworm) could just start with the following command to install a set of relevant packages (the main prerequisite ones and extra ones):
 
 .. code:: bash
 
- # Depending on version, libwxgtk3.0-dev could/should be replaced
- # with libwxgtk-webview3.0-gtk3-dev:
- #
- $ sudo apt-get install bzip2 coreutils build-essential g++       \
-   libncurses5-dev openssl libssl-dev libwxgtk3.0-dev             \
-   libgl1-mesa-dev libglu1-mesa-dev libpng3                       \
-   python-docutils eog evince gcc gnuplot gnuplot-x11             \
-   geeqie graphviz uuid-runtime make mplayer ant                  \
-   openjdk-8-jdk texlive python3
+ $ sudo apt-get install bzip2 coreutils build-essential \
+   libncurses5-dev openssl libssl-dev libwxgtk3.2-dev   \
+   libgl1-mesa-dev libglu1-mesa-dev libpng16-16         \
+   python3-docutils eog evince gnuplot-x11              \
+   geeqie graphviz uuid-runtime mplayer ant             \
+   default-jre texlive python3
 
 
+.. Previously was: libwxgtk3.0-dev, libwxgtk-webview3.0-gtk3-dev, openjdk-8-jdk
 
 .. Note:: On an headless server (with no GUI, like for some cluster hosts), ``gnuplot-x11`` may be replaced with ``gnuplot-nox``.
 
@@ -329,7 +327,7 @@ Finally, users of Debian-based distributions (Jeesie, Wheezy) could just start w
 Preparing the Sim-Diasca sources
 --------------------------------
 
-The sources of Sim-Diasca can be obtained either from a GIT repository (recommended approach) or from an archive file. Both cases are detailed below.
+The sources of Sim-Diasca can be obtained either from a Git repository (recommended approach) or from an archive file. Both cases are detailed below.
 
 .. include:: Sim-Diasca-getting-sources-english.rst
 
@@ -337,7 +335,7 @@ The sources of Sim-Diasca can be obtained either from a GIT repository (recommen
 Installation From a Sim-Diasca Archive
 ......................................
 
-You should have been given a Sim-Diasca archive, probably corresponding to a stable version (ex: ``Sim-Diasca-a.b.c.tar.xz``, like in ``Sim-Diasca-2.2.11.tar.xz``) or a release candidate version, in the form of ``Sim-Diasca-a.b.c-rcd.tar.xz`` (like in ``Sim-Diasca-2.2.11-rc3.tar.xz``). In 2015 we stopped using `Semantic Versioning <http://semver.org/>`_ to switch back to the plain old versioning scheme.
+You should have been given a Sim-Diasca archive, probably corresponding to a stable version (e.g. ``Sim-Diasca-a.b.c.tar.xz``, like in ``Sim-Diasca-2.2.11.tar.xz``) or a release candidate version, in the form of ``Sim-Diasca-a.b.c-rcd.tar.xz`` (like in ``Sim-Diasca-2.2.11-rc3.tar.xz``). In 2015 we stopped using `Semantic Versioning <http://semver.org/>`_ to switch back to the plain old versioning scheme.
 
 In a directory on which you have read/write access and enough space left, extract that Sim-Diasca archive, using a proper ``tar`` incantation:
 
@@ -353,7 +351,7 @@ For example:
 
 This should create a root directory named ``Sim-Diasca-a.b.c`` which contains all the relevant sources, including various top-level directories (``myriad``, ``wooper``, ``traces``, ``sim-diasca``, etc.).
 
-From now on, non-absolute paths (ex: ``mock-simulators/soda-test/...``) must be understood as being relative to this root directory.
+From now on, non-absolute paths (e.g. ``mock-simulators/soda-test/...``) must be understood as being relative to this root directory.
 
 
 
@@ -365,7 +363,7 @@ Sim-Diasca is essentially written in `Erlang <http://erlang.org>`_, thus as soon
 This means that **all the computing hosts that may be used in the context of a distributed simulation must have access to such an Erlang environment**, with compatible versions. There are various ways of ensuring it, including the cases where:
 
 - an appropriate Erlang environment is already built-in on the host operating system
-- the hosts have access to some shared infrastructure (ex: a distributed filesystem, like NFS) - it is generally the case with HPC clusters
+- the hosts have access to some shared infrastructure (e.g. a distributed filesystem, like NFS) - it is generally the case with HPC clusters
 - a dedicated installation is performed on each of them
 
 Although older versions of Erlang were supported (initially starting from ``R12B-5``, released on November 5, 2008), API and typing changes require now using Erlang versions that are considerably more recent. One may preferably rely on the latest stable version available, as it is both more robust and efficient, and this is the one that is used by the developers of the engine. This version was usually in the form ``RxBy``, like ``R16B``, and now is named typically as ``OTP 23.2`` at the time of this writing. As the engine relies on some features introduced in ``OTP 23.0``, this version, or more recent, shall be used.
@@ -379,7 +377,7 @@ Although older versions of Erlang were supported (initially starting from ``R12B
 
 .. Note::
 
-  The libncurses development files (ex: the ``libncurses5-dev`` package, for Debian-based distributions) are needed to build Erlang.
+  The libncurses development files (e.g. the ``libncurses5-dev`` package, for Debian-based distributions) are needed to build Erlang.
 
   Similarly, the OpenSSL development files (i.e. the ``openssl`` and ``libssl-dev`` packages, for Debian-based distributions) are needed for the ``crypto`` Erlang module to be available, as we prefer to rely on better-quality random generation (in the future we may use *Tiny Mersenne Twister* - ``TinyMT``, or a library dedicated to stochastic management).
 
@@ -391,10 +389,8 @@ Although older versions of Erlang were supported (initially starting from ``R12B
 
   .. code:: bash
 
-   $ sudo apt-get install g++ make libncurses5-dev openssl \
-	 libssl-dev libwxgtk3.0-dev libgl1-mesa-dev            \
-	 libglu1-mesa-dev libpng3
-
+   $ sudo apt-get install g++ make libncurses5-dev libssl-dev libwxgtk3.2-dev \
+	 libgl1-mesa-dev libglu1-mesa-dev libpng16-16
 
 
 For such an installation from sources, in the ``myriad/conf`` directory of the Sim-Diasca codebase a script named ``install-erlang.sh`` is provided [#]_.
@@ -406,10 +402,10 @@ If you have a direct connection to the Internet, it can automatically download t
 
 You can then either run the installation script "as is" (with or without a prefix being specified as parameter) or, if preferred, modify its settings appropriately beforehand, or just get inspiration from it instead and then install Erlang directly from the shell.
 
-``install-erlang.sh --help`` will provide more usage information, notably on whether it should be run as root or not, installed in a prefixed directory or in the system tree, with a selection of options (ex: to prevent any attempt of downloading said archives), etc.
+``install-erlang.sh --help`` will provide more usage information, notably on whether it should be run as root or not, installed in a prefixed directory or in the system tree, with a selection of options (e.g. to prevent any attempt of downloading said archives), etc.
 
 
-From a well-chosen, separate directory (ex: ``~/Software/Erlang``, to avoid mixing the sources of Erlang with the ones of Sim-Diasca), one could run [#]_ for example:
+From a well-chosen, separate directory (e.g. ``~/Software/Erlang``, to avoid mixing the sources of Erlang with the ones of Sim-Diasca), one could run [#]_ for example:
 
 .. code:: bash
 
@@ -438,7 +434,7 @@ or, if a specific installation prefix is to be used:
 
 In all cases, you should end up with an installed version of the latest stable source of Erlang.
 
-Sim-Diasca developers could prefer installing automatically this version, along with its associated documentation, in an **ad hoc software repository** (ex: ``~/Software/Erlang/``), where successive versions of the tools would be installed over time (it is quite convenient to switch versions).
+Sim-Diasca developers could prefer installing automatically this version, along with its associated documentation, in an **ad hoc software repository** (e.g. ``~/Software/Erlang/``), where successive versions of the tools would be installed over time (it is quite convenient to switch versions).
 
 The simplest and recommended approach is to run the installation script directly from such any software repository of choice (*not* located within the Sim-Diasca codebase), and to add the ``--doc-install`` option in order to obtain the documentation as well, like in:
 
@@ -448,7 +444,7 @@ The simplest and recommended approach is to run the installation script directly
  $ cd ~/Software/Erlang
  $ $DIR/myriad/conf/install-erlang.sh --doc-install
 
-Let's call ``V`` the Erlang version number selected by the script (ex: ``V=23.2``).
+Let's call ``V`` the Erlang version number selected by the script (e.g. ``V=23.2``).
 
 The actual installation directory will then be:
 
@@ -459,14 +455,14 @@ The actual installation directory will then be:
 
 - if a prefix PREFIX was specified, installation will be done in ``PREFIX/Erlang/Erlang-$V``
 
-To allow for any later recompilation (ex: should some options be changed), if no prefix was specified and if the installation script is not run as root, the **Erlang build tree** (``otp_src_x.y``) is *not* removed after the installation. Should the current directory (whence the user ran the installation script) be located within the build tree of any part of Sim-Diasca, the corresponding ``otp_src_x.y`` directory *must* be removed by the user, so that the Erlang BEAM files cannot be mixed up with the ones of that layer. In other cases, one may or may not prefer removing the OTP build tree or even the Erlang archives (typically ``otp_*_x.y.tar.gz``).
+To allow for any later recompilation (e.g. should some options be changed), if no prefix was specified and if the installation script is not run as root, the **Erlang build tree** (``otp_src_x.y``) is *not* removed after the installation. Should the current directory (whence the user ran the installation script) be located within the build tree of any part of Sim-Diasca, the corresponding ``otp_src_x.y`` directory *must* be removed by the user, so that the Erlang BEAM files cannot be mixed up with the ones of that layer. In other cases, one may or may not prefer removing the OTP build tree or even the Erlang archives (typically ``otp_*_x.y.tar.gz``).
 
 
-If intending to make any actual development in the future (ex: writing a specialized simulator, adding models or operating on the Sim-Diasca code itself), one should add the ``--generate-plt`` option to the ``install-erlang.sh`` command-line. It will pre-process Erlang files to generate a *PLT file* that will be later reused by the `Dialyzer <http://www.it.uu.se/research/group/hipe/dialyzer>`_ tool for code analysis. Please refer to the *Using Type Specifications With Sim-Diasca* section of the *Sim-Diasca Developer Guide* for further information.
+If intending to make any actual development in the future (e.g. writing a specialized simulator, adding models or operating on the Sim-Diasca code itself), one should add the ``--generate-plt`` option to the ``install-erlang.sh`` command-line. It will pre-process Erlang files to generate a *PLT file* that will be later reused by the `Dialyzer <http://www.it.uu.se/research/group/hipe/dialyzer>`_ tool for code analysis. Please refer to the *Using Type Specifications With Sim-Diasca* section of the *Sim-Diasca Developer Guide* for further information.
 
 Running the installation script should create, in the target installation directory, two corresponding sub-directories, ``Erlang-$V`` and ``Erlang-$V-documentation``, containing respectively the Erlang runtime and its corresponding documentation, if it was selected.
 
-Additionally, in this installation directory two symbolic links (``Erlang-current-install`` and ``Erlang-current-documentation``) will also be automatically created or updated, to point to these newly installed directories, so that one can register in one's settings files (ex: ``~/.bashrc``) appropriate paths referring to these **links**: further Erlang updates will then not require the user to update his settings, while prior installed versions will remain available through the use of their full path.
+Additionally, in this installation directory two symbolic links (``Erlang-current-install`` and ``Erlang-current-documentation``) will also be automatically created or updated, to point to these newly installed directories, so that one can register in one's settings files (e.g. ``~/.bashrc``) appropriate paths referring to these **links**: further Erlang updates will then not require the user to update his settings, while prior installed versions will remain available through the use of their full path.
 
 So one may end up with a directory layout like:
 
@@ -499,7 +495,7 @@ For example, directly from a ``bash`` shell:
  erl is /home/dalton/Software/Erlang/Erlang-current-install/bin/erl
 
 
-Setting also the relevant path, one time for all (rather than on a single short-lived terminal) in the shell configuration of the user (ex: ``~/.bashrc``) is mandatory for further uses as well; as a consequence, please add the relevant export in the configuration file of your shell of choice.
+Setting also the relevant path, one time for all (rather than on a single short-lived terminal) in the shell configuration of the user (e.g. ``~/.bashrc``) is mandatory for further uses as well; as a consequence, please add the relevant export in the configuration file of your shell of choice.
 
 Finally, two simple tests allow to ensure that Erlang can run flawlessly in this new environment. The first one allows to check that we are using the expected version and that it can indeed be run (you have to enter CTRL-C twice to close the Erlang shell afterwards):
 
@@ -573,7 +569,7 @@ Note that if only the ``Java SE Runtime Environment`` (i.e. the JRE) is installe
 
 However both cases should work, since using a recent JRE should spare the rebuilding of the Sim-Diasca parser (and hence the use of the JDK).
 
-.. Note:: With some distributions (ex: Ubuntu), the default JRE is headless (which means that the JRE does not provide the dependencies used for the graphical components). Fixing this issue is as easy as installing the missing dependencies (``apt-get install openjdk-8-jre``).
+.. Note:: With some distributions (e.g. Ubuntu), the default JRE is headless (which means that the JRE does not provide the dependencies used for the graphical components). Fixing this issue is as easy as installing the missing dependencies (``apt-get install openjdk-8-jre``).
 
 
 
@@ -644,11 +640,11 @@ Identically to ``Erlang``, the LogMX script must be found from the path. For exa
  $ type logmx.sh
  logmx.sh is /home/dalton/Software/LogMX/LogMX_vx.y.z/logmx.sh
 
-Setting also the relevant path in the shell configuration (ex: ``~/.bashrc``) is recommended for further uses.
+Setting also the relevant path in the shell configuration (e.g. ``~/.bashrc``) is recommended for further uses.
 
-A best practise for that is to install all custom software in a base directory (ex: ``~/Software/``), with a sub-directory for each tool (ex: ``~/Software/LogMX/``). Then all successive versions of that tool could be installed here (ex: ``~/Software/LogMX/LogMX_v7.3.0/``).
+A best practise for that is to install all custom software in a base directory (e.g. ``~/Software/``), with a sub-directory for each tool (e.g. ``~/Software/LogMX/``). Then all successive versions of that tool could be installed here (e.g. ``~/Software/LogMX/LogMX_v7.3.0/``).
 
-Finally, a symbolic link pointing to the latest current version could be defined when installing a new version of that tool (ex: ``cd ~/Software/LogMX/; ln -sf LogMX_v7.3.0 LogMX-current-install``).
+Finally, a symbolic link pointing to the latest current version could be defined when installing a new version of that tool (e.g. ``cd ~/Software/LogMX/; ln -sf LogMX_v7.3.0 LogMX-current-install``).
 
 That way, one just has to specify in one's shell configuration:
 
@@ -772,7 +768,7 @@ Python Configuration
 
 Python 3 (``3.5.2`` or newer) is required here, and - as for the other runtime dependencies - must thus be available on the target system (i.e. on the user host and also on all additional computing hosts - if any).
 
-Often, on a given host (typically a computing one), multiple generations of Python coexist (Python 2 or 3), as well as multiple versions thereof (ex: 3.5.2, 3.6.3, etc.).
+Often, on a given host (typically a computing one), multiple generations of Python coexist (Python 2 or 3), as well as multiple versions thereof (e.g. 3.5.2, 3.6.3, etc.).
 
 We leave the choice of the actual Python version to be used by the engine up to the developer, who can select it by creating a symbolic link named ``python-for-sim-diasca`` that should point to the Python version of interest, and be found from the default user PATH.
 
@@ -894,16 +890,16 @@ It is mandatory to have Sim-Diasca know where the tools it needs can be found. T
 
 
 
-Some tools will be only used by this ``make`` system, whereas others, the majority of them (ex: the Erlang interpreter and compiler) will be used by the simulator as well.
+Some tools will be only used by this ``make`` system, whereas others, the majority of them (e.g. the Erlang interpreter and compiler) will be used by the simulator as well.
 
 Therefore the path to the former ones could be set directly in the makefiles only. However it is generally more convenient that the latter ones are found directly from the shell environment, so that both the Make system *and* the simulator will find them with the same correct versions.
 
-If a ``make``-only tool is lacking, edit the ``GNUmakevars.inc`` file of the relevant package (ex: the one of ``myriad``, ``wooper``, ``traces``, ``sim-diasca``, etc.) accordingly.
+If a ``make``-only tool is lacking, edit the ``GNUmakevars.inc`` file of the relevant package (e.g. the one of ``myriad``, ``wooper``, ``traces``, ``sim-diasca``, etc.) accordingly.
 
 
 If another tool is lacking, then the shell environment should be updated. This involves updating - most preferably, once for all - the PATH environment variable.
 
-This can be done by adding ``PATH=/a/path/to/a/lacking/tool:$PATH`` to the shell init file (ex: ``~/.bashrc``) and sourcing it again (``. ~/.bashrc``).
+This can be done by adding ``PATH=/a/path/to/a/lacking/tool:$PATH`` to the shell init file (e.g. ``~/.bashrc``) and sourcing it again (``. ~/.bashrc``).
 
 Re-run ``make info-tools`` and apply changes until the ``make`` system selects the exact tool versions you want.
 
@@ -956,11 +952,11 @@ However, should multiple computing hosts be used, a few system-level checks shal
 
 .. _`domain configuration`:
 
-Just before, a note about what we believe is a rather common network misconfiguration of too many Linux computers, which may impact even local, single-host simulations [#]_: one should ensure that, if FQDN hostnames are associated to IPs for the local host in ``/etc/hosts`` (ex: ``127.0.1.1 hurricane.foobar.org hurricane``), their domain matches the one (if any) specified in ``/etc/resolv.conf``.
+Just before, a note about what we believe is a rather common network misconfiguration of too many Linux computers, which may impact even local, single-host simulations [#]_: one should ensure that, if FQDN hostnames are associated to IPs for the local host in ``/etc/hosts`` (e.g. ``127.0.1.1 hurricane.foobar.org hurricane``), their domain matches the one (if any) specified in ``/etc/resolv.conf``.
 
 Often one can see there ``domain localdomain`` (instead of, say, ``domain foobar.org``), which may lead to resolve the local FQDN as ``hurricane.localdomain`` instead of ``hurricane.foobar.org`` (which may be a problem at least for the Erlang VM).
 
-.. [#] The network configuration still plays a role even in a non-distributed mode of operation, as the user node is to launch, on that same given host, a computing node, and this spawned one is to connect back to the user node by designating it with either just a node name (ex: ``my_user_node``) or with a node name *and* a (local, here) hostname (ex: ``my_user_node@LOCAL_HOSTNAME``). A problem with the aforementioned discrepancy is that, if we just specify ``my_user_node``, it will be expanded by the VM in ``my_user_node@hurricane.localdomain`` instead of ``my_user_node@hurricane.foobar.org``, and that computing node will never be seen by the user node.
+.. [#] The network configuration still plays a role even in a non-distributed mode of operation, as the user node is to launch, on that same given host, a computing node, and this spawned one is to connect back to the user node by designating it with either just a node name (e.g. ``my_user_node``) or with a node name *and* a (local, here) hostname (e.g. ``my_user_node@LOCAL_HOSTNAME``). A problem with the aforementioned discrepancy is that, if we just specify ``my_user_node``, it will be expanded by the VM in ``my_user_node@hurricane.localdomain`` instead of ``my_user_node@hurricane.foobar.org``, and that computing node will never be seen by the user node.
 
 
 
@@ -984,7 +980,7 @@ Of course, the user could log on each of these hosts, and install then launch ma
 
 One has mainly to ensure that the network is correctly configured and that, with one's account, a SSH password-less login can be performed from the current computer to all targeted remote hosts, which are expected to already have an Erlang environment directly available.
 
-From now on, the *user node* will designate the Erlang node from which the user will run the simulation (ex: the one created when issuing a command like ``make my_simulation_run`` from the user shell). That Erlang node will never take part directly to the computing. However, depending on the simulation settings, the *host* this node runs on may or may not be used as a computing resource, thanks to the automatic creation of another (local, simulation-dedicated) computing node.
+From now on, the *user node* will designate the Erlang node from which the user will run the simulation (e.g. the one created when issuing a command like ``make my_simulation_run`` from the user shell). That Erlang node will never take part directly to the computing. However, depending on the simulation settings, the *host* this node runs on may or may not be used as a computing resource, thanks to the automatic creation of another (local, simulation-dedicated) computing node.
 
 One can also refer to the *distributed cheat sheet* of the *Sim-Diasca Technical Manual* for further guidance.
 
@@ -1157,7 +1153,7 @@ Managing the Simulator Codebase
 
 In a distributed context, the proper code (software) must of course be available on each of the computing hosts, so that this host is able to run a part of the simulation.
 
-However installing manually everything on each host would be soon strenuous, error-prone, and could happen many times (ex: when fine-tuning some models).
+However installing manually everything on each host would be soon strenuous, error-prone, and could happen many times (e.g. when fine-tuning some models).
 
 With Sim-Diasca, the only prerequisite that must be available on a host before this host is able to take part to a simulation are:
 
@@ -1184,7 +1180,7 @@ One should ensure that the ``/tmp`` directory is writable by the user on each co
 Cleaning Up
 -----------
 
-Under some circumstances (ex: a model-level failure encountered during a simulation), some pending nodes, created by the deployment manager, may linger on a computing host; this should not be an issue, as the next launching of Sim-Diasca will wipe them out.
+Under some circumstances (e.g. a model-level failure encountered during a simulation), some pending nodes, created by the deployment manager, may linger on a computing host; this should not be an issue, as the next launching of Sim-Diasca will wipe them out.
 
 To remove them manually, the *Erlang Port Mapper Daemon* can be used, just run on that host:
 

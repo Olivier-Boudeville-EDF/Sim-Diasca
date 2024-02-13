@@ -93,9 +93,10 @@ endif
 # As soon as Traces is used, no need to ellipse traces anymore, they can be
 # fully preserved:
 #
-ERLANG_COMPILER_OPT_BASE += $(TRACES_OPT_FLAGS)      \
-							$(TRACES_DEBUG_FLAGS)    \
-							$(TRACES_CHECK_FLAGS)    \
+ERLANG_COMPILER_OPT_BASE += -Dtraces_version=\"$(TRACES_VERSION)\" \
+							$(TRACES_OPT_FLAGS)                    \
+							$(TRACES_DEBUG_FLAGS)                  \
+							$(TRACES_CHECK_FLAGS)                  \
 							-Dwooper_preserve_traces
 
 
@@ -117,20 +118,20 @@ endif
 
 # PROJECT_SHORT_NAME should be defined on a per-project basis.
 ifndef PROJECT_SHORT_NAME
- PROJECT_SHORT_NAME := traces
+	PROJECT_SHORT_NAME := traces
 endif
 
 
-# PROJECT_NAME_FOR_REBAR should be defined on a per-project basis.
-ifndef PROJECT_NAME_FOR_REBAR
-	PROJECT_NAME_FOR_REBAR := $(PROJECT_SHORT_NAME)
+# PROJECT_NAME_FOR_OTP should be defined on a per-project basis.
+ifndef PROJECT_NAME_FOR_OTP
+	PROJECT_NAME_FOR_OTP := $(PROJECT_SHORT_NAME)
 endif
 
 
-# The uniquely-defined version of this layer, for all uses (including rebar and
-# hex):
+# The uniquely-defined version of this layer, for all uses (including rebar, hex
+# and the code itself, see traces_utils:get_traces_version{_string,}/0):
 #
-TRACES_VERSION := 1.0.17
+TRACES_VERSION := 1.0.21
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -242,7 +243,7 @@ KILL_TRACE_SUPERVISION_TOOL = $(TRACES_TOP)/priv/bin/kill-trace-supervision-tool
 
 
 ifndef EDOC_OPTS
-	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {includes,["$(LAYER_TOP)/include", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["$(LAYER_TOP)/include", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
 endif
 
 

@@ -98,8 +98,9 @@ endif
 # be ellipsed (typically if relying on an advanced logger able to cope with
 # longer traces, such as Ceylan-Traces).
 
-ERLANG_COMPILER_OPT_BASE += $(WOOPER_DEBUG_FLAGS)               \
-							$(WOOPER_CHECK_FLAGS)               \
+ERLANG_COMPILER_OPT_BASE += -Dwooper_version=\"$(WOOPER_VERSION)\" \
+							$(WOOPER_DEBUG_FLAGS)                  \
+							$(WOOPER_CHECK_FLAGS)                  \
 							$(WOOPER_UNELLIPSED_TRACES_OPT)
 
 
@@ -126,16 +127,16 @@ ifndef PROJECT_SHORT_NAME
 endif
 
 
-# PROJECT_NAME_FOR_REBAR should be defined on a per-project basis.
-ifndef PROJECT_NAME_FOR_REBAR
-	PROJECT_NAME_FOR_REBAR := $(PROJECT_SHORT_NAME)
+# PROJECT_NAME_FOR_OTP should be defined on a per-project basis.
+ifndef PROJECT_NAME_FOR_OTP
+	PROJECT_NAME_FOR_OTP := $(PROJECT_SHORT_NAME)
 endif
 
 
-# The uniquely-defined version of this layer, for all uses (including rebar and
-# hex):
+# The uniquely-defined version of this layer, for all uses (including rebar, hex
+# and the code itself, see wooper_utils:get_wooper_version{_string,}/0):
 #
-WOOPER_VERSION := 2.0.23
+WOOPER_VERSION := 2.0.28
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -359,7 +360,7 @@ endif
 
 
 ifndef EDOC_OPTS
-	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {includes,["$(LAYER_TOP)/include", "$(LAYER_TOP)/include/interfaces", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["$(LAYER_TOP)/include", "$(LAYER_TOP)/include/interfaces", "$(MYRIAD_TOP)/.."]}, {overview,"$(LAYER_TOP)/overview.edoc"}]'
 endif
 
 

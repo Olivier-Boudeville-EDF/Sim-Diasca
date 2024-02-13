@@ -9,7 +9,7 @@
 
 .PHONY: .PHONY-myriad-explicit
 
-.PHONY-myriad-explicit:  all all-pre-hook all-parallel-recurse all-recurse   \
+.PHONY-myriad-explicit: all all-pre-hook all-parallel-recurse all-recurse    \
 			all-parse-transforms bootstrap-modules make-all-parse-transforms \
 			build-debug rebuild                                              \
 			test test-recurse test-interactive test-interactive-recurse      \
@@ -19,7 +19,7 @@
 			install-all install-announce install-ebin install-bin            \
 			install-src install-include install-examples install-test        \
 			install-doc info-install info-install-locations                  \
-			info-install-content create-myriad-checkout                      \
+			info-install-content create-myriad-checkout create-app-file      \
 			rebar3-application rebar3-upgrade-lock                           \
 			set-rebar-conf set-rebar-conf-for-hex                            \
 			rebar3-release rebar3-development-release                        \
@@ -29,7 +29,7 @@
 			rebar3-bulletproof-compile-pre-hook                              \
 			rebar3-bulletproof-compile-post-hook                             \
 			rebar3-update rebar3-compile rebar3-create-tree                  \
-			rebar3-populate-build-tree rebar3-create-app-file                \
+			rebar3-populate-build-tree                                       \
 			rebar3-copy-beams rebar3-clean rebar3-real-clean                 \
 			rebar3-test-clean                                                \
 			rebar3-cache-clean rebar3-info rebar3-hex-publish                \
@@ -45,7 +45,7 @@
 			help-intro help-erl                                              \
 			clean clean-erlang clean-layer-ebin clean-python clean-protobuf  \
 			clean-database clean-recurse clean-outputs clean-ast-debug       \
-			real-clean track                                                 \
+			clean-previous real-clean track                                  \
 			info-platform info-hardware info-software info-source-layout     \
 			info-erlang-target-version                                       \
 			info info-files info-meta info-erlang info-python info-java      \
@@ -78,7 +78,7 @@ all: all-pre-hook all-parse-transforms create-include-links
 	fi); then exit 1; fi; done
 
 
-# Not removing rebar.config anymore, to avoid that GIT considers it deleted on
+# Not removing rebar.config anymore, to avoid that Git considers it deleted on
 # purpose.
 #
 # Also deactivated, as any dependency in _build would then be lost, whereas we
@@ -387,10 +387,10 @@ copy-all-beams-to-ebins: copy-beams-to-ebin
 
 
 
-FAKE_OTP_ROOT := /tmp/ceylan-fake-otp-projects/$(PROJECT_NAME_FOR_REBAR)
+FAKE_OTP_ROOT := /tmp/ceylan-fake-otp-projects/$(PROJECT_NAME_FOR_OTP)
 
 # Section for newer OTP management: we create now automatically from our actual
-# source tree (in GIT) a simpler, fake one that respects the conventions that
+# source tree (in Git) a simpler, fake one that respects the conventions that
 # rebar3 expects (instead of trying to have our actual build tree be somewhat
 # compliant with rebar3, which proved utterly complicated and frustrating) .
 #
@@ -398,7 +398,7 @@ FAKE_OTP_ROOT := /tmp/ceylan-fake-otp-projects/$(PROJECT_NAME_FOR_REBAR)
 # to recompile these BEAMs... (and fail; sigh).
 #
 create-fake-otp-project: all
-	@echo "  Creating a fake OTP project for $(PROJECT_NAME_FOR_REBAR) in $(FAKE_OTP_ROOT)"
+	@echo "  Creating a fake OTP project for $(PROJECT_NAME_FOR_OTP) in $(FAKE_OTP_ROOT)"
 	-@/bin/rm -rf $(FAKE_OTP_ROOT)
 	@mkdir -p $(FAKE_OTP_ROOT)/{src,include,priv,ebin}
 	@find . -name '*.erl' -a ! -name '*_test.*' -exec /bin/cp -f '{}' $(FAKE_OTP_ROOT)/src/ ';'
@@ -566,6 +566,47 @@ create-myriad-checkout:
 	@mkdir -p _checkouts
 
 
+# We generate a .app file and place it both in the OTP build tree (by default:
+# _build/lib/...) and in an ebin directory directly at the Git root, as it is
+# expected when having specified a Git dependency with rebar, such as: {myriad,
+# {git, "https://github.com/Olivier-Boudeville/Ceylan-Myriad.git"} }
+#
+# For the listed modules, this target removes paths, extension, replaces
+# newlines with commas, and removes the last one.
+#
+# Not specifically removing source files, each .app.src does that thanks its
+# 'exclude_files' entry, with MODULES_FOR_OTP:
+#
+# -a ! -name sql_support.erl -a ! -name hdf5_support.erl
+#
+# A .app file seems to be necessary in all cases, to generate: an application
+# (otherwise nothing is built), a release (otherwise dependency not reachable),
+# and probably an hex package as well.
+#
+# Apparently, at least in some cases (e.g. generating a standalone release), an
+# (updated) *.app.src file is looked-up in src (not in ebin - try to create
+# syntax error in it to check), so we add a symbolic link there as well.
+#
+# We have thus:
+# ./conf/FOOBAR.app.src [only real source]
+# ./_build/lib/FOOBAR/ebin.FOOBAR.app
+# ./ebin/FOOBAR.app [needed by rebar for dependencies]
+# ./src/FOOBAR.app.src -> ../ebin/FOOBAR.app
+#
+# So, a priori, only conf/FOOBAR.app.src and ebin/FOOBAR.ap shall be put in VCS.
+#
+# (not so rebar-specific, hence not called rebar3-create-app-file anymore)
+#
+create-app-file:
+	@echo "  Generating $(PROJECT_NAME_FOR_OTP).app file"
+	@# This target may be called for hex for example:
+	@mkdir -p $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/ebin $(LAYER_TOP)/ebin
+	@all_modules=$$(find src -name '*.erl' -a ! -name '*_test.erl' $(MYRIAD_REBAR_FIND_SRC_OPT) -exec echo '{}' ';' | sed 's|.*/||1' | sed 's|.erl$$||1' | sort | tr '\n' ','| sed 's|,|, |g' | sed 's|, $$||1'); cat conf/$(PROJECT_NAME_FOR_OTP).app.src | sed "s|VERSION_FOR_OTP|$(VERSION_FOR_OTP)|1" | sed "s|MODULES_FOR_OTP|$$all_modules|1" > $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/ebin/$(PROJECT_NAME_FOR_OTP).app
+	@/bin/cp -f $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/ebin/$(PROJECT_NAME_FOR_OTP).app $(LAYER_TOP)/ebin/
+	@cd $(LAYER_TOP)/src; ln -sf ../ebin/$(PROJECT_NAME_FOR_OTP).app $(PROJECT_NAME_FOR_OTP).app.src
+
+
+
 # The two main rebar-based targets for application and release are:
 # 'rebar3-application' and 'rebar3-release':
 
@@ -581,7 +622,7 @@ create-myriad-checkout:
 # mentions do match indeed the actual (probably latest) intended Git commit of
 # the corresponding dependencies.
 #
-# (creating a ebin/*.app file is necessary at this point, otherwise no module
+# (creating an ebin/*.app file is necessary at this point, otherwise no module
 # will be compiled, leading to an empty application; the same applies - silently
 # - if the conf/*.app.src, hence the ebin/*.app file, are invalid - e.g. cannot
 # be parsed)
@@ -591,7 +632,7 @@ create-myriad-checkout:
 #
 rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf \
 					create-include-links rebar3-hide-unsupported-sources \
-					rebar3-create-app-file
+					create-app-file
 	@echo "  Triggering the overall creation by rebar3 of an OTP application corresponding to $(PROJECT_NAME)"
 	-@/bin/rm -f rebar.lock 2>/dev/null
 	@$(REBAR_DEBUG) $(MYRIAD_REBAR_EXEC) compile
@@ -599,7 +640,11 @@ rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf \
 
 
 # Upgrades the rebar.lock file, regarding the dependencies of the current layer.
-rebar3-upgrade-lock:
+#
+# ebin/THIS_PACKAGE.app is necessary, as otherwise: 'Cannot read app file:
+#  "[...]/src/THIS_PACKAGE.app.src"'.
+#
+rebar3-upgrade-lock: create-app-file
 	@$(MYRIAD_REBAR_EXEC) upgrade --all
 
 
@@ -670,26 +715,26 @@ rebar3-compile-post-hook:
 # bypass the rebar3 logic as a whole (as much as possible):
 #
 rebar3-bulletproof-compile-pre-hook:
-	@echo "  Executing rebar3 bullet-proof pre-compile hook in $$(pwd), with the '$(MYRIAD_REBAR_PROFILE)' profile, for $(PROJECT_NAME_FOR_REBAR), with following options: $(REBAR_HOOK_EXTRA_OPTS)"
-	@$(MYRIAD_TOP)/conf/fix-rebar-compile-pre-hook.sh $(PROJECT_NAME_FOR_REBAR) $(REBAR_HOOK_EXTRA_OPTS)
+	@echo "  Executing rebar3 bullet-proof pre-compile hook in $$(pwd), with the '$(MYRIAD_REBAR_PROFILE)' profile, for $(PROJECT_NAME_FOR_OTP), with following options: $(REBAR_HOOK_EXTRA_OPTS)"
+	@$(MYRIAD_TOP)/conf/fix-rebar-compile-pre-hook.sh $(PROJECT_NAME_FOR_OTP) $(REBAR_HOOK_EXTRA_OPTS)
 
 
 rebar3-bulletproof-compile-post-hook:
-	@echo "  Executing rebar3 bullet-proof post-compile hook in $$(pwd), with the '$(MYRIAD_REBAR_PROFILE)' profile, for $(PROJECT_NAME_FOR_REBAR), with following options: $(REBAR_HOOK_EXTRA_OPTS)"
-	@$(MYRIAD_TOP)/conf/fix-rebar-compile-post-hook.sh $(PROJECT_NAME_FOR_REBAR) $(REBAR_HOOK_EXTRA_OPTS)
+	@echo "  Executing rebar3 bullet-proof post-compile hook in $$(pwd), with the '$(MYRIAD_REBAR_PROFILE)' profile, for $(PROJECT_NAME_FOR_OTP), with following options: $(REBAR_HOOK_EXTRA_OPTS)"
+	@$(MYRIAD_TOP)/conf/fix-rebar-compile-post-hook.sh $(PROJECT_NAME_FOR_OTP) $(REBAR_HOOK_EXTRA_OPTS)
 
 
 # By default, development releases, not production ones:
 rebar3-release: rebar3-development-release
 
 
-# Creating a ebin/*.app file is necessary here, otherwise this layer is a
+# Creating an ebin/*.app file is necessary here, otherwise this layer is a
 # dependency "not reachable by the system" (same error is the .app exists yet is
 # invalid):
 #
 pre-release: rebar3-real-clean clean rebar3-update          \
 			 rebar3-hide-unsupported-sources set-rebar-conf \
-			 rebar3-create-app-file
+			 create-app-file
 	-@/bin/rm -f rebar.lock 2>/dev/null
 
 
@@ -736,7 +781,7 @@ rebar3-update:
 rebar3-compile:
 	@echo "  Preparing $(PROJECT_NAME) for a rebar3-compliant build (in $(MYRIAD_REBAR_BUILD_DIR))"
 	@$(MAKE) -s set-rebar-conf rebar3-clean rebar3-create-tree              \
-	rebar3-populate-build-tree rebar3-create-app-file all rebar3-copy-beams \
+	rebar3-populate-build-tree create-app-file all rebar3-copy-beams \
 	MYRIAD_REBAR_PROFILE=$(MYRIAD_REBAR_PROFILE) MYRIAD_REBAR_BUILD_DIR=$(MYRIAD_REBAR_BUILD_DIR)
 
 
@@ -755,8 +800,8 @@ rebar3-compile:
 #
 rebar3-create-tree:
 	@echo "  Creating rebar3 build tree in $(MYRIAD_REBAR_BUILD_DIR)"
-	@mkdir -p $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/{priv/examples,include,doc,test,ebin}
-	@cd $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/ && ln -sf ../../../../src
+	@mkdir -p $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/{priv/examples,include,doc,test,ebin}
+	@cd $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/ && ln -sf ../../../../src
 
 
 # Currently, 'priv' is not specifically populated, and all header files
@@ -781,60 +826,28 @@ rebar3-create-tree:
 #
 rebar3-populate-build-tree:
 	@echo "  Copying sources in rebar3 build tree"
-	@true "Using a src symlink, hence disabled: find src -name '*.erl' -a ! -name '*_test.erl' -a ! -name sql_support.erl -a ! -name hdf5_support.erl -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/src/ ';'"
+	@true "Using a src symlink, hence disabled: find src -name '*.erl' -a ! -name '*_test.erl' -a ! -name sql_support.erl -a ! -name hdf5_support.erl -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/src/ ';'"
 	@# As tests may be in a separate 'tests' directory for example, and we do not want to select the content of _build once copied, in order to be idempotent:
-	@find src tests -name '*_test.erl' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/test/ ';' 1>/dev/null 2>&1 | true
-	@find src -name '*.hrl' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/include/ ';'
-	@find examples -name '*rl' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/priv/examples ';' 1>/dev/null 2>&1 | true
-	@/bin/cp LICENSE README.md $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/doc
+	@find src tests -name '*_test.erl' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/test/ ';' 1>/dev/null 2>&1 | true
+	@find src -name '*.hrl' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/include/ ';'
+	@find examples -name '*rl' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/priv/examples ';' 1>/dev/null 2>&1 | true
+	@/bin/cp LICENSE README.md $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/doc
 
-
-# We generate a .app file and place it both in the OTP build tree (by default:
-# _build/lib/...) and in an ebin directory directly at the GIT root, as it is
-# expected when having specified a GIT dependency with rebar, such as: {myriad,
-# {git, "https://github.com/Olivier-Boudeville/Ceylan-Myriad.git"} }
-#
-# For the listed modules, this target removes paths, extension, replaces
-# newlines with commas, and removes the last one.
-#
-# Not specifically removing source files, each .app.src does that thanks its
-# 'exclude_files' entry, with MODULES_FOR_REBAR:
-#
-# -a ! -name sql_support.erl -a ! -name hdf5_support.erl
-#
-# A .app file seems to be necessary in all cases, to generate: an application
-# (otherwise nothing is built), a release (otherwise dependency not reachable),
-# and probably an hex package as well.
-#
-# Apparently, at least in some cases (e.g. generating a standalone release), an
-# (updated) *.app.src file is looked-up in src (not in ebin - try to create
-# syntax error in it to check), so we add a symbolic link there as well.
-#
-# We have thus:
-# ./conf/FOOBAR.app.src [only real source]
-# ./_build/lib/FOOBAR/ebin.FOOBAR.app
-# ./ebin/FOOBAR.app
-# ./src/FOOBAR.app.src -> ../ebin/FOOBAR.app
-#
-rebar3-create-app-file:
-	@echo "  Generating rebar3 $(PROJECT_NAME_FOR_REBAR).app file"
-	@# This target may be called for hex for example:
-	@mkdir -p $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/ebin $(LAYER_TOP)/ebin
-	@all_modules=$$(find src -name '*.erl' -a ! -name '*_test.erl' $(MYRIAD_REBAR_FIND_SRC_OPT) -exec echo '{}' ';' | sed 's|.*/||1' | sed 's|.erl$$||1' | sort | tr '\n' ','| sed 's|,|, |g' | sed 's|, $$||1'); cat conf/$(PROJECT_NAME_FOR_REBAR).app.src | sed "s|VERSION_FOR_REBAR|$(VERSION_FOR_REBAR)|1" | sed "s|MODULES_FOR_REBAR|$$all_modules|1" > $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/ebin/$(PROJECT_NAME_FOR_REBAR).app
-	@/bin/cp -f $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/ebin/$(PROJECT_NAME_FOR_REBAR).app $(LAYER_TOP)/ebin/
-	@cd $(LAYER_TOP)/src; ln -sf ../ebin/$(PROJECT_NAME_FOR_REBAR).app $(PROJECT_NAME_FOR_REBAR).app.src
 
 
 # Currently excluding test BEAMs, for a smaller size:
 rebar3-copy-beams:
 	@echo "  Copying non-test BEAM modules in rebar3 build tree"
-	@find src -name '*.beam' -a ! -name '*_test.beam' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/ebin/ ';'
+	@find src -name '*.beam' -a ! -name '*_test.beam' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_OTP)/ebin/ ';'
 
 
+# Note that at least the ebin/*.app is (and must be) in VCS, so that it is not
+# removed anymore:
+#
 rebar3-clean: clean-include-links rebar3-restore-unsupported-sources
 	@echo "  Removing any prior rebar3 build tree for this project ($(MYRIAD_REBAR_BUILD_BASE))"
 	-@/bin/rm -rf $(MYRIAD_REBAR_BUILD_BASE) 2>/dev/null
-	-@/bin/rm -f ebin/$(PROJECT_NAME_FOR_REBAR).app
+	-@#/bin/rm -f ebin/$(PROJECT_NAME_FOR_OTP).app
 
 
 # Adding _build for increased safety:
@@ -854,8 +867,8 @@ rebar3-test-clean:
 # (actually triggering the rebar3-update target should suffice)
 #
 rebar3-cache-clean:
-	@echo "  Removing rebar3 cache for $(PROJECT_NAME_FOR_REBAR)"
-	@# Wiping dependencies and all as well: @/bin/rm -f $$HOME/.cache/rebar3/hex/hexpm/packages/$(PROJECT_NAME_FOR_REBAR)-*
+	@echo "  Removing rebar3 cache for $(PROJECT_NAME_FOR_OTP)"
+	@# Wiping dependencies and all as well: @/bin/rm -f $$HOME/.cache/rebar3/hex/hexpm/packages/$(PROJECT_NAME_FOR_OTP)-*
 	-@/bin/rm -f $$HOME/.cache/rebar3/hex/hexpm/packages/*
 
 
@@ -868,7 +881,7 @@ rebar3-info:
 	@echo "MYRIAD_REBAR_FIND_SRC_OPT = $(MYRIAD_REBAR_FIND_SRC_OPT)"
 	@echo "MYRIAD_REBAR_TEST_DIR = $(MYRIAD_REBAR_TEST_DIR)"
 	@echo "MYRIAD_REBAR_EXEC = $(MYRIAD_REBAR_EXEC)"
-	@echo "VERSION_FOR_REBAR = $(VERSION_FOR_REBAR)"
+	@echo "VERSION_FOR_OTP = $(VERSION_FOR_OTP)"
 	@echo "MYRIAD_REBAR_BUILD_BASE = $(MYRIAD_REBAR_BUILD_BASE)"
 	@echo "MYRIAD_OTP_BEAM_DIR_FROM_USUAL = $(MYRIAD_OTP_BEAM_DIR_FROM_USUAL)"
 
@@ -900,7 +913,7 @@ rebar3-info:
 # - BEAMs shall not be included in the archive, as hex packages are source
 #   containers, not binary ones
 #
-# - a correct, non-template, src/$(PROJECT_NAME_FOR_REBAR).app.src is needed
+# - a correct, non-template, src/$(PROJECT_NAME_FOR_OTP).app.src is needed
 #
 # To publish a package, 'rebar3 hex user auth' is expected to have been executed
 # at least once on the publishing computer.
@@ -918,13 +931,14 @@ rebar3-info:
 # recompilation (hex does not take into account the .app.src file, hence does
 # not rely on explicitly-specified modules to build)
 #
-# - remove rebar.lock, otherwise a past Myriad dep (e.g. Git-based) may be reused
+# - remove rebar.lock, otherwise a past Myriad dep (e.g. Git-based) may be
+# reused
 #
 # - afterwards we restore the ebin/*.app and rebar.config files for standard
-# releases, in order to avoid having them considered as deleted by GIT
+# releases, in order to avoid having them considered as deleted by Git
 #
-rebar3-hex-publish: rebar3-clean clean set-rebar-conf-for-hex rebar3-create-app-file
-	@/bin/cp -f $(MYRIAD_REBAR_BUILD_BASE)/ebin/$(PROJECT_NAME_FOR_REBAR).app src/$(PROJECT_NAME_FOR_REBAR).app.src
+rebar3-hex-publish: rebar3-clean clean set-rebar-conf-for-hex create-app-file
+	@/bin/cp -f $(MYRIAD_REBAR_BUILD_BASE)/ebin/$(PROJECT_NAME_FOR_OTP).app src/$(PROJECT_NAME_FOR_OTP).app.src
 	@cd include && find * -mindepth 1 -a -name '*.hrl' -exec ln -sf '{}' ';'
 	@cd src && for f in $(EXCLUDED_SOURCES); do find . -name "$$f" -exec /bin/mv -f '{}' "{}-hidden" ';'; done
 	@#mkdir -p priv/hex-packaging/{root,doc}
@@ -935,8 +949,8 @@ rebar3-hex-publish: rebar3-clean clean set-rebar-conf-for-hex rebar3-create-app-
 	@$(REBAR_DEBUG) rebar3 hex publish
 	@cd src && to_rename=$$(for f in $(EXCLUDED_SOURCES); do find . -name "$$f-hidden"; done) && for f in $$to_rename; do /bin/mv -f $$f $$(echo $$f | sed 's|-hidden||1'); done
 	@#/bin/rm -rf priv/
-	@/bin/rm -f src/$(PROJECT_NAME_FOR_REBAR).app.src
-	@$(MAKE) -s rebar3-clean rebar3-create-app-file set-rebar-conf
+	@/bin/rm -f src/$(PROJECT_NAME_FOR_OTP).app.src
+	@$(MAKE) -s rebar3-clean create-app-file set-rebar-conf
 
 
 # Nothing to do for Myriad, not having dependency:
@@ -944,7 +958,7 @@ rebar3-local-update:
 
 
 test-hex-package: rebar3-test-clean
-	@echo "  Testing $(PROJECT_NAME) hex package ('$(PROJECT_NAME_FOR_REBAR)' package, version $(VERSION_FOR_REBAR)) in $(MYRIAD_REBAR_TEST_DIR) using $(MYRIAD_REBAR_EXEC)"
+	@echo "  Testing $(PROJECT_NAME) hex package ('$(PROJECT_NAME_FOR_OTP)' package, version $(VERSION_FOR_OTP)) in $(MYRIAD_REBAR_TEST_DIR) using $(MYRIAD_REBAR_EXEC)"
 	@cd conf && $(MAKE) -s rebar-for-testing.config && /bin/cp -f rebar-for-testing.config $(MYRIAD_REBAR_TEST_DIR)/rebar.config
 	@cd $(MYRIAD_REBAR_TEST_DIR) && $(MYRIAD_REBAR_EXEC) update && $(MYRIAD_REBAR_EXEC) compile
 
@@ -1019,7 +1033,7 @@ copy-static-content:
 # Generates a relevant overview page for edoc:
 overview.edoc: doc/overview.edoc.template
 	@echo "  Generating $@ from $<"
-	@cat $< | sed "s|PROJECT_VERSION|$(PROJECT_VERSION)|g" | sed "s|GENERATION_DATE|$$(date '+%A, %B %-e, %Y')|g" > $@
+	@cat $< | sed "s|COPYRIGHT_YEAR|$$(date '+%Y')|g" | sed "s|PROJECT_VERSION|$(PROJECT_VERSION)|g" |sed "s|GENERATION_DATE|$$(date '+%A, %B %-e, %Y')|g" > $@
 
 
 clean-api-doc:
@@ -1117,10 +1131,15 @@ check-with-gradualizer: all
 	@$(GRADUALIZER) $(GRADUALIZER_OPTS) -- $(TARGETS_TO_CHECK)
 
 
-# Not functional yet:
-check-with-eqwalizer: all copy-beams-to-ebin
+# Checks the full code base of the current layer with eqwalizer:
+# (not functional yet)
+#
+check-with-eqwalizer: #all copy-beams-to-ebin
 	@echo "  Checking BEAMs in $$(basename $$(pwd)) with eqWAlizer"
+	@echo $(EQWALIZER) eqwalize-all $(EQWALIZER_OPTS)
 	@$(EQWALIZER) eqwalize-all $(EQWALIZER_OPTS)
+
+# See also the eqwalize-% automatic target.
 
 
 
@@ -1218,6 +1237,12 @@ clean-ast-debug-myriad:
 
 
 clean-outputs:
+
+
+# Removes the files hidden by file_utils:hide_overwriting/*:
+clean-previous:
+	@echo "  Removing recursively from $$(pwd) all '*.previous' files"
+	@find . -name '*.previous' -exec /bin/rm -f '{}' ';'
 
 
 # To be enriched by user layers:

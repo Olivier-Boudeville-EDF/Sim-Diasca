@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2023 EDF R&D
+% Copyright (C) 2014-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,7 +28,7 @@
 
 -define( class_description,
 		 "Manager of the Sim-Diasca plugins, which allows third-party tools "
-		 "to interface  to the engine." ).
+		 "to interface to the engine." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -47,7 +47,6 @@
 
 % Allows to define WOOPER base variables and methods for that class:
 -include_lib("wooper/include/wooper.hrl").
-
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization, "Core.Plugin management" ).
@@ -200,7 +199,8 @@ notifySimulatorStart( State ) ->
 		_Acc0={ BlankConfChanges, InitialPluginTable },
 		_List=table:enumerate( InitialPluginTable ) ),
 
-	?info_fmt( "Final requested configuration changes: ~p.", [ FinalChanges ] ),
+	?info_fmt( "Final requested configuration changes are: ~p.",
+			   [ FinalChanges ] ),
 
 	FinalState = setAttribute( State, plugin_table, FinalTable ),
 

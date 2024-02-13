@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -119,7 +119,7 @@
 % visibility and the possibilities in terms of desired multiplicities (at any
 % scope, up to one process can register a given name).
 %
-% Throws an exception on failure (ex: if that name is already registered).
+% Throws an exception on failure (e.g. if that name is already registered).
 %
 -spec register_as( registration_name(), registration_scope() ) -> void().
 register_as( Name, RegistrationScope ) ->
@@ -180,15 +180,8 @@ register_as( Pid, Name, global_only ) when is_atom( Name ) ->
 	%trace_utils:debug_fmt( "register_as: global_only, with PID=~w "
 	%                       "and Name='~p'.", [ Pid, Name ] ),
 
-	case global:register_name( Name, Pid ) of
-
-		yes ->
-			ok;
-
-		no ->
-			throw( { global_registration_failed, Name } )
-
-	end;
+	global:register_name( Name, Pid ) =:= yes orelse
+		throw( { global_registration_failed, Name } );
 
 register_as( Pid, Name, local_and_global ) when is_atom( Name ) ->
 	register_as( Pid, Name, local_only ),
@@ -220,7 +213,7 @@ register_as( _Pid, Name, _Other ) ->
 register_or_return_registered( Name, Scope ) when is_atom( Name ) ->
 
 	% Minor annoyance: we ensured that looking up a process relied generally on
-	% a different atom than registering it (ex: 'global' vs 'global_only').
+	% a different atom than registering it (e.g. 'global' vs 'global_only').
 	%
 	% Here, we expect the user to specify a registration atom; we need to
 	% convert it for look-up purposes:
@@ -232,7 +225,6 @@ register_or_return_registered( Name, Scope ) when is_atom( Name ) ->
 		not_registered ->
 
 			try
-
 				register_as( Name, Scope ),
 				registered
 
@@ -432,8 +424,8 @@ get_registered_pid_for( Name, _RegistrationScope=local_and_global ) ->
 
 
 % @doc Returns the PID of the process corresponding to the specified local name
-% on specified node: that process is expected to be locally registered on that
-% specified node.
+% on the specified node: that process is expected to be locally registered on
+% that specified node.
 %
 % Throws an exception on failure.
 %
@@ -495,7 +487,6 @@ is_registered( Name, _LookUpScope=global ) ->
 	case global:whereis_name( Name ) of
 
 		undefined ->
-
 			cond_utils:if_defined( myriad_debug_registration,
 				trace_utils:debug_fmt( "The name '~ts' is not globally "
 					"registered; the ones that are are:~n  ~p",
@@ -514,7 +505,6 @@ is_registered( Name, _LookUpScope=local ) ->
 	case erlang:whereis( Name ) of
 
 		undefined ->
-
 			cond_utils:if_defined( myriad_debug_registration,
 				trace_utils:debug_fmt( "The name '~ts' is not locally "
 					"registered; the ones that are are:~n  ~p",
@@ -537,11 +527,10 @@ is_registered( Name, _LookUpScope=local_and_global ) ->
 	case is_registered( Name, local ) of
 
 		not_registered ->
-
 			cond_utils:if_defined( myriad_debug_registration,
 				trace_utils:debug_fmt( "First, the name '~ts' is not locally "
-				   "registered; the ones that are are:~n  ~p",
-				   [ Name, get_registered_names( local ) ] ) ),
+					"registered; the ones that are are:~n  ~p",
+					[ Name, get_registered_names( local ) ] ) ),
 
 			not_registered;
 
@@ -553,7 +542,6 @@ is_registered( Name, _LookUpScope=local_and_global ) ->
 					Pid;
 
 				not_registered ->
-
 					cond_utils:if_defined( myriad_debug_registration,
 						trace_utils:debug_fmt( "Second, the name '~ts' is not "
 							"globally registered; the ones that are are:~n  ~p",
@@ -562,7 +550,6 @@ is_registered( Name, _LookUpScope=local_and_global ) ->
 					not_registered;
 
 				OtherPid ->
-
 					cond_utils:if_defined( myriad_debug_registration,
 						trace_utils:warning_fmt( "The name '~ts' is "
 							"globally registered, but to a PID (~w) different "
@@ -670,7 +657,7 @@ wait_for_global_registration_of( Name, _Seconds=0 ) ->
 		trace_utils:error_fmt( "Global registration of '~ts' timed-out; "
 			"globally registered processes: ~w",
 			[ Name, lists:sort(
-						get_registered_names( _LookUpScope=global ) ) ] ) ),
+				get_registered_names( _LookUpScope=global ) ) ] ) ),
 
 	throw( { registration_waiting_timeout, Name, global } );
 
@@ -710,7 +697,7 @@ wait_for_local_registration_of( Name, _Seconds=0 ) ->
 		trace_utils:error_fmt( "Local registration of '~ts' timed-out; "
 			"locally registered processes: ~w",
 			[ Name, lists:sort(
-						get_registered_names( _LookUpScope=local ) ) ] ) ),
+				get_registered_names( _LookUpScope=local ) ) ] ) ),
 
 	throw( { registration_waiting_timeout, Name, local } );
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -1129,7 +1129,7 @@
 -ifdef(tracing_activated).
 
 
-% The type of trace output (ex: LogMX, PDF, etc.) is defined in the traces.hrl
+% The type of trace output (e.g. LogMX, PDF, etc.) is defined in the traces.hrl
 % file.
 
 
@@ -1178,7 +1178,7 @@
 
 
 % Some delay were added when error-like traces are sent, so that they can be
-% stored before the virtual machine is stopped, should it happen (ex: if an
+% stored before the virtual machine is stopped, should it happen (e.g. if an
 % exception is thrown); they have been since then replaced by synchronous
 % operations.
 
@@ -1573,7 +1573,7 @@
 %
 %-define( send_debug_cat( State, Message, MessageCategorization ),
 %		 class_Traceable:send( debug, State, Message,
-%								  MessageCategorization )
+%							   MessageCategorization )
 %).
 
 
@@ -1583,7 +1583,7 @@
 %
 %-define( debug_cat( Message, MessageCategorization ),
 %		 class_Traceable:send( debug, State, Message,
-%								  MessageCategorization )
+%							   MessageCategorization )
 %).
 
 
@@ -1601,7 +1601,7 @@
 -define( send_debug_full( State, Message, MessageCategorization,
 						  ApplicationTimestamp ),
 		 class_Traceable:send( debug, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+							   MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1750,7 +1750,7 @@
 % WOOPER one cannot be permuted (as this header defines functions as well).
 %
 % Specifying the parameters 'as are' instead of wrapping them in a
-% trace_disabled function (ex: 'State, Message' instead of
+% trace_disabled function (e.g. 'State, Message' instead of
 % 'trace_disabled(State,Message)' results in the following warning:
 % 'Warning: a term is constructed, but never used'
 
@@ -1776,15 +1776,15 @@
 %                    trace_disabled/4, trace_disabled/5 ] } ).
 
 % Final solution: replacing calls to trace_disabled/[1..5] by tuples containing
-% these variables (ex: 'trace_disabled( State, Message )' -> { State, Message })
-% (and not defining these trace_disabled functions)
+% these variables (e.g. 'trace_disabled( State, Message )' -> { State, Message
+% }) (and not defining these trace_disabled functions).
 
 
 % We also use trace_disabled/1 on any parameter Foobar unused by the macro,
 % otherwise the compiler would report that the "variable 'Foobar' is unused".
 
 % We do the same also whenever the 'State' variable is to be implicitly used
-% (ex: with '?error("Hello")'), otherwise user code would also have it
+% (e.g. with '?error("Hello")'), otherwise user code would also have it
 % reported as unused.
 
 
@@ -2013,12 +2013,12 @@
 
 
 %-define( send_debug_cat( State, Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%		  trace_disabled( State, Message, MessageCategorization )
 %).
 
 
 %-define( debug_cat( Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%		  trace_disabled( State, Message, MessageCategorization )
 %).
 
 
@@ -2116,7 +2116,7 @@
 % WOOPER one cannot be permuted (as this header defines functions as well).
 %
 % Specifying the parameters 'as are' instead of wrapping them in a
-% trace_disabled function (ex: 'State, Message' instead of
+% trace_disabled function (e.g. 'State, Message' instead of
 % 'trace_disabled(State,Message)' results in the following warning:
 % 'Warning: a term is constructed, but never used'
 %
@@ -2222,8 +2222,8 @@ trace_disabled( _, _, _, _, _ ) ->
 % named 'State'.
 %
 %-define( report_cat( Message, MessageCategorization ),
-%		 class_Traceable:send_safe( info, State, Message,
-%									MessageCategorization )
+%		  class_Traceable:send_safe( info, State, Message,
+%									 MessageCategorization )
 %).
 
 
@@ -2232,8 +2232,8 @@ trace_disabled( _, _, _, _, _ ) ->
 % named 'State'.
 %
 %-define( report_cat_fmt( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send_safe( info, State,
-%			text_utils:format( Message, FormatValues ),
+%		  class_Traceable:send_safe( info, State,
+%			 text_utils:format( Message, FormatValues ),
 %			MessageCategorization )
 %).
 
@@ -2248,7 +2248,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % implicit use of a variable named 'State'.
 %
 %-define( report_full( State, Message, MessageCategorization,
-%					  ApplicationTimestamp ),
+%					   ApplicationTimestamp ),
 %		 class_Traceable:send_safe( info, State, Message,
 %			MessageCategorization, ApplicationTimestamp )
 %).
@@ -2259,7 +2259,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % implicit use of a variable named 'State'.
 %
 %-define( report_full_fmt( State, Message, FormatValues, MessageCategorization,
-%						  ApplicationTimestamp ),
+%						   ApplicationTimestamp ),
 %		 class_Traceable:send_safe( info, State,
 %			text_utils:format( Message, FormatValues ),
 %			MessageCategorization, ApplicationTimestamp )
@@ -2304,7 +2304,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % Sends a trace of 'void' type with specified parameters and an explicit state.
 %
 %-define( send_void_cat( State, Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%		  trace_disabled( State, Message, MessageCategorization )
 %).
 
 
@@ -2313,7 +2313,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 %-define( void_cat( Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%		  trace_disabled( State, Message, MessageCategorization )
 %).
 
 
@@ -2328,9 +2328,9 @@ trace_disabled( _, _, _, _, _ ) ->
 % Sends a trace of 'void' type with specified parameters and an explicit state.
 %
 %-define( send_void_full( State, Message, MessageCategorization,
-%						 ApplicationTimestamp ),
+%						  ApplicationTimestamp ),
 %		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%						  ApplicationTimestamp )
 %).
 
 
@@ -2417,7 +2417,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 %-define( void_fmt_full( Message, FormatValues, MessageCategorization,
-%						ApplicationTimestamp ),
+%						 ApplicationTimestamp ),
 %		 trace_disabled( State, Message, FormatValues, MessageCategorization,
 %						 ApplicationTimestamp )
 %).

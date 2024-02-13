@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2011-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,7 @@
 %
 % Authors: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 %          Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: 2003.
+% Creation date: November 10, 2011.
 
 
 % @doc Tests for comparing and illustrating the differences of following types
@@ -202,7 +202,7 @@ run_basic_tests() ->
 
 
 	test_facilities:display( "Looking up for ~ts in hashtable: ~p",
-		   [ ?my_first_key, hashtable:lookup_entry( ?my_first_key, MyH5 ) ] ),
+		[ ?my_first_key, hashtable:lookup_entry( ?my_first_key, MyH5 ) ] ),
 
 	{ value, "MyFirstValue" } = hashtable:lookup_entry( ?my_first_key, MyH5 ),
 
@@ -285,12 +285,12 @@ run_basic_tests() ->
 		[ ?my_first_key, list_table:lookup_entry( ?my_first_key, MyL5 ) ] ),
 
 	{ value, "MyFirstValue" } = list_table:lookup_entry( ?my_first_key,
-															MyL5 ),
+														 MyL5 ),
 
 	test_facilities:display( "Removing that entry." ),
 	MyL6 = list_table:remove_entry( ?my_first_key, MyL5 ),
-	false = list_table:is_empty( MyL6 )
-		,
+	false = list_table:is_empty( MyL6 ),
+
 	test_facilities:display( "Looking up for ~ts in list hashtable: ~p",
 		[ ?my_first_key, list_table:lookup_entry( ?my_first_key, MyL6 ) ] ),
 
@@ -466,16 +466,13 @@ get_pairs( _Series=0, _Count, Acc ) ->
 get_pairs( Series, Count, Acc ) ->
 
 	ToAddStrings = [
-
 			 { io_lib:format( "key-~B", [ Count + 1 ] ) , self() },
 			 { io_lib:format( "key-~B", [ Count + 2 ] ) , "hello world!" },
 			 { io_lib:format( "key-~B", [ Count + 3 ] ) , an_atom },
 			 { io_lib:format( "key-~B", [ Count + 4 ] ) , [ "a", 123, list ] },
 			 { io_lib:format( "key-~B", [ Count + 5 ] ) , { 23, 45, 67, 90 } },
 			 { io_lib:format( "key-~B", [ Count + 6 ] ) , 1.0 },
-			 { io_lib:format( "key-~B", [ Count + 7 ] ) , << "A binary" >> }
-
-	],
+			 { io_lib:format( "key-~B", [ Count + 7 ] ) , << "A binary" >> } ],
 
 	ToAdd = [ { text_utils:string_to_atom( lists:flatten( K ) ), V }
 					|| { K, V } <- ToAddStrings ],
@@ -604,8 +601,8 @@ run_performance_tests() ->
 	Pairs = get_pairs(),
 
 	test_facilities:display(
-	  "Feeding empty tables with ~B initial key/value pairs.",
-	  [ length( Pairs ) ] ),
+		"Feeding empty tables with ~B initial key/value pairs.",
+		[ length( Pairs ) ] ),
 
 	% Do it 5 times at blank to avoid transition effects:
 	_FedTablesWithTimings = [ [ feed_table( T, M, Pairs )
@@ -628,7 +625,7 @@ run_performance_tests() ->
 				|| { M, T, _Timing } <- FedTablesWithTimings ],
 
 	test_facilities:display( "~nSizes: ~ts",
-			   [ text_utils:strings_to_string( FedSizeStrings ) ] ),
+		[ text_utils:strings_to_string( FedSizeStrings ) ] ),
 
 
 	OtherPairs = get_other_pairs( Pairs ),
@@ -640,7 +637,7 @@ run_performance_tests() ->
 	FedTables = [ { M, T } || { M, T, _Timing } <- FedTablesWithTimings ],
 
 	UpdatedTablesWithTimings = [ update_table( T, M, OtherPairs )
-						|| { M, T } <- FedTables ],
+		|| { M, T } <- FedTables ],
 
 
 	UpTimeStrings = [ text_utils:format( "for ~ts: ~.3f ms", [ M, Timing ] )

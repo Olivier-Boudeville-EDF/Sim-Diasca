@@ -22,14 +22,14 @@ Similarly, applying most usual good practices (like described in `1 <http://subv
 
 .. Note:: We switched to versions of SVN which are at least 1.5, to take advantage of the more complete support for merges. Now our SVN server is in version 1.5 or more recent, the corresponding repository has been updated and user permissions have been fixed, thus the only remaining point to ensure is that each SVN client is itself in version 1.5 or more recent (one may use: ``svn --version --quiet`` to check).
 
-Later, the use of GIT-SVN, then pure GIT is planned.
+Later, the use of Git is planned.
 
 
 
 General Conventions
 -------------------
 
-All *check-in* operations must be commented, in English, with a long enough message to be explicit (ex: ``Waiting mechanism fixed for stochastic actors waiting for terminating actors.``), without paraphrasing the changes (that can be obtained anyway, thanks to ``svn diff``).
+All *check-in* operations must be commented, in English, with a long enough message to be explicit (e.g. ``Waiting mechanism fixed for stochastic actors waiting for terminating actors.``), without paraphrasing the changes (that can be obtained anyway, thanks to ``svn diff``).
 
 A check-in should involve all the changes scattered over possibly multiple files regarding one complete logical modification, so that one SVN transaction encompasses a relevant thematic change-set.
 
@@ -45,4 +45,4 @@ TO-DO
 -----
 
 - discuss the "rebase" frequency, the release or feature branches
-- consider using ``svn hooks``, to be triggered automatically whenever a certain type of SVN operation occurs (ex: mail-based check-in notification, check-in rejected if its message does not respect constraints like minimum length, etc.)
+- consider using ``svn hooks``, to be triggered automatically whenever a certain type of SVN operation occurs (e.g. mail-based check-in notification, check-in rejected if its message does not respect constraints like minimum length, etc.)

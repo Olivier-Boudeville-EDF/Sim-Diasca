@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -35,4 +35,10 @@
 	root_directory :: maybe( file_utils:bin_directory_path() ),
 
 	% The table storing the currently-loaded resources:
-	table :: resource:resource_table() } ).
+	table :: resource:resource_table()
+
+	% Bitmap holder, to be able to control their life-cycle:
+	% (this workaround was actually unecessary)
+	%dummy_frame :: maybe( gui_frame:frame() )
+
+							   } ).

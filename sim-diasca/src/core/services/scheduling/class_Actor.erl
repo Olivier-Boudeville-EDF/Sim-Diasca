@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -551,11 +551,11 @@
 % About actor creation.
 
 % When an actor is created (either initially, i.e. from the simulation case,
-% direectly or not, or from another actor, i.e. in the course of the
-% simulation), the actual spawn triggers its constructor that in turn will
-% trigger the subscription of this actor. If the simulation is already running,
-% it will result into the execution of the simulationStarted/3 engine-level
-% request (otherwise it will happen right at the future simulation start).
+% directly or not, or from another actor, i.e. in the course of the simulation),
+% the actual spawn triggers its constructor that in turn will trigger the
+% subscription of this actor. If the simulation is already running, it will
+% result into the execution of the simulationStarted/3 engine-level request
+% (otherwise it will happen right at the future simulation start).
 %
 % If the simulation is already running, we want to avoid simply scheduling first
 % this newly created actor thanks to its actSpontaneous/1 actor oneway, as it
@@ -566,12 +566,12 @@
 % (in the course of the simulation), not only the actual creation (spawn and
 % synchronisation, done by the load balancer) will happen at D+1 and generally
 % (not always, as for example a created actor may in turn create other actors)
-% the *creator* will be notified of it at D+2 (by an onActorCreated/4 call), but
-% also the created actor will also be triggered, at this already scheduled
-% diasca (D+2 in many cases), by an onFirstDiasca/2 actor oneway call. This way,
-% this actor may decide to send actor messages and/or define its next
-% spontaneous ticks and/or create other actor(s), allowing for instantaneous
-% chained creations.
+% the (initial) *creator* will be notified of it at D+2 (by an onActorCreated/4
+% call), but also the created actor will also be triggered, at this already
+% scheduled diasca (D+2 in many cases), by an onFirstDiasca/2 actor oneway
+% call. This way, this actor may decide to send actor messages and/or define its
+% next spontaneous ticks and/or create other actor(s), allowing for
+% instantaneous chained creations.
 %
 % One may note that nested creations may happen, either initial or at runtime;
 % in the former case, creations are instantaneous, while, on the latter case,
@@ -592,7 +592,6 @@
 % triggering a later callback call), etc.; at worst, an actor may determine
 % whether the simulation is already started (see is_running/1) or not, and then
 % opt for a variation either of create_actor or create_initial_actor.
-
 
 
 % About creation tags.
@@ -635,7 +634,7 @@
 %
 % More precisely: created actors have to initialize themselves, and not all
 % relevant information are always available at their creation (e.g. simulation
-% starting tick). For any late, model-specific, set-up, knowing that their
+% starting tick). For any late, model-specific set-up, knowing that their
 % simulationStarted/3 method is not meant to be overridden (it is used privately
 % by the engine, notably to tell the actor about the simulation initial tick and
 % the current timestamp), their onFirstDiasca/2 actor oneway (which is not used
@@ -944,8 +943,8 @@ construct( State,
 			% simulationStarted/3 atomically:
 			%
 			{ StartedState, { actor_started, _SelfPid } } = executeRequest(
-					TickState, simulationStarted,
-					[ ActualInitialTick, FirstScheduledOffset ] ),
+				TickState, simulationStarted,
+				[ ActualInitialTick, FirstScheduledOffset ] ),
 			StartedState
 
 	end.
@@ -955,8 +954,10 @@ construct( State,
 
 % @doc Overridden destructor.
 %
-% Unsubscribing from the time manager supposed already done, thanks to a
-% termination message.
+% Unsubscribing from the time manager supposed already done if needed, thanks to
+% a termination message.
+%
+% See also: onTerminationRequested/1.
 %
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
@@ -1047,6 +1048,32 @@ simulationStarted( State, SimulationInitialTick,
 
 
 
+% @doc Synchronises directly this actor to the specified simulation (logical)
+% timestamp.
+%
+% Useful for example when terminating, so that each destructed actor knows the
+% right, final simulation time (and not the last one it saw, which is generally
+% in the past).
+%
+-spec synchroniseTo( wooper:state(), tick_offset(), diasca() ) ->
+											oneway_return().
+synchroniseTo( State, CurrentTickOffset, CurrentDiasca ) ->
+
+	%?debug_fmt( "Synchronised to tick offset #~B, diasca ~B.",
+	%            [ CurrentTickOffset, CurrentDiasca ] ),
+
+	NewTraceTimestamp =
+		get_trace_timestamp( CurrentTickOffset, CurrentDiasca, State ),
+
+	SyncState = setAttributes( State, [
+		{ current_tick_offset, CurrentTickOffset },
+		{ current_diasca, CurrentDiasca },
+		{ trace_timestamp, NewTraceTimestamp } ] ),
+
+	wooper:return_state( SyncState ).
+
+
+
 % @doc Notifies this actor that the simulation ended.
 %
 % For the vast majority of actors (but unlike the load balancer for example),
@@ -1076,17 +1103,17 @@ simulationEnded( State ) ->
 % A typical yet simplistic implementation can be, in order to trigger a first
 % scheduling at the next tick:
 %
-%-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+%-spec onFirstDiasca(wooper:state(), sending_actor_pid()) ->
 %                                               actor_oneway_return().
-% onFirstDiasca( State, _SendingActorPid ) ->
-%   ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
-%   wooper:return_state( ScheduledState ).
+% onFirstDiasca(State, _SendingActorPid) ->
+%   ScheduledState = executeOneway(State, scheduleNextSpontaneousTick),
+%   wooper:return_state(ScheduledState).
 %
 % or even, if wanting this actor to remain passive:
 %
-%-spec onFirstDiasca( wooper:state(), load_balancer_pid() ) ->
+%-spec onFirstDiasca(wooper:state(), load_balancer_pid()) ->
 %                                          const_actor_oneway_return().
-%onFirstDiasca( State, _SendingActorPid ) ->
+%onFirstDiasca(State, _SendingActorPid) ->
 %   actor:const_return().
 %
 -spec onFirstDiasca( wooper:state(), load_balancer_pid() ) ->
@@ -1128,11 +1155,11 @@ beginTick( State, NewTickOffset ) ->
 
 	Agenda = ?getAttr(current_agenda),
 
-	cond_utils:if_defined( simdiasca_debug_time_management,
+	cond_utils:if_defined( sim_diasca_debug_time_management,
 		?debug_fmt( "beginTick for actor ~w at tick offset #~B, "
 					"with agenda ~w.", [ self(), NewTickOffset, Agenda ] ) ),
 
-	cond_utils:if_defined( simdiasca_check_time_management,
+	cond_utils:if_defined( sim_diasca_check_time_management,
 		begin
 			check_spontaneous_tick_consistency( NewTickOffset, State ),
 			[] = ?getAttr(added_spontaneous_ticks),
@@ -1159,7 +1186,7 @@ beginTick( State, NewTickOffset ) ->
 	% Note: we are not checking the correctness of the engine here, we ensure
 	% that models are properly written.
 	%
-	cond_utils:if_defined( simdiasca_check_model_behaviours,
+	cond_utils:if_defined( sim_diasca_check_model_behaviours,
 						   validate_scheduling_outcome( SpontaneousState ) ),
 
 	% The 'actSpontaneous' method might have sent actor messages:
@@ -1284,11 +1311,11 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 -spec beginDiasca( wooper:state(), tick_offset(), diasca() ) -> oneway_return().
 beginDiasca( State, TickOffset, NewDiasca ) ->
 
-	cond_utils:if_defined( simdiasca_debug_time_management,
+	cond_utils:if_defined( sim_diasca_debug_time_management,
 		?debug_fmt( "beginDiasca for ~w at diasca ~B of tick offset #~B.",
 					[ self(), NewDiasca, TickOffset ] ) ),
 
-	cond_utils:if_defined( simdiasca_check_time_management,
+	cond_utils:if_defined( sim_diasca_check_time_management,
 		check_diasca_consistency( TickOffset, NewDiasca, State ) ),
 
 	% Other attributes set at the end of previous scheduling:
@@ -1312,7 +1339,7 @@ beginDiasca( State, TickOffset, NewDiasca ) ->
 	% Note: we are not checking the correctness of the engine here, we ensure
 	% that models are properly written.
 	%
-	cond_utils:if_defined( simdiasca_check_model_behaviours,
+	cond_utils:if_defined( sim_diasca_check_model_behaviours,
 						   validate_scheduling_outcome( TriggerState ) ),
 
 	% The triggered methods might have sent actor messages:
@@ -1470,21 +1497,23 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 
 	% Actual termination now!
 
-	cond_utils:if_defined( simdiasca_debug_life_cycles,
+	cond_utils:if_defined( sim_diasca_debug_life_cycles,
 		begin
 			?debug( "Terminating now." ),
 			trace_utils:debug_fmt( "Actor ~w terminating now, at {~p,~p}.",
 								   [ self(), TickOffset, NewDiasca ] )
-		end ),
+		end,
+		basic_utils:ignore_unused( [ TickOffset, NewDiasca ] ) ),
 
-	cond_utils:if_defined( simdiasca_check_life_cycles,
+	cond_utils:if_defined( sim_diasca_check_life_cycles,
 		begin
 			{ terminated, no_diasca_requested } = ?getAttr(next_action),
 			check_termination_time_consistency( TickOffset, NewDiasca, State ),
 			[] = ?getAttr(current_agenda)
-		end ),
+		end,
+		basic_utils:ignore_unused( [ TickOffset, NewDiasca ] ) ),
 
-	cond_utils:if_defined( simdiasca_check_model_behaviours,
+	cond_utils:if_defined( sim_diasca_check_model_behaviours,
 		case ?getAttr(pending_messages) of
 
 			[] ->
@@ -1497,9 +1526,10 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 					[ ?getAttr(actor_abstract_id), TickOffset, NewDiasca,
 					  Messages ] )
 
-		end ),
+		end,
+		basic_utils:ignore_unused( [ TickOffset, NewDiasca ] ) ),
 
-	cond_utils:if_defined( simdiasca_debug_model_behaviours,
+	cond_utils:if_defined( sim_diasca_debug_model_behaviours,
 		begin
 
 			% (not counting terminating tick)
@@ -1515,7 +1545,8 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 				  LifespanInTicks, time_utils:duration_to_string(
 									round( 1000 * LifespanInSeconds ) ) ] )
 
-		end ),
+		end,
+		basic_utils:ignore_unused( [ TickOffset, NewDiasca ] ) ),
 
 	% Finally we do not delete this actor here, we defer until next tick and
 	% trigger it from the time manager:
@@ -1837,7 +1868,7 @@ add_spontaneous_tick( Other, _State ) ->
 									wooper:state().
 add_spontaneous_ticks( SpontaneousTicksToAdd, State ) ->
 
-	cond_utils:if_defined( simdiasca_check_user_api_calls,
+	cond_utils:if_defined( sim_diasca_check_user_api_calls,
 		list_utils:check_integers( SpontaneousTicksToAdd ) ),
 
 	PreviousTicks = ?getAttr(added_spontaneous_ticks),
@@ -1938,7 +1969,7 @@ withdraw_spontaneous_tick( Other, _State ) ->
 										wooper:state().
 withdraw_spontaneous_ticks( SpontaneousTicksToWithdraw, State ) ->
 
-	cond_utils:if_defined( simdiasca_check_user_api_calls,
+	cond_utils:if_defined( sim_diasca_check_user_api_calls,
 		list_utils:check_integers( SpontaneousTicksToWithdraw ) ),
 
 	PreviousTicks = ?getAttr(withdrawn_spontaneous_ticks),
@@ -1960,7 +1991,7 @@ withdraw_spontaneous_ticks( SpontaneousTicksToWithdraw, State ) ->
 -spec declareTermination( wooper:state() ) -> oneway_return().
 declareTermination( State ) ->
 
-	cond_utils:if_defined( simdiasca_debug_life_cycles,
+	cond_utils:if_defined( sim_diasca_debug_life_cycles,
 		trace_utils:debug_fmt( "Actor named '~ts' (~w) declaring termination.",
 							   [ ?getAttr(name), self() ] ) ),
 
@@ -1986,7 +2017,7 @@ declareTermination( State ) ->
 								oneway_return().
 declareTermination( State, TerminationDelay ) ->
 
-	cond_utils:if_defined( simdiasca_debug_life_cycles,
+	cond_utils:if_defined( sim_diasca_debug_life_cycles,
 		trace_utils:debug_fmt( "Actor named '~ts' (~w) declaring termination ",
 			"with a delay of ~p.",
 			[ ?getAttr(name), self(), TerminationDelay ] ) ),
@@ -2040,7 +2071,7 @@ declare_termination( IntercalaryDiasca, State ) ->
 
 		new_diasca_needed ->
 
-			cond_utils:if_defined( simdiasca_debug_life_cycles,
+			cond_utils:if_defined( sim_diasca_debug_life_cycles,
 				trace_utils:debug_fmt( "Actor ~w terminating, and "
 					"requesting a new diasca.", [ self() ] ) ),
 
@@ -2049,7 +2080,7 @@ declare_termination( IntercalaryDiasca, State ) ->
 
 		no_diasca_requested ->
 
-			cond_utils:if_defined( simdiasca_debug_life_cycles,
+			cond_utils:if_defined( sim_diasca_debug_life_cycles,
 				trace_utils:debug_fmt( "Actor ~w terminating, not "
 					"requesting any new diasca.", [ self() ] ) ),
 
@@ -2070,11 +2101,12 @@ declare_termination( IntercalaryDiasca, State ) ->
 
 
 
+
 % @doc Reacts to a notification of time manager shutdown by deleting this actor.
 -spec timeManagerShutdown( wooper:state() ) -> const_oneway_return().
 timeManagerShutdown( State ) ->
 
-	cond_utils:if_defined( simdiasca_debug_life_cycles,
+	cond_utils:if_defined( sim_diasca_debug_life_cycles,
 		?debug( "Received a notification of time manager shutdown, "
 				"requesting our own deletion." ) ),
 
@@ -2116,7 +2148,7 @@ receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
 	CurrentTickOffset = ?getAttr(current_tick_offset),
 	CurrentDiasca = ?getAttr(current_diasca),
 
-	cond_utils:if_defined( simdiasca_debug_time_management,
+	cond_utils:if_defined( sim_diasca_debug_time_management,
 		trace_utils:debug_fmt( "receiveActorMessage '~p' for ~w: current tick "
 			"offset is #~p, current diasca is ~B, message tick offset is #~p, "
 			"message target diasca is ~B.",
@@ -2267,7 +2299,7 @@ receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
 		% Either 'undefined' or a different timestamp (in the past):
 		 _ ->
 
-			cond_utils:if_defined( simdiasca_debug_time_management,
+			cond_utils:if_defined( sim_diasca_debug_time_management,
 				trace_utils:debug_fmt(
 					"~w sending scheduleTrigger to time manager ~w.",
 					[ self(), ?getAttr(time_manager_pid) ] ) ),
@@ -2372,7 +2404,7 @@ acknowledgeMessage( State, CalledActorPid ) ->
 %
 notify_diasca_ended( State ) ->
 
-	cond_utils:if_defined( simdiasca_check_time_management,
+	cond_utils:if_defined( sim_diasca_check_time_management,
 						   [] = ?getAttr(waited_acks) ),
 
 	% Let's try to ease as much as possible the work of the time manager:
@@ -2384,7 +2416,7 @@ notify_diasca_ended( State ) ->
 	CurrentTickOffset = ?getAttr(current_tick_offset),
 	CurrentDiasca = ?getAttr(current_diasca),
 
-	cond_utils:if_defined( simdiasca_debug_time_management,
+	cond_utils:if_defined( sim_diasca_debug_time_management,
 		trace_utils:debug_fmt(
 			"~w will report at ~w following added spontaneous ticks: ~w ",
 			[ self(), { CurrentTickOffset, CurrentDiasca },
@@ -2400,7 +2432,7 @@ notify_diasca_ended( State ) ->
 			{ no_diasca_requested, no_diasca_requested };
 
 		{ terminating, _DiascaCount=unlimited, DiascaRequest } ->
-			cond_utils:if_defined( simdiasca_debug_life_cycles,
+			cond_utils:if_defined( sim_diasca_debug_life_cycles,
 				trace_utils:debug_fmt( "Actor ~w unlimited-terminating at ~w, "
 					"requesting ~w.", [ self(), DiascaRequest,
 							{ CurrentTickOffset, CurrentDiasca } ] ) ),
@@ -2432,7 +2464,7 @@ notify_diasca_ended( State ) ->
 
 	end,
 
-	cond_utils:if_defined( simdiasca_debug_time_management,
+	cond_utils:if_defined( sim_diasca_debug_time_management,
 		trace_utils:debug_fmt( "Actor ~w at {~p,~p}: next recorded action is "
 			"~p, while next notified action is ~p.",
 			[ self(), CurrentTickOffset, CurrentDiasca, NextRecordedAction,
@@ -2731,9 +2763,6 @@ convert_seconds_to_ticks( Seconds, State ) ->
 % For example TickCount = class_Actor:convert_seconds_to_ticks_explicit(_Secs=5,
 %                                       _TickDur=0.01)
 %
-% This function can be called as soon as the class_Actor constructor has been
-% executed.
-%
 % (helper function)
 %
 -spec convert_seconds_to_ticks_explicit( any_seconds(), virtual_seconds() ) ->
@@ -2787,7 +2816,7 @@ convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError, TickDuration )
 
 		false ->
 			ActualError = math_utils:get_relative_difference( Seconds,
-												CorrespondingSeconds ),
+				CorrespondingSeconds ),
 
 			trace_bridge:error_fmt( "Requested to convert ~w seconds in ticks "
 				"(whose duration is ~ts), yet the corresponding relative "
@@ -2938,6 +2967,8 @@ get_textual_timings( State ) ->
 % relatively to the simulation initial time (initial_tick), expressed in
 % simulation ticks.
 %
+% Returns for example 14011.
+%
 -spec get_current_tick_offset( wooper:state() ) -> tick_offset().
 get_current_tick_offset( State ) ->
 	?getAttr(current_tick_offset).
@@ -2948,6 +2979,8 @@ get_current_tick_offset( State ) ->
 %
 % Note: this function is defined for completeness, we see little reason for the
 % user code to call it (except for debugging purposes).
+%
+% Returns for example 0.
 %
 -spec get_current_diasca( wooper:state() ) -> diasca().
 get_current_diasca( State ) ->
@@ -2962,6 +2995,8 @@ get_current_diasca( State ) ->
 % user code to call it (except for debugging purposes), as the actual value of a
 % diasca should remain opaque.
 %
+% Returns for example {14011,0}.
+%
 -spec get_current_logical_timestamp( wooper:state() ) -> logical_timestamp().
 get_current_logical_timestamp( State ) ->
 	{ ?getAttr(current_tick_offset), ?getAttr(current_diasca) }.
@@ -2973,6 +3008,8 @@ get_current_logical_timestamp( State ) ->
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
+%
+% Returns for example {{2000,11,7}, {13,14,53}}.
 %
 % (helper function)
 %
@@ -3111,7 +3148,7 @@ convert_tick_offset_to_timestamp_as_string_explicit( TickOffset, InitialTick,
 													 TickDuration ) ->
 
 	Timestamp = convert_tick_offset_to_timestamp_explicit( TickOffset,
-							InitialTick, TickDuration ),
+		InitialTick, TickDuration ),
 
 	time_utils:get_textual_timestamp( Timestamp ).
 
@@ -3198,14 +3235,14 @@ get_current_tick( State ) ->
 								wooper:state().
 send_actor_message( ActorPid, ActorOneway, State ) when is_pid( ActorPid ) ->
 
-	cond_utils:if_defined( simdiasca_debug_model_behaviours,
+	cond_utils:if_defined( sim_diasca_debug_model_behaviours,
 		trace_utils:debug_fmt( "~w sending an actor message to ~w "
 			"at {~p,~p}: ~p",
 			[ self(), ActorPid, ?getAttr(current_tick_offset),
 			  ?getAttr(current_diasca), ActorOneway ] ) ),
 
 	% The simulation shall be already started:
-	cond_utils:if_defined( simdiasca_check_model_behaviours,
+	cond_utils:if_defined( sim_diasca_check_model_behaviours,
 						   true = is_running( State ) ),
 
 	ActorPid ! { receiveActorMessage,
@@ -3324,7 +3361,7 @@ send_actor_messages( _ActorPids=[], _ActorOneway, State ) ->
 send_actor_messages( ActorPids, ActorOneway, State )
 											when is_list( ActorPids ) ->
 
-	cond_utils:if_defined( simdiasca_debug_model_behaviours,
+	cond_utils:if_defined( sim_diasca_debug_model_behaviours,
 		trace_utils:debug_fmt( "Actor ~w sending an actor message "
 			"to ~B actors (~w) at {~p,~p}: ~p",
 			[ self(), length( ActorPids ), ActorPids,
@@ -3332,7 +3369,7 @@ send_actor_messages( ActorPids, ActorOneway, State )
 			  ActorOneway ] ) ),
 
 	% The simulation shall be already started:
-	cond_utils:if_defined( simdiasca_check_model_behaviours,
+	cond_utils:if_defined( sim_diasca_check_model_behaviours,
 						   true = is_running( State ) ),
 
 	ActorMessage = { receiveActorMessage,
@@ -3451,7 +3488,7 @@ execute_actor_oneway_as( Classname, Onewayname, MethodArgs, State ) ->
 									 wooper:state() ) -> wooper:state().
 self_trigger_actor_message_in( _DiascaOffset=1, ActorOneway, State ) ->
 
-	cond_utils:if_defined( simdiasca_debug_model_behaviours,
+	cond_utils:if_defined( sim_diasca_debug_model_behaviours,
 		?info_fmt( "Self-sending actor oneway '~p' now.", [ ActorOneway ] ) ),
 
 	send_actor_message( self(), ActorOneway, State );
@@ -3460,7 +3497,7 @@ self_trigger_actor_message_in( _DiascaOffset=1, ActorOneway, State ) ->
 self_trigger_actor_message_in( DiascaOffset, ActorOneway, State )
 									when DiascaOffset > 1 ->
 
-	cond_utils:if_defined( simdiasca_debug_model_behaviours,
+	cond_utils:if_defined( sim_diasca_debug_model_behaviours,
 		?debug_fmt( "Will trigger in ~B diascas following actor oneway: ~p.",
 					[ DiascaOffset, ActorOneway ] ) ),
 
@@ -3516,7 +3553,7 @@ process_last_diasca_messages( CurrentTickOffset, CurrentDiasca, State ) ->
 	% processing) if the sending actor got its own 'begin diasca' message and
 	% executed quick enough to have this actor message received before.
 
-	cond_utils:if_defined( simdiasca_check_time_management,
+	cond_utils:if_defined( sim_diasca_check_time_management,
 		begin
 
 			check_future_messages( NextMessages, CurrentTickOffset,
@@ -3531,7 +3568,8 @@ process_last_diasca_messages( CurrentTickOffset, CurrentDiasca, State ) ->
 
 				end
 
-		end ),
+		end,
+		basic_utils:ignore_unused( PastMessages ) ),
 
 	ReorderedMessages = apply_reordering( CurrentMessages,
 										  ?getAttr(message_ordering_mode) ),
@@ -3659,7 +3697,8 @@ execute_reordered_oneways( _Messages=[
 			FullStackTraceString =
 				code_utils:interpret_stacktrace( FullStackTrace ),
 
-			DictString = list_table:to_string( list_table:new( get() ) ),
+			% Useful at least for the random seed there (rand_seed):
+			DictString = process_dictionary:to_short_string(),
 
 			SenderInfoString =
 
@@ -3703,7 +3742,7 @@ execute_reordered_oneways( _Messages=[
 						text_utils:format( "and the ~B core parameters of "
 							"the actor oneway were (initial state and "
 							"final sending actor PID parameters "
-							"being omitted):~n  ~ts",
+							"being omitted): ~ts~n",
 							[ CoreParamCount, ArgString ] )
 
 				end,
@@ -3712,6 +3751,20 @@ execute_reordered_oneways( _Messages=[
 				ActorName = ?getAttr(name),
 				ActorPid = self(),
 				ActorAAI = ?getAttr(actor_abstract_id),
+
+				% The need is:
+				%  - a short enough diagnosis on the console
+				%  - one (single) complete diagnosis (not multiple ones) on the
+				%  trace supervision, and marked emitted by the instance whence
+				%  the exception came
+				%
+				% The best approach for that is to issue different messages (one
+				% short, one expanding on it) for each need, so we use here
+				% finer, lower-level calls:
+
+				% We forge as soon as possible the two messages and send first
+				% the most important one, before possibly blocking this process
+				% with the console:
 
 				ErrorMessage = text_utils:format(
 					"Actor oneway ~ts/~B failed (~ts~ts) "
@@ -3723,7 +3776,7 @@ execute_reordered_oneways( _Messages=[
 					"The simulation timestamp was ~p, corresponding to ~ts "
 					"(wallclock time: ~ts), and the corresponding "
 					"user-level stack trace of the crashing actor "
-					"(on node '~ts') was: ~ts~n"
+					"(on node '~ts') was: ~ts~n~n"
 					"Its actor-specific state was made of the "
 					"following ~ts",
 					[ OnewayName, OnewayArity, ExceptionClass, LocString,
@@ -3735,47 +3788,73 @@ execute_reordered_oneways( _Messages=[
 					  time_utils:get_textual_timestamp(),
 					  node(), UsrStackTraceString, StateString ] ),
 
-				logger:error( ErrorMessage ),
+
+				% Now forging, based on it, the more complete full error
+				% message, the first that we need:
 
 				Beams = code_utils:list_beams_in_path(),
 
 				KnownBeamString = text_utils:atoms_to_sorted_string( Beams ),
 
-				BaseString = "Here are the fully detailed, internal extra "
-					"information about the exception reported "
-					"in the error trace just sent. The purpose of the "
-					"current trace is to help any complex troubleshooting "
-					"that could even involve the engine itself.~n",
-
-				DebugMessage = case Exception of
+				FullErrorMessage = text_utils:format(
+									"~ts~nFull stack trace is: ~ts~n~n",
+									[ ErrorMessage, FullStackTraceString ] )
+						++ case Exception of
 
 					undef ->
 						% Internal state and process dictionary are not
 						% needed:
 						%
-						text_utils:format( BaseString ++
-							"Full stack trace is: ~ts~n~nThe ~ts~n~n"
+						text_utils:format(
 							"Consequently, following ~B BEAM files are "
 							"available (listed in alphabetical order): ~ts~n",
-							[ FullStackTraceString,
-							  code_utils:get_code_path_as_string(),
+							[ code_utils:get_code_path_as_string(),
 							  length( Beams ), KnownBeamString ] );
 
 					_ ->
-						text_utils:format( BaseString ++
-							"Full stack trace is: ~ts~n~n~ts~n"
-							"Process dictionary here shown as a ~ts",
-							[ FullStackTraceString,
-							  wooper:state_to_string( State ), DictString ] )
+						text_utils:format( "~ts~nThis process dictionary ~ts",
+							[ wooper:state_to_string( State ), DictString ] )
 
 				end,
 
-				logger:debug( DebugMessage ),
+				% A real problem with the mere logger was that the message is
+				% then sent as, for example, "Erlang logger.<0-72-0>" instead of
+				% the actual actor, whereas we of course want all the messages
+				% to belong to the same "channel", the one of that actor.
+				%
+				%logger:error( ErrorMessage ),
 
-				% Wait a bit (also for past error reported), as logger (at
-				% least former error_logger) seems asynchronous:
+				% Short enough as displayed on the console:
+				%?error( ErrorMessage ),
+
+				% Not using even ?error_no_echo_fmt/1 as we want to interleave
+				% the receiving of the aggregator ack with the console display
+				% (e.g. should the aggregator be overloaded):
+				%
+				class_TraceEmitter:send_synchronisable( _TraceSeverity=error,
+					State, FullErrorMessage ),
+
+				% Now let's trigger the shorter, as console-based, message:
+
+				%logger:debug( ErrorMessage ),
+				%?debug( ErrorMessage ),
+
+				TimestampText = time_utils:get_bin_textual_timestamp(),
+
+				EchoMessage = text_utils:format(
+					"~ts~n(more information in the traces)", [ ErrorMessage ] ),
+
+				trace_utils:echo( EchoMessage, _TraceSev=error,
+					?default_standalone_emitter_categorization, TimestampText ),
+
+				% Wait a bit (also for past reported error), as logger (at least
+				% former error_logger) seems asynchronous (although
+				% trace_utils:echo/4 is supposed to be pretty synchronous):
 				%
 				system_utils:await_output_completion( 500 ),
+
+				% Interleaved from class_TraceEmitter:send_synchronisable/3:
+				class_TraceEmitter:wait_for_aggregator_synchronisation(),
 
 				% Commented out to avoid duplicated output, should it
 				% propagate to beginDiasca/3.
@@ -4181,7 +4260,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters,
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.
 
-	cond_utils:if_defined( simdiasca_debug_initial_creations,
+	cond_utils:if_defined( sim_diasca_debug_initial_creations,
 		trace_utils:debug_fmt( "~w requesting the creation of an initial actor "
 			"named '~ts'.", [ self(), ActorClassname ] ) ),
 
@@ -4190,7 +4269,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters,
 	LoadBalancerPid ! { createInitialActor,
 		[ ActorClassname, ActorConstructionParameters, self() ] },
 
-	cond_utils:if_defined( simdiasca_debug_initial_creations,
+	cond_utils:if_defined( sim_diasca_debug_initial_creations,
 		trace_utils:debug_fmt( "~w waiting for the creation acknowledgment.",
 							   [ self() ] ) ),
 
@@ -4198,7 +4277,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters,
 
 		{ onInitialActorCreated, ActorPid } -> % when is_pid( ActorPid ) ->
 
-			cond_utils:if_defined( simdiasca_debug_initial_creations,
+			cond_utils:if_defined( sim_diasca_debug_initial_creations,
 				trace_utils:debug_fmt( "~w received creation acknowledgment "
 					"for initial actor ~w.", [ self(), ActorPid ] ) ),
 
@@ -4289,7 +4368,7 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.
 
-	cond_utils:if_defined( simdiasca_debug_initial_creations,
+	cond_utils:if_defined( sim_diasca_debug_initial_creations,
 		trace_utils:debug_fmt( "~w requesting the creation of an initial "
 			"placed actor named '~ts' with hint '~p'.",
 			[ self(), ActorClassname, PlacementHint ] ) ),
@@ -4306,7 +4385,7 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 
 		{ onInitialActorCreated, ActorPid } -> % when is_pid( ActorPid ) ->
 
-			cond_utils:if_defined( simdiasca_debug_initial_creations,
+			cond_utils:if_defined( sim_diasca_debug_initial_creations,
 				trace_utils:debug_fmt( "~w received creation acknowledgment "
 					"for initial placed actor ~w.", [ self(), ActorPid ] ) ),
 
@@ -4369,7 +4448,7 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.
 
-	cond_utils:if_defined( simdiasca_debug_initial_creations,
+	cond_utils:if_defined( sim_diasca_debug_initial_creations,
 		begin
 			ActorLines = [ text_utils:format( "~p", [ CP ] )
 							|| CP <- ActorConstructionList ],
@@ -4383,7 +4462,7 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 	LoadBalancerPid ! { createInitialActors,
 						[ ActorConstructionList, self() ] },
 
-	cond_utils:if_defined( simdiasca_debug_initial_creations,
+	cond_utils:if_defined( sim_diasca_debug_initial_creations,
 		trace_utils:debug_fmt(
 			"~w waiting for the acknowledgment of the ~B creations.",
 			[ self(), length( ActorConstructionList ) ] ) ),
@@ -4392,7 +4471,7 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 
 		{ onInitialActorsCreated, [ ActorPids ] } -> % when is_list( ActorPids )
 
-			cond_utils:if_defined( simdiasca_debug_initial_creations,
+			cond_utils:if_defined( sim_diasca_debug_initial_creations,
 				trace_utils:debug_fmt( "~w received creation acknowledgment "
 					"for ~B actors: ~w.",
 					[ self(), length( ActorPids ), ActorPids ] ) ),
@@ -4486,7 +4565,7 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 	%?info_fmt( "Actor '~ts' (~w) creating at runtime an instance of ~p.",
 	%           [ ?getAttr(name), self(), ActorClassname ] ),
 
-	cond_utils:if_defined( simdiasca_debug_runtime_creations,
+	cond_utils:if_defined( sim_diasca_debug_runtime_creations,
 		trace_utils:info_fmt(
 			"Actor '~ts' (~w) creating at runtime an instance of ~p.",
 			[ ?getAttr(name), self(), ActorClassname ] ) ),
@@ -4553,7 +4632,7 @@ create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
 	% The checking that the simulation is already running is done in
 	% send_actor_message/3.
 
-	cond_utils:if_defined( simdiasca_debug_runtime_creations,
+	cond_utils:if_defined( sim_diasca_debug_runtime_creations,
 		?info_fmt( "Actor '~ts' (~w) creating at runtime an instance of ~p "
 			"with user tag '~p'.",
 			[ ?getAttr(name), self(), ActorClassname, ActorTag ] ) ),
@@ -4613,7 +4692,7 @@ create_actors( ActorConstructionList, State )
 	% The checking that the simulation is already running is done in
 	% send_actor_message/3.
 
-	cond_utils:if_defined( simdiasca_debug_runtime_creations,
+	cond_utils:if_defined( sim_diasca_debug_runtime_creations,
 		?info_fmt( "Actor '~ts' (~w) creating at runtime ~B actors, "
 			"whose creation list is: ~ts",
 			[ ?getAttr(name), self(), length( ActorConstructionList ),
@@ -5161,7 +5240,7 @@ apply_reordering( MessagesForCurrentDiasca, constant_permuted_order ) ->
 
 % @doc Returns a textual representation of the specified state, listing only the
 % attributes specifically introduced to specialise the actor generic class
-% (omitting all technical ones introduced by the engine).
+% (omitting all technical ones introduced by the engine), in an ellipsed form.
 %
 -spec state_to_string( wooper:state() ) -> ustring().
 state_to_string( State ) ->
@@ -5169,7 +5248,7 @@ state_to_string( State ) ->
 	AttrPairs = get_actor_specialised_attributes( State ),
 
 	AttrStrings = lists:sort( [ text_utils:format( "~ts: ~ts", [ AttrName,
-		text_utils:term_to_bounded_string( AttrValue, _MaxLen=1000 ) ] )
+		text_utils:term_to_bounded_string( AttrValue, _MaxLen=1500 ) ] )
 								|| { AttrName, AttrValue } <- AttrPairs ] ),
 
 	EnumString = text_utils:strings_to_string( AttrStrings ),
@@ -5190,7 +5269,6 @@ state_to_string( State ) ->
 -spec get_actor_specialised_attributes( wooper:state() ) ->
 											[ attribute_entry() ].
 get_actor_specialised_attributes( State ) ->
-
 	AllAttrs = wooper:get_all_attributes( State ),
 
 	BaseAttrNames = get_all_base_attribute_names(),

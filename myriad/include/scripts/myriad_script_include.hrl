@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2023 Olivier Boudeville
+% Copyright (C) 2016-2024 Olivier Boudeville
 %
 % Include file meant to simplify the writing of Myriad-using escripts.
 %
@@ -141,14 +141,14 @@ get_myriad_path_from( CodePath ) ->
 
 				Path ->
 					%trace_utils:debug_fmt( "Found from myriad: '~ts'.",
-					%					   [ Path ] ),
+					%                       [ Path ] ),
 					Path
 
 			end;
 
 		Path ->
 			%trace_utils:debug_fmt( "Found from Ceylan-Myriad: '~ts'.",
-			%					   [ Path ] ),
+			%                       [ Path ] ),
 			Path
 
 	end.

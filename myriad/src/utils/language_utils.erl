@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2023 Olivier Boudeville
+% Copyright (C) 2017-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -44,7 +44,7 @@
 
 
 -type runtime_container_pid() :: pid().
-% Type to designate an (Erlang) process driving a runtime container (ex: a
+% Type to designate an (Erlang) process driving a runtime container (e.g. a
 % Python interpreter or a Java virtual machine) of a given language runtime
 % (typically on a given node).
 
@@ -54,7 +54,7 @@
 
 
 -type java_vm_container_pid() :: runtime_container_pid().
-% The PID of a Java virtual machine runtime container (ex: it can be a binding
+% The PID of a Java virtual machine runtime container (e.g. it can be a binding
 % agent, otherwise directly a controller mbox).
 
 
@@ -102,7 +102,7 @@ language_to_string( Language ) ->
 
 % @doc Returns an indented textual description of the specified language.
 -spec language_to_string( language(), text_utils:indentation_level() ) ->
-								ustring().
+											ustring().
 language_to_string( erlang, _IndentationLevel ) ->
 	"Erlang";
 

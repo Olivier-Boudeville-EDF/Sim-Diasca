@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2023 Olivier Boudeville
+% Copyright (C) 2011-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,24 +26,33 @@
 % Creation date: 2011.
 
 
-% See also the map used by filename:basedir/3.
+% A Myriad-defined record introduced in order to store information regarding any
+% application.
+%
+% This information can be transformed in a map that is a bit less detailed (not
+% storing application name, and storing os only, instead of os_family and
+% os_name) and that can be used directly by functions in the standard 'filename'
+% module, such as filename:basedir/3 in order to return suitable system-specific
+% base paths.
+%
 -record( app_info, {
 
 	% The official name of the corresponding application:
 	name :: text_utils:bin_string(),
 
-	% The version of the corresponding application:
-	version :: basic_utils:any_version(),
+	% The version (if any) of the corresponding application:
+	%
+	version :: maybe( basic_utils:any_version() | text_utils:ustring() ),
 
-	% The author description of the corresponding application:
+	% The author description (if any)  of the corresponding application:
 	author :: maybe( text_utils:bin_string() ),
 
 	% The current operating system information (see
-	% system_utils:get_operating_system_type(/0) on which is this application
-	% runs:
+	% system_utils:get_operating_system_type(/0), if any, on which is this
+	% application runs:
 
-	% Coarse categorization of the current operating system:
-	os_family :: system_utils:os_family(),
+	% Coarse categorisation of the current operating system:
+	os_family :: maybe( system_utils:os_family() ),
 
-	% More precise categorization of the current operating system:
-	os_name :: system_utils:os_name() } ).
+	% More precise categorisation of the current operating system:
+	os_name :: maybe( system_utils:os_name() ) } ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -53,6 +53,20 @@
 		  send_to_pid_set/2 ]).
 
 
+% Run-related functions.
+%
+% Not in code_utils, as we want them in a bootstrapped module.
+-export([ run/1, run/2, run/3, exec/1, exec/2, exec/3 ]).
+
+
+% Version-related functions.
+-export([ get_myriad_version/0, get_myriad_version_string/0,
+		  % See also text_utils:version_to_string/1:
+		  parse_version/1,
+		  check_three_digit_version/1, check_any_version/1,
+		  compare_versions/2 ]).
+
+
 % Miscellaneous functions.
 -export([ get_process_info/1, get_process_info/2,
 		  display_process_info/1,
@@ -65,11 +79,6 @@
 		  display_error/1, display_error/2,
 		  throw_diagnosed/1, throw_diagnosed/2,
 		  debug/1, debug/2,
-
-		  % See also text_utils:version_to_string/1:
-		  parse_version/1,
-		  check_three_digit_version/1, check_any_version/1,
-		  compare_versions/2,
 
 		  get_unix_process_specific_string/0,
 		  get_process_specific_value/0, get_process_specific_value/1,
@@ -84,9 +93,15 @@
 		  identity/1,
 		  check_undefined/1, check_all_undefined/1, are_all_defined/1,
 		  check_defined/1, check_not_undefined/1, check_all_defined/1,
+		  set_maybe/2,
+
 		  ignore_unused/1,
-		  freeze/0, crash/0, crash/1, enter_infinite_loop/0,
+		  do_nothing/0, freeze/0, crash/0, crash/1, enter_infinite_loop/0,
 		  trigger_oom/0 ]).
+
+
+-compile( { inline, [ set_maybe/2 ] } ).
+
 
 
 % Hints about retrieving the name of the function being currently evaluated by a
@@ -243,10 +258,11 @@
 
 
 -type safe_maybe( T ) :: { 'just', T } | 'nothing'.
-% Denotes a value that may be set to one of type T (with no restriction on T),
-% or that may not be set at all.
+% Denotes a value that may be set to one of type T (with no restriction on T -
+% unlike maybe/1 where T should not include the 'undefined' value), or that may
+% not be set at all.
 %
-% A bit more expensive than maybe/1.
+% A bit safer and more expensive than maybe/1.
 %
 % Obviously a nod to Haskell.
 
@@ -347,8 +363,6 @@
 
 -type argument() :: any().
 
--type arguments() :: [ argument() ].
-
 
 
 % Shorthand for Module, Function, Arity:
@@ -358,7 +372,7 @@
 %-type mfa() :: { module_name(), function_name(), arity() }.
 
 
--type command_spec() :: { module_name(), function_name(), arguments() }.
+-type command_spec() :: { module_name(), function_name(), [ argument() ] }.
 % A command (module-function-arguments).
 
 
@@ -428,7 +442,7 @@
 			   version_number/0, version/0, two_digit_version/0, any_version/0,
 			   three_digit_version/0, four_digit_version/0,
 			   positive_index/0, zero_index/0,
-			   module_name/0, function_name/0, argument/0, arguments/0,
+			   module_name/0, function_name/0, argument/0,
 			   command_spec/0, layer_name/0, record_name/0, field_name/0,
 			   activation_switch/0,
 			   comparison_result/0, execution_target/0, execution_context/0,
@@ -446,6 +460,12 @@
 %
 % The 'cond_utils' facilities shall not be used in this module, as it is a
 % pioneer one (they are thus not bootstrapped yet).
+
+
+% Local types:
+
+% Module name as an iolist:
+-type io_list_mod() :: text_utils:io_list().
 
 
 % Shorthands:
@@ -546,8 +566,12 @@ stop_on_failure( StatusCode ) ->
 
 % @doc Identity function: returns its argument as it is.
 %
-% Useful to avoid having the compiler being too smart by notifying annoying,
-% spurious messages (e.g. no clause will ever match) in some tests.
+% Useful to:
+% - avoid having the compiler being too smart by notifying annoying, spurious
+% messages (e.g. no clause will ever match) in some tests
+% - to prevent manually Last-Call Optimisation by calling this function on the
+% result (last expression) of a function, in order that this last function does
+% not disappear from stacktraces
 %
 -spec identity( term() ) -> term().
 identity( Term ) ->
@@ -615,6 +639,24 @@ are_all_defined( _Elems=[ _E | T ] ) ->
 
 
 
+% @doc Returns the first term is it is not undefined, otherwise returns the
+% second, default, term.
+%
+% Allows to apply a default if a maybe-term is not defined.
+%
+% For example: `ActualX = basic_utils:set_maybe(MaybeX, DefaultX)'.
+%
+% Ideally the default term would be lazily evaluated.
+%
+-spec set_maybe( maybe( term() ), term() ) -> term().
+set_maybe( _MaybeTerm=undefined, TDef ) ->
+	TDef;
+
+set_maybe( T, _TDef ) ->
+	T.
+
+
+
 % @doc Ignores specified argument.
 %
 % Useful to define, for debugging purposes, terms that will be (temporarily)
@@ -630,6 +672,14 @@ ignore_unused( _Term ) ->
 	%trace_utils:warning_fmt( "unused term (~p) ignored "
 	%   "(thanks to basic_utils:ignore_unused/1).", [ _Term ] ).
 
+
+% @doc Does nothing at all, at the expense of a remote call.
+%
+% May be useful for experiments, for example in link with LCO (Last Call
+% Optimisation).
+
+do_nothing() ->
+	ok.
 
 
 % @doc Freezes the current process immediately.
@@ -1250,6 +1300,280 @@ send_to_pid_set( Message, { Pid, NewIterator }, Count ) ->
 
 
 
+% @doc Runs the run/0 function from the specified module.
+%
+% Designed as a convenient launcher used with 'erl -run', dealing notably best
+% with outputs, error management and stacktraces.
+%
+-spec run( io_list_mod() ) -> void().
+run( ModIOList ) ->
+	run( ModIOList, _FunctionName=run ).
+
+
+
+% @doc Runs the specified 0-arity function from the specified module.
+%
+% Designed as a convenient launcher used with 'erl -run', dealing notably best
+% with outputs, error management and stacktraces.
+%
+-spec run( io_list_mod(), function_name() ) -> void().
+run( ModIOList, FunctionName ) ->
+	run( ModIOList, FunctionName, _Args=[] ).
+
+
+% @doc Runs the specified function from the specified module, with the specified
+% arguments.
+%
+% Designed as a convenient launcher used with 'erl -run', dealing notably best
+% with outputs, error management and stacktraces.
+%
+-spec run( io_list_mod(), function_name(), [ argument() ] ) -> void().
+run( ModIOList, FunctionName, Args ) ->
+
+	% Not sufficient, as input is ["my_module"], not "my_module":
+	%ModName = text_utils:string_to_atom( ModName ),
+
+	ModName = list_to_atom( lists:flatten( ModIOList ) ),
+
+	%trace_utils:debug_fmt( "Running ~ts:~ts with arguments ~p.",
+	%                       [ ModName, FunctionName, Args ] ),
+
+	try
+
+		apply( ModName, FunctionName, Args )
+
+	catch Class:Exception:Stacktrace ->
+
+		%trace_utils:debug_fmt( "For exception ~p of class ~p, "
+		%   "obtained stacktrace:~n ~p.", [ Exception, Class, Stacktrace ] ),
+
+		{ ExplainStr, ShowStacktrace } = case Exception of
+
+			undef ->
+				{ Mod, Fun, Third } = case hd( Stacktrace ) of
+
+					Triplet={ _M, _F, _A } ->
+						Triplet;
+
+					{ M, F, A, _FileLoc } ->
+						{ M, F, A }
+
+				end,
+
+				Arity = case Third of
+
+					Ar when is_integer( Ar ) ->
+						Ar;
+
+					% 'Args' already used!
+					SomeArgs when is_list( SomeArgs ) ->
+						length( SomeArgs )
+
+				end,
+				{ get_hint( code_utils:interpret_undef_exception( Mod, Fun,
+																  Arity ) ),
+				  true };
+
+
+			{ application_not_found, _AppName, AppFilename, _AbsBaseDir } ->
+				{ get_hint( "To generate 'ebin/~ts', "
+					"one may run 'make create-app-file' "
+					"from the root of the sources.", [ AppFilename ] ),
+				  false };
+
+
+			{ app_not_compiled, AppName, _AppBeam } ->
+				{ get_hint( "The application '~ts' is not available.",
+							[ AppName ] ), false };
+
+			% Not interpreted (yet?):
+			_ ->
+				{ _NoHint="", true }
+
+		end,
+
+		ShowStacktrace andalso
+			begin
+				case lists:reverse( Stacktrace ) of
+
+					[ {init,do_boot,3,[]}, {init,start_em,1,[]},
+					  {basic_utils,run,3, _RunFileLoc} | RevRest ] ->
+						manage_minimised_stacktrace( RevRest, Class, Exception,
+													 ExplainStr );
+
+					[ {init,start_em,1,[]}, {basic_utils,run,3, _RunFileLoc}
+										| RevRest ] ->
+						manage_minimised_stacktrace( RevRest, Class, Exception,
+													 ExplainStr );
+
+					% Apparently, sometimes (e.g. for gui_splash_test with LCO
+					% disabled) the stacktrace does not even reference
+					% basic_utils:run/3!
+					%
+					Rev ->
+						manage_minimised_stacktrace( Rev, Class, Exception,
+													 ExplainStr )
+
+				end
+
+			end,
+
+		% As this is an error case:
+		init:stop( _Status=15 )
+
+	end.
+
+
+
+% (helper)
+get_hint( HintStr ) ->
+	text_utils:format( "~nHint: ~ts~n", [ HintStr ] ).
+
+get_hint( HintFormatStr, HintFormatValue ) ->
+	get_hint( text_utils:format( HintFormatStr, HintFormatValue ) ).
+
+
+% (helper)
+manage_minimised_stacktrace( RevRest, Class, Exception, ExplainStr ) ->
+	ShrunkStacktrace = lists:reverse( RevRest ),
+
+	StackStr = code_utils:interpret_stacktrace( ShrunkStacktrace ),
+
+	io:format( "~n#### Error: the program crashed with the following ~ts-class "
+		"exception:~n  ~p~n~ts~nLatest calls first: ~ts~n",
+		[ Class, Exception, ExplainStr, StackStr ] ).
+
+
+
+% The exec/N variations for applications behave mostly like the run/N variations
+% for tests (with X_app instead of X_test).
+
+
+% @doc Executes the exec/0 function from the specified application module.
+%
+% Designed as a convenient launcher used with 'erl -run', dealing notably best
+% with outputs, error management and stacktraces.
+%
+-spec exec( io_list_mod() ) -> void().
+exec( ModIOList ) ->
+	run( ModIOList, _FunctionName=exec ).
+
+
+% @doc Executes the specified 0-arity function from the specified application
+% module.
+%
+% Designed as a convenient launcher used with 'erl -run', dealing notably best
+% with outputs, error management and stacktraces.
+%
+-spec exec( io_list_mod(), function_name() ) -> void().
+exec( ModIOList, FunctionName ) ->
+	exec( ModIOList, FunctionName, _Args=[] ).
+
+
+% @doc Executes the specified function from the specified application module,
+% with the specified arguments.
+%
+% Designed as a convenient launcher used with 'erl -run', dealing notably best
+% with outputs, error management and stacktraces.
+%
+-spec exec( io_list_mod(), function_name(), [ argument() ] ) -> void().
+exec( ModIOList, FunctionName, Args ) ->
+	run( ModIOList, FunctionName, Args ).
+
+
+
+% Version-related functions.
+
+
+% @doc Returns the version of the Myriad library being used.
+-spec get_myriad_version() -> three_digit_version().
+get_myriad_version() ->
+	parse_version( get_myriad_version_string() ).
+
+
+% @doc Returns the version of the Myriad library being used, as a string.
+-spec get_myriad_version_string() -> ustring().
+get_myriad_version_string() ->
+	% As defined (uniquely) in GNUmakevars.inc:
+	?myriad_version.
+
+
+
+% @doc Parses the specified textual version.
+%
+% For example "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
+%
+-spec parse_version( ustring() ) -> any_version().
+parse_version( VersionString ) ->
+
+	% First transform "4.22.1" into ["4","22","1"]:
+	Elems = string:tokens( VersionString, "." ),
+
+	% Then simply switch to {4,22,1}:
+	list_to_tuple( [ text_utils:string_to_integer( E ) || E <- Elems ] ).
+
+
+
+% @doc Checks that the specified term is a three-digit version, and returns it.
+-spec check_three_digit_version( term() ) -> three_digit_version().
+check_three_digit_version( T={ A, B, C } ) when is_integer( A )
+				andalso is_integer( B ) andalso is_integer( C ) ->
+	T;
+
+check_three_digit_version( T ) ->
+	throw( { invalid_three_digit_version, T } ).
+
+
+
+% @doc Checks that the specified term is a any-version, and returns it.
+-spec check_any_version( term() ) -> any_version().
+check_any_version( T ) when is_tuple( T ) ->
+	case lists:all( fun( E ) -> is_integer( E ) andalso E >= 0 end,
+					tuple_to_list( T ) ) of
+
+		true ->
+			T;
+
+		false ->
+			throw( { invalid_any_version, T } )
+
+	end;
+
+check_any_version( V ) ->
+	throw( { invalid_any_version, V } ).
+
+
+
+% @doc Compares the two specified any-versions (expected to be of the same
+% size), which describe two version numbers (e.g. {0,1,0} and {0,1,7}) and
+% returns either first_bigger, second_bigger, or equal.
+%
+% The two compared versions must have the same number of digits.
+%
+-spec compare_versions( any_version(), any_version() ) ->
+								'equal' | 'first_bigger' | 'second_bigger'.
+compare_versions( A, B ) when tuple_size( A ) =:= tuple_size( B ) ->
+	% As the default term order is already what we need:
+	case A > B of
+
+		true ->
+			first_bigger;
+
+		false ->
+			case A =:= B of
+
+				true ->
+					equal;
+
+				false ->
+					second_bigger
+
+			end
+
+	end.
+
+
+
 
 % Miscellaneous functions.
 
@@ -1688,80 +2012,6 @@ debug( Message ) ->
 debug( Format, Values ) ->
 	debug( text_utils:format( Format, Values ) ).
 
-
-
-% @doc Parses the specified textual version.
-%
-% For example "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
-%
--spec parse_version( ustring() ) -> any_version().
-parse_version( VersionString ) ->
-
-	% First transform "4.22.1" into ["4","22","1"]:
-	Elems = string:tokens( VersionString, "." ),
-
-	% Then simply switch to {4,22,1}:
-	list_to_tuple( [ text_utils:string_to_integer( E ) || E <- Elems ] ).
-
-
-
-% @doc Checks that the specified term is a three-digit version, and returns it.
--spec check_three_digit_version( term() ) -> three_digit_version().
-check_three_digit_version( T={ A, B, C } ) when is_integer( A )
-				andalso is_integer( B ) andalso is_integer( C ) ->
-	T;
-
-check_three_digit_version( T ) ->
-	throw( { invalid_three_digit_version, T } ).
-
-
-
-% @doc Checks that the specified term is a any-version, and returns it.
--spec check_any_version( term() ) -> any_version().
-check_any_version( T ) when is_tuple( T ) ->
-	case lists:all( fun( E ) -> is_integer( E ) andalso E >= 0 end,
-					tuple_to_list( T ) ) of
-
-		true ->
-			T;
-
-		false ->
-			throw( { invalid_any_version, T } )
-
-	end;
-
-check_any_version( V ) ->
-	throw( { invalid_any_version, V } ).
-
-
-
-% @doc Compares the two specified any-versions (expected to be of the same
-% size), which describe two version numbers (e.g. {0,1,0} and {0,1,7}) and
-% returns either first_bigger, second_bigger, or equal.
-%
-% The two compared versions must have the same number of digits.
-%
--spec compare_versions( any_version(), any_version() ) ->
-								'equal' | 'first_bigger' | 'second_bigger'.
-compare_versions( A, B ) when tuple_size( A ) =:= tuple_size( B ) ->
-	% As the default term order is already what we need:
-	case A > B of
-
-		true ->
-			first_bigger;
-
-		false ->
-			case A =:= B of
-
-				true ->
-					equal;
-
-				false ->
-					second_bigger
-
-			end
-
-	end.
 
 
 

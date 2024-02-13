@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 Olivier Boudeville
+% Copyright (C) 2008-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -50,13 +50,16 @@
 -export([ join/1, join/2, bin_join/1, bin_join/2, any_join/1, any_join/2,
 		  split/1,
 
-		  get_base_path/1, get_last_path_element/1, split_path/1,
+		  get_base_path/1, get_base_path/2,
+		  get_last_path_element/1, split_path/1,
 
 		  resolve_path/1, resolve_any_path/1,
 
-		  convert_to_filename/1, escape_path/1,
+		  convert_to_filename/1, convert_to_filename_with_extension/2,
+		  escape_path/1,
 
 		  get_extensions/1, get_extension/1, get_dotted_extension_for/1,
+		  add_extension/2,
 		  remove_extension/1, remove_extension/2, replace_extension/3,
 
 		  exists/1, get_type_of/1, resolve_type_of/1,
@@ -73,13 +76,16 @@
 		  is_existing_directory_or_link/1,
 		  list_dir_elements/1, list_dir_elements/2,
 
+		  check_existing_file/1, check_existing_file_or_link/1,
+		  check_existing_directory/1,
+
 		  get_size/1, get_last_modification_time/1, touch/1,
 		  create_empty_file/1, create_non_clashing_file/0,
 
 		  get_current_directory/0, get_bin_current_directory/0,
 		  set_current_directory/1,
 
-		  get_first_existing_directory_in/1,
+		  get_first_existing_directory_in/1, get_first_file_or_link_for/2,
 
 		  filter_by_extension/2, filter_by_extensions/2,
 		  filter_by_included_suffixes/2, filter_by_excluded_suffixes/2,
@@ -150,7 +156,10 @@
 % OS / project / application specific paths:
 -export([ get_cache_directory/1,
 
-		  get_configuration_directory/1, get_extra_configuration_directories/1,
+		  get_configuration_directory/1,
+		  get_most_suitable_configuration_directory/1,
+
+		  get_extra_configuration_directories/1,
 
 		  get_data_directory/1, get_extra_data_directories/1,
 
@@ -400,6 +409,13 @@
 % ".." / `<<"..">>' means the parent directory.
 
 
+-type depth() :: count().
+% A depth in a filesystem, when seen as a tree.
+%
+% For example the depth of "a" in "foo/bar/a" is 3.
+
+
+
 -type leaf_name() :: path_element().
 % A leaf name, i.e. the final element of a path (possibly a file or directory).
 %
@@ -503,13 +519,15 @@
 			   filename_radix/0, filepath_radix/0,
 			   extension/0, dotted_extension/0, any_suffix/0,
 			   path_element/0, bin_path_element/0, any_path_element/0,
-			   leaf_name/0,
+			   depth/0, leaf_name/0,
 			   entry_type/0, parent_creation/0, file_open_mode/0,
 			   compression_format/0, file/0, file_info/0,
 			   permission/0, permission_mask/0, improper_encoding_action/0 ]).
 
 
 % Shorthands:
+
+-type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
@@ -889,7 +907,7 @@ get_last_element( _List=[ _H | T ] ) ->
 
 
 
-% @doc Returns the complete leading, "directory" part of specified path,
+% @doc Returns the complete leading, "directory" part of the specified path,
 % that is the one with all its element but the last one.
 %
 % For example "/aaa/bbb/ccc" =
@@ -905,7 +923,26 @@ get_last_element( _List=[ _H | T ] ) ->
 %
 -spec get_base_path( any_path() ) -> any_path().
 get_base_path( AnyPath ) ->
-	filename:dirname( AnyPath ).
+	get_base_path( AnyPath, _Depth=1 ).
+
+
+% @doc Returns the leading part of the specified path, obtained at the specified
+% depth, that is when the specified number of bottom-level elements have been
+% chopped.
+%
+% For example "/aaa/bbb" =
+%          file_utils:get_base_path("/aaa/bbb/ccc/foobar.txt", _Depth=2).
+%
+% Note that the return type is the same of the input path, i.e. plain string or
+% binary string.
+%
+-spec get_base_path( any_path(), depth() ) -> any_path().
+get_base_path( AnyPath, _Depth=0 ) ->
+	AnyPath;
+
+get_base_path( AnyPath, Depth ) ->
+	ShrunkPath = filename:dirname( AnyPath ),
+	get_base_path( ShrunkPath, Depth-1 ).
 
 
 
@@ -942,6 +979,10 @@ split_path( AnyPath ) ->
 
 
 % @doc Resolves the specified resolvable path as a standard path.
+%
+% For example resolve_path([home, "computer-info", short_hostname, "info.txt"])
+% may return "/home/john/computer-info/hurricane/info.txt".
+%
 -spec resolve_path( resolvable_path() ) -> path().
 resolve_path( ResolvablePath ) when is_list( ResolvablePath ) ->
 	resolve_path( ResolvablePath, _Acc=[] ).
@@ -998,6 +1039,9 @@ resolve_path( _ResolvablePath=[ UnexpectedTerm | _T ], _Acc ) ->
 % @doc Resolves the specified path - either a standard one or a resolvable one -
 % in all cases as a plain, standard path.
 %
+% For example resolve_any_path([home, "computer-info", short_hostname,
+% "info.txt"]) may return "/home/john/computer-info/hurricane/info.txt".
+%
 -spec resolve_any_path( possibly_resolvable_path() ) -> path().
 resolve_any_path( BinPath ) when is_binary( BinPath ) ->
 	text_utils:binary_to_string( BinPath );
@@ -1019,7 +1063,8 @@ resolve_any_path( Other ) ->
 
 
 
-% @doc Converts the specified name into an acceptable filename, filesystem-wise.
+% @doc Converts the specified name into an acceptable filename (or file path),
+% filesystem-wise.
 %
 % Returns the same type of string as the provided one.
 %
@@ -1039,7 +1084,19 @@ convert_to_filename( Name ) ->
 	% different).
 
 	re:replace( lists:flatten( Name ), ?patterns_to_replace_for_paths,
-				?replacement_for_paths, [ global, { return, list } ] ).
+		?replacement_for_paths, [ global, { return, list } ] ).
+
+
+
+% @doc Converts the specified name into an acceptable filename (or file path),
+% filesystem-wise.
+%
+% Returns the same type of string as the provided one.
+%
+-spec convert_to_filename_with_extension( any_string(), extension() ) ->
+											any_file_name().
+convert_to_filename_with_extension( Name, Ext ) ->
+	convert_to_filename( add_extension( Name, Ext ) ).
 
 
 
@@ -1119,13 +1176,29 @@ get_extension( Filename ) ->
 
 
 
+% @doc Adds the specified extension to the specified filename prefix.
+%
+% For example: "/mnt/foobar.txt" = add_extension("/mnt/foobar", "txt")
+%
+% Returns a file path of the same type as the specified one.
+%
+-spec add_extension( any_file_path(), extension() ) -> any_file_path().
+add_extension( BinFilePath, Ext ) when is_binary( BinFilePath ) ->
+	text_utils:bin_format( "~ts.~ts", [ BinFilePath, Ext ] );
+
+add_extension( FilePathStr, Ext ) ->
+	text_utils:format( "~ts.~ts", [ FilePathStr, Ext ] ).
+
+
+
 % @doc Removes the (last) extension (regardless of its actual value) of the
 % specified file path.
 %
 % For example "/home/jack/rosie.tmp" =
-% remove_extension("/home/jack/rosie.tmp.ttf")
+%   remove_extension("/home/jack/rosie.tmp.ttf")
 %
--spec remove_extension( file_path() ) -> file_path().
+-spec remove_extension( file_path() ) -> file_path();
+					  ( bin_file_path() ) -> bin_file_path().
 remove_extension( FilePath ) ->
 
 	case text_utils:split( FilePath, _Delimiters=[ $. ] ) of
@@ -1151,8 +1224,15 @@ remove_extension( FilePath ) ->
 % For example "/home/jack/rosie" = remove_extension("/home/jack/rosie.tmp.ttf",
 % "ttf")
 %
--spec remove_extension( file_path(), extension() ) -> file_path().
-remove_extension( FilePath, ExpectedExtension ) ->
+-spec remove_extension( any_file_path(), extension() ) -> file_path().
+remove_extension( BinFilePath, ExpectedExtension )
+										when is_binary( BinFilePath ) ->
+	remove_extension( text_utils:binary_to_string( BinFilePath ),
+					  ExpectedExtension );
+
+remove_extension( FilePath, ExpectedExtension )
+										% To secure the match:
+										when is_list( ExpectedExtension ) ->
 
 	Separator = $.,
 
@@ -1771,6 +1851,35 @@ list_dir_elements( DirName, ImproperEncodingAction ) ->
 
 
 
+% @doc Checks that the specified path entry exists and is a regular file, or
+% throws an exception if not.
+%
+-spec check_existing_file( any_path() ) -> void().
+check_existing_file( Path ) ->
+	is_existing_file( Path ) orelse
+		throw( { non_existing_file, Path } ).
+
+
+% @doc Checks that the specified path entry exists and is either a regular
+% file or a symbolic link, or throws an exception if not.
+%
+-spec check_existing_file_or_link( any_path() ) -> void().
+check_existing_file_or_link( Path ) ->
+	is_existing_file_or_link( Path ) orelse
+		throw( { non_existing_file_or_link, Path } ).
+
+
+% @doc Checks that the specified path entry exists and is a directory, or throws
+% an exception if not.
+%
+-spec check_existing_directory( any_path() ) -> void().
+check_existing_directory( Path ) ->
+	is_existing_directory( Path ) orelse
+		throw( { non_existing_directory, Path } ).
+
+
+
+
 % @doc Returns the size, in bytes, of the specified file.
 -spec get_size( any_file_path() ) -> system_utils:byte_size().
 get_size( FilePath ) ->
@@ -1979,8 +2088,35 @@ get_first_existing_dir( _DirPaths=[ Dir | T ], Acc ) ->
 		true ->
 			Dir;
 
-		false ->
+		_False ->
 			get_first_existing_dir( T, [ Dir | Acc ] )
+
+	end.
+
+
+
+% @doc Returns, as a full path, the first occurrence (if any) of the specified
+% filename found (as a regular file or a symbolic link) through the specified
+% (ordered) list of directories.
+%
+% For example get_first_file_or_link_for("foobar.etf", ["/home/prefs",
+% "/var/config"]) may return "/var/config/foobar.etf", if this file exists and
+% "/home/prefs/foobar.etf" does not.
+%
+-spec get_first_file_or_link_for( any_file_name(), [ any_directory_path() ] ) ->
+											maybe( any_file_path() ).
+get_first_file_or_link_for( _TargetFilename, _CandidateDirs=[] ) ->
+	undefined;
+
+get_first_file_or_link_for( TargetFilename, _CandidateDirs=[ Dir | T ] ) ->
+	TargetFilePath = join( Dir, TargetFilename ),
+	case is_existing_file_or_link( TargetFilePath ) of
+
+		true ->
+			TargetFilePath;
+
+		_False ->
+			get_first_file_or_link_for( TargetFilename, T )
 
 	end.
 
@@ -4147,6 +4283,8 @@ is_absolute_path( AnyPath ) ->
 % If it is not already absolute, it will made so by using the current working
 % directory.
 %
+% Acts a bit like the realpath command.
+%
 -spec ensure_path_is_absolute( path() ) -> path();
 							 ( bin_path() ) -> bin_path().
 ensure_path_is_absolute( Path ) ->
@@ -4772,9 +4910,9 @@ get_image_file_gif( Image ) ->
 
 
 
-% @doc Returns the path location intended for the storage of transient data
-% files that the specified application may perform on the local machine, that is
-% any cache that it may use.
+% @doc Returns the directory path location intended for the storage of transient
+% data files that the specified application may perform on the local machine,
+% that is any cache that it may use.
 %
 -spec get_cache_directory( any_app_info() ) -> directory_path().
 get_cache_directory( AppInfo=#app_info{} ) ->
@@ -4786,9 +4924,14 @@ get_cache_directory( AppInfoMap=#{ name := BinAppName } ) ->
 
 
 
-% @doc Returns the path location intended for the storage of persistent
-% configuration files that the specified application may perform on the local
-% machine.
+% @doc Returns the main directory path location intended for the storage of
+% persistent user-level configuration files that the specified application may
+% perform on the local machine.
+%
+% Does not check whether this directory exists, and of course a configuration
+% file of interest may or may not be available there.
+%
+% May return for example "~/.config/foobar/0.0.1".
 %
 -spec get_configuration_directory( any_app_info() ) -> directory_path().
 get_configuration_directory( AppInfo=#app_info{} ) ->
@@ -4797,6 +4940,61 @@ get_configuration_directory( AppInfo=#app_info{} ) ->
 
 get_configuration_directory( AppInfoMap=#{ name := BinAppName } ) ->
 	filename:basedir( _PathType=user_config, BinAppName, _Opts=AppInfoMap ).
+
+
+
+% @doc Returns the best, existing directory path intended for the storage of
+% persistent user-level configuration files that the specified application may
+% perform on the local machine: looks up in turn the candidate directories, by
+% decreasing priority order, and returns the relevant, most suitable one (if
+% any).
+%
+% Of course a configuration file of interest may or may not be available there,
+% which may limit the interest of this function; see then
+% preferences:get_most_suitable_configuration_file/1.
+%
+% May return for example "~/.config/foobar/0.0.1" (if existing),
+% otherwise "~/.config/foobar" (if existing), otherwise 'undefined'.
+%
+-spec get_most_suitable_configuration_directory( any_app_info() ) ->
+											maybe( directory_path() ).
+get_most_suitable_configuration_directory( AppInfo=#app_info{} ) ->
+	AppInfoMap = app_facilities:get_app_info_map( AppInfo ),
+	get_configuration_directory( AppInfoMap );
+
+get_most_suitable_configuration_directory(
+		AppInfoMap=#{ name := BinAppName, version := _VersionStr } ) ->
+
+	FirstCandidateDir =
+		filename:basedir( _PathType=user_config, BinAppName, _Opts=AppInfoMap ),
+
+	case file_utils:is_existing_directory_or_link( FirstCandidateDir ) of
+
+		true ->
+			FirstCandidateDir;
+
+		false ->
+			% Then trying without the version information:
+			NoVersionMap = maps:remove( version, AppInfoMap ),
+			get_most_suitable_configuration_directory( NoVersionMap )
+
+	end;
+
+get_most_suitable_configuration_directory(
+									AppInfoMap=#{ name := BinAppName } ) ->
+	CandidateDir =
+		filename:basedir( _PathType=user_config, BinAppName, _Opts=AppInfoMap ),
+
+	case file_utils:is_existing_directory_or_link( CandidateDir ) of
+
+		true ->
+			CandidateDir;
+
+		false ->
+			undefined
+
+	end.
+
 
 
 % @doc Returns the extra path locations intended for the storage of persistent

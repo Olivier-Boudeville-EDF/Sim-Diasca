@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -62,7 +62,8 @@
 
 -type color_by_name() :: atom().
 % A color, as designated by an atom (e.g. 'aliceblue'); possibly a logical
-% color.
+% color. See get_colors/0 for a list thereof.
+
 
 -type logical_color() :: color_by_name().
 % A logical color, like 'window_frame_color'.
@@ -71,6 +72,17 @@
 -type color_by_decimal() :: { Red :: byte(), Green :: byte(), Blue :: byte() }.
 % RGB (integer coordinates, in [0;255]) color; no alpha coordinate here.
 
+
+-type rgb_hexastring() :: ustring().
+% A RGB color that is encoded based on 6 hexadecimal digits in a string, with a
+% "#" prefix (hence is not a text_utils:hexastring/0).
+%
+% For example "#3ab001" corresponds to lightgreen.
+%
+% Possibly used for HTML content, by gnuplot, etc.
+
+
+
 -type color_by_decimal_with_alpha() ::
 		{ Red :: byte(), Green :: byte(), Blue :: byte(), Alpha :: byte() }.
 % RGBA (integer coordinates, in [0;255]) color.
@@ -78,7 +90,7 @@
 -type any_color_by_decimal() ::
 		color_by_decimal() | color_by_decimal_with_alpha().
 
--type color() :: color_by_name() | color_by_decimal().
+-type color() :: color_by_name() | color_by_decimal() | rgb_hexastring().
 % Any kind of RGB color.
 
 
@@ -173,6 +185,8 @@
 
 			   color_by_decimal/0, color_by_decimal_with_alpha/0,
 			   any_color_by_decimal/0,
+			   rgb_hexastring/0,
+
 			   color/0,
 
 			   color_depth/0,
@@ -400,7 +414,14 @@ get_color( ColorName ) when is_atom( ColorName ) ->
 
 			end
 
-	end.
+	end;
+
+% For example "#0b5474":
+get_color( _RGBHexastr=[ $#, R1, R2, G1, G2, B1, B2 ] ) ->
+	Red   = text_utils:hexastring_to_integer( [ R1, R2 ] ),
+	Green = text_utils:hexastring_to_integer( [ G1, G2 ] ),
+	Blue  = text_utils:hexastring_to_integer( [ B1, B2 ] ),
+	{ Red, Green, Blue }.
 
 
 
@@ -427,8 +448,9 @@ get_logical_color( Other ) ->
 
 
 % @doc Returns a stringified representation for gnuplot of the specified color.
--spec get_color_for_gnuplot( color() ) -> ustring().
+-spec get_color_for_gnuplot( color() ) -> color().
 get_color_for_gnuplot( _Color={ _R, _G, _B } ) ->
+	% Would return rgb_hexastring() ("#a1710f" for example):
 	throw( hexadecimal_conversion_not_implemented );
 
 get_color_for_gnuplot( ColorName ) ->

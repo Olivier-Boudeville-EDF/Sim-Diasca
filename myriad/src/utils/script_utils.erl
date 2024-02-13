@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2023 Olivier Boudeville
+% Copyright (C) 2012-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -120,7 +120,6 @@ get_script_base_directory() ->
 	case is_running_as_escript() of
 
 		true ->
-
 			%io:format( "Found running as escript.~n" ),
 
 			% filename:absname/1 could be used instead:
@@ -149,7 +148,6 @@ get_script_base_directory() ->
 
 
 		false ->
-
 			%io:format( "Found not running as escript.~n" ),
 
 			% Supposing Myriad is already available then?
@@ -513,7 +511,7 @@ is_legit_path( BaseCandidatePath ) ->
 % with a dash, may have any number of arguments, and may be specified more than
 % once in the command-line.
 %
-% Note: switches to the Unicode encoding (ex: use "~tp" then).
+% Note: switches to the Unicode encoding (e.g. use "~tp" then).
 %
 % Allows to write code that can be seamlessly triggered by a erl interpreter or
 % by an escript, by putting them in the latter case in our "canonical" form.

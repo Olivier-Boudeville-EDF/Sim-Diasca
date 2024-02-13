@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -84,7 +84,7 @@
 % expecting the intended structure of AST elements (e.g. the structure of a
 % tuple corresponding to a 'receive' statement).
 %
-% Then, for a more complete control, we match the AST against its intended,
+% Then, for a more complete control, we matched the AST against its intended,
 % "official" structure, as defined in
 % http://erlang.org/doc/apps/erts/absform.html; however, for a mere scan, this
 % is mostly useless (as a more basic traversal is sufficient), and moreover
@@ -110,7 +110,7 @@
 
 
 
-% Order of the forms in the AST
+% About the orOrder of the forms in the AST.
 %
 % A parse transform receives an (ordered) list of forms as input AST: forms are
 % ordered only by their position in that list (file locations, i.e. line/column
@@ -229,10 +229,10 @@ scan( AST ) ->
 
 
 
-% @doc Reports specified error, using the same format as erlc, so that tools can
-% parse these errors as well.
+% @doc Reports the specified error, using the same format as erlc, so that tools
+% can parse these errors as well.
 %
-% For example foo.erl:102: can't find include file "bar.hrl"
+% For example: 'foo.erl:102: can't find include file "bar.hrl"'.
 %
 -spec report_error( { scan_context(), basic_utils:error_reason() } ) ->
 							basic_utils:void().
@@ -249,7 +249,7 @@ report_error( { Context, Error } ) ->
 			text_utils:format( "~ts", [ Msg ] );
 
 		{ undefined_macro_variable, VariableName }
-						when is_atom( VariableName ) ->
+				when is_atom( VariableName ) ->
 			text_utils:format( "undefined macro variable '~ts'",
 							   [ VariableName ] );
 
@@ -276,7 +276,7 @@ report_error( { Context, Error } ) ->
 
 		% For example Problem="unbalanced"
 		{ epp_error, { illegal, Problem, DirectiveName } }
-						when is_atom( DirectiveName )  ->
+				when is_atom( DirectiveName )  ->
 			text_utils:format( "illegal ~ts '~ts' preprocessor directive",
 							   [ Problem, DirectiveName ] );
 
@@ -295,13 +295,22 @@ report_error( { Context, Error } ) ->
 			text_utils:format( "could not find include_lib header file '~ts'",
 							   [ HeaderPath ] );
 
+		{ epp_error, { call, [ Char, Str ] } } ->
+			text_utils:format( "preprocessor error for character '~c' "
+				"regarding '~ts'", [ Char, Str ] );
+
+		{ epp_error, { redefine, DefineStr } } ->
+			text_utils:format(
+				"the preprocessor symbol '~ts' is already defined",
+				[ DefineStr ] );
+
 		String when is_list( String ) ->
-			%text_utils:format( "~ts (raw error string reported)", [ String ] );
-			text_utils:format( "~ts", [ String ] );
+			text_utils:format( "~ts (raw error string reported)", [ String ] );
+			%text_utils:format( "~ts", [ String ] );
 
 		Other ->
-			%text_utils:format( "~p (raw error reported)", [ Other ] )
-			text_utils:format( "~p", [ Other ] )
+			text_utils:format( "~p (raw error reported)", [ Other ] )
+			%text_utils:format( "~p", [ Other ] )
 
 	end,
 
@@ -398,7 +407,7 @@ scan_forms( _AST=[ _Form={ 'attribute', FileLoc, 'export', FunctionIds } | T ],
 
 			NewFunInfo = case ?table:lookup_entry( FunId, FunTableAcc ) of
 
-				 key_not_found ->
+				key_not_found ->
 
 					% New entry then:
 					#function_info{ name=Name,
@@ -411,8 +420,8 @@ scan_forms( _AST=[ _Form={ 'attribute', FileLoc, 'export', FunctionIds } | T ],
 									%callback=undefined,
 									exported=[ NextASTLoc ] };
 
-				 % A function *might* be exported more than once:
-				 { value, FunInfo } -> % F=#function_info{ exported=[] } } ->
+				% A function *might* be exported more than once:
+				{ value, FunInfo } -> % F=#function_info{ exported=[] } } ->
 					% Just add the fact that the function is exported then:
 					NewExp = [ NextASTLoc | FunInfo#function_info.exported ],
 					FunInfo#function_info{ exported=NewExp }
@@ -554,7 +563,7 @@ scan_forms( _AST=[ Form={ 'attribute', _FileLoc, 'file',
 	% bootstrapped as well, which does not seem desirable.
 
 	%NewCurrentFileReference = text_utils:string_to_binary(
-	%     file_utils:normalise_path( Filepath ) ),
+	%   file_utils:normalise_path( Filepath ) ),
 	NewCurrentFileReference = text_utils:string_to_binary( FilePath ),
 
 	% Avoids duplicates (in 'includes' only, not in definitions):
@@ -593,7 +602,7 @@ scan_forms(
   NextASTLoc, CurrentFileReference ) ->
 
 	%ast_utils:display_debug( "function definition for ~p/~p",
-	% [ FunctionName, FunctionArity ] ),
+	%   [ FunctionName, FunctionArity ] ),
 
 	% The non-first clauses could be checked as well:
 	%

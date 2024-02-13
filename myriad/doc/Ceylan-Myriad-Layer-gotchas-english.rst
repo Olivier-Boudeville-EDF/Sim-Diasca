@@ -55,7 +55,7 @@ The actual compilation will be done by our native build system in all cases, eit
 
 Finally, such dependencies may or may not be listed in the ``deps`` entry of the  ``conf/foo.app.src`` file [#]_, depending on whether they are optional or not.
 
-.. [#] After having edited this file, run ``make rebar3-create-app-file`` afterwards in order to have the three other versions of it properly generated (namely ``./_build/lib/foo/ebin/foo.app``, ``ebin/foo.app`` and ``src/foo.app.src``).
+.. [#] After having edited this file, run ``make create-app-file`` afterwards in order to have the three other versions of it properly generated (namely ``./_build/lib/foo/ebin/foo.app``, ``ebin/foo.app`` and ``src/foo.app.src``).
 
 
 

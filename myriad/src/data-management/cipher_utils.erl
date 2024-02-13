@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2023 Olivier Boudeville
+% Copyright (C) 2013-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,7 +51,7 @@
 % Implementation notes.
 %
 % To encrypt a file, one shall use a key file, whose extension is by convention
-% 'cipher' (ex: "my-key-file.cipher").
+% 'cipher' (e.g. "my-key-file.cipher").
 %
 % The same file can be used to perform the reverse operation.
 %
@@ -218,6 +218,7 @@
 -define( list_write_opts, [ write, raw, delayed_write ] ).
 
 
+
 % Shorthands:
 
 -type count() :: basic_utils:count().
@@ -235,15 +236,8 @@
 -spec generate_key( file_path(), [ cipher_transform() ] ) -> void().
 generate_key( KeyFilePath, Transforms ) ->
 
-	case file_utils:exists( KeyFilePath ) of
-
-		true ->
-			throw( { already_existing_key_file, KeyFilePath } );
-
-		false ->
-			ok
-
-	end,
+	file_utils:exists( KeyFilePath ) andalso
+		throw( { already_existing_key_file, KeyFilePath } ),
 
 	% No delayed_write wanted:
 	KeyFile = file_utils:open( KeyFilePath, _Opts=[ write, raw ] ),
@@ -268,7 +262,7 @@ generate_key( KeyFilePath, Transforms ) ->
 key_to_string( Key ) ->
 	text_utils:format( "Key composed of following ~B cipher(s): ~ts",
 		[ length( Key ), text_utils:strings_to_string(
-							key_to_strings( Key, _Acc=[] ) ) ] ).
+			key_to_strings( Key, _Acc=[] ) ) ] ).
 
 
 % (helper)
@@ -311,26 +305,12 @@ key_to_strings( [ Cipher | T ], Acc ) ->
 -spec encrypt( file_path(), file_path(), file_path() ) -> void().
 encrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 
-	case file_utils:is_existing_file_or_link( SourceFilePath ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { non_existing_source_file, SourceFilePath } )
-
-	end,
+	file_utils:is_existing_file_or_link( SourceFilePath ) orelse
+		throw( { non_existing_source_file, SourceFilePath } ),
 
 
-	case file_utils:exists( TargetFilePath ) of
-
-		true ->
-			throw( { already_existing_target_file, TargetFilePath } );
-
-		false ->
-			ok
-
-	end,
+	file_utils:exists( TargetFilePath ) andalso
+		throw( { already_existing_target_file, TargetFilePath } ),
 
 	KeyInfos = read_key( KeyFilePath ),
 
@@ -357,27 +337,11 @@ encrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 -spec decrypt( file_path(), file_path(), file_path() ) -> void().
 decrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 
-	case file_utils:is_existing_file_or_link( SourceFilePath ) of
+	file_utils:is_existing_file_or_link( SourceFilePath ) orelse
+		throw( { non_existing_source_file, SourceFilePath } ),
 
-		true ->
-			ok;
-
-		false ->
-			throw( { non_existing_source_file, SourceFilePath } )
-
-	end,
-
-
-	case file_utils:exists( TargetFilePath ) of
-
-		true ->
-			throw( { already_existing_target_file, TargetFilePath } );
-
-		false ->
-			ok
-
-	end,
-
+	file_utils:exists( TargetFilePath ) andalso
+		throw( { already_existing_target_file, TargetFilePath } ),
 
 	KeyInfos = read_key( KeyFilePath ),
 
@@ -470,7 +434,6 @@ apply_key( _KeyInfos=[], SourceFilePath, _CipherCount ) ->
 
 apply_key( _KeyInfos=[ C | H ], SourceFilePath, CipherCount ) ->
 
-
 	io:format( " - applying cipher #~B: '~p'~n",
 			   [ CipherCount, get_cipher_description( C ) ] ),
 
@@ -479,16 +442,9 @@ apply_key( _KeyInfos=[ C | H ], SourceFilePath, CipherCount ) ->
 
 	apply_cipher( C, SourceFilePath, CipheredFilePath ),
 
-	case CipherCount of
-
-		1 ->
-			ok;
-
-		_ ->
-			% Not wanting to saturate the storage space with intermediate files:
-			file_utils:remove_file( SourceFilePath )
-
-	end,
+	CipherCount =:= 1 orelse
+		% Not wanting to saturate the storage space with intermediate files:
+		file_utils:remove_file( SourceFilePath ),
 
 	apply_key( H, CipheredFilePath, CipherCount + 1 ).
 
@@ -810,7 +766,7 @@ extract_random_cipher( CipheredFilePath, TargetFilePath, Range )
 		extract_helper( CipheredFile, TargetFile, Range, _Count=0 ).
 
 	%trace_utils:debug_fmt( "extract_random_cipher: extracted ~B bytes.~n",
-	%		   [ ExtractedCount ] ).
+	%                       [ ExtractedCount ] ).
 
 
 
@@ -1063,7 +1019,7 @@ fill_table( Table, Index, FinalIndex, Alphabet, AlphabetSize ) ->
 
 	NewTable = array:set( Index, InnerArray, Table ),
 
-	fill_table( NewTable, Index + 1, FinalIndex, Alphabet, AlphabetSize ).
+	fill_table( NewTable, Index+1, FinalIndex, Alphabet, AlphabetSize ).
 
 
 
@@ -1102,7 +1058,7 @@ fill_inner_array( Array, Index, FinalIndex, _Letters=[ L | T ], StateCount ) ->
 
 	NewArray = array:set( Index, Cell, Array ),
 
-	fill_inner_array( NewArray, Index + 1, FinalIndex, T, StateCount ).
+	fill_inner_array( NewArray, Index+1, FinalIndex, T, StateCount ).
 
 
 
@@ -1145,7 +1101,7 @@ fill_reverse_table( InverseTable, _InnerArrays=[ A | T ], Index, FinalIndex,
 
 	NewInverseTable = array:set( Index, ReversedInnerArray, InverseTable ),
 
-	fill_reverse_table( NewInverseTable, T, Index + 1, FinalIndex,
+	fill_reverse_table( NewInverseTable, T, Index+1, FinalIndex,
 						AlphabetSize ).
 
 
@@ -1169,7 +1125,7 @@ inverse_cells( _Cells=[ { NextState, OutputLetter } | T ], Index, AccArray ) ->
 
 	NewAccArray = array:set( OutputLetter, { NextState, Index }, AccArray ),
 
-	inverse_cells( T, Index + 1, NewAccArray ).
+	inverse_cells( T, Index+1, NewAccArray ).
 
 
 
@@ -1198,9 +1154,9 @@ get_inner_info( Table, Index, FinalIndex, Acc ) ->
 	InnerList = array:to_list( array:get( Index, Table ) ),
 
 	S = text_utils:format( "for state S~B:~n~ts",
-						   [ Index + 1, get_cells_info( InnerList ) ] ),
+						   [ Index+1, get_cells_info( InnerList ) ] ),
 
-	get_inner_info( Table, Index + 1, FinalIndex, [ S | Acc ] ).
+	get_inner_info( Table, Index+1, FinalIndex, [ S | Acc ] ).
 
 get_cells_info( InnerList ) ->
 	% To avoid many ineffective concatenations:

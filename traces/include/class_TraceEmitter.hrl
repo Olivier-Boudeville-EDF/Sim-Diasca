@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -95,8 +95,7 @@
 		%
 		%TracesStandaloneEmitterName ->
 		_ ->
-			{ TracesInitialisationTermInternal,
-			  ?trace_emitter_categorization }
+			{ TracesInitialisationTermInternal, ?trace_emitter_categorization }
 
 	end ).
 
@@ -105,25 +104,28 @@
 % To obtain a proper string-like name, whether a trace categorization has been
 % specified or not (typically useful when wanting to designate with '~ts' the
 % name of a trace emitter from its constructor, i.e. when its specified name
-% (actually, emitter_info()) may still include its trace categorization):
+% (actually, emitter_info()) may still include its trace categorization).
+%
+% Note that implementing this feature, as opposed to trace_categorize/1 above,
+% does not require a macro. Use class_TraceEmitter:get_trace_name/1 instead.
 %
 % -macrospec trace_name( emitter_name() | emitter_info() ) ->
 %                                   emitter_name().
--define( trace_name( TracesInitialisationTermForNameInternal ),
+% -define( trace_name( TracesInitialisationTermForNameInternal ),
 
-	% As few variables bound as possible, and longer variable names chosen
-	% (prefixed with 'Traces'), to avoid clashes with user-defined variables:
-	%
-	case TracesInitialisationTermForNameInternal of
+%	% As few variables bound as possible, and longer variable names chosen
+%	% (prefixed with 'Traces'), to avoid clashes with user-defined variables:
+%	%
+%	case TracesInitialisationTermForNameInternal of
 
-		%{ TraceName, _TraceCategorization } ->
-		{ TraceNameForNameInternal, _ } ->
-			TraceNameForNameInternal;
+%		%{ TraceName, _TraceCategorization } ->
+%		{ TraceNameForNameInternal, _ } ->
+%			TraceNameForNameInternal;
 
-		TraceNameForNameInternal ->
-			TraceNameForNameInternal
+%		TraceNameForNameInternal ->
+%			TraceNameForNameInternal
 
-	end ).
+%	end ).
 
 
 
@@ -138,7 +140,7 @@
 % to a timer:sleep/1).
 %
 % That way, even if the very next operation of the process sending such a
-% failure-oriented trace is to halt the VM (ex: with an uncaught throw/1), the
+% failure-oriented trace is to halt the VM (e.g. with an uncaught throw/1), the
 % corresponding trace will be duely recorded and thus available (otherwise such
 % critical messages could get lost).
 
@@ -1097,7 +1099,7 @@
 -define( send_warning_full( State, Message, MessageCategorization,
 							ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( warning, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1396,7 +1398,7 @@
 -ifdef(tracing_activated).
 
 
-% The type of trace output (ex: LogMX, PDF, etc.) is defined in the traces.hrl
+% The type of trace output (e.g. LogMX, PDF, etc.) is defined in the traces.hrl
 % file.
 
 
@@ -1445,7 +1447,7 @@
 
 
 % Some delay was added when error-like traces are sent, so that they can be
-% stored before the virtual machine is stopped, should it happen (ex: if an
+% stored before the virtual machine is stopped, should it happen (e.g. if an
 % exception is thrown); they have been since then replaced by synchronous
 % operations.
 
@@ -1848,7 +1850,7 @@
 % WOOPER one cannot be permuted (as this header defines functions as well).
 %
 % Specifying the parameters 'as are' instead of wrapping them in a
-% trace_disabled function (ex: 'State, Message' instead of
+% trace_disabled function (e.g. 'State, Message' instead of
 % 'trace_disabled(State,Message)' results in the following warning:
 % 'Warning: a term is constructed, but never used'
 
@@ -1874,15 +1876,15 @@
 %                    trace_disabled/4, trace_disabled/5 ] } ).
 
 % Final solution: replacing calls to trace_disabled/[1..5] by tuples containing
-% these variables (ex: 'trace_disabled( State, Message )' -> { State, Message })
-% (and not defining these trace_disabled functions)
+% these variables (e.g. 'trace_disabled( State, Message )' -> { State, Message
+% }) (and not defining these trace_disabled functions).
 
 
 % We also use trace_disabled/1 on any parameter Foobar unused by the macro,
 % otherwise the compiler would report that the "variable 'Foobar' is unused".
 
 % We do the same also whenever the 'State' variable is to be implicitly used
-% (ex: with '?error("Hello")'), otherwise user code would also have it
+% (e.g. with '?error("Hello")'), otherwise user code would also have it
 % reported as unused.
 
 
@@ -2116,7 +2118,7 @@
 % WOOPER one cannot be permuted (as this header defines functions as well).
 %
 % Specifying the parameters 'as are' instead of wrapping them in a
-% trace_disabled function (ex: 'State, Message' instead of
+% trace_disabled function (e.g. 'State, Message' instead of
 % 'trace_disabled(State,Message)' results in the following warning:
 % 'Warning: a term is constructed, but never used'
 %

@@ -6,7 +6,7 @@ Sim-Diasca Changes
 ------------------
 
 
-.. Note:: All the changes can be tracked down, with full details, based on the R&D internal GIT repository (see the ``git log`` command).
+.. Note:: All the changes can be tracked down, with full details, based on the R&D internal Git repository (see the ``git log`` command).
 
 
 Starting from the 2.x versions, we did extensive efforts to preserve backward compatibility, so that most of the pre-existing user workflows are preserved.
@@ -466,7 +466,7 @@ Version 2.2.0
 Released on Thursday, June 27, 2013.
 
 
- - in general: we switched from SVN to GIT, and rewrote many rules (e.g. to generate releases) accordingly, relying on an improved layout
+ - in general: we switched from SVN to Git, and rewrote many rules (e.g. to generate releases) accordingly, relying on an improved layout
 
  - in ``Myriad``:
 

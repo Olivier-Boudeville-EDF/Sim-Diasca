@@ -46,7 +46,7 @@ Implementation
 
 The performance tracker and its integration test are located in ``sim-diasca/src/core/src/data-management/monitoring/performance``.
 
-The performance tracker is integrated at the Sim-Diasca level (i.e. not only at the WOOPER-level), and relies on various services of the engine (ex: probe, deployment manager, result manager).
+The performance tracker is integrated at the Sim-Diasca level (i.e. not only at the WOOPER-level), and relies on various services of the engine (e.g. probe, deployment manager, result manager).
 
 
 The performance tracker is implemented as an optional service, disabled by default (to avoid any unnecessary runtime overhead), which can be enabled on a per-need basis.

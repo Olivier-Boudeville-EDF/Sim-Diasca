@@ -37,7 +37,7 @@
 
 
 % We try to stick close to the latest stable OTP version:
-{minimum_otp_vsn, "25.0"}.
+{minimum_otp_vsn, "26.0"}.
 
 
 % Settings for the 'default' profile follow.
@@ -52,7 +52,7 @@
 % No need to select here a JSON backend (i.e. neither use_jsx_json_backend nor
 % use_jiffy_json_backend is useful), as their look-up is now done at runtime.
 %
-{erl_opts, [ {d,myriad_debug_mode}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR ]}.
+{erl_opts, [ {myriad_version,"VERSION_FOR_OTP"}, {d,myriad_debug_mode}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR ]}.
 
 
 % Bootstrapped modules (from BOOTSTRAP_MODULES):
@@ -69,25 +69,36 @@
 %{post_hooks, [ {compile, "make -s rebar3-compile-post-hook"} ]}.
 
 
-% Was deemed likely needed sooner or later to prevent spurious, ill-configured
-% compilations that would be attempted by rebar3, when used as a dependency,
-% however the opposite happened (for projects based on Myriad, with bulletproof
-% hooks rebar3 started to attempt such a failing rebuild, whereas with the base
-% hooks not).
+% Previously, bulletproof build was deemed likely needed sooner or later to
+% prevent spurious, ill-configured compilations that would be attempted by
+% rebar3, when used as a dependency, however the opposite happened (for projects
+% based on Myriad, with bulletproof hooks rebar3 started to attempt such a
+% failing rebuild, whereas with the base hooks not). Not hiding Myriad build
+% elements seemed the way to go.
 %
-% Not hiding Myriad build elements seems the way to go:
+% Yet since then (and after many rebar versions), adding our version define
+% (i.e. {myriad_version,"VERSION_FOR_OTP"}) made the non-bulletproof build of
+% Myriad fail. Switching back to the bulletproof (moreover with hiding), for
+% Myriad and least for most of its dependencies, seemed to fix the issue.
+%
+% Should issues like these come again, maybe the
+% '{erlc_compiler, [{recursive,false}]}.' rebar setting could help.
 
 
-%{pre_hooks,  [ {compile, "make -s rebar3-bulletproof-compile-pre-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar --verbose'"} ]}.
+{pre_hooks, [ {compile, "make -s rebar3-bulletproof-compile-pre-hook REBAR_HOOK_EXTRA_OPTS='--hiding-for-rebar --verbose'"} ]}.
+
+%{pre_hooks, [ {compile, "make -s rebar3-bulletproof-compile-pre-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar --verbose'"} ]}.
 
 % Verbosity disabled:
-{pre_hooks,  [ {compile, "make -s rebar3-bulletproof-compile-pre-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar'"} ]}.
+%{pre_hooks, [ {compile, "make -s rebar3-bulletproof-compile-pre-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar'"} ]}.
 
 
-{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar --verbose'"} ]}.
+{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook REBAR_HOOK_EXTRA_OPTS='--hiding-for-rebar --verbose'"} ]}.
+
+%{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar --verbose'"} ]}.
 
 % Verbosity disabled:
-{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar'"} ]}.
+%{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar'"} ]}.
 
 
 
@@ -100,7 +111,7 @@
 %
 {relx, [
 
-  {release, {myriad_release, "VERSION_FOR_REBAR"},
+  {release, {myriad_release, "VERSION_FOR_OTP"},
 			[sasl, myriad]},
 
   %{sys_config, "./config/sys.config"},
@@ -124,7 +135,7 @@
 	% Like for the default profile, except for removed {d,myriad_debug_mode} and
 	% added {d,exec_target_is_production}:
 	%
-	{erl_opts, [ {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR ]},
+	{erl_opts, [ {myriad_version,"VERSION_FOR_OTP"}, {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR ]},
 
 	% For the build makefiles:
 	{env, [ { 'REBAR_PROFILE', "prod" } ] },
@@ -152,7 +163,7 @@
 	% nor use_jiffy_json_backend is useful), as their look-up is now done at
 	% runtime.
 	%
-	{erl_opts, [ {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR, {d,my_first_test_token}, {d,my_second_test_token,200}, {d,my_third_test_token,some_text} ]}
+	{erl_opts, [ {myriad_version,"VERSION_FOR_OTP"}, {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR, {d,my_first_test_token}, {d,my_second_test_token,200}, {d,my_third_test_token,some_text} ]}
 
   ]}
 

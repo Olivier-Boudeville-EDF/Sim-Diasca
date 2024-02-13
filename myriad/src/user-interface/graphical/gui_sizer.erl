@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -114,7 +114,10 @@
 
 % Simplification for the user: no specific flag needed.
 -type sizer_option() :: { 'proportion', weight_factor() }
-					  | { 'border', width() }
+
+						% Applies iff at least one border is requested:
+					  | { 'border_width', width() }
+
 					  | { 'user_data', term() }
 					  | sizer_flag_opt().
 % An option when configuring a sizer.
@@ -202,13 +205,15 @@ create( Orientation ) ->
 
 
 
+% To have a box created, a parent must be specified.
+
 % @doc Creates a sizer operating along the specified orientation, within
 % specified parent, with a box drawn around.
 %
 -spec create_with_box( orientation(), parent() ) -> sizer().
 create_with_box( Orientation, Parent ) ->
 	ActualOrientation = gui_wx_backend:to_wx_orientation( Orientation ),
-	wxStaticBoxSizer:new( ActualOrientation, Parent ).
+	wxStaticBoxSizer:new( ActualOrientation, Parent, _Opts=[] ).
 
 
 
@@ -351,7 +356,8 @@ add_spacer( Sizer, Length ) ->
 											sizer_item().
 add_spacer( Sizer, Width, Height, Options ) ->
 	ActualOptions = to_wx_sizer_options( Options ),
-	wxSizer:addSpacer( Sizer, Width, Height, ActualOptions ).
+	% Not addSpacer:
+	wxSizer:add( Sizer, Width, Height, ActualOptions ).
 
 
 % @doc Adds to the specified sizer a stretchable spacer child, and returns the
@@ -360,6 +366,7 @@ add_spacer( Sizer, Width, Height, Options ) ->
 -spec add_stretchable_spacer( sizer() ) -> sizer_item().
 add_stretchable_spacer( Sizer ) ->
 	wxSizer:addStretchSpacer( Sizer ).
+
 
 
 % @doc Clears the specified sizer, detaching and deleting all its child widgets.
@@ -400,7 +407,11 @@ to_wx_sizer_options( _Options=[], AccOpts, AccFlags ) ->
 to_wx_sizer_options( _Options=[ { userData, Data } | T ], AccOpts, AccFlags ) ->
 	to_wx_sizer_options( T, [ { user_data, Data } | AccOpts ], AccFlags );
 
-% Letting {proportion, integer()} and {border, integer()} go through:
+to_wx_sizer_options( _Options=[ { border_width, W } | T ], AccOpts,
+					 AccFlags ) ->
+	to_wx_sizer_options( T, [ { border, W } | AccOpts ], AccFlags );
+
+% Letting {proportion, integer()} go through:
 to_wx_sizer_options( _Options=[ P | T ], AccOpts, AccFlags )
 											when is_tuple( P ) ->
 	to_wx_sizer_options( T, [ P | AccOpts ], AccFlags );

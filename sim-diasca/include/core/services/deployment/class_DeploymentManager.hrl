@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -47,9 +47,9 @@
 	% - or a pair made of the previous list and of an atom telling whether the
 	% current node should be added to the node list: either 'include_localhost'
 	% (may not be specified since, as already mentioned, this is true by
-	% default) or 'exclude_localhost', if we do no want the user computer
-	% from which the simulation is launched to take part to the computings
-	% (ex: {[computer_a.foo.org], exclude_localhost})
+	% default) or 'exclude_localhost', if we do no want the user computer from
+	% which the simulation is launched to take part to the computings
+	% (e.g. {[computer_a.foo.org], exclude_localhost})
 	%
 	% - or localhost_only, implying that the execution is not wanted to be
 	% distributed, just being wanted to run on the local host (with the current
@@ -60,7 +60,7 @@
 	% which lists candidates in terms of computing hosts, each filename being
 	% either:
 	%
-	%    - alone on its line, specified as an atom (ex: 'myhost.example.org')
+	%    - alone on its line, specified as an atom (e.g. 'myhost.example.org')
 	%
 	%    - or in a pair with a string-based comment (which is ignored by
 	%    Sim-Diasca, its only purpose is to help to maintain the list), like in:
@@ -153,7 +153,7 @@
 	% default settings for the selected execution target.
 	%
 	maximum_allowed_deployment_duration = undefined ::
-									maybe( unit_utils:seconds() ),
+		maybe( unit_utils:seconds() ),
 
 
 	% This field tells how the deployment package should be managed.
@@ -176,12 +176,12 @@
 	%
 	% Although any extension can be specified for a deployment package, the
 	% "sdar" extension, meaning 'Sim-Diasca Archive', should be preferred, for
-	% the sake of clarity. Ex: "MySimPackage.sdar".
+	% the sake of clarity; for example "MySimPackage.sdar".
 	%
 	package_manager = generate_deployment_package ::
-			'generate_deployment_package'
-		  | { 'generate_and_save_deployment_package', file_utils:file_name() }
-		  | { 'use_deployment_package', file_utils:file_name() },
+		'generate_deployment_package'
+	  | { 'generate_and_save_deployment_package', file_utils:file_name() }
+	  | { 'use_deployment_package', file_utils:file_name() },
 
 
 	% Tells whether an attempt to rebuild/update the simulation engine will be
@@ -209,9 +209,9 @@
 	% {ElementPath, ElementType, ElementOptions}, where:
 	%
 	% - ElementPath is a path, specified as a plain string, to this element to
-	% deploy; it is either an absolute path (ex:
+	% deploy; it is either an absolute path (e.g.
 	% "/home/stallone/My-data/foo.dat"), or a path relative to the current
-	% directory - i.e. the directory in which the simulation case is run (ex:
+	% directory - i.e. the directory in which the simulation case is run (e.g.
 	% "../my-data/bootstrap-infos"; this will expect the 'my-data' directory to
 	% be in the parent directory from the one of the case being run); if a
 	% specified path refers to a file, that file will be added to the deployment
@@ -232,9 +232,9 @@
 	%  - 'code', which implies that the deployment manager is to look-up BEAM
 	%  files only (always from the directory whence the simulation is run),
 	%  either specified explicitly (in this case one specific file is targeted,
-	%  ex: ElementPath="my-simulator/ebin/my_sim_case.beam"), or as a whole from
-	%  a parent directory (then the corresponding tree will be scanned, and all
-	%  found BEAM files - and only them - will be added to the archive, ex:
+	%  e.g. ElementPath="my-simulator/ebin/my_sim_case.beam"), or as a whole
+	%  from a parent directory (then the corresponding tree will be scanned, and
+	%  all found BEAM files - and only them - will be added to the archive, e.g.
 	%  ElementPath="my-simulator/ebin/second-generation-models"); note that a
 	%  default, implicit {code, "../src"} entry is automatically added (should
 	%  this directory exist) in this field, to spare the need to declare, in a
@@ -260,8 +260,9 @@
 	%     be accepted, and only them); this option will be processed last,
 	%     i.e. *after* exclusions (usage example: for a given path, first a set
 	%     of directories is excluded, then some suffixes are specifically
-	%     excluded (ex: "_test.beam"), then only the ".beam" and ".dat" suffixes
-	%     are kept, allowing to end up with exactly the targeted content
+	%     excluded (e.g. "_test.beam"), then only the ".beam" and ".dat"
+	%     suffixes are kept, allowing to end up with exactly the targeted
+	%     content
 	%
 	%     - 'rebuild' (the default for elements of type code): uses GNU 'make'
 	%     to trigger any needed rebuild (note that code but also data may have
@@ -315,9 +316,9 @@
 	plugin_directories = [] :: [ file_utils:directory_path() ],
 
 
-	% Some prerequisites (ex: erlhdf5 or gephi), used only by some internal
+	% Some prerequisites (e.g. erlhdf5 or gephi), used only by some internal
 	% simulations) may not have to be deployed as they would by convention
-	% already be readily available (installed) on the target platform (ex: on
+	% already be readily available (installed) on the target platform (e.g. on
 	% the user node, or on computing nodes).
 	%
 	% So they will not be deployed, yet the engine must add their (absolute)
@@ -412,7 +413,7 @@
 
 
 	% Tells which directory shall be used, on each computing node, to store
-	% temporary data (ex: some clusters may require to use '/local' rather than
+	% temporary data (e.g. some clusters may require to use '/local' rather than
 	% '/tmp' for that, to benefit from more inodes, more space, etc.)
 	%
 	temporary_directory = "/tmp" :: file_utils:directory_name(),
@@ -424,7 +425,7 @@
 
 	% Tells whether the distributed data exchange service should be enabled.
 	%
-	% Can be set to false, or true, or {true, ConfigurationFiles where
+	% Can be set to false, or true, or {true, ConfigurationFiles} where
 	% ConfigurationFiles is a list of plain strings corresponding to paths
 	% (relative to the directory in which the simulation case file is) to the
 	% configuration files that must be read from the deployment archive and
@@ -449,8 +450,8 @@
 	% The (final) extension of JSON files must be "json" (for example, a
 	% configuration file may be named "foobar.baz.json").
 	%
-	enable_data_exchanger = true :: boolean()
-								| { 'true', [ file_utils:file_name() ] },
+	enable_data_exchanger = false ::
+		boolean() | { 'true', [ file_utils:file_name() ] },
 
 
 	% Tells whether the performance tracker should be enabled:
@@ -458,10 +459,10 @@
 
 
 	% Tells which of the supported foreign (non-Erlang) programming languages
-	% shall be enabled (ex: Python, Java, etc.) on the computing nodes, possibly
-	% with a language-specific (possibly with resolvable paths) code path
-	% specified in order that they can find the additional runtime files (ex:
-	% *.py, *.class) that they may need.
+	% shall be enabled (e.g. Python, Java, etc.) on the computing nodes,
+	% possibly with a language-specific (possibly with resolvable paths) code
+	% path specified in order that they can find the additional runtime files
+	% (e.g. *.py, *.class) that they may need.
 	%
 	% Note:
 	%
@@ -507,13 +508,13 @@
 	%
 	enable_webmanager = false :: boolean()
 
-			| { 'true', class_DeploymentManager:web_probe_classnames() }
+		| { 'true', class_DeploymentManager:web_probe_classnames() }
 
-			| { 'true', class_DeploymentManager:web_probe_classnames(),
-				net_utils:tcp_port() }
+		| { 'true', class_DeploymentManager:web_probe_classnames(),
+			net_utils:tcp_port() }
 
-			| { 'true', class_DeploymentManager:web_probe_classnames(),
-				net_utils:tcp_port(), file_utils:directory_path() },
+		| { 'true', class_DeploymentManager:web_probe_classnames(),
+			net_utils:tcp_port(), file_utils:directory_path() },
 
 
 	% Tells whether graph streaming shall be enabled, with which a dedicated
@@ -522,22 +523,38 @@
 	%
 	% If the use of graph streaming is enabled:
 	%
-	%  - if no host is specified, then a suitable graph tool (Gephi) will be
-	%  launched on the local host (any previously running instance of Gephi
-	%  being then gracefully reused)
+	%  - if no host is specified, then a suitable graph server tool (Gephi) will
+	%  be launched on the local host if needed (any previously running instance
+	%  of Gephi being then gracefully reused)
 	%
 	%  - otherwise (if an host is specified), then a corresponding server will
 	%  be expected to be already launched and running there
 	%
-	% A corresponding project file to be loaded can be specified, possibly with
-	% the host and TCP port that this graph tool shall use.
+	% A project path (relative to the current directory, that is the one of the
+	% simulation case) is needed only when a (local) graph server is to be
+	% launched.
 	%
-	enable_graph_streaming = false :: boolean()
-		| { 'true', maybe( class_GraphStreamProbe:project_path() ) }
+	% Otherwise, if an already-running server is to be used, only the host, TCP
+	% port and workspace that this graph tool shall use should be specified (as
+	% the project selection is needed only to launch such a graph server).
+	%
+	enable_graph_streaming = false :: 'false'
+
+		% Localhost and default port implied; launched iff project is defined:
 		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
+			class_GraphStreamProbe:workspace_name() }
+
+		% Localhost implied; launched iff project is defined:
+		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
+			class_GraphStreamProbe:workspace_name(),
 			net_utils:tcp_port() }
+
+		% Full settings; launched iff project is defined and the hostname is the
+		% 'localhost' atom):
+		%
 		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
-			net_utils:string_host_name(), net_utils:tcp_port() },
+			class_GraphStreamProbe:workspace_name(),
+			net_utils:possibly_local_hostname(), net_utils:tcp_port() },
 
 
 	% Tells what is the required resilience of the simulation with regard to the

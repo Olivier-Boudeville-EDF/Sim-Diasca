@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -108,8 +108,7 @@
 % application.
 
 
--type basic_event_table() ::
-		table( basic_user_event(), application_event() ).
+-type basic_event_table() :: table( basic_user_event(), application_event() ).
 % A table allowing to translate a basic user event into an higher level
 % application event.
 
@@ -225,9 +224,11 @@
 
 
 
-% Thus an actual (non-opaque) wx:wx_object(), i.e. a #wx_ref record:
+% Thus an actual (non-opaque) wx:wx_object(), i.e. a #wx_ref record, for example
+% {wx_ref,131,wxPaintEvent,[]}:
+%
 -type gui_event_object() :: wxEvent:wxEvent().
-% A Myriad GUI object (therefore the reference to a full-blown backend process -
+% A MyriadGUI object (therefore the reference to a full-blown backend process -
 % not a mere datastructure like an event record received as a message) holding
 % information about an event passed to a callback or member function.
 %
@@ -302,10 +303,8 @@
 % For char | char_hook | key_down | key_up.
 
 
--type event_type() :: window_event_type()
-					| command_event_type()
-					| mouse_event_type()
-					| keyboard_event_type().
+-type event_type() :: command_event_type()
+					| basic_event_type().
 % A type of MyriadGUI event, independent from any backend.
 %
 % Unless specified otherwise, by default the events (actually: mostly the
@@ -313,8 +312,8 @@
 % preclude them from being sent also to the parent event handlers in the widget
 % hierarchy.
 %
-% For some other, less numerous event types (e.g. onWindowClosed), they will be
-% by default trapped (their events will not be propagated, so they will be
+% For some other, more basic, event types (e.g. onWindowClosed), they will be by
+% default trapped (their events will not be propagated, so they will be
 % processed only by the user event handler).
 %
 % For the event types that propagate by default, specifying the 'trap_event'
@@ -325,8 +324,48 @@
 % 'propagate_event' subscription option or calling the propagate_event/1
 % function in one's event handler will enable that propagation.
 %
-% Note: if adding event types, consider updating gui:get_event_types_to_trap/0
-% as well.
+% Note: if adding event types, consider updating get_trapped_event_types/0 as
+% well.
+
+
+-type command_event_type() ::
+
+	% Typically when the mouse cursor enters a toolbar (hovering):
+	'onToolbarEntered'
+
+	% Typically when selecting (e.g. left-clicking) an item of a menu or a tool
+	% of a toolbar:
+	%
+  | 'onItemSelected'
+
+	% Typically when right-clicking on a tool of a toolbar:
+  | 'onToolRightClicked'.
+% A type of events emitted by commands, a variety of simple controls
+% (e.g. buttons, menus, toolbars) or an actual window.
+%
+% By default these higher-level command events are propagated upward in the
+% widget hierarchy, so that multiple handlers may manage them - unless a given
+% handler chooses to trap them.
+%
+% See https://docs.wxwidgets.org/stable/classwx_command_event.html to better
+% picture them.
+
+
+-type basic_event_type() :: window_event_type()
+						  | mouse_event_type()
+						  | keyboard_event_type().
+						  % | many_other_event_types()
+% Basically the type of all non-command events.
+%
+% These lower-level events may be triggered by using the input devices (such as
+% keyboard, mouse, joystick) directly.
+%
+% By default these lower-level events are not propagated in the widget
+% hierarchy, as a single, user-defined handler usually suffices - unless a given
+% handler chooses to propagate them explicitly.
+%
+% See https://docs.wxwidgets.org/stable/classwx_event.html to better picture
+% them.
 
 
 -type window_event_type() ::
@@ -345,27 +384,6 @@
 % Note that resizing a widget (typically a canvas) implies receiving also a
 % onRepaintNeeded event; so a canvas may subscribe only to onRepaintNeeded (not
 % necessarily to onResized).
-
-
--type command_event_type() ::
-
-	% Typically when the mouse cursor enters a toolbar (hovering):
-	'onToolbarEntered'
-
-	% Typically when selecting (e.g. left-clicking) an item of a menu or a tool
-	% of a toolbar:
-	%
-  | 'onItemSelected'
-
-	% Typically when right-clicking on a tool of a toolbar:
-  | 'onToolRightClicked'.
-% Types of events emitted by commands, a variety of simple controls (e.g. menus,
-% toolbars).
-%
-% Generally these command events are meant to be trapped (not propagated in the
-% widget hierarchy), as a single, user-defined handler suffice; as a result, by
-% default, all of them are trapped.
-
 
 
 
@@ -770,6 +788,24 @@
 % process of the MyriadGUI main loop.
 
 
+% Event propagation: this is presumably the most complex element to understand
+% in a GUI.
+%
+% Events originate from a widget and are managed by any event handler found
+% while climbing the widget hierarchy; generally the first handler triggered
+% will handle the event (especially if it is an higher-level command event) and
+% trap it (i.e. not propagate it further). Otherwise, typically if it is a basic
+% event, it may propagate it (handler "skipped", the search for any handler
+% continuing then), resulting in multiple handlers being possible triggered
+% (useful for example to trigger a resize or a repaint of each).
+
+% Refer to:
+%  - https://docs.wxwidgets.org/stable/overview_events.html#overview_events_propagation
+% for more details (see notably "How Events are Processed")
+%  - https://docs.wxwidgets.org/stable/classwx_event.html to better discriminate
+%  between event types (command or basic events)
+
+
 % Events can be managed as messages or callbacks. We generally prefer the former
 % (as messages can be selectively received, any context can be kept in the
 % receive loop, no temporary process is created, no wx include is needed hence
@@ -778,11 +814,11 @@
 % Whether an event shall be also dispatched to subsequent handlers may be
 % decided by using trap_event/1.
 %
-% Event messages are internally converted, in order to hide the wx backend,
-% augment it with other primitives (e.g. canvas widget) and make them compliant
-% with the MyriadGUI conventions, as seen by the user code (hint: these
-% conventions comply with the WOOPER ones, should the GUI be used in an OOP
-% context).
+% Event messages are internally converted, in order to hide the wx backend, to
+% augment it with other primitives (e.g. canvas widget) and to make them
+% compliant with the MyriadGUI conventions, as seen by the user code (hint:
+% these conventions comply with the WOOPER ones, should the GUI be used in an
+% OOP context).
 %
 % Regarding events, see also:
 % https://wiki.wxwidgets.org/Events#Event.Skip_and_Event.Veto
@@ -814,7 +850,6 @@
 % without changing any event subscription), for some reason the panel will not
 % send any key press event, and even by fiddling with event propagation /
 % skipping / trapping, we could not change it.
-
 
 
 % Shorthands:
@@ -878,6 +913,11 @@
 -spec start_main_event_loop( wx_server(), wx_env(), trap_set() ) -> no_return().
 start_main_event_loop( WxServer, WxEnv, TrapSet ) ->
 
+	cond_utils:if_defined( myriad_debug_gui_events,
+		trace_utils:debug_fmt( "[event] Will start the main MyriadGUI loop "
+			"with wx server ~w, wx environment ~w, trap set ~p.",
+			[ WxServer, WxEnv, TrapSet ] ) ),
+
 	% Yet it can be, often preferably, reached through an environment:
 	naming_utils:register_as( ?gui_event_loop_reg_name, _Scope=local_only ),
 
@@ -906,7 +946,6 @@ start_main_event_loop( WxServer, WxEnv, TrapSet ) ->
 	cond_utils:if_defined( myriad_debug_gui_performance,
 		process_utils:spawn_message_queue_monitor( _MonitoredPid=self(),
 			_MonitoredProcessDesc="MyriadGUI main loop" ) ),
-
 
 	%trace_utils:debug_fmt( "[event] Starting main MyriadGUI loop." ] ),
 
@@ -1383,7 +1422,7 @@ process_event_message( { unsubscribeFromEvents,
 
 	cond_utils:if_defined( myriad_debug_gui_events,
 		trace_utils:debug_fmt( "[event] Unsubscribing by ~w of process ~w "
-			"from events ~p.",
+			"from events ~w.",
 			[ SenderPid, SubscribedPid, UnsubscribedEvents ] ) ),
 
 	NewLoopState = unregister_from_event_loop_tables( UnsubscribedEvents,
@@ -2556,7 +2595,7 @@ register_user_events( _UserEvents=[ { scancode_pressed, Scancode } | T ],
 
 register_user_events( _UserEvents=[ { keycode_pressed, Keycode } | T ],
 		AppEvent, AppGUIState=#app_gui_state{
-									keycode_table=KeycodeTable } ) ->
+			keycode_table=KeycodeTable } ) ->
 
 	cond_utils:if_defined( myriad_debug_gui_events,
 		trace_utils:debug_fmt( "Associating keycode ~w to ~ts.",
@@ -3373,12 +3412,18 @@ set_instance_state( MyriadObjectType, InstanceId, InstanceState, TypeTable ) ->
 
 % @doc Traps the specified event: does not propagate it upward in the widget
 % hierarchy, thus considering that it has been processed once for all by the
-% current handler.
+% current handler. May typically apply to command events.
 %
 % Refer to gui:trap_event/1 for all details.
 %
 -spec trap_event( gui_event_object() ) -> void().
 trap_event( GUIEventObject ) ->
+
+	trace_utils:debug_fmt( "Trapping event ~w.", [ GUIEventObject ] ),
+
+	% As various unrelated terms may apparently be accepted:
+	cond_utils:assert( myriad_debug_gui_events,
+					   gui_wx_backend:is_wx_event( GUIEventObject ) ),
 
 	% The skip semantics is a bit unclear.
 	% 'skip' is strangely here a synonymous of 'propagate'.
@@ -3394,13 +3439,21 @@ trap_event( GUIEventObject ) ->
 
 
 % @doc Propagates the specified event upward in the widget hierarchy, so that it
-% can be processed by parent handlers knowing that, for some event types, by
-% default no event propagation is enabled.
+% can be processed by parent handlers knowing that, for some event types (basic
+% events, i.e. non-command ones like onRepaintNeeded), by default no event
+% propagation is enabled.
 %
 % Refer to gui:propagate_event/1 for all details.
 %
 -spec propagate_event( gui_event_object() ) -> void().
 propagate_event( GUIEventObject ) ->
+
+	trace_utils:debug_fmt( "Propagating event ~w.", [ GUIEventObject ] ),
+
+	% As various unrelated terms may apparently be accepted:
+	cond_utils:assert( myriad_debug_gui_events,
+					   gui_wx_backend:is_wx_event( GUIEventObject ) ),
+
 	% Default of skip/1 is having skip=true:
 	wxEvent:skip( GUIEventObject ).
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,13 +37,13 @@
 
 
 -type spec_name() :: atom().
-% The name of a Protobuf specification (ex: foobar), corresponding both to a
-% specification file (ex: "foobar.proto") and the corresponding module name
+% The name of a Protobuf specification (e.g. foobar), corresponding both to a
+% specification file (e.g. "foobar.proto") and the corresponding module name
 % generated from it ('foobar').
 
 
 -type spec_file_path() :: file_utils:any_file_path().
-% A path to a Protobuf specification file respecting our conventions (ex:
+% A path to a Protobuf specification file respecting our conventions (e.g.
 % "/home/joe/foobar.proto").
 
 

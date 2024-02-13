@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -480,8 +480,8 @@ freeze_instances( InstancePids, TargetVersion, MaybeExtraData ) ->
 % So operates at the class level, with no direct interaction with instances, not
 % selecting any particular version (the one of the updated class will just
 % apply). Typically all instances of that class have been already frozen (see
-% the freezeUntilVersionChange special call), waiting for the new code to be
-% available and adapt to it.
+% the freeze_instances/{2,3} static methods and the freezeUntilVersionChange
+% special call), waiting for the new code to be available and adapt to it.
 %
 % ForceRecompilation tells whether the class module shall be forcibly
 % recompiled; useful for example if wanting to apply specific compilation
@@ -495,7 +495,7 @@ freeze_instances( InstancePids, TargetVersion, MaybeExtraData ) ->
 % class_Upgradable_test) was not updated, yet the next module reloading will
 % fail, as the class will *not* be updated. If ignoring that failure, the old
 % code will attempt to operate on newer instance states, which of course should
-% not be attempted.
+% not be done.
 %
 -spec update_class( classname(), boolean(), [ define() ], boolean() ) ->
 									static_return( base_status() ).
@@ -834,12 +834,18 @@ purge_and_reload_class( Classname, KillAnyLingeringProcess ) ->
 					trace_utils:warning_fmt( "Classname '~ts' cannot be "
 						"soft-purged, as there is at least one process "
 						"lingering in the old code; such processes to be "
-						"killed now through a hard purge.", [ Classname ] ),
+						"killed now through a hard purge. "
+						"If this test VM gets killed in the process, ensure "
+						"that the module corresponding to this class was "
+						"not compiled with LCO disabled "
+						"(refer to the MYRIAD_LCO_OPT for that).",
+						[ Classname ] ),
 
 					case code:purge( Classname ) of
 
 						% Understood as being successful:
 						true ->
+							trace_utils:debug( "(purge succeeded)" ),
 							reload_class( Classname );
 
 						false ->
@@ -904,7 +910,7 @@ wait_update_outcomes( WaitedSet, SuccessAcc, FailureAcc ) ->
 
 
 				{ onUpdateFailure, FailureReport=[ _ErrorReason, _Classname,
-										InstancePid, _ResultingVersion ] } ->
+						InstancePid, _ResultingVersion ] } ->
 
 					NewWaitedSet =
 						set_utils:delete_existing( InstancePid, WaitedSet ),

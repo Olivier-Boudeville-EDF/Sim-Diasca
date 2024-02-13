@@ -65,7 +65,7 @@ Sim-Diasca Developer Guide
 
  This document intends to gather information mostly aimed at Sim-Diasca *maintainers* or *contributors* - not users. Most people should read the *Sim-Diasca Technical Manual* first, and possibly the *Sim-Diasca Modeller Guide* as well.
 
- However we require that the in-house authors of any simulation element making use of Sim-Diasca's services (ex: models, simulation cases, etc.) respect the conventions presented in the current document, for the sake of the clarity and homogeneity of the code base.
+ However we require that the in-house authors of any simulation element making use of Sim-Diasca's services (e.g. models, simulation cases, etc.) respect the conventions presented in the current document, for the sake of the clarity and homogeneity of the code base.
 
  As we believe that these conventions may benefit to third-party users, we share them as well.
 
@@ -75,8 +75,6 @@ Sim-Diasca Developer Guide
 
 .. include:: Sim-Diasca-technical-gotchas.rst
 
-
-.. comment To be adapted to GIT:
 
 .. comment :raw-latex:`\pagebreak`
 

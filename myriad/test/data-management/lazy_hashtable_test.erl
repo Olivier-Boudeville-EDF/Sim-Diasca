@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2012-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -21,12 +21,12 @@
 % along with this library.
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
-
-% Creation date: January 4, 2012.
+%
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Creation date: January 4, 2012.
 
 
-% Unit tests for the lazy hashtable implementation.
+% @doc Unit tests for the lazy hashtable implementation.
 %
 % See the lazy_hashtable.erl tested module.
 %
@@ -72,7 +72,7 @@ run() ->
 							 [ lazy_hashtable:to_string( MyH4 ), MyH4Size ] ),
 
 	test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
-			lazy_hashtable:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
+		lazy_hashtable:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
 
 	{ value, MyFirstValue } = lazy_hashtable:lookup_entry( ?MyFirstKey, MyH4 ),
 
@@ -90,7 +90,7 @@ run() ->
 	key_not_found = lazy_hashtable:lookup_entry( ?MyFirstKey, MyH5 ),
 
 	[ MySecondValue, MyFirstValue ] = lazy_hashtable:get_all_values(
-										[ ?MySecondKey, ?MyFirstKey ], MyH4 ),
+		[ ?MySecondKey, ?MyFirstKey ], MyH4 ),
 
 	% remove_entry can also be used if the specified key is not here, will
 	% return an identical table.
@@ -165,6 +165,6 @@ run() ->
 	Keys = [ ?MyFirstKey, ?MyThirdKey ],
 
 	test_facilities:display( "Listing the entries for keys ~p:~n ~p",
-					[ Keys, lazy_hashtable:select_entries( Keys, MyH8 ) ] ),
+		[ Keys, lazy_hashtable:select_entries( Keys, MyH8 ) ] ),
 
 	test_facilities:stop().

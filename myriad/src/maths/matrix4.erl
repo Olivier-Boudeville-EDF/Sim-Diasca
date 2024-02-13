@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -64,6 +64,9 @@
 % new rotation each frame) is prone to the accumulation of rounding errors. A
 % better practice is to each time recompute the matrix from scratch from
 % higher-level parameters, which can then be safely updated.
+
+% Note that translations are commutative, but not rotations (R1.R2 is in general
+% different from R2.R1).
 
 
 % For printout_*, inline_size, etc.:
@@ -1329,7 +1332,7 @@ are_equal( Ma=identity_4, Mb ) ->
 
 
 % @doc Updates the translation part of the specified matrix, considered to be an
-% homogeneous transformation one, by adding it the specified vector.
+% homogeneous transformation one, by adding the specified vector to it.
 %
 % A lot more efficient than creating a dedicated translation matrix Mt and
 % returning HM.Mt.
@@ -1344,10 +1347,10 @@ are_equal( Ma=identity_4, Mb ) ->
 %translate_homogeneous( M=#matrix4{ m14=M14,
 %                                   m24=M24,
 %                                   m34=M34 }, _VT=[ Tx, Ty, Tz ] ) ->
-% Homogeneous W element m44 not modified.
-%   M#matrix4{ m14=M14+Tx,
-%              m24=M24+Ty,
-%              m34=M34+Tz };
+% % Homogeneous W element m44 not modified.
+% M#matrix4{ m14=M14+Tx,
+%            m24=M24+Ty,
+%            m34=M34+Tz };
 
 translate_homogeneous( M=#compact_matrix4{ tx=M14,
 										   ty=M24,

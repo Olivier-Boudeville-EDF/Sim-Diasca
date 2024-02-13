@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -28,11 +28,13 @@
 
 % @doc Minimal testing of <b>shader-based transformation rendering</b>: applies
 % a transformation matrix created from the application and displays a textured
-% square based on it that can be moved with the keyboard to test translations
-% (and directions thereof) in the current referential.
+% square based on it that can be moved with the keyboard to test transformations
+% (translations, rotations and shearings) and directions thereof in the current
+% referential.
 %
 % This test relies on shaders and thus on modern versions of OpenGL (e.g. 3.3),
-% as opposed to the compatibility mode for OpenGL 1.x.
+% as opposed to the compatibility mode for OpenGL 1.x, and on Myriad's
+% conventions (e.g. a Z-UP referential).
 %
 -module(gui_opengl_transformation_shader_test).
 
@@ -41,12 +43,36 @@
 %
 % Inspired from https://learnopengl.com/Getting-started/Transformations.
 %
-% Here, as we used NDC (normalised coordinates), not need to render based on the
+% Here, as we used NDC (normalised coordinates), no need to render based on the
 % dimensions of the canvas.
 %
 % Refer to https://myriad.esperide.org/#geometric-conventions to better
 % understand the referential and transformations involved.
+%
+% A Myriad-textured square will be initially located "centered on the floor":
+% its center will be the origin, it will belong to the Z=0 plane (zero altitude)
+% and its axes will be parallel to the X and Y ones.
+%
+% The camera will be located at the origin, looking towards the -Z axis
+% ("downward"), and its up direction will be the Y axis.
+%
+% No specific lighting applies.
+%
+% Refer to myriad-opengl-transformation-setting.png for a (Blender-based) view
+% of the initial setting of this test.
 
+% An improvement could be not to texture the backside of the square (just
+% rendered as pure black); easily done with legacy OpenGL, maybe less with
+% shaders.
+
+% With a square of null thickness, shearing along the Z axis will not change
+% anything.
+
+% Due to how 4x4 matrix multiplication works, the translations will be applied
+% last, whereas rotations and shearings will happen in their reverse
+% specification order. As a result, for example if rotating the square whereas
+% it has been translated far away from the origin, it will not rotate around the
+% origin, but on itself, in its local referential (around its center).
 
 
 % For GL/GLU defines; the sole include that MyriadGUI user code shall reference:
@@ -116,7 +142,7 @@
 	% The currect projection settings that apply:
 	projection_settings :: projection_settings(),
 
-	% The projection matrix of interest:
+	% The corresponding projection matrix of interest:
 	projection :: matrix4(),
 
 	% The currently active transformation mode (translation, rotation,
@@ -168,7 +194,13 @@
 % properly once not needed anymore.
 
 
-% Key bindings (Z-up conventions), first supposing a keypad is available:
+% Key bindings (Z-being-altitude conventions, i.e. Z-UP); note that the
+% user-triggered movements are by default the ones of the model (the square),
+% not the ones of the view (the camera), and that they are defined in absolute
+% terms, relatively to the global referential (as opposed to, for example, based
+% on the camera).
+%
+% First supposing that a keypad is available:
 
 -define( has_keypad, true ).
 %-define( has_keypad, false ).
@@ -176,31 +208,44 @@
 
 -if( ?has_keypad =:= true ).
 
-% X (abscissa) is controlled by left-right keypad numbers/arrows:
+% X (abscissa in the Z-up referential) is controlled by left-right keypad
+% numbers/arrows:
 
-% Object seen moving to the right:
+% Square moving along the +X axis (to the right on the screen, with the default
+% camera) when hitting the key labelled "6" on keypad:
+%
 -define( increase_x_scan_code, ?MYR_SCANCODE_KP_6 ).
 
-% To the left:
+% Square moving along the -X axis (to the left on the screen, with the default
+% camera) when hitting the key labelled "4" on keypad:
+%
 -define( decrease_x_scan_code, ?MYR_SCANCODE_KP_4 ).
 
 
-% Y (depth)
+% Y (depth in the Z-up referential)
 
-% Moving farther:
--define( increase_y_scan_code, ?MYR_SCANCODE_KP_9 ).
+% Square moving along the +Y axis (to the top of the screen, with the default
+% camera) when hitting the key labelled "8" on keypad:
+%
+-define( increase_y_scan_code, ?MYR_SCANCODE_KP_8 ).
 
-% Nearer:
--define( decrease_y_scan_code, ?MYR_SCANCODE_KP_3 ).
+% Square moving along the -Y axis (to the bottom of the screen, with the default
+% camera) when hitting the key labelled "2" on keypad:
+%
+-define( decrease_y_scan_code, ?MYR_SCANCODE_KP_2 ).
 
 
-% Z (ordinate)
+% Z (ordinate / altitude in the Z-up referential)
 
-% Up:
--define( increase_z_scan_code, ?MYR_SCANCODE_KP_8 ).
+% Square moving along the +Z axis (from front to behind, with the default
+% camera) when hitting the key labelled "9" on keypad:
+%
+-define( increase_z_scan_code, ?MYR_SCANCODE_KP_9 ).
 
-% Down:
--define( decrease_z_scan_code, ?MYR_SCANCODE_KP_2 ).
+% Square moving along the -Z axis (from behind to front, with the default
+% camera) when hitting the key labelled "9" on keypad:
+%
+-define( decrease_z_scan_code, ?MYR_SCANCODE_KP_3 ).
 
 
 % Re-center all:
@@ -214,30 +259,32 @@
 
 -else. % Not using keypad here:
 
-% X (abscissa) is controlled by left-right keypad numbers/arrows:
 
-% Object seen moving to the right:
+% X (abscissa in the Z-up referential) is controlled by left-right keypad
+% numbers/arrows:
+
+% Square seen moving to the right with the default camera:
 -define( increase_x_scan_code, ?MYR_SCANCODE_RIGHT ).
 
 % To the left:
 -define( decrease_x_scan_code, ?MYR_SCANCODE_LEFT ).
 
 
-% Y (depth)
+% Y (ordinate)
 
-% Moving farther:
+% Up:
 -define( increase_y_scan_code, ?MYR_SCANCODE_UP ).
 
-% Nearer:
+% Down:
 -define( decrease_y_scan_code, ?MYR_SCANCODE_DOWN ).
 
 
-% Z (ordinate)
+% Z (depth/altitude)
 
-% Up:
+% Moving nearer/upward:
 -define( increase_z_scan_code, ?MYR_SCANCODE_PAGEUP ).
 
-% Down:
+% Moving farther/downward:
 -define( decrease_z_scan_code, ?MYR_SCANCODE_PAGEDOWN ).
 
 
@@ -323,6 +370,9 @@
 -spec prepare_square( texture() ) -> { vao_id(), vbo_id(), ebo_id() }.
 prepare_square( Texture ) ->
 
+	% Creates the VAO context we need for the upcoming VBO (vertices and texture
+	% coordinates) and EBO (for indices in the VBO):
+	%
 	SquareVAOId = gui_shader:set_new_vao(),
 
 	% Half edge length:
@@ -346,11 +396,14 @@ prepare_square( Texture ) ->
 	OrigSquareTexCoords = [ _STC2={ O, O }, _STC1={ O, Z },
 							_STC0={ Z, Z }, _STC3={ Z, O } ],
 
+	% To have correct texture coordinates in spite of padding:
 	ActualSquareTexCoords = gui_texture:recalibrate_coordinates_for(
 		OrigSquareTexCoords, Texture ),
 
 	SquareAttrSeries= [ SquareVertices, ActualSquareTexCoords ],
 
+	% Creates a VBO from these two series.
+	%
 	% We start at vertex attribute index #0 in this VAO; as there are two
 	% series, the vertex attribute indices will be 0 and 1:
 	%
@@ -359,7 +412,7 @@ prepare_square( Texture ) ->
 
 	% We describe now our square as two triangles in CCW order; the first,
 	% S0-S1-S3 on the bottom left, the second, S1-S2-S3 on the top right; we
-	% have just a list of indices (not for example a list of triplets of
+	% have just a plain list of indices (not for example a list of triplets of
 	% indices):
 	%
 	SquareIndices = [ 0, 1, 3,   % As the first  triangle is S0-S1-S3
@@ -406,31 +459,33 @@ run_opengl_test() ->
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
-	% Only true if keypad is enabled:
-	test_facilities:display( "This test will display a textured square "
-		"that can be moved by pressing keys on the numerical keypad:~n"
+	% Only true if keypad is enabled
+
+	% Using a Myriad 3D referential here with Z-up, where the camera is fixed at
+	% the origin, pointing to the -Z axis, with its up direction being the +Y
+	% axis; so:
+	% - X increases from, onscreen, left to right
+	% - Y increases from bottom of screen to top
+	% - Z increases as getting from farther to nearer the observer
+	%
+	test_facilities:display( "This test will display a square textured with a Myriad image, whose center is at the origin, which is belonging to the Z=0 plane (using Z-up conventions), and that can be moved by hitting keys on the numerical keypad (while the rendering window has the focus):~n"
 		"  - to translate it of ~f units along (if in translation mode):~n"
-		"    * the X axis: hit '4' to move it on the left, '6' on the right~n"
-		"    * the Y axis: hit '3' to move it nearer, '9' farther "
-		"(note that in orthographic mode the square will not appear to move "
-		"along this axis - until reaching either the near or far clipping "
-		"plane)~n"
-		"    * the Z axis: hit '2' to move it down, '8' up~n"
+		"    * the X (abscissa) axis: hit '4' to move it, on the left, '6' on the right~n"
+		"    * the Y (ordinate) axis: hit '2' to move it down, '8' up~n"
+		"    * the Z (depth/altitude) axis: hit '3' to move it further/downward, '9' nearer/upward~n"
 		"  - to rotate of ~f degrees around (if in rotation mode):~n"
-		"    * the X axis: hit '4' to turn it counter-clockwise (CCW), "
-		"'6' clockwise (CW)~n"
-		"    * the Y axis: hit '3' to turn it CCW, '9' CW~n"
-		"    * the Z axis: hit '2' to turn it CCW, '8' CW~n"
+		"    * the X axis: hit '4' to turn it clockwise (CW), '6' counter-clockwise (CCW)~n"
+		"    * the Y axis: hit '2' to turn it CW, '8' CCW~n"
+		"    * the Z axis: hit '3' to turn it CW, '9' CCW~n"
 		"  - to shear it of a ~f factor along (if in shearing mode):~n"
 		"    * the X axis: hit '4' to scale it down, '6' up~n"
-		"    * the Y axis: hit '3' to scale it down, '9' up~n"
-		"    * the Z axis: hit '2' to scale it down, '8' up~n~n"
+		"    * the Y axis: hit '2' to scale it down, '8' up~n"
+		"    * the Z axis: hit '3' to scale it down, '9' up~n~n"
 		" Hit '5' to reset its position and direction, 'Enter' on the keypad "
-		"to switch to the next transformation mode, 'P' to toggle the "
-		"projection mode, 'Escape' to quit.~n~n"
+		"to switch to the next transformation mode (cycling between translation, rotation, shearing), 'p' to toggle the projection mode (cycling between orthographic and perspective), 'Escape' to quit.~n~n"
 		"Hints:~n"
-		" - with the orthographic (default) projection, the square will remain the same for any Z in [-1.0, 1.0] (no perspective division) and, out of this range, will fully disappear~n"
-		" - with the perspective projection, the square will appear iff its Z is below -0.1 (as ZNear=0.1), and will then progressively shrink when progressing along the -Z axis~n",
+		" - with the (default) orthographic projection mode, the square will remain the same for any Z in [-1.0, 1.0] (no perspective division) and, out of this range (past either the near or far clipping plane), it will fully disappear~n"
+		" - with the perspective projection, the square will appear iff its Z is below -0.1 (as ZNear=0.1), and will then progressively shrink when progressing along the -Z axis; as a result, from the default position, first make the square go further/downward to make it appear~n",
 		[ ?delta_coord, ?delta_angle, ?delta_scale ] ),
 
 	gui:start(),
@@ -460,15 +515,20 @@ init_test_gui() ->
 
 	MainFrame = gui_frame:create(
 		"MyriadGUI OpenGL Shader-based Transformation Test",
-		_Size={ 1024, 768 } ),
+
+		% Preferring a square frame/viewport, otherwise due to aspect ratio the
+		% square will be a rectangle:
+		_Size={ 800, 800 } ),
+
+	% Better:
+	gui_frame:center_on_screen( MainFrame ),
 
 	% Using mostly default GL attributes:
 	GLCanvasAttrs =
 		[ use_core_profile | gui_opengl:get_default_canvas_attributes() ],
 
-	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame,
-										 [ { gl_attributes, GLCanvasAttrs } ] ),
-
+	GLCanvas = gui_opengl:create_canvas(
+		_CanvasOpts=[ { gl_attributes, GLCanvasAttrs } ], _Parent=MainFrame ),
 
 	% Created, yet not bound yet (must wait for the main frame to be shown):
 	GLContext = gui_opengl:create_context( GLCanvas ),
@@ -477,7 +537,7 @@ init_test_gui() ->
 							   MainFrame } ),
 
 	% Needed, otherwise if that frame is moved out of the screen or if another
-	% windows overlaps, the OpenGL canvas gets garbled and thus must be redrawn:
+	% window overlaps, the OpenGL canvas gets garbled and thus must be redrawn:
 	%
 	% (key events collected at the canvas-level, as frames do not handle them)
 	%
@@ -594,8 +654,8 @@ gui_main_loop( GUIState ) ->
 
 		% Less frequent messages looked up last:
 
-		% The most suitable first location to initialise OpenGL, as making a GL
-		% context current requires a shown window:
+		% This is the most suitable first location to initialise OpenGL, as
+		% making a GL context current requires a shown window:
 		%
 		{ onShown, [ ParentFrame, _ParentFrameId, _EventContext ] } ->
 
@@ -609,7 +669,7 @@ gui_main_loop( GUIState ) ->
 			% Done once for all:
 			InitGUIState = initialise_opengl( GUIState ),
 
-			% A onRepaintNeeded event message expected just afterwards.
+			% A onRepaintNeeded event message is expected just afterwards.
 
 			gui_main_loop( InitGUIState );
 
@@ -743,15 +803,19 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 		projection_id=ProjMatUnifId,
 
 		square_vao_id=SquareVAOId,
+
 		% Two basic triangles referenced in the associated VBO:
 		square_vertex_count=6,
+
 		square_merged_vbo_id=SquareMergedVBOId,
 		square_ebo_id=SquareEBOId },
 
 	% Note that the default projection is orthographic; as a result, moving the
-	% square along the Y-axis (depth, with our Z-up conventions) will not change
-	% anything (until going out of the NDC [-1.0, 1.0] range and having the
-	% square disappear).
+	% square along the Z (depth) will not change anything (until going out of
+	% the NDC [-1.0, 1.0] range, and having the square disappear).
+
+	trace_utils:debug( "Starting with an orthographic projection "
+					   "with Z-up conventions, and in translation mode." ),
 
 	InitGUIState = GUIState#my_gui_state{
 		% Start at the origin:
@@ -777,9 +841,12 @@ cleanup_opengl( #my_gui_state{ opengl_state=#my_opengl_state{
 
 	trace_utils:debug( "Cleaning up OpenGL." ),
 
-	gui_shader:delete_vbo( SquareMergedVBOId ),
+	% Deleting the VAO does not delete the VBO or the EBO (that are just
+	% referenced); deleting first the VAO is preferred:
 
 	gui_shader:delete_vao( SquareVAOId ),
+
+	gui_shader:delete_vbo( SquareMergedVBOId ),
 
 	gui_shader:delete_ebo( SquareEBOId ),
 
@@ -812,7 +879,7 @@ on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas,
 	% received and applied by the process of the target window, whereas a GL
 	% (NIF-based) operation is immediate; without a sufficient delay, the
 	% rendering will thus take place according to the former (e.g. minimised)
-	% canvas size, not according to the one that was expected to be already
+	% canvas size - not according to the one that was expected to be already
 	% resized.
 	%
 	gui_widget:sync( GLCanvas ),
@@ -823,25 +890,29 @@ on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas,
 	% here.
 	%
 	% Using here normalised coordinates (in [0.0,1.0]), so no need to update the
-	% orthographic projection.
+	% projection.
 
 	render( GLState ),
 
 	% Includes a gl:flush/0:
 	gui_opengl:swap_buffers( GLCanvas ),
 
-	% No null height expected:
+	% No null canvas height expected:
 	GUIState#my_gui_state{ aspect_ratio=CanvasWidth/CanvasHeight }.
 
 
 
-% @doc Performs a (pure OpenGL) rendering.
+% @doc Performs a (pure OpenGL; no gui_* involved) rendering.
 -spec render( my_opengl_state() ) -> void().
 render( #my_opengl_state{
 			square_vao_id=SquareVAOId,
-			square_vertex_count=SquareVCount,
-			square_merged_vbo_id=_SquareMergedVBOId,
-			square_ebo_id=_SquareEBOId } ) ->
+			square_vertex_count=SquareVCount
+
+			% Both bound thanks to the VAO:
+			%square_merged_vbo_id=SquareMergedVBOId,
+			%square_ebo_id=SquareEBOId
+
+		  } ) ->
 
 	%trace_utils:debug_fmt( "Rendering now for size {~B,~B}.",
 	%                       [ Width, Height ] ),
@@ -852,15 +923,15 @@ render( #my_opengl_state{
 
 	PrimType = ?GL_TRIANGLES,
 
-	% From now, all operations must be performed at each rendering; rendering
+	% From now, all operations must be performed at each rendering; displaying
 	% the square:
 
-	% Sets the vertex attribute; binds at well the square EBO, as it was still
-	% tracked by the VAO when this VAO was unset:
+	% Sets the vertex attribute; this binds as well the square EBO (and the
+	% VBO), as they were still tracked by the VAO when this VAO was unset:
 	%
 	gui_shader:set_current_vao_from_id( SquareVAOId ),
 
-	% No offset:
+	% No offset in the start index needed:
 	gui_shader:render_from_enabled_ebo( PrimType, SquareVCount ),
 
 	gui_shader:unset_current_vao(),
@@ -871,6 +942,7 @@ render( #my_opengl_state{
 	% gl:flush/0 done when swapping buffers.
 
 	ok.
+
 
 
 % @doc Terminates the test.
@@ -887,7 +959,10 @@ terminate( GUIState=#my_gui_state{ main_frame=MainFrame } ) ->
 	gui_frame:destruct( MainFrame ).
 
 
-% @doc Updates the scene based on the specified user-entered scan code.
+
+% @doc Updates the scene, based on the specified user-entered (keyboard) scan
+% code.
+%
 %
 % First managing translations:
 -spec update_scene( scancode(), my_gui_state() ) ->
@@ -935,9 +1010,6 @@ update_scene( _Scancode=?decrease_x_scan_code,
 	{ GUIState#my_gui_state{ model_view=NewModelViewMat4 }, _DoQuit=false };
 
 
-% Note that moving along the Y axis whereas the projection is orthographic will
-% show no difference:
-
 update_scene( _Scancode=?increase_y_scan_code,
 			  GUIState=#my_gui_state{
 				model_view=ModelViewMat4,
@@ -979,6 +1051,10 @@ update_scene( _Scancode=?decrease_y_scan_code,
 	{ GUIState#my_gui_state{ model_view=NewModelViewMat4 }, _DoQuit=false };
 
 
+
+% Note that moving along the Z axis whereas the projection is orthographic will
+% show no difference:
+
 update_scene( _Scancode=?increase_z_scan_code,
 			  GUIState=#my_gui_state{
 				model_view=ModelViewMat4,
@@ -1019,6 +1095,7 @@ update_scene( _Scancode=?decrease_z_scan_code,
 	gui_shader:set_uniform_matrix4( ModelViewMatUnifId, NewModelViewMat4 ),
 
 	{ GUIState#my_gui_state{ model_view=NewModelViewMat4 }, _DoQuit=false };
+
 
 
 % Secondly managing rotations:
@@ -1206,9 +1283,6 @@ update_scene( _Scancode=?decrease_x_scan_code,
 	{ GUIState#my_gui_state{ model_view=NewModelViewMat4 }, _DoQuit=false };
 
 
-% Note that moving along the Y axis whereas the projection is orthographic will
-% show no difference:
-
 update_scene( _Scancode=?increase_y_scan_code,
 			  GUIState=#my_gui_state{
 				model_view=ModelViewMat4,
@@ -1293,8 +1367,12 @@ update_scene( _Scancode=?reset_scan_code,
 			  GUIState=#my_gui_state{
 				opengl_state=#my_opengl_state{
 					model_view_id=ModelViewMatUnifId } } ) ->
-	trace_utils:debug( "Resetting modelview matrix." ),
+
 	NewModelViewMat4 = identity_4,
+
+	trace_utils:debug_fmt(
+		"Resetting the modelview matrix, resulting in: MV = ~ts",
+		[ matrix4:to_string( NewModelViewMat4 ) ] ),
 
 	gui_shader:set_uniform_matrix4( ModelViewMatUnifId, NewModelViewMat4 ),
 
@@ -1395,6 +1473,7 @@ get_base_perspective_settings( AspectRatio ) ->
 		aspect_ratio=AspectRatio,
 		z_near=0.1,
 		z_far=100.0 }.
+
 
 
 % @doc Runs the test.

@@ -10,7 +10,7 @@ General Principles
 
 Each plugin is able to:
 
-- specify requests for configuration changes (ex: like the number of sequencers on each computing node)
+- specify requests for configuration changes (e.g. like the number of sequencers on each computing node)
 
 - know runtime information, like the list of the computing nodes that have been actually elected by the engine
 

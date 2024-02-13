@@ -84,10 +84,10 @@ As a result, such a platform may run a simulation case with:
 
 Then the specified SII will be used instead of the one that would be determined internally, at runtime, notably to designate:
 
-- the user and computing nodes (ex: ``Sim-Diasca-Foobar_Case-john-117-user-node@volt``)
-- the simulation result tree (ex: ``Foobar_Case-on-2016-6-14-at-17h-07m-28s-by-john-117``)
-- the temporary directories (ex: ``/tmp/sim-diasca-Foobar_Case-2016-6-14-at-15h-12m-18s-117``)
-- the simulation trace file (ex: ``Foobar_Case-john-117.traces``)
+- the user and computing nodes (e.g. ``Sim-Diasca-Foobar_Case-john-117-user-node@volt``)
+- the simulation result tree (e.g. ``Foobar_Case-on-2016-6-14-at-17h-07m-28s-by-john-117``)
+- the temporary directories (e.g. ``/tmp/sim-diasca-Foobar_Case-2016-6-14-at-15h-12m-18s-117``)
+- the simulation trace file (e.g. ``Foobar_Case-john-117.traces``)
 
 
 .. _`Node Naming`:

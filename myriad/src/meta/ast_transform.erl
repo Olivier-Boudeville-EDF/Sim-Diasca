@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -183,9 +183,9 @@
 %% AST subtree replacement section.
 
 
--type transform_trigger() :: ast_expression:expression_kind()
-						   | 'clause' | 'body'.
-% Lists the contexts that may trigger a transformation function:
+-type transform_trigger() ::
+		ast_expression:expression_kind() | 'clause' | 'body'.
+% Lists the contexts that may trigger a transformation function.
 %
 % Note that not all triggers are supported, but that adding any lacking one is
 % not especially difficult.
@@ -374,7 +374,7 @@ get_local_type_transform_table( Replacements ) ->
 get_local_type_repl_helper( _Replacements=[], Table ) ->
 	Table;
 
-% Replacement can be either { TargetModule, TargetType } or TargetModule:
+% Replacement can be either {TargetModule, TargetType} or TargetModule:
 get_local_type_repl_helper( _Replacements=[
 		{ Src={ _SourceTypeMatch, _ArityMatch },
 		  Replacement={ _TargetModule, _TargetType } } | T ], Table ) ->
@@ -577,14 +577,11 @@ get_remote_call_transform_table( Replacements ) ->
 get_remote_call_repl_helper( _Replacements=[], Table ) ->
 	Table;
 
-% Replacement can be either { TargetModule, TargetFunctionName } or
-% TargetModule:
-%
+% Replacement can be either {TargetModule, TargetFunctionName} or TargetModule:
 get_remote_call_repl_helper( _Replacements=[
 	{ Src={ _ModuleMatch, _SourceFunctionNameMatch, _ArityMatch },
 			Replacement={ _TargetModule, _TargetFunctionName } } | T ],
 							 Table ) ->
-
 	% Up to one transformation per source function:
 	NewTable = ?table:add_new_entry( Src, Replacement, Table ),
 	get_remote_call_repl_helper( T, NewTable );

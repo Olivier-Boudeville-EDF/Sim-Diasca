@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -165,7 +165,7 @@
 %-opaque hashtable( K, V ) :: tuple( bucket( K, V ) ).
 
 -type bullet() :: ustring().
-% A type of bullet (ex: " * ").
+% A type of bullet (e.g. " * ").
 
 
 -type description_type() :: bullet() | 'user_friendly' | 'full' | 'internal'.
@@ -194,16 +194,12 @@ new() ->
 %
 -spec new( entry_count() | entries() ) -> hashtable().
 new( ExpectedNumberOfEntries ) when is_integer( ExpectedNumberOfEntries ) ->
-
 	NumberOfBuckets = get_ideal_bucket_count( ExpectedNumberOfEntries ),
-
 	create_tuple( NumberOfBuckets, _DefaultValue=[] );
 
 
 new( InitialEntries ) when is_list( InitialEntries ) ->
-
 	BlankTable = new(),
-
 	add_entries( InitialEntries, BlankTable ).
 
 
@@ -225,7 +221,6 @@ new_with_buckets( NumberOfBuckets ) ->
 %
 -spec add_entry( key(), value(), hashtable() ) -> hashtable().
 add_entry( Key, Value, Hashtable ) ->
-
 	KeyIndex = get_bucket_index( Key, Hashtable ),
 
 	% Retrieve appropriate bucket:
@@ -246,7 +241,6 @@ add_entry( Key, Value, Hashtable ) ->
 -spec add_diagnosed_entry( key(), value(), hashtable() ) ->
 								{ hashtable(), 'added' | 'updated' }.
 add_diagnosed_entry( Key, Value, Hashtable ) ->
-
 	KeyIndex = get_bucket_index( Key, Hashtable ),
 
 	% Retrieve appropriate bucket:
@@ -329,7 +323,6 @@ remove_entry( Key, Hashtable ) ->
 -spec remove_diagnosed_entry( key(), hashtable() ) ->
 						{ 'deleted', hashtable() } | 'unchanged'.
 remove_diagnosed_entry( Key, Hashtable ) ->
-
 	KeyIndex = get_bucket_index( Key, Hashtable ),
 
 	PreviousBucket = element( KeyIndex, Hashtable ),
@@ -462,7 +455,7 @@ get_value_with_default( Key, DefaultValue, Hashtable ) ->
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
-% Ex: `[Color, Age, Mass] = hashtable:get_values([color, age, mass],
+% For example `[Color, Age, Mass] = hashtable:get_values([color, age, mass],
 %           MyTable])'.
 %
 -spec get_values( [ key() ], hashtable() ) -> [ value() ].
@@ -490,8 +483,8 @@ get_values( Keys, Hashtable ) ->
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
-% Ex: `[Color=red, Age=23, Mass=51] = hashtable:get_all_values([color, age,
-%         mass], [{color, red}, {mass, 51}, {age, 23}])'.
+% For example `[Color=red, Age=23, Mass=51] = hashtable:get_all_values([color,
+%   age, mass], [{color, red}, {mass, 51}, {age, 23}])'.
 %
 -spec get_all_values( [ key() ], hashtable() ) -> [ value() ].
 get_all_values( Keys, Hashtable ) ->
@@ -526,7 +519,7 @@ get_all_values( Keys, Hashtable ) ->
 % to duplicate the whole content in memory).
 %
 % Note: as the fun may return modified keys, the whole structure of the
-% hashtable may change (ex: different buckets used for replaced entries,
+% hashtable may change (e.g. different buckets used for replaced entries,
 % colliding keys resulting in having less entries afterwards, etc.).
 %
 % One may request the returned hashtable to be optimised after this call.
@@ -807,7 +800,7 @@ pop_from_entry( Key, Hashtable ) ->
 % @doc Returns a flat list whose elements are all the key/value pairs of the
 % hashtable, in no particular order.
 %
-% Ex: `[{K1,V1}, {K2,V2}, ...]'.
+% For example `[{K1,V1}, {K2,V2}, ...]'.
 %
 -spec enumerate( hashtable() ) -> entries().
 enumerate( Hashtable ) ->
@@ -850,7 +843,8 @@ keys( Hashtable ) ->
 
 % @doc Returns a list containing all the values of this hashtable.
 %
-% Ex: useful if the key was used as an index to generate this table first.
+% For example useful if the key was used as an index to generate this table
+% first.
 %
 -spec values( hashtable() ) -> [ value() ].
 values( Hashtable ) ->
@@ -952,7 +946,7 @@ optimise_unconditionally( EntryCount, CurrentBucketCount, Entries,
 
 	IdealBucketCount = get_ideal_bucket_count( EntryCount ),
 
-	% Avoids useless reshuffles (ex: due to rounding errors):
+	% Avoids useless reshuffles (e.g. due to rounding errors):
 	case IdealBucketCount of
 
 		CurrentBucketCount ->
@@ -1010,7 +1004,7 @@ to_string( Hashtable, DescriptionType ) ->
 
 				user_friendly ->
 					Strs = [ text_utils:format_ellipsed( "~p: ~p", [ K, V ] )
-							 || { K, V } <- lists:sort( L ) ],
+								|| { K, V } <- lists:sort( L ) ],
 
 					lists:flatten( io_lib:format( "table with ~B entries: ~ts",
 						[ length( L ), text_utils:strings_to_string( Strs,

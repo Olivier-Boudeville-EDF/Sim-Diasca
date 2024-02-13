@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -49,7 +49,7 @@
 
 
 -type ast_generic_clause() ::
-	{ 'clause', file_loc(),	ast_pattern:ast_pattern_sequence(),
+	{ 'clause', file_loc(), ast_pattern:ast_pattern_sequence(),
 	  ast_guard:ast_guard_sequence(), ast_body() }.
 % Describes a generic (most general) clause in an AST.
 
@@ -198,7 +198,6 @@ transform_clause_generic( Clause, Transforms ) ?rec_guard ->
 	case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-
 			NewClausePair = transform_clause_default( Clause, Transforms ),
 
 			%ast_utils:display_debug(
@@ -601,8 +600,8 @@ transform_body( Other, _Transforms ) ->
 % forge_local_call( some_fun, ParamDefs, 102 ) - which returns:
 % {call,102,{atom,102,some_fun},[{atom,102,a},{atom,102,b}]}.
 %
--spec forge_local_call( function_name(), [ ast_expression() ],
-						file_loc() ) -> ast_expression().
+-spec forge_local_call( function_name(), [ ast_expression() ], file_loc() ) ->
+		                                ast_expression().
 forge_local_call( FunctionName, Params, FileLoc ) ->
 	forge_local_call( FunctionName, Params, FileLoc, FileLoc ).
 

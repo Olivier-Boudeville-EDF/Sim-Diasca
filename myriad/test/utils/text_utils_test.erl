@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: July 1, 2007.
 
 
 % @doc Unit tests for the <b>text utils toolbox.</b>
@@ -162,7 +163,7 @@ run() ->
 	%                           [ "D1" ] ],
 
 	Strings = [ text_utils:format( "blah: ~ts",
-				 [ text_utils:strings_to_string( N, _IndentationLevel=1 ) ] )
+		[ text_utils:strings_to_string( N, _IndentationLevel=1 ) ] )
 				|| N <- NestedStringsForIndent ],
 
 	% Emulating the way it is used in practice:
@@ -189,7 +190,7 @@ run() ->
 	test_facilities:display( "Displaying text '~ts' once formatted "
 		"for a width of ~B:~n~p",
 		[ JustWideEnoughLine, NewTargetWidth, text_utils:format_text_for_width(
-									JustWideEnoughLine, NewTargetWidth ) ] ),
+			JustWideEnoughLine, NewTargetWidth ) ] ),
 
 
 	test_facilities:display( "Displaying atom list, obtained from string "
@@ -292,7 +293,7 @@ run() ->
 	test_facilities:display( " Checking string/binary conversions." ),
 
 	"hello" = text_utils:binary_to_string( <<"hello">> ),
-	 <<"hello">> = text_utils:string_to_binary( "hello" ),
+	<<"hello">> = text_utils:string_to_binary( "hello" ),
 
 	StringList = [ "hello", "world" ],
 	BinList = [ <<"hello">>, <<"world">> ],

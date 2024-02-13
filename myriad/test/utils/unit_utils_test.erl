@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2023 Olivier Boudeville
+% Copyright (C) 2016-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,26 +37,17 @@
 -include("test_facilities.hrl").
 
 
-test_parse( InputString, ExpectedString ) ->
-
-	%test_facilities:display( "### Parsing '~ts'...", [ InputString ] ),
-
-	{ Value, Unit } = unit_utils:parse_value_with_unit( InputString ),
-
-	ResultString = unit_utils:value_with_unit_to_string( Value, Unit ),
-
-	test_facilities:display( " + '~ts' translated as '~ts'.",
-							 [ InputString, ResultString ] ),
-
-	ExpectedString = ResultString.
+% For epsilon define:
+-include("math_utils.hrl").
 
 
 
--spec run() -> no_return().
-run() ->
+% Silencing:
+-export([ test_parsing/0, test_lengths/0 ]).
 
-	test_facilities:start( ?MODULE ),
 
+
+test_parsing() ->
 
 	test_facilities:display( "Testing prefix management." ),
 
@@ -157,6 +148,63 @@ run() ->
 	test_facilities:display( "~nTesting the non-standard units." ),
 
 	% 'teqCO2' is not a known unit:
-	test_parse( "0.4 teqCO2/year", "0.4 teqCO2^1.year^-1" ),
+	test_parse( "0.4 teqCO2/year", "0.4 teqCO2^1.year^-1" ).
+
+
+
+test_parse( InputString, ExpectedString ) ->
+
+	%test_facilities:display( "### Parsing '~ts'...", [ InputString ] ),
+
+	{ Value, Unit } = unit_utils:parse_value_with_unit( InputString ),
+
+	ResultString = unit_utils:value_with_unit_to_string( Value, Unit ),
+
+	test_facilities:display( " + '~ts' translated as '~ts'.",
+							 [ InputString, ResultString ] ),
+
+	ExpectedString = ResultString.
+
+
+
+test_lengths() ->
+
+	test_facilities:display( "~nTesting the description of lengths." ),
+
+	_ = [ [ begin
+			Length = math:pow( 10, E ),
+
+			test_facilities:display( " + for ~g m: ~ts",
+				[ Length, unit_utils:meters_to_string( Length ) ] )
+
+		  end || E <- lists:seq(-5,20) ] ],
+
+
+	% From Sun to Proxima Centauri:
+	SunProximaInLy = 4.2465,
+	SunProximaInPc = 1.3020,
+
+	SunProximaInLyToM = unit_utils:light_years_to_meters( SunProximaInLy ),
+	SunProximaInPcToM = unit_utils:parsecs_to_meters( SunProximaInPc ),
+
+	test_facilities:display( "Relative difference in terms of distance between "
+		"the Sun and Proxima Centauri: ~w.",
+		[ math_utils:get_relative_difference( SunProximaInLyToM,
+											  SunProximaInPcToM ) ] ),
+
+	% Awful precision:
+	true = math_utils:are_relatively_close( SunProximaInLyToM,
+		SunProximaInPcToM, ?epsilon * 100 ).
+
+
+
+-spec run() -> no_return().
+run() ->
+
+	test_facilities:start( ?MODULE ),
+
+	test_parsing(),
+
+	test_lengths(),
 
 	test_facilities:stop().

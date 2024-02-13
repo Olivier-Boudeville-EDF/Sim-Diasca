@@ -18,7 +18,7 @@ For example::
 
 
 
-Directory names are preferentially in lowercase only (ex: ``test-cases``), except specific acronyms (ex: ``NATO``).
+Directory names are preferentially in lowercase only (e.g. ``test-cases``), except specific acronyms (e.g. ``NATO``).
 
 The initial import is to be performed by copying the sources in a working copy containing a check-out of that module, and adding them, with ``svn add`` (which is recursive by default, unless the option ``-N`` is used).
 
@@ -56,11 +56,11 @@ Creating a Branch
 .................
 
 
-#. select the origin of that branch, i.e. the place from which the initial content of the branch should be copied (ex: ``trunk``, or another branch)
+#. select the origin of that branch, i.e. the place from which the initial content of the branch should be copied (e.g. ``trunk``, or another branch)
 
 #. check to the origin is up-to-date (``svn status`` / ``svn ci``)
 
-#. find a proper name for that branch (ex: based on a feature rather than on a developer name)
+#. find a proper name for that branch (e.g. based on a feature rather than on a developer name)
 
 #. create the branch: ``svn copy svn+ssh://<user>@<server>/<path>/<location> svn+ssh://<user>@<server>/<path>/branches/<branch name> -m "<comment>"``
 
@@ -93,14 +93,14 @@ If wanting then to restore the previous state of the working copy, a recursive r
 
 Although all branches are managed identically by SVN, the following usual conventions are to be respected:
 
-- all vendor branches should be created in the top-level ``vendor`` directory (ex: ``vendor/myriad/0.1``)
+- all vendor branches should be created in the top-level ``vendor`` directory (e.g. ``vendor/myriad/0.1``)
 
-- all other branches should be created in the top-level ``branches`` directory (ex: ``branches/sim-diasca-2.0``)
+- all other branches should be created in the top-level ``branches`` directory (e.g. ``branches/sim-diasca-2.0``)
 
 - names (all lowercases, words separated by a dash) should describe clearly the changes to be operated on that branch
 
 
-Similarly, all tags should be created in the top-level ``tags`` directory (ex: ``tags/sim-diasca-release-2.0.6``).
+Similarly, all tags should be created in the top-level ``tags`` directory (e.g. ``tags/sim-diasca-release-2.0.6``).
 
 
 Simple Merge
@@ -128,7 +128,7 @@ If a simple merge was performed, then the modifications inherited from A in B wo
 
 To do so, the source control system has to keep track of which changes have been applied to which elements, which was not supported by SVN versions prior to the 1.5 one.
 
-A side-effect of this newer SVN feature is that the the reintegrated branch (here, B) cannot be used anymore then. This is why branches should not be named according to user names, as the first reintegration will disallow the use of this name afterwards. So branches should preferably be named according to features or topics instead (ex: ``preparation-of-sim-diasca-2.0``).
+A side-effect of this newer SVN feature is that the the reintegrated branch (here, B) cannot be used anymore then. This is why branches should not be named according to user names, as the first reintegration will disallow the use of this name afterwards. So branches should preferably be named according to features or topics instead (e.g. ``preparation-of-sim-diasca-2.0``).
 
 
 
@@ -141,21 +141,21 @@ A SVN tag named ``foo-release-x.y.z`` can be set (here on the current trunk) wit
 
 	svn copy svn+ssh://<user>@<server>/<path>/<location> svn+ssh://<user>@<server>/<path>/tags/foo-release-x.y.z -m "<comment>"
 
-In addition to these ``foo-release-x.y.z`` tags, which correspond to a major functional evolution of the software, one can define tags like ``milestone-yyyymmdd`` (ex: ``foo-milestone-20080924``), which may correspond to a project deadline. One can get inspiration from the already set tags.
+In addition to these ``foo-release-x.y.z`` tags, which correspond to a major functional evolution of the software, one can define tags like ``milestone-yyyymmdd`` (e.g. ``foo-milestone-20080924``), which may correspond to a project deadline. One can get inspiration from the already set tags.
 
 The corresponding *check-out* for a tag is for example::
 
 	svn co svn+ssh://<user>@<server>/<path>/tags/foo-release-x.y.z
 
 
-Therefore developments are made in a branch whose name define only the major and minor version numbers (ex: ``branches/foo-2.0``), from which all the ``2.0.x`` releases will be generated, resulting in as many tags, such as ``tags/foo-release-2.0.1``.
+Therefore developments are made in a branch whose name define only the major and minor version numbers (e.g. ``branches/foo-2.0``), from which all the ``2.0.x`` releases will be generated, resulting in as many tags, such as ``tags/foo-release-2.0.1``.
 
 
 
 Removing the Need Of Typing One's Password Endlessly
 ----------------------------------------------------
 
-The SVN repository is accessed through SSH, and by default the SVN client will request the SSH password to be typed each time a remote operation is needed (ex: when committing versions), which becomes quickly annoying.
+The SVN repository is accessed through SSH, and by default the SVN client will request the SSH password to be typed each time a remote operation is needed (e.g. when committing versions), which becomes quickly annoying.
 
 A solution is to generate a pair of public/private pair thanks to SSH, and to copy the *public* key on the SVN server.
 
@@ -179,7 +179,7 @@ Under GNU/Linux this copy is preferably [#]_ done thanks to::
 .. [#] To ensure permissions are correctly set.
 
 
-There is no ``ssh-copy-id`` tool on Windows, thus one has to add manually the content of the ``~/.ssh/id_rsa.pub`` file to the authorised keys of your SVN server (ex: in the ``armstrong@my_host.org:.ssh/authorized_keys`` file).
+There is no ``ssh-copy-id`` tool on Windows, thus one has to add manually the content of the ``~/.ssh/id_rsa.pub`` file to the authorised keys of your SVN server (e.g. in the ``armstrong@my_host.org:.ssh/authorized_keys`` file).
 
 On both platforms one can then check that a remote SSH login can be performed without a password, with::
 

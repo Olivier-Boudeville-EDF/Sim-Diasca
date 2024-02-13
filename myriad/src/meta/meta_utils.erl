@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2023 Olivier Boudeville
+% Copyright (C) 2014-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -147,7 +147,7 @@
 % code (as a string).
 %
 % For example:
-%   ast_utils:string_to_form( "f(X) -> throw({hello,X})." ).
+%   ast_utils:string_to_form("f(X) -> throw({hello,X}).").
 % is to return:
 % {function,{0,1}, f,1, [{clause,{0,1}, [{var,{0,3},'X'}], [],
 %   [{call,{0,9}, {atom,{0,9},throw}, ...
@@ -156,7 +156,7 @@
 
 -type parse_transform_options() :: proplists:proplist().
 % Options specified to a parse transform at runtime, like: report_warnings,
-% beam,report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P},
+% beam, report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P},
 % debug_info, warnings_as_errors, etc.
 %
 % (hence not a list_table, anyway not available here)
@@ -432,7 +432,7 @@ remove_type( TypeInfo=#type_info{ variables=TypeVariables,
 % (helper)
 %
 -spec apply_ast_transforms( module_info(), ast_transforms() ) ->
-						{ module_info(), ast_transforms() }.
+										{ module_info(), ast_transforms() }.
 apply_ast_transforms( ModuleInfo=#module_info{ types=TypeTable,
 											   records=RecordTable,
 											   functions=FunctionTable },

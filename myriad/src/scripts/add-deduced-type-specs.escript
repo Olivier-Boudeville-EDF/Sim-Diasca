@@ -2,7 +2,7 @@
 %% -*- erlang -*-
 %%! -smp enable
 
-% Copyright (C) 2010-2021 Olivier Boudeville
+% Copyright (C) 2010-2023 Olivier Boudeville
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
@@ -12,9 +12,9 @@
 
 
 
-% This script will process recursively all BEAM files from specified directory
-% and add to each function the type specification that could be deduced from its
-% current implementation.
+% This script will process recursively all BEAM files from the specified
+% directory and add to each function the type specification that could be
+% deduced from its current implementation.
 
 % That way, user code may have a better chance thanks to dialyzer to statically
 % detect mistakes, and regressions that may appear because of later changes will
@@ -22,7 +22,8 @@
 
 % Note of course that the added type specifications are not the ones intended by
 % the original developer (whose mind cannot be read by this script), but the
-% ones deduced from the current code, which may be finer or coarser.
+% ones deduced from the current code, which may be finer or coarser. Because of
+% that, using such scripts may be considered as a bad practice.
 
 
 % An hypothesis here is that when scanning a ${path}/X.beam file, the
@@ -352,7 +353,7 @@ integrate_info_from_plt( PltFilename, BeamDir ) ->
 	%io:format( "~n#### Information: ~p.~n~n", [ Info ] ),
 
 	% A text with a module header and the list of specs (all in one string).
-	% Ex:
+	% For example:
 	% """
 	%
 	%%% ------- Module: file_utils -------
@@ -370,7 +371,7 @@ integrate_info_from_plt( PltFilename, BeamDir ) ->
 	_R = [ _ | SlicedSpecs ] = split_module_and_specs( SpecString ),
 
 	%io:format( "~n#### Split specifications:~n~s~n~n", [ R ] ),
-	% Ex: [ "-spec close(_) -> any()",
+	% For example: [ "-spec close(_) -> any()",
 	% "-spec close( _, 'overcome_failure' | 'throw_if_failed' ) -> any()" ]
 	write_specs( SlicedSpecs, BeamDir ).
 
@@ -553,7 +554,7 @@ build_fun_entries( FunctionNames, Text ) ->
 	SortedByNames = lists:keysort( _FunNamePos=1, SortedByArities ),
 
 	% Here entries are sorted first by name, then for a name by arity, then for
-	% an arity by index, ex:
+	% an arity by index, for example:
 	%  [      {"append_at_end",2,17043},
 	%		  {"checkpoint",1,19801},
 	%		  {"compare_versions",2,20079},
@@ -631,8 +632,9 @@ insert_spec( Text, _FunEntries, _SpecEntries=[], _Offset ) ->
 insert_spec( Text, _FunEntries=[], SpecEntries, _Offset ) ->
 
 	% This can happen, for example if some functions are defined in the BEAM but
-	% not in the .erl source files (ex: WOOPER new operators coming from
+	% not in the .erl source files (for example WOOPER new operators coming from
 	% wooper.hrl):
+	%
 	%throw( {unexpected_spec_entry,SpecEntries} );
 	notify_unexpected_spec( SpecEntries ),
 	Text;
@@ -790,9 +792,8 @@ find_source_file_for( ModuleName, Dir ) ->
 % Allows to back-up source files before specs are inserted.
 perform_any_backup( ErlPath ) ->
 
-	case do_backup() of
-
-		true ->
+	do_backup() andalso
+		begin
 			Destination = ErlPath ++ ".specbak",
 			case file:copy( ErlPath, Destination ) of
 
@@ -802,17 +803,12 @@ perform_any_backup( ErlPath ) ->
 				{ error, Reason } ->
 					throw( { cannot_backup_file, ErlPath, Reason } )
 
-			end;
-
-		false ->
-			ok
-
-	end.
+			end
+		end.
 
 
 
 % Reads all lines from specified device (file descriptor).
-%
 read_all_lines( Device, Acc ) ->
 
 	case io:get_line( Device, "" ) of
@@ -830,7 +826,7 @@ read_all_lines( Device, Acc ) ->
 
 
 % Returns the number of first-level elements in the specified string expression.
-% Ex: for expression "3, a, [5,6,{b,1} ]", should return 3.
+% For example for expression "3, a, [5,6,{b,1} ]", should return 3.
 %
 % Simpler to do that way rather than using parse_trans or erl_scan:string/1 then
 % erl_parse:abstract/1.
@@ -849,11 +845,11 @@ compute_first_level_element_count( _ArgString=[], _BraceLevel=0,
 	% Here we parsed correctly the full string:
 	Count;
 
-compute_first_level_element_count( [ $, | T ], _BraceLevel=0, _ParenLevel=0,
-								   _BrackLevel=0, Count ) ->
+compute_first_level_element_count( [ $, | T ], BraceLevel=0, ParenLevel=0,
+								   BrackLevel=0, Count ) ->
 	% Here we found a top-level comma, the only interesting kind:
-	compute_first_level_element_count( T, _BraceLevel=0, _ParenLevel=0,
-									   _BrackLevel=0, Count+1 );
+	compute_first_level_element_count( T, BraceLevel, ParenLevel,
+									   BrackLevel, Count+1 );
 
 compute_first_level_element_count( [$,|T], BraceLevel, ParenLevel,
 								   BrackLevel, Count ) ->
@@ -899,16 +895,7 @@ compute_first_level_element_count( [ _H | T ], BraceLevel, ParenLevel,
 
 
 notify( Message ) ->
-
-	case is_verbose() of
-
-		true ->
-			io:format( Message );
-
-		false ->
-			ok
-
-	end.
+	is_verbose() andalso io:format( Message ).
 
 
 
@@ -926,7 +913,7 @@ notify( Message ) ->
 
 % Taken from myriad/src/utils/text_utils.erl:
 
-% join(Separator,ListToJoin), ex: join( '-', [ "Barbara", "Ann" ] ).
+% join(Separator,ListToJoin), for example: join('-', ["Barbara", "Ann"]).
 %
 % Python-like 'join', combines items in a list into a string using a separator
 % between each item representation.

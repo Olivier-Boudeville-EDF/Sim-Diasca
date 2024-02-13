@@ -9,6 +9,6 @@ MYRIAD_TOP = ..
 MODULES_DIRS = utils data-management meta maths user-interface scripts apps
 
 real-clean:
-	-@/bin/rm -f $(PROJECT_NAME_FOR_REBAR).app.src
+	-@/bin/rm -f $(PROJECT_NAME_FOR_OTP).app.src
 
 include $(MYRIAD_TOP)/GNUmakesettings.inc

@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -67,7 +67,7 @@ start_link() ->
 init( Args=undefined ) ->
 
 	trace_utils:debug_fmt(
-		"Initializing the WOOPER root supervisor (args: ~p).", [ Args ] ),
+		"Initialising the WOOPER root supervisor (args: ~p).", [ Args ] ),
 
 	ExecTarget= wooper:get_execution_target(),
 

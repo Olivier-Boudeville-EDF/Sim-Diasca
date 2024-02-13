@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2023 Olivier Boudeville
+% Copyright (C) 2020-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -27,7 +27,7 @@
 
 
 % @doc Gathering of various convenient facilities regarding the support of
-% various <b>locales</b> (ex: for the management of per-country bank holidays)
+% various <b>locales</b> (e.g. for the management of per-country bank holidays)
 % and related character sets.
 %
 -module(locale_utils).
@@ -63,11 +63,11 @@
 
 
 -type locale_description() :: ustring().
-% A description of a locale (ex: "Afrikaans (South Africa)").
+% A description of a locale (e.g. "Afrikaans (South Africa)").
 
 
 -type bin_locale_description() :: bin_string().
-% A description of a locale (ex: `<<"Afrikaans (South Africa)">>').
+% A description of a locale (e.g. `<<"Afrikaans (South Africa)">>').
 
 
 -type locale_charset() :: ustring().

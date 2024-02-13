@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -55,8 +55,13 @@
 -export_type([ panel/0, panel_option/0, panel_options/0 ]).
 
 
--export([ create/0, create/1, create/2, create/4, create/5, create/6,
-		  destruct/1 ]).
+-export([ create/0, create/1, create/2, create/3, create/4, create/5, create/6,
+		  destruct/1,
+		  get_size/1 ]).
+
+
+-type wx_panel_option() :: gui_window:wx_window_option()
+						 | gui_wx_backend:wx_event_handler_option().
 
 
 % Implementation notes:
@@ -77,6 +82,7 @@
 -type width() :: gui:width().
 -type height() :: gui:height().
 -type size() :: gui:size().
+-type dimensions() :: gui:dimensions().
 -type position() :: gui:position().
 -type coordinate() :: gui:coordinate().
 
@@ -93,6 +99,8 @@ create() ->
 % @doc Creates a panel, associated to the specified parent.
 -spec create( parent() ) -> panel().
 create( _Parent=#splitter{ splitter_window=Win } ) ->
+	%trace_utils:debug_fmt( "Creating panel from splitter window ~w.",
+	%                       [ Win ] ),
 	wxPanel:new( Win );
 
 create( Parent ) ->
@@ -108,8 +116,7 @@ create( Options, _Parent=#splitter{ splitter_window=Win } ) ->
 	create( Options, Win );
 
 create( Options, Parent ) ->
-	ActualOptions = gui_wx_backend:to_wx_panel_options( Options ),
-	wxPanel:new( Parent, ActualOptions ).
+	wxPanel:new( Parent, to_wx_panel_options( Options ) ).
 
 
 
@@ -129,8 +136,8 @@ create( X, Y, Width, Height, Parent ) ->
 -spec create( position(), size(), parent() ) -> panel().
 create( Position, Size, Parent ) ->
 
-	WxOpts = [ { pos, gui_wx_backend:to_wx_position( Position ) },
-			   { size, gui_wx_backend:to_wx_size( Size ) } ],
+	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
+			   gui_wx_backend:to_wx_size( Size ) ],
 
 	wxPanel:new( Parent, WxOpts ).
 
@@ -143,7 +150,7 @@ create( Position, Size, Options, Parent ) ->
 
 	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
 			   gui_wx_backend:to_wx_size( Size )
-			 | gui_wx_backend:to_wx_panel_options( Options ) ],
+					| to_wx_panel_options( Options ) ],
 
 	%trace_utils:debug_fmt( "Creating panel: parent: ~w, position: ~w, "
 	%    "size: ~w, options: ~w, full options: ~w.",
@@ -161,7 +168,7 @@ create( Position, Size, Options, Parent ) ->
 create( X, Y, Width, Height, Options, Parent ) ->
 
 	WxOpts = [ { pos, { X, Y } }, { size, { Width, Height } }
-						| gui_wx_backend:to_wx_panel_options( Options ) ],
+					| to_wx_panel_options( Options ) ],
 
 	wxPanel:new( Parent, WxOpts ).
 
@@ -171,3 +178,23 @@ create( X, Y, Width, Height, Options, Parent ) ->
 -spec destruct( panel() ) -> void().
 destruct( Panel ) ->
 	wxPanel:destroy( Panel ).
+
+
+% @doc Returns the size of the specified panel.
+%
+% Defined here only for convenience (as gui_widget provides it).
+%
+-spec get_size( panel() ) -> dimensions().
+get_size( Panel ) ->
+	wxWindow:getSize( Panel ).
+
+
+% @doc Converts the specified MyriadGUI panel option(s) into the appropriate
+% wx-specific options.
+%
+% (exported helper)
+%
+-spec to_wx_panel_options( maybe_list( panel_option() ) ) ->
+											[ wx_panel_option() ].
+to_wx_panel_options( Options ) ->
+	gui_window:to_wx_window_options( Options ).

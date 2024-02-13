@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2023 EDF R&D
+% Copyright (C) 2012-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -31,7 +31,7 @@
 
 
 -define( class_description,
-		 "manages the resilience operations on a specific computing host. "
+		 "Manages the resilience operations on a specific computing host. "
 		 "It is driven by the resilience manager. "
 		 "See also class_ResilienceManager.erl." ).
 
@@ -212,7 +212,7 @@ construct( State, ResilienceManagerPid, SecuringNodes, SecuredByNodes,
 	EmitterName = text_utils:format( "Resilience Agent on node ~ts", [ Node ] ),
 
 	TraceState = class_EngineBaseObject:construct( State,
-										?trace_categorize(EmitterName) ),
+		?trace_categorize(EmitterName) ),
 
 	% Ensures also it is a singleton indeed:
 	naming_utils:register_as( ?resilience_agent_name, ?registration_scope ),
@@ -220,7 +220,7 @@ construct( State, ResilienceManagerPid, SecuringNodes, SecuredByNodes,
 	class_InstanceTracker:register_agent( ?resilience_agent_name ),
 
 	LocalTimeManagerPid = naming_utils:get_registered_pid_for(
-							?time_manager_name, local ),
+		?time_manager_name, local ),
 
 	ResilienceDir = text_utils:binary_to_string( ResilienceDirBin ),
 
@@ -276,7 +276,7 @@ serialiseNode( State, Tick, Diasca ) ->
 
 	?debug_fmt( "Serialising now, at ~p.", [ { Tick, Diasca } ] ),
 
-	trace_bridge:notice_fmt( "Serialising now on ~ts (~w) at {~p,~p}.",
+	trace_utils:notice_fmt( "Serialising now on ~ts (~w) at {~p,~p}.",
 							 [ node(), self(), Tick, Diasca ] ),
 
 	% Serialising is basically writing the state of all local elements (actors,
@@ -395,7 +395,7 @@ recoverNodes( State, NodesToRecover, Tick, Diasca ) ->
 		_AckReceiveAtom=serialisation_read,
 		_ThrowAtom=serialisation_reading_time_out ),
 
-	trace_bridge:notice_fmt( "Node ~ts successfully read ~B serialisation "
+	trace_utils:notice_fmt( "Node ~ts successfully read ~B serialisation "
 		"files.", [ node(), length( FileReaderPidList ) ] ),
 
 	?debug_fmt( "Node ~ts successfully read ~B serialisation files.",
@@ -459,7 +459,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		{ serialise_actor, ActorPid } ->
 
-			trace_bridge:debug_fmt( " - actor ~w to be written", [ ActorPid ] ),
+			trace_utils:debug_fmt( " - actor ~w to be written", [ ActorPid ] ),
 
 			% We delegate the actual serialisation to the actor itself:
 			ActorPid ! { serialise, [ EntryTransformer, UserData ], self() },
@@ -479,7 +479,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 					FileWriterPid ! { write_content, Binary },
 
-					trace_bridge:debug_fmt(
+					trace_utils:debug_fmt(
 						" - actor ~w written (payload: ~B bytes)",
 						[ ActorPid, Size ] ),
 
@@ -491,7 +491,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		{ serialise_probe, ProbePid } ->
 
-			trace_bridge:debug_fmt( " - probe ~w to be written", [ ProbePid ] ),
+			trace_utils:debug_fmt( " - probe ~w to be written", [ ProbePid ] ),
 
 			% Delegated serialisation again:
 			ProbePid ! { serialise, [ EntryTransformer, UserData ], self() },
@@ -511,7 +511,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 					FileWriterPid ! { write_content, Binary },
 
-					trace_bridge:debug_fmt(
+					trace_utils:debug_fmt(
 						" - probe ~w written (payload: ~B bytes)",
 						[ ProbePid, Size ] ),
 
@@ -523,7 +523,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		{ serialise_agent, AgentPid } ->
 
-			trace_bridge:debug_fmt( " - agent ~w to be written", [ AgentPid ] ),
+			trace_utils:debug_fmt( " - agent ~w to be written", [ AgentPid ] ),
 
 			% Actual serialisation still delegated:
 			AgentPid ! { serialise, [ EntryTransformer, UserData ], self() },
@@ -543,7 +543,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 					FileWriterPid ! { write_content, Binary },
 
-					trace_bridge:debug_fmt(
+					trace_utils:debug_fmt(
 						" - agent ~w written (payload: ~B bytes)",
 						[ AgentPid, Size ] ),
 
@@ -555,7 +555,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		terminate ->
 
-			trace_bridge:debug_fmt( "Serialiser ~w terminated.", [ self() ] ),
+			trace_utils:debug_fmt( "Serialiser ~w terminated.", [ self() ] ),
 
 			% To avoid serialiser-level race conditions:
 			FileWriterPid ! serialisation_sent
@@ -571,7 +571,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 %
 dispatch_serialisations( SerialisationKind, InstancePidList, SerialiserRing ) ->
 
-	trace_bridge:debug_fmt(
+	trace_utils:debug_fmt(
 		"- dispatching ~B serialisations of type ~p onto a ring of "
 		"~B serialisers",
 		[ length( InstancePidList ), SerialisationKind,
@@ -741,12 +741,12 @@ reader_loop( File, AgentPid, LocalInstanceTracker, Waited ) ->
 
 		eof ->
 
-			%trace_bridge:debug_fmt( "End of file reached, waiting for:~n~p",
+			%trace_utils:debug_fmt( "End of file reached, waiting for:~n~p",
 			%                        [ Waited ] ),
 
 			wait_for_readings( Waited ),
 
-			%trace_bridge:debug_fmt( "Serialisation file fully processed." ),
+			%trace_utils:debug_fmt( "Serialisation file fully processed." ),
 
 			AgentPid ! { serialisation_read, self() };
 
@@ -780,7 +780,7 @@ read_actor( File, _AgentPid, LocalInstanceTracker ) ->
 	%
 	ActorPid = ?myriad_spawn_link( fun() ->
 
-		trace_bridge:debug_fmt(
+		trace_utils:debug_fmt(
 			"Reading actor, serialised in ~B bytes, becoming ~p.",
 			[ ContentSize, self() ] ),
 
@@ -869,7 +869,7 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 		TotalSize = ContentSize + CommandSize + DataSize,
 
-		trace_bridge:debug_fmt(
+		trace_utils:debug_fmt(
 			"Reading probe, serialised in a total of ~B bytes "
 			"(instance size: ~B, command size: ~B, data size: ~B), "
 			"becoming ~p.",
@@ -892,7 +892,7 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 %
 read_agent( File, _AgentPid, _LocalInstanceTracker ) ->
 
-	trace_bridge:debug( "Reading agent." ),
+	trace_utils:debug( "Reading agent." ),
 
 	{ ok, << ContentSize:32 >> } = file_utils:read( File, _SizeSize=4 ),
 
@@ -1037,7 +1037,7 @@ produce_serialisation_file( SerialisationPath, State ) ->
 
 	%		end,
 
-			%trace_bridge:debug_fmt( "PID ~w resolved in '~p'.",
+			%trace_utils:debug_fmt( "PID ~w resolved in '~p'.",
 			%					   [ Pid, PidTranslation ] ),
 
 			% Replaces that found PID by its translation, wrapped in a
@@ -1098,7 +1098,7 @@ produce_serialisation_file( SerialisationPath, State ) ->
 	%
 	SerialiserPids = [ ?myriad_spawn_link( fun() ->
 
-			trace_bridge:debug_fmt( "Serialiser ~w spawned.", [ self() ] ),
+			trace_utils:debug_fmt( "Serialiser ~w spawned.", [ self() ] ),
 
 			serialiser_loop( FileWriterPid, EntryTransformer, UserData )
 										   end )
@@ -1134,7 +1134,7 @@ produce_serialisation_file( SerialisationPath, State ) ->
 	{ ProbeCount, _ProbeSerialiserRing } = dispatch_serialisations(
 					serialise_probe, ProbePidList, ActorSerialiserRing ),
 
-	trace_bridge:debug_fmt( "Writing serialisation data in file '~ts', "
+	trace_utils:debug_fmt( "Writing serialisation data in file '~ts', "
 		"~w serialising ~B agents, ~B actors and ~B probes.",
 		[ SerialisationPath, self(), AgentCount, ActorCount, ProbeCount ] ),
 
@@ -1332,7 +1332,7 @@ exchange_serialisation_files( SerialisationPath, State ) ->
 	% A priori no need to keep our own backup:
 	file_utils:remove_file( SerialisationPath ),
 
-	trace_bridge:info_fmt( "Serialisation finished by ~w on node '~ts'.",
+	trace_utils:info_fmt( "Serialisation finished by ~w on node '~ts'.",
 						  [ self(), node() ] ),
 
 	NodePathList.

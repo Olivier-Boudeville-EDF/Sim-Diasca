@@ -19,7 +19,7 @@ PDF_TARGET := $(CURRENT_TRACES_PDF)
 
 DOC_GENERATED_FILES := $(HTML_TARGET) $(PDF_TARGET)
 
-
+PROJECT_VERSION := 0.1
 
 PROJECT_CSS := pygments-default.css,traces.css
 

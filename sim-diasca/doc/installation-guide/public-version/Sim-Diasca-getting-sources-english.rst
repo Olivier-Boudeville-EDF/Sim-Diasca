@@ -1,9 +1,9 @@
 
-Installation From the Sim-Diasca Public GIT Repository
+Installation From the Sim-Diasca Public Git Repository
 ......................................................
 
 
-Unless you have access to the EDF-internal Sim-Diasca GIT repository (which should then be preferred, as it contains more content, and is by design more recent), you can clone the public GIT repository (which should be fine as well [#]_), at the following location: `https://github.com/Olivier-Boudeville-EDF/Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_.
+Unless you have access to the EDF-internal Sim-Diasca Git repository (which should then be preferred, as it contains more content, and is by design more recent), you can clone the public Git repository (which should be fine as well [#]_), at the following location: `https://github.com/Olivier-Boudeville-EDF/Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_.
 
 .. [#] Please tell us (typically thanks to the e-mail address at the top of this document) if ever the current public version seems to date back a bit too much, as we do not always update the public version once an internal one has been released.
 

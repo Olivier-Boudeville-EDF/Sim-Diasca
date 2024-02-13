@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -121,8 +121,8 @@
 % floating-point distances, numerical errors should be significantly lessened.
 %
 % Note that multiple, different datastructures may be used (created and updated)
-% simultaneously, so that each type of operation (ex: query) can be performed on
-% the most efficient one.
+% simultaneously, so that each type of operation (e.g. query) can be performed
+% on the most efficient one.
 
 
 % Our octrees:
@@ -137,10 +137,10 @@
 %  smaller cells (that is: larger objects)
 %
 %  (2) rapidly-moving objects that would keep on transitioning between neighbour
-%  cells (ex: a planet orbiting across multiple elementary cells)
+%  cells (e.g. a planet orbiting across multiple elementary cells)
 %
 %  (3) to store aggregate information, variable resolution representation of a
-%  data field (ex: average value - like color, temperature, mass/gravitational
+%  data field (e.g. average value - like color, temperature, mass/gravitational
 %  field - of the elements recursively contained)
 %
 %  However queries then have to take into account additionally the full path
@@ -181,7 +181,7 @@
 % A table of all octants available at a given height of an octree.
 
 
-% For an octree of height H (defined as the maximum number of edges (ex: not
+% For an octree of height H (defined as the maximum number of edges (e.g. not
 % vertices) traversed from root to leaves, its leaves define (up to) 8^H
 % elementary cells; for a global space that would be a cube of side length L
 % (hence of volume L^3), each of these cells would be of length L/2^H (hence of
@@ -320,7 +320,7 @@
 
 
 %-opaque sequential_octree() ::
-%			{ node_content(), maybe( sequential_octants() ) }.
+%  { node_content(), maybe( sequential_octants() ) }.
 % A sequential octree is made of its own content and of up to 8 child sequential
 % octrees.
 %
@@ -351,7 +351,7 @@
 
 
 %-opaque concurrent_octree() ::
-%			{ node_content(), maybe( concurrent_octants() ) }.
+%  { node_content(), maybe( concurrent_octants() ) }.
 % A concurrent octree is made of its own content and of up to 8 child concurrent
 % octrees.
 %
@@ -382,7 +382,7 @@
 
 
 %-opaque hybrid_octree() ::
-%			{ node_content(), maybe( hybrid_octants() ) }.
+%  { node_content(), maybe( hybrid_octants() ) }.
 % A hybrid octree is made of its own content and of up to 8 child hybrid
 % octrees.
 %
@@ -439,7 +439,7 @@
 		{ H :: height(), Xi :: x_index(), Yi :: y_index(), Zi :: z_index() }.
 % The identifier of an octant, expressed in terms of octant coordinates.
 %
-% Ex: { H=2, Xi=-1, Yi=2, Zi=1 }.
+% For example {H=2, Xi=-1, Yi=2, Zi=1}.
 %
 % For H=0, Xi=Yi=Zi=1.
 % For H=1, Xi, Yi, Zi each are either -1 or +1.
@@ -453,7 +453,7 @@
 % The identifier of an octant at a given height in the octree, expressed in
 % terms of octant coordinates.
 %
-% Ex: { Xi=-1, Yi=2, Zi=1 }, for H=2.
+% For example {Xi=-1, Yi=2, Zi=1}, for H=2.
 
 
 
@@ -502,6 +502,7 @@
 %%		  height/1, size/1, to_string/1 ]).
 
 
+
 % Shorthands:
 
 -type count() :: basic_utils:count().
@@ -521,6 +522,7 @@
 %-type locatable_center() :: point3().
 % Designates the center of a locatable, to be understood here as the center of
 % the diameter (largest distance between two points) of this locatable.
+
 
 
 % @doc Creates an empty (regarding content and octants), sequential, octree.

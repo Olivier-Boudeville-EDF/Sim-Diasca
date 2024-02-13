@@ -49,7 +49,7 @@ _____________________
 
 An actor can be created either initially (before the simulation is started) or at simulation-time (i.e. in the course of the simulation), as detailed in next sections.
 
-Calling directly (i.e. from the user code) any ``spawn`` variation or any WOOPER ``new`` variation (ex: ``remote_new_link``) is totally prohibited: we must rely on the Sim-Diasca mechanisms, and not attempt to bypass them.
+Calling directly (i.e. from the user code) any ``spawn`` variation or any WOOPER ``new`` variation (e.g. ``remote_new_link``) is totally prohibited: we must rely on the Sim-Diasca mechanisms, and not attempt to bypass them.
 
 The actual creation will be performed by the load balancer, on a computing node of its choice, and the placement will be fully transparent for the model writer.
 
@@ -197,7 +197,7 @@ For example, in ``my_creation_test.erl``, we could have:
  [...]
 
 
-Note that ``test_receive/0`` corresponds to a safer form than ``receive {wooper_result, R} -> R end``. It is logically equivalent, but immune to interfering messages that could be sent to the simulation case by other Sim-Diasca services (ex: notifications from the trace supervisor).
+Note that ``test_receive/0`` corresponds to a safer form than ``receive {wooper_result, R} -> R end``. It is logically equivalent, but immune to interfering messages that could be sent to the simulation case by other Sim-Diasca services (e.g. notifications from the trace supervisor).
 
 
 
@@ -241,7 +241,7 @@ So Sim-Diasca provides a counterpart to its basic creation API, whose functions 
 
 - ``class_Actor:create_actor/3`` has a ``class_Actor:create_placed_actor/4`` counterpart
 
-Except the hint specification, these functions work exactly as their counterpart (ex: w.r.t. the call to ``onActorCreated/5``).
+Except the hint specification, these functions work exactly as their counterpart (e.g. w.r.t. the call to ``onActorCreated/5``).
 
 For example, if devices in a house were to be modelled, and if a large number of houses was to be simulated, then for house 437, the placement hint (as an atom) ``house_437`` could be specified for the house creation, as well for the creation of each of the devices it will contain.
 
@@ -303,7 +303,7 @@ Note that:
 
 - should a too short termination delay be chosen by mistake, the simulation engine will do its best to detect it
 
-- if setting up a proper termination happens to be too cumbersome on to many cases, an automatic system might be designed, in order to keep track of inter-model references (ex: like a garbage collector operated on actors, based on reference counting - either PID or AAI); however this mechanism would probably have some major drawbacks by design (complex, expensive because of reference indirections, etc.); moreover having an implicit, dynamic, flexible communication graph is probably more a feature than a limitation
+- if setting up a proper termination happens to be too cumbersome on to many cases, an automatic system might be designed, in order to keep track of inter-model references (e.g. like a garbage collector operated on actors, based on reference counting - either PID or AAI); however this mechanism would probably have some major drawbacks by design (complex, expensive because of reference indirections, etc.); moreover having an implicit, dynamic, flexible communication graph is probably more a feature than a limitation
 
 
 .. Note::
@@ -377,7 +377,7 @@ Simulation Time: Of Ticks and Diascas
 _____________________________________
 
 
-Simulation time is fully decorrelated from wall-clock time, and is controlled by the time manager(s): the ``fundamental frequency`` of the simulation (ex: 50Hz) leads to a unit time-step (a.k.a. ``simulation tick``) to be defined (ex: 20ms, in simulation time), each time-step lasting, in wall-clock time, for any duration needed so that all relevant actors can be evaluated for that tick.
+Simulation time is fully decorrelated from wall-clock time, and is controlled by the time manager(s): the ``fundamental frequency`` of the simulation (e.g. 50Hz) leads to a unit time-step (a.k.a. ``simulation tick``) to be defined (e.g. 20ms, in simulation time), each time-step lasting, in wall-clock time, for any duration needed so that all relevant actors can be evaluated for that tick.
 
 If that wall-clock duration is smaller than the time-step (the simulation is "faster than the clock"), then the simulation can be ``interactive`` (i.e. it can be slowed down on purpose to stay on par with wall-clock time, allowing for example for some human interaction), otherwise it will be in ``batch`` mode (running as fast as possible).
 
@@ -528,7 +528,7 @@ For example:
 This root directory has two sub-directories:
 
 - ``deployed-elements``, which corresponds to the content of the simulation package (i.e. both code and data, both for the engine and for the third-party elements, if any)
-- ``outputs``, which is to contain all live data produced by the simulation (ex: data file, probe reports, etc.); all computing nodes will have directly this directory as working (current) directory
+- ``outputs``, which is to contain all live data produced by the simulation (e.g. data file, probe reports, etc.); all computing nodes will have directly this directory as working (current) directory
 
 
 A simulator which added third-party data to the simulation archive (thanks to the ``additional_elements_to_deploy`` field of the deployment settings specified in the simulation case) is able to access to them thanks to ``class_Actor:get_deployed_root_directory/1``.

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2013-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,4 +51,4 @@
 	% As apparently we cannot retrieve the size of the underlying bitmap and
 	% back buffer (typically useful when the panel may have been resized):
 	%
-	size :: gui:size() }).
+	size :: gui:size() } ).

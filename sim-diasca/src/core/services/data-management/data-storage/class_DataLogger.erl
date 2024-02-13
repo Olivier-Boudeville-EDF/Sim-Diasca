@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2008-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -133,7 +133,7 @@
 	{ deployment_manager_pid, deployment_manager_pid(),
 	  "the PID of the deployment manager (if any)" },
 
-	{ meta_data, class_ResultManager:meta_data(),
+	{ meta_data, meta_data(),
 	  "records the meta-data to be passed to (virtual) probes" },
 
 	{ gnuplot_version, basic_utils:two_digit_version(),
@@ -141,8 +141,11 @@
 	  "probes" } ] ).
 
 
-% For probe_settings():
+% For the plot_options record:
 -include("class_Probe.hrl").
+
+% For the plot_settings record:
+-include_lib("myriad/include/plot_utils.hrl").
 
 
 % TO-DO: replace 'dict' with 'table'.
@@ -323,7 +326,7 @@
 % whereas no flow control is enabled (presumably to avoid too many
 % synchronisation messages, like for example with setData/4), the datalogger
 % mailbox will grow indefinitely and possibly exhaust the memory. Use a
-% synchronous counterpart function in that case (ex: setDataSynchronous/4).
+% synchronous counterpart function in that case (e.g. setDataSynchronous/4).
 
 % Writings performed with setData/4 will overwrite any previous sample entry for
 % that tick, so partial sample sending (with some data being set to 'undefined',
@@ -353,7 +356,7 @@
 % the key, and thus need no extra index.
 
 % Both files used for the generation of probe report (configuration file and
-% data file) are created only when the generation is requested (ex: no
+% data file) are created only when the generation is requested (e.g. no
 % create_command_file_initially, would be always set to false).
 
 
@@ -396,6 +399,7 @@
 -type probe_tick() :: class_Probe:probe_tick().
 -type sample_data() :: class_Probe:sample_data().
 
+%class_Probe:zone_entries()
 
 % @doc Constructs a datalogger.
 %
@@ -412,14 +416,15 @@
 construct( State, _RegistrationOptions={ Name, RegistrationType }, MetaData ) ->
 
 	% First the direct mother classes:
-	EmitterName = text_utils:uppercase_initial_letter( atom_to_list( Name ) ),
+	EmitterName = text_utils:uppercase_initial_letter(
+		text_utils:atom_to_string( Name ) ),
 
 	TraceState = class_ResultProducer:construct( State,
-											?trace_categorize(EmitterName) ),
+		?trace_categorize(EmitterName) ),
 
 	% Then the class-specific actions:
 
-	% Depending on its use (ex: if using numerous asynchronous operations), the
+	% Depending on its use (e.g. if using numerous asynchronous operations), the
 	% datalogger may become a bottleneck:
 	%
 	erlang:process_flag( priority, _Level=high ),
@@ -467,28 +472,19 @@ destruct( State ) ->
 	% Class-specific actions:
 	?info( "Deleting datalogger." ),
 
-	case ?getAttr(database_activated) of
+	?getAttr(database_activated) andalso
+		case ?getAttr(deployment_manager_pid) of
 
-		true ->
+			undefined ->
+				% Should never happen, activating means storing the PID.
+				ok;
 
-			case ?getAttr(deployment_manager_pid) of
+			DeployPid ->
+				% Acts as if was the only client:
+				DeployPid ! { deactivateDatabase, [], self() }
+				% Not interested in the request answer (ignored).
 
-				undefined ->
-					% Should never happen, activating means storing the PID.
-					ok;
-
-				DeployPid ->
-
-					% Acts as if was the only client:
-					DeployPid ! { deactivateDatabase, [], self() }
-					% Not interested in the request answer (ignored).
-
-			end;
-
-		false ->
-			ok
-
-	end,
+		end,
 
 	?debug( "Datalogger deleted." ),
 
@@ -536,7 +532,7 @@ createVirtualProbe( State, BinProbeName, Node, CurveNames, Zones, Title,
 
 	% First, determines whether this probe should be created:
 	?getAttr(result_manager_pid) ! { isResultProducerWantedWithOptions,
-								[ BinProbeName, virtual_probe ], self() },
+		[ BinProbeName, virtual_probe ], self() },
 
 	receive
 
@@ -565,18 +561,18 @@ createVirtualProbe( State, BinProbeName, Node, CurveNames, Zones, Title,
 			% datalogger, so the Gnuplot version we determine in this function
 			% is the correct one:
 			%
-			Settings = class_Probe:get_probe_settings( Title, XLabel, YLabel,
-													?getAttr(gnuplot_version) ),
+			Settings = class_Probe:get_plot_settings( Title, XLabel, YLabel,
+				?getAttr(gnuplot_version) ),
 
 			NewID = ?getAttr(next_probe_id),
 			TableName = get_table_name_for( NewID ),
 
 			% Results in [{curve_index(), curve_name()}]:
-			CurveEntries = class_Probe:transform_curve_names( CurveNames ),
+			CurveEntries = plot_utils:transform_curve_names( CurveNames ),
 
 			% Results in [zone_definition()]:
 			ZoneEntries =
-				class_Probe:transform_declared_zones( Zones, CurveEntries ),
+				plot_utils:transform_declared_zones( Zones, CurveEntries ),
 
 			CurveCount = length( CurveEntries ),
 
@@ -587,11 +583,12 @@ createVirtualProbe( State, BinProbeName, Node, CurveNames, Zones, Title,
 				% Will be like [ {1,<<"A">>,DefaultBinPlotSuffix},
 				%                {2,<<"Curve B">>,DefaultBinPlotSuffix},
 				%                {3,<<"Foobar">>,DefaultBinPlotSuffix} ]:
+				%
 				curve_entries=CurveEntries,
 				zone_entries=ZoneEntries,
 				curve_count=CurveCount,
 				row_format_string=
-					class_Probe:forge_format_string_for( CurveCount ),
+					plot_utils:forge_format_string_for( CurveCount ),
 				table_name=TableName,
 				render_settings=Settings },
 
@@ -824,14 +821,14 @@ addCurve( State, ProbeID, CurveName ) ->
 	NewCount = ProbeRecord#virtual_probe.curve_count + 1,
 
 	NewCurveEntry = { NewCount, text_utils:string_to_binary( CurveName ),
-					  class_Probe:get_default_curve_plot_suffix() },
+					  plot_utils:get_default_curve_plot_suffix() },
 
 	NewCurveEntries = list_utils:append_at_end( NewCurveEntry,
 		ProbeRecord#virtual_probe.curve_entries ),
 
 	NewProbeRecord = ProbeRecord#virtual_probe{
 		curve_count=NewCount,
-		row_format_string=class_Probe:forge_format_string_for( NewCount ),
+		row_format_string=plot_utils:forge_format_string_for( NewCount ),
 		curve_entries=NewCurveEntries },
 
 	NewState = set_virtual_probe( ProbeID, { NewProbeRecord, Opts }, State ),
@@ -881,7 +878,7 @@ setCurveRenderOrder( State, ProbeID, Names ) ->
 
 		Len ->
 			NewCurveEntries =
-				class_Probe:add_probe_index_back( Names, CurveEntries ),
+				plot_utils:add_plot_index_back( Names, CurveEntries ),
 
 			NewProbeRecord =
 				ProbeRecord#virtual_probe{ curve_entries=NewCurveEntries },
@@ -915,7 +912,7 @@ getProbeTable( State, ProbeID ) ->
 
 
 
-% @doc Sets the plot settings to the ones specified as a plain string (ex:
+% @doc Sets the plot settings to the ones specified as a plain string (e.g.
 % "histograms") for the specified virtual probe.
 %
 -spec setPlotStyle( wooper:state(), virtual_probe_id(), ustring() ) ->
@@ -926,11 +923,10 @@ setPlotStyle( State, ProbeID, NewPlotStyle ) ->
 
 	Settings = ProbeRecord#virtual_probe.render_settings,
 
-	NewSettings = Settings#probe_settings{
-		   plot_style=text_utils:string_to_binary( NewPlotStyle ) },
+	NewSettings = Settings#plot_settings{
+		plot_style=text_utils:string_to_binary( NewPlotStyle ) },
 
-	NewProbeRecord = ProbeRecord#virtual_probe{
-						render_settings=NewSettings },
+	NewProbeRecord = ProbeRecord#virtual_probe{ render_settings=NewSettings },
 
 	NewState = set_virtual_probe( ProbeID, { NewProbeRecord, Opts }, State ),
 
@@ -938,19 +934,19 @@ setPlotStyle( State, ProbeID, NewPlotStyle ) ->
 
 
 
-% @doc Sets the fill settings, specified as a plain string (ex: "solid 1.0
+% @doc Sets the fill settings, specified as a plain string (e.g. "solid 1.0
 % border -1") for the specified virtual probe.
 %
 -spec setFillStyle( wooper:state(), virtual_probe_id(), ustring() ) ->
-							oneway_return().
+											oneway_return().
 setFillStyle( State, ProbeID, NewFillStyle ) ->
 
 	{ ProbeRecord, Opts } = get_virtual_probe_and_options( ProbeID, State ),
 
 	Settings = ProbeRecord#virtual_probe.render_settings,
 
-	NewSettings = Settings#probe_settings{
-					fill_style=text_utils:string_to_binary( NewFillStyle ) },
+	NewSettings = Settings#plot_settings{
+		fill_style=text_utils:string_to_binary( NewFillStyle ) },
 
 	NewProbeRecord = ProbeRecord#virtual_probe{ render_settings=NewSettings },
 
@@ -971,9 +967,8 @@ setCanvasSize( State, ProbeID, NewWidth, NewHeight ) ->
 
 	Settings = ProbeRecord#virtual_probe.render_settings,
 
-	NewSettings = Settings#probe_settings{
-					canvas_width=NewWidth,
-					canvas_height=NewHeight },
+	NewSettings = Settings#plot_settings{ canvas_width=NewWidth,
+										   canvas_height=NewHeight },
 
 	NewProbeRecord = ProbeRecord#virtual_probe{ render_settings=NewSettings },
 
@@ -983,7 +978,7 @@ setCanvasSize( State, ProbeID, NewWidth, NewHeight ) ->
 
 
 
-% @doc Sets the key (legend) settings, specified as a plain string (ex: "inside
+% @doc Sets the key (legend) settings, specified as a plain string (e.g. "inside
 % left") for the specified virtual probe.
 %
 -spec setKeyOptions( wooper:state(), virtual_probe_id(), ustring() ) ->
@@ -994,8 +989,8 @@ setKeyOptions( State, ProbeID, NewOptions ) ->
 
 	Settings = ProbeRecord#virtual_probe.render_settings,
 
-	NewSettings = Settings#probe_settings{
-					key_options=text_utils:string_to_binary( NewOptions ) },
+	NewSettings = Settings#plot_settings{
+		key_options=text_utils:string_to_binary( NewOptions ) },
 
 	NewProbeRecord = ProbeRecord#virtual_probe{ render_settings=NewSettings },
 
@@ -1048,14 +1043,14 @@ sendResults( State, _Options ) ->
 			wooper:return_state_result( CollectedState,
 										{ self(), no_result } );
 
-		FilenameList ->
+		Filenames ->
 
 			%trace_utils:debug_fmt( "datalogger to send an archive of: ~ts, "
 			%   "from ~p.",
-			%   [ text_utils:strings_to_string( FilenameList ),
+			%   [ text_utils:strings_to_string( Filenames ),
 			%     file_utils:get_current_directory() ] ),
 
-			Bin = file_utils:files_to_zipped_term( FilenameList ),
+			Bin = file_utils:files_to_zipped_term( Filenames ),
 
 			wooper:return_state_result( CollectedState,
 										{ self(), archive, Bin } )
@@ -1064,7 +1059,7 @@ sendResults( State, _Options ) ->
 
 
 
-% @doc Manages the result from specified probe, with specified options.
+% @doc Manages the result from the specified probe, with the specified options.
 %
 % Returns a list of corresponding files, to be retrieved to the user node.
 %
@@ -1091,17 +1086,9 @@ manage_probe_result( ProbeRecord, [ data_only ], State ) ->
 	DataFilename = generate_data_file( ProbeRecord, ?getAttr(meta_data) ),
 
 	ProbeBasename = text_utils:binary_to_string(
-						ProbeRecord#virtual_probe.name ),
+		ProbeRecord#virtual_probe.name ),
 
-	IsTimestamped = case ?getAttr(maybe_tick_duration) of
-
-		undefined ->
-			false;
-
-		_ ->
-			true
-
-	end,
+	IsTimestamped = ?getAttr(maybe_tick_duration) =/= undefined,
 
 	CommandFilename = class_Probe:generate_command_file(
 		ProbeBasename,
@@ -1154,15 +1141,7 @@ generateReport( State, ProbeID, DisplayWanted ) ->
 	{ _DataFilename, _CommandFilename, ReportFilename } =
 		generate_report_from_id( ProbeID, State ),
 
-	case DisplayWanted of
-
-		true ->
-			executable_utils:display_png_file( ReportFilename );
-
-		false ->
-			ok
-
-	end,
+	DisplayWanted andalso executable_utils:display_png_file( ReportFilename ),
 
 	wooper:const_return_result( probe_report_generated ).
 
@@ -1174,8 +1153,8 @@ generateReport( State, ProbeID, DisplayWanted ) ->
 % Static methods:
 
 
-% @doc Creates the main (default) datalogger on specified node, specified as an
-% atom.
+% @doc Creates the main (default) datalogger on the specified node, specified as
+% an atom.
 %
 % Note: the created instance is linked to the caller process.
 %
@@ -1208,7 +1187,6 @@ get_main_datalogger() ->
 	catch
 
 		_Exception ->
-
 			sim_diasca:notify_hint( "The main datalogger could not be found, "
 				"whereas your simulation needed it. "
 				"The most likely cause is that you did not enable it in "
@@ -1256,13 +1234,13 @@ get_data_logger_look_up_time_out() ->
 %
 % - CurveNames is a list containing the ordered names (as plain strings) of each
 % curve to be drawn (hence the probe will expect receiving data in the form
-% {Tick, {V1,V2,..} }); ex: ["First curve", "Second curve"]
+% {Tick, {V1,V2,..} }); e.g. ["First curve", "Second curve"]
 %
 % - Zones, which correspond to specific areas between two curves being defined,
 % are specified as a (potentially empty) list of {ZoneName, {
 % ExtendedCurveNameOne, ExtendedCurveNameTwo}} entries, where ZoneName is the
 % name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (ex:
+% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
 % "Second curve") already defined in CurveNames, or a special atom designating
 % the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
 % example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
@@ -1462,8 +1440,7 @@ ensure_database_activated( State ) ->
 %
 -spec get_table_name_for( virtual_probe_id() ) -> table_name().
 get_table_name_for( Id ) ->
-	% Avoids the need for flatten:
-	list_to_atom( "virtual_probe_" ++ text_utils:integer_to_string( Id ) ).
+	text_utils:atom_format( "virtual_probe_~B", [ Id ] ).
 
 
 
@@ -1473,7 +1450,7 @@ get_table_name_for( Id ) ->
 % (helper function)
 %
 -spec get_virtual_probe( virtual_probe_id(), wooper:state() ) ->
-								virtual_probe().
+										virtual_probe().
 get_virtual_probe( Id, State ) ->
 
 	case dict:find( _Key=Id, ?getAttr(probe_table) ) of
@@ -1516,7 +1493,7 @@ get_virtual_probe_and_options( ID, State ) ->
 % (helper function)
 %
 -spec set_virtual_probe( virtual_probe_id(),
-	   { virtual_probe(), probe_options() }, wooper:state() ) -> wooper:state().
+	{ virtual_probe(), probe_options() }, wooper:state() ) -> wooper:state().
 set_virtual_probe( ProbeID, NewProbePair, State ) ->
 
 	%trace_utils:debug_fmt( "set_virtual_probe for probe #~B: ~p",
@@ -1535,8 +1512,7 @@ set_virtual_probe( ProbeID, NewProbePair, State ) ->
 %
 % (helper function)
 %
--spec generate_data_file( virtual_probe(), class_ResultManager:meta_data() ) ->
-								file_utils:file_path().
+-spec generate_data_file( virtual_probe(), meta_data() ) -> file_path().
 generate_data_file( ProbeRecord, MetaData ) ->
 
 	ProbeBasename =
@@ -1564,7 +1540,7 @@ generate_data_file( ProbeRecord, MetaData ) ->
 
 	% Not needing transactions, thus relying on dirty operations:
 	%Val = mnesia:transaction( fun() ->
-	%            get_all( Table, mnesia:first( Table ), [] ) end ),
+	%    get_all( Table, mnesia:first( Table ), [] ) end ),
 
 	Table = ProbeRecord#virtual_probe.table_name,
 
@@ -1576,16 +1552,9 @@ generate_data_file( ProbeRecord, MetaData ) ->
 
 	%trace_utils:debug_fmt( "Sorted pairs = ~p", [ SortedPairs ] ),
 
-	case SortedPairs of
-
-		[] ->
-			throw( { no_available_data_sample,
-					 ProbeRecord#virtual_probe.table_name } );
-
-		_NonEmpty ->
-			ok
-
-	end,
+	SortedPairs =:= [] andalso
+		throw( { no_available_data_sample,
+				 ProbeRecord#virtual_probe.table_name } ),
 
 	write_data( File, SortedPairs, ProbeRecord#virtual_probe.curve_count,
 				ProbeRecord#virtual_probe.row_format_string ),
@@ -1784,15 +1753,7 @@ generate_report( ProbeRecord, State ) ->
 	%trace_utils:debug_fmt( "Generation of report requested for virtual probe "
 	%                       "named '~ts'.", [ ProbeBasename ] ),
 
-	IsTimestamped = case ?getAttr(maybe_tick_duration) of
-
-		undefined ->
-			false;
-
-		_ ->
-			true
-
-	end,
+	IsTimestamped = ?getAttr(maybe_tick_duration) =/= undefined,
 
 	CommandFilename = class_Probe:generate_command_file( ProbeBasename,
 		ProbeRecord#virtual_probe.render_settings,

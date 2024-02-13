@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,6 +38,12 @@
 -include_lib("wx/include/wx.hrl").
 
 
+
+% Silencing:
+-export([ determine_constants/0, test_frame/0, test_window_from_frame/0 ]).
+
+
+
 determine_constants() ->
 
 	wxe_util:init_nif( _Silent=false ),
@@ -49,13 +55,80 @@ determine_constants() ->
 
 
 
+test_frame() ->
+	_WxServer = wx:new(),
+	%process_flag(trap_exit, true),
+
+	TestWindowOpts = [ { style, ?wxBORDER_NONE } ],
+
+	TestWindow = wxWindow:new( _Parent=wx:null(), _Id=?wxID_ANY,
+							   TestWindowOpts ),
+
+	wxWindow:show( TestWindow ),
+
+	%timer:sleep( 3000 ),
+
+	TestFrameOpts = [ { style, ?wxBORDER_NONE } ],
+
+	TestFrame = wxFrame:new( wx:null(), ?wxID_ANY,
+							 "Test frame", TestFrameOpts ),
+
+	wxFrame:show( TestFrame ),
+
+	timer:sleep( 1000 ),
+
+	%% receive
+
+	%%	Any ->
+	%%		trace_utils:debug_fmt( "Test received ~w.", [ Any ] )
+	%%		% Terminates.
+
+	%% end.
+
+	terminates.
+
+
+test_window_from_frame() ->
+	_WxServer = wx:new(),
+	process_flag(trap_exit, true),
+
+	%TestWindowOpts = [ { style, ?wxBORDER_NONE } ],
+	TestWindowOpts = [],
+
+	% Shows that a mere window may not even appear onscreen; use a frame
+	% instead.
+	%
+	TestWindow = wxWindow:new( _Parent=wx:null(), _Id=?wxID_ANY,
+							   TestWindowOpts ),
+
+	wxWindow:show( TestWindow ),
+
+	receive
+
+		Any ->
+			trace_utils:debug_fmt( "Test received ~w.", [ Any ] )
+			% Terminates.
+
+	end.
+
+
+
 % @doc Executes the actual test.
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
 	test_facilities:display( "~nStarting the wx test." ),
 
-	determine_constants(),
+	% Either of the next two functions shall be commented-out, as otherwise the
+	% first would load the wx NIF, and the second as well (hence: "NIF library
+	% already loaded):
+
+	% Loads the wx NIF:
+	%determine_constants(),
+
+	test_frame(),
+
+	%test_window_from_frame(),
 
 	test_facilities:display( "End of the wx test." ).
 

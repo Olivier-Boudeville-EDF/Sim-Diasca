@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009-2021 Olivier Boudeville
+# Copyright (C) 2009-2023 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 #
@@ -13,7 +13,7 @@
 
 usage="Usage: $(basename $0) RST_FILE: generates a PDF file from the specified RST file, overwriting any past file with that name.
 
-  Ex: '$(basename $0) my_file.rst' will attempt to generate a new 'my_file.pdf' file."
+  For example: '$(basename $0) my_file.rst' will attempt to generate a new 'my_file.pdf' file."
 
 
 # Arch packages: do not forget 'pacman -S rubber python-pygments'.
@@ -61,6 +61,6 @@ if [ -f "${target_file}" ]; then
 fi
 
 
-echo "Generating now ${target_file} from ${source_file}..." && make -f "${rule_file}" "${target_file}" && echo "Generation succeeded!"
+echo "Generating now '${target_file}' from '${source_file}'..." && make -f "${rule_file}" "${target_file}" && echo "Generation succeeded!"
 
 /bin/rm -f ${file_prefix}.aux ${file_prefix}.tex ${file_prefix}.out ${file_prefix}.log

@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -671,9 +671,9 @@ set_current_texture_unit( TexUnit ) ->
 
 
 
-% @doc Recalibrates the specified texture coordinates, supposed to correspond to
-% an original texture, to the specified one, which is typically padded, hence of
-% different dimensions.
+% @doc Recalibrates the specified logical texture coordinates, supposed to
+% correspond to the original texture, to the specified one, which is typically
+% padded, hence of different dimensions.
 %
 -spec recalibrate_coordinates_for( [ uv_point() ], texture() ) ->
 										[ uv_point() ].

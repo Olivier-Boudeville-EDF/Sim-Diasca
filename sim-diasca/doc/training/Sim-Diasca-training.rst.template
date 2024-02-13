@@ -131,7 +131,7 @@ The correction of each exercise will be given once that exercise will be complet
 Prerequisites
 =============
 
-For the practical work, each attendee should bring with him a 32-bit or 64-bit laptop running a recent GNU/Linux operating system. Upgrading it, prior to the training, to the latest stable version is recommended. Ideally this would be a multi-core laptop running a Debian-based distribution (ex: Ubuntu).
+For the practical work, each attendee should bring with him a 32-bit or 64-bit laptop running a recent GNU/Linux operating system. Upgrading it, prior to the training, to the latest stable version is recommended. Ideally this would be a multi-core laptop running a Debian-based distribution (e.g. Ubuntu).
 
 One is encouraged to bring along also one's copy of the *Programming Erlang* book, authored by Joe Armstrong.
 
@@ -161,16 +161,16 @@ Following prerequisites should already be installed on the trainee laptop:
 - gcc
 - gnuplot
 - eog
-- libncurses development package (ex: ``libncurses5-dev``, for Debian-based distributions)
-- SSL runtime and development packages (ex: ``openssl``, ``libssl-dev``)
+- libncurses development package (e.g. ``libncurses5-dev``, for Debian-based distributions)
+- SSL runtime and development packages (e.g. ``openssl``, ``libssl-dev``)
 - dot
 - ant
 - java JDK environment (i.e. including a compiler, not only an interpreter)
 - svn (client)
 - make (GNU version)
 - gkrellm
-- any program editor (ex: nedit, emacs, `erlIDE <http://erlide.sourceforge.net/>`_, etc.)
-- any PDF reader (ex: evince)
+- any program editor (e.g. nedit, emacs, `erlIDE <http://erlide.sourceforge.net/>`_, etc.)
+- any PDF reader (e.g. evince)
 - optional at this stage: just testing, before the training, a `LogMX <http://www.logmx.com/>`_ install would allow to check it can properly work on the trainee platform indeed [#]_ (see also the *Installing LogMX* section in the Sim-Diasca technical overview)
 
 
@@ -212,7 +212,7 @@ This implies preserving *reproducibility*.
 
 .. admonition:: Example
 
-  Reproducibility is the key when wanting, for instance, to fine-tune the quantity of fuel for a rocket launch in a given set of detailed conditions (ex: wind, altitude, temperature, etc.).
+  Reproducibility is the key when wanting, for instance, to fine-tune the quantity of fuel for a rocket launch in a given set of detailed conditions (e.g. wind, altitude, temperature, etc.).
 
 
 
@@ -248,7 +248,7 @@ As a consequence, although each combination of events in ergodic mode is general
 
 This is why, from the point of view of the simulation user, reproducibility and ergodicity are antagonistic (although any given situation in ergodic mode can be replayed as wanted, in a reproducible manner).
 
-Finally, simulations may have to involve a very large number of actors (several hundreds of thousands), and, of course, every simulation has to be correct, i.e. to be an exact result deduced from the models, and from them only (ex: not depending on any technical context).
+Finally, simulations may have to involve a very large number of actors (several hundreds of thousands), and, of course, every simulation has to be correct, i.e. to be an exact result deduced from the models, and from them only (e.g. not depending on any technical context).
 
 We will see later in this document why the technical answer proposed by Sim-Diasca covers these requirements.
 
@@ -340,7 +340,7 @@ Remaining technical subjects that might be useful in general and/or in a simulat
 
 - **process scheduling priorities**: they can be set to some extent, although generally it is not necessary
 
-- **interfacing techniques**: port, linked-in drivers, etc. to integrate with other languages (C, C++, Java, etc.) and have access to third-party libraries (ex: GUI, post-processing tools, etc.)
+- **interfacing techniques**: port, linked-in drivers, etc. to integrate with other languages (C, C++, Java, etc.) and have access to third-party libraries (e.g. GUI, post-processing tools, etc.)
 
 - **file-system management**: files, directories, for reading and writing data
 
@@ -348,7 +348,7 @@ Remaining technical subjects that might be useful in general and/or in a simulat
 
 - **data formats** for protocol exchanges and persistence: ASN.1, XML, custom-made protocols, JSON, etc.
 
-- **Mnesia**: real-time *distributed* database, in memory and/or on disk, with fragmentation, replication, fault-tolerance, possible transactions, and management of *any* Erlang term (ex: object-oriented database)
+- **Mnesia**: real-time *distributed* database, in memory and/or on disk, with fragmentation, replication, fault-tolerance, possible transactions, and management of *any* Erlang term (e.g. object-oriented database)
 
 
 
@@ -387,7 +387,7 @@ Another useful step is to enable proper syntax highlighting, both for Erlang and
 
 .. admonition:: Exercise ex_erlang_install
 
- - go into the directory where Sim-Diasca related developments are to be put, called from now though the supposedly set PREFIX environment variable (relative paths are then based on PREFIX); ex: ``export PREFIX=~/Sim-Diasca-testing``
+ - go into the directory where Sim-Diasca related developments are to be put, called from now though the supposedly set PREFIX environment variable (relative paths are then based on PREFIX); e.g. ``export PREFIX=~/Sim-Diasca-testing``
 
  - extract the Sim-Diasca archive: ``tar xvjf SimDiasca-training-install.tar.bz2``
 
@@ -395,9 +395,9 @@ Another useful step is to enable proper syntax highlighting, both for Erlang and
 
  - run it to automatically install the Erlang environment: ``myriad/conf/install-erlang.sh --cutting-edge --doc-install --no-download``, from a directory where the ``otp_*`` files are available (no connection available from the training room)
 
- - update your PATH variable (preferably permanently, ex: in ``~/.bashrc``, one can add: ``export PATH=~/Software/Erlang/Erlang-current-install/bin:$PATH``)
+ - update your PATH variable (preferably permanently, e.g. in ``~/.bashrc``, one can add: ``export PATH=~/Software/Erlang/Erlang-current-install/bin:$PATH``)
 
- - run the interpreter from an updated environment (ex: ``source ~/.bashrc``) and check everything is correct (version, SMP, etc.): run ``erl``
+ - run the interpreter from an updated environment (e.g. ``source ~/.bashrc``) and check everything is correct (version, SMP, etc.): run ``erl``
 
  - recommended: bookmark the relevant documentation, a *Manual Page Index* bookmark should point to: ``~/Software/Erlang/Erlang-current-documentation/doc/man_index.html`` (the bookmark will remain valid even when the Erlang version will be updated)
 
@@ -604,7 +604,7 @@ Some words about common problems encountered when designing parallel operations:
 
   - definition: *solutions so that concurrency cannot violate data integrity*
   - must be taken care of whenever there can be multiple writing accesses to a given resource
-  - most languages (C, C++, Java, Python, etc.) have to rely on specific synchronisation constructs (ex: mutexes, semaphores, serialisation, etc.)
+  - most languages (C, C++, Java, Python, etc.) have to rely on specific synchronisation constructs (e.g. mutexes, semaphores, serialisation, etc.)
   - their use is intensively error-prone, debugging parallel and/or distributed systems can be soon a nightmare (non-reproducible bugs, `Heisenbugs <http://en.wikipedia.org/wiki/Unusual_software_bug#Heisenbug>`_, etc.) and only very skilled developers are able to produce correct code
   - these problems usually cannot happen in Erlang since no data is shared between processes, and processes exchange only asynchronous messages
 
@@ -614,7 +614,7 @@ Some words about common problems encountered when designing parallel operations:
   - definition: *a specific condition when two or more processes are each waiting for each other to release a resource, or more than two processes are waiting for resources in a circular chain*
   - example: one pencil, one rule, two persons wanting simultaneously to draw a line
 
-  - with Erlang, only the unavoidable deadlocks can happen, i.e. the ones introduced by the user at the logic, at the protocol level (the Erlang VM is free from lower-level deadlocks); ex: when implementing the `Dining philosophers problem <http://en.wikipedia.org/wiki/Dining_philosophers_problem>`_
+  - with Erlang, only the unavoidable deadlocks can happen, i.e. the ones introduced by the user at the logic, at the protocol level (the Erlang VM is free from lower-level deadlocks); e.g. when implementing the `Dining philosophers problem <http://en.wikipedia.org/wiki/Dining_philosophers_problem>`_
 
 
 - `race conditions <http://en.wikipedia.org/wiki/Race_condition>`_:
@@ -643,9 +643,9 @@ Later Erlang Skills To Develop
 
 - tuning: see also the `Erlang Efficiency Guide <http://erlang.org/doc/efficiency_guide/part_frame.html>`_
 
-- increasing reliability (ex: OTP might be interesting to use)
+- increasing reliability (e.g. OTP might be interesting to use)
 
-- data management and transformation, depending on what are the input data and what results are output, and on their volume (ex: large arrays, spreadsheets, databases, etc.)
+- data management and transformation, depending on what are the input data and what results are output, and on their volume (e.g. large arrays, spreadsheets, databases, etc.)
 
 - graphical user interfaces, to enter simulation parameters or view the results (pre and post processing); can be done either natively or by interfacing with other tools/languages
 
@@ -739,7 +739,7 @@ Therefore a class implementer just has to specify the class-specific elements, w
   - are not inherited
   - or that would be inherited, but actually are overridden in this class
 
-Note that, when a method is called, the current state of the instance (its ``State`` table) is always appended as first method parameter, therefore the method arity is always the number of parameters it expects plus one: a method named ``say_hello`` to be called with two parameters (ex: ``Instance ! {say_hello,[X,Y]}``) will be declared (exported) as ``say_hello/3``: ``say_hello( State, X, Y ) -> [..].``.
+Note that, when a method is called, the current state of the instance (its ``State`` table) is always appended as first method parameter, therefore the method arity is always the number of parameters it expects plus one: a method named ``say_hello`` to be called with two parameters (e.g. ``Instance ! {say_hello,[X,Y]}``) will be declared (exported) as ``say_hello/3``: ``say_hello( State, X, Y ) -> [..].``.
 
 See, in the ``wooper/examples`` directory, the ``class_Cat.erl`` and ``class_Cat_test.erl`` files for method definition and calling.
 
@@ -988,7 +988,7 @@ Moreover, to run in interactive mode, enough computing resources have to be avai
 If simulation time was not totally uncoupled from user time?
 ............................................................
 
-Then a simulation would produce different results depending on the available resources (ex: what computers it would run on).
+Then a simulation would produce different results depending on the available resources (e.g. what computers it would run on).
 
 Example: a deployment policy installing meters in a loop which would be unaware of simulation time (i.e. without a proper scheduling nor being integrated with that scheduling, thus being scheduled in user time); for example all other processes running on the computer would affect the simulation outcomes, which of course is not wanted.
 
@@ -1049,7 +1049,7 @@ Therefore specific mechanisms have to be implemented so that *every possible com
 
 As a consequence:
 
-- unless adequate simulation-specific tools are used (ex: if just using OOP languages or even multi-agent frameworks, which includes Erlang and WOOPER), then none of these properties is expected to be preserved
+- unless adequate simulation-specific tools are used (e.g. if just using OOP languages or even multi-agent frameworks, which includes Erlang and WOOPER), then none of these properties is expected to be preserved
 - hence the need of specific constructs, associated with specific constraints to respect
 - the purpose of Sim-Diasca is to support these expected properties
 - what is difficult is to ensure them *in a concurrent context*, which is key to scalability
@@ -1081,7 +1081,7 @@ ________________
 - time-stepped simulations:
 
   - simulation time is chopped into ticks, of constant duration in virtual time
-  - a fundamental simulation frequency can therefore be defined (ex: 50 Hz means 20 ms ticks)
+  - a fundamental simulation frequency can therefore be defined (e.g. 50 Hz means 20 ms ticks)
 
 - simulation time is controlled by a (root) time manager, which schedules all simulation actors (notably it notifies them of the beginning of each tick)
 
@@ -1124,7 +1124,7 @@ Advanced scheduling basically uncouples the processing of past actor messages fr
 - a tick which is not scheduled at all for that actor, neither for actor message nor for a planned action
 
 
-As a result, as soon as for a given simulation (overall) tick no actor is to be scheduled, this tick can safely be skipped, and the engine actually will automatically jump instantly over all idle durations (i.e. simulated periods during which no event can possibly happen), which is especially interesting for systems which may register no activity during some periods (ex: tremendous acceleration if a 200Hz simulation involves event bursts separated by, say, centuries).
+As a result, as soon as for a given simulation (overall) tick no actor is to be scheduled, this tick can safely be skipped, and the engine actually will automatically jump instantly over all idle durations (i.e. simulated periods during which no event can possibly happen), which is especially interesting for systems which may register no activity during some periods (e.g. tremendous acceleration if a 200Hz simulation involves event bursts separated by, say, centuries).
 
 
 
@@ -1143,7 +1143,7 @@ ____________
 
   - for a tick, the actual duration is the maximal duration in all the actors, instead of the sum of all actor durations
 
-  - ex: 35 million actors evaluated in parallel, rather than one after the other
+  - e.g. 35 million actors evaluated in parallel, rather than one after the other
 
 - two simulation modes:
 
@@ -1430,7 +1430,7 @@ This describes more specifically how Sim-Diasca is to be used in a distributed c
 
 Key elements:
 
-- a scheduling hierarchy based on a distributed time management allowing for flexible granularity (ex: at the core/processor/computer/cluster level), based on time managers: they drive actors, directly or through child managers, forming a scheduling tree, whose root controls and monitors the overall simulation time and interacts with the user
+- a scheduling hierarchy based on a distributed time management allowing for flexible granularity (e.g. at the core/processor/computer/cluster level), based on time managers: they drive actors, directly or through child managers, forming a scheduling tree, whose root controls and monitors the overall simulation time and interacts with the user
 
 - advanced actor scheduling: hybrid engine, time-stepped but with some event-based features (jumping directly over idle periods)
 

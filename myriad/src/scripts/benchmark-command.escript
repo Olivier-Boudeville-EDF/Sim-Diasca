@@ -1,13 +1,13 @@
 #!/usr/bin/env escript
 
-% Copyright (C) 2010-2021 Olivier Boudeville
+% Copyright (C) 2010-2023 Olivier Boudeville
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
 % This file is part of the Ceylan-Myriad library.
 
 
-% See benchmark-command.sh which is simpler and probably more reliable
+% See benchmark-command.sh, which is simpler and probably more reliable
 % (execution seems to behave differently with os:cmd).
 
 get_time_format( ) ->
@@ -80,16 +80,16 @@ run_command( Command, CurrentCount, Count,
 	{ W, S, M, U } = interpret_result( parse_result( RawRes ) ),
 	%o:format( "Intermediary result: ~p.~n", [ { W, S, M, U } ] ),
 	run_command( Command, CurrentCount-1, Count,
-				{ WTotal+W, STotal+S, MTotal+M, UTotal+U } ).
+				 { WTotal+W, STotal+S, MTotal+M, UTotal+U } ).
 
 
 display_result( { W, S, U, M }, CommandToBenchmark, MeasureCount ) ->
 	io:format( "The execution of command '~s' led, after ~B measures, to:~n"
-			  " - a mean wall-clock time of ~.1f milliseconds~n"
-			  " - a mean system time of ~.1f milliseconds~n"
-			  " - a mean user time of ~.1f milliseconds~n"
-			  " - a mean total memory of ~f KB~n",
-			 [ CommandToBenchmark, MeasureCount, W, S, U, M ] ).
+			   " - a mean wall-clock time of ~.1f milliseconds~n"
+			   " - a mean system time of ~.1f milliseconds~n"
+			   " - a mean user time of ~.1f milliseconds~n"
+			   " - a mean total memory of ~f KB~n",
+			   [ CommandToBenchmark, MeasureCount, W, S, U, M ] ).
 
 
 
@@ -102,9 +102,7 @@ main( [ CommandToBenchmark ] ) ->
 
 	MeasureCount = 5,
 	Res = run_command( ActualCommand, MeasureCount ),
-	display_result( Res, CommandToBenchmark, MeasureCount ),
-
-	ok;
+	display_result( Res, CommandToBenchmark, MeasureCount );
 
 main( _ ) ->
 	usage().

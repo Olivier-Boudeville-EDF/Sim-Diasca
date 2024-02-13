@@ -38,7 +38,7 @@ Architecture
 
 With Sim-Diasca, the management of distributed traces is split into the following roles:
 
-- Each simulated object (model instance, i.e. actor), but also each technical agent or simulation case, may be led to send traces regarding its operation. The vast majority of them are ``TrameEmitter`` instances (they inherit from that class, directly or not), other are not instances thereof but nevertheless need to be able to output traces (ex: test cases)
+- Each simulated object (model instance, i.e. actor), but also each technical agent or simulation case, may be led to send traces regarding its operation. The vast majority of them are ``TrameEmitter`` instances (they inherit from that class, directly or not), other are not instances thereof but nevertheless need to be able to output traces (e.g. test cases)
 
 - The distributed traces have to be collected and aggregated, this is done by a ``TraceAggregator`` instance, which supports various output formats. Then overall analysis and search for event correlations are possible
 
@@ -53,14 +53,14 @@ Sending, collecting and aggregating traces proves very useful, but this feature 
 
 As a consequence, the point has been, for non-critical channels, to be able to disable trace sending as a whole, *without any performance penalty* compared to the same code in which there would not be any trace sending at all.
 
-To disable trace sending and incur no runtime overhead, one should ensure that the compile-time make variable ``ENABLE_TRACES`` is set to false [#]_. To do so, one should either specify it directly on the command-line (ex: ``make clean all ENABLE_TRACES=false``), or update directly the make files (typically by setting ``ENABLE_TRACES := false`` in ``traces/GNUmakevars.inc``). Then everything above WOOPER (i.e. the Traces layer, the Sim-Diasca layer, and the code using it) should be rebuilt, as it is a compile-time (as opposed to runtime) option.
+To disable trace sending and incur no runtime overhead, one should ensure that the compile-time make variable ``ENABLE_TRACES`` is set to false [#]_. To do so, one should either specify it directly on the command-line (e.g. ``make clean all ENABLE_TRACES=false``), or update directly the make files (typically by setting ``ENABLE_TRACES := false`` in ``traces/GNUmakevars.inc``). Then everything above WOOPER (i.e. the Traces layer, the Sim-Diasca layer, and the code using it) should be rebuilt, as it is a compile-time (as opposed to runtime) option.
 
 .. [#] This will result in *not* having the  ``TracingActivated`` preprocessor symbol defined.
 
 
 .. Tip::
 
-  If wanting to operate a selection on the classes whose instances must be able to send traces while others cannot, one may just keep the default ``ENABLE_TRACES := true`` and compile everything with traces disabled (from the root: ``make clean all ENABLE_TRACES=false``, then  update the timestamp of the source files of the cherry-picked classes that are to be allowed to send traces (ex: ``touch class_Foobar.erl``), then run ``make all`` from the root of the sources: all classes then rebuilt will have traces enabled.
+  If wanting to operate a selection on the classes whose instances must be able to send traces while others cannot, one may just keep the default ``ENABLE_TRACES := true`` and compile everything with traces disabled (from the root: ``make clean all ENABLE_TRACES=false``, then  update the timestamp of the source files of the cherry-picked classes that are to be allowed to send traces (e.g. ``touch class_Foobar.erl``), then run ``make all`` from the root of the sources: all classes then rebuilt will have traces enabled.
 
   Of course this can be done the other way round, in order to just select the classes that are to be silenced.
 
@@ -99,7 +99,7 @@ The type of traces is by default based on LogMX.
 This can be changed (``TraceType`` being then either ``log_mx_traces`` or ``{text_traces,T}`` where ``T`` is either ``text_only`` or ``pdf``):
 
 - one time for all, by editing the ``TraceType`` define in ``traces/src/traces.hrl`` (and then rebuilding all)
-- on a per-case basis, still at compilation-time, by using the ``?case_start(TraceType)`` macro (ex: see ``soda_stochastic_integration_test.erl``)
+- on a per-case basis, still at compilation-time, by using the ``?case_start(TraceType)`` macro (e.g. see ``soda_stochastic_integration_test.erl``)
 - at runtime, by specifying the ``--trace-type TraceSpecType`` command-line option, where ``TraceSpecType`` is ``logmx``, ``text`` or ``pdf``, like in::
 
   $ make foobar_run CMD_LINE_OPT="--trace-type text --batch"
@@ -167,7 +167,7 @@ When wanting to generate a trace report once the simulation is over - rather tha
 
 To do so, in ``traces/src/traces.hrl``, just define ``TraceType`` to ``{text_traces,pdf}`` instead of the default ``log_mx_traces``, and rebuild everything above ``WOOPER`` (i.e. the ``Traces`` package, the ``Sim-Diasca`` package, and the code using it).
 
-Then, as soon as the simulation will have stopped, the traces will be properly aggregated and formatted from Sim-Diasca, a PDF being generated and then automatically displayed. This PDF can be useful to share simulation results asynchronously (ex: with remote colleagues).
+Then, as soon as the simulation will have stopped, the traces will be properly aggregated and formatted from Sim-Diasca, a PDF being generated and then automatically displayed. This PDF can be useful to share simulation results asynchronously (e.g. with remote colleagues).
 
 Only the most interesting trace fields are kept here (a well-chosen subset of the full, actual ones), for the sake of readability.
 
@@ -214,7 +214,7 @@ Among the common features:
 - their data files for time series all start with an header that lists meta-data like generation date and time, probe name, title, and the description of the curves involved
 
 
-As subclassing the basic probe or devising new ones (ex: web-based ones) is relatively straightforward, projects may start with built-in probes and define in their course specialised ones.
+As subclassing the basic probe or devising new ones (e.g. web-based ones) is relatively straightforward, projects may start with built-in probes and define in their course specialised ones.
 
 Another popular option is to switch to dedicated plotting/rendering libraries when post-processing the data resulting from the simulation. Then, in the simulation case of interest, the ``data_only`` producer option might be specified in the patterns listed in the ``result_specification`` field of the ``simulation_settings`` record , in which case only the corresponding data files (``*.dat`` files) will be produced (no ``*.png`` plot files).
 
@@ -323,7 +323,7 @@ Probe Report Generation Issues
 
 You must first check that you sent at least one data sample to your probe, and then that it is included in the result specification.
 
-If, when the generation takes place, a warning about ``bmargin`` is issued, then you must be using a *very* old version of ``gnuplot`` (ex: 4.0).
+If, when the generation takes place, a warning about ``bmargin`` is issued, then you must be using a *very* old version of ``gnuplot`` (e.g. 4.0).
 
 In this case you can either:
 
@@ -331,11 +331,11 @@ In this case you can either:
 - in ``sim-diasca/src/core/src/probe/class_Probe.erl``, disable all key options: set the ``key_options`` attribute to an empty string
 
 
-More generally, if a problems occurs, you should check first that the probe report (ex: ``Test_probe.png``) was indeed generated.
+More generally, if a problems occurs, you should check first that the probe report (e.g. ``Test_probe.png``) was indeed generated.
 
 If yes, it must be a (minor) problem of the display tool, see the ``Probe Report Display Issues``_ section.
 
-If no, actually the PNG could not be generated. The next step is to check in your result directory that the data file (ex: ``Test_probe.dat``) and the command file (ex: ``Test_probe.p``) are correct, i.e. existing, not empty, and not corrupted.
+If no, actually the PNG could not be generated. The next step is to check in your result directory that the data file (e.g. ``Test_probe.dat``) and the command file (e.g. ``Test_probe.p``) are correct, i.e. existing, not empty, and not corrupted.
 
 If these files seem correct, you can just check that you can generate the lacking PNG by yourself, by issuing on the command line::
 
@@ -506,7 +506,7 @@ Each data that is shared according to following conventions:
 
 - data is defined as key/value pairs, respectively an atom and any Erlang term
 
-- data can be *static*, i.e. be defined initially and thus be permanently available (ex: through the built-in support for reading from configuration files) and/or be introduced in the course of the simulation, i.e. be *dynamic*
+- data can be *static*, i.e. be defined initially and thus be permanently available (e.g. through the built-in support for reading from configuration files) and/or be introduced in the course of the simulation, i.e. be *dynamic*
 
 - can be modified over time once defined (non-const, to be defined with the ``mutable`` qualifier) or not (immutable, to be defined with the ``const`` qualifier)
 
@@ -514,7 +514,7 @@ Note that static/dynamic and mutable/const are orthogonal properties, all combin
 
 So, basically, compared to inter-actor messages, the data-exchanger offers an alternate, radically different paradigm to manage data, that can be seen as a DSM (i.e. a *Distributed Shared Memory*), somewhat a dual approach to the in-tick reordered actor messages. The point is that this service still allows to preserve simulation properties, and that the different trade-offs it offers may, depending on the situation, be more suitable for some needs of information sharings, notably in the *one writer/many readers* case.
 
-These services had to be offered with care, as, for the model developer, unwanted side-effects or race conditions should not be made easier to perform, and for sure these sharing services must not become a means of bypassing the simulation mechanisms (ex: if instantaneous reads and writes were allowed, then the induced possible immediate inter-actor communication would break at least reproducibility).
+These services had to be offered with care, as, for the model developer, unwanted side-effects or race conditions should not be made easier to perform, and for sure these sharing services must not become a means of bypassing the simulation mechanisms (e.g. if instantaneous reads and writes were allowed, then the induced possible immediate inter-actor communication would break at least reproducibility).
 
 Note that the only standard way of exchanging information and synchronising between actors (as opposed to the sharing of information) remains the sending of actor messages.
 
@@ -537,7 +537,7 @@ These configuration files must respect the Erlang term syntax, with a ``{Key,Val
 
 
 
-Such configuration files are to be declared in the ``enable_data_exchanger`` field of the deployment settings (see the detailed syntax in ``class_DeploymentManager.hrl``). They will be then automatically deployed [#]_ and their corresponding data defined. As a convention, their recommended extension is ``.cfg`` (ex: ``my_simulation_parameters.cfg``). See the ``valid_example_configuration_file.cfg`` and ``invalid_example_configuration_file.cfg`` as examples.
+Such configuration files are to be declared in the ``enable_data_exchanger`` field of the deployment settings (see the detailed syntax in ``class_DeploymentManager.hrl``). They will be then automatically deployed [#]_ and their corresponding data defined. As a convention, their recommended extension is ``.cfg`` (e.g. ``my_simulation_parameters.cfg``). See the ``valid_example_configuration_file.cfg`` and ``invalid_example_configuration_file.cfg`` as examples.
 
 .. [#] We preferred adding automatically these user-specified configuration files to the deployment archive and having them parsed once per computing node, rather than read only once and then be sent as messages over the network: for fairly large data-sets, we believe that being compressed in a data archive rather than being expanded as Erlang terms on the sender-side should result in better performances, network-wise.
 
@@ -558,7 +558,7 @@ Modifying Data
 
 Any already-defined data, whose current qualifier is ``mutable``, can be modified, either initially (in this case the change will be immediate) or in the course of the simulation (in this case the change will occur only starting from the next tick).
 
-This is done thanks to calls to the ``modify_data/{3,4,5}`` helper functions, which on each tick are synchronous operations resulting in the root data exchanger recording all commits that happen during the current tick, and checking them on the fly (ex: no change in `const` data, only up to one commit per data key per tick, etc.). A ``commit`` request is implemented as a direct message sending, from an actor to the root data exchanger (thus not going through the data-exchange tree).
+This is done thanks to calls to the ``modify_data/{3,4,5}`` helper functions, which on each tick are synchronous operations resulting in the root data exchanger recording all commits that happen during the current tick, and checking them on the fly (e.g. no change in `const` data, only up to one commit per data key per tick, etc.). A ``commit`` request is implemented as a direct message sending, from an actor to the root data exchanger (thus not going through the data-exchange tree).
 
 Once this tick is over, should at least one commit have been requested, the root time manager notifies the root data exchanger that we are in-between two ticks and that it can thus propagate safely its commit(s), down the exchanger hierarchy (tree-based propagation).
 
@@ -572,7 +572,7 @@ That way, at the expense of a minimal (and conditional [#]_) inter-tick wall-clo
 .. [#] For synchronisation reasons, the commit propagation has to be part of the critical path of the time manager (the period between two ticks during which no parallel operation can occur). As increasing too much that duration would directly impact the simulation overall performances, we did our best to minimise the inter-tick latency induced by the data-exchange service. For example most checkings are not once a write operation is requested, not later once it is to be actually committed.
 
 
-Note also that setting a data involves either defining a new key or modifying a value associated to an already-defined key, possibly also updating the qualifier of a key/value pair, provided these operations are licit (ex: a ``mutable`` qualifier may be set to ``const``, not the other way round; a data can be defined only once, and modified any number of times once first defined).
+Note also that setting a data involves either defining a new key or modifying a value associated to an already-defined key, possibly also updating the qualifier of a key/value pair, provided these operations are licit (e.g. a ``mutable`` qualifier may be set to ``const``, not the other way round; a data can be defined only once, and modified any number of times once first defined).
 
 
 More precisely, data **modification**, during the simulation, is to be done from actors, and is either:
@@ -583,7 +583,7 @@ More precisely, data **modification**, during the simulation, is to be done from
 
 The point is that, once the simulation is started:
 
-- a modification done at tick T will be visible (thanks to read operations) only at the next scheduled tick (ex: T+1)
+- a modification done at tick T will be visible (thanks to read operations) only at the next scheduled tick (e.g. T+1)
 
 - a given data (i.e. a value associated to a key), provided it was declared as ``mutable``, can be modified during the simulation up to once per tick, otherwise the data exchanger will detect the mismatch (commit inconsistency, up to one writer per key and per tick) and crash on purpose the simulation with a relevant exception
 

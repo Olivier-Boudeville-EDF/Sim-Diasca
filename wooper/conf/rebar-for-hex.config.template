@@ -33,7 +33,7 @@
 % hex-compile-hook-script.sh, to compensate for the GNUmake* root files that the
 % package archive will not include at their location)
 %
-{deps, [ {myriad, "MYRIAD_VERSION_FOR_REBAR"} ] }.
+{deps, [ {myriad, "MYRIAD_VERSION_FOR_OTP"} ] }.
 
 
 % Include directories found in INC:
@@ -59,7 +59,7 @@
 %
 {relx, [
 
-  {release, {wooper_release, "VERSION_FOR_REBAR"},
+  {release, {wooper_release, "VERSION_FOR_OTP"},
 			% myriad thus implied:
 			[sasl, wooper]},
 

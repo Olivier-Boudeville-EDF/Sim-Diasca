@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2023 Olivier Boudeville
+% Copyright (C) 2011-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -125,6 +125,7 @@
 
 
 % Shorthands:
+
 -type accumulator() :: basic_utils:accumulator().
 -type ustring() :: text_utils:ustring().
 -type bucket_count() :: hashtable:bucket_count().
@@ -300,8 +301,8 @@ get_value_with_default( Key, DefaultValue,
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
-% Ex: [Color, Age, Mass] = lazy_hashtable:get_values([color, age, mass],
-%  MyLazyTable])
+% For example [Color, Age, Mass] = lazy_hashtable:get_values([color, age, mass],
+% MyLazyTable])
 %
 -spec get_values( [ key() ], lazy_hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
@@ -309,10 +310,8 @@ get_values( Keys, Hashtable ) ->
 	{ RevValues, _FinalTable } = lists:foldl(
 
 		fun( _Elem=Key, _Acc={ Values, Table } ) ->
-
 			{ Value, ShrunkTable } = extract_entry( Key, Table ),
 			{ [ Value | Values ], ShrunkTable }
-
 		end,
 		_Acc0={ [], Hashtable },
 		_List=Keys ),
@@ -328,7 +327,7 @@ get_values( Keys, Hashtable ) ->
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
-% Ex: [Color=red, Age=23, Mass=51] = lazy_hashtable:get_all_values(
+% For example [Color=red, Age=23, Mass=51] = lazy_hashtable:get_all_values(
 %   [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
 %
 -spec get_all_values( [ key() ], lazy_hashtable() ) -> [ value() ].
@@ -336,10 +335,8 @@ get_all_values( Keys, Hashtable ) ->
 
 	{ RevValues, FinalTable } = lists:foldl(
 		fun( _Elem=Key, _Acc={ Values, Table } ) ->
-
-				{ Value, ShrunkTable } = extract_entry( Key, Table ),
-				{ [ Value | Values ], ShrunkTable }
-
+			{ Value, ShrunkTable } = extract_entry( Key, Table ),
+			{ [ Value | Values ], ShrunkTable }
 		end,
 		_Acc0={ [], Hashtable },
 		_List=Keys ),
@@ -364,7 +361,7 @@ get_all_values( Keys, Hashtable ) ->
 % to duplicate the whole content in memory).
 %
 % Note: as the fun may return modified keys, the whole structure of the
-% hashtable may change (ex: different buckets used for replaced entries,
+% hashtable may change (e.g. different buckets used for replaced entries,
 % colliding keys resulting in having less entries afterwards, etc.).
 %
 % One may request the returned hashtable to be optimised after this call.
@@ -533,7 +530,7 @@ optimise_table_if_necessary( LazyTable={ Hashtable, CurrentOpCount } ) ->
 				true ->
 					%io:format( "Lazy table is optimised.~n" ),
 					NewHashtable = hashtable:optimise_unconditionally(
-								EntryCount, BucketCount, Entries, Hashtable ),
+						EntryCount, BucketCount, Entries, Hashtable ),
 					{ NewHashtable, _NewOpCount=0 };
 
 				false ->
@@ -623,7 +620,7 @@ pop_from_entry( Key, LazyHashtable ) ->
 % @doc Returns a flat list whose elements are all the key/value pairs of the
 % hashtable, in no particular order.
 %
-% Ex: [{K1,V1}, {K2,V2}, ...].
+% For example: [{K1,V1}, {K2,V2}, ...].
 %
 -spec enumerate( lazy_hashtable() ) -> entries().
 enumerate( _LazyHashtable={ Hashtable, _OpCount } ) ->
@@ -647,7 +644,8 @@ keys( _LazyHashtable={ Hashtable, _OpCount } ) ->
 
 % @doc Returns a list containing all the values of this hashtable.
 %
-% Ex: useful if the key was used as an index to generate this table first.
+% For example useful if the key was used as an index to generate this table
+% first.
 %
 -spec values( lazy_hashtable() ) -> [ value() ].
 values( _LazyHashtable={ Hashtable, _OpCount }  ) ->

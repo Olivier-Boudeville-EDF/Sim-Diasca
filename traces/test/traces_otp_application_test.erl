@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -79,9 +79,9 @@ test_traces_application( OrderedAppNames ) ->
 
 
 	% The top-level user process may not be aware that an OTP application fails
-	% (ex: because its main process crashed), which is a problem for a test. So
-	% here we link explicitly this test process to the trace aggregator, to
-	% have a chance of detecting issues:
+	% (e.g. because its main process crashed), which is a problem for a test. So
+	% here we link explicitly this test process to the trace aggregator, to have
+	% a chance of detecting issues:
 	%
 	erlang:link( AggPid ),
 

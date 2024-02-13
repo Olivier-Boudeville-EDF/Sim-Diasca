@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2023 Olivier Boudeville
+% Copyright (C) 2023-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -28,7 +28,7 @@
 
 % @doc Testing the <b>OpenGL support</b>, as an integration test, designated as
 % "applicative" since using application events and higher-level applicative GUI
-% states (as opposed to direct event messages like
+% states (as opposed to direct event messages, like
 % gui_opengl_direct_integration_test.erl does).
 %
 % This test relies on the old OpenGL (the one obtained with the "compatibility"
@@ -48,8 +48,8 @@
 % - wx:demo/0: lib/wx/examples/demo/ex_gl.erl
 % - test suite: lib/wx/test/wx_opengl_SUITE.erl
 %
-% As the OpenGL canvas is not resized when its containers are resized, we listen
-% to the resizing of the parent window and adapt accordingly.
+% As the OpenGL canvas is not resized when its containers are resized, the test
+% listens to the resizing of the parent window and adapts accordingly.
 
 
 % For GL/GLU defines; the sole include that MyriadGUI user code shall reference:
@@ -95,7 +95,6 @@
 
 % This is the test-specific overall GUI information:
 -record( my_test_gui_info, {
-
 
 	% Subsection for MyriadGUI-level test information:
 
@@ -179,8 +178,6 @@
 -type mesh() :: mesh:mesh().
 -type indexed_face() :: mesh:indexed_face().
 -type indexed_triangle() :: mesh:indexed_triangle().
-
-
 
 
 
@@ -274,7 +271,7 @@ get_test_tetra_colors() ->
 
 
 
-% Test colored cube (regular hexaedron).
+% Test colored cube (regular hexaedron, i.e. cube).
 
 % @doc Returns the information needed in order to define a simple test colored
 % cube.
@@ -347,14 +344,15 @@ get_test_colored_cube_normals() ->
 % @doc Returns the (8) per-vertex (not face) colors of the test colored cube.
 -spec get_test_colored_cube_colors( ) -> [ render_rgb_color() ].
 get_test_colored_cube_colors() ->
-	[ _CF1={ 0.0, 0.0, 0.0 },
-	  _CF2={ 1.0, 0.0, 0.0 },
-	  _CF3={ 1.0, 1.0, 0.0 },
-	  _CF4={ 0.0, 1.0, 0.0 },
-	  _CF5={ 0.0, 1.0, 1.0 },
-	  _CF6={ 1.0, 1.0, 1.0 },
-	  _CF7={ 1.0, 0.0, 1.0 },
-	  _CF8={ 0.0, 0.0, 1.0 } ].
+	[ _CF1={ 0.0, 0.0, 0.0 }, % black
+	  _CF2={ 1.0, 0.0, 0.0 }, % red
+	  _CF3={ 1.0, 1.0, 0.0 }, % yellow
+	  _CF4={ 0.0, 1.0, 0.0 }, % green
+	  _CF5={ 0.0, 1.0, 1.0 }, % cyan
+	  _CF6={ 1.0, 1.0, 1.0 }, % white
+	  _CF7={ 1.0, 0.0, 1.0 }, % magenta
+	  _CF8={ 0.0, 0.0, 1.0 }  % blue
+	].
 
 
 
@@ -375,7 +373,7 @@ get_test_colored_cube_colors() ->
 -spec get_test_textured_cube_info() ->
 	{ [ vertex3() ], [ indexed_face() ], [ unit_normal3() ], [ uv_point() ] }.
 get_test_textured_cube_info() ->
-	% No texture coordinates used:
+	% Texture coordinates used:
 	{ get_test_textured_cube_vertices(), get_test_textured_cube_faces(),
 	  get_test_textured_cube_normals(), get_test_textured_cube_tex_coords() }.
 
@@ -412,11 +410,11 @@ get_test_textured_cube_vertices() ->
 
 
 
-% @doc Returns the (12) face triangles of the test textured cube.
+% @doc Returns the (2*6=12) face triangles of the test textured cube.
 -spec get_test_textured_cube_faces() -> [ indexed_triangle() ].
 get_test_textured_cube_faces() ->
 
-	% 36 indices (each in [0..23] - glTF indices start at zero - listed once or
+	% 36 indices (each in [0..23] - glTF indices start at zero, listed once or
 	% twice):
 	%
 	Indices = [ 1, 14, 20, 1, 20, 7, 10, 6, 19, 10, 19, 23,
@@ -471,7 +469,7 @@ get_test_image_directory() ->
 
 
 % @doc Returns the path to a basic "material" test image, to be mapped on the
-% cube.
+% rotating cube.
 %
 -spec get_test_image_path() -> file_path().
 get_test_image_path() ->
@@ -561,33 +559,20 @@ run_actual_test() ->
 -spec init_test_gui() -> app_gui_state().
 init_test_gui() ->
 
-	MainFrame = 
+	MainFrame =
 		gui_frame:create( "MyriadGUI OpenGL Applicative Integration Test" ),
 
 	% No way found to properly clear its content before onShow is processed:
 	Panel = gui_panel:create( MainFrame ),
 
-
-	% Creating a GL canvas with 'GLCanvas =
-	% gui_opengl:create_canvas(_Parent=Panel)' would have been enough:
-
-	% At least this number of bits per RGB component:
-	MinSize = 8,
-
-	GLAttributes = [ rgba, double_buffer, { min_red_size, MinSize },
-					 { min_green_size, MinSize }, { min_blue_size, MinSize },
-					 { depth_buffer_size, 24 } ],
-
 	% Could not be cleared early:
-	GLCanvas = gui_opengl:create_canvas( _Parent=Panel,
-		_Opts=[ { style, full_repaint_on_resize },
-				{ gl_attributes, GLAttributes } ] ),
-
-	% Subscribing to the panel instead would not catch any key press:
-	gui:subscribe_to_events( { onKeyPressed, GLCanvas } ),
+	GLCanvas = gui_opengl:create_canvas( _Parent=Panel ),
 
 	% Created, yet not bound yet (must wait for the main frame to be shown):
 	GLContext = gui_opengl:create_context( GLCanvas ),
+
+	% Subscribing to the panel instead would not catch any key press:
+	gui:subscribe_to_events( { onKeyPressed, GLCanvas } ),
 
 	GLBaseInfo = { GLCanvas, GLContext },
 

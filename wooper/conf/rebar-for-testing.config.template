@@ -20,9 +20,9 @@
 
 % As an hex-package dependency:
 %
-% Implied: {myriad, "MYRIAD_VERSION_FOR_REBAR"}
+% Implied: {myriad, "MYRIAD_VERSION_FOR_OTP"}
 %
-{deps, [ {wooper, "VERSION_FOR_REBAR" } ] }.
+{deps, [ {wooper, "VERSION_FOR_OTP" } ] }.
 
 
 % This testing just targets to trigger the build of WOOPER (and its Myriad
@@ -48,7 +48,7 @@
 %
 {relx, [
 
-  {release, {wooper_test_release, "VERSION_FOR_REBAR"},
+  {release, {wooper_test_release, "VERSION_FOR_OTP"},
 			[sasl, wooper]},
 
   %{sys_config, "./config/sys.config"},

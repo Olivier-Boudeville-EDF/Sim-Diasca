@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2023 Olivier Boudeville
+% Copyright (C) 2017-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -30,6 +30,10 @@
 % internal use.
 %
 -module(wooper_utils).
+
+
+% Version-related functions.
+-export([ get_wooper_version/0, get_wooper_version_string/0 ]).
 
 
 % Section related to the possible use of Python.
@@ -76,7 +80,25 @@
 
 % Shorthands:
 
+-type three_digit_version() :: basic_utils:three_digit_version().
+
 -type ustring() :: text_utils:ustring().
+
+
+
+% Version-related functions.
+
+% @doc Returns the version of the WOOPER library being used.
+-spec get_wooper_version() -> three_digit_version().
+get_wooper_version() ->
+	basic_utils:parse_version( get_wooper_version_string() ).
+
+
+% @doc Returns the version of the WOOPER library being used, as a string.
+-spec get_wooper_version_string() -> ustring().
+get_wooper_version_string() ->
+	% As defined (uniquely) in GNUmakevars.inc:
+	?wooper_version.
 
 
 

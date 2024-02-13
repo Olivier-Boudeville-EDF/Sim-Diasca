@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,12 +30,12 @@
 %
 % While using the process dictionary is usually regarded with contempt for good
 % reasons (impure, prone to unwanted side-effects, etc.), there are a few
-% specific cases where it might be nevertheless useful/relevant (ex: to make the
-% state of a user interfaces implicit, rather than adding a parameter to
+% specific cases where it might be nevertheless useful/relevant (e.g. to make
+% the state of a user interfaces implicit, rather than adding a parameter to
 % virtually all functions of views, in the sense of the MVC pattern).
 %
 % We provide a basic encapsulation for the ways of interacting with the process
-% dictionary, notably so that it is easier to locate (ex: thanks to 'grep') the
+% dictionary, notably so that it is easier to locate (e.g. thanks to 'grep') the
 % places where the process dictionary is used.
 %
 % This module could have been named 'impure_table' as well, and could have
@@ -59,7 +59,7 @@
 -export([ put/2, put_as_new/2, get/1, get_existing/1,
 		  remove/1, remove_existing/1,
 		  get_dictionary/0, get_keys/0, get_keys_for/1,
-		  blank/0, to_string/0 ]).
+		  blank/0, to_string/0, to_short_string/0 ]).
 
 
 % Shorthands:
@@ -200,20 +200,32 @@ blank() ->
 %
 -spec to_string() -> ustring().
 to_string() ->
+	text_utils:format( "the process dictionary of ~p ~ts",
+					   [ self(), to_short_string() ] ).
 
+
+% @doc Returns a short textual description of the current state of the process
+% dictionary.
+%
+-spec to_short_string() -> ustring().
+to_short_string() ->
+
+	% Keys can be any terms (not only atoms):
 	case erlang:get() of
 
 		[] ->
-			text_utils:format( "the process dictionary of ~p is empty",
-							   [ self() ] );
+			"is empty";
+
+		[ { K, V } ] ->
+			text_utils:format( "contains a single key, '~p', "
+				"associated to the following value:~n  ~p", [ K, V ] );
 
 		Pairs ->
 			Strings = lists:sort( [ text_utils:format(
-				"key '~ts' associated to value '~p'",
+				"key '~p' associated to value '~p'",
 				[ K, V ] ) || { K, V } <- Pairs ] ),
 
-			text_utils:format( "the process dictionary of ~p contains "
-				"~B pair(s): ~ts", [ self(), length( Pairs ),
-									 text_utils:strings_to_string( Strings ) ] )
+			text_utils:format( "contains ~B entries: ~ts", [ length( Pairs ),
+				text_utils:strings_to_string( Strings ) ] )
 
 	end.

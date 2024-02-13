@@ -1000,9 +1000,9 @@ Whereas some `WOOPER integrated calls`_ include a time-out, in the general case 
 
 It may be desirable instead that this waiting gets interrupted, should a crash of said instance be detected. This can be done by having a **link** between the client process (which may or may not trap EXIT messages) and the requested instance. Such a link can be created at instance creation (e.g. with ``new link``) or later.
 
-Another, often more appropriate, way for the client to be notified is to **monitor** the requested instance: if this last one crashes while being monitored, the monitoring processes (hence possibly the client process) will receive a ``DOWN`` message and possibly generate an exit call. This way a clent will never block waiting for a crashed instance [#]_.
+Another, often more appropriate, way for the client to be notified is to **monitor** the requested instance: if this last one crashes while being monitored, the monitoring processes (hence possibly the client process) will receive a ``DOWN`` message and possibly generate an exit call. This way a client will never block waiting for a crashed instance [#]_.
 
-In the future, the API for `WOOPER integrated calls`_ may include ``execute_monitired_request/{2,3,4}`` functions.
+In the future, the API for `WOOPER integrated calls`_ may include ``execute_monitored_request/{2,3,4}`` functions (see `gen_server:do_call/4 <https://github.com/erlang/otp/blob/dec82158732b72e97d42ae8a8bdf897e8f91bd23/lib/stdlib/src/gen.erl#L248C1-L248C1>`_ as an inspiration).
 
 See also our `process monitors`_ section, so that a WOOPER instance can monitor processes (possibly other WOOPER - active - instances).
 

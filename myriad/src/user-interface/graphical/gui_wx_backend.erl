@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2023 Olivier Boudeville
+% Copyright (C) 2017-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -232,9 +232,6 @@
 % See the corresponding gui:event_subscription_option().
 
 
--type wx_panel_option() :: gui_window:wx_window_option()
-						 | wx_event_handler_option().
-
 % Precisely:
 %    {id, integer()} |
 %    {position, {X :: integer(), Y :: integer()}} |
@@ -256,13 +253,10 @@
 
 
 -export_type([ wx_native_object_type/0, wx_opt_pair/0,
-			   wx_event_handler_option/0, wx_panel_option/0,
+			   wx_event_handler_option/0,
 			   other_wx_device_context_attribute/0,
 			   wx_device_context_attribute/0, wx_enum/0,
 			   wx_direction/0, wx_orientation/0 ]).
-
--type wx_art_id() :: unicode:chardata().
-% For example "wxART_NEW".
 
 
 % Preferably no '-export_type' here to avoid leakage of backend conventions.
@@ -282,10 +276,6 @@
 		  to_wx_connect_options/3,
 		  to_wx_debug_level/1,
 
-		  to_wx_panel_options/1,
-
-		  to_wx_bitmap_id/1, to_wx_icon_id/1,
-
 		  to_wx_id/1, to_wx_parent/1, to_wx_position/1, to_wx_size/1,
 		  to_wx_direction/1, to_wx_orientation/1,
 		  wx_id_to_window/1, wx_id_to_string/1,
@@ -300,6 +290,9 @@
 -export([ from_wx_object_type/1 ]).
 
 
+% Checks:
+-export([ is_wx_event/1 ]).
+
 
 % Shorthands:
 
@@ -313,7 +306,7 @@
 -type myriad_object_type() :: gui:myriad_object_type().
 -type gui_object() :: gui:gui_object().
 -type position() :: gui:position().
--type size() :: gui:size().
+-type sizing() :: gui:sizing().
 -type direction() :: gui:direction().
 -type orientation() :: gui:orientation().
 -type parent() :: gui:parent().
@@ -328,12 +321,6 @@
 
 
 -type window() :: gui_window:window().
-
--type icon_name_id() :: gui_window:icon_name_id().
-
--type panel_option() :: gui_panel:panel_option().
-
--type bitmap_name_id() :: gui_bitmap:bitmap_name_id().
 
 -type device_context_attribute() :: gui_opengl:device_context_attribute().
 
@@ -387,6 +374,21 @@ from_wx_object_type( WxObjectType ) ->
 
 
 
+% @doc Tells whether the specified term is a wx event.
+%
+% As wxEvent() = wx:wx_object() = #wx_ref{}, for example
+% {wx_ref,131,wxPaintEvent,[]}.
+%
+% Only in wxe.hrl:
+%is_wx_event( E ) when is_record( E, wx_ref ) ->
+is_wx_event( _E={ wx_ref, _RefCount, _EventType, _State } ) ->
+	% Supposedly:
+	true;
+
+is_wx_event( _ ) ->
+	false.
+
+
 
 % Debug section.
 
@@ -406,61 +408,7 @@ to_wx_debug_level( _DebugLevel=life_cycle ) ->
 
 
 
-
-
-% Panels section.
-
-
-% @doc Converts the specified MyriadGUI panel option(s) into the appropriate
-% wx-specific options.
-%
-% (exported helper)
-%
--spec to_wx_panel_options( maybe_list( panel_option() ) ) ->
-											[ wx_panel_option() ].
-to_wx_panel_options( Options ) ->
-	gui_window:to_wx_window_options( Options ).
-
-
-
-
-
-% @doc Converts the specified bitmap identifier (for an already-existing menu
-% item) into a wx-specific one.
-%
--spec to_wx_bitmap_id( bitmap_name_id() ) -> wx_art_id().
-to_wx_bitmap_id( BitmapId ) ->
-	case gui_generated:get_maybe_second_for_bitmap_id( BitmapId ) of
-
-		undefined ->
-			throw( { unknown_bitmap_id, BitmapId } );
-
-		WxArtId ->
-			WxArtId
-
-	end.
-
-
-
-
-% @doc Converts the specified icon identifier into a wx-specific one.
--spec to_wx_icon_id( icon_name_id() ) -> wx_art_id().
-to_wx_icon_id( IconId ) ->
-	case gui_generated:get_maybe_second_for_icon_name_id( IconId ) of
-
-		undefined ->
-			throw( { unknown_icon_id, IconId } );
-
-		WxIconId ->
-			WxIconId
-
-	end.
-
-
-
-
-
-% @doc Converts specified MyriadGUI identifier in a wx-specific widget
+% @doc Converts the specified MyriadGUI identifier in a wx-specific widget
 % identifier.
 %
 % (helper)
@@ -488,7 +436,7 @@ to_wx_parent( Other ) ->
 
 
 
-% @doc Converts specified MyriadGUI position in a wx-specific position (with
+% @doc Converts the specified MyriadGUI position in a wx-specific position (with
 % defaults).
 %
 % (helper)
@@ -502,11 +450,12 @@ to_wx_position( Position ) ->
 
 
 
-% @doc Converts specified MyriadGUI size in a wx-specific size (with defaults).
+% @doc Converts the specified MyriadGUI size in a wx-specific size (with
+% defaults).
 %
 % (helper)
 %
--spec to_wx_size( size() ) -> wx_size().
+-spec to_wx_size( sizing() ) -> wx_size().
 to_wx_size( _Size=auto ) ->
 	{ size, ?wx_default_size };
 
@@ -586,7 +535,7 @@ to_wx_device_context_attributes( _Attrs=[ Other | _T ], _Acc ) ->
 
 
 %
-% Section for the conversions from wx to MyriadGUI:
+% Section for the conversions from wx to MyriadGUI.
 %
 
 
@@ -694,13 +643,13 @@ connect( SourceGUIObject, EventType, Options, TrapSet ) ->
 	% Events to be processed through messages, not callbacks:
 	WxEventType = gui_event:to_wx_event_type( EventType ),
 
+	WxConnOpts = to_wx_connect_options( Options, EventType, TrapSet ),
+
 	cond_utils:if_defined( myriad_debug_gui_events,
 		trace_utils:debug_fmt( " - connecting event source '~ts' to ~w "
-			"for ~p (i.e. ~p), with options ~p.",
+			"for ~p (i.e. ~p), with options ~p, resulting in backend ones: ~w.",
 			[ gui:object_to_string( SourceGUIObject ), self(), EventType,
-			  WxEventType, Options ] ) ),
-
-	WxConnOpts = to_wx_connect_options( Options, EventType, TrapSet ),
+			  WxEventType, Options, WxConnOpts ] ) ),
 
 	wxEvtHandler:connect( SourceGUIObject, WxEventType, WxConnOpts ).
 
@@ -725,7 +674,8 @@ to_wx_connect_options( Opts, EventType, TrapSet ) ->
 % End of recursion, propagation explicitly requested by the user:
 to_wx_connect_options( _Opts=[], _EventType, _TrapSet,
 					   _PropagationSetting=propagate, Acc ) ->
-	[ _Propagate={ skip, true } | Acc ];
+	%[ _Propagate={ skip, true } | Acc ];
+	[ Acc ];
 
 % End of recursion, propagation explicitly denied by the user:
 to_wx_connect_options( _Opts=[], _EventType, _TrapSet,
@@ -748,7 +698,8 @@ to_wx_connect_options( _Opts=[], EventType, TrapSet,
 			Acc;
 
 		false ->
-			[ _Propagate={ skip, true } | Acc ]
+			%[ _Propagate={ skip, true } | Acc ]
+			Acc
 
 	end;
 

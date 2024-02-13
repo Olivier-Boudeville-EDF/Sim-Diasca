@@ -1,4 +1,4 @@
-% Copyright (C) 2009-2023 Olivier Boudeville
+% Copyright (C) 2009-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,11 +40,17 @@
 		  fail/1, fail/2, finished/0 ] ).
 
 
+% Resource information, notably useful for multimedia tests:
+-export([ get_myriad_icon_path/0, get_myriad_logo_path/0 ]).
+
+
 % Shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
 -type format_values() :: text_utils:format_values().
+
+-type image_path() :: gui_image:image_path().
 
 
 
@@ -60,11 +66,11 @@
 -spec start( module() | [ module() ] ) -> void().
 start( Module ) when is_atom( Module ) ->
 	start_common(),
-	basic_utils:display( "~n~n--> Testing module ~ts.~n", [ Module ] );
+	basic_utils:display( "~n--> Testing module ~ts.~n", [ Module ] );
 
 start( Modules ) when is_list( Modules ) ->
 	start_common(),
-	basic_utils:display( "~n~n--> Testing modules ~p.~n", [ Modules ] ).
+	basic_utils:display( "~n--> Testing modules ~p.~n", [ Modules ] ).
 
 
 % (helper)
@@ -222,3 +228,23 @@ fail( FormatString, Values ) ->
 	ReasonMessage = text_utils:format( FormatString, Values ),
 
 	fail( ReasonMessage ).
+
+
+
+
+% @doc Returns a path to the Myriad icon image, supposing the current directory
+% is two levels above the root one, that is typically in a subdirectory of the
+% 'test' one, like 'test/user-interface/'.
+%
+-spec get_myriad_icon_path() -> image_path().
+get_myriad_icon_path() ->
+	"../../doc/myriad-icon.png".
+
+
+% @doc Returns a path to the Myriad logo (main representation) image, supposing
+% the current directory is two levels above the root one, that is typically in a
+% subdirectory of the 'test' one, like 'test/user-interface/'.
+%
+-spec get_myriad_logo_path() -> image_path().
+get_myriad_logo_path() ->
+	"../../doc/myriad-title.png".

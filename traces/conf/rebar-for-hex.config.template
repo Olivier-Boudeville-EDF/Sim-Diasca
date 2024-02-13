@@ -47,7 +47,7 @@
 % hex-compile-hook-script.sh, to compensate for the GNUmake* root files that the
 % package archive will not include at their location)
 %
-{deps, [ {wooper, "WOOPER_VERSION_FOR_REBAR"} ] }.
+{deps, [ {wooper, "WOOPER_VERSION_FOR_OTP"} ] }.
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
@@ -189,7 +189,7 @@ display_usage() ->
 
 
 % @doc Returns the corresponding alphabet, based on its spec, expressed as an
-% atom (ex: 'numeric' for all numeric literals) or as a list thereof.
+% atom (e.g. 'numeric' for all numeric literals) or as a list thereof.
 %
 get_alphabet( AlphabetSpecs ) when is_list( AlphabetSpecs ) ->
 	list_utils:flatten_once( [ get_alphabet( A ) || A <- AlphabetSpecs ] );

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -567,20 +567,7 @@ init_test_gui() ->
 
 	Panel = gui_panel:create( MainFrame ),
 
-	% Creating a GL canvas with 'GLCanvas =
-	% gui_opengl:create_canvas(_Parent=Panel)' would have been enough:
-
-	% At least this number of bits per RGB component:
-	MinSize = 8,
-
-	GLAttributes = [ rgba, double_buffer, { min_red_size, MinSize },
-					 { min_green_size, MinSize }, { min_blue_size, MinSize },
-					 { depth_buffer_size, 24 } ],
-
-	GLCanvas = gui_opengl:create_canvas( _Parent=Panel,
-		_Opts=[ { style, full_repaint_on_resize },
-				{ gl_attributes, GLAttributes } ] ),
-
+	GLCanvas = gui_opengl:create_canvas( _Parent=Panel ),
 
 	% Created, yet not bound yet (must wait for the main frame to be shown):
 	GLContext = gui_opengl:create_context( GLCanvas ),

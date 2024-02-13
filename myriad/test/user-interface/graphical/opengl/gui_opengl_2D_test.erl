@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2023 Olivier Boudeville
+% Copyright (C) 2022-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -27,7 +27,7 @@
 
 
 % @doc 2D testing of the <b>OpenGL support</b>; displays a white rectangle
-% on a black background.
+% on a black background, with "FUN" written from colored lines.
 %
 % It is therefore a non-interactive, passive test (no spontaneous/scheduled
 % behaviour) whose main interest is to show a simple yet generic, appropriate
@@ -463,8 +463,7 @@ render( Width, Height ) ->
 		gl:vertex2i( XOffset+2*XInterletterOffset, YOffset ),
 		gl:vertex2i( XOffset+2*XInterletterOffset+CharWidth,
 					 YOffset + CharHeight  ),
-		gl:vertex2i( XOffset+2*XInterletterOffset+CharWidth,
-					 YOffset ),
+		gl:vertex2i( XOffset+2*XInterletterOffset+CharWidth, YOffset ),
 	gl:'end'(),
 
 

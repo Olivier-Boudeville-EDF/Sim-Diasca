@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -88,7 +88,7 @@
 
 
 -type monitor_node_option() :: { 'node_type', net_utils:node_type() }
-								 | 'nodedown_reason'.
+							 | 'nodedown_reason'.
 
 
 -export_type([ monitor_reference/0, monitored_element_type/0,

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Monday, February 15, 2010.
 
 
 % Numerical margin to account for rounding/quantisation errors induced by the
@@ -35,6 +36,10 @@
 -define( epsilon, 1.0e-6 ).
 
 
+% Quite small epsilon, for example for series expansions:
+-define( smaller_epsilon, 1.0e-20 ).
+
+
 % A threshold to denote unbounded values:
 %
 % (corresponds to the maximum value of 32-bit floats, i.e. the maximum
@@ -45,5 +50,9 @@
 
 % Should these constants be evaluated only at runtime otherwise:
 
-% math:sqrt(2*math:pi()):
+% sqrt(2.Pi): math:sqrt(2*math:pi()):
 -define( sqrt_2_pi, 2.5066282746310002 ).
+
+
+% ln(Pi): math:log(math:pi()).
+-define( ln_pi, 1.144729885849400174143427351353058711647 ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2011-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: November 10, 2011.
 
 
-% Unit tests for the generic hashtable implementation.
+% @doc Unit tests for the generic hashtable implementation.
 %
 % See the hashtable.erl tested module.
 %
@@ -85,6 +86,7 @@ run() ->
 
 	test_facilities:display( "Extracting the same entry from "
 							 "the same initial table." ),
+
 	{ MyFirstValue, MyH5 } = hashtable:extract_entry( ?MyFirstKey, MyH4 ),
 
 	test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,

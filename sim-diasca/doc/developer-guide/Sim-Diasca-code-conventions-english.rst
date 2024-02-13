@@ -108,15 +108,15 @@ Erlang Conventions
 
 The most obvious conventions are:
 
-- the **settings of the build chain** should be used (ex: with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) ``GNUmakesettings.inc``,  ``GNUmakerules.inc`` and ``GNUmakevars.inc`` files should be relied upon
+- the **settings of the build chain** should be used (e.g. with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) ``GNUmakesettings.inc``,  ``GNUmakerules.inc`` and ``GNUmakevars.inc`` files should be relied upon
 
 - **no warning should be tolerated**; anyway now our build chain treats warnings as (blocking) errors
 
-- **test cases** should be developed alongside most if not all modules [#]_; ex: if developing ``class_X.erl``, then probably the ``class_X_test.erl`` testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``) and fail loudly (and in a blocking manner) at the first error met
+- **test cases** should be developed alongside most if not all modules [#]_; e.g. if developing ``class_X.erl``, then probably the ``class_X_test.erl`` testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (e.g. thanks to pattern matching), not by the person running the test (e.g. who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``) and fail loudly (and in a blocking manner) at the first error met
 
 - **multiple levels of quality documentation** should be made available to the code user, and probably be written in parallel to the code; there are at least three documentation levels:
 
-  - lower-level documentation: code should always be **densely commented**, with headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (ex: ``RegisteredState=...`` to be preferred to ``NewState=...``), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort
+  - lower-level documentation: code should always be **densely commented**, with headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (e.g. ``RegisteredState=...`` to be preferred to ``NewState=...``), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort
 
   - higher-level **design and/or implementation notes**: they should be available as a set of paragraphs in each source file, before the function definitions, to help understanding how the features are implemented, and why
 
@@ -124,11 +124,11 @@ The most obvious conventions are:
 
 - more generally, **comments** should be clear and precise, numerous, rich and complete (overall, in terms of line counts, we target roughly 1/3 of code, 1/3 of blank lines and 1/3 of comments); all comments shall be written in UK English, start with a single ``%`` and be properly word-wrapped (use ``meta-q`` with our Emacs settings)
 
-- **indentation** should respect, as already explained, the 80-character width and 4-space tabulation; however the default built-in Erlang indentation mode of ``emacs`` can hardly be used for that, as it leads to huge width offsets (the ``elisp`` code for the emacs indentation will be modified for our need, in the future); the Sim-Diasca conventional indentation should be enforced, preferably automatically (ex: thanks to ``emacs``)
+- **indentation** should respect, as already explained, the 80-character width and 4-space tabulation; however the default built-in Erlang indentation mode of ``emacs`` can hardly be used for that, as it leads to huge width offsets (the ``elisp`` code for the emacs indentation will be modified for our need, in the future); the Sim-Diasca conventional indentation should be enforced, preferably automatically (e.g. thanks to ``emacs``)
 
-- **spacing homogeneity** across Sim-Diasca source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses), arguments should be separated by spaces (ex: ``f( X ) -> ...``, not ``f(X) -> ...``), especially if they are a bit complex (``f( A={U,V}, B, _C ) -> ...``, not ``f(A={U,V},B,_C) -> ...``)
+- **spacing homogeneity** across Sim-Diasca source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses), arguments should be separated by spaces (e.g. ``f( X ) -> ...``, not ``f(X) -> ...``), especially if they are a bit complex (``f( A={U,V}, B, _C ) -> ...``, not ``f(A={U,V},B,_C) -> ...``)
 
-- see the `Using Type Specifications With Sim-Diasca`_ section for **type-related conventions**; at least all exported functions shall have a ``-spec`` declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in "semantic" terms rather than on technical ones (ex: ``-type temperature() :: ...`` than ``float()``); developers may refer to, or enrich, ``myriad/src/utils/unit_utils.erl`` for that
+- see the `Using Type Specifications With Sim-Diasca`_ section for **type-related conventions**; at least all exported functions shall have a ``-spec`` declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in "semantic" terms rather than on technical ones (e.g. ``-type temperature() :: ...`` than ``float()``); developers may refer to, or enrich, ``myriad/src/utils/unit_utils.erl`` for that
 
 - the **latest stable version of Erlang** should be used, preferably built thanks to our ``myriad/conf/install-erlang.sh`` script
 
@@ -147,20 +147,20 @@ The most obvious conventions are:
 
 - the use of ``case ... of ... end`` should be preferred to the use of ``if`` (never used in our code base)
 
-- we also prefer that the various patterns of a case are indented with exactly one tabulation, and that the closing ``end`` lies as much as possible on the left (ex: if having specified ``MyVar = case ... end``, then ``end`` should begin at the same column as ``MyVar``); the same applies to ``try ... catch ... end`` clauses
+- we also prefer that the various patterns of a case are indented with exactly one tabulation, and that the closing ``end`` lies as much as possible on the left (e.g. if having specified ``MyVar = case ... end``, then ``end`` should begin at the same column as ``MyVar``); the same applies to ``try ... catch ... end`` clauses
 
-- when a term is ignored, instead of using simply ``_``, one should define a **named mute variable** in order to provide more information about this term (ex: ``_TimeManagerPid``); one should then to accidental matching of such names
+- when a term is ignored, instead of using simply ``_``, one should define a **named mute variable** in order to provide more information about this term (e.g. ``_TimeManagerPid``); one should then to accidental matching of such names
 
 - some conventional variable names are, and may be, extensively used: ``Res`` for result, ``H`` and ``T`` for respectively the head and tail of a list
 
-- when needing an **associative table**, use the ``table`` pseudo-module; if needing to store such an instance in an attribute, its name shall be suffixed with ``_table`` (ex: ``road_table``); a key/value pair shall be designated as a table *entry* (ex: variable named as ``RoadEntry``)
+- when needing an **associative table**, use the ``table`` pseudo-module; if needing to store such an instance in an attribute, its name shall be suffixed with ``_table`` (e.g. ``road_table``); a key/value pair shall be designated as a table *entry* (e.g. variable named as ``RoadEntry``)
 
 - regarding **text**:
 
   - if a text is to be rather static (constant) and/or if it is to be exchanged between processes, then it should be a ``binary``, and its type shall be declared as ``text_utils:bin_string()``
   - other, a plain string (``string()``) shall be used
 
-- when defining a non-trivial datastructure, a **record** shall be used (rather than, say, a mere ad-hoc tuple), a corresponding **type** should be then defined (ex: a ``foobar`` record leading to a ``foobar()`` type), and a **function to describe it** as text shall be provided (ex: ``-spec foobar_to_string(foobar()) -> string()``)
+- when defining a non-trivial datastructure, a **record** shall be used (rather than, say, a mere ad-hoc tuple), a corresponding **type** should be then defined (e.g. a ``foobar`` record leading to a ``foobar()`` type), and a **function to describe it** as text shall be provided (e.g. ``-spec foobar_to_string(foobar()) -> string()``)
 
   - **mute variables** should be used as well to document actual parameters; for example ``f(3,7,10)`` could preferably be written as a clearer ``f(_Min=3,_Max=7,_Deviation=10)``
 
@@ -248,14 +248,14 @@ WOOPER type conventions shall be used as well, for example:
  -spec getFoo( wooper:state() ) -> request_return( foo() ).
 
 
-Method names should be spelled in ``CamelCase`` (ex: ``getColorOf``, not ``get_color_of``).
+Method names should be spelled in ``CamelCase`` (e.g. ``getColorOf``, not ``get_color_of``).
 
-Variables bound to a WOOPER state shall have their name suffixed with ``State``; ex: ``NewState``, ``UpdatedState``, etc.
+Variables bound to a WOOPER state shall have their name suffixed with ``State``; e.g. ``NewState``, ``UpdatedState``, etc.
 
-To better discriminate between methods and functions (ex: helpers):
+To better discriminate between methods and functions (e.g. helpers):
 
-- the latter shall have their name spelled in ``snake_case`` (ex: ``update_table``, not ``updateTable``)
-- should an helper function have among its parameters the state of an instance (type: ``wooper:state()``; typically either to access directly to attributes or to use trace primitives), this parameter should be listed last (ex: ``update_table(X,Table,State)`` instead of ``update_table(State,X,Table)``), so that helpers can be more easily discriminated from member methods, which have such a state as first parameter
+- the latter shall have their name spelled in ``snake_case`` (e.g. ``update_table``, not ``updateTable``)
+- should an helper function have among its parameters the state of an instance (type: ``wooper:state()``; typically either to access directly to attributes or to use trace primitives), this parameter should be listed last (e.g. ``update_table(X,Table,State)`` instead of ``update_table(State,X,Table)``), so that helpers can be more easily discriminated from member methods, which have such a state as first parameter
 - all class-specific attributes shall be documented in a proper ``class_attributes`` define, so that their name, type, meaning and role are described
 
 
@@ -285,8 +285,8 @@ So that log messages can be kept track of over time, a distributed trace system 
 At implementation time, one just has to choose:
 
 - the trace channel on which the trace should be sent, among: ``fatal``, ``error``, ``warning``, ``info``, ``trace``, ``debug`` (from highest priority to lowest)
-- if a constant message is to be sent (ex: ``?warning("This is a static message")``), or if it is determined at runtime (ex: ``?warning_fmt("There are ~B apples.",[Count])``)
-- if the trace is sent from a method (ex: ``?info("Hello")``) or from a constructor (ex: ``?send_info(MyState,"Hello")`` where ``MyState`` is a state returned, directly or not, by a ``class_TraceEmitter`` constructor)
+- if a constant message is to be sent (e.g. ``?warning("This is a static message")``), or if it is determined at runtime (e.g. ``?warning_fmt("There are ~B apples.",[Count])``)
+- if the trace is sent from a method (e.g. ``?info("Hello")``) or from a constructor (e.g. ``?send_info(MyState,"Hello")`` where ``MyState`` is a state returned, directly or not, by a ``class_TraceEmitter`` constructor)
 - there are other, less commonly used, information that can be specified, as the categorisation (``_cat`` variations, like in ``?debug_cat("Hello","core.greetings")``), additional timing information (``_full`` variations, like in ``?trace_full("Bye","core.greetings",_Tick=121)``), etc.
 
 

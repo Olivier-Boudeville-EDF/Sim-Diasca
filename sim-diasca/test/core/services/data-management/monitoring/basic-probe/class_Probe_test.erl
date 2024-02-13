@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2023 EDF R&D
+% Copyright (C) 2010-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -156,14 +156,14 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 	ProbePid ! { addLabel, [ "This is a label", _FirstLocation={2,1} ] },
 
 	ProbePid ! { addLabel, [ "This is another label",
-							 _SecondLocation={8,5}, _SecondColor="#FF00FF",
+							 _SecondLocation={8,5}, _SecondColor="#ff00ff",
 							 _Orientation=45, _Position=right ] },
 
 	% Let's make so that the curve named "Second curve" is in pink now (was
 	% originally probably blue)
 	%
 	ProbePid ! { setCurveColor,
-					[ "Second curve", _ExtraCurveColorSettings="FFC0CB" ] },
+					[ "Second curve", _ExtraCurveColorSettings="#ffc0cb" ] },
 
 	% Now the dynamic curve is the third, and the so-called "last" is indeed the
 	% last:
@@ -354,13 +354,13 @@ run( UseTickOffsets ) ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Creating a facility probe." ),
 
 	FacilityProbePid = manage_facility_probe(
-				_FacilityProbeName="Test Facility Probe", UseTickOffsets ),
+		_FacilityProbeName="Test Facility Probe", UseTickOffsets ),
 
 
 	?test_info( "Creating a test probe." ),

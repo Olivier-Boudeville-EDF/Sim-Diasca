@@ -10,8 +10,8 @@
 % ./ebin/myriad.app
 % ./src/myriad.app.src -> ../ebin/myriad.app
 %
-% For more information see the 'rebar3-create-app-file' make target and its
-% associated comments.
+% For more information see the 'create-app-file' make target and its associated
+% comments.
 
 % See also:
 % - http://erlang.org/doc/man/app.html
@@ -20,7 +20,7 @@
 
 {application, myriad,
  [{description, "Ceylan-Myriad, a generic-purpose Erlang toolbox, as an OTP application library here (see http://myriad.esperide.org)"},
-  {vsn, "VERSION_FOR_REBAR"},
+  {vsn, "VERSION_FOR_OTP"},
 
   % No process registered:
   {registered, []},
@@ -51,7 +51,7 @@
   {env,[]},
 
   % Flat hierarchy in ebin here:
-  {modules, [MODULES_FOR_REBAR]},
+  {modules, [MODULES_FOR_OTP]},
 
   {licenses, ["Ceylan-Myriad is licensed by its author (Olivier Boudeville) under a disjunctive tri-license, giving you the choice of one of the three following sets of free software/open source licensing terms:
 	- the Mozilla Public License (MPL), version 1.1 or later (very close to the former Erlang Public License, except aspects regarding Ericsson and/or the Swedish law)

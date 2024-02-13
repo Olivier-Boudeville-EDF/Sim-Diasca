@@ -1,28 +1,42 @@
-// This is a configuration file for the eqWAlizer type checker.
-// To be used with Myriad's 'check-with-eqwalizer' make target.
-
 {
-  "apps": [myriad],
-  "deps": [],       // 3rd party dependencies (not type-checked), defaults to []
-  "root": "."       // Defaults to ""
-}
+
+	"__comment": "This is a configuration file for the eqWAlizer type checker. To be used with Myriad's 'check-with-eqwalizer' make target. Can be checked with: 'jq . THIS_FILE.json'.",
+
+	"apps": [
+
+		{   "name": "myriad",
+
+			"__comment": "Relative to project root:",
+			"dir": ".",
+
+			"__comment": "Not wanting the tool to operate on sources, but on BEAMs: (relative to app dir)",
+			"src_dirs": [ "src" ],
+
+			"__comment": "(relative to app dir)",
+			"extra_src_dirs": [],
+
+			"__comment": "A single path, not a list thereof (so refer to the 'copy-beams-to-ebin' make target): (relative to app dir)",
+			"ebin": "ebin",
+
+			"__comment": "Symlinks to all .hrl there: (relative to app dir)",
+			"include_dirs": [ "include" ],
+
+			"macros": []
+		}
+
+	],
 
 
-{
-  "name": "myriad",
-  "dir": ".",                      // Relative to project root
+	"__comment": "3rd party dependencies (not type-checked):",
+	"deps": [
 
-  // Not wanting the tool to operate on sources, but on BEAMs:
-  "src_dirs": ["src"],             // Relative to app dir, defaults to ["src"]
+		{
+			"__comment": "For some unclear reason, eqwalizer_support would be needed; however downloading an elp package (elp-linux.tar.gz) does not bring the modules supposedly required; next time, a build from sources for elp shall be tested.",
+			"name": "eqwalizer_support",
+			"dir": "/home/foobar/Software/eqwalizer"
+		}
 
-  "extra_src_dirs": [],            // Relative to app dir, defaults to []
+	],
 
-  // A single path, not a list thereof (so refer to the 'copy-beams-to-ebin'
-  // make target):
-  "ebin": "ebin",                  // Relative to app dir, defaults to "ebin"
-
-  // Symlinks to all .hrl there:
-  "include_dirs": ["include"],     // Relative to app dir, defaults to []
-
-  "macros": []                     // Defaults to []
+	"root": "."
 }

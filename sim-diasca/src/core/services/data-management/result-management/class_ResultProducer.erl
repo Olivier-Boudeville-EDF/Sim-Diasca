@@ -1,21 +1,21 @@
-% Copyright (C) 2010-2023 EDF R&D
-
+% Copyright (C) 2010-2024 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2010.
 
@@ -145,6 +145,7 @@ construct( State, ProducerName ) ->
 
 	{ _SameState, BinName } = executeRequest( TraceState, getName ),
 
+	% Note this is an instance tracker, not (yet) the result manager:
 	TrackerPid ! { registerResultProducer, BinName, self() },
 
 	% Then look-up the result manager, so that the actual producer child class
@@ -224,7 +225,7 @@ destruct( State ) ->
 -spec setEnableStatus( wooper:state(), boolean() ) -> oneway_return().
 setEnableStatus( State, NewStatus ) ->
 	wooper:return_state(
-				setAttribute( State, enabled_producer, NewStatus ) ).
+		setAttribute( State, enabled_producer, NewStatus ) ).
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2008-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2008.
 
 
-% Unit tests for the WOOPER class manager implementation.
+% @doc Unit tests for the WOOPER class manager implementation.
 %
 % See the wooper_class_manager.erl tested module.
 %

@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -22,8 +22,8 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Creation date: Saturday, July 6, 2019.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Saturday, July 6, 2019.
 
 
 % Currently, by default we are in development mode, and we want as much
@@ -45,8 +45,8 @@
 
   % In development mode then:
 
-  % Currently disabled as leading to way too verbose error reports (ex: detailed
-  % state of all neighbours):
+  % Currently disabled as leading to way too verbose error reports
+  % (e.g. detailed state of all neighbours):
   %
   %-define( myriad_spawn_info, "proc_lib spawn" ).
   %-define( myriad_spawn, proc_lib:spawn ).

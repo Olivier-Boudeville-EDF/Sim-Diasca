@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,9 +39,7 @@
 % Implementation notes:
 %
 % These 2x2 matrices come in various forms:
-%
 % - the canonical one (2x2 coordinates)
-%
 % - special ones, at least the identity matrix
 
 
@@ -164,7 +162,6 @@ identity() ->
 %
 -spec rotation( radians() ) -> rot_matrix2().
 rotation( RadAngle ) ->
-
 	Cos = math:cos( RadAngle ),
 	Sin = math:sin( RadAngle ),
 	#matrix2{ m11=Cos, m12=-Sin,
@@ -404,7 +401,7 @@ mult( _Ma=#matrix2{ m11=A11, m12=A12,
 
 % @doc Multiplies (in-order) the specified matrices.
 %
-% Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
+% For example mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
 %
 -spec mult( [ matrix2() ] ) -> matrix2().
 mult( [ Ma, Mb | T ] ) ->
@@ -480,8 +477,8 @@ comatrix( _M=#matrix2{ m11=M11, m12=M12,
 % @doc Returns the inverse of the specified matrix, if it is invertible (that is
 % iff its determinant is non-null), otherwise returns undefined.
 %
-% Note: often the inverse can be obtained differently (ex: by applying reverse
-% operations starting from identity) or computed differently (ex: by Gaussian
+% Note: often the inverse can be obtained differently (e.g. by applying reverse
+% operations starting from identity) or computed differently (e.g. by Gaussian
 % elimination), or can be replaced by a mere lower–upper (LU) decomposition.
 %
 -spec inverse( matrix2() ) -> maybe( matrix2() ).

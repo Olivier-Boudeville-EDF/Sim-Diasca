@@ -76,7 +76,7 @@ list-trace-files-in-tree:
 
 remove-trace-files-in-tree:
 	@echo "  Removing all *.traces files from $$(pwd)..."
-	@find -L . -name '*.traces' -exec /bin/rm -f '{}' ';' 2>/dev/null
+	@find -L . -name '*.traces' -o -name '*.traces.previous' -exec /bin/rm -f '{}' ';' 2>/dev/null
 
 
 # Not wanting to define a default rule:

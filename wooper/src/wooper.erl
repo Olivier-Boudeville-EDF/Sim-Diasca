@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2023 Olivier Boudeville
+% Copyright (C) 2012-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -2076,8 +2076,10 @@ state_to_string( State ) ->
 		fun( { AttName, AttrValue }, Acc ) ->
 			Acc ++ text_utils:format( "     * ~ts = ~ts~n",
 					[ text_utils:term_to_string( AttName ),
-					  text_utils:term_to_string( AttrValue, _MaxDepth=16,
-												 _MaxLength=100 ) ] )
+					  % No more ellipsing wanted, for complete traces:
+					  %text_utils:term_to_string( AttrValue, _MaxDepth=16,
+					  %                           _MaxLength=100 ) ] )
+					  text_utils:term_to_string( AttrValue ) ] )
 
 		end,
 
@@ -2649,7 +2651,7 @@ delete_any_instance_referenced_in( PidAttribute, State ) ->
 	[ attribute_name() ] | attribute_name(), wooper:state() ) -> wooper:state().
 delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
 	delete_synchronously_any_instance_referenced_in( Attributes,
-										_PreTestLiveliness=false, State ).
+		_PreTestLiveliness=false, State ).
 
 
 % @doc Deletes safely (pre-testing whether the specified process still exists
@@ -2669,7 +2671,7 @@ delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
 	[ attribute_name() ] | attribute_name(), wooper:state() ) -> wooper:state().
 safe_delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
 	delete_synchronously_any_instance_referenced_in( Attributes,
-										_PreTestLiveliness=true, State ).
+		_PreTestLiveliness=true, State ).
 
 
 
@@ -2692,7 +2694,7 @@ delete_synchronously_any_instance_referenced_in( _Attributes=[],
 
 
 delete_synchronously_any_instance_referenced_in( Attributes, PreTestLiveliness,
-									State ) when is_list( Attributes ) ->
+		State ) when is_list( Attributes ) ->
 
 	% Triggers the deletion of selected instances:
 	{ TargetAttributes, TargetPids } =
@@ -2713,8 +2715,8 @@ delete_synchronously_any_instance_referenced_in( Attributes, PreTestLiveliness,
 	%                        [ TargetAttributes ] ),
 
 	% Erases deleted PIDs:
-	UndefinedAttributes = [ { AttrName, undefined }
-								|| AttrName <- TargetAttributes ],
+	UndefinedAttributes =
+		[ { AttrName, undefined } || AttrName <- TargetAttributes ],
 
 	setAttributes( State, UndefinedAttributes );
 
@@ -2767,14 +2769,14 @@ delete_pid_from( [ Attr | T ], DeleteMessage, PreTestLiveliness, State,
 					%trace_bridge:debug_fmt(
 					%   "(PID ~w was already dead, nothing done)", [ Pid ] ),
 					delete_pid_from( T, DeleteMessage, PreTestLiveliness,
-									 State, [ Attr | AccAttr ], AccPid );
+						State, [ Attr | AccAttr ], AccPid );
 
 				false ->
 					%trace_bridge:debug_fmt( "Sending sync delete now ~ts "
 					%                        "(PID: ~w).", [ Attr, Pid ] ),
 					Pid ! DeleteMessage,
 					delete_pid_from( T, DeleteMessage, PreTestLiveliness,
-							State, [ Attr | AccAttr ], [ Pid | AccPid ] )
+						State, [ Attr | AccAttr ], [ Pid | AccPid ] )
 
 			end
 

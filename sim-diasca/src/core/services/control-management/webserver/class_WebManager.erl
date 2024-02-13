@@ -1,21 +1,21 @@
-% Copyright (C) 2019-2023 EDF R&D
-
+% Copyright (C) 2019-2024 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: Friday, June 7, 2019.
 
@@ -249,7 +249,7 @@ construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 
 	% First the direct mother classes:
 	BaseState = class_EngineBaseObject:construct( State,
-							?trace_categorize("WebManager") ),
+		?trace_categorize("WebManager") ),
 
 	{ NewMaybeBinServerInstallRoot, NewBinServerContentRoot, TCPPort } =
 		check_settings( ServerContentRoot, MaybeServerInstallRoot, MaybeTCPPort,
@@ -411,8 +411,7 @@ results_collected( State, ResultBaseDirName ) ->
 	case ?getAttr(interactivity_mode) of
 
 		batch ->
-			?debug( "In batch mode, hence no browser launched." ),
-			ok;
+			?debug( "In batch mode, hence no browser launched." );
 
 		interactive ->
 
@@ -569,7 +568,7 @@ check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 -spec check_no_pending_webserver( tcp_port(), wooper:state() ) -> void().
 check_no_pending_webserver( TCPPort, State ) ->
 
-	case net_utils:is_service_running_at( TCPPort ) of
+	case net_utils:is_local_service_running_at( TCPPort ) of
 
 		true ->
 			?error_fmt( "A service (presumably a webserver) is already "
@@ -610,23 +609,17 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 	TargetFilePath = file_utils:join( BinServerInstallRoot, TargetFilename ),
 
 	% Made not to fail, knowing a clash in filenames is very unlikely:
-	case file_utils:is_existing_file_or_link( TargetFilePath ) of
-
-		true ->
-
+	file_utils:is_existing_file_or_link( TargetFilePath ) andalso
+		begin
 			BackupName = text_utils:format( "~ts-~ts", [ TargetFilePath,
-								time_utils:get_textual_timestamp_for_path() ] ),
+				time_utils:get_textual_timestamp_for_path() ] ),
 
 			?warning_fmt( "A Node.js configuration file has been found already "
 				"existing, '~ts'; moving it out of the way by "
 				"renaming it to '~ts'.", [ TargetFilePath, BackupName ] ),
 
-			file_utils:rename( TargetFilePath, BackupName );
-
-		false ->
-			ok
-
-	end,
+			file_utils:rename( TargetFilePath, BackupName )
+		end,
 
 	% Now not existing by design:
 	NewCfgFile = file_utils:open( TargetFilePath, [ write, raw ] ),
@@ -678,18 +671,16 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 	LandingFilename = file_utils:join( BinServerContentRoot, "index.html" ),
 
-	case file_utils:is_existing_file_or_link( LandingFilename ) of
+	file_utils:is_existing_file_or_link( LandingFilename ) andalso
+		begin
 
-		true ->
 			% Quite surprising:
 			?warning_fmt( "Removing a former version of '~ts'.",
 						  [ LandingFilename ] ),
-			file_utils:remove_file( LandingFilename );
 
-		false ->
-			ok
+			file_utils:remove_file( LandingFilename )
 
-	end,
+		end,
 
 	?debug_fmt( "Generating following landing page: '~ts'.",
 				[ LandingFilename ] ),
@@ -699,25 +690,9 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 	write_header( ?getAttr(sii), Metadata, PageFile ),
 
-	HasBasicProbe = case BasicProbeInfos of
+	HasBasicProbe = BasicProbeInfos =/= [],
 
-		[] ->
-			false;
-
-		_ ->
-			true
-
-	end,
-
-	HasWebProbe = case WebProbeInfos of
-
-		[] ->
-			false;
-
-		_ ->
-			true
-
-	end,
+	HasWebProbe = WebProbeInfos =/= [],
 
 	case { HasBasicProbe, HasWebProbe } of
 
@@ -766,21 +741,19 @@ manage_support_termination( State ) ->
 	%trace_utils:debug_fmt( "Support classes to terminate: ~p",
 	%                       [ SupportClassnamesToTerminate ] ),
 
-	[ case meta_utils:is_function_exported( Mod=Classname,
-								Fun=terminate_support, _Arity=3 ) of
+	[ meta_utils:is_function_exported( Mod=Classname,
+									   Fun=terminate_support, _Arity=3 )
+		andalso
+			begin
 
-		  true ->
-			  true = Mod:Fun( ?getAttr(engine_root_dir),
-						?getAttr(webserver_install_root),
-						?getAttr(webserver_content_root) );
+				true = Mod:Fun( ?getAttr(engine_root_dir),
+					?getAttr(webserver_install_root),
+					?getAttr(webserver_content_root) )
 
-		  false ->
-			  ok
-
-	  end || Classname <- SupportClassnamesToTerminate ],
+			end || Classname <- SupportClassnamesToTerminate ],
 
 	NewSupportTable = table:add_entries( [ { Classname, _IsInit=false }
-			|| Classname <- SupportClassnamesToTerminate ], SupportTable ),
+		|| Classname <- SupportClassnamesToTerminate ], SupportTable ),
 
 	setAttribute( State, support_table, NewSupportTable ).
 
@@ -805,7 +778,7 @@ write_header( SII, Metadata, File ) ->
 
 	% Layer versions skipped:
 	MetadataString = web_utils:get_unordered_list(
-			[ SimString, RunString, TimeString, HostString, TickString ] ),
+		[ SimString, RunString, TimeString, HostString, TickString ] ),
 
 	file_utils:write_ustring( File,
 	  "<!DOCTYPE html>~n"
@@ -842,8 +815,8 @@ write_web_probes( [ WebProbeInfo ], BinServerContentRoot, File ) ->
 
 write_web_probes( WebProbeInfos, BinServerContentRoot, File ) ->
 
-	ProbeLinks = [ get_probe_link( I, BinServerContentRoot )
-						|| I <- WebProbeInfos ],
+	ProbeLinks =
+		[ get_probe_link( I, BinServerContentRoot ) || I <- WebProbeInfos ],
 
 	file_utils:write_ustring( File, "<a name=\"web_probes\"></a>~n"
 		"<p>~B web probes enabled:~n~ts</p>~n",
@@ -861,7 +834,7 @@ get_probe_link( { BinProbeName, _MaybeBinProbeDir=undefined },
 				_BinServerContentRoot ) ->
 	text_utils:format( "<a href=\"~ts\">~ts</a>", [
 		file_utils:join( [ "..", "simulation-results",
-					class_WebProbe:get_filename_for( BinProbeName ) ] ),
+			class_WebProbe:get_filename_for( BinProbeName ) ] ),
 		BinProbeName ] );
 
 
@@ -894,12 +867,12 @@ write_basic_probes( _BasicProbeInfos=[ { ProbeName, _BinDirPath } ],
 write_basic_probes( BasicProbeInfos, BinServerContentRoot, File ) ->
 
 	ProbeLinks = [ get_html_link_for( PName, BinServerContentRoot )
-					|| { PName, _BinDirPath } <- BasicProbeInfos ],
+		|| { PName, _BinDirPath } <- BasicProbeInfos ],
 
 	file_utils:write_ustring( File,
-	  "<a name=\"basic_probes\"></a>~n<p>~B basic probes enabled: ~ts</p>~n",
-	  [ length( BasicProbeInfos ),
-		web_utils:get_unordered_list( ProbeLinks ) ] ).
+		"<a name=\"basic_probes\"></a>~n<p>~B basic probes enabled: ~ts</p>~n",
+		[ length( BasicProbeInfos ),
+		  web_utils:get_unordered_list( ProbeLinks ) ] ).
 
 
 
@@ -909,7 +882,7 @@ get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 
 	ProbeContentFilePath = file_utils:join( [ BinServerContentRoot, "..",
 		"simulation-results", class_Probe:get_report_filename(
-							text_utils:binary_to_string( BinProbeName ) ) ] ),
+			text_utils:binary_to_string( BinProbeName ) ) ] ),
 
 	%trace_utils:debug_fmt( "Searching for '~ts' from '~ts'.",
 	%   [ ProbeContentFilePath, file_utils:get_current_directory() ] ),

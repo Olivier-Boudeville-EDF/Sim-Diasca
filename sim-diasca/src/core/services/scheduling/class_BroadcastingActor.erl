@@ -1,33 +1,37 @@
-% Copyright (C) 2008-2023 EDF R&D
-
+% Copyright (C) 2008-2024 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
-% @doc Base class for <n>Broadcasting actors</b>.
+% @doc Base class for <n>broadcasting actors</b>, which are actors that may have
+% to send the same actor message to a large number (e.g. at least several
+% thousands) of actors.
+%
 -module(class_BroadcastingActor).
 
 
 -define( class_description,
 		 "Broadcasting actor base class."
-		 "This is a specialization of the generic actor class, for all models "
+		 "This is a specialisation of the generic actor class, for all models "
 		 "that have at least once to send the same actor message to a large "
-		 "number (ex: at least several thousands) of actors."
+		 "number (e.g. at least several thousands) of actors."
 		 "This broadcasting actor manages its waited actors thanks to a table "
 		 "rather than thanks to a plain list, which should be more efficient "
 		 "for larger simulations."
@@ -55,10 +59,18 @@
 	  "and whose associated values are the actual count of these sendings; it "
 	  "allows a broadcasting actor to notify adequately its time manager that "
 	  "its diasca is finished indeed, for actors sending a large number of "
-	  "actor messages (ex: the load balancer sending the onFirstDiasca message "
-	  "to all actors)" },
+	  "actor messages (e.g. the load balancer sending the onFirstDiasca "
+	  "message to all actors)" },
 
 	{ chunk_size, actor_count(), "the number of actors per sending chunk" } ] ).
+
+
+
+% Usage notes:
+%
+% Sending a given actor message to actors across diascas may have consequences,
+% notably if these actors interact, as of course they will process this message
+% at different diascas. Watch out your actor interaction protocol!
 
 
 
@@ -99,8 +111,9 @@
 % times this actor is waited for is associated.
 %
 % As a (broadcasting) actor may send more than one message to another actor at
-% the same diasca (ex: the load-balancer may notify a creating actor of multiple
-% creations that happen at the same diasca), a count must be maintained.
+% the same diasca (e.g. the load-balancer may notify a creating actor of
+% multiple creations that happen at the same diasca), a count must be
+% maintained.
 %
 % This choice cannot be generalised to all actors, as it would induce overhead
 % in terms of processing and memory to the vast majority of them; hence the
@@ -180,13 +193,15 @@ beginTick( State, NewTickOffset ) ->
 	[ NewTickOffset | T ] = ?getAttr(current_agenda),
 
 	%trace_utils:debug_fmt( "beginTick for actor ~w at tick offset #~B, "
-	%                  "with agenda ~w.", [ self(), NewTickOffset, Agenda ] ),
+	%   "with agenda ~w.", [ self(), NewTickOffset, Agenda ] ),
 
-	% Comment to disable these checkings:
-	class_Actor:check_spontaneous_tick_consistency( NewTickOffset, State ),
-
-	[] = ?getAttr(added_spontaneous_ticks),
-	[] = ?getAttr(withdrawn_spontaneous_ticks),
+	cond_utils:if_defined( sim_diasca_check_time_management,
+		begin
+			class_Actor:check_spontaneous_tick_consistency( NewTickOffset,
+															State ),
+			[] = ?getAttr(added_spontaneous_ticks),
+			[] = ?getAttr(withdrawn_spontaneous_ticks)
+		end ),
 
 	% Removes the first entry of this agenda, this new tick offset:
 	SpontaneousUpdatedState = setAttribute( State, current_agenda, T ),
@@ -206,7 +221,8 @@ beginTick( State, NewTickOffset ) ->
 	% Note: we are not checking the correctness of the engine here, we ensure
 	% models are properly written (hence this should not be commented out):
 	%
-	class_Actor:validate_scheduling_outcome( SpontaneousState ),
+	cond_utils:if_defined( sim_diasca_check_model_behaviours,
+		class_Actor:validate_scheduling_outcome( SpontaneousState ) ),
 
 	% The 'actSpontaneous' method might have sent actor messages:
 	WaitedAcks = getAttribute( SpontaneousState, waited_acks ),
@@ -237,17 +253,18 @@ beginDiasca( State, TickOffset, NewDiasca ) ->
 
 	% Note: exactly as the class_Actor counterpart, except for waited_acks:
 
-	%trace_utils:debug_fmt( "beginDiasca for ~w at diasca ~B of "
-	%   "tick offset #~B.", [ self(), NewDiasca, TickOffset ] ),
+	cond_utils:if_defined( sim_diasca_debug_time_management,
+		?debug_fmt( "beginDiasca for ~w at diasca ~B of tick offset #~B.",
+					[ self(), NewDiasca, TickOffset ] ) ),
 
-	% Comment to disable these checkings:
-	class_Actor:check_diasca_consistency( TickOffset, NewDiasca, State ),
+	cond_utils:if_defined( sim_diasca_check_time_management,
+		class_Actor:check_diasca_consistency( TickOffset, NewDiasca, State ) ),
 
 	% Other attributes set at the end of previous scheduling:
 	PreState = setAttributes( State, [
 
-		% This is not superfluous, we might have received an actor message while
-		% being still lagging in a past tick:
+		% This is not superfluous, as we might have received an actor message
+		% while being still lagging in a past tick:
 		%
 		{ current_tick_offset, TickOffset },
 
@@ -259,12 +276,13 @@ beginDiasca( State, TickOffset, NewDiasca ) ->
 			  get_trace_timestamp( TickOffset, NewDiasca, State ) } ) ] ),
 
 	TriggerState = class_Actor:process_last_diasca_messages( TickOffset,
-														NewDiasca, PreState ),
+		NewDiasca, PreState ),
 
 	% Note: we are not checking the correctness of the engine here, we ensure
 	% models are properly written (hence this should not be commented out).
 	%
-	class_Actor:validate_scheduling_outcome( TriggerState ),
+	cond_utils:if_defined( sim_diasca_check_model_behaviours,
+		class_Actor:validate_scheduling_outcome( TriggerState ) ),
 
 	WaitedAcks = getAttribute( TriggerState, waited_acks ),
 
@@ -433,11 +451,11 @@ notify_diasca_ended( State ) ->
 
 	% Prepare for next diasca, reset relevant attributes:
 	setAttributes( State, [
-				{ previous_schedule, { CurrentTickOffset, CurrentDiasca } },
-				{ added_spontaneous_ticks, [] },
-				{ withdrawn_spontaneous_ticks, [] },
-				{ next_action, NextRecordedAction },
-				{ current_agenda, NewAgenda } ] ).
+		{ previous_schedule, { CurrentTickOffset, CurrentDiasca } },
+		{ added_spontaneous_ticks, [] },
+		{ withdrawn_spontaneous_ticks, [] },
+		{ next_action, NextRecordedAction },
+		{ current_agenda, NewAgenda } ] ).
 
 
 
@@ -479,7 +497,7 @@ nudge( State, SenderPid ) ->
 % hence the +1.
 %
 % The actor message is a oneway call: it is described by the name of the actor
-% oneway to trigger on the target actor (specified as an atom, ex: 'setColor')
+% oneway to trigger on the target actor (specified as an atom, e.g. 'setColor')
 % on the next tick, and by a (possibly empty) list of the corresponding
 % arguments; so the call is either 'my_oneway' or
 % '{my_oneway,SingleNonListParameter}' or '{my_oneway,[Arg1,...]}'.
@@ -593,7 +611,7 @@ send_actor_message( ActorPid, ActorOneway, State ) ->
 % hence the +1.
 %
 % The actor message is a oneway call: it is described by the name of the actor
-% oneway to trigger on the target actor (specified as an atom, ex: 'setColor')
+% oneway to trigger on the target actor (specified as an atom, e.g. 'setColor')
 % on the next tick, and by a (possibly empty) list of the corresponding
 % arguments; so the call is either 'my_oneway' or
 % '{my_oneway,SingleNonListParameter}' or '{my_oneway,[Arg1,...]}'.
@@ -742,8 +760,9 @@ send_actor_messages_over_diascas( AttributeName, ActorOneway, State ) ->
 			% ourselves) an actor message for that:
 			%
 			PlanState = send_actor_message( _Target=self(),
-			  { sendActorMessagesOverDiascas, [ ActorOneway, AttributeName ] },
-			  SentState ),
+				{ sendActorMessagesOverDiascas,
+					[ ActorOneway, AttributeName ] },
+				SentState ),
 
 			setAttribute( PlanState, AttributeName, RemainingActors )
 

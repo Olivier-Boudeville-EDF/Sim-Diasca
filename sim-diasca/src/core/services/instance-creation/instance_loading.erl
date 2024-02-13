@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2023 EDF R&D
+% Copyright (C) 2014-2024 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -30,10 +30,17 @@
 -module(instance_loading).
 
 
-% Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.Load balancing.Instances." ).
--define( loader_cat, ?trace_emitter_categorization ++ "Loading" ).
--define( reader_cat, ?trace_emitter_categorization ++ "Creating" ).
+% For all traces (sent with ?notify_* or trace_bridge); must be included before
+% class_TraceEmitter header:
+%
+-define( base_categorization, "Core.Load balancing" ).
+-define( base_emitter_name, "Instances" ).
+
+-define( trace_emitter_categorization,
+		 ?base_categorization ++ "." ++ ?base_emitter_name ).
+
+-define( loader_cat, ?trace_emitter_categorization ++ ".Loading" ).
+-define( reader_cat, ?trace_emitter_categorization ++ ".Creating" ).
 
 
 % Of type time_utils:time_out(), hence milliseconds if numerical:
@@ -60,7 +67,7 @@
 %
 % If nested creations are to be done, reproducibility can be preserved by
 % limiting the number of creator processes to 1. Refer to the use of the
-% simdiasca_allow_reproducible_nested_initial_creations token below.
+% sim_diasca_allow_reproducible_nested_initial_creations token below.
 
 
 % Types related to creation lines:
@@ -273,6 +280,12 @@ get_maybe_user_id_reference_for( AnyUserId ) ->
 									no_return().
 manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
+	% So that all traces (besides the ones sent with ?notify_*), i.e the ones
+	% relying on trace_bridge, are well integrated:
+	%
+	class_TraceEmitter:register_as_bridge( _TraceEmitterName=?base_emitter_name,
+		_TraceCategory=?base_categorization ),
+
 	LoadStartTimestamp = time_utils:get_precise_timestamp(),
 
 	ShortenInitFiles = [ text_utils:format( "file '~ts'",
@@ -294,7 +307,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
 				CompressExt ->
 
-					cond_utils:if_defined( simdiasca_debug_instance_loading,
+					cond_utils:if_defined( sim_diasca_debug_instance_loading,
 						trace_utils:info_fmt( "Decompressing '~ts'.",
 											  [ Filename ] ) ),
 
@@ -322,7 +335,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	% Needed for synchronisation (beware, closure):
 	InstanceLoaderPid = self(),
 
-	cond_utils:if_defined( simdiasca_debug_instance_loading,
+	cond_utils:if_defined( sim_diasca_debug_instance_loading,
 		trace_utils:info_fmt( "Creating user_id resolver from ~w.",
 							  [ InstanceLoaderPid ] ) ),
 
@@ -340,7 +353,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	%
 	CreatorsCount = cond_utils:if_defined(
 
-		simdiasca_allow_reproducible_nested_initial_creations,
+		sim_diasca_allow_reproducible_nested_initial_creations,
 
 		% Setting here a single creator process, in order to support
 		% fully-reproducible nested initial actor creations, and also for an
@@ -390,7 +403,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
 	end,
 
-	cond_utils:if_defined( simdiasca_debug_instance_loading,
+	cond_utils:if_defined( sim_diasca_debug_instance_loading,
 		trace_utils:info_fmt( "Reading following initialisation file(s): ~ts",
 			[ text_utils:strings_to_string( ReadyInitFiles ) ] ) ),
 
@@ -457,7 +470,7 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 							 Readers, LoadStartTimestamp, LoadBalancerPid ) ->
 
-	cond_utils:if_defined( simdiasca_debug_instance_loading,
+	cond_utils:if_defined( sim_diasca_debug_instance_loading,
 		trace_utils:info_fmt( "Waiting for following reader(s), whereas "
 			"~B creations have already been done: ~w.",
 			[ CreationCount, Readers ] ) ),
@@ -469,7 +482,7 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 		%
 		{ initialisation_file_read, InstanceCreationCount, ReaderPid } ->
 
-			cond_utils:if_defined( simdiasca_debug_instance_loading,
+			cond_utils:if_defined( sim_diasca_debug_instance_loading,
 				trace_utils:info_fmt( "Instance reader ~w finished "
 					"(~B new instances created).",
 					[ ReaderPid, InstanceCreationCount ] ) ),
@@ -815,7 +828,7 @@ read_chunk( File, ChunkCount, CurrentLineNumber, CreationCount, ShortenFilename,
 				% Typically a comment or a blank line:
 				ignore ->
 
-					%cond_utils:if_defined( simdiasca_debug_instance_loading,
+					%cond_utils:if_defined( sim_diasca_debug_instance_loading,
 					%   trace_bridge:debug_fmt( "Ignoring line '~ts'.",
 					%       [ NewLogLine ] ) ),
 
@@ -825,7 +838,7 @@ read_chunk( File, ChunkCount, CurrentLineNumber, CreationCount, ShortenFilename,
 						_NextStartLN=NextCurrentLineNumber, AccLines );
 
 				true ->
-					cond_utils:if_defined( simdiasca_debug_instance_loading,
+					cond_utils:if_defined( sim_diasca_debug_instance_loading,
 						trace_bridge:debug_fmt( "Accepting line '~ts'.",
 												[ NewLogLine ] ) ),
 
@@ -853,7 +866,7 @@ read_chunk( File, ChunkCount, CurrentLineNumber, CreationCount, ShortenFilename,
 				% complete:
 				%
 				false ->
-					cond_utils:if_defined( simdiasca_debug_instance_loading,
+					cond_utils:if_defined( sim_diasca_debug_instance_loading,
 						trace_bridge:debug_fmt( "Expanding line '~ts'.",
 												[ NewLogLine ] ) ),
 
@@ -939,7 +952,7 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 
 		{ process_chunk, _Chunk={ LineInfos, BinFilename }, ReaderPid } ->
 
-			cond_utils:if_defined( simdiasca_debug_instance_loading,
+			cond_utils:if_defined( sim_diasca_debug_instance_loading,
 				trace_utils:debug_fmt( "Creator ~w processing chunk of ~B "
 					"elements: ~ts", [ self(), length( LineInfos ),
 					text_utils:terms_to_string( LineInfos ) ] ) ),
@@ -968,7 +981,7 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 				( LoadBalancerPid !
 					{ registerInitialActors, [ FilteredWaited ], self() } ),
 
-			cond_utils:if_defined( simdiasca_debug_instance_loading,
+			cond_utils:if_defined( sim_diasca_debug_instance_loading,
 				trace_utils:debug_fmt(
 					"Waiting for embodiment of ~w actors: ~w...",
 					[ length( FilteredWaited ), FilteredWaited ] ) ),
@@ -1006,7 +1019,7 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 
 			end,
 
-			cond_utils:if_defined( simdiasca_debug_instance_loading,
+			cond_utils:if_defined( sim_diasca_debug_instance_loading,
 				trace_utils:debug_fmt( "...embodiment of ~w finished.",
 									   [ FilteredWaited ] ) ),
 
@@ -1053,7 +1066,7 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 					 IdResolverPid, LoadBalancerPid ) ->
 
 	% Removes the ending newline for readability:
-	cond_utils:if_defined( simdiasca_debug_instance_loading,
+	cond_utils:if_defined( sim_diasca_debug_instance_loading,
 		trace_utils:debug_fmt( "Parsing line #~B: '~ts'.", [ LineNumber,
 			list_utils:remove_last_element(
 				text_utils:binary_to_string( BinLine ) ) ] ) ),
@@ -1215,7 +1228,7 @@ create_instance_from( CreationClause, IdInfo,
 		LineContext={ _BinFilename, LineNumber, _BinLine }, IdResolverPid,
 		LoadBalancerPid ) ->
 
-	cond_utils:if_defined( simdiasca_debug_instance_loading,
+	cond_utils:if_defined( sim_diasca_debug_instance_loading,
 		trace_utils:debug_fmt( "[~p] creating an instance from '~ts', "
 			"with id=~p.", [ self(), CreationClause, IdInfo ] ) ),
 
@@ -1377,7 +1390,7 @@ create_instance_from( CreationClause, IdInfo,
 					FullParams =
 						[ ActorSettings | ActualConstructionParameters ],
 
-					cond_utils:if_defined( simdiasca_debug_instance_loading,
+					cond_utils:if_defined( sim_diasca_debug_instance_loading,
 						trace_utils:debug_fmt(
 							" - embodiment of an instance of ~ts",
 							[ Class ] ) ),

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2023 Olivier Boudeville
+% Copyright (C) 2021-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -55,20 +55,29 @@
 % opposed to bitmaps).
 
 
--type image_format() :: 'png'
-					  | 'jpeg'
-					  | 'bmp'
-					  | 'gif'
-					  | 'pcx'
-					  | 'tiff'
-					  | 'tga'
-					  | 'pnm'
-					  | 'iff'
-					  | 'xpm'
-					  | 'ico'
-					  | 'cur'
-					  | 'ani'.
-% Designates a supported file format able to store images.
+
+-type image_bitmap_format() :: 'png'
+							 | 'jpeg'
+							 | 'bmp'
+							 | 'gif'
+							 | 'pcx'
+							 | 'tiff'
+							 | 'tga'
+							 | 'pnm'
+							 | 'iff'
+							 | 'xpm'
+							 | 'ico'
+							 | 'cur'
+							 | 'ani'.
+% Designates a supported file format able to store bitmap images.
+
+
+-type image_vector_format() :: 'svg'.
+% Designates a supported file format able to store vector-based images.
+
+
+-type image_format() :: image_bitmap_format() | image_vector_format().
+% Designates a supported file format able to store (bitmap or vector) images.
 %
 % We prefer telling explicitly the type rather than trying to guess it from the
 % extension of a filename, as it is clearer and more reliable.
@@ -79,8 +88,8 @@
 % https://docs.wxwidgets.org/stable/classwx_image.html for the available image
 % handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).
 %
-% We recommend PNG for bitmap-like images (as lossless) and JPEG for
-% snapshot-like image (as is lossy but compact).
+% We recommend PNG for bitmap-like images (as lossless), JPEG for snapshot-like
+% images (as is lossy but compact) and SVG for vector-based images.
 
 
 -type image_quality() :: 'normal' | 'high'.
@@ -101,19 +110,26 @@
 % A small rectangular bitmap usually used for denoting a minimised application.
 
 
--export_type([ image/0, image_format/0, image_quality/0,
+-export_type([ image/0,
+			   image_bitmap_format/0, image_vector_format/0, image_format/0,
+			   image_quality/0,
 			   image_path/0, bin_image_path/0, any_image_path/0,
 			   icon/0 ]).
 
 
 % For images:
--export([ load_from_file/1, load_from_file/2,
+-export([ image_format_to_extension/1,
+		  load_from_file/1, load_from_file/2,
 		  destruct/1, destruct_multiple/1,
 
-		  get_size/1, has_alpha/1,
+		  get_width/1, get_height/1, get_size/1,
+
+		  has_alpha/1,
 		  load/2, load/3, save/2, save/3,
 		  scale/3, scale/4, mirror/2,
-		  colorize/2, to_string/1 ]).
+		  colorize/2,
+		  to_bitmap/1,
+		  to_string/1 ]).
 
 
 % Other functions:
@@ -140,12 +156,12 @@
 
 % Shorthands:
 
-
 -type maybe_list( T ) :: list_utils:maybe_list( T ).
 
 -type file_path() :: file_utils:file_path().
 -type bin_file_path() :: file_utils:bin_file_path().
 -type any_file_path() :: file_utils:any_file_path().
+-type extension() :: file_utils:extension().
 
 -type ustring() :: text_utils:ustring().
 
@@ -239,9 +255,20 @@ destruct_multiple( Images ) ->
 	[ wxImage:destroy( Img ) || Img <- Images ].
 
 
+% @doc Returns the width of the specified image.
+-spec get_width( image() ) -> width().
+get_width( Image ) ->
+	wxImage:getWidth( Image ).
 
 
-% @doc Returns the size of this image.
+% @doc Returns the height of the specified image.
+-spec get_height( image() ) -> height().
+get_height( Image ) ->
+	wxImage:getHeight( Image ).
+
+
+
+% @doc Returns the size of the specified image.
 -spec get_size( image() ) -> dimensions().
 get_size( Image ) ->
 	{ wxImage:getWidth( Image ), wxImage:getHeight( Image ) }.
@@ -258,11 +285,12 @@ has_alpha( Image ) ->
 %
 -spec scale( image(), width(), height() ) -> void().
 scale( Image, Width, Height ) ->
+	% In-place; default, unknown quality:
 	wxImage:rescale( Image, Width, Height ).
 
 
-% @doc Scales the specified image to the specified dimensions, with specified
-% quality.
+% @doc Scales the specified image to the specified dimensions, with the
+% specified quality.
 %
 -spec scale( image(), width(), height(), image_quality() ) -> void().
 scale( Image, Width, Height, Quality ) ->
@@ -353,6 +381,19 @@ colorize( SrcBuffer, _Color={ R, G, B } ) ->
 
 
 
+% @doc Returns a bitmap corresponding to the specified image.
+%
+% Does not alter that image.
+%
+-spec to_bitmap( image() ) -> bitmap().
+to_bitmap( Image ) ->
+	ImgBitmap = wxBitmap:new( Image ),
+	wxBitmap:isOk( ImgBitmap ) orelse
+		throw( { conversion_to_bitmap_failed, Image } ),
+	ImgBitmap.
+
+
+
 % @doc Returns a textual representation of the specified image.
 -spec to_string( image() ) -> ustring().
 to_string( Image ) ->
@@ -401,6 +442,7 @@ create_bitmap( ImagePath ) ->
 
 	Image = wxImage:new( ImagePath ),
 
+	% Not using to_bitmap/1 to offer a more precise exception if needed:
 	ImgBitmap = wxBitmap:new( Image ),
 	wxImage:destroy( Image ),
 	case wxBitmap:isOk( ImgBitmap ) of
@@ -409,10 +451,21 @@ create_bitmap( ImagePath ) ->
 			ImgBitmap;
 
 		false ->
-			throw( { bitmap_creation_failed, ImagePath } )
+			throw( { bitmap_creation_failed,
+					 text_utils:ensure_string( ImagePath ) } )
 
 	end.
 
+
+% @doc Returns the file extension corresponding to the specified image format.
+%
+% Note though that often the specified atom may be used directly, instead of the
+% corresponding plain string.
+%
+-spec image_format_to_extension( image_format() ) -> extension().
+image_format_to_extension( ImgFormat ) ->
+	% Currently sufficient:
+	text_utils:atom_to_string( ImgFormat ).
 
 
 
@@ -477,7 +530,7 @@ to_wx_image_quality( Other ) ->
 
 % Helper section.
 
--spec check_image_path(  any_image_path() ) -> void().
+-spec check_image_path( any_image_path() ) -> void().
 check_image_path( ImagePath ) ->
 
 	file_utils:is_existing_file_or_link( ImagePath ) orelse

@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -306,7 +306,7 @@ update_information_sizer( InfoSizer, Panel, Texts ) ->
 
 	%gui_sizer:clear( InfoSizer ),
 
-	TextOpts = [ { border, 10 }, expand_fully ],
+	TextOpts = [ { border_width, 10 }, all_borders, expand_fully ],
 
    [ gui_sizer:add_element( InfoSizer,
 		gui_text:create_static_display( T, Panel ), TextOpts ) || T <- Texts ].

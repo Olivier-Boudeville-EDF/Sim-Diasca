@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2023 Olivier Boudeville
+% Copyright (C) 2010-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,7 +39,7 @@
 -export([ floor/1, ceiling/1, round_after/2,
 		  float_to_integer/1, float_to_integer/2,
 		  modulo/2, clamp/2, clamp/3, squarify/1,
-		  sign/1,
+		  sign/1, copy_sign/2,
 		  square/1, int_pow/2, get_next_power_of_two/1,
 		  ln/1 ]).
 
@@ -77,7 +77,11 @@
 
 
 % Operations related to functions:
--export([ evaluate/2, sample/4, sample_as_pairs/4, normalise/2,
+-export([ evaluate/2,
+		  sample/4, sample_for/4,
+		  sample_as_pairs/3, sample_as_pairs/4,
+		  sample_as_pairs_for/3, sample_as_pairs_for/4,
+		  normalise/2,
 
 		  compute_support/1, compute_support/3, compute_support/4,
 
@@ -98,7 +102,7 @@
 
 
 % Special functions:
--export([ factorial/1, gamma/1 ]).
+-export([ factorial/1, gamma/1, lgamma/1 ]).
 
 
 % For epsilon define:
@@ -149,6 +153,9 @@
 % A factor expected to be positive or null.
 
 
+-type scale_factor() :: any_factor().
+% A factor of scale.
+
 
 -type standard_deviation() :: float().
 % Standard deviation, as used to describe a Gaussian curve.
@@ -159,7 +166,7 @@
 
 
 -type ratio() :: dimensionless().
-% A ration between two values.
+% A ratio between two values.
 
 
 -type percent() :: ratio().
@@ -212,6 +219,24 @@
 % support.
 
 
+-type sample() :: any().
+% A basic, unitary sample.
+
+-type float_sample() :: float().
+% A basic, unitary float sample.
+
+
+-type sample_data() :: type_utils:tuple( sample() ).
+% A tuple of data (numbers) to be sent as samples for a plot.
+%
+% This may or may not comprise the common abscissa (e.g. tick) that could be
+% common to these samples.
+
+
+-type sample_count() :: pos_integer().
+% A strictly positive number of samples.
+
+
 -type abscissa() :: float().
 
 -type integer_abscissa() :: integer().
@@ -249,11 +274,13 @@
 			   positive_factor/0, non_negative_factor/0,
 			   non_zero_integer/0,
 			   infinite_number/0, infinite_range/0,
+			   scale_factor/0,
 			   standard_deviation/0, variance/0,
 			   ratio/0, percent/0, integer_percent/0,
 			   probability/0, probability_like/0,
 			   bound/0, integer_bound/0,
 			   bounds/0, integer_bounds/0,
+			   sample/0, float_sample/0, sample_data/0, sample_count/0,
 			   abscissa/0, integer_abscissa/0, any_abscissa/0,
 			   integer_to_integer_fun/0, float_to_integer_fun/0,
 			   number_to_integer_fun/0, number_to_float_fun/0,
@@ -282,6 +309,37 @@
 -type int_degrees() :: unit_utils:int_degrees().
 -type any_degrees() :: unit_utils:any_degrees().
 -type radians() :: unit_utils:radians().
+
+
+-define( lanczos_g, 6.024680040776729583740234375 ).
+
+-define( lanczos_count, 13 ).
+
+
+% Lists of ?lanczos_count elements:
+
+% For the numerators:
+-define( lanczos_num_coeffs, [
+	23531376880.410759688572007674451636754734846804940,
+	42919803642.649098768957899047001988850926355848959,
+	35711959237.355668049440185451547166705960488635843,
+	17921034426.037209699919755754458931112671403265390,
+	6039542586.3520280050642916443072979210699388420708,
+	1439720407.3117216736632230727949123939715485786772,
+	248874557.86205415651146038641322942321632125127801,
+	31426415.585400194380614231628318205362874684987640,
+	2876370.6289353724412254090516208496135991145378768,
+	186056.26539522349504029498971604569928220784236328,
+	8071.6720023658162106380029022722506138218516325024,
+	210.82427775157934587250973392071336271166969580291,
+	2.5066282746310002701649081771338373386264310793408 ] ).
+
+
+% For the denominators, which are: X*(X+1)*...*(X+?lanczos_num_coeffs-2):
+-define( lanczos_den_coeffs, [
+	0.0, 39916800.0, 120543840.0, 150917976.0, 105258076.0, 45995730.0,
+	13339535.0, 2637558.0, 357423.0, 32670.0, 1925.0, 66.0, 1.0 ] ).
+
 
 
 % General section.
@@ -348,6 +406,10 @@ ceiling( X ) ->
 % the decimal point.
 %
 % For example round_after(12.3456, _DigitCount3) = 12.346.
+%
+% For a standard round operation, simply use the (Erlang-native) round(float())
+% -> integer() function directly. For example: 1 = round(1.1), 2 = round(
+% 1.9) and -2 = round( -1.9).
 %
 -spec round_after( float(), count() ) -> float().
 round_after( F, DigitCount ) ->
@@ -515,12 +577,29 @@ sign( _N ) ->
 	-1.
 
 
+
+% @doc Returns a float with the magnitude (absolute value) of X but the sign of
+% Y.
+%
+% For example -2.0 = copy_sign( 2.0, -0.0) returns -2.0.
+%
+-spec copy_sign( float(), float() ) -> float().
+copy_sign( X, Y ) when is_float( Y ) andalso Y >= 0.0 ->
+	abs( X );
+
+% Y < 0.0:
+copy_sign( X, Y ) when is_float( Y ) ->
+	-abs( X ).
+
+
+
 % @doc Returns the square of the specified number.
 %
 % Always useful.
 %
 -spec square( number() ) -> number().
 square( N ) ->
+	% No math:sqr/1; presumably better than math:pow(N,2):
 	N*N.
 
 
@@ -656,6 +735,9 @@ are_relatively_close( X, Y ) ->
 %
 -spec are_relatively_close( number(), number(), epsilon() ) -> boolean().
 are_relatively_close( X, Y, Epsilon ) ->
+
+	cond_utils:if_defined( myriad_debug_math,
+		trace_utils:debug_fmt( "Are ~w and ~w relatively close?", [ X, Y ] ) ),
 
 	% are_close/2 is not satisfactory at least when X and Y are large.
 	%
@@ -890,10 +972,10 @@ canonify( AngleInDegrees ) ->
 
 
 
-% @doc Evaluates the specified function as the specified abscissa, and returns
+% @doc Evaluates the specified function at the specified abscissa, and returns
 % the corresponding value if it could be computed, otherwise returns 'undefined'
 % (this happens when typically 'badarith' is thrown due to an operation failing,
-% like for math:pow(1000,1000).
+% like for math:pow(1000,1000) or math:pow(0.0,-0.89)).
 %
 -spec evaluate( float_to_float_fun(), abscissa() ) ->
 											maybe( float_result_value() ).
@@ -903,6 +985,10 @@ evaluate( Fun, Abs ) ->
 		Fun( Abs )
 
 	catch error:badarith ->
+		cond_utils:if_defined( myriad_debug_math,
+			trace_utils:error_fmt( "Unable to evaluate ~w at point ~w.",
+								   [ Fun, Abs ] ) ),
+
 		undefined
 
 	end.
@@ -919,6 +1005,25 @@ sample( Fun, StartPoint, StopPoint, Increment ) ->
 	sample( Fun, _Current=StartPoint, StopPoint, Increment, _Acc=[] ).
 
 
+% @doc Samples the specified function taking a single numerical argument, by
+% evaluating it on every point in turn from Start until up to Stop, for the
+% specified number of (evenly-spaced) samples: returns the ordered list of the
+% corresponding values that it took.
+%
+-spec sample_for( fun( ( number() ) -> T ), number(), number(),
+				  sample_count() ) -> [ T ].
+sample_for( Fun, StartPoint, StopPoint, SampleCount )
+											when SampleCount > 0 ->
+	Inc = ( StopPoint - StartPoint ) / SampleCount,
+	Samples = sample( Fun, _Current=StartPoint, StopPoint, Inc, _Acc=[] ),
+
+	cond_utils:assert( myriad_debug_math, SampleCount =:= length( Samples ) ),
+
+	Samples.
+
+
+
+
 % (helper)
 sample( _Fun, CurrentPoint, StopPoint, _Increment, Acc )
 											when CurrentPoint > StopPoint ->
@@ -926,10 +1031,22 @@ sample( _Fun, CurrentPoint, StopPoint, _Increment, Acc )
 
 sample( Fun, CurrentPoint, StopPoint, Increment, Acc ) ->
 	% Not trying to resist errors with evaluate/2:
-	NewValue = Fun( CurrentPoint ),
+	NewValue = evaluate( Fun, CurrentPoint ),
 	sample( Fun, CurrentPoint + Increment, StopPoint, Increment,
 			[ NewValue | Acc ] ).
 
+
+
+% @doc Samples uniformly the specified function taking a single numerical
+% argument, by evaluating it on every point in turn from Start until up to Stop,
+% with specified increment: returns the ordered list of the corresponding
+% {X,f(X)} pairs that it took.
+%
+-spec sample_as_pairs( fun( ( number() ) -> T ), bounds(),
+					   number() ) -> [ { number(), T } ].
+sample_as_pairs( Fun, Bounds, Increment ) ->
+	{ StartPoint, StopPoint } = canonicalise_bounds( Bounds ),
+	sample_as_pairs( Fun, StartPoint, StopPoint, Increment ).
 
 
 % @doc Samples uniformly the specified function taking a single numerical
@@ -944,15 +1061,59 @@ sample_as_pairs( Fun, StartPoint, StopPoint, Increment ) ->
 					 _Acc=[] ).
 
 
+% @doc Samples uniformly the specified function taking a single numerical
+% argument, by evaluating it on every point in turn within the specified
+% bounds', for the specified number of (evenly-spaced) samples: returns the
+% ordered list of the corresponding {X,f(X)} pairs that it took.
+%
+-spec sample_as_pairs_for( fun( ( number() ) -> T ), bounds(),
+						   sample_count() ) -> [ { number(), T } ].
+sample_as_pairs_for( Fun, Bounds, SampleCount ) ->
+	{ StartPoint, StopPoint } = canonicalise_bounds( Bounds ),
+	sample_as_pairs_for( Fun, StartPoint, StopPoint, SampleCount ).
+
+
+% @doc Samples uniformly the specified function taking a single numerical
+% argument, by evaluating it on every point in turn from Start until up to Stop,
+% for the specified number of (evenly-spaced) samples: returns the ordered list
+% of the corresponding {X,f(X)} pairs that it took.
+%
+-spec sample_as_pairs_for( fun( ( number() ) -> T ), number(), number(),
+						   sample_count() ) -> [ { number(), T } ].
+sample_as_pairs_for( Fun, StartPoint, StopPoint, SampleCount )
+											when SampleCount > 0 ->
+
+	%trace_utils:debug_fmt( "Sampling ~B points from ~w to ~w.",
+	%                       [ SampleCount, StartPoint, StopPoint ] ),
+
+	Inc = ( StopPoint - StartPoint ) / SampleCount,
+
+	% Due to rounding errors after adding the increment multiple times, we might
+	% have one data point too few or too many. We should use a specific function
+	% rather than:
+	%
+	Pairs = sample_as_pairs( Fun, _CurrentPoint=StartPoint, StopPoint, Inc,
+							 _Acc=[] ),
+
+	%trace_utils:debug_fmt( "~B pairs: ~p", [ length( Pairs ), Pairs ] ),
+
+	% May fail, commented until a specific sample helper function is defined:
+	%cond_utils:assert( myriad_debug_math, SampleCount =:= length( Pairs ) ),
+
+	Pairs.
+
+
+
 % (helper)
 sample_as_pairs( _Fun, CurrentPoint, StopPoint, _Increment, Acc )
 								when CurrentPoint > StopPoint ->
 	lists:reverse( Acc );
 
 sample_as_pairs( Fun, CurrentPoint, StopPoint, Increment, Acc ) ->
-   NewValue = Fun( CurrentPoint ),
+   NewValue = evaluate( Fun, CurrentPoint ),
    sample_as_pairs( Fun, CurrentPoint+Increment, StopPoint, Increment,
 					[ { CurrentPoint, NewValue } | Acc ] ).
+
 
 
 
@@ -1216,7 +1377,6 @@ search_non_null( Fun, Origin, MaybeMin, MaybeMax, Inc, RemainingTests,
 
 
 
-
 % Searches by dichotomy in one direction (defined by the sign of the increment)
 % the first null point, for which the next ones being are supposed to be all
 % null, found from the specified origin (whose value is expected to be
@@ -1248,8 +1408,21 @@ search_first_null( Fun, Pivot, MaybeMax, Inc, RemainingTests, Epsilon ) ->
 			case evaluate( Fun, TestedPoint ) of
 
 				undefined ->
-					% If ever it improved:
-					search_first_null( Fun, Pivot, MaybeMax, 2.0 * Inc,
+					trace_utils:debug_fmt(
+						"No value can be computed for point ~w.",
+						[ TestedPoint ] ),
+
+					% If ever it improved (generally: not at all):
+					%search_first_null( Fun, Pivot, MaybeMax, 2.0 * Inc,
+					%                   RemainingTests-1, Epsilon );
+
+					% Instead we suppose that we just entered a forbidden area,
+					% we thus backtrack a bit and sample uniformly from the
+					% pivot to this bad point:
+
+					NewInc = ( TestedPoint - Pivot ) / RemainingTests,
+
+					search_first_null( Fun, Pivot, _NewMax=TestedPoint, NewInc,
 									   RemainingTests-1, Epsilon );
 
 				Value ->
@@ -1289,6 +1462,10 @@ search_first_null( Fun, Pivot, MaybeMax, Inc, RemainingTests, Epsilon ) ->
 							end;
 
 						false ->
+
+							%trace_utils:debug_fmt( "Non-null vamue: ~w.",
+							%   [ Value ] ),
+
 							% Same sign for increment, hence same direction,
 							% again exponential:
 							%
@@ -1547,7 +1724,7 @@ compute_integer_support( Fun ) ->
 % Typically useful to properly discretise probability density functions.
 %
 -spec compute_integer_support( integer_to_float_fun(), maybe( integer_bound() ),
-								maybe( integer_bound() ) ) -> integer_bounds().
+							   maybe( integer_bound() ) ) -> integer_bounds().
 compute_integer_support( Fun, MaybeMin=undefined, MaybeMax=undefined ) ->
 	compute_integer_support( Fun, _Origin=0, MaybeMin, MaybeMax );
 
@@ -2138,8 +2315,7 @@ factorial( N ) when N > 0 ->
 
 
 % @doc Evaluates the well-known Gamma function for the specified value (integer
-% or floating-point: no need felt for one operating on complex numbers).
-%
+% or floating-point - no need felt for one operating on complex numbers).
 %
 %              +infinity
 %             /
@@ -2149,6 +2325,13 @@ factorial( N ) when N > 0 ->
 %
 % Exact results are returned for integer values, approximated ones for
 % floating-point ones.
+%
+% Note that this function returns very quickly extremely large values, soon
+% exceeding, for floating-point values, the range of float() (hence C doubles) -
+% whereas remaining able to be evaluated for integer values (e.g. gamma(650) can
+% be evaluated whereas gamma(650.0) cannot, due to an exception when evaluating
+% an arithmetic expression, related to math:pow/2). One may rely on lgamma/1
+% instead.
 %
 % Refer to https://en.wikipedia.org/wiki/Gamma_function for more information.
 %
@@ -2210,3 +2393,150 @@ add_gamma( _P=[], _OffsetF, _Inc, AccV ) ->
 add_gamma( _P=[ H | T ], OffsetF, Inc, AccV ) ->
 	NewAccV = AccV + H / ( OffsetF + Inc),
 	add_gamma( T, OffsetF, Inc+1, NewAccV ).
+
+
+
+% @doc Evaluates the natural logarithm of the absolute value of the well-known
+% Gamma function for the specified (integer or floating-point) value.
+%
+% Refer to https://en.wikipedia.org/wiki/Gamma_function for more information.
+%
+% See also gamma/1.
+%
+-spec lgamma( pos_integer() ) -> pos_integer();
+			( float() ) -> float().
+lgamma( _I=1 ) ->
+	0;
+
+% Otherwise tends to +infinity:
+lgamma( I ) when is_integer( I ) andalso I > 0 ->
+	lgamma( float( I ) );
+
+lgamma( F ) when is_float( F ) ->
+	% Inspired from the implementation in
+	% https://github.com/python/cpython/blob/31c05b72c15885ad5ff298de39456d8baed28448/Modules/mathmodule.c#L490
+
+	% Apparently, for large arguments, Lanczos' formula works extremely well
+	% here.
+
+	% No specific management of non-finite - including NaN - values.
+
+	AbsF = abs( F ),
+
+	% For tiny arguments, lgamma(x) ~ -log(fabs(x)):
+	case AbsF < ?smaller_epsilon of
+
+		true ->
+			-ln( AbsF );
+
+		_False ->
+			LanczosG = ?lanczos_g,
+			R1 = ln( lanczos_sum( AbsF ) ) - LanczosG,
+			R2 = R1 + (AbsF - 0.5 ) * ( ln( AbsF + LanczosG - 0.5 ) - 1 ),
+			case F < 0.0 of
+
+				true ->
+					% Use reflection formula to get value for negative F:
+					?ln_pi - ln( abs( sin_pi( AbsF ) ) ) - ln( AbsF ) - R2;
+
+				false ->
+					R2
+
+			end
+
+	end.
+
+
+
+% Computes the rational Lanczos sum of the specified strictly positive float.
+lanczos_sum( F ) when is_float( F ) andalso F > 0.0 ->
+
+	Nums = ?lanczos_num_coeffs,
+	Dens = ?lanczos_den_coeffs,
+
+	cond_utils:assert( myriad_debug_math,
+		?lanczos_count =:= length( Nums )
+			andalso ?lanczos_count =:= length( Dens ) ),
+
+	% Evaluates the rational function lanczos_sum(F). For large F, the obvious
+	% algorithm risks overflow, so we instead rescale the denominator and
+	% numerator of the rational function by x**(1-?lanczos_count) and treat this
+	% as a rational function in 1/F. This also reduces the error for larger F
+	% values. The choice of cutoff point (5.0 below) is somewhat arbitrary; in
+	% tests, smaller cutoff values than this resulted in lower accuracy.
+
+	{ Num, Den } = case F < 5.0 of
+
+		true ->
+			RevNums = lists:reverse( Nums ),
+			RevDens = lists:reverse( Dens ),
+
+			mult_lanczos_coeffs( _N=0.0, _D=0.0, F, RevNums, RevDens );
+
+		_False ->
+			div_lanczos_coeffs( _N=0.0, _D=0.0, F, Nums, Dens )
+
+	end,
+
+	Num / Den.
+
+
+
+% (helper)
+mult_lanczos_coeffs( N, D, _F, _Ns=[], _Ds ) ->
+	{ N, D };
+
+mult_lanczos_coeffs( N, D, F, _Ns=[ Num | TN ], _Ds=[ Den | TD ] ) ->
+	NewN = N * F + Num,
+	NewD = D * F + Den,
+	mult_lanczos_coeffs( NewN, NewD, F, TN, TD ).
+
+
+% (helper)
+div_lanczos_coeffs( N, D, _F, _Ns=[], _Ds ) ->
+	{ N, D };
+
+div_lanczos_coeffs( N, D, F, _Ns=[ Num | TN ], _Ds=[ Den | TD ] ) ->
+	NewN = N / F + Num,
+	NewD = D / F + Den,
+	div_lanczos_coeffs( NewN, NewD, F, TN, TD ).
+
+
+
+
+
+
+sin_pi( F ) ->
+
+	AbsF = abs( F ),
+
+	% In [0.0, 2.0]:
+	Mod2F = math:fmod( AbsF, 2.0 ),
+
+	N = round( 2.0 * Mod2F ),
+
+	% Useless: cond_utils:assert( myriad_debug_math, N >= 0 andalso N =< 4 ),
+
+	R = case N of
+
+		0 ->
+			math:sin( math:pi() * Mod2F );
+
+		1 ->
+			math:cos( math:pi() * (Mod2F-0.5) );
+
+		2 ->
+			% -sin(pi*(Mod2F-1.0)) is *not* equivalent: it would give -0.0
+			% instead of 0.0 when Mod2F == 1.0.
+			%
+			math:sin( math:pi() * (1.0-Mod2F));
+
+		3 ->
+			-math:cos( math:pi() * (Mod2F-1.5));
+
+		4 ->
+			math:sin( math:pi() * (Mod2F-2.0))
+
+	end,
+
+	copy_sign( 1.0, F ) * R.

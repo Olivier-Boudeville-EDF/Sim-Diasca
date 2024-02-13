@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2023 Olivier Boudeville
+% Copyright (C) 2019-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,9 +26,9 @@
 % Creation date: Friday, July 19, 2019.
 
 
-% Testing of Myriad as an OTP library application, directly from within its code
-% base (hence without needing to create a separate, mock-up test OTP release for
-% that).
+% @doc Testing of Myriad as an OTP library application, directly from within its
+% code base (hence without needing to create a separate, mock-up test OTP
+% release for that).
 %
 -module(myriad_otp_application_test).
 
@@ -50,13 +50,12 @@ test_myriad_application( OrderedAppNames ) ->
 	test_facilities:display( "Current user name: '~ts'.",
 							 [ system_utils:get_user_name() ] ),
 
-
 	% Including Myriad:
 	test_facilities:display( "Stopping all user applications." ),
 	otp_utils:stop_user_applications( OrderedAppNames ),
 
 	test_facilities:display(
-	  "Successful end of test of the Myriad OTP application." ).
+		"Successful end of test of the Myriad OTP application." ).
 
 
 

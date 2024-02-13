@@ -1,5 +1,7 @@
 name: Erlang CI
 
+# Do *not* whitespace-clean up this file, it would corrupt it!
+
 on:
   push:
     branches: [ master ]

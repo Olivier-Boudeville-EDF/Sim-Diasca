@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2023 Olivier Boudeville
+% Copyright (C) 2013-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -103,12 +103,13 @@
 
 
 -type phone_number() :: ustring().
-% A phone number, preferably international, preferably with no whitespaces (ex:
+% A phone number, preferably international, preferably with no whitespaces (e.g.
 % "+330616XXXXXX").
 
 
 -type recipient() :: phone_number().
-% Phone number of a recipient, probably of a mobile phone (ex: "+330616XXXXXX").
+% Phone number of a recipient, probably of a mobile phone
+% (e.g. "+330616XXXXXX").
 
 
 -type sender_description() :: ustring().
@@ -120,16 +121,16 @@
 
 
 -type failure_reason() ::
-		{ 'invalid_content', ustring() }
-	  | { 'invalid_phone_number', ustring() }
-	  |   'credits_exhausted'
-	  |   'insufficient_credits'
-	  | { 'invalid_password', ustring() }
-	  | { 'invalid_user', ustring() }
-	  | { 'invalid_content', ustring() }
-	  | { 'invalid_request', ustring() }
-	  | { 'error', ustring() }
-	  | { 'request_failed', ustring() }.
+	{ 'invalid_content', ustring() }
+  | { 'invalid_phone_number', ustring() }
+  |   'credits_exhausted'
+  |   'insufficient_credits'
+  | { 'invalid_password', ustring() }
+  | { 'invalid_user', ustring() }
+  | { 'invalid_content', ustring() }
+  | { 'invalid_request', ustring() }
+  | { 'error', ustring() }
+  | { 'request_failed', ustring() }.
 % Many steps may go wrong.
 
 
@@ -281,7 +282,7 @@ send( #sms{ message=Message, recipient=Recipient,
 
 		success ->
 			NewC = Credits - get_credit_cost( Provider, ActualServiceClass ),
-			NewS = Successes + 1,
+			NewS = Successes+1,
 			{ NewC, NewS };
 
 		_Failure ->
@@ -441,7 +442,7 @@ sms_to_string( #sms{ message=Message, recipient=Recipient,
 					 sender_description=SenderDesc,
 					 service_class=ServiceClass } ) ->
 
-	% Encoding (ex: of accentuated characters) changes the byte size:
+	% Encoding (e.g. of accentuated characters) changes the byte size:
 	Len = length( Message ),
 
 	text_utils:format( "SMS whose message is '~ts' (character length: "
@@ -604,7 +605,7 @@ execute_request( Request, Username, Password, Recipient ) ->
 
 
 % @doc Returns the cost in credits of sending one SMS of the specified service
-% class from specified provider.
+% class from the specified provider.
 %
 get_credit_cost( _Provider=verysms, _ServiceClass=eco ) ->
 	5;

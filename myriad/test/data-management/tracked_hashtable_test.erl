@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2023 Olivier Boudeville
+% Copyright (C) 2011-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -22,10 +22,13 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Authors: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+%          Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: November 10, 2011.
 
 
-% Unit tests for the tracked hashtable implementation.
+% @doc Unit tests for the tracked hashtable implementation.
+%
 % See the tracked_hashtable.erl module.
 %
 -module(tracked_hashtable_test).
@@ -58,7 +61,7 @@ run() ->
 	MyFirstValue = "MyFirstValue",
 	MyH3 = tracked_hashtable:add_entry( ?MyFirstKey, MyFirstValue, MyH2 ),
 	false = tracked_hashtable:is_empty( MyH3 ),
-	tracked_hashtable:display("The tracked hashtable", MyH3 ),
+	tracked_hashtable:display( "The tracked hashtable", MyH3 ),
 
 	MySecondValue = [ 1, 2, 3 ],
 	MyH4 = tracked_hashtable:add_entry( ?MySecondKey, MySecondValue, MyH3 ),
@@ -88,7 +91,7 @@ run() ->
 		tracked_hashtable:extract_entry( ?MyFirstKey, MyH4 ),
 
 	test_facilities:display( "Looking up for ~ts: ~p", [ ?MySecondKey,
-			tracked_hashtable:lookup_entry( ?MySecondKey, MyH5 ) ] ),
+		tracked_hashtable:lookup_entry( ?MySecondKey, MyH5 ) ] ),
 
 	{ value, [1,2,3] } = tracked_hashtable:lookup_entry( ?MySecondKey, MyH5 ),
 
@@ -179,6 +182,6 @@ run() ->
 	Keys = [ ?MyFirstKey, ?MyThirdKey ],
 
 	test_facilities:display( "Listing the entries for keys ~p:~n ~p",
-					[ Keys, tracked_hashtable:select_entries( Keys, MyH8 ) ] ),
+		[ Keys, tracked_hashtable:select_entries( Keys, MyH8 ) ] ),
 
 	test_facilities:stop().

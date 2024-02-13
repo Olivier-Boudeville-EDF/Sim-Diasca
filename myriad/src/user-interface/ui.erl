@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2023 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -110,7 +110,7 @@
 % Defines that are common, transverse to all user interface backends.
 
 
--type text() :: text_utils:any_string().
+-type text() :: any_string().
 % Any text, as a plain or binary (Unicode, UTF-8) string.
 %
 % Could usually be a more general (notably as recursive lists as such elements),
@@ -124,8 +124,13 @@
 -type prompt() :: text().
 % A prompt, typically of an interpreter.
 
+
 -type title() :: text().
 % A title, typically of a document.
+
+-type bin_title() :: bin_string().
+% A (binary) title, typically of a document.
+
 
 -type caption() :: text().
 % A caption, typically of a window.
@@ -166,7 +171,8 @@
 % Useful to define the interface wanted and to interpret its outcome.
 
 
--export_type([ text/0, label/0, prompt/0, title/0, caption/0, message/0,
+-export_type([ text/0, label/0, prompt/0, title/0, bin_title/0,
+			   caption/0, message/0,
 			   binary_choice/0,
 			   choice_text/0, choice_designator/0, choice_index/0,
 			   choice_element/0, choice_spec/0 ]).
@@ -294,6 +300,8 @@
 -type argument_table() :: shell_utils:argument_table().
 
 -type ustring() :: text_utils:ustring().
+-type any_string() :: text_utils:any_string().
+-type bin_string() :: text_utils:bin_string().
 -type format_string() :: text_utils:format_string().
 -type format_values() :: text_utils:format_values().
 

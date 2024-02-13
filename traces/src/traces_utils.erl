@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2023 Olivier Boudeville
+% Copyright (C) 2020-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -29,9 +29,15 @@
 % @doc Module gathering various <b>trace-related facilities</b>, notably in link
 % with OTP.
 %
-% Note: not to be mixed up with the trace_utils module from Myriad.
+% This module should not be mixed up with the trace_utils module from Myriad
+% (note that the names of these modules differ, therefore their BEAM files
+% cannot clash).
 %
 -module(traces_utils).
+
+
+% Version-related functions.
+-export([ get_traces_version/0, get_traces_version_string/0 ]).
 
 
 -export([ get_aggregator_registration_scope/0, get_aggregator_look_up_scope/0,
@@ -44,7 +50,10 @@
 
 % Shorthands:
 
+-type three_digit_version() :: basic_utils:three_digit_version().
 -type module_name() :: basic_utils:module_name() .
+
+-type ustring() :: text_utils:ustring().
 
 -type bin_file_name() :: file_utils:bin_file_name().
 
@@ -55,13 +64,29 @@
 
 
 
+% Version-related functions.
+
+% @doc Returns the version of the Traces library being used.
+-spec get_traces_version() -> three_digit_version().
+get_traces_version() ->
+	basic_utils:parse_version( get_traces_version_string() ).
+
+
+% @doc Returns the version of the Traces library being used, as a string.
+-spec get_traces_version_string() -> ustring().
+get_traces_version_string() ->
+	% As defined (uniquely) in GNUmakevars.inc:
+	?traces_version.
+
+
+
 % @doc Returns the registration scope that applies to the trace aggregator in
 % the current context.
 %
 -spec get_aggregator_registration_scope() -> registration_scope().
 get_aggregator_registration_scope() ->
 
-	% Possibly read from any *.config file specified (ex: refer to the
+	% Possibly read from any *.config file specified (e.g. refer to the
 	% INTERNAL_OPTIONS make variable):
 	%
 	% Supporting this not deemed useful:

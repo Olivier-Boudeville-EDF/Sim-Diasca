@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2023 Olivier Boudeville
+% Copyright (C) 2011-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -22,7 +22,8 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Authors: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+%          Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: November 10, 2011.
 
 
@@ -172,7 +173,7 @@ new_with_buckets( _NumberOfBuckets ) ->
 %
 -spec add_entry( key(), value(), tracked_hashtable() ) -> tracked_hashtable().
 add_entry( Key, Value,
-		 _TrackedHashtable={ Hashtable, EntryCount, NumberOfBuckets } ) ->
+		   _TrackedHashtable={ Hashtable, EntryCount, NumberOfBuckets } ) ->
 
 	% We pay inter-module calls to preserve hashtable opaqueness.
 
@@ -180,7 +181,7 @@ add_entry( Key, Value,
 	% (impacting the load factor) or being updated (load factor unchanged).
 
 	{ Newhashtable, Diagnosis } = hashtable:add_diagnosed_entry( Key, Value,
-			Hashtable ),
+																 Hashtable ),
 
 	% Should a new element be added, we verify and optimise the hashtable if
 	% necessary:
@@ -243,7 +244,7 @@ add_entries( EntryList,
 		true ->
 
 			OptimisedTable = hashtable:optimise_unconditionally( NewEntryCount,
-						NumberOfBuckets, Entries, AugmentedTable ),
+				NumberOfBuckets, Entries, AugmentedTable ),
 			{ OptimisedTable, NewEntryCount,
 			  hashtable:get_bucket_count( OptimisedTable ) };
 
@@ -276,7 +277,7 @@ remove_entry( Key, TrackedHashtable={ Hashtable, EntryCount, BucketCount } ) ->
 					Entries = hashtable:enumerate( NewTable ),
 
 					OptimisedTable = hashtable:optimise_unconditionally(
-							NewEntryCount, BucketCount, Entries, NewTable ),
+						NewEntryCount, BucketCount, Entries, NewTable ),
 
 					{ OptimisedTable, NewEntryCount,
 					  hashtable:get_bucket_count( OptimisedTable ) };
@@ -362,8 +363,8 @@ get_value_with_default( Key, DefaultValue,
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
-% Ex: [Color, Age, Mass] = tracked_hashtable:get_values([color, age, mass],
-% MyTable])
+% For example [Color, Age, Mass] = tracked_hashtable:get_values([color, age,
+%   mass], MyTable])
 %
 -spec get_values( [ key() ], tracked_hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
@@ -371,10 +372,8 @@ get_values( Keys, Hashtable ) ->
 	{ RevValues, _FinalTable } = lists:foldl(
 
 		fun( _Elem=Key, _Acc={ Values, Table } ) ->
-
-			   { Value, ShrunkTable } = extract_entry( Key, Table ),
-			   { [ Value | Values ], ShrunkTable }
-
+			    { Value, ShrunkTable } = extract_entry( Key, Table ),
+			    { [ Value | Values ], ShrunkTable }
 		end,
 		_Acc0={ [], Hashtable },
 		_List=Keys ),
@@ -390,18 +389,16 @@ get_values( Keys, Hashtable ) ->
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
-% Ex: [Color=red, Age=23, Mass=51 ] = tracked_hashtable:get_all_values(
-%                 [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
+% For example [Color=red, Age=23, Mass=51 ] = tracked_hashtable:get_all_values(
+%   [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
 %
 -spec get_all_values( [ key() ], tracked_hashtable() ) -> [ value() ].
 get_all_values( Keys, Hashtable ) ->
 
 	{ RevValues, FinalTable } = lists:foldl(
 		   fun( _Elem=Key, _Acc={ Values, Table } ) ->
-
 				{ Value, ShrunkTable } = extract_entry( Key, Table ),
 				{ [ Value | Values ], ShrunkTable }
-
 		   end,
 		   _Acc0={ [], Hashtable },
 		   _List=Keys ),
@@ -426,7 +423,7 @@ get_all_values( Keys, Hashtable ) ->
 % to duplicate the whole content in memory).
 %
 % Note: as the fun may return modified keys, the whole structure of the
-% hashtable may change (ex: different buckets used for replaced entries,
+% hashtable may change (e.g. different buckets used for replaced entries,
 % colliding keys resulting in having less entries afterwards, etc.).
 %
 % One may request the returned hashtable to be optimised after this call.
@@ -501,7 +498,7 @@ merge( _TrackedHashtableBase={ HashtableBase, _NEntB, _NBuckB },
 
 		true ->
 			OptimisedTable = hashtable:optimise_unconditionally( NewEntryCount,
-					UpdatedTableSize, Entries, UpdatedHashtable ),
+				UpdatedTableSize, Entries, UpdatedHashtable ),
 
 			{ OptimisedTable, NewEntryCount,
 			  hashtable:get_bucket_count( OptimisedTable ) };
@@ -611,7 +608,7 @@ pop_from_entry( Key, TrackedHashtable ) ->
 % @doc Returns a flat list whose elements are all the key/value pairs of the
 % hashtable.
 %
-% Ex: [ {K1,V1}, {K2,V2}, ... ].
+% For example [{K1,V1}, {K2,V2}, ...].
 %
 -spec enumerate( tracked_hashtable() ) -> entries().
 enumerate( _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
@@ -636,7 +633,8 @@ keys( _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 
 % @doc Returns a list containing all the values of this hashtable.
 %
-% Ex: useful if the key was used as an index to generate this table first.
+% For example useful if the key was used as an index to generate this table
+% first.
 %
 -spec values( tracked_hashtable() ) -> [ value() ].
 values( _TrackedHashtable={ Hashtable, _NEnt, _NBuck }  ) ->
@@ -673,7 +671,7 @@ to_string( _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 % display setting.
 %
 -spec to_string( tracked_hashtable(), 'internal' | 'user_friendly' ) ->
-						ustring().
+						                    ustring().
 to_string( _TrackedHashtable={ Hashtable, _NEnt, _NBuck }, DescriptionType ) ->
 	hashtable:to_string( Hashtable, DescriptionType ).
 

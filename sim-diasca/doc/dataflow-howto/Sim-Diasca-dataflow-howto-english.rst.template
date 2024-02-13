@@ -135,7 +135,7 @@ Dataflows of course have an immediate graphical counterpart. The conventional sy
 :raw-latex:`\includegraphics[scale=0.3]{dataflow-legend.png}`
 
 
-By convention, input ports are in orange, output ports in green, dataflow objects in light purple, dataflow units (ex: processing or mock-up ones) are in light blue and comprise the symbol of their activation policy, and channels are in various shades of blue [#]_.
+By convention, input ports are in orange, output ports in green, dataflow objects in light purple, dataflow units (e.g. processing or mock-up ones) are in light blue and comprise the symbol of their activation policy, and channels are in various shades of blue [#]_.
 
 .. [#] Please refer to `Annex 3: Conventions for the Graphical Representation of Dataflows`_ for more information.
 
@@ -148,9 +148,9 @@ Still in blue, the ``SUTC`` quadruplet:
 
  S:'http://foobar.org/urban/1.1/energy/demand'
 
-- the *Unit* of the value, prefixed with ``"U:"`` (ex: ``"U: kW.h"``, or ``"U: g/Gmol.s^-2"``); often the unit information implies a type (described in next point): for example the unit ``"U: W"`` implies the type ``"T: float"``; in this case the type information can be safely omitted
-- the *Type* of the values conveyed by the channel, prefixed with ``"T:"`` (ex: ``"T: string"`` or ``"T: {integer,boolean}"``)
-- the *Constraints* (if any) applying to the exchanged value, as a list of elementary constraints (ex: ``"C: [ {between,{2.0,8.0}} ]"`` means that a single constraint applies to the exchanged values, which is that they must be between 2 and 8)
+- the *Unit* of the value, prefixed with ``"U:"`` (e.g. ``"U: kW.h"``, or ``"U: g/Gmol.s^-2"``); often the unit information implies a type (described in next point): for example the unit ``"U: W"`` implies the type ``"T: float"``; in this case the type information can be safely omitted
+- the *Type* of the values conveyed by the channel, prefixed with ``"T:"`` (e.g. ``"T: string"`` or ``"T: {integer,boolean}"``)
+- the *Constraints* (if any) applying to the exchanged value, as a list of elementary constraints (e.g. ``"C: [ {between,{2.0,8.0}} ]"`` means that a single constraint applies to the exchanged values, which is that they must be between 2 and 8)
 
 These ``SUTC`` information shall preferably be specified close to the associated channel (if any) or output port.
 
@@ -199,7 +199,7 @@ In practice, it is a set of interlinked dataflow blocks, typically `dataflow pro
 
 Even though dataflows could remain only implicit data-structures (they would just correspond to an actual set of interlinked dataflow elements), we preferred introducing an actual **dataflow class**, in order to ease the interaction with such instances and provide a reference point.
 
-So overall operations on a given dataflow (ex: creations, modifications, report inquiries) shall be operated only through its corresponding federating ``class_Dataflow`` instance.
+So overall operations on a given dataflow (e.g. creations, modifications, report inquiries) shall be operated only through its corresponding federating ``class_Dataflow`` instance.
 
 Multiple dataflow instances may exist, and they are collectively managed by the overall `experiment manager`_, introduced later in this document.
 
@@ -250,8 +250,8 @@ A port is the only way by which a dataflow block (typically a unit) may interact
 Following rules apply:
 
 - a port is either an **input** one (listening to the update of a value conveyed by the corresponding channel) or an **output** one (able to update its corresponding value and notify its registered input listeners); this is reflected by their type (either ``input_port`` or ``output_port``)
-- each port is **named** (as a non-empty string [#]_, ex: ``"my foobar port"``) and no two input ports of a block can bear the same name, nor output ones can (however an input port and an output port of the same block *can* have the same name - they will be differentiated by their nature)
-- a **port identifier** is defined from a pair made of an identifier of the block that defined it and from the name of that port [#]_ (ex: it could be ``("My Unit","Port 24")``, or based on more technical identifiers)
+- each port is **named** (as a non-empty string [#]_, e.g. ``"my foobar port"``) and no two input ports of a block can bear the same name, nor output ones can (however an input port and an output port of the same block *can* have the same name - they will be differentiated by their nature)
+- a **port identifier** is defined from a pair made of an identifier of the block that defined it and from the name of that port [#]_ (e.g. it could be ``("My Unit","Port 24")``, or based on more technical identifiers)
 - a port (input or output) may either hold a value (arbitrary data can be set; the port is then considered as ready, i.e. as ``set``), or not - in which case it holds the ``unset`` symbol (the port is then itself considered as ``unset``)
 - an **output** port can be considered as being always unset: as soon as a new value is available, it notifies all its connected input ports and then reverts back to the unset status; therefore the set/unset status can be abstracted out for output ports, which just get punctually activated
 - conversely, this status matters for **input** ports: a block starts with all its input ports to ``unset``, and, each time an input port is notified by an output port, this input port switches to ``set``; how a block is to react depending on none, one, some or all of its input ports being set is discussed below
@@ -261,7 +261,7 @@ Following rules apply:
 
   - it gets **connected** (i.e. a channel is created from this output port to an input port) *whereas this output port has already been set at least once in the past*; then, on channel creation, the latest value it sent will be re-emitted, only to the newly connected input port
 
-- ports can convey arbitrary data (i.e. any Erlang term), yet any given port has a **type**, which defines what are the licit the values that it can hold (ex: "this port can be set to any pair of non-negative floats") [#]_
+- ports can convey arbitrary data (i.e. any Erlang term), yet any given port has a **type**, which defines what are the licit the values that it can hold (e.g. "this port can be set to any pair of non-negative floats") [#]_
 - **a block can declare any number of output ports** (possibly none, in which case it is an *exit block*, a sink)
 - **a block can declare any number of input ports** (possibly none, in which case it is an *entry block*, a source)
 - **a channel links exactly one output port to one input port**, and these two ports shall have the same types, units and semantics (which are the ones of the channel)
@@ -301,7 +301,7 @@ Type of a Value
 Type Basics
 ...........
 
-A channel is **typed**, in the sense that all the values that it conveys shall be of the same type (in terms of programming language; ex: a floating-point value), which is the one specified for the channel. The ``T`` in ``SUTC`` stands for this *type* information.
+A channel is **typed**, in the sense that all the values that it conveys shall be of the same type (in terms of programming language; e.g. a floating-point value), which is the one specified for the channel. The ``T`` in ``SUTC`` stands for this *type* information.
 
 The *name* of a type must be a series of alphanumerical characters, in lowercase, starting with an alphabetical one, and possibly containing underscore (``_``) characters; example of a type name: ``integer`` or ``this_is_my_type_name_221``.
 
@@ -312,7 +312,7 @@ In the absence of *unit* information (see next section), the *type* information 
 .. Note:: The specified typing information is currently *not* used: as a consequence, the values conveyed by the dataflow are *not* yet checked against their declared type.
 
 
-.. comment  symbols not starting by a lowercase letter or containing spaces must be enclosed in single quotes (ex: ``'MySymbol'`` or ``'my symbol'``)
+.. comment  symbols not starting by a lowercase letter or containing spaces must be enclosed in single quotes (e.g. ``'MySymbol'`` or ``'my symbol'``)
 
 
 A set of *built-in* and *derived* types is provided, and many port specifications rely directly on them in order to define simple, scalar, atomic values (often floating-point ones) - as opposed to compound ones. Specifications may also define and use any additional type that they may need.
@@ -357,13 +357,13 @@ Name of the built-in type Description                                     Exampl
 
 :raw-html:`</center>`
 
-.. [#] Note that some types overlap, notably some of them are special cases of others, like integers and numbers. So, for a given value, multiple type specifications apply (ex: ``any`` will always match).
+.. [#] Note that some types overlap, notably some of them are special cases of others, like integers and numbers. So, for a given value, multiple type specifications apply (e.g. ``any`` will always match).
 
 .. [#] Mapped as an Erlang binary string, displayed as a basic string.
 
 
 .. Note:: Indiscriminate use of the ``any`` type is strictly prohibited;
-		  typically it should *never* be used operationally (ex: when defining
+		  typically it should *never* be used operationally (e.g. when defining
 		  actual ports), as it would then be a way of bypassing the type system.
 
 		  For advanced users: the main use of ``any`` lies in the very specific context of "polymorphic units", i.e. units that may be able to process values of all kinds of types.
@@ -380,9 +380,9 @@ These types are not built-in, they are to be specifically derived (possibly by t
 Type Definition
 _______________
 
-Often, a new type definition has to be used in several occurrences (ex: when having different ports that happen to rely on the same type). Rather than repeating the same type definition each time, we recommend that, as soon as a type definition is used more than once for the same purpose, a (derived) type is defined from it and named one time for all - and then referred to as often as needed.
+Often, a new type definition has to be used in several occurrences (e.g. when having different ports that happen to rely on the same type). Rather than repeating the same type definition each time, we recommend that, as soon as a type definition is used more than once for the same purpose, a (derived) type is defined from it and named one time for all - and then referred to as often as needed.
 
-Indeed, being (new) types, derived types have their own name (ex:  ``my_own_type``), knowing that the names of all built-in types are reserved.
+Indeed, being (new) types, derived types have their own name (e.g.  ``my_own_type``), knowing that the names of all built-in types are reserved.
 
 So, in order to define a derived type named ``my_own_type`` according to any kind of definition (designated here by ``A_TYPE_DEFINITION``), the following syntax shall be used::
 
@@ -436,17 +436,17 @@ Finally, in addition to all the atomic types (built-in or derived) presented abo
 
 - *list* of type ``T``, noted as ``list(T)`` or ``[T]``: any kind of (proper, homogeneous) list (empty or not), represented between square brackets, to account for a variable-size sequential container containing values of type ``T``
 
-  - ex: ``list(integer)`` and ``[integer]`` denote the same type, a list containing any number of integers; values of that type can thus be: ``[4,-17]``, ``[]``, etc.
+  - e.g. ``list(integer)`` and ``[integer]`` denote the same type, a list containing any number of integers; values of that type can thus be: ``[4,-17]``, ``[]``, etc.
   - ``list()`` refers to any kind of list (alias of ``list(any)``)
 
 - *tuple* containing elements of types T1, T2, T3, etc., noted as ``{T1,T2,T3,...}``: any kind of tuple (fixed-size container, homogeneous or not), delimited by curly braces
 
-  - ex: a value of the  ``{burner_status,float,[bool]}`` type might be ``{'burner_on_operation',14.7,['false','false']}``
-  - ``tuple(T)`` refers to tuples whose elements are all of type ``T``, and whose number is not specified (ex: ``{2,46,5}`` is of type ``tuple(integer)``), while ``tuple()`` refers to any kind of tuple
+  - e.g. a value of the  ``{burner_status,float,[bool]}`` type might be ``{'burner_on_operation',14.7,['false','false']}``
+  - ``tuple(T)`` refers to tuples whose elements are all of type ``T``, and whose number is not specified (e.g. ``{2,46,5}`` is of type ``tuple(integer)``), while ``tuple()`` refers to any kind of tuple
 
 - in later versions: *associative tables*, whose keys are of type ``Tk`` and values are of type ``Tv``, noted as ``table(Tk,Tv)``
 
-Note that *recursive* types (ex: a type ``tree`` being defined as ``{tree,tree,node_content}``), are, at least currently, not allowed (they can be expressed yet no specific support for them is provided).
+Note that *recursive* types (e.g. a type ``tree`` being defined as ``{tree,tree,node_content}``), are, at least currently, not allowed (they can be expressed yet no specific support for them is provided).
 
 
 
@@ -472,7 +472,7 @@ One should refer to the documentation of the ``Myriad`` layer [#]_ for a descrip
 
 .. [#] Please refer to the *Description of the Management of Units* section, in the technical manual of the Myriad layer (in ``Ceylan-Myriad-Layer-technical-manual-english.pdf``).
 
-In a dataflow, the unit of the values that will be held by a port shall preferably be specified when declaring that port. This is done thanks to a string, prefixed with ``"U:"`` (ex: ``"U: kW.h"``, ``"U: g/Gmol.s^-2"`` or ``"U: {mm,mm,mm}"`` for a 3D vector in millimeters).
+In a dataflow, the unit of the values that will be held by a port shall preferably be specified when declaring that port. This is done thanks to a string, prefixed with ``"U:"`` (e.g. ``"U: kW.h"``, ``"U: g/Gmol.s^-2"`` or ``"U: {mm,mm,mm}"`` for a 3D vector in millimeters).
 
 Specifying the unit of a scalar value implies declaring its type as ``float``.
 
@@ -491,7 +491,7 @@ Therefore this domain-specific information shall be specified separately. It is 
 
 We recommend that semantics are specified according to a well-defined, standard format: `RDF <https://en.wikipedia.org/wiki/Resource_Description_Framework>`_ (standing for *Resource Description Framework*).
 
-RDF statements (potentially expressed as RDF triples) about subjects (ex: a block or a port) clarify the intents (made them explicit and expressed in an uniform way) and may allow the use of tools able to perform queries and inference. This may enable, in the future, the automatic checking and even generation of proper dataflows.
+RDF statements (potentially expressed as RDF triples) about subjects (e.g. a block or a port) clarify the intents (made them explicit and expressed in an uniform way) and may allow the use of tools able to perform queries and inference. This may enable, in the future, the automatic checking and even generation of proper dataflows.
 
 Typically a port semantics is then a *subject* in RDF parlance, like in:
 
@@ -524,7 +524,7 @@ They allow to specify a set of rules by which the value must abide.
 
 .. Note::
 
- Unlike most of the other meta-data (ex: semantics or type), constraints are not considered as being intrinsic to a value; they are generally seen as a property (on values) that is enforced at the port level.
+ Unlike most of the other meta-data (e.g. semantics or type), constraints are not considered as being intrinsic to a value; they are generally seen as a property (on values) that is enforced at the port level.
 
 The following constraints can be mixed and matched:
 
@@ -545,16 +545,16 @@ For example, constraints applying to a value could be:
  C: [ {between,2020,2040}, {in, [1989,2021,2030,2988]} ]
 
 
-.. Note:: As mentioned, for all numerical comparisons (ex: ``greater_than``), the value of interest is expected to be a (scalar) number.
+.. Note:: As mentioned, for all numerical comparisons (e.g. ``greater_than``), the value of interest is expected to be a (scalar) number.
 
-		  Otherwise (ex: the value is a triplet, or the value is not a number), the associated constraint is considered as *not* satisfied.
+		  Otherwise (e.g. the value is a triplet, or the value is not a number), the associated constraint is considered as *not* satisfied.
 
 
 All constraints have to apply (as if they were associated by ``AND`` operators). The previous example would thus allow only two possible values, ``2021`` and ``2030``.
 
 Various additional kinds of constraints may be supported, based on encountered needs.
 
-Constraints are currently parametrised by *constants* (ex: ``{greather_than,10.0}``); maybe in the future they could also accept *references* onto other local ports (ex: to compare their values or base some constraints on operations, like ``sum``, performed on their values).
+Constraints are currently parametrised by *constants* (e.g. ``{greather_than,10.0}``); maybe in the future they could also accept *references* onto other local ports (e.g. to compare their values or base some constraints on operations, like ``sum``, performed on their values).
 
 
 
@@ -563,7 +563,7 @@ Accuracy of a Value
 
 This may be the next value-level metadata to be handled by the dataflow infrastructure.
 
-Depending on various factors like data quality and numerical errors (ex: floating-point rounding), the computed values might show a good precision and many digits, yet a poor `accuracy <https://en.wikipedia.org/wiki/Accuracy_and_precision>`_.
+Depending on various factors like data quality and numerical errors (e.g. floating-point rounding), the computed values might show a good precision and many digits, yet a poor `accuracy <https://en.wikipedia.org/wiki/Accuracy_and_precision>`_.
 
 The first step to prevent it is to measure how accurate a computation is. This can be evaluated thanks to `relative error and ulps <https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html#689>`_ (for *units in the last place*).
 
@@ -740,22 +740,22 @@ On Model Assemblies
 Defining the Notion of Assembly
 -------------------------------
 
-As seen already, within simulations, the target system (ex: a city) is translated into a set of instances of dataflow objects of various types (ex: ``Building``, ``Household``, etc.), on which models - themselves made of a set of instances of processing units of various types (ex: ``EnergyDemand``, ``PollutionExhausted``, etc.), complemented with at least one unit manager - are to operate.
+As seen already, within simulations, the target system (e.g. a city) is translated into a set of instances of dataflow objects of various types (e.g. ``Building``, ``Household``, etc.), on which models - themselves made of a set of instances of processing units of various types (e.g. ``EnergyDemand``, ``PollutionExhausted``, etc.), complemented with at least one unit manager - are to operate.
 
 The (generally interconnected) set of models involved into a single simulation is named a **model assembly**.
 
 Assemblies may comprise any number of models: generally at least one, most often multiple ones, since the purpose of this dataflow approach is to perform model coupling.
 
-Let's from now adopt the convention that a *model name* is a series of alphanumerical characters (ex: ``FoobarBazv2``) and that its *canonical name* is the lowercase version of it (ex: ``foobarbazv2``).
+Let's from now adopt the convention that a *model name* is a series of alphanumerical characters (e.g. ``FoobarBazv2``) and that its *canonical name* is the lowercase version of it (e.g. ``foobarbazv2``).
 
 
 
 Ad-hoc Assemblies
 -----------------
 
-One option is that a ``FoobarBazv2`` model is *directly* integrated in a dataflow thanks to an ad-hoc simulation case for a target assembly, a case whose name could be freely chosen (ex: ``my_foobarbazv2_case.erl``).
+One option is that a ``FoobarBazv2`` model is *directly* integrated in a dataflow thanks to an ad-hoc simulation case for a target assembly, a case whose name could be freely chosen (e.g. ``my_foobarbazv2_case.erl``).
 
-Then, in this simulation case (accounting for the corresponding assembly), all relevant ``FoobarBazv2``-specific settings would have to be directly specified (ex: the elements to deploy for it, the unit managers it is to rely on, etc.); note that these model-specific information would be somewhat hardcoded there.
+Then, in this simulation case (accounting for the corresponding assembly), all relevant ``FoobarBazv2``-specific settings would have to be directly specified (e.g. the elements to deploy for it, the unit managers it is to rely on, etc.); note that these model-specific information would be somewhat hardcoded there.
 
 
 
@@ -786,7 +786,7 @@ For example it could result in this file having for content (note that these set
 
 Defining the needs of a model as such enables the definition and use of dynamic assemblies, that can be freely be mixed and matched.
 
-Indeed, should all the models of interest have their configuration file available, defining an assembly would just boil down to specify the names of the models it comprises (ex: ``FoobarBazv2``, ``ACME`` and ``ComputeShading``; that's it).
+Indeed, should all the models of interest have their configuration file available, defining an assembly would just boil down to specify the names of the models it comprises (e.g. ``FoobarBazv2``, ``ACME`` and ``ComputeShading``; that's it).
 
 
 
@@ -855,7 +855,7 @@ One can also notice:
 - two **dataflow probes** (on the right), should specific results have to be extracted from the dataflow (read here from the output ports of some blocks)
 - external **state importer and exporter**, supposing here that this simulation is integrated into a wider computation chain (respectively in charge of providing an input state of the world at each time step, and, once evaluated and updated by the dataflow, of reading back this state and possibly transferring it to other, third-party, computational components; they are specialised versions of `experiment entry and exit points`_).
 
-We can see that we have still here a rather high-level, abstract view of the dataflow: types are mentioned (ex: ``Building``) instead of instances (ex: ``building_11``, ``building_12``, etc.), and managers (discussed later in this document) are omitted.
+We can see that we have still here a rather high-level, abstract view of the dataflow: types are mentioned (e.g. ``Building``) instead of instances (e.g. ``building_11``, ``building_12``, etc.), and managers (discussed later in this document) are omitted.
 
 
 
@@ -892,11 +892,11 @@ Developing Dataflow Elements in Other Programming Languages
 
 The dataflow infrastructure, like the rest of Sim-Diasca, uses a single implementation language, `Erlang <http://erlang.org>`_, which may be readily used in order to implement, notably, dataflow processing units.
 
-However it may be useful to introduce, in one's simulation, dataflow blocks (ex: a set of processing units corresponding to at least one model) that are implemented in other programming languages, especially if they are for the most part already developed and complex: integrating them in a dataflow might involve less efforts than redeveloping them.
+However it may be useful to introduce, in one's simulation, dataflow blocks (e.g. a set of processing units corresponding to at least one model) that are implemented in other programming languages, especially if they are for the most part already developed and complex: integrating them in a dataflow might involve less efforts than redeveloping them.
 
 To ease these integrations, **language bindings** have been defined, currently for the ``Python`` and the ``Java`` languages - still to be used from GNU/Linux. These bindings provide **APIs in order to develop dataflow constructs** in these languages and have them take part to the simulations.
 
-Note that a language binding often induces the use of a specific version of the associated programming language (ex: the Python binding may target a specific version of Python). We tend to prefer the latest stable versions for these languages (as they are generally more stable and provide more features), however in some cases some helper libraries that might be proposed for inclusion by models (for their internal use) may not be updated yet.
+Note that a language binding often induces the use of a specific version of the associated programming language (e.g. the Python binding may target a specific version of Python). We tend to prefer the latest stable versions for these languages (as they are generally more stable and provide more features), however in some cases some helper libraries that might be proposed for inclusion by models (for their internal use) may not be updated yet.
 
 In that case, should these extra dependencies be acknowledged, a language downgrade *may* be feasible, until these libraries are made compliant again with the current language version.
 
@@ -914,7 +914,7 @@ General Information
 
 This binding allows to use the `Python <https://www.python.org/>`_ programming language, typically to write dataflow processing units.
 
-The Python version ``3.6.0`` (released on December 23rd, 2016) or more recent is to be used. We recommend to stick to the latest stable one (available `here <https://www.python.org/downloads/>`_). Let's designate by ``A.B.C`` the actual version of Python that is used (ex: ``A.B.C=3.6.0``).
+The Python version ``3.6.0`` (released on December 23rd, 2016) or more recent is to be used. We recommend to stick to the latest stable one (available `here <https://www.python.org/downloads/>`_). Let's designate by ``A.B.C`` the actual version of Python that is used (e.g. ``A.B.C=3.6.0``).
 
 A Python `virtual environment <http://docs.python-guide.org/en/latest/dev/virtualenvs/>`_, named ``sim-diasca-dataflow-env``, is provided to ease developments.
 
@@ -1249,9 +1249,9 @@ One may imagine, dynamically (i.e. in the course of the simulation):
 - updating the connectivity of channels and blocks
 - creating or destroying input or output ports of a block
 
-This would be useful as soon as the target system is itself **dynamic** in some way (ex: buildings being created in a city over the years, each building relying on its associated computation units - which thus have to be dynamic as well, at least with varying multiplicities).
+This would be useful as soon as the target system is itself **dynamic** in some way (e.g. buildings being created in a city over the years, each building relying on its associated computation units - which thus have to be dynamic as well, at least with varying multiplicities).
 
-Moreover, often all the overall layout cannot be statically defined, and the dataflow as a whole has to be dynamically connected to the components feeding it or waiting for its outputs (ex: a database reader having to connect in some way to some input ports) - so some amount of **flexibility** is definitively needed.
+Moreover, often all the overall layout cannot be statically defined, and the dataflow as a whole has to be dynamically connected to the components feeding it or waiting for its outputs (e.g. a database reader having to connect in some way to some input ports) - so some amount of **flexibility** is definitively needed.
 
 
 
@@ -1293,9 +1293,9 @@ Min..Max       0..4,a..b, 2..* Between Min and Max iterated ports (bounds includ
 
 :raw-html:`</center>`
 
-In a given dataflow, variable names (ex: ``m``, ``n``, ``o``, etc.) are expected to match. For example, if the variable ``n`` is referenced more than once in the dataflow, then all its occurrences refer to the same value (which is let unspecified in the diagram).
+In a given dataflow, variable names (e.g. ``m``, ``n``, ``o``, etc.) are expected to match. For example, if the variable ``n`` is referenced more than once in the dataflow, then all its occurrences refer to the same value (which is let unspecified in the diagram).
 
-Iterated ports are automatically named by the runtime (ex: ``energy_demand_iterated_1``, ``energy_demand_iterated_2``); they are standard ports and thus their name shall remain an identifier [#]_.
+Iterated ports are automatically named by the runtime (e.g. ``energy_demand_iterated_1``, ``energy_demand_iterated_2``); they are standard ports and thus their name shall remain an identifier [#]_.
 
 .. [#] This is why the runtime enforces the single restriction that applies to port names, which is that the ``_iterated_`` substring cannot exist in such a user-defined name.
 
@@ -1311,7 +1311,7 @@ An example of these conventions is the following processing unit, featuring two 
 
 We can see above that, at any time, the first input iteration shall have between 2 and 7 (included) iterated ports, while the second input iterations is detailed graphically and has exactly 5 iterated ports (``[5]`` is thus implied).
 
-As for the output iterations, both have a certain number of iterated ports, and, as ``k`` is different from ``p``, their respective counts of iterated ports may not match (ex: we can have ``k=2`` and ``p=0``).
+As for the output iterations, both have a certain number of iterated ports, and, as ``k`` is different from ``p``, their respective counts of iterated ports may not match (e.g. we can have ``k=2`` and ``p=0``).
 
 
 
@@ -1346,14 +1346,14 @@ To enable the creation of iterated ports, the ``is_iteration`` field of the corr
 Domain-Specific Timestamps
 --------------------------
 
-By default, engine ticks directly translate to a real, quantified simulation time: depending on the starting timestamp and on the selected simulation frequency, a given tick corresponds to an **exact time and date** in the Gregorian calendar (ex: each month and year lasting for the right number of days - not respectively, for example, 30 and 365, a simplification that is done in some cases in order to remain in a constant time-step setting).
+By default, engine ticks directly translate to a real, quantified simulation time: depending on the starting timestamp and on the selected simulation frequency, a given tick corresponds to an **exact time and date** in the Gregorian calendar (e.g. each month and year lasting for the right number of days - not respectively, for example, 30 and 365, a simplification that is done in some cases in order to remain in a constant time-step setting).
 
-However, in some simulations, models are ruled by such a strange simplified time [#]_, so domain-specific timestamps may be useful. Their general form is ``{timescale(),index()}``, where ``timescale()`` designates the selected time granularity for the underlying channel (ex: ``constant_year``, ``month_of_30_days``) and ``index()`` is a counter (a positive integer corresponding to as many periods of the specified time granularity).
+However, in some simulations, models are ruled by such a strange simplified time [#]_, so domain-specific timestamps may be useful. Their general form is ``{timescale(),index()}``, where ``timescale()`` designates the selected time granularity for the underlying channel (e.g. ``constant_year``, ``month_of_30_days``) and ``index()`` is a counter (a positive integer corresponding to as many periods of the specified time granularity).
 
 .. [#] Even if this oversimplification just by itself yields already significant relative errors (greater than 10%).
 
 
-For example, in a simulation some models may be evaluated at a yearly timescale, while others would be at a daily one. Considering that initial year and day have been set beforehand, a timestamp may become ``{yearly,5}`` or ``{daily,421}``. This could be used to check that connected ports have indeed the same temporality (ex: no yearly port linked to a daily - a *timescale convertor unit* needing to be inserted in that case), and that none of such timescale-specific timesteps (i.e. index) went amiss in the channel.
+For example, in a simulation some models may be evaluated at a yearly timescale, while others would be at a daily one. Considering that initial year and day have been set beforehand, a timestamp may become ``{yearly,5}`` or ``{daily,421}``. This could be used to check that connected ports have indeed the same temporality (e.g. no yearly port linked to a daily - a *timescale convertor unit* needing to be inserted in that case), and that none of such timescale-specific timesteps (i.e. index) went amiss in the channel.
 
 
 
@@ -1389,7 +1389,7 @@ Depending on the project, it may be convenient for a given experiment relying on
 
 For that, base classes are provided (``ExperimentEntryPoint`` and ``ExperimentExitPoint``) that are meant, if needed, to be subclassed on a per-project basis.
 
-The purpose of these (optional) endpoints is to drive multiple dataflow instances, possibly on par with some external software (ex: any overall integration platform).
+The purpose of these (optional) endpoints is to drive multiple dataflow instances, possibly on par with some external software (e.g. any overall integration platform).
 
 Their impact in the progress of an experiment is discussed next.
 
@@ -1404,7 +1404,7 @@ In terms of logical ordering, the usual **course of action of a dataflow-oriente
 #. a synchronisation stage, detailed in the next sections, occurs: the dataflows are suspended, and the state of the simulated world is updated first, then the computations that shall be applied on it are modified accordingly
 #. then the dataflows are resumed, and it usually triggers (based on intermediate logical moments, i.e. diascas) in turn (source) dataflow objects and/or processing units
 #. this may trigger cascading updates of dataflow elements over diascas
-#. once all evaluations are done, the experiment exit point (another actor) is to wrap up all information and perform any related tick-termination operation (ex: sending an update regarding the newer state of the simulated world to a third-party platform)
+#. once all evaluations are done, the experiment exit point (another actor) is to wrap up all information and perform any related tick-termination operation (e.g. sending an update regarding the newer state of the simulated world to a third-party platform)
 #. then the next planned tick begins (usually this corresponds to ``T+1``), and the process continues until a termination criterion is met (typically a final timestamp is reached, or the simulation is notified that no changes are to be expected anymore)
 
 .. [#] To shed some light on the related implementation (as the technical organisation is a bit different), please refer to the `Scheduling Cycle of Experiments`_.
@@ -1470,13 +1470,13 @@ The World Manager and its Dataflow Object Managers
 Purpose of the World Manager
 ----------------------------
 
-This manager (singleton instance of the ``WorldManager`` class), whose shorthand is ``WM``, is used in order to **create, update and keep track of the simulated world and its structure**; this world is itself made of the target system of interest (ex: a city) and of its context (ex: its associated weather system, the other cities in the vicinity, etc.).
+This manager (singleton instance of the ``WorldManager`` class), whose shorthand is ``WM``, is used in order to **create, update and keep track of the simulated world and its structure**; this world is itself made of the target system of interest (e.g. a city) and of its context (e.g. its associated weather system, the other cities in the vicinity, etc.).
 
-As a result, the world manager is generic, yet its use is specific to a given modelling structure (ex: to some way of describing a city), and bears no direct relationship with the computations that will be performed on it (one of its purposes is indeed to help uncoupling the description of the world of interest from the models operating on it, so that they can themselves be defined independently, one from another).
+As a result, the world manager is generic, yet its use is specific to a given modelling structure (e.g. to some way of describing a city), and bears no direct relationship with the computations that will be performed on it (one of its purposes is indeed to help uncoupling the description of the world of interest from the models operating on it, so that they can themselves be defined independently, one from another).
 
 This virtual world is to be modelled based on **various types of dataflow objects**. For example, if the target system is a city, then districts, roads, buildings, weather elements, other cities, etc. may be defined (as types first, before planning their instantiaton) in order to represent the whole.
 
-These dataflow objects, which account for the state of the simulation world, are to be defined **individually** (in terms of internal state; ex: a building has a ``surface`` and an ``height`` attributes, of corresponding SUTC metadata) and **collectively** (in terms of structure and relationships; ex: a building must be included in a district, and may comprise any number of dwellings).
+These dataflow objects, which account for the state of the simulation world, are to be defined **individually** (in terms of internal state; e.g. a building has a ``surface`` and an ``height`` attributes, of corresponding SUTC metadata) and **collectively** (in terms of structure and relationships; e.g. a building must be included in a district, and may comprise any number of dwellings).
 
 
 
@@ -1485,11 +1485,11 @@ Purpose of the Object Managers
 
 For each of these types of dataflow objects, an **object manager**, in charge of taking care of the corresponding dataflow objects (i.e. the instances of that type) must be defined [#]_. For example the ``BuildingManager`` will take care of (all) ``Building`` instances.
 
-Note that a given object manager is to take care of *at least* one type of objects, possibly multiple ones (ex: if deemed more appropriate, a single object manager may be defined in order to take care of the buildings *and* of the households *and* and the districts).
+Note that a given object manager is to take care of *at least* one type of objects, possibly multiple ones (e.g. if deemed more appropriate, a single object manager may be defined in order to take care of the buildings *and* of the households *and* and the districts).
 
-.. [#] All actual dataflow managers are either instances of the ``DataflowObjectManager`` class (for the simpler cases), or child classes thereof (ex: to support specifically some kind of associations). All these managers are themselves simulation actors, as interacting with them in the course of the simulation may be necessary (ex: to create new object instances).
+.. [#] All actual dataflow managers are either instances of the ``DataflowObjectManager`` class (for the simpler cases), or child classes thereof (e.g. to support specifically some kind of associations). All these managers are themselves simulation actors, as interacting with them in the course of the simulation may be necessary (e.g. to create new object instances).
 
-The purpose of an object manager is to be the entry point whenever having to **perform dataflow-level operations on the object instances** of the type(s) it is in charge of (ex: actual buildings): in the course of the simulation, instances may indeed have to be properly created, associated, connected, modified, deleted, etc.
+The purpose of an object manager is to be the entry point whenever having to **perform dataflow-level operations on the object instances** of the type(s) it is in charge of (e.g. actual buildings): in the course of the simulation, instances may indeed have to be properly created, associated, connected, modified, deleted, etc.
 
 Finally, all dataflow object managers are federated by this ``WM`` (*World Manager*), which is their direct parent, in charge of driving them all.
 
@@ -1514,13 +1514,13 @@ These changes are expressed at the dataflow level thanks to **world (synchronisa
 
 More precisely:
 
-- a **creation** event describes the creation of a block, typically of a dataflow object (ex: building B2 being built in the city on the current year)
-- a **deletion** event describes the deletion of a block, typically of a dataflow object (ex: district D7 being destructed)
-- an **association** event describes the creation of an association between dataflow objects; a *binary* association is a very common, special case thereof (ex: building B2 is "located in" neighborhood N3)
-- a **disassociation** event describes the removal of an association between dataflow objects (ex: household H1 is not "living in" building B2 anymore)
-- a **connection** event describes the creation of a dataflow channel between two ports of blocks, from an output one to an input one (ex: from the ``surface`` output port of building B6, to the ``average_area`` input port of the land-use processing unit L9)
+- a **creation** event describes the creation of a block, typically of a dataflow object (e.g. building B2 being built in the city on the current year)
+- a **deletion** event describes the deletion of a block, typically of a dataflow object (e.g. district D7 being destructed)
+- an **association** event describes the creation of an association between dataflow objects; a *binary* association is a very common, special case thereof (e.g. building B2 is "located in" neighborhood N3)
+- a **disassociation** event describes the removal of an association between dataflow objects (e.g. household H1 is not "living in" building B2 anymore)
+- a **connection** event describes the creation of a dataflow channel between two ports of blocks, from an output one to an input one (e.g. from the ``surface`` output port of building B6, to the ``average_area`` input port of the land-use processing unit L9)
 - a **disconnection** event describes the deletion of a dataflow channel that used to exist between two ports
-- an **update** event describes the modification of the value of attributes of a dataflow object (ex: for building B2, the ``surface`` attribute is set to 120.0 m^2, while its ``inhabitant_count`` is set to 7)
+- an **update** event describes the modification of the value of attributes of a dataflow object (e.g. for building B2, the ``surface`` attribute is set to 120.0 m^2, while its ``inhabitant_count`` is set to 7)
 
 
 Should, for a given project, the incoming dataflow updates deal only with the *state* of the simulated world (not directly with the *computations* themselves - whose changes may be automatically deduced from the state ones at a latter step), only a subset of the types of world events are to be supported (by the world manager), namely all types of events but connections and disconnections.
@@ -1529,7 +1529,7 @@ Should, for a given project, the incoming dataflow updates deal only with the *s
 Changetrees and Changesets
 --------------------------
 
-**A given event may induce any number of other events** (ex: a creation of a building may induce its association with a given district), which themselves may induce in turn other events, and so on.
+**A given event may induce any number of other events** (e.g. a creation of a building may induce its association with a given district), which themselves may induce in turn other events, and so on.
 
 As a result, we define the concept of *changetree* (an event and all the ones it induces, directly or not) and of *changeset* (a list of changetrees):
 
@@ -1552,7 +1552,7 @@ Events are processed by the world manager based on their height on the pending c
 
 Moreover, when an object manager reports to the world manager the completion of event(s), **it may as well inject new events**. For example, if creating a building entails creating three lifts, then the building object manager may inject three additional lift creation events. Then these events will be processed, among the pending others, by the world manager, and thus will be dispatched to the lift object manager. This allows for an indirect communication between object managers, and to embed, if needed, domain-specific rules in order to structure appropriately the state of the simulated system.
 
-.. Note:: During the whole synchronisation phase, the blocks of the dataflow that are affected (ex: created or updated) are put in stasis, i.e. they are suspended.
+.. Note:: During the whole synchronisation phase, the blocks of the dataflow that are affected (e.g. created or updated) are put in stasis, i.e. they are suspended.
 
 		  Otherwise their evaluation could start whereas the dataflow did not reach yet a stable state, which could lead to an incorrect evaluation of the overall dataflow.
 
@@ -1608,7 +1608,7 @@ A **Unit Manager** is in charge of taking care of all instances of at least one 
 
 Let's say for example that, for a given model, we have, among other ones, two types of processing units, ``EnergyDemandUnit`` and ``WaterDemandUnit`` that are to operate each on a given building.
 
-A unit manager named ``ResourceDemandUnitManager`` may be in charge of all instances of these two types of units, for example so that it can be ensured that the two kinds of demands are appropriately interlinked and applied consistently (ex: exactly to the same buildings).
+A unit manager named ``ResourceDemandUnitManager`` may be in charge of all instances of these two types of units, for example so that it can be ensured that the two kinds of demands are appropriately interlinked and applied consistently (e.g. exactly to the same buildings).
 
 
 .. Note::
@@ -1617,17 +1617,17 @@ A unit manager named ``ResourceDemandUnitManager`` may be in charge of all insta
   However one can instead define, for a given model, **multiple unit managers**, each in charge of a subset of the types of processing units involved - provided that these unit managers partition these unit types, i.e. that each unit type is driven by exactly one unit manager instance.
 
 
-  If such a scheme allows the work on the processing units to be split in more autonomous parts, it induces limitations: relying on a single unit manager allows to store in its state *all* unified information about dataflow objects (based on the world events it listens to) and units (as, for that model, it is their sole manager), which is often necessary to perform proper channel creations (ex: to determine the right instance of processing unit to be connected to a given dataflow object).
+  If such a scheme allows the work on the processing units to be split in more autonomous parts, it induces limitations: relying on a single unit manager allows to store in its state *all* unified information about dataflow objects (based on the world events it listens to) and units (as, for that model, it is their sole manager), which is often necessary to perform proper channel creations (e.g. to determine the right instance of processing unit to be connected to a given dataflow object).
 
 
-  As a result, unit managers tend to define various associative tables, to keep track of which processing unit they created (ex: a pollution computation) in response to the creation of which dataflow object (ex: a car). Unit managers are then able to connect these units adequately, once they are reported as created.
+  As a result, unit managers tend to define various associative tables, to keep track of which processing unit they created (e.g. a pollution computation) in response to the creation of which dataflow object (e.g. a car). Unit managers are then able to connect these units adequately, once they are reported as created.
 
 
 
 
 As a result, each unit manager federates the units of specific types, so that it can perform - for computations and on behalf of the EM - what dataflow object managers perform for the simulated world on behalf of the WM [#]_: **a unit manager will synchronise the computation part of the dataflow regarding these unit types**.
 
-.. [#] Similarly to object managers, unit managers typically take part to the simulation (ex: they may create processing units) and therefore must be properly synchronized; as such they are simulation actors as well.
+.. [#] Similarly to object managers, unit managers typically take part to the simulation (e.g. they may create processing units) and therefore must be properly synchronized; as such they are simulation actors as well.
 
 
 
@@ -1636,13 +1636,13 @@ Mode of Operation
 
 This synchronisation of the computational part of the dataflow could be explicitly dictated by an external source, as done previously for the part of the dataflow devoted to the description of the state of the simulated system. However, more often than not, **the changes in the computation part may be determined automatically from the changes done on the state part, based on relevant rules**. The purpose of the unit managers is to *implement* said rules.
 
-To do so, each unit manager is to declare not only the types of processing units it is to manage (ex: ``ResourceDemandUnitManager`` taking care of ``EnergyDemandUnit`` and ``WaterDemandUnit``), but also the **world synchronisation events it listens to**, and **how it is to react to them**.
+To do so, each unit manager is to declare not only the types of processing units it is to manage (e.g. ``ResourceDemandUnitManager`` taking care of ``EnergyDemandUnit`` and ``WaterDemandUnit``), but also the **world synchronisation events it listens to**, and **how it is to react to them**.
 
-For example, ``ResourceDemandUnitManager`` may request to be notified whenever a building is created and/or whenever the current operating state of a given heat pump changed (ex: from nominal mode to degraded mode). It may then choose to apply the relevant domain-specific actions in order to adapt the computations performed by the dataflow, such as, respectively, creating one instance of ``EnergyDemandUnit`` and of ``WaterDemandUnit`` and connecting them to the new building, or linking said heat pump to a different processing unit implementing a model corresponding to its new mode of operation (by updating their dataflow connectivity).
+For example, ``ResourceDemandUnitManager`` may request to be notified whenever a building is created and/or whenever the current operating state of a given heat pump changed (e.g. from nominal mode to degraded mode). It may then choose to apply the relevant domain-specific actions in order to adapt the computations performed by the dataflow, such as, respectively, creating one instance of ``EnergyDemandUnit`` and of ``WaterDemandUnit`` and connecting them to the new building, or linking said heat pump to a different processing unit implementing a model corresponding to its new mode of operation (by updating their dataflow connectivity).
 
 In practice, a given unit manager may declare (to the experiment manager) any number of **event match clauses** [#]_, whose granularity can be finely tuned (from a non-discriminating unit manager listening to all events of all types, to one focusing only on very precise matches [#]_).
 
-.. [#] Refer to ``dataflow_changesets_defines.hrl`` for their actual definitions: for each type of event match (ex: ``creation_event_match``), a corresponding datastructure is defined in order to store against which element(s) of the corresponding event the match shall be done (ex: "the (created) object type shall be of type ``Building``, it should occur in the context of this dataflow, involve a dataflow object bearing this external identifier and/or this internal one, specify these construction parameters, etc.).
+.. [#] Refer to ``dataflow_changesets_defines.hrl`` for their actual definitions: for each type of event match (e.g. ``creation_event_match``), a corresponding datastructure is defined in order to store against which element(s) of the corresponding event the match shall be done (e.g. "the (created) object type shall be of type ``Building``, it should occur in the context of this dataflow, involve a dataflow object bearing this external identifier and/or this internal one, specify these construction parameters, etc.).
 
 .. [#] Of course a unit manager is free to perform any additional, arbitrary filtering it may need, simply by ignoring the notified events that would not be deemed of interest.
 
@@ -1667,11 +1667,11 @@ This unit manager will then be **free to react appropriately to this listened ev
 
    For that, **various organizations can exist on both sides**; in the example above (left, purple, pane), three geographical scales have been defined to account for the simulated world: city, district and precinct.
 
-   Some urban objects may then be defined at their level (ex: buildings and dwellings pertain here to the precinct scale), and the scales may themselves have counterparts in terms of urban objects (ex: a district may exist as such in the simulation - obviously at the district scale). The information path goes then through the red lines, possibly upward and downward.
+   Some urban objects may then be defined at their level (e.g. buildings and dwellings pertain here to the precinct scale), and the scales may themselves have counterparts in terms of urban objects (e.g. a district may exist as such in the simulation - obviously at the district scale). The information path goes then through the red lines, possibly upward and downward.
 
    For example, the creation of a building will propagate from the building manager to the precinct one, until climbing through coarser and coarser scales (district then city) and reaching finally the top-level (WM).
 
-   For other urban objects (ex: roads), perhaps that no specific scale applies, hence their dataflow object manager may be directly connected to the WM.
+   For other urban objects (e.g. roads), perhaps that no specific scale applies, hence their dataflow object manager may be directly connected to the WM.
 
    Regarding computations this time (right, light blue pane), here two dataflow instances have been defined, to account respectively for energy and for network. They will drive each their own units, yet a given type of unit may be used in more than one dataflow (this is the case here of the "Energy Production" unit type).
 
@@ -1681,7 +1681,7 @@ This unit manager will then be **free to react appropriately to this listened ev
 
    On a more technical side:
 
-   - the generic managers involved (ex: ``WM``, ``EM``) register themselves globally, to ease their integration. All case-specific managers (i.e. dataflow object and unit ones) shall follow the same convention
+   - the generic managers involved (e.g. ``WM``, ``EM``) register themselves globally, to ease their integration. All case-specific managers (i.e. dataflow object and unit ones) shall follow the same convention
    - the Worldmanager and the ExperimentManager maintain respectively a table able to tell which object or unit manager is in charge of processing a world event relative to which specific type of dataflow object or unit
 
 
@@ -1696,10 +1696,10 @@ This unit manager will then be **free to react appropriately to this listened ev
 
    Six types of events allow describing changes to be applied on the state of a dataflow:
 
-   - *creation* or *destruction* of dataflow objects (ex: a building) or processing units (ex: an energy demand unit)
-   - *association* of dataflow objects (ex: this building is included in that district)
-   - *update* of dataflow attributes (ex: the area of this building is set to 5020 square meters)
-   - *connection* or *disconnection* of ports (ex: a channel is created between this output port of this building and this input port of this unit)
+   - *creation* or *destruction* of dataflow objects (e.g. a building) or processing units (e.g. an energy demand unit)
+   - *association* of dataflow objects (e.g. this building is included in that district)
+   - *update* of dataflow attributes (e.g. the area of this building is set to 5020 square meters)
+   - *connection* or *disconnection* of ports (e.g. a channel is created between this output port of this building and this input port of this unit)
 
    In practice, an input changeset, processed at diasca D, is sorted first by the world manager:
 
@@ -1723,7 +1723,7 @@ As such, mock-up units merely *associate* pre-recorded outputs to inputs, instea
 
 These mock-up units can act as "termination plugs", i.e. placeholders inserted in a dataflow in order for example:
 
-- to replace an actual unit (ex: to wait until it is delivered)
+- to replace an actual unit (e.g. to wait until it is delivered)
 - to emulate the context of another unit in order to better test it
 - to validate an implemented unit against reference input/output datasets
 - to provide a simpler, less computation-demanding version of a unit (see `model order reduction <https://en.wikipedia.org/wiki/Model_order_reduction>`_, called metamodel in some communities)
@@ -1737,7 +1737,7 @@ They are instantiated and managed by a *unit manager*, just like any *processing
 Definition of a Mock-up Unit
 -----------------------------
 
-A mock-up unit is specified exactly as any other dataflow unit (ex: with a name, a temporality, a description of its input and output ports), yet it has to replace the inner computation logic that would be included in any standard unit by a (static) **association determining its outputs from its inputs**.
+A mock-up unit is specified exactly as any other dataflow unit (e.g. with a name, a temporality, a description of its input and output ports), yet it has to replace the inner computation logic that would be included in any standard unit by a (static) **association determining its outputs from its inputs**.
 
 This association can be seen as a **simple function** which, based on a given (optional) simulation time and an *input match specification* operating on its input ports, tells in which state the output ports of this mock-up unit shall be.
 
@@ -1776,7 +1776,7 @@ This second parameter of the mock-up function allows to specify the **configurat
 
 In practice, an input match spec is an (unordered) list of pairs, whose first element designates an input port, and whose second one specifies the associated state(s) that would match.
 
-This first element is the name of the input port (ex: ``"I1"``), as, in the context of a unit, it is an identifier (it is unique).
+This first element is the name of the input port (e.g. ``"I1"``), as, in the context of a unit, it is an identifier (it is unique).
 
 The second element of the pair associated to a listed input port is among:
 
@@ -1992,7 +1992,7 @@ Once the clauses are expressed according to this format, one may think of creati
 
 For that, the DUMF format includes not only these clauses, but also all the other informations that a mock-up unit - as any other processing unit - must provide. Namely:
 
-- metadata such as its name, the type of this unit (ex: of use for its (unit) manager), etc.
+- metadata such as its name, the type of this unit (e.g. of use for its (unit) manager), etc.
 - the specification of its input and output ports
 
 These three blocks of data, with the final addition of the clauses, form a complete description of a mock-up unit, and thus an operational DUMF stream.
@@ -2227,7 +2227,7 @@ A few Supplementary Pieces of Advice
 Possible Enhancements
 ---------------------
 
-- the patterns recognized could include the state of another input port (ex: ``{I4,I6}`` meaning that ``I4`` should be in the same state as ``I6``), of course provided that the dependency graph remains acyclic
+- the patterns recognized could include the state of another input port (e.g. ``{I4,I6}`` meaning that ``I4`` should be in the same state as ``I6``), of course provided that the dependency graph remains acyclic
 - port names could also be pattern-matched; for example an input match spec could include ``{"ip_*",{set,3}}`` to specify that any input port whose name is prefixed with ``ip_`` and that is set to ``3`` would validate this part of the match
 - during a time-step, a given unit might be triggered any number of times (from none to more than once); even if introducing logical moments (i.e. replacing timesteps with a pair made of a timestep and a logical moment, i.e. a diasca) is probably not desirable, maybe specifying whether a unit is allowed to be triggered once (``once``) or any number of times (``always``) could be useful
 
@@ -2250,15 +2250,15 @@ Preliminary Step (#0): Remembering the Basics
 
 Let's recap first the general structure that we target and the features we need to support.
 
-A model embodies **computations** of some sorts (for example, here, some energy evaluations) that are **intermingled with others** (ex: there may be interrelated evaluations about waste or transportation), the whole **applying to the state of a system** (ex: a city) and **updating it in turn** (ex: all these evaluations are performed for a given year, and the dynamics they capture will lead to an updated city, available for the next simulated year).
+A model embodies **computations** of some sorts (for example, here, some energy evaluations) that are **intermingled with others** (e.g. there may be interrelated evaluations about waste or transportation), the whole **applying to the state of a system** (e.g. a city) and **updating it in turn** (e.g. all these evaluations are performed for a given year, and the dynamics they capture will lead to an updated city, available for the next simulated year).
 
 To turn such a simulation into a dataflow, both the **state** of the system and the **computations** performed on it have to be modelled thanks to dataflow constructs.
 
-Here the state is typically modelled based on **Dataflow Objects** (ex: the city as a whole may be hierarchically divided into districts, buildings, households, etc. - each of these urban objects being represented by a dedicated dataflow object instance).
+Here the state is typically modelled based on **Dataflow Objects** (e.g. the city as a whole may be hierarchically divided into districts, buildings, households, etc. - each of these urban objects being represented by a dedicated dataflow object instance).
 
 The main role of these dataflow objects is to store, thanks to attributes, the relevant state information of these various parts of the system so that the expected computations can be carried, i.e. so that these computations can be fed with the data they need and so that they can as well update that state with their results. As a consequence, **prior to the integration of the computations, an agreement on the structure** (based on dataflow objects) and **on the content** (based on the attributes of these objects) **of the description of the system at hand shall be found**.
 
-As for the computations (including the ones provided by the ``Foobar`` model), they are to be described macroscopically in terms of a set of **Dataflow Processing Units** (ex: a type of unit can correspond to the energy evaluation, whereas another type of unit may take care of waste and transportation).
+As for the computations (including the ones provided by the ``Foobar`` model), they are to be described macroscopically in terms of a set of **Dataflow Processing Units** (e.g. a type of unit can correspond to the energy evaluation, whereas another type of unit may take care of waste and transportation).
 
 Of course **multiple instances of a given type of unit may exist** to account for the underlying multiplicities of dataflow objects. For example, if some computations have to be done strictly on a per building basis, then a corresponding processing unit type may be defined, and a bijection (a one-to-one relationship) between buildings and such unit instances should exist.
 
@@ -2287,7 +2287,7 @@ The purpose of this step is:
 - to establish how these computations are **organised** - including the ones that are to be taken in charge by this ``Foobar`` model
 - to express the whole uniformly, and **in terms of dataflow constructs** (objects and processing units, and also streams of information)
 
-.. [#] For example any needed *living space* attribute of a (dataflow object) building shall be defined once for all, instead of introducing as many (attribute) variations of it as there will be different unit types requiring such an information. Otherwise the state of dataflow objects would be bound to become increasingly difficult to maintain, if not silently inconsistent (ex: one version of the livable surface being updated while the others not).
+.. [#] For example any needed *living space* attribute of a (dataflow object) building shall be defined once for all, instead of introducing as many (attribute) variations of it as there will be different unit types requiring such an information. Otherwise the state of dataflow objects would be bound to become increasingly difficult to maintain, if not silently inconsistent (e.g. one version of the livable surface being updated while the others not).
 
 
 
@@ -2315,9 +2315,9 @@ In the previous steps, the ``Foobar`` model was seen as a single black box (one 
 
 Indeed, in the general case, for each model **multiple dataflow units are needed** in order to account for the various computational stages and multiplicities that a model must support.
 
-For example, some aggregations (ex: spatial ones) are often to be done before and after the central, domain-specific computations of the model, and for that they need a varying (runtime-determined) number of input and output ports (ex: an instance of the ``Foobar`` model may have to accommodate for any number of energy sources).
+For example, some aggregations (e.g. spatial ones) are often to be done before and after the central, domain-specific computations of the model, and for that they need a varying (runtime-determined) number of input and output ports (e.g. an instance of the ``Foobar`` model may have to accommodate for any number of energy sources).
 
-If simple models may be expressed only thanks to a single processing unit relying on `port iterations`_, more complex models often require to be translated into a *set of interlinked dataflow units*, some of which taking in charge the bulk of the computations while others are in charge of transforming (ex: aggregating, summing, averaging, converting, routing, etc.) information on their behalf.
+If simple models may be expressed only thanks to a single processing unit relying on `port iterations`_, more complex models often require to be translated into a *set of interlinked dataflow units*, some of which taking in charge the bulk of the computations while others are in charge of transforming (e.g. aggregating, summing, averaging, converting, routing, etc.) information on their behalf.
 
 So the outcome of this step is to have a **design** of the ``Foobar`` model once it has been translated into **a collection of actual dataflow units** whose superposition provides the combined input and output ports that have been determined in the previous step.
 
@@ -2328,7 +2328,7 @@ Step #4: Implement the Corresponding Actual Units
 
 Now that the ``Foobar`` model has been split into real, dataflow units, in the general case **these units** do not exist yet, and thus **have to be implemented** [#]_.
 
-.. [#] Depending on the history of the project, some already available units may be re-used. Similarly, some units may perform fairly standard operations (ex: simple aggregations) and thus may be provided by the dataflow infrastructure as built-in. Usually at least the model-specific computations must be developed.
+.. [#] Depending on the history of the project, some already available units may be re-used. Similarly, some units may perform fairly standard operations (e.g. simple aggregations) and thus may be provided by the dataflow infrastructure as built-in. Usually at least the model-specific computations must be developed.
 
 
 Each newly-introduced processing unit can either be a *native* unit (i.e. written in Erlang and thus directly developed within the dataflow infrastructure), or a unit relying on a *language-specific binding*.
@@ -2365,7 +2365,7 @@ Requirements For the Dataflow Integration of a Model
 
 - ``R1``: a description of the overall dataflow must be defined, in which the target model is represented by a single, abstract, dataflow unit; its inbound and outbound channels shall be specified
 - ``R2``: the target model itself shall be defined in terms of dataflow constructs
-- ``R3``: the general operational rules apply (ex: compliance with the underlying operating system and libraries)
+- ``R3``: the general operational rules apply (e.g. compliance with the underlying operating system and libraries)
 
 
 
@@ -2380,7 +2380,7 @@ Mode of Operation
 
 As already mentioned and represented in the class diagram below, **processing units** are implemented as instances of the ``DataflowProcessingUnit`` class, a child class of the ``DataflowBlock`` one, itself a child class of the basic (Sim-Diasca) ``Actor`` one (note that, actually, *all* classes represented on this diagram are child classes - directly or not - of the ``Actor`` one).
 
-Most units are *passive* actors: they will be solely scheduled if/when some of their input ports are triggered, which, depending on their policy, might result in their activation. Some units (ex: source ones) may be *active*, in the sense that they may choose to develop a spontaneous behaviour (typically to auto-activate periodically).
+Most units are *passive* actors: they will be solely scheduled if/when some of their input ports are triggered, which, depending on their policy, might result in their activation. Some units (e.g. source ones) may be *active*, in the sense that they may choose to develop a spontaneous behaviour (typically to auto-activate periodically).
 
 A special case of unit has been defined, the ``DataflowMockupUnit``. Such **mock-up unit** provides a generic emulation of a unit, associating output values to input ones based on the data (rules) it has been provided with. It is typically used to develop termination plugs that allow to wait until the implementation of the final unit is ready, and to validate it afterwards.
 
@@ -2388,22 +2388,22 @@ A special case of unit has been defined, the ``DataflowMockupUnit``. Such **mock
 
 We propose the following convention to name the variables holding a port:
 
-- the name of the variable shall reflect the name of the corresponding port (ex: if the port is named ``"My distance"``, the variable name may begin with ``MyDistance``
-- if it is an input port, the variable name may end with ``IPort`` (ex: ``MyDistanceIPort``)
-- if it is an output port, the variable name may end with ``OPort`` (ex: ``MyDistanceOPort``)
+- the name of the variable shall reflect the name of the corresponding port (e.g. if the port is named ``"My distance"``, the variable name may begin with ``MyDistance``
+- if it is an input port, the variable name may end with ``IPort`` (e.g. ``MyDistanceIPort``)
+- if it is an output port, the variable name may end with ``OPort`` (e.g. ``MyDistanceOPort``)
 
 
 Implementation-wise, **channels** do not exist per se, they are abstracted out thanks to ports.
 
-The static channel-related information (ex: ``SUTC``, for semantics, unit, type, constraints) is held by all endpoints (the output port and its linked input ports); as their metadata are checked for compliance when ports get connected, the exchanged values do not include them, since they are automatically checked in turn for compliance at port sending and receiving.
+The static channel-related information (e.g. ``SUTC``, for semantics, unit, type, constraints) is held by all endpoints (the output port and its linked input ports); as their metadata are checked for compliance when ports get connected, the exchanged values do not include them, since they are automatically checked in turn for compliance at port sending and receiving.
 
 Dataflow **values** are records that store their accuracy, timestamp and, of course, actual value. As always, they are exchanged through actor messages, managed by the engine.
 
 As for the **dataflow objects**, they unsurprisingly inherit from the ``DataflowObject`` class. These actors participate to the description of the simulated world and, thanks to their **dataflow attributes** (special actor attributes that map to a pair of input and output ports), they are ready to be integrated in a dataflow.
 
-Finally, instances of dataflow objects of a given class (ex: ``Building``) are governed by a **dataflow object manager** specific to this class (ex: ``BuildingManager``). All these managers inherit from the ``DataflowObjectManager`` base, abstract class.
+Finally, instances of dataflow objects of a given class (e.g. ``Building``) are governed by a **dataflow object manager** specific to this class (e.g. ``BuildingManager``). All these managers inherit from the ``DataflowObjectManager`` base, abstract class.
 
-Similarly, all instances of a given type of unit (ex: ``EnergyDemand``) are governed by a **unit manager** specific to this class (ex: ``EnergyDemandManager``), and all these managers inherit from the ``UnitManager`` base, abstract class.
+Similarly, all instances of a given type of unit (e.g. ``EnergyDemand``) are governed by a **unit manager** specific to this class (e.g. ``EnergyDemandManager``), and all these managers inherit from the ``UnitManager`` base, abstract class.
 
 The overall **dataflow** could have remained implicit (in the sense that no specific instance could have been defined in order to designate it as such, a dataflow being just an abstract concept corresponding to a set of actual, interconnected blocks), yet having it in an explicit form (i.e. as an instance of a well-defined ``Dataflow`` class) has been deemed more convenient and future-proof.
 
@@ -2436,9 +2436,9 @@ Please refer to the ``Dataflow Urban Example``, whose sources are located in the
 Class or Instance-level Checking
 --------------------------------
 
-Any given instance dataflow block (ex: a processing unit) may declare ports, statically or not.
+Any given instance dataflow block (e.g. a processing unit) may declare ports, statically or not.
 
-Ports created statically are usually the same for all instances of that type of dataflow element. So, instead of performing checks (ex: in terms of semantics or types) for each of these instances (that are potentially very numerous), the verification is better done once, at the class level - based on its declarations.
+Ports created statically are usually the same for all instances of that type of dataflow element. So, instead of performing checks (e.g. in terms of semantics or types) for each of these instances (that are potentially very numerous), the verification is better done once, at the class level - based on its declarations.
 
 For example, for units, any of them should preferably declare statically these information so that its unit manager can check them at simulation startup [#]_.
 
@@ -2458,7 +2458,7 @@ To establish whence semantics and typing information come for a given dataflow e
 
 - for types, a slightly different logic applies: the ``get_declared_types/0`` static method should be used whenever having to introduce new types, especially so that the types mentioned through  ``get_port_specifications/0`` can be resolved
 
-.. [#] For semantics, their name is also their definition (ex: ``'my semantics'``), whereas types have to be specifically defined (ex: ``my_type`` is ``[integer]``) before being used (ex: ``my_value`` is of type ``my_type``).
+.. [#] For semantics, their name is also their definition (e.g. ``'my semantics'``), whereas types have to be specifically defined (e.g. ``my_type`` is ``[integer]``) before being used (e.g. ``my_value`` is of type ``my_type``).
 
 
 Defining ``get_port_specifications/0`` is recommended, as by design the static information that is reported matches the ports that are initially created. Otherwise explicit checking shall be done when creating the actual initial ports, to ensure their information match any one that would be statically defined thanks to ``get_declared_{semantic,type}s/0``.
@@ -2517,7 +2517,7 @@ The dataflow constructs are defined, in the code base, in the ``sim-diasca/src/c
 
 Traces sent by the dataflow architecture are available in the ``Core.Dataflow`` category and its children categories.
 
-A dataflow initialization file has preferably for extension ``.init`` (ex: ``dataflow-urban-example.init``).
+A dataflow initialization file has preferably for extension ``.init`` (e.g. ``dataflow-urban-example.init``).
 
 It generally lists the creations of:
 
@@ -2538,13 +2538,13 @@ Annex 1: Design Questions
 -------------------------
 
 - Should all output ports of all blocks of the dataflow emit at each diasca a value, even if it did not change (event-based or synchronous)?; if yes, many useless sendings and schedulings, and not all units have the same temporality, so a year-based one, if included in a simulation with a daily one, would have to change its behaviour; so we preferred opting for an **event-based** mode of operation
-- As not all state changes/operations are instantaneous, should **delays** (in diascas or ticks) induced by a block be managed? (ex: ignition spark received, explosion happening 4 milliseconds afterwards)
+- As not all state changes/operations are instantaneous, should **delays** (in diascas or ticks) induced by a block be managed? (e.g. ignition spark received, explosion happening 4 milliseconds afterwards)
 - Would it be possible and useful that units can be **composed**, i.e. that a given unit can actually be recursively made of sub-units? If such a feature was wanted, then `ecore <https://en.wikipedia.org/wiki/Eclipse_Modeling_Framework#Ecore>`_ could be used to define the corresponding system, and two different approaches could be considered:
 
-  - either defining, directly at this dataflow level, *nested units*, and manage the consequences thereof (ex: when the inputs of a "macro" unit would change, its outputs would change in turn accordingly, yet only *after some delay in terms of logical moments* (i.e. only once some of them elapsed, with state transitions that may be arbitrarily deferred)
+  - either defining, directly at this dataflow level, *nested units*, and manage the consequences thereof (e.g. when the inputs of a "macro" unit would change, its outputs would change in turn accordingly, yet only *after some delay in terms of logical moments* (i.e. only once some of them elapsed, with state transitions that may be arbitrarily deferred)
   - or introduce new, higher-level concepts, such as the one of *assemblies* that can be nested; an assembly would ultimately translate to a basic, non-nested dataflow, by collapsing a (multi-level, compounded, compact) assembly into a (single-layer, uniform, intricate) dataflow; for that assemblies (either user-defined or generated) would be recursively unboxed and expanded into their parts until only standard dataflow blocks are found (a bit like when going from a higher-level electronic schematics to its full, elementary counterpart at the level of the logic gates)
 - Should large datastructures have to be carried by channels, maybe these data currently pushed by an output port shall be pulled by the input ports instead? (anyway this will most probably lead to a term duplication anyway)
-- If a model deals with a currency (ex: euros, or US dollars of year 2012), is the best approach to have its unit flagged as ``dimensionless`` (hence, not ``euro``) and complement this information at the semantics level?
+- If a model deals with a currency (e.g. euros, or US dollars of year 2012), is the best approach to have its unit flagged as ``dimensionless`` (hence, not ``euro``) and complement this information at the semantics level?
 
 
 
@@ -2556,7 +2556,7 @@ Annex 2: Possible Overall Improvements
 - a group of ports (*portset*?) may be represented by a unique, conventional graphical element (a portset is to ports what buses are to channels); more specific activation policies could rely on portsets
 - scale hints could be revamped (as a unit may have one scale, its inputs others, and the same for its outputs)
 - a consensual, sufficiently expressive language of types should be defined and enforced all the way regarding the values conveyed by the dataflow (such a check is not done currently)
-- the state changes of a dataflow may be collected by a process (should this feature be enabled), which could either write them in a file according to a conventional format (ex: ``*.df-state``) or make them available through an ad-hoc http server; in both cases, these information could feed a tool representing graphically (according to the conventions listed in `annex 3`_) the state of a dataflow (as an image), or the changes over time of the state of a dataflow (as a video made out of frames, generated with as few layout changes as possible from one to the next)
+- the state changes of a dataflow may be collected by a process (should this feature be enabled), which could either write them in a file according to a conventional format (e.g. ``*.df-state``) or make them available through an ad-hoc http server; in both cases, these information could feed a tool representing graphically (according to the conventions listed in `annex 3`_) the state of a dataflow (as an image), or the changes over time of the state of a dataflow (as a video made out of frames, generated with as few layout changes as possible from one to the next)
 - a support for a Python implementation of unit managers (at least the simplest/most classical ones) could be provided
 
 
@@ -2598,7 +2598,7 @@ Elements to Represent Graphically         Associated Color Color RGB Definition
 Input ports                               Dark orange      ``ffcd70`` / ``ff8900``
 Output ports                              Dark green       ``688e68`` / ``82ae82``
 Channels, buses and port-level meta-data  Pure blue        ``0000ff``
-Lines for shapes (ex: units)              Pure black       ``000000``
+Lines for shapes (e.g. units)             Pure black       ``000000``
 Default background                        Pure white       ``ffffff``
 State-related background                  Light purple     ``f1e3f1``
 Dataflow object                           Stronger purple  ``cfaecf`` / ``a13ba1``

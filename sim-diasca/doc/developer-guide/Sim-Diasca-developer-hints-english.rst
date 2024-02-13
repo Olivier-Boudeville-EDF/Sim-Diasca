@@ -16,7 +16,7 @@ There is a large choice of both data-structures as such (lists, trees, associati
 
 In some occasions, we felt the need to develop our own versions of some of them (see ``myriad/src/data-management`` for the most common ones), even if in some cases built-in solutions could provide better trade-offs (thinking to ETS tables- albeit offering a different sharing semantics - and to the process dictionary - which is not the purest and most flexible feature we wanted to rely on).
 
-We nevertheless use most of the time the built-in data-structures, like ``gb_sets`` or ``queues``. When multiple implementations providing the same API are available (ex: for ordered lists), we usually define a (sometimes module-specific) ``list_impl`` symbol, allowing to switch easily between similar datastructures.
+We nevertheless use most of the time the built-in data-structures, like ``gb_sets`` or ``queues``. When multiple implementations providing the same API are available (e.g. for ordered lists), we usually define a (sometimes module-specific) ``list_impl`` symbol, allowing to switch easily between similar datastructures.
 
 For example:
 
@@ -33,7 +33,7 @@ For example:
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-tree.png}`
 
 
-Similarly, for **algorithms** operating on these data-structures we tend not to reinvent the wheel (ex: ``class_Mesh`` uses the ``digraph`` module), unless we need specific versions of them (ex: operating on an implicit graph, with user-specified anonymous functions, see ``myriad/src/utils/graph_utils.erl``).
+Similarly, for **algorithms** operating on these data-structures we tend not to reinvent the wheel (e.g. ``class_Mesh`` uses the ``digraph`` module), unless we need specific versions of them (e.g. operating on an implicit graph, with user-specified anonymous functions, see ``myriad/src/utils/graph_utils.erl``).
 
 :raw-html:`<center><img src="xkcd-ineffective_sorts.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-ineffective_sorts.png}`
@@ -70,7 +70,7 @@ Here is a list of recommended steps to go through, in order to have a better cha
 #. for all the classes for which traces are wanted (if any), re-enable their sending:
 
    - re-activate traces, reverting the content of ``traces/src/class_TraceEmitter.hrl``
-   - update the time-stamps of all target classes, ex::
+   - update the time-stamps of all target classes, e.g.:
 
 	 touch sim-diasca/src/core/src/scheduling/class_DeploymentManager.erl
 
@@ -78,7 +78,7 @@ Here is a list of recommended steps to go through, in order to have a better cha
 
 #. possibly: hide ``~/.ssh/known_hosts`` to avoid nodes being rejected because of a change in the RSA fingerprint of their key
 
-#. launch in debug mode from the front-end, ex:
+#. launch in debug mode from the front-end, e.g.
 
 .. code:: bash
 

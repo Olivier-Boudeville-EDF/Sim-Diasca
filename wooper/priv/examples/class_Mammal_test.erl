@@ -1,13 +1,14 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Unit tests for the Mammal class implementation.
+% @doc Unit tests for the Mammal class implementation.
 %
 % See the class_Mammal.erl tested module.
 %
@@ -154,23 +155,16 @@ run( IsDebug ) ->
 
 	end,
 
-
-	case IsDebug of
-
-		true ->
-
+	IsDebug andalso
+		begin
 			MyM ! { wooper_get_instance_description, [], self() },
 			receive
 
 				{ wooper_result, InspectString } ->
 					test_facilities:display( "Instance description: ~ts",
 											 [ InspectString ] )
-			end;
-
-		false ->
-			ok
-
-	end,
+			end
+		end,
 
 	wooper:delete_synchronously_instance( MyM ),
 

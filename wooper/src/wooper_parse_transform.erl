@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2023 Olivier Boudeville
+% Copyright (C) 2014-2024 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -284,8 +284,8 @@ apply_wooper_transform( InputAST, Options ) ->
 	?display_trace( "Module information extracted." ),
 
 	%ast_utils:display_debug( "Module information, directly as obtained "
-	%	"from Myriad and command-line options: ~ts",
-	%	[ ast_info:module_info_to_string( WithOptsModuleInfo ) ] ),
+	%   "from Myriad and command-line options: ~ts",
+	%   [ ast_info:module_info_to_string( WithOptsModuleInfo ) ] ),
 
 	{ ModInfo, MaybeClassInfo } = case is_wooper_class( WithOptsModuleInfo ) of
 
@@ -519,7 +519,7 @@ create_class_info_from(
 		FinalClassInfo#class_info{ functions=FinalFunctionTable },
 
 	%trace_utils:debug_fmt( "Recomposed class information: ~ts",
-	%	   [ wooper_info:class_info_to_string( ReturnedClassInfo ) ] ),
+	%   [ wooper_info:class_info_to_string( ReturnedClassInfo ) ] ),
 
 	ReturnedClassInfo.
 
@@ -550,10 +550,10 @@ create_class_info_from(
 %% get_info( _AST=[ { 'attribute', FileLoc, 'classname', Classname } | T ],
 %%        C=#class_info{ class=undefined, class_def=undefined } ) ->
 
-%%	trace_utils:debug_fmt( "Intercepting WOOPER classname declaration for "
+%%  trace_utils:debug_fmt( "Intercepting WOOPER classname declaration for "
 %%                         "'~ts'.", [ Classname ] ),
 
-%%	check_classname( Classname ),
+%%  check_classname( Classname ),
 
 %%  % Transforms that in a standard module definition:
 %%  NewDef = { 'attribute', FileLoc, 'module', Classname },
