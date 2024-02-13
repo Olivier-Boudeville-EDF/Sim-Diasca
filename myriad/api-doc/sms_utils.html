@@ -15,7 +15,7 @@
 
 <h2><a name="description">Description</a></h2><p>Gathering of various convenient <b>SMS-related</b> facilities.</p>
 
- <p>They rely mostly on a web gateway for that. See <a href="http://mobile.esperide.org" target="_top"><tt>http://mobile.esperide.org</tt></a> 
+ <p>They rely mostly on a web gateway for that. See <a href="http://mobile.esperide.org" target="_top"><code>http://mobile.esperide.org</code></a> 
 for one based typically on 3G devices.</p>
 
  See sms_utils_test.erl for testing.
@@ -23,40 +23,41 @@ for one based typically on 3G devices.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-credits">credits()</a></h3>
-<p><tt>credits() = <a href="#type-maybe">maybe</a>(<a href="#type-count">count()</a>)</tt></p>
+<p><code>credits() = <a href="#type-maybe">maybe</a>(<a href="#type-count">count()</a>)</code></p>
 <p> Number of credits left (if applicable).</p>
 
 <h3 class="typedecl"><a name="type-diagnosis">diagnosis()</a></h3>
-<p><tt>diagnosis() = any()</tt></p>
+<p><code>diagnosis() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-failure_reason">failure_reason()</a></h3>
-<p><tt>failure_reason() = {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_phone_number, <a href="#type-ustring">ustring()</a>} | credits_exhausted | insufficient_credits | {invalid_password, <a href="#type-ustring">ustring()</a>} | {invalid_user, <a href="#type-ustring">ustring()</a>} | {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_request, <a href="#type-ustring">ustring()</a>} | {error, <a href="#type-ustring">ustring()</a>} | {request_failed, <a href="#type-ustring">ustring()</a>}</tt></p>
+<p><code>failure_reason() = {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_phone_number, <a href="#type-ustring">ustring()</a>} | credits_exhausted | insufficient_credits | {invalid_password, <a href="#type-ustring">ustring()</a>} | {invalid_user, <a href="#type-ustring">ustring()</a>} | {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_request, <a href="#type-ustring">ustring()</a>} | {error, <a href="#type-ustring">ustring()</a>} | {request_failed, <a href="#type-ustring">ustring()</a>}</code></p>
 <p> Many steps may go wrong.</p>
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>message() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Message to be sent as SMS (up to 160 bytes).</p>
 
 <h3 class="typedecl"><a name="type-phone_number">phone_number()</a></h3>
-<p><tt>phone_number() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> A phone number, preferably international, preferably with no whitespaces (ex:
+<p><code>phone_number() = <a href="#type-ustring">ustring()</a></code></p>
+<p> A phone number, preferably international, preferably with no whitespaces (e.g.
  "+330616XXXXXX").</p>
 
 <h3 class="typedecl"><a name="type-provider">provider()</a></h3>
-<p><tt>provider() = verysms</tt></p>
+<p><code>provider() = verysms</code></p>
 <p> Name of a SMS provider (HTTP gateway), as an atom.</p>
 
 <h3 class="typedecl"><a name="type-recipient">recipient()</a></h3>
-<p><tt>recipient() = <a href="#type-phone_number">phone_number()</a></tt></p>
-<p> Phone number of a recipient, probably of a mobile phone (ex: "+330616XXXXXX").</p>
+<p><code>recipient() = <a href="#type-phone_number">phone_number()</a></code></p>
+<p> Phone number of a recipient, probably of a mobile phone
+ (e.g. "+330616XXXXXX").</p>
 
 <h3 class="typedecl"><a name="type-sender_description">sender_description()</a></h3>
-<p><tt>sender_description() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>sender_description() = <a href="#type-ustring">ustring()</a></code></p>
 <p><p> Any (short) alphanumerical string describing the sender, if this service is 
 provided.</p>
 
@@ -64,23 +65,23 @@ provided.</p>
  actually SMS always shown as sent by the number "38200".</p>
 
 <h3 class="typedecl"><a name="type-sending_outcome">sending_outcome()</a></h3>
-<p><tt>sending_outcome() = success | {<a href="#type-failure_reason">failure_reason()</a>, <a href="#type-diagnosis">diagnosis()</a>}</tt></p>
+<p><code>sending_outcome() = success | {<a href="#type-failure_reason">failure_reason()</a>, <a href="#type-diagnosis">diagnosis()</a>}</code></p>
 <p> Describes the result of the sending, as reported by the gateway.</p>
 
 <h3 class="typedecl"><a name="type-service_class">service_class()</a></h3>
-<p><tt>service_class() = eco | pro</tt></p>
+<p><code>service_class() = eco | pro</code></p>
 <p> Service class of a SMS being sent.</p>
 
 <h3 class="typedecl"><a name="type-sms">sms()</a></h3>
-<p><tt>sms() = #sms{message = <a href="#type-message">message()</a>, recipient = <a href="#type-recipient">recipient()</a>, sender_description = <a href="#type-sender_description">sender_description()</a>, service_class = <a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)}</tt></p>
+<p><code>sms() = #sms{message = <a href="#type-message">message()</a>, recipient = <a href="#type-recipient">recipient()</a>, sender_description = <a href="#type-sender_description">sender_description()</a>, service_class = <a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)}</code></p>
 <p> Describes a SMS account.</p>
 
 <h3 class="typedecl"><a name="type-sms_account">sms_account()</a></h3>
-<p><tt>sms_account() = #sms_account{provider = <a href="#type-provider">provider()</a>, user_name = <a href="system_utils.html#type-user_name">system_utils:user_name()</a>, password = <a href="system_utils.html#type-password">system_utils:password()</a>, default_class = <a href="#type-service_class">service_class()</a>, credits = <a href="#type-credits">credits()</a>, sent_count = <a href="#type-count">count()</a>, sent_success_count = <a href="#type-count">count()</a>}</tt></p>
+<p><code>sms_account() = #sms_account{provider = <a href="#type-provider">provider()</a>, user_name = <a href="system_utils.html#type-user_name">system_utils:user_name()</a>, password = <a href="system_utils.html#type-password">system_utils:password()</a>, default_class = <a href="#type-service_class">service_class()</a>, credits = <a href="#type-credits">credits()</a>, sent_count = <a href="#type-count">count()</a>, sent_success_count = <a href="#type-count">count()</a>}</code></p>
 <p> Describes a SMS account at a provider.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -102,13 +103,13 @@ replaces the recorded one.</td></tr>
 
 <h3 class="function"><a name="account_to_string-1">account_to_string/1</a></h3>
 <div class="spec">
-<p><tt>account_to_string(Sms_account::<a href="#type-sms_account">sms_account()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>account_to_string(Sms_account::<a href="#type-sms_account">sms_account()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified SMS account.</p>
 
 <h3 class="function"><a name="create_sms-3">create_sms/3</a></h3>
 <div class="spec">
-<p><tt>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sms">sms()</a></tt><br></p>
+<p><code>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sms">sms()</a></code><br></p>
 <p> </p>
 </div><p>Creates a SMS record instance from specified information, the service
  class being not defined, so that the default class of the account will
@@ -117,19 +118,19 @@ replaces the recorded one.</td></tr>
 
 <h3 class="function"><a name="create_sms-4">create_sms/4</a></h3>
 <div class="spec">
-<p><tt>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>, ServiceClass::<a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)) -&gt; <a href="#type-sms">sms()</a></tt><br></p>
+<p><code>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>, ServiceClass::<a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)) -&gt; <a href="#type-sms">sms()</a></code><br></p>
 <p> </p>
 </div><p>Creates a SMS record instance from specified information.</p>
 
 <h3 class="function"><a name="send-2">send/2</a></h3>
 <div class="spec">
-<p><tt>send(Sms::<a href="#type-sms">sms()</a>, Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {<a href="#type-sending_outcome">sending_outcome()</a>, <a href="#type-sms_account">sms_account()</a>}</tt><br></p>
+<p><code>send(Sms::<a href="#type-sms">sms()</a>, Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {<a href="#type-sending_outcome">sending_outcome()</a>, <a href="#type-sms_account">sms_account()</a>}</code><br></p>
 <p> </p>
 </div><p>Sends specified SMS, using specified account.</p>
 
 <h3 class="function"><a name="send-7">send/7</a></h3>
 <div class="spec">
-<p><tt>send(Provider::<a href="#type-provider">provider()</a>, ServiceClass::<a href="#type-service_class">service_class()</a>, Username::<a href="system_utils.html#type-user_name">system_utils:user_name()</a>, Password::<a href="system_utils.html#type-password">system_utils:password()</a>, Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sending_outcome">sending_outcome()</a></tt><br></p>
+<p><code>send(Provider::<a href="#type-provider">provider()</a>, ServiceClass::<a href="#type-service_class">service_class()</a>, Username::<a href="system_utils.html#type-user_name">system_utils:user_name()</a>, Password::<a href="system_utils.html#type-password">system_utils:password()</a>, Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sending_outcome">sending_outcome()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends specified SMS, using most detailed (explicit) settings.</p>
 
@@ -138,13 +139,13 @@ replaces the recorded one.</td></tr>
 
 <h3 class="function"><a name="sms_to_string-1">sms_to_string/1</a></h3>
 <div class="spec">
-<p><tt>sms_to_string(Sms::<a href="#type-sms">sms()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>sms_to_string(Sms::<a href="#type-sms">sms()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified SMS.</p>
 
 <h3 class="function"><a name="update_credits-1">update_credits/1</a></h3>
 <div class="spec">
-<p><tt>update_credits(Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {matching | overwritten | failed, <a href="#type-sms_account">sms_account()</a>}</tt><br></p>
+<p><code>update_credits(Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {matching | overwritten | failed, <a href="#type-sms_account">sms_account()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Returns the specified SMS account, whose credit count has been updated, 
 telling whether the actual, provider-obtained count corresponds to the 

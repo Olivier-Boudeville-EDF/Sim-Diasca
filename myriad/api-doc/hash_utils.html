@@ -24,15 +24,15 @@ cryptographically-secure or not, to be applied either to files or directly to
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_hash">any_hash()</a></h3>
-<p><tt>any_hash() = <a href="#type-integer_hash">integer_hash()</a> | <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>any_hash() = <a href="#type-integer_hash">integer_hash()</a> | <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p> Any kind of hash value ("digest").</p>
 
 <h3 class="typedecl"><a name="type-binary_hash">binary_hash()</a></h3>
-<p><tt>binary_hash() = binary()</tt></p>
+<p><code>binary_hash() = binary()</code></p>
 <p><p> Most hash values are, and should be, internally, binaries.</p>
 
  <p>For example 128-bit (16 bytes) for MD5, 160-bit hash (20 bytes) for SHA1, 
@@ -41,36 +41,36 @@ cryptographically-secure or not, to be applied either to files or directly to
  Use text_utils:binary_to_hexastring/2 for clear-text storage thereof.</p>
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-hash_algorithm">hash_algorithm()</a></h3>
-<p><tt>hash_algorithm() = md5 | sha1 | sha2_224 | sha2_256 | sha2_384 | sha2_512 | sha2_512_224 | sha2_512_256 | sha3_224 | sha3_256 | sha3_384 | sha3_512</tt></p>
+<p><code>hash_algorithm() = md5 | sha1 | sha2_224 | sha2_256 | sha2_384 | sha2_512 | sha2_512_224 | sha2_512_256 | sha3_224 | sha3_256 | sha3_384 | sha3_512</code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_hash">integer_hash()</a></h3>
-<p><tt>integer_hash() = non_neg_integer()</tt></p>
+<p><code>integer_hash() = non_neg_integer()</code></p>
 <p> A (positive or null) integer value obtained when hashing a piece of data.</p>
 
 <h3 class="typedecl"><a name="type-md5_sum">md5_sum()</a></h3>
-<p><tt>md5_sum() = <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>md5_sum() = <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p><p> MD5 sum, a 128-bit hash value (that is 16 bytes).</p>
 
  MD5 is mostly obsolete for cryptographic uses.</p>
 
 <h3 class="typedecl"><a name="type-passphrase_hash">passphrase_hash()</a></h3>
-<p><tt>passphrase_hash() = <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>passphrase_hash() = <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p><p> The passphrase (binary) hash value of an account.</p>
 
  Should be salted. May be stored.</p>
 
 <h3 class="typedecl"><a name="type-portable_integer_hash">portable_integer_hash()</a></h3>
-<p><tt>portable_integer_hash() = <a href="#type-integer_hash">integer_hash()</a></tt></p>
+<p><code>portable_integer_hash() = <a href="#type-integer_hash">integer_hash()</a></code></p>
 <p> A hash value of a term that will the same regardless of machine architecture
  and ERTS version.</p>
 
 <h3 class="typedecl"><a name="type-salt_value">salt_value()</a></h3>
-<p><tt>salt_value() = binary()</tt></p>
+<p><code>salt_value() = binary()</code></p>
 <p><p> A salt value used to generate safer hashes of passphrase.</p>
 
  <p>A constant, system-wide salt is pointless to mitigate attacks; it would just 
@@ -82,27 +82,27 @@ make passphrases longer.</p>
  preferably in different locations.</p>
 
 <h3 class="typedecl"><a name="type-sha1_sum">sha1_sum()</a></h3>
-<p><tt>sha1_sum() = <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>sha1_sum() = <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p><p> SHA1 sum (Secure Hash Algorithm 1) i, a 160-bit hash value (that is 20 bytes).</p>
 
  SHA1 is a cryptographically broken, but still widely used, hash function.</p>
 
 <h3 class="typedecl"><a name="type-sha2_512_sum">sha2_512_sum()</a></h3>
-<p><tt>sha2_512_sum() = <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>sha2_512_sum() = <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p><p> SHA-2 (Secure Hash Algorithm 2) for a cryptographic hash function whose hash 
 values are 512 bits (that is 64 bytes).</p>
 
  The corresponding algorithm name is 'sha2_512'.</p>
 
 <h3 class="typedecl"><a name="type-sha2_sum">sha2_sum()</a></h3>
-<p><tt>sha2_sum() = <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>sha2_sum() = <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p> SHA-2 (Secure Hash Algorithm 2) is a set of 6 cryptographic hash functions
  whose hash values are 224, 256, 384 or 512 bits: SHA-224, SHA-256, SHA-384,
  SHA-512, SHA-512/224, SHA-512/256 (the last two being computed with eight
  32-bit and 64-bit words, respectively).</p>
 
 <h3 class="typedecl"><a name="type-sha3_sum">sha3_sum()</a></h3>
-<p><tt>sha3_sum() = <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>sha3_sum() = <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p><p> SHA-3 (Secure Hash Algorithm 3) is a subset of the broader cryptographic 
 primitive family Keccak.</p>
 
@@ -110,10 +110,10 @@ primitive family Keccak.</p>
  MD5-like structure of SHA-1 and SHA-2.</p>
 
 <h3 class="typedecl"><a name="type-sha_sum">sha_sum()</a></h3>
-<p><tt>sha_sum() = <a href="#type-binary_hash">binary_hash()</a></tt></p>
+<p><code>sha_sum() = <a href="#type-binary_hash">binary_hash()</a></code></p>
 <p><p> SHA sum, a hash value of unspecified size.</p>
 
- See <a href="https://en.wikipedia.org/wiki/SHA-1#Comparison_of_SHA_functions" target="_top"><tt>https://en.wikipedia.org/wiki/SHA-1#Comparison_of_SHA_functions</tt></a>.</p>
+ See <a href="https://en.wikipedia.org/wiki/SHA-1#Comparison_of_SHA_functions" target="_top"><code>https://en.wikipedia.org/wiki/SHA-1#Comparison_of_SHA_functions</code></a>.</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_hash_algorithm-1">check_hash_algorithm/1</a></td><td>Checks whether the specified atom corresponds to a supported hashing
@@ -140,7 +140,7 @@ algorithm that we currently recommend.</td></tr>
 
 <h3 class="function"><a name="check_hash_algorithm-1">check_hash_algorithm/1</a></h3>
 <div class="spec">
-<p><tt>check_hash_algorithm(Alg::atom()) -&gt; <a href="#type-hash_algorithm">hash_algorithm()</a></tt><br></p>
+<p><code>check_hash_algorithm(Alg::atom()) -&gt; <a href="#type-hash_algorithm">hash_algorithm()</a></code><br></p>
 <p> </p>
 </div><p>Checks whether the specified atom corresponds to a supported hashing
  algorithm; if yes, returns it, otherwise raises an exception.
@@ -148,7 +148,7 @@ algorithm that we currently recommend.</td></tr>
 
 <h3 class="function"><a name="get_file_hash-2">get_file_hash/2</a></h3>
 <div class="spec">
-<p><tt>get_file_hash(FilePath::<a href="#type-file_path">file_path()</a>, Alg::<a href="#type-hash_algorithm">hash_algorithm()</a>) -&gt; <a href="#type-binary_hash">binary_hash()</a></tt><br></p>
+<p><code>get_file_hash(FilePath::<a href="#type-file_path">file_path()</a>, Alg::<a href="#type-hash_algorithm">hash_algorithm()</a>) -&gt; <a href="#type-binary_hash">binary_hash()</a></code><br></p>
 <p> </p>
 </div><p>Returns the hash sum corresponding to the content of the specified file,
  based on the specified cryptographic algorithm for hashing.
@@ -156,7 +156,7 @@ algorithm that we currently recommend.</td></tr>
 
 <h3 class="function"><a name="get_file_recommended_hash-1">get_file_recommended_hash/1</a></h3>
 <div class="spec">
-<p><tt>get_file_recommended_hash(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-binary_hash">binary_hash()</a></tt><br></p>
+<p><code>get_file_recommended_hash(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-binary_hash">binary_hash()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the hash for the specified file, computed from the cryptographic 
 algorithm that we currently recommend.</p>
@@ -166,7 +166,7 @@ algorithm that we currently recommend.</p>
 
 <h3 class="function"><a name="get_hash-2">get_hash/2</a></h3>
 <div class="spec">
-<p><tt>get_hash(Term::term(), Alg::<a href="#type-hash_algorithm">hash_algorithm()</a>) -&gt; <a href="#type-binary_hash">binary_hash()</a></tt><br></p>
+<p><code>get_hash(Term::term(), Alg::<a href="#type-hash_algorithm">hash_algorithm()</a>) -&gt; <a href="#type-binary_hash">binary_hash()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the hash sum corresponding to the content of the specified term, 
 based on the specified cryptographic algorithm for hashing.</p>
@@ -178,7 +178,7 @@ based on the specified cryptographic algorithm for hashing.</p>
 
 <h3 class="function"><a name="get_insecure_hash-1">get_insecure_hash/1</a></h3>
 <div class="spec">
-<p><tt>get_insecure_hash(Term::term()) -&gt; <a href="#type-portable_integer_hash">portable_integer_hash()</a></tt><br></p>
+<p><code>get_insecure_hash(Term::term()) -&gt; <a href="#type-portable_integer_hash">portable_integer_hash()</a></code><br></p>
 <p> </p>
 </div><p>Returns the hash value corresponding to the specified term, using an
  hashing algorithm efficient, fair, yet not suitable for cryptographic uses.
@@ -186,7 +186,7 @@ based on the specified cryptographic algorithm for hashing.</p>
 
 <h3 class="function"><a name="get_recommended_algorithm-0">get_recommended_algorithm/0</a></h3>
 <div class="spec">
-<p><tt>get_recommended_algorithm() -&gt; <a href="#type-hash_algorithm">hash_algorithm()</a></tt><br></p>
+<p><code>get_recommended_algorithm() -&gt; <a href="#type-hash_algorithm">hash_algorithm()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the cryptographic algorithm that we currently recommend for 
 hashing.</p>
@@ -196,7 +196,7 @@ hashing.</p>
 
 <h3 class="function"><a name="get_recommended_hash-1">get_recommended_hash/1</a></h3>
 <div class="spec">
-<p><tt>get_recommended_hash(Term::term()) -&gt; <a href="#type-binary_hash">binary_hash()</a></tt><br></p>
+<p><code>get_recommended_hash(Term::term()) -&gt; <a href="#type-binary_hash">binary_hash()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the hash for the specified file, computed from the cryptographic 
 algorithm that we currently recommend.</p>
@@ -206,13 +206,13 @@ algorithm that we currently recommend.</p>
 
 <h3 class="function"><a name="list_hash_algorithms-0">list_hash_algorithms/0</a></h3>
 <div class="spec">
-<p><tt>list_hash_algorithms() -&gt; [<a href="#type-hash_algorithm">hash_algorithm()</a>]</tt><br></p>
+<p><code>list_hash_algorithms() -&gt; [<a href="#type-hash_algorithm">hash_algorithm()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the supported hashing algorithms.</p>
 
 <h3 class="function"><a name="start_crypto_hashing-0">start_crypto_hashing/0</a></h3>
 <div class="spec">
-<p><tt>start_crypto_hashing() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_crypto_hashing() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that a support for cryptographic hashing is available and ready
  to use.
@@ -220,7 +220,7 @@ algorithm that we currently recommend.</p>
 
 <h3 class="function"><a name="stop_crypto_hashing-0">stop_crypto_hashing/0</a></h3>
 <div class="spec">
-<p><tt>stop_crypto_hashing() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>stop_crypto_hashing() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Stops the support for cryptographic hashing.</p>
 

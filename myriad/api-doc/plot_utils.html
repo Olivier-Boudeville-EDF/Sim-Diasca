@@ -1,0 +1,827 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module plot_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module plot_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of facilities <b>to plot graphs</b>.
+
+
+<h2><a name="description">Description</a></h2>Gathering of facilities <b>to plot graphs</b>.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_command_file_name">bin_command_file_name()</a></h3>
+<p><code>bin_command_file_name() = <a href="#type-bin_file_name">bin_file_name()</a></code></p>
+<p> The name of a gnuplot command file (see the command_extension define).</p>
+
+<h3 class="typedecl"><a name="type-bin_command_file_path">bin_command_file_path()</a></h3>
+<p><code>bin_command_file_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
+<p> A path to a gnuplot command file (see the command_extension define).</p>
+
+<h3 class="typedecl"><a name="type-bin_data_file_name">bin_data_file_name()</a></h3>
+<p><code>bin_data_file_name() = <a href="#type-bin_file_name">bin_file_name()</a></code></p>
+<p> The name of a data file (see the command_extension define).</p>
+
+<h3 class="typedecl"><a name="type-bin_data_file_path">bin_data_file_path()</a></h3>
+<p><code>bin_data_file_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
+<p> A path to a data file (see the data_extension define).</p>
+
+<h3 class="typedecl"><a name="type-bin_file_name">bin_file_name()</a></h3>
+<p><code>bin_file_name() = <a href="file_utils.html#type-bin_file_name">file_utils:bin_file_name()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
+<p><code>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_plot_filename">bin_plot_filename()</a></h3>
+<p><code>bin_plot_filename() = <a href="#type-bin_file_name">bin_file_name()</a></code></p>
+<p> A filename of a plot (image) file (see the image_format field in the plot
+ settings).</p>
+
+<h3 class="typedecl"><a name="type-bin_plot_name">bin_plot_name()</a></h3>
+<p><code>bin_plot_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> Internal plot name.</p>
+
+<h3 class="typedecl"><a name="type-bin_plot_path">bin_plot_path()</a></h3>
+<p><code>bin_plot_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
+<p> A path to a plot (image) file (see the image_format field in the plot
+ settings).</p>
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bounds">bounds()</a></h3>
+<p><code>bounds() = <a href="math_utils.html#type-bounds">math_utils:bounds()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-color">color()</a></h3>
+<p><code>color() = <a href="gui_color.html#type-color">gui_color:color()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-command_element">command_element()</a></h3>
+<p><code>command_element() = <a href="#type-ustring">ustring()</a></code></p>
+<p> An element of a gnuplot command.</p>
+
+<h3 class="typedecl"><a name="type-command_file_path">command_file_path()</a></h3>
+<p><code>command_file_path() = <a href="#type-file_path">file_path()</a></code></p>
+<p> A path to a gnuplot command file (see the command_extension define).</p>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-curve_count">curve_count()</a></h3>
+<p><code>curve_count() = <a href="#type-count">count()</a></code></p>
+<p> A number of curves.</p>
+
+<h3 class="typedecl"><a name="type-curve_entry">curve_entry()</a></h3>
+<p><code>curve_entry() = {<a href="#type-curve_index">curve_index()</a>, <a href="#type-curve_name">curve_name()</a>, <a href="#type-curve_plot_suffix">curve_plot_suffix()</a>}</code></p>
+<p> Information specific to the rendering of a curve.</p>
+
+<h3 class="typedecl"><a name="type-curve_index">curve_index()</a></h3>
+<p><code>curve_index() = <a href="#type-curve_count">curve_count()</a></code></p>
+<p> Curves are numbered internally, and correspond to the position of data in
+ specified samples.</p>
+
+<h3 class="typedecl"><a name="type-curve_name">curve_name()</a></h3>
+<p><code>curve_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> The internal name for a curve.</p>
+
+<h3 class="typedecl"><a name="type-curve_offset">curve_offset()</a></h3>
+<p><code>curve_offset() = <a href="#type-count">count()</a></code></p>
+<p> Applies notably if using (unquoted) timestamps that account for more than one
+ field in data. Prefer relying on quoted timestamps.</p>
+
+<h3 class="typedecl"><a name="type-curve_plot_suffix">curve_plot_suffix()</a></h3>
+<p><code>curve_plot_suffix() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> A (binary string) suffix (e.g. <code>&lt;&lt;"noenhanced with filledcurves"&gt;&gt;</code>, <code>&lt;&lt;"with
+ boxes"&gt;&gt;</code> or <code>&lt;&lt;"with boxes lt rgb</code>#f0f0f0'"&gt;&gt;') to be added to the plot
+ command of the corresponding curve.</p>
+
+<h3 class="typedecl"><a name="type-data_file_path">data_file_path()</a></h3>
+<p><code>data_file_path() = <a href="#type-file_path">file_path()</a></code></p>
+<p> A path to a data file (see the data_extension define).</p>
+
+<h3 class="typedecl"><a name="type-declared_curve_id">declared_curve_id()</a></h3>
+<p><code>declared_curve_id() = <a href="#type-declared_curve_name">declared_curve_name()</a> | <a href="#type-special_curve_id">special_curve_id()</a></code></p>
+<p> The identifier of a user-specified extended curve.</p>
+
+<h3 class="typedecl"><a name="type-declared_curve_name">declared_curve_name()</a></h3>
+<p><code>declared_curve_name() = <a href="#type-any_string">any_string()</a></code></p>
+<p> The name of a user-specified curve.</p>
+
+<h3 class="typedecl"><a name="type-declared_zone">declared_zone()</a></h3>
+<p><code>declared_zone() = {<a href="#type-declared_zone_name">declared_zone_name()</a>, {<a href="#type-declared_curve_id">declared_curve_id()</a>, <a href="#type-declared_curve_id">declared_curve_id()</a>}}</code></p>
+<p> The definition of a user-specified zone, which is the specific area between
+ the two specified curves.</p>
+
+<h3 class="typedecl"><a name="type-declared_zone_name">declared_zone_name()</a></h3>
+<p><code>declared_zone_name() = <a href="#type-any_string">any_string()</a></code></p>
+<p> The name of a user-specified zone.</p>
+
+<h3 class="typedecl"><a name="type-elementary_command">elementary_command()</a></h3>
+<p><code>elementary_command() = <a href="#type-ustring">ustring()</a></code></p>
+<p> A (complete) elementary (gnuplot) command, that is a self-standing line
+ (possibly a comment) of a command file thereof.</p>
+
+<h3 class="typedecl"><a name="type-error_message">error_message()</a></h3>
+<p><code>error_message() = <a href="#type-ustring">ustring()</a></code></p>
+<p> Any error (failure case, no plot was generated) message issued when
+ trying to generate a plot.</p>
+
+<h3 class="typedecl"><a name="type-extended_curve_id">extended_curve_id()</a></h3>
+<p><code>extended_curve_id() = <a href="#type-curve_index">curve_index()</a> | <a href="#type-special_curve_id">special_curve_id()</a></code></p>
+<p> Extended to allow for zone definitions.</p>
+
+<h3 class="typedecl"><a name="type-extra_curve_settings">extra_curve_settings()</a></h3>
+<p><code>extra_curve_settings() = <a href="#type-rgb_hexastring">rgb_hexastring()</a></code></p>
+<p> The color of a given curve.</p>
+
+<h3 class="typedecl"><a name="type-extra_zone_settings">extra_zone_settings()</a></h3>
+<p><code>extra_zone_settings() = <a href="#type-rgb_hexastring">rgb_hexastring()</a></code></p>
+<p> The color of a given zone.</p>
+
+<h3 class="typedecl"><a name="type-file">file()</a></h3>
+<p><code>file() = <a href="file_utils.html#type-file">file_utils:file()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-fill_style">fill_style()</a></h3>
+<p><code>fill_style() = empty | term()</code></p>
+<p><p> to be further specified 
+Fill style (default being 'empty'):</p>
+
+ (see http://gnuplot.info/docs_5.5/loc15482.html)</p>
+
+<h3 class="typedecl"><a name="type-float_to_float_fun">float_to_float_fun()</a></h3>
+<p><code>float_to_float_fun() = <a href="math_utils.html#type-float_to_float_fun">math_utils:float_to_float_fun()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-gnuplot_version">gnuplot_version()</a></h3>
+<p><code>gnuplot_version() = <a href="basic_utils.html#type-two_digit_version">basic_utils:two_digit_version()</a></code></p>
+<p> A version of gnuplot.</p>
+
+<h3 class="typedecl"><a name="type-int_degrees">int_degrees()</a></h3>
+<p><code>int_degrees() = <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-key_options">key_options()</a></h3>
+<p><code>key_options() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p><p> Options related to the plot key.</p>
+
+ See http://gnuplot.info/docs_5.5/loc12343.html.</p>
+
+<h3 class="typedecl"><a name="type-label">label()</a></h3>
+<p><code>label() = <a href="ui.html#type-label">ui:label()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-label_color">label_color()</a></h3>
+<p><code>label_color() = <a href="#type-color">color()</a></code></p>
+<p> Color of the text (default: "blue").</p>
+
+<h3 class="typedecl"><a name="type-label_justification">label_justification()</a></h3>
+<p><code>label_justification() = left | center | right</code></p>
+<p> Describes the justification of the text based on the specified location for
+ the label.</p>
+
+<h3 class="typedecl"><a name="type-label_location">label_location()</a></h3>
+<p><code>label_location() = <a href="gui.html#type-point">gui:point()</a></code></p>
+<p> Corresponds to the 2D integer coordinates of the label on the plot.</p>
+
+<h3 class="typedecl"><a name="type-label_orientation">label_orientation()</a></h3>
+<p><code>label_orientation() = upright | <a href="#type-int_degrees">int_degrees()</a></code></p>
+<p> Describes whether the text of the label should be rendered with an angle, from
+ the abscissa axis.</p>
+
+<h3 class="typedecl"><a name="type-label_spec">label_spec()</a></h3>
+<p><code>label_spec() = {<a href="#type-label_text">label_text()</a>, <a href="#type-label_location">label_location()</a>} | {<a href="#type-label_text">label_text()</a>, <a href="#type-label_location">label_location()</a>, <a href="#type-user_point_style_spec">user_point_style_spec()</a>}</code></p>
+<p> A user specification of a label.</p>
+
+<h3 class="typedecl"><a name="type-label_text">label_text()</a></h3>
+<p><code>label_text() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p><p> Actual text of a label.</p>
+
+ Note that texts can be "enhanced" (e.g. "for some {/:Bold important} text"),
+ and may include newlines (e.g. "radius\\nat...").</p>
+
+<h3 class="typedecl"><a name="type-plot_data">plot_data()</a></h3>
+<p><code>plot_data() = [<a href="#type-plot_point">plot_point()</a>]</code></p>
+<p> A data to plot, based on an (unordered) list of points to be plotted.</p>
+
+<h3 class="typedecl"><a name="type-plot_function">plot_function()</a></h3>
+<p><code>plot_function() = <a href="#type-float_to_float_fun">float_to_float_fun()</a></code></p>
+<p> A function to be plotted.</p>
+
+<h3 class="typedecl"><a name="type-plot_generation_outcome">plot_generation_outcome()</a></h3>
+<p><code>plot_generation_outcome() = {success, <a href="#type-bin_plot_path">bin_plot_path()</a>} | {warning, <a href="#type-bin_plot_path">bin_plot_path()</a>, <a href="#type-warning_message">warning_message()</a>} | {error, <a href="#type-error_message">error_message()</a>}</code></p>
+<p> The possible outcomes of an attempt of plot generation.</p>
+
+<h3 class="typedecl"><a name="type-plot_label">plot_label()</a></h3>
+<p><code>plot_label() = #plot_label{text = <a href="plot_utils.html#type-label_text">plot_utils:label_text()</a>, location = <a href="plot_utils.html#type-label_location">plot_utils:label_location()</a>, color = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-label_color">plot_utils:label_color()</a>), justification = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-label_justification">plot_utils:label_justification()</a>), orientation = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-label_orientation">plot_utils:label_orientation()</a>), point = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-point_style_spec">plot_utils:point_style_spec()</a>)}</code></p>
+<p> Fully defines a label on a plot.</p>
+
+<h3 class="typedecl"><a name="type-plot_name">plot_name()</a></h3>
+<p><code>plot_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> The internal plot name.</p>
+
+<h3 class="typedecl"><a name="type-plot_parameter">plot_parameter()</a></h3>
+<p><code>plot_parameter() = <a href="#type-any_string">any_string()</a> | number()</code></p>
+<p><p> A parameter corresponding to a plot point.</p>
+
+ <p>This may be a timestamp.</p>
+
+ For example "Monday", or 14557.</p>
+
+<h3 class="typedecl"><a name="type-plot_parameter_bin_string">plot_parameter_bin_string()</a></h3>
+<p><code>plot_parameter_bin_string() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> A string corresponding to a plot parameter.</p>
+
+<h3 class="typedecl"><a name="type-plot_path">plot_path()</a></h3>
+<p><code>plot_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
+<p><p> The (internal) path to a file corresponding to a rendering of a plot, as an 
+image.</p>
+
+ Typically a PNG or a SVG file.</p>
+
+<h3 class="typedecl"><a name="type-plot_point">plot_point()</a></h3>
+<p><code>plot_point() = {<a href="#type-plot_parameter">plot_parameter()</a>, <a href="#type-plot_sample">plot_sample()</a>}</code></p>
+<p><p> A data point to plot, made of a parameter (like a function one, for example 
+time) and the associated sample values to be plotted (like the values of 
+various functions for the previous parameter).</p>
+
+ <p>May also be designated as a data row.</p>
+
+ For example {"Monday", {1, undefined, 5.1}}, or {5.5, "hello"}.</p>
+
+<h3 class="typedecl"><a name="type-plot_sample">plot_sample()</a></h3>
+<p><code>plot_sample() = <a href="type_utils.html#type-tuploid">type_utils:tuploid</a>(<a href="#type-maybe">maybe</a>(<a href="#type-plot_value">plot_value()</a>))</code></p>
+<p><p> A sample to plot.</p>
+
+ For example {1, undefined, "red", 5.1}, or "hello".</p>
+
+<h3 class="typedecl"><a name="type-plot_settings">plot_settings()</a></h3>
+<p><code>plot_settings() = #plot_settings{name = <a href="plot_utils.html#type-bin_plot_name">plot_utils:bin_plot_name()</a>, title = <a href="#type-maybe">maybe</a>(<a href="ui.html#type-bin_title">ui:bin_title()</a>), key_options = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-key_options">plot_utils:key_options()</a>), x_label = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-label_text">plot_utils:label_text()</a>), y_label = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-label_text">plot_utils:label_text()</a>), x_tick = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-tick_option">plot_utils:tick_option()</a>), y_tick = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-tick_option">plot_utils:tick_option()</a>), x_range = <a href="#type-maybe">maybe</a>({<a href="#type-maybe">maybe</a>(<a href="gui.html#type-coordinate">gui:coordinate()</a>), <a href="#type-maybe">maybe</a>(<a href="gui.html#type-coordinate">gui:coordinate()</a>)}), y_range = <a href="#type-maybe">maybe</a>({<a href="#type-maybe">maybe</a>(<a href="gui.html#type-coordinate">gui:coordinate()</a>), <a href="#type-maybe">maybe</a>(<a href="gui.html#type-coordinate">gui:coordinate()</a>)}), x_ticks = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-ticks_option">plot_utils:ticks_option()</a>), is_timestamped = boolean(), x_ticks_timestamp_time_format = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-timestamp_time_format">plot_utils:timestamp_time_format()</a>), y_ticks = <a href="#type-maybe">maybe</a>(<a href="plot_utils.html#type-ticks_option">plot_utils:ticks_option()</a>), plot_style = <a href="plot_utils.html#type-plot_style">plot_utils:plot_style()</a>, point_size = non_neg_integer(), fill_style = <a href="plot_utils.html#type-fill_style">plot_utils:fill_style()</a>, canvas_width = <a href="gui.html#type-width">gui:width()</a>, canvas_height = <a href="gui.html#type-height">gui:height()</a>, image_format = <a href="gui_image.html#type-image_format">gui_image:image_format()</a>, labels = [<a href="plot_utils.html#type-plot_label">plot_utils:plot_label()</a>], extra_defines = [<a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>], meta_data = <a href="plot_utils.html#type-plot_meta_data">plot_utils:plot_meta_data()</a>, plot_directory = <a href="#type-maybe">maybe</a>(<a href="file_utils.html#type-bin_directory_name">file_utils:bin_directory_name()</a>), plot_filename = <a href="#type-maybe">maybe</a>(<a href="file_utils.html#type-bin_file_name">file_utils:bin_file_name()</a>), curve_entries = [<a href="plot_utils.html#type-curve_entry">plot_utils:curve_entry()</a>], zone_entries = [<a href="plot_utils.html#type-zone_entry">plot_utils:zone_entry()</a>], row_format_string = <a href="#type-maybe">maybe</a>(<a href="text_utils.html#type-format_bin_string">text_utils:format_bin_string()</a>)}</code></p>
+<p><p> The settings governing a given plot.</p>
+
+ The underlying conventions are the gnuplot ones.</p>
+
+<h3 class="typedecl"><a name="type-plot_style">plot_style()</a></h3>
+<p><code>plot_style() = linespoints | lines | points | boxes | histograms | filledcurves | fillsteps | atom()</code></p>
+<p> As many others exist.</p>
+
+<h3 class="typedecl"><a name="type-plot_value">plot_value()</a></h3>
+<p><code>plot_value() = <a href="#type-any_string">any_string()</a> | number()</code></p>
+<p><p> A value corresponding to a plot point.</p>
+
+ For example "active", or 1.12.</p>
+
+<h3 class="typedecl"><a name="type-point_size_factor">point_size_factor()</a></h3>
+<p><code>point_size_factor() = pos_integer()</code></p>
+<p> A factor by which the default point size is multiplied.</p>
+
+<h3 class="typedecl"><a name="type-point_style_spec">point_style_spec()</a></h3>
+<p><code>point_style_spec() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p><p> The internal specification of a point to be rendered.</p>
+
+ For example <code>&lt;&lt;"pointtype 1"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-rgb_hexastring">rgb_hexastring()</a></h3>
+<p><code>rgb_hexastring() = <a href="gui_color.html#type-rgb_hexastring">gui_color:rgb_hexastring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-row_data_string">row_data_string()</a></h3>
+<p><code>row_data_string() = <a href="#type-format_string">format_string()</a></code></p>
+<p> A data row, typically to be written in a data file.</p>
+
+<h3 class="typedecl"><a name="type-row_format_string">row_format_string()</a></h3>
+<p><code>row_format_string() = <a href="#type-format_string">format_string()</a></code></p>
+<p> Describes how a data row is to be formatted.</p>
+
+<h3 class="typedecl"><a name="type-special_curve_id">special_curve_id()</a></h3>
+<p><code>special_curve_id() = abscissa_top | abscissa_bottom</code></p>
+<p> Identifiers of pseudo-curves (Ordinate = constant), corresponding respectively
+ to the highest ordinate value and lowest one.</p>
+
+<h3 class="typedecl"><a name="type-tick_option">tick_option()</a></h3>
+<p><code>tick_option() = rotate</code></p>
+<p> Option applying to label ticks.</p>
+
+<h3 class="typedecl"><a name="type-ticks_option">ticks_option()</a></h3>
+<p><code>ticks_option() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> Option applying to ticks (e.g. axis, border, start, font, textcolor, etc.) for
+ a fine control of the major (labelled) tics on an axis (e.g. see Xtics, in
+ http://www.gnuplot.info/docs_4.2/node295.html)</p>
+
+<h3 class="typedecl"><a name="type-timestamp_bin_string">timestamp_bin_string()</a></h3>
+<p><code>timestamp_bin_string() = <a href="#type-bin_string">bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-timestamp_string">timestamp_string()</a></h3>
+<p><code>timestamp_string() = <a href="#type-ustring">ustring()</a></code></p>
+<p> String describing a timestamp (typically either a tick or a textual
+ timestamp).</p>
+
+<h3 class="typedecl"><a name="type-timestamp_time_format">timestamp_time_format()</a></h3>
+<p><code>timestamp_time_format() = single_line | double_line</code></p>
+
+
+<h3 class="typedecl"><a name="type-title">title()</a></h3>
+<p><code>title() = <a href="ui.html#type-title">ui:title()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-user_key_options">user_key_options()</a></h3>
+<p><code>user_key_options() = <a href="#type-any_string">any_string()</a></code></p>
+<p><p> A user-specified string containing key options.</p>
+
+ For example "box".</p>
+
+<h3 class="typedecl"><a name="type-user_plot_name">user_plot_name()</a></h3>
+<p><code>user_plot_name() = <a href="#type-any_string">any_string()</a></code></p>
+<p> The user-specified plot name, whence for example the corresponding file names
+ will be derived.</p>
+
+<h3 class="typedecl"><a name="type-user_plot_path">user_plot_path()</a></h3>
+<p><code>user_plot_path() = <a href="#type-any_file_path">any_file_path()</a></code></p>
+<p><p> The path to a file corresponding to a rendering of a plot, as an image.</p>
+
+ Typically a PNG or a SVG file.</p>
+
+<h3 class="typedecl"><a name="type-user_point_style_spec">user_point_style_spec()</a></h3>
+<p><code>user_point_style_spec() = <a href="#type-any_string">any_string()</a> | boolean()</code></p>
+<p><p> A user specification of a point to be rendered.</p>
+
+ <p>For example <code>&lt;&lt;"pointtype 1"&gt;&gt;</code>.</p>
+
+ If true, a default point style is selected; if false no point will be
+ rendered.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-warning_message">warning_message()</a></h3>
+<p><code>warning_message() = <a href="#type-ustring">ustring()</a></code></p>
+<p> Any warning (still a success case, plot was generated) message issued when
+ trying to generate a plot.</p>
+
+<h3 class="typedecl"><a name="type-zone_entry">zone_entry()</a></h3>
+<p><code>zone_entry() = {<a href="#type-zone_name">zone_name()</a>, {<a href="#type-extended_curve_id">extended_curve_id()</a>, <a href="#type-extended_curve_id">extended_curve_id()</a>}, <a href="#type-zone_plot_suffix">zone_plot_suffix()</a>}</code></p>
+<p> Information specific to the rendering of a zone.</p>
+
+<h3 class="typedecl"><a name="type-zone_name">zone_name()</a></h3>
+<p><code>zone_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> Tne name of a zone.</p>
+
+<h3 class="typedecl"><a name="type-zone_plot_suffix">zone_plot_suffix()</a></h3>
+<p><code>zone_plot_suffix() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> A (binary string) suffix (e.g. <code>&lt;&lt;"fillcolor red"&gt;&gt;</code>) to be added to the plot
+ command of the corresponding zone.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_label-3">add_label/3</a></td><td>Adds a in-plot label, with the specified text at the specified location.</td></tr>
+<tr><td valign="top"><a href="#add_label-4">add_label/4</a></td><td>Adds a in-plot label, with the specified text at the specified location,
+ possibly with a point being marked there.</td></tr>
+<tr><td valign="top"><a href="#add_label-7">add_label/7</a></td><td>Adds a in-plot label, with the specified text at the specified location, 
+possibly with a point being marked there.</td></tr>
+<tr><td valign="top"><a href="#add_labels-2">add_labels/2</a></td><td>Adds the specified in-plot labels.</td></tr>
+<tr><td valign="top"><a href="#add_plot_index_back-2">add_plot_index_back/2</a></td><td>Adds back the index in the list of curve names, as read from the list of 
+curve entries, without changing the order of the curve names.</td></tr>
+<tr><td valign="top"><a href="#declare_curves-2">declare_curves/2</a></td><td>Declares the specified curves.</td></tr>
+<tr><td valign="top"><a href="#declare_zones-2">declare_zones/2</a></td><td>Declares the specified zones.</td></tr>
+<tr><td valign="top"><a href="#forge_format_string_for-1">forge_format_string_for/1</a></td><td>Returns a format string suitable for the writing of the corresponding
+ samples.</td></tr>
+<tr><td valign="top"><a href="#generate_command_file-1">generate_command_file/1</a></td><td>Generates unconditionally an appropriate gnuplot command file 
+corresponding to the specified plot settings, and returns its (absolute) path.</td></tr>
+<tr><td valign="top"><a href="#generate_data_file-2">generate_data_file/2</a></td><td>Generates unconditionally an appropriate data file (typically for 
+gnuplot) corresponding to the specified (non-empty) data and plot settings, 
+and returns its filename.</td></tr>
+<tr><td valign="top"><a href="#get_basic_options-1">get_basic_options/1</a></td><td>Returns some basic rendering options, depending on the current gnuplot 
+version.</td></tr>
+<tr><td valign="top"><a href="#get_default_curve_plot_suffix-0">get_default_curve_plot_suffix/0</a></td><td>Returns the default per-curve plot suffix, as a binary.</td></tr>
+<tr><td valign="top"><a href="#get_default_plot_settings-0">get_default_plot_settings/0</a></td><td>Returns reasonable defaults in terms of plot settings, for a single,
+ anonymous curve.</td></tr>
+<tr><td valign="top"><a href="#get_default_plot_settings-1">get_default_plot_settings/1</a></td><td>Returns reasonable defaults in terms of plot settings, for the specified
+ single curve.</td></tr>
+<tr><td valign="top"><a href="#get_default_zone_plot_suffix-0">get_default_zone_plot_suffix/0</a></td><td>Returns the default per-zone plot suffix, as a binary.</td></tr>
+<tr><td valign="top"><a href="#get_formatted_orientation-1">get_formatted_orientation/1</a></td><td>Returns a gnuplot-compatible rotation specification.</td></tr>
+<tr><td valign="top"><a href="#get_gnuplot_reference_version-0">get_gnuplot_reference_version/0</a></td><td>Returns Myriad's gnuplot reference version.</td></tr>
+<tr><td valign="top"><a href="#get_label_definitions-1">get_label_definitions/1</a></td><td>Returns the gnuplot command appropriate to render all registered labels.</td></tr>
+<tr><td valign="top"><a href="#get_label_definitions-2">get_label_definitions/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_plot_command-5">get_plot_command/5</a></td><td>Returns the gnuplot command appropriate to render that plot.</td></tr>
+<tr><td valign="top"><a href="#get_plot_settings-1">get_plot_settings/1</a></td><td>Returns the specification of a plot of the specified name.</td></tr>
+<tr><td valign="top"><a href="#get_timestamp_settings-1">get_timestamp_settings/1</a></td><td>Returns the appropriate settings, depending on whether the abscissa axis
+ gathers timestamps or not.</td></tr>
+<tr><td valign="top"><a href="#get_timestamp_settings-2">get_timestamp_settings/2</a></td><td>Returns the appropriate settings, depending on whether the abscissa axis 
+gathers timestamps or not.</td></tr>
+<tr><td valign="top"><a href="#get_x_range_option-1">get_x_range_option/1</a></td><td>Returns the abscissa range options, as read from the specified plot
+ settings.</td></tr>
+<tr><td valign="top"><a href="#get_x_ticks_option-1">get_x_ticks_option/1</a></td><td>Returns the option to control the labels of the major ticks on the x
+ axis, as read from the specified settings.</td></tr>
+<tr><td valign="top"><a href="#get_xticks_option-1">get_xticks_option/1</a></td><td>Returns the settings for fine control of the major (labeled) ticks on the
+ abscissa axis, as read from the specified settings.</td></tr>
+<tr><td valign="top"><a href="#get_y_range_option-1">get_y_range_option/1</a></td><td>Returns the ordinate range options, as read from the specified plot
+ settings.</td></tr>
+<tr><td valign="top"><a href="#get_y_ticks_option-1">get_y_ticks_option/1</a></td><td>Returns the option to control the labels of the major ticks on the y
+ axis, as read from the specified settings.</td></tr>
+<tr><td valign="top"><a href="#get_yticks_option-1">get_yticks_option/1</a></td><td>Returns the settings for fine control of the major (labeled) ticks on the
+ ordinate axis, as read from the specified settings.</td></tr>
+<tr><td valign="top"><a href="#plot-3">plot/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#plot-4">plot/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#plot_samples-2">plot_samples/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#plot_samples-3">plot_samples/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_labels-1">remove_labels/1</a></td><td>Removes all in-plot labels.</td></tr>
+<tr><td valign="top"><a href="#set_key_options-2">set_key_options/2</a></td><td>Returns the specification of a plot corresponding to the specified one 
+once the specified key options (if any) have been set.</td></tr>
+<tr><td valign="top"><a href="#set_plot_name-2">set_plot_name/2</a></td><td>Sets the name of the target plot.</td></tr>
+<tr><td valign="top"><a href="#set_title-2">set_title/2</a></td><td>Returns the specification of a plot corresponding to the specified one
+ once the specified title (if any) has been set.</td></tr>
+<tr><td valign="top"><a href="#set_x_label-2">set_x_label/2</a></td><td>Returns the specification of a plot corresponding to the specified one
+ once the specified label (if any) for abscissas has been set.</td></tr>
+<tr><td valign="top"><a href="#set_y_label-2">set_y_label/2</a></td><td>Returns the specification of a plot corresponding to the specified one
+ once the specified label (if any) for ordinate has been set.</td></tr>
+<tr><td valign="top"><a href="#transform_curve_names-1">transform_curve_names/1</a></td><td>Transforms a list of names into a list of {Number, Name, CurvePlotSuffix} 
+curve entries, where Number is the index of the name in the list (starting at 
+1), Name is a binary name, and CurvePlotSuffix is the curve-specific default 
+plot suffix.</td></tr>
+<tr><td valign="top"><a href="#transform_declared_zones-2">transform_declared_zones/2</a></td><td>Transforms a list of zone declarations into actual zone entries, while 
+checking them against the curve names.</td></tr>
+<tr><td valign="top"><a href="#write_row-3">write_row/3</a></td><td>Used (only) by third-party modules.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_label-3">add_label/3</a></h3>
+<div class="spec">
+<p><code>add_label(Text::<a href="#type-label_text">label_text()</a>, Location::<a href="#type-label_location">label_location()</a>, PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Adds a in-plot label, with the specified text at the specified location.</p>
+
+<h3 class="function"><a name="add_label-4">add_label/4</a></h3>
+<div class="spec">
+<p><code>add_label(Text::<a href="#type-label_text">label_text()</a>, Location::<a href="#type-label_location">label_location()</a>, UsrPtStyleSpec::<a href="#type-user_point_style_spec">user_point_style_spec()</a>, PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Adds a in-plot label, with the specified text at the specified location,
+ possibly with a point being marked there.
+</p>
+
+<h3 class="function"><a name="add_label-7">add_label/7</a></h3>
+<div class="spec">
+<p><code>add_label(Text, Location, Color, Justification, Orientation, UsrPtStyleSpec, PlotSettings) -&gt; any()</code></p>
+<p> </p>
+</div><p><p>Adds a in-plot label, with the specified text at the specified location, 
+possibly with a point being marked there.</p>
+
+ (most complete label definition)
+</p>
+
+<h3 class="function"><a name="add_labels-2">add_labels/2</a></h3>
+<div class="spec">
+<p><code>add_labels(LabelSpecs::[<a href="#type-label_spec">label_spec()</a>], PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Adds the specified in-plot labels.</p>
+
+<h3 class="function"><a name="add_plot_index_back-2">add_plot_index_back/2</a></h3>
+<div class="spec">
+<p><code>add_plot_index_back(CurveNames::[<a href="#type-declared_curve_name">declared_curve_name()</a>], CurveEntries::[<a href="#type-curve_entry">curve_entry()</a>]) -&gt; [<a href="#type-curve_entry">curve_entry()</a>]</code><br></p>
+<p> </p>
+</div><p><p>Adds back the index in the list of curve names, as read from the list of 
+curve entries, without changing the order of the curve names.</p>
+
+ <p>Transforms any plain string in a binary one as well.</p>
+
+ <p>For example <code>add_plot_index_back(["b", "c", "a"], CurveEntries)</code> with
+ <code>CurveEntries=[ {3,&lt;&lt;"a"&gt;&gt;}, {2,&lt;&lt;"b"&gt;&gt;}, {1,&lt;&lt;"c"&gt;&gt;}]</code> should return:
+ <code>[{2,&lt;&lt;"b"&gt;&gt;}, {1,&lt;&lt;"c"&gt;&gt;}, {3,&lt;&lt;"a"&gt;&gt;}]</code>, i.e. the items of curve names, in 
+their original order there, with their index added back.</p>
+
+ (helper function)
+</p>
+
+<h3 class="function"><a name="declare_curves-2">declare_curves/2</a></h3>
+<div class="spec">
+<p><code>declare_curves(CurveNames::[<a href="#type-declared_curve_name">declared_curve_name()</a>], PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p><p>Declares the specified curves.</p>
+
+ Supersedes any previous curve entries.
+</p>
+
+<h3 class="function"><a name="declare_zones-2">declare_zones/2</a></h3>
+<div class="spec">
+<p><code>declare_zones(DeclaredZones::[<a href="#type-declared_zone">declared_zone()</a>], PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p><p>Declares the specified zones.</p>
+
+ Supersedes any previous zone entries.
+</p>
+
+<h3 class="function"><a name="forge_format_string_for-1">forge_format_string_for/1</a></h3>
+<div class="spec">
+<p><code>forge_format_string_for(CurveCount::<a href="#type-curve_count">curve_count()</a>) -&gt; <a href="#type-format_string">format_string()</a></code><br></p>
+<p> </p>
+</div><p>Returns a format string suitable for the writing of the corresponding
+ samples.
+</p>
+
+<h3 class="function"><a name="generate_command_file-1">generate_command_file/1</a></h3>
+<div class="spec">
+<p><code>generate_command_file(PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-bin_command_file_name">bin_command_file_name()</a></code><br></p>
+<p> </p>
+</div><p><p>Generates unconditionally an appropriate gnuplot command file 
+corresponding to the specified plot settings, and returns its (absolute) path.</p>
+
+ Returning a filename is more convenient than returning an absolute path, so
+ that interlinked files can be specified as local files and thus directly moved
+ as a whole.
+</p>
+
+<h3 class="function"><a name="generate_data_file-2">generate_data_file/2</a></h3>
+<div class="spec">
+<p><code>generate_data_file(PlotData::<a href="#type-plot_data">plot_data()</a>, Plot_settings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-bin_data_file_name">bin_data_file_name()</a></code><br></p>
+<p> </p>
+</div><p><p>Generates unconditionally an appropriate data file (typically for 
+gnuplot) corresponding to the specified (non-empty) data and plot settings, 
+and returns its filename.</p>
+
+ Returning a filename is more convenient than returning an absolute path, so
+ that interlinked files can be specified as local files and thus directly moved
+ as a whole.
+</p>
+
+<h3 class="function"><a name="get_basic_options-1">get_basic_options/1</a></h3>
+<div class="spec">
+<p><code>get_basic_options(MaybeGnuplotVersion::<a href="#type-maybe">maybe</a>(<a href="#type-gnuplot_version">gnuplot_version()</a>)) -&gt; {<a href="#type-bin_string">bin_string()</a>, <a href="#type-bin_string">bin_string()</a>}</code><br></p>
+<p> </p>
+</div><p><p>Returns some basic rendering options, depending on the current gnuplot 
+version.</p>
+
+ (helper, for code sharing)
+</p>
+
+<h3 class="function"><a name="get_default_curve_plot_suffix-0">get_default_curve_plot_suffix/0</a></h3>
+<div class="spec">
+<p><code>get_default_curve_plot_suffix() -&gt; <a href="#type-curve_plot_suffix">curve_plot_suffix()</a></code><br></p>
+<p> </p>
+</div><p>Returns the default per-curve plot suffix, as a binary.</p>
+
+<h3 class="function"><a name="get_default_plot_settings-0">get_default_plot_settings/0</a></h3>
+<div class="spec">
+<p><code>get_default_plot_settings() -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Returns reasonable defaults in terms of plot settings, for a single,
+ anonymous curve.
+</p>
+
+<h3 class="function"><a name="get_default_plot_settings-1">get_default_plot_settings/1</a></h3>
+<div class="spec">
+<p><code>get_default_plot_settings(PlotName::<a href="#type-user_plot_name">user_plot_name()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Returns reasonable defaults in terms of plot settings, for the specified
+ single curve.
+</p>
+
+<h3 class="function"><a name="get_default_zone_plot_suffix-0">get_default_zone_plot_suffix/0</a></h3>
+<div class="spec">
+<p><code>get_default_zone_plot_suffix() -&gt; <a href="#type-curve_plot_suffix">curve_plot_suffix()</a></code><br></p>
+<p> </p>
+</div><p>Returns the default per-zone plot suffix, as a binary.</p>
+
+<h3 class="function"><a name="get_formatted_orientation-1">get_formatted_orientation/1</a></h3>
+<div class="spec">
+<p><code>get_formatted_orientation(Angle::<a href="#type-label_orientation">label_orientation()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns a gnuplot-compatible rotation specification.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="get_gnuplot_reference_version-0">get_gnuplot_reference_version/0</a></h3>
+<div class="spec">
+<p><code>get_gnuplot_reference_version() -&gt; <a href="#type-gnuplot_version">gnuplot_version()</a></code><br></p>
+<p> </p>
+</div><p>Returns Myriad's gnuplot reference version.</p>
+
+<h3 class="function"><a name="get_label_definitions-1">get_label_definitions/1</a></h3>
+<div class="spec">
+<p><code>get_label_definitions(Labels::[<a href="#type-plot_label">plot_label()</a>]) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p>Returns the gnuplot command appropriate to render all registered labels.</p>
+
+<h3 class="function"><a name="get_label_definitions-2">get_label_definitions/2</a></h3>
+<div class="spec">
+<p><code>get_label_definitions(Labels, Acc) -&gt; any()</code></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_plot_command-5">get_plot_command/5</a></h3>
+<div class="spec">
+<p><code>get_plot_command(Settings::<a href="#type-plot_settings">plot_settings()</a>, CurveEntries::[<a href="#type-curve_entry">curve_entry()</a>], CurveOffset::<a href="#type-curve_offset">curve_offset()</a>, ZoneEntries::[<a href="#type-zone_entry">zone_entry()</a>], DataFilename::<a href="#type-bin_file_name">bin_file_name()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the gnuplot command appropriate to render that plot.</p>
+
+ Defines one plot curve per declared curve, with current plot settings, and
+ defines as well any specified zone.
+</p>
+
+<h3 class="function"><a name="get_plot_settings-1">get_plot_settings/1</a></h3>
+<div class="spec">
+<p><code>get_plot_settings(UsrPlotName::<a href="#type-user_plot_name">user_plot_name()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Returns the specification of a plot of the specified name.</p>
+
+<h3 class="function"><a name="get_timestamp_settings-1">get_timestamp_settings/1</a></h3>
+<div class="spec">
+<p><code>get_timestamp_settings(PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; {<a href="#type-command_element">command_element()</a>, <a href="#type-curve_offset">curve_offset()</a>}</code><br></p>
+<p> </p>
+</div><p>Returns the appropriate settings, depending on whether the abscissa axis
+ gathers timestamps or not.
+</p>
+
+<h3 class="function"><a name="get_timestamp_settings-2">get_timestamp_settings/2</a></h3>
+<div class="spec">
+<p><code>get_timestamp_settings(Plot_settings::<a href="#type-plot_settings">plot_settings()</a>, IsTimestamped::boolean()) -&gt; {<a href="#type-command_element">command_element()</a>, <a href="#type-curve_offset">curve_offset()</a>}</code><br></p>
+<p> </p>
+</div><p><p>Returns the appropriate settings, depending on whether the abscissa axis 
+gathers timestamps or not.</p>
+
+ Note: now, thanks to quoting, curve offset is always zero as a timestamp
+ occupies only one column (exactly).
+</p>
+
+<h3 class="function"><a name="get_x_range_option-1">get_x_range_option/1</a></h3>
+<div class="spec">
+<p><code>get_x_range_option(Plot_settings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p>Returns the abscissa range options, as read from the specified plot
+ settings.
+</p>
+
+<h3 class="function"><a name="get_x_ticks_option-1">get_x_ticks_option/1</a></h3>
+<div class="spec">
+<p><code>get_x_ticks_option(Plot_settings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p>Returns the option to control the labels of the major ticks on the x
+ axis, as read from the specified settings.
+</p>
+
+<h3 class="function"><a name="get_xticks_option-1">get_xticks_option/1</a></h3>
+<div class="spec">
+<p><code>get_xticks_option(Plot_settings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p>Returns the settings for fine control of the major (labeled) ticks on the
+ abscissa axis, as read from the specified settings.
+</p>
+
+<h3 class="function"><a name="get_y_range_option-1">get_y_range_option/1</a></h3>
+<div class="spec">
+<p><code>get_y_range_option(Plot_settings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p>Returns the ordinate range options, as read from the specified plot
+ settings.
+</p>
+
+<h3 class="function"><a name="get_y_ticks_option-1">get_y_ticks_option/1</a></h3>
+<div class="spec">
+<p><code>get_y_ticks_option(Plot_settings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p>Returns the option to control the labels of the major ticks on the y
+ axis, as read from the specified settings.
+</p>
+
+<h3 class="function"><a name="get_yticks_option-1">get_yticks_option/1</a></h3>
+<div class="spec">
+<p><code>get_yticks_option(Plot_settings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-command_element">command_element()</a></code><br></p>
+<p> </p>
+</div><p>Returns the settings for fine control of the major (labeled) ticks on the
+ ordinate axis, as read from the specified settings.
+</p>
+
+<h3 class="function"><a name="plot-3">plot/3</a></h3>
+<div class="spec">
+<p><code>plot(FunToPlot::<a href="#type-plot_function">plot_function()</a>, Bounds::<a href="#type-bounds">bounds()</a>, MaybePlotSettings::<a href="#type-maybe">maybe</a>(<a href="#type-plot_settings">plot_settings()</a>)) -&gt; <a href="#type-plot_generation_outcome">plot_generation_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="plot-4">plot/4</a></h3>
+<div class="spec">
+<p><code>plot(FunToPlot::<a href="#type-plot_function">plot_function()</a>, Bounds::<a href="#type-bounds">bounds()</a>, MaybePlotSettings::<a href="#type-maybe">maybe</a>(<a href="#type-plot_settings">plot_settings()</a>), DoDisplay::boolean()) -&gt; <a href="#type-plot_generation_outcome">plot_generation_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="plot_samples-2">plot_samples/2</a></h3>
+<div class="spec">
+<p><code>plot_samples(PlotData::<a href="#type-plot_data">plot_data()</a>, PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_generation_outcome">plot_generation_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="plot_samples-3">plot_samples/3</a></h3>
+<div class="spec">
+<p><code>plot_samples(PlotData::<a href="#type-plot_data">plot_data()</a>, PlotSettings::<a href="#type-plot_settings">plot_settings()</a>, DoDisplay::boolean()) -&gt; <a href="#type-plot_generation_outcome">plot_generation_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="remove_labels-1">remove_labels/1</a></h3>
+<div class="spec">
+<p><code>remove_labels(PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Removes all in-plot labels.</p>
+
+<h3 class="function"><a name="set_key_options-2">set_key_options/2</a></h3>
+<div class="spec">
+<p><code>set_key_options(MaybeKeyOpts::<a href="#type-maybe">maybe</a>(<a href="#type-user_key_options">user_key_options()</a>), PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the specification of a plot corresponding to the specified one 
+once the specified key options (if any) have been set.</p>
+
+ Example of</p>
+
+<h3 class="function"><a name="set_plot_name-2">set_plot_name/2</a></h3>
+<div class="spec">
+<p><code>set_plot_name(UsrPlotName::<a href="#type-user_plot_name">user_plot_name()</a>, PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Sets the name of the target plot.</p>
+
+<h3 class="function"><a name="set_title-2">set_title/2</a></h3>
+<div class="spec">
+<p><code>set_title(MaybeTitle::<a href="#type-maybe">maybe</a>(<a href="#type-title">title()</a>), PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Returns the specification of a plot corresponding to the specified one
+ once the specified title (if any) has been set.
+</p>
+
+<h3 class="function"><a name="set_x_label-2">set_x_label/2</a></h3>
+<div class="spec">
+<p><code>set_x_label(MaybeLabel::<a href="#type-maybe">maybe</a>(<a href="#type-label">label()</a>), PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Returns the specification of a plot corresponding to the specified one
+ once the specified label (if any) for abscissas has been set.
+</p>
+
+<h3 class="function"><a name="set_y_label-2">set_y_label/2</a></h3>
+<div class="spec">
+<p><code>set_y_label(MaybeLabel::<a href="#type-maybe">maybe</a>(<a href="#type-label">label()</a>), PlotSettings::<a href="#type-plot_settings">plot_settings()</a>) -&gt; <a href="#type-plot_settings">plot_settings()</a></code><br></p>
+<p> </p>
+</div><p>Returns the specification of a plot corresponding to the specified one
+ once the specified label (if any) for ordinate has been set.
+</p>
+
+<h3 class="function"><a name="transform_curve_names-1">transform_curve_names/1</a></h3>
+<div class="spec">
+<p><code>transform_curve_names(CurveNames::[<a href="#type-declared_curve_name">declared_curve_name()</a>]) -&gt; [<a href="#type-curve_entry">curve_entry()</a>]</code><br></p>
+<p> </p>
+</div><p><p>Transforms a list of names into a list of {Number, Name, CurvePlotSuffix} 
+curve entries, where Number is the index of the name in the list (starting at 
+1), Name is a binary name, and CurvePlotSuffix is the curve-specific default 
+plot suffix.</p>
+
+ <p>Respects the order of specified names.</p>
+
+ For example <code>transform_curve_names(["a", "b", "c"])</code> should result in:
+  <code>[{1,&lt;&lt;"a"&gt;&gt;,DefaultBinPlotSuffix}, {2,&lt;&lt;"b"&gt;&gt;,DefaultBinPlotSuffix},
+   {3,&lt;&lt;"c"&gt;&gt;,DefaultBinPlotSuffix}]</code>.
+</p>
+
+<h3 class="function"><a name="transform_declared_zones-2">transform_declared_zones/2</a></h3>
+<div class="spec">
+<p><code>transform_declared_zones(DeclaredZones::[<a href="#type-declared_zone">declared_zone()</a>], CurveEntries::[<a href="#type-curve_entry">curve_entry()</a>]) -&gt; [<a href="#type-zone_entry">zone_entry()</a>]</code><br></p>
+<p> </p>
+</div><p><p>Transforms a list of zone declarations into actual zone entries, while 
+checking them against the curve names.</p>
+
+ (defined for re-use)
+</p>
+
+<h3 class="function"><a name="write_row-3">write_row/3</a></h3>
+<div class="spec">
+<p><code>write_row(File::<a href="#type-file">file()</a>, PlotParamBinStr::<a href="#type-plot_parameter_bin_string">plot_parameter_bin_string()</a>, PlotSample::<a href="#type-plot_sample">plot_sample()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Used (only) by third-party modules.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

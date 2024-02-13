@@ -73,7 +73,7 @@ between second ones..</p>
  with care, as if a given module is generated three times (hence updated/loaded
  twice), the initial module would become 'current', then 'old', and then be
  removed. Any process that would linger in it would then be terminated (see
- <a href="http://www.erlang.org/doc/reference_manual/code_loading.html" target="_top"><tt>http://www.erlang.org/doc/reference_manual/code_loading.html</tt></a>). However, due 
+ <a href="http://www.erlang.org/doc/reference_manual/code_loading.html" target="_top"><code>http://www.erlang.org/doc/reference_manual/code_loading.html</code></a>). However, due 
 to the nature of these modules (just one-shot fully-qualified calls, no 
 recursion or message-waiting construct), this is not expected to happen.</p>
 
@@ -89,40 +89,40 @@ recursion or message-waiting construct), this is not expected to happen.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-element_lookup">element_lookup()</a></h3>
-<p><tt>element_lookup() = <a href="const_bijective_topics.html#type-element_lookup">const_bijective_topics:element_lookup()</a></tt></p>
+<p><code>element_lookup() = <a href="const_bijective_topics.html#type-element_lookup">const_bijective_topics:element_lookup()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><tt>entries() = [<a href="#type-entry">entry()</a>]</tt></p>
+<p><code>entries() = [<a href="#type-entry">entry()</a>]</code></p>
 <p> Entries that can be fed to a const-bijective table.</p>
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><tt>entry() = {<a href="#type-first_type">first_type()</a>, <a href="#type-second_type">second_type()</a>}</tt></p>
+<p><code>entry() = {<a href="#type-first_type">first_type()</a>, <a href="#type-second_type">second_type()</a>}</code></p>
 <p> An entry to be fed to a const-bijective table.</p>
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-first_type">first_type()</a></h3>
-<p><tt>first_type() = <a href="#type-permanent_term">permanent_term()</a></tt></p>
+<p><code>first_type() = <a href="#type-permanent_term">permanent_term()</a></code></p>
 <p> Designates the first elements of the table pairs.
  A module-based storage cannot hold transient terms.</p>
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-permanent_term">permanent_term()</a></h3>
-<p><tt>permanent_term() = <a href="type_utils.html#type-permanent_term">type_utils:permanent_term()</a></tt></p>
+<p><code>permanent_term() = <a href="type_utils.html#type-permanent_term">type_utils:permanent_term()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-second_type">second_type()</a></h3>
-<p><tt>second_type() = <a href="#type-permanent_term">permanent_term()</a></tt></p>
+<p><code>second_type() = <a href="#type-permanent_term">permanent_term()</a></code></p>
 <p> Designates the second elements of the table pairs.
  A module-based storage cannot hold transient terms.</p>
 
@@ -151,7 +151,7 @@ either element of the recorded pairs.</td></tr>
 
 <h3 class="function"><a name="generate_in_file-2">generate_in_file/2</a></h3>
 <div class="spec">
-<p><tt>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in-file (a BEAM file created in the current directory) a module 
 sharing bijectively the specified entries by exporting suitably-generated 
@@ -168,7 +168,7 @@ either element of the recorded pairs.</p>
 
 <h3 class="function"><a name="generate_in_file-3">generate_in_file/3</a></h3>
 <div class="spec">
-<p><tt>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in-file (a BEAM file created in the current directory) a module 
 sharing bijectively the specified entries by exporting suitably-generated 
@@ -192,7 +192,7 @@ sets contains the 'undefined' atom, as it leads to ambiguity.</p>
 
 <h3 class="function"><a name="generate_in_file-4">generate_in_file/4</a></h3>
 <div class="spec">
-<p><tt>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in-file (a BEAM file created in the specified directory) a 
 module sharing bijectively the specified entries by exporting 
@@ -217,7 +217,7 @@ sets contains the 'undefined' atom, as it leads to ambiguity.</p>
 
 <h3 class="function"><a name="generate_in_memory-2">generate_in_memory/2</a></h3>
 <div class="spec">
-<p><tt>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in memory (only) and loads a module sharing bijectively the 
 specified entries by exporting suitably-generated get_{first,second}_for/1 
@@ -230,7 +230,7 @@ pairs.</p>
 
 <h3 class="function"><a name="generate_in_memory-3">generate_in_memory/3</a></h3>
 <div class="spec">
-<p><tt>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in memory (only) and loads a module sharing bijectively the 
 specified entries by exporting suitably-generated functions in order to access 

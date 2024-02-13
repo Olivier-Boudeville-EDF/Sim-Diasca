@@ -20,15 +20,15 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-feeder">feeder()</a></h3>
-<p><tt>feeder() = fun((<a href="#type-vertex">vertex()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; [<a href="#type-vertex">vertex()</a>])</tt></p>
+<p><code>feeder() = fun((<a href="#type-vertex">vertex()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; [<a href="#type-vertex">vertex()</a>])</code></p>
 <p> Lists the children nodes of the specified one.</p>
 
 <h3 class="typedecl"><a name="type-predicate">predicate()</a></h3>
-<p><tt>predicate() = fun((<a href="#type-vertex">vertex()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; boolean())</tt></p>
+<p><code>predicate() = fun((<a href="#type-vertex">vertex()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; boolean())</code></p>
 <p> Tells whether the specified node can be considered as a solution.</p>
 
 <h3 class="typedecl"><a name="type-vertex">vertex()</a></h3>
-<p><tt>vertex() = any()</tt></p>
+<p><code>vertex() = any()</code></p>
 <p> The node of a graph of interest (can be any type).</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -44,7 +44,7 @@ function to obtain outbound edges of a vertex of interest.</td></tr>
 
 <h3 class="function"><a name="find_breadth_first-3">find_breadth_first/3</a></h3>
 <div class="spec">
-<p><tt>find_breadth_first(InitialVertex::<a href="#type-vertex">vertex()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Feeder::<a href="#type-feeder">feeder()</a>) -&gt; no_path_found | [<a href="#type-vertex">vertex()</a>]</tt><br></p>
+<p><code>find_breadth_first(InitialVertex::<a href="#type-vertex">vertex()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Feeder::<a href="#type-feeder">feeder()</a>) -&gt; no_path_found | [<a href="#type-vertex">vertex()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Tries to find, breadth-first, the first vertex to satisfy specified 
 predicate, from specified initial vertex, relying on the specified feeder 
@@ -56,7 +56,7 @@ function to obtain outbound edges of a vertex of interest.</p>
 
 <h3 class="function"><a name="find_breadth_first-4">find_breadth_first/4</a></h3>
 <div class="spec">
-<p><tt>find_breadth_first(InitialVertex::<a href="#type-vertex">vertex()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Feeder::<a href="#type-feeder">feeder()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; no_path_found | [<a href="#type-vertex">vertex()</a>]</tt><br></p>
+<p><code>find_breadth_first(InitialVertex::<a href="#type-vertex">vertex()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Feeder::<a href="#type-feeder">feeder()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; no_path_found | [<a href="#type-vertex">vertex()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Tries to find, breadth-first, the first vertex to satisfy specified 
 predicate, from specified initial vertex, relying on the specified feeder 

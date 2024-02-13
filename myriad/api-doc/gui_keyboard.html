@@ -20,23 +20,23 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-backend_keyboard_event">backend_keyboard_event()</a></h3>
-<p><tt>backend_keyboard_event() = <a href="#type-wxKey">wxKey()</a></tt></p>
+<p><code>backend_keyboard_event() = <a href="#type-wxKey">wxKey()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-code_pair">code_pair()</a></h3>
-<p><tt>code_pair() = {<a href="#type-scancode">scancode()</a>, <a href="#type-keycode">keycode()</a>}</tt></p>
+<p><code>code_pair() = {<a href="#type-scancode">scancode()</a>, <a href="#type-keycode">keycode()</a>}</code></p>
 <p> A pair of codes corresponding to an event regarding a given key.</p>
 
 <h3 class="typedecl"><a name="type-event_context">event_context()</a></h3>
-<p><tt>event_context() = <a href="gui.html#type-event_context">gui:event_context()</a></tt></p>
+<p><code>event_context() = <a href="gui.html#type-event_context">gui:event_context()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-key_status">key_status()</a></h3>
-<p><tt>key_status() = pressed | released</tt></p>
+<p><code>key_status() = pressed | released</code></p>
 <p> Corresponds to the (potentially durable) status of a key.</p>
 
 <h3 class="typedecl"><a name="type-key_transition">key_transition()</a></h3>
-<p><tt>key_transition() = key_down | key_up</tt></p>
+<p><code>key_transition() = key_down | key_up</code></p>
 <p><p> Corresponds to a (punctual) state transition of a key.</p>
 
  Note that key down/up transitions are not paired (e.g. if a key is maintained
@@ -44,11 +44,11 @@
  up will be reported at the end, when the key is released).</p>
 
 <h3 class="typedecl"><a name="type-keyboard_event_type">keyboard_event_type()</a></h3>
-<p><tt>keyboard_event_type() = onCharEntered | onCharEnteredHook | onKeyPressed | onKeyReleased</tt></p>
+<p><code>keyboard_event_type() = onCharEntered | onCharEnteredHook | onKeyPressed | onKeyReleased</code></p>
 
 
 <h3 class="typedecl"><a name="type-keycode">keycode()</a></h3>
-<p><tt>keycode() = <a href="#type-uint32">uint32()</a></tt></p>
+<p><code>keycode() = <a href="#type-uint32">uint32()</a></code></p>
 <p><p> Designates a layout-dependent (Unicode) character code, that is the key 
 corresponding to a given character, wherever that key may be on the user's 
 actual keyboard (which notably depends on its layout of choice).</p>
@@ -59,11 +59,11 @@ account whenever generating a keycode.</p>
  Refer to the corresponding MYR_K_* defines.</p>
 
 <h3 class="typedecl"><a name="type-modifier">modifier()</a></h3>
-<p><tt>modifier() = <a href="#type-keycode">keycode()</a></tt></p>
+<p><code>modifier() = <a href="#type-keycode">keycode()</a></code></p>
 <p> Designates a modifier, like Shift, Control, Alt or Meta.</p>
 
 <h3 class="typedecl"><a name="type-scancode">scancode()</a></h3>
-<p><tt>scancode() = <a href="#type-uint32">uint32()</a></tt></p>
+<p><code>scancode() = <a href="#type-uint32">uint32()</a></code></p>
 <p><p> Designates a button at a given location of the keyboard when it is considered 
 as a ~104-button joystick.</p>
 
@@ -79,23 +79,23 @@ to non-printable special keys (e.g. the Home key, the Insert one).</p>
  Refer to the corresponding MYR_SCANCODE_* defines.</p>
 
 <h3 class="typedecl"><a name="type-uchar">uchar()</a></h3>
-<p><tt>uchar() = <a href="text_utils.html#type-uchar">text_utils:uchar()</a></tt></p>
+<p><code>uchar() = <a href="text_utils.html#type-uchar">text_utils:uchar()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-uint32">uint32()</a></h3>
-<p><tt>uint32() = <a href="type_utils.html#type-uint32">type_utils:uint32()</a></tt></p>
+<p><code>uint32() = <a href="type_utils.html#type-uint32">type_utils:uint32()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wxKey">wxKey()</a></h3>
-<p><tt>wxKey() = #wxKey{type = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxKeyEvent.html#type-wxKeyEventType">wxKeyEvent:wxKeyEventType()</a>, x = integer(), y = integer(), keyCode = integer(), controlDown = boolean(), shiftDown = boolean(), altDown = boolean(), metaDown = boolean(), uniChar = integer(), rawCode = integer(), rawFlags = integer()}</tt></p>
+<p><code>wxKey() = #wxKey{type = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxKeyEvent.html#type-wxKeyEventType">wxKeyEvent:wxKeyEventType()</a>, x = integer(), y = integer(), keyCode = integer(), controlDown = boolean(), shiftDown = boolean(), altDown = boolean(), metaDown = boolean(), uniChar = integer(), rawCode = integer(), rawFlags = integer()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_keycode">wx_keycode()</a></h3>
-<p><tt>wx_keycode() = integer()</tt></p>
+<p><code>wx_keycode() = integer()</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -141,7 +141,7 @@ keyboard event.</td></tr>
 
 <h3 class="function"><a name="event_context_to_code_pair-1">event_context_to_code_pair/1</a></h3>
 <div class="spec">
-<p><tt>event_context_to_code_pair(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-code_pair">code_pair()</a></tt><br></p>
+<p><code>event_context_to_code_pair(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-code_pair">code_pair()</a></code><br></p>
 <p> </p>
 </div><p>Returns the scancode/keycode pair corresponding to the key referenced in
  the specified event context corresponding to the receiving of a
@@ -151,7 +151,7 @@ keyboard event.</td></tr>
 
 <h3 class="function"><a name="event_context_to_keycode-1">event_context_to_keycode/1</a></h3>
 <div class="spec">
-<p><tt>event_context_to_keycode(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-keycode">keycode()</a></tt><br></p>
+<p><code>event_context_to_keycode(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-keycode">keycode()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the keycode corresponding to the character referenced in the 
 specified event context corresponding to the receiving of a keyboard-related 
@@ -163,7 +163,7 @@ backend keyboard event.</p>
 
 <h3 class="function"><a name="event_context_to_maybe_uchar-1">event_context_to_maybe_uchar/1</a></h3>
 <div class="spec">
-<p><tt>event_context_to_maybe_uchar(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-uchar">uchar()</a>)</tt><br></p>
+<p><code>event_context_to_maybe_uchar(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-uchar">uchar()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the Unicode char corresponding to the printable character (if 
 any) referenced in the specified event context corresponding to the receiving 
@@ -175,7 +175,7 @@ expected to include a backend keyboard event.</p>
 
 <h3 class="function"><a name="event_context_to_scancode-1">event_context_to_scancode/1</a></h3>
 <div class="spec">
-<p><tt>event_context_to_scancode(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-scancode">scancode()</a></tt><br></p>
+<p><code>event_context_to_scancode(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-scancode">scancode()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the scancode corresponding to the key (interpreted as a "button 
 code" rather than as any character) referenced in the specified event context 
@@ -188,13 +188,13 @@ keyboard event.</p>
 
 <h3 class="function"><a name="get_backend_event-1">get_backend_event/1</a></h3>
 <div class="spec">
-<p><tt>get_backend_event(Event_context::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-backend_keyboard_event">backend_keyboard_event()</a></tt><br></p>
+<p><code>get_backend_event(Event_context::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-backend_keyboard_event">backend_keyboard_event()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_code_pair-1">get_code_pair/1</a></h3>
 <div class="spec">
-<p><tt>get_code_pair(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-code_pair">code_pair()</a></tt><br></p>
+<p><code>get_code_pair(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-code_pair">code_pair()</a></code><br></p>
 <p> </p>
 </div><p>Returns the scancode and keycode corresponding to the key referenced in
  the specified backend keyboard event.
@@ -202,7 +202,7 @@ keyboard event.</p>
 
 <h3 class="function"><a name="get_keycode-1">get_keycode/1</a></h3>
 <div class="spec">
-<p><tt>get_keycode(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-keycode">keycode()</a></tt><br></p>
+<p><code>get_keycode(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-keycode">keycode()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the keycode corresponding to the character referenced in the 
 specified backend keyboard event.</p>
@@ -223,7 +223,7 @@ this does not work for Unicode characters in general.</p>
 
 <h3 class="function"><a name="get_maybe_uchar-1">get_maybe_uchar/1</a></h3>
 <div class="spec">
-<p><tt>get_maybe_uchar(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-uchar">uchar()</a>)</tt><br></p>
+<p><code>get_maybe_uchar(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-uchar">uchar()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the Unicode char corresponding to the printable character (if 
 any) referenced in the specified backend keyboard event.</p>
@@ -237,7 +237,7 @@ entered when using national keyboard layouts.</p>
 
 <h3 class="function"><a name="get_scancode-1">get_scancode/1</a></h3>
 <div class="spec">
-<p><tt>get_scancode(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-scancode">scancode()</a></tt><br></p>
+<p><code>get_scancode(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-scancode">scancode()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the scancode corresponding to the key (interpreted as a "button 
 code" rather than as any character) referenced in the specified backend 
@@ -251,13 +251,13 @@ layout and do not specifically correspond to a given character.</p>
 
 <h3 class="function"><a name="is_key_pressed-1">is_key_pressed/1</a></h3>
 <div class="spec">
-<p><tt>is_key_pressed(Keycode::<a href="#type-keycode">keycode()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_key_pressed(Keycode::<a href="#type-keycode">keycode()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified key, designated as a keycode, is pressed.</p>
 
 <h3 class="function"><a name="is_modkey_pressed-1">is_modkey_pressed/1</a></h3>
 <div class="spec">
-<p><tt>is_modkey_pressed(Scancode::<a href="#type-scancode">scancode()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_modkey_pressed(Scancode::<a href="#type-scancode">scancode()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified key, designated as a scancode comprising a
  modifier, is pressed.
@@ -265,7 +265,7 @@ layout and do not specifically correspond to a given character.</p>
 
 <h3 class="function"><a name="key_event_to_string-1">key_event_to_string/1</a></h3>
 <div class="spec">
-<p><tt>key_event_to_string(WxKey::<a href="#type-wxKey">wxKey()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>key_event_to_string(WxKey::<a href="#type-wxKey">wxKey()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified key event, of type
  gui_wx_event_info().
@@ -273,13 +273,13 @@ layout and do not specifically correspond to a given character.</p>
 
 <h3 class="function"><a name="myr_keycode_to_wx-1">myr_keycode_to_wx/1</a></h3>
 <div class="spec">
-<p><tt>myr_keycode_to_wx(MyrKeycode::<a href="#type-keycode">keycode()</a>) -&gt; <a href="#type-wx_keycode">wx_keycode()</a></tt><br></p>
+<p><code>myr_keycode_to_wx(MyrKeycode::<a href="#type-keycode">keycode()</a>) -&gt; <a href="#type-wx_keycode">wx_keycode()</a></code><br></p>
 <p> </p>
 </div><p>Returns the wx keycode corresponding to the specified MyriadGUI one.</p>
 
 <h3 class="function"><a name="to_lower-2">to_lower/2</a></h3>
 <div class="spec">
-<p><tt>to_lower(Mod::<a href="#type-modifier">modifier()</a>, Char::<a href="#type-keycode">keycode()</a>) -&gt; <a href="#type-keycode">keycode()</a></tt><br></p>
+<p><code>to_lower(Mod::<a href="#type-modifier">modifier()</a>, Char::<a href="#type-keycode">keycode()</a>) -&gt; <a href="#type-keycode">keycode()</a></code><br></p>
 <p> </p>
 </div><p>Returns the specified key, once the specified pressed modifier has been
  taken into account.
@@ -287,7 +287,7 @@ layout and do not specifically correspond to a given character.</p>
 
 <h3 class="function"><a name="wx_keycode_to_myr-1">wx_keycode_to_myr/1</a></h3>
 <div class="spec">
-<p><tt>wx_keycode_to_myr(WxKeycode::<a href="#type-wx_keycode">wx_keycode()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-keycode">keycode()</a>)</tt><br></p>
+<p><code>wx_keycode_to_myr(WxKeycode::<a href="#type-wx_keycode">wx_keycode()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-keycode">keycode()</a>)</code><br></p>
 <p> </p>
 </div><p>Returns the MyriadGUI keycode corresponding to the specified wx one.</p>
 <hr>

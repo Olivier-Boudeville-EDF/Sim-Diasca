@@ -22,144 +22,154 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-abs_directory_path">abs_directory_path()</a></h3>
-<p><tt>abs_directory_path() = <a href="#type-directory_path">directory_path()</a></tt></p>
+<p><code>abs_directory_path() = <a href="#type-directory_path">directory_path()</a></code></p>
 <p> Sometimes useful.</p>
 
 <h3 class="typedecl"><a name="type-any_app_info">any_app_info()</a></h3>
-<p><tt>any_app_info() = <a href="app_facilities.html#type-any_app_info">app_facilities:any_app_info()</a></tt></p>
+<p><code>any_app_info() = <a href="app_facilities.html#type-any_app_info">app_facilities:any_app_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_device_path">any_device_path()</a></h3>
-<p><tt>any_device_path() = <a href="#type-device_path">device_path()</a> | <a href="#type-bin_device_path">bin_device_path()</a></tt></p>
+<p><code>any_device_path() = <a href="#type-device_path">device_path()</a> | <a href="#type-bin_device_path">bin_device_path()</a></code></p>
 <p> Designates any type of path to a device (including its device name), e.g.
  "/dev/ttyUSB0".</p>
 
 <h3 class="typedecl"><a name="type-any_directory_name">any_directory_name()</a></h3>
-<p><tt>any_directory_name() = <a href="#type-directory_name">directory_name()</a> | <a href="#type-bin_directory_name">bin_directory_name()</a></tt></p>
+<p><code>any_directory_name() = <a href="#type-directory_name">directory_name()</a> | <a href="#type-bin_directory_name">bin_directory_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><tt>any_directory_path() = <a href="#type-directory_path">directory_path()</a> | <a href="#type-bin_directory_path">bin_directory_path()</a></tt></p>
+<p><code>any_directory_path() = <a href="#type-directory_path">directory_path()</a> | <a href="#type-bin_directory_path">bin_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_executable_path">any_executable_path()</a></h3>
-<p><tt>any_executable_path() = <a href="#type-executable_path">executable_path()</a> | <a href="#type-bin_executable_path">bin_executable_path()</a></tt></p>
+<p><code>any_executable_path() = <a href="#type-executable_path">executable_path()</a> | <a href="#type-bin_executable_path">bin_executable_path()</a></code></p>
 <p> Any type of path to an executable.</p>
 
 <h3 class="typedecl"><a name="type-any_file_name">any_file_name()</a></h3>
-<p><tt>any_file_name() = <a href="#type-file_name">file_name()</a> | <a href="#type-bin_file_name">bin_file_name()</a></tt></p>
+<p><code>any_file_name() = <a href="#type-file_name">file_name()</a> | <a href="#type-bin_file_name">bin_file_name()</a></code></p>
 <p> Could also be the more general file:name_all().</p>
 
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><tt>any_file_path() = <a href="#type-file_path">file_path()</a> | <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p><code>any_file_path() = <a href="#type-file_path">file_path()</a> | <a href="#type-bin_file_path">bin_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_link_path">any_link_path()</a></h3>
-<p><tt>any_link_path() = <a href="#type-link_path">link_path()</a> | <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p><code>any_link_path() = <a href="#type-link_path">link_path()</a> | <a href="#type-bin_file_path">bin_file_path()</a></code></p>
 <p> Any type of path for a (symbolic) link.</p>
 
 <h3 class="typedecl"><a name="type-any_path">any_path()</a></h3>
-<p><tt>any_path() = <a href="#type-path">path()</a> | <a href="#type-bin_path">bin_path()</a></tt></p>
+<p><code>any_path() = <a href="#type-path">path()</a> | <a href="#type-bin_path">bin_path()</a></code></p>
 <p> We do not believe that atoms shall be legit paths.</p>
 
 <h3 class="typedecl"><a name="type-any_path_element">any_path_element()</a></h3>
-<p><tt>any_path_element() = <a href="#type-path_element">path_element()</a> | <a href="#type-bin_path_element">bin_path_element()</a></tt></p>
+<p><code>any_path_element() = <a href="#type-path_element">path_element()</a> | <a href="#type-bin_path_element">bin_path_element()</a></code></p>
 <p><p> Any (legit) type of a part of a path (e.g. <code>&lt;&lt;"local"&gt;&gt;</code> in 
 "/usr/local/share"); preferably without whitespaces.</p>
 
  ".." / <code>&lt;&lt;".."&gt;&gt;</code> means the parent directory.</p>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_suffix">any_suffix()</a></h3>
-<p><tt>any_suffix() = <a href="#type-any_string">any_string()</a></tt></p>
+<p><code>any_suffix() = <a href="#type-any_string">any_string()</a></code></p>
 <p> The suffix (final part) in a path element (e.g. "share" in
  "/usr/local/share").</p>
 
 <h3 class="typedecl"><a name="type-bin_device_path">bin_device_path()</a></h3>
-<p><tt>bin_device_path() = <a href="#type-bin_path">bin_path()</a></tt></p>
+<p><code>bin_device_path() = <a href="#type-bin_path">bin_path()</a></code></p>
 <p> Designates a (binary) path to a device (including its device name), e.g.
  <code>"/dev/ttyUSB0"</code>.</p>
 
 <h3 class="typedecl"><a name="type-bin_directory_name">bin_directory_name()</a></h3>
-<p><tt>bin_directory_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_directory_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_directory_path">bin_directory_path()</a></h3>
-<p><tt>bin_directory_path() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_directory_path() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_executable_path">bin_executable_path()</a></h3>
-<p><tt>bin_executable_path() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p><code>bin_executable_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
 <p> Designates a path to an executable, as a binary.</p>
 
 <h3 class="typedecl"><a name="type-bin_file_name">bin_file_name()</a></h3>
-<p><tt>bin_file_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_file_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
-<p><tt>bin_file_path() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_file_path() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_link_path">bin_link_path()</a></h3>
-<p><tt>bin_link_path() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p><code>bin_link_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
 <p> The (binary) path of a (symbolic) link.</p>
 
 <h3 class="typedecl"><a name="type-bin_path">bin_path()</a></h3>
-<p><tt>bin_path() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_path() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_path_element">bin_path_element()</a></h3>
-<p><tt>bin_path_element() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_path_element() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> A (legit) part of a path (e.g. <code>&lt;&lt;"local"&gt;&gt;</code> in "/usr/local/share");
  preferably without whitespaces.</p>
 
 <h3 class="typedecl"><a name="type-bin_script_path">bin_script_path()</a></h3>
-<p><tt>bin_script_path() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p><code>bin_script_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
 <p> Designates a path to an (executable) script, as a binary.</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-compression_format">compression_format()</a></h3>
-<p><tt>compression_format() = zip | bzip2 | xz</tt></p>
+<p><code>compression_format() = zip | bzip2 | xz</code></p>
 <p> The supported compression formats.</p>
 
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-depth">depth()</a></h3>
+<p><code>depth() = <a href="#type-count">count()</a></code></p>
+<p><p> A depth in a filesystem, when seen as a tree.</p>
+
+ For example the depth of "a" in "foo/bar/a" is 3.</p>
+
 <h3 class="typedecl"><a name="type-device_path">device_path()</a></h3>
-<p><tt>device_path() = <a href="#type-path">path()</a></tt></p>
+<p><code>device_path() = <a href="#type-path">path()</a></code></p>
 <p> Designates a path to a device (including its device name), e.g.
  "/dev/ttyUSB0".</p>
 
 <h3 class="typedecl"><a name="type-directory_name">directory_name()</a></h3>
-<p><tt>directory_name() = <a href="#type-path">path()</a></tt></p>
+<p><code>directory_name() = <a href="#type-path">path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="#type-path">path()</a></tt></p>
+<p><code>directory_path() = <a href="#type-path">path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dotted_extension">dotted_extension()</a></h3>
-<p><tt>dotted_extension() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>dotted_extension() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A dot followed by the extension of a filename, either unitary (e.g. ".baz", in
  "foobar.baz.json") or composed (e.g. ".tar.gz" in "hello.tar.gz").</p>
 
 <h3 class="typedecl"><a name="type-entry_type">entry_type()</a></h3>
-<p><tt>entry_type() = device | directory | other | regular | symlink</tt></p>
+<p><code>entry_type() = device | directory | other | regular | symlink</code></p>
 <p> All known types of file entries.</p>
 
 <h3 class="typedecl"><a name="type-executable_name">executable_name()</a></h3>
-<p><tt>executable_name() = <a href="#type-file_name">file_name()</a></tt></p>
+<p><code>executable_name() = <a href="#type-file_name">file_name()</a></code></p>
 <p> Designates an executable, generally without a path (e.g. "foobar").</p>
 
 <h3 class="typedecl"><a name="type-executable_path">executable_path()</a></h3>
-<p><tt>executable_path() = <a href="#type-file_path">file_path()</a></tt></p>
+<p><code>executable_path() = <a href="#type-file_path">file_path()</a></code></p>
 <p> Designates a path to an executable; e.g. "../my_dir/other/run.exe").</p>
 
 <h3 class="typedecl"><a name="type-extension">extension()</a></h3>
-<p><tt>extension() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>extension() = <a href="#type-ustring">ustring()</a></code></p>
 <p><p> An extension in a filename, either unitary (e.g. "baz", in "foobar.baz.json") 
 or composed (e.g. "tar.gz" in "hello.tar.gz").</p>
 
@@ -167,106 +177,106 @@ or composed (e.g. "tar.gz" in "hello.tar.gz").</p>
  ".gz").</p>
 
 <h3 class="typedecl"><a name="type-file">file()</a></h3>
-<p><tt>file() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-io_device">file:io_device()</a></tt></p>
+<p><code>file() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-io_device">file:io_device()</a></code></p>
 <p> Corresponds to the handle to an open file (typically a file descriptor
  counterpart), but also, possibly, 'standard_io' (for standard output,
  descriptor 1), 'standard_error' (for standard error, descriptor 2), a
  registered name (as an atom), or any PID handling the I/O protocols.</p>
 
 <h3 class="typedecl"><a name="type-file_info">file_info()</a></h3>
-<p><tt>file_info() = #file_info{size = non_neg_integer() | undefined, type = device | directory | other | regular | symlink | undefined, access = read | write | read_write | none | undefined, atime = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-date_time">file:date_time()</a> | non_neg_integer() | undefined, mtime = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-date_time">file:date_time()</a> | non_neg_integer() | undefined, ctime = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-date_time">file:date_time()</a> | non_neg_integer() | undefined, mode = non_neg_integer() | undefined, links = non_neg_integer() | undefined, major_device = non_neg_integer() | undefined, minor_device = non_neg_integer() | undefined, inode = non_neg_integer() | undefined, uid = non_neg_integer() | undefined, gid = non_neg_integer() | undefined}</tt></p>
+<p><code>file_info() = #file_info{size = non_neg_integer() | undefined, type = device | directory | other | regular | symlink | undefined, access = read | write | read_write | none | undefined, atime = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-date_time">file:date_time()</a> | non_neg_integer() | undefined, mtime = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-date_time">file:date_time()</a> | non_neg_integer() | undefined, ctime = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-date_time">file:date_time()</a> | non_neg_integer() | undefined, mode = non_neg_integer() | undefined, links = non_neg_integer() | undefined, major_device = non_neg_integer() | undefined, minor_device = non_neg_integer() | undefined, inode = non_neg_integer() | undefined, uid = non_neg_integer() | undefined, gid = non_neg_integer() | undefined}</code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><tt>file_name() = <a href="#type-path">path()</a></tt></p>
+<p><code>file_name() = <a href="#type-path">path()</a></code></p>
 <p> Designates a filename, generally without a path (e.g. "foobar.txt").</p>
 
 <h3 class="typedecl"><a name="type-file_open_mode">file_open_mode()</a></h3>
-<p><tt>file_open_mode() = tuple() | atom() | ram</tt></p>
+<p><code>file_open_mode() = tuple() | atom() | ram</code></p>
 <p><p> Relevant flags when opening a file (e.g. read, write, append, exclusive, raw, 
 etc.).</p>
 
- <p>See <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a> for their detailed 
+ <p>See <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><code>http://erlang.org/doc/man/file.html#open-2</code></a> for their detailed 
 description.</p>
 
  (file:mode() not exported currently unfortunately, see
  lib/kernel/src/file.erl)</p>
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="#type-path">path()</a></tt></p>
+<p><code>file_path() = <a href="#type-path">path()</a></code></p>
 <p> Designates a path to a file (including its filename),
  e.g. "../my_dir/other/foobar.txt".</p>
 
 <h3 class="typedecl"><a name="type-filename">filename()</a></h3>
-<p><tt>filename() = <a href="#type-file_name">file_name()</a></tt></p>
+<p><code>filename() = <a href="#type-file_name">file_name()</a></code></p>
 <p> Just a convenience alias.</p>
 
 <h3 class="typedecl"><a name="type-filename_radix">filename_radix()</a></h3>
-<p><tt>filename_radix() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>filename_radix() = <a href="#type-ustring">ustring()</a></code></p>
 <p> The part of a filename before the dot of the first extension.
  For example the filename radix of "hello.tar.gz" is "hello".</p>
 
 <h3 class="typedecl"><a name="type-filepath_radix">filepath_radix()</a></h3>
-<p><tt>filepath_radix() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>filepath_radix() = <a href="#type-ustring">ustring()</a></code></p>
 <p><p> The part of a file path before the dot of the first extension.</p>
 
  For example the filepath radix of "/home/bond/hello.tar.gz" is
  "/home/bond/hello".</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="#type-format_values">format_values()</a></tt></p>
+<p><code>format_values() = <a href="#type-format_values">format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-improper_encoding_action">improper_encoding_action()</a></h3>
-<p><tt>improper_encoding_action() = throw | warn | ignore | include</tt></p>
+<p><code>improper_encoding_action() = throw | warn | ignore | include</code></p>
 
 
 <h3 class="typedecl"><a name="type-leaf_name">leaf_name()</a></h3>
-<p><tt>leaf_name() = <a href="#type-path_element">path_element()</a></tt></p>
+<p><code>leaf_name() = <a href="#type-path_element">path_element()</a></code></p>
 <p><p> A leaf name, i.e. the final element of a path (possibly a file or directory).</p>
 
  For example in 'aaa/bbb/ccc', 'aaa' is the root, and 'ccc' is the leaf.</p>
 
 <h3 class="typedecl"><a name="type-link_name">link_name()</a></h3>
-<p><tt>link_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>link_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> The name of a (symbolic) link.</p>
 
 <h3 class="typedecl"><a name="type-link_path">link_path()</a></h3>
-<p><tt>link_path() = <a href="#type-file_path">file_path()</a></tt></p>
+<p><code>link_path() = <a href="#type-file_path">file_path()</a></code></p>
 <p> The path of a (symbolic) link.</p>
 
 <h3 class="typedecl"><a name="type-parent_creation">parent_creation()</a></h3>
-<p><tt>parent_creation() = create_no_parent | create_parents</tt></p>
+<p><code>parent_creation() = create_no_parent | create_parents</code></p>
 <p> Tells whether parent directories shall be created.</p>
 
 <h3 class="typedecl"><a name="type-path">path()</a></h3>
-<p><tt>path() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>path() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A path may designate either a file or a directory (in both case with leading,
  root directories possibly specified).</p>
 
 <h3 class="typedecl"><a name="type-path_element">path_element()</a></h3>
-<p><tt>path_element() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>path_element() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A (legit) part of a path (e.g. "local" in "/usr/local/share"); preferably
  without whitespaces.</p>
 
 <h3 class="typedecl"><a name="type-permission">permission()</a></h3>
-<p><tt>permission() = owner_read | owner_write | owner_execute | group_read | group_write | group_execute | other_read | other_write | other_execute | set_user_id | set_group_id</tt></p>
+<p><code>permission() = owner_read | owner_write | owner_execute | group_read | group_write | group_execute | other_read | other_write | other_execute | set_user_id | set_group_id</code></p>
 <p> The various permissions that can be combined for file-like elements.</p>
 
 <h3 class="typedecl"><a name="type-permission_mask">permission_mask()</a></h3>
-<p><tt>permission_mask() = non_neg_integer()</tt></p>
+<p><code>permission_mask() = non_neg_integer()</code></p>
 <p> The binary mask corresponding to a filesystem permission.</p>
 
 <h3 class="typedecl"><a name="type-possibly_resolvable_path">possibly_resolvable_path()</a></h3>
-<p><tt>possibly_resolvable_path() = <a href="#type-resolvable_path">resolvable_path()</a> | <a href="#type-any_path">any_path()</a></tt></p>
+<p><code>possibly_resolvable_path() = <a href="#type-resolvable_path">resolvable_path()</a> | <a href="#type-any_path">any_path()</a></code></p>
 <p> Any kind of path, resolvable or not.</p>
 
 <h3 class="typedecl"><a name="type-resolvable_path">resolvable_path()</a></h3>
-<p><tt>resolvable_path() = [<a href="#type-resolvable_path_element">resolvable_path_element()</a>]</tt></p>
+<p><code>resolvable_path() = [<a href="#type-resolvable_path_element">resolvable_path_element()</a>]</code></p>
 <p><p> A path that is resolved at runtime, all its elements being joined accordingly.</p>
 
  <p>For example <code>[home, "Project", lang, &lt;&lt;"simulation"&gt;&gt;</code>, user] being translated 
@@ -275,23 +285,24 @@ to the "/home/bond/Project/en_GB.utf8/simulation/bond" path.</p>
  See resolve_path/1.</p>
 
 <h3 class="typedecl"><a name="type-resolvable_path_element">resolvable_path_element()</a></h3>
-<p><tt>resolvable_path_element() = <a href="#type-any_path">any_path()</a> | <a href="#type-resolvable_token_path">resolvable_token_path()</a></tt></p>
+<p><code>resolvable_path_element() = <a href="#type-any_path">any_path()</a> | <a href="#type-resolvable_token_path">resolvable_token_path()</a></code></p>
 <p> An element of a resolvable path.</p>
 
 <h3 class="typedecl"><a name="type-resolvable_token_path">resolvable_token_path()</a></h3>
-<p><tt>resolvable_token_path() = user_name | user_id | group_name | group_id | home | locale_charset | fqdn | short_hostname</tt></p>
+<p><code>resolvable_token_path() = user_name | user_id | group_name | group_id | home | locale_charset | fqdn | short_hostname</code></p>
 
 
 <h3 class="typedecl"><a name="type-script_path">script_path()</a></h3>
-<p><tt>script_path() = <a href="#type-file_path">file_path()</a></tt></p>
+<p><code>script_path() = <a href="#type-file_path">file_path()</a></code></p>
 <p> Designates a path to an (executable) script; e.g. "../my_dir/other/run.sh").</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#any_join-1">any_join/1</a></td><td>Joins the specified list of path elements; returns a corresponding binary 
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_extension-2">add_extension/2</a></td><td>Adds the specified extension to the specified filename prefix.</td></tr>
+<tr><td valign="top"><a href="#any_join-1">any_join/1</a></td><td>Joins the specified list of path elements; returns a corresponding binary 
 string if at least one element is a binary string itself, otherwise returns a 
 plain string.</td></tr>
 <tr><td valign="top"><a href="#any_join-2">any_join/2</a></td><td>Joins the two specified path elements; returns a corresponding binary 
@@ -304,6 +315,12 @@ string.</td></tr>
 <tr><td valign="top"><a href="#bin_join-2">bin_join/2</a></td><td>Joins the two specified path elements, returns a corresponding binary 
 string.</td></tr>
 <tr><td valign="top"><a href="#change_permissions-2">change_permissions/2</a></td><td>Changes the permissions ("chmod") of specified filesystem element.</td></tr>
+<tr><td valign="top"><a href="#check_existing_directory-1">check_existing_directory/1</a></td><td>Checks that the specified path entry exists and is a directory, or throws
+ an exception if not.</td></tr>
+<tr><td valign="top"><a href="#check_existing_file-1">check_existing_file/1</a></td><td>Checks that the specified path entry exists and is a regular file, or
+ throws an exception if not.</td></tr>
+<tr><td valign="top"><a href="#check_existing_file_or_link-1">check_existing_file_or_link/1</a></td><td>Checks that the specified path entry exists and is either a regular
+ file or a symbolic link, or throws an exception if not.</td></tr>
 <tr><td valign="top"><a href="#close-1">close/1</a></td><td>Closes the specified file reference.</td></tr>
 <tr><td valign="top"><a href="#close-2">close/2</a></td><td>Closes the specified file reference.</td></tr>
 <tr><td valign="top"><a href="#compress-1">compress/1</a></td><td>Compresses the specified file: creates a compressed version thereof 
@@ -311,7 +328,10 @@ string.</td></tr>
 filename, established based on usual conventions, is returned.</td></tr>
 <tr><td valign="top"><a href="#compress-2">compress/2</a></td><td>Compresses the specified file: creates a compressed version thereof, 
 whose filename, established based on usual conventions, is returned.</td></tr>
-<tr><td valign="top"><a href="#convert_to_filename-1">convert_to_filename/1</a></td><td>Converts the specified name into an acceptable filename, filesystem-wise.</td></tr>
+<tr><td valign="top"><a href="#convert_to_filename-1">convert_to_filename/1</a></td><td>Converts the specified name into an acceptable filename (or file path), 
+filesystem-wise.</td></tr>
+<tr><td valign="top"><a href="#convert_to_filename_with_extension-2">convert_to_filename_with_extension/2</a></td><td>Converts the specified name into an acceptable filename (or file path), 
+filesystem-wise.</td></tr>
 <tr><td valign="top"><a href="#copy_as_regular_file_in-2">copy_as_regular_file_in/2</a></td><td>Copies the actual regular file specified - either directly a regular 
 file, or a regular file ultimately pointed to by any specified symbolic link - 
 in the specified destination directory, overwriting any previous file, and 
@@ -417,15 +437,18 @@ root with specified extension, in the whole subtree (that is recursively).</td><
 from the root, in the whole subtree (that is recursively).</td></tr>
 <tr><td valign="top"><a href="#from_permission_mask-1">from_permission_mask/1</a></td><td>Decodes the specified permission mask into a list of the corresponding
  permissions.</td></tr>
-<tr><td valign="top"><a href="#get_base_path-1">get_base_path/1</a></td><td>Returns the complete leading, "directory" part of specified path, 
+<tr><td valign="top"><a href="#get_base_path-1">get_base_path/1</a></td><td>Returns the complete leading, "directory" part of the specified path, 
 that is the one with all its element but the last one.</td></tr>
+<tr><td valign="top"><a href="#get_base_path-2">get_base_path/2</a></td><td>Returns the leading part of the specified path, obtained at the specified 
+depth, that is when the specified number of bottom-level elements have been 
+chopped.</td></tr>
 <tr><td valign="top"><a href="#get_bin_current_directory-0">get_bin_current_directory/0</a></td><td>Returns the current directory, as a binary string.</td></tr>
-<tr><td valign="top"><a href="#get_cache_directory-1">get_cache_directory/1</a></td><td>Returns the path location intended for the storage of transient data
- files that the specified application may perform on the local machine, that is
- any cache that it may use.</td></tr>
-<tr><td valign="top"><a href="#get_configuration_directory-1">get_configuration_directory/1</a></td><td>Returns the path location intended for the storage of persistent
- configuration files that the specified application may perform on the local
- machine.</td></tr>
+<tr><td valign="top"><a href="#get_cache_directory-1">get_cache_directory/1</a></td><td>Returns the directory path location intended for the storage of transient
+ data files that the specified application may perform on the local machine,
+ that is any cache that it may use.</td></tr>
+<tr><td valign="top"><a href="#get_configuration_directory-1">get_configuration_directory/1</a></td><td>Returns the main directory path location intended for the storage of 
+persistent user-level configuration files that the specified application may 
+perform on the local machine.</td></tr>
 <tr><td valign="top"><a href="#get_current_directory-0">get_current_directory/0</a></td><td>Returns the current directory, as a plain string.</td></tr>
 <tr><td valign="top"><a href="#get_data_directory-1">get_data_directory/1</a></td><td>Returns the path location intended for the storage of persistent data
  files that the specified application may perform on the local machine.</td></tr>
@@ -445,6 +468,9 @@ needing to open a file for writing - should such an option be used.</td></tr>
  data files that the specified application may perform on the local machine.</td></tr>
 <tr><td valign="top"><a href="#get_first_existing_directory_in-1">get_first_existing_directory_in/1</a></td><td>Returns the first (if any) existing directory found in the specified 
 list, or throws an exception if none is found.</td></tr>
+<tr><td valign="top"><a href="#get_first_file_or_link_for-2">get_first_file_or_link_for/2</a></td><td>Returns, as a full path, the first occurrence (if any) of the specified 
+filename found (as a regular file or a symbolic link) through the specified 
+(ordered) list of directories.</td></tr>
 <tr><td valign="top"><a href="#get_group_of-1">get_group_of/1</a></td><td>Returns the group identifier (gid) of the group of the specified file
  entry.</td></tr>
 <tr><td valign="top"><a href="#get_image_extensions-0">get_image_extensions/0</a></td><td>Returns a list of the known file extensions that refer to image files.</td></tr>
@@ -460,6 +486,11 @@ element, as a one-element path, corresponding either to a file or a directory.</
 <tr><td valign="top"><a href="#get_longest_common_path-1">get_longest_common_path/1</a></td><td>Returns a pair made of the longest path common to all specified directory 
 paths, and the corresponding suffixes, that is an (unordered) list of the 
 input paths (as binaries) once the common prefix elements have been removed.</td></tr>
+<tr><td valign="top"><a href="#get_most_suitable_configuration_directory-1">get_most_suitable_configuration_directory/1</a></td><td>Returns the best, existing directory path intended for the storage of 
+persistent user-level configuration files that the specified application may 
+perform on the local machine: looks up in turn the candidate directories, by 
+decreasing priority order, and returns the relevant, most suitable one (if 
+any).</td></tr>
 <tr><td valign="top"><a href="#get_non_clashing_entry_name_from-1">get_non_clashing_entry_name_from/1</a></td><td>Returns a path deriving from the specified one (and of the same type) so 
 that it is unique, meaning that it does not clash with any pre-existing entry.</td></tr>
 <tr><td valign="top"><a href="#get_owner_of-1">get_owner_of/1</a></td><td>Returns the user identifier (uid) of the owner of the specified file
@@ -542,11 +573,11 @@ specified path.</td></tr>
 no intermediate, superfluous '.' or '..' is present afterwards.</td></tr>
 <tr><td valign="top"><a href="#open-2">open/2</a></td><td>Opens the file corresponding to the specified path, with the specified
  list of options (as listed for file:open/2 in
- <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>, that is: read, write, append, 
+ <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><code>http://erlang.org/doc/man/file.html#open-2</code></a>, that is: read, write, append, 
 exclusive, raw, etc).</td></tr>
 <tr><td valign="top"><a href="#open-3">open/3</a></td><td>Opens the file corresponding to the specified path (first parameter) with
  the specified list of options (second parameter; refer to file:open/2 for
- detailed documentation, see <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>).</td></tr>
+ detailed documentation, see <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><code>http://erlang.org/doc/man/file.html#open-2</code></a>).</td></tr>
 <tr><td valign="top"><a href="#path_to_variable_name-1">path_to_variable_name/1</a></td><td>Converts specified path (full filename, like '/home/jack/test.txt' or 
 './media/test.txt') into a variable name licit in most programming languages 
 (e.g.</td></tr>
@@ -613,8 +644,8 @@ renames it first by adding the specified suffix to its name (then overwriting
 any identically-named file that would already exist), before performing the 
 renaming.</td></tr>
 <tr><td valign="top"><a href="#replace_extension-3">replace_extension/3</a></td><td>Returns a new file path whose extension has been updated.</td></tr>
-<tr><td valign="top"><a href="#resolve_any_path-1">resolve_any_path/1</a></td><td>Resolves the specified path - either a standard one or a resolvable one -
- in all cases as a plain, standard path.</td></tr>
+<tr><td valign="top"><a href="#resolve_any_path-1">resolve_any_path/1</a></td><td>Resolves the specified path - either a standard one or a resolvable one - 
+in all cases as a plain, standard path.</td></tr>
 <tr><td valign="top"><a href="#resolve_path-1">resolve_path/1</a></td><td>Resolves the specified resolvable path as a standard path.</td></tr>
 <tr><td valign="top"><a href="#resolve_symlink_fully-1">resolve_symlink_fully/1</a></td><td>Resolves fully the specified symbolic link: returns the entry it points
  ultimately to (therefore this entry cannot be a symbolic link), or throws an
@@ -680,9 +711,20 @@ them on disk, in the specified directory.</td></tr>
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="add_extension-2">add_extension/2</a></h3>
+<div class="spec">
+<p><code>add_extension(BinFilePath::<a href="#type-any_file_path">any_file_path()</a>, Ext::<a href="#type-extension">extension()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
+<p> </p>
+</div><p><p>Adds the specified extension to the specified filename prefix.</p>
+
+ <p>For example: "/mnt/foobar.txt" = add_extension("/mnt/foobar", "txt")</p>
+
+ Returns a file path of the same type as the specified one.
+</p>
+
 <h3 class="function"><a name="any_join-1">any_join/1</a></h3>
 <div class="spec">
-<p><tt>any_join(ComponentList::[<a href="#type-any_path_element">any_path_element()</a>]) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>any_join(ComponentList::[<a href="#type-any_path_element">any_path_element()</a>]) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Joins the specified list of path elements; returns a corresponding binary 
 string if at least one element is a binary string itself, otherwise returns a 
@@ -700,7 +742,7 @@ string only when necessary.</p>
 
 <h3 class="function"><a name="any_join-2">any_join/2</a></h3>
 <div class="spec">
-<p><tt>any_join(FirstPath::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>any_join(FirstPath::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Joins the two specified path elements; returns a corresponding binary 
 string if at least one element is a binary string itself, otherwise returns a 
@@ -712,7 +754,7 @@ plain string.</p>
 
 <h3 class="function"><a name="append_file-2">append_file/2</a></h3>
 <div class="spec">
-<p><tt>append_file(TargetFilename::<a href="#type-file_name">file_name()</a>, ToAppendFilename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>append_file(TargetFilename::<a href="#type-file_name">file_name()</a>, ToAppendFilename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Appends, at the end of the first specified file, the content of the
  second specified one: concatenates the second with the first one.
@@ -720,7 +762,7 @@ plain string.</p>
 
 <h3 class="function"><a name="bin_join-1">bin_join/1</a></h3>
 <div class="spec">
-<p><tt>bin_join(ComponentList::[<a href="#type-any_path_element">any_path_element()</a>]) -&gt; <a href="#type-bin_path">bin_path()</a></tt><br></p>
+<p><code>bin_join(ComponentList::[<a href="#type-any_path_element">any_path_element()</a>]) -&gt; <a href="#type-bin_path">bin_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Joins the specified list of path elements, returns a corresponding binary 
 string.</p>
@@ -735,7 +777,7 @@ is returned in all cases.</p>
 
 <h3 class="function"><a name="bin_join-2">bin_join/2</a></h3>
 <div class="spec">
-<p><tt>bin_join(FirstPath::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-bin_path">bin_path()</a></tt><br></p>
+<p><code>bin_join(FirstPath::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-bin_path">bin_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Joins the two specified path elements, returns a corresponding binary 
 string.</p>
@@ -750,7 +792,7 @@ string.</p>
 
 <h3 class="function"><a name="change_permissions-2">change_permissions/2</a></h3>
 <div class="spec">
-<p><tt>change_permissions(Path::<a href="#type-any_path">any_path()</a>, NewPermissions::<a href="#type-permission">permission()</a> | [<a href="#type-permission">permission()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>change_permissions(Path::<a href="#type-any_path">any_path()</a>, NewPermissions::<a href="#type-permission">permission()</a> | [<a href="#type-permission">permission()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Changes the permissions ("chmod") of specified filesystem element.</p>
 
@@ -758,9 +800,33 @@ string.</p>
  corresponding file will end up with (exactly) a -------r-- permission.
 </p>
 
+<h3 class="function"><a name="check_existing_directory-1">check_existing_directory/1</a></h3>
+<div class="spec">
+<p><code>check_existing_directory(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Checks that the specified path entry exists and is a directory, or throws
+ an exception if not.
+</p>
+
+<h3 class="function"><a name="check_existing_file-1">check_existing_file/1</a></h3>
+<div class="spec">
+<p><code>check_existing_file(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Checks that the specified path entry exists and is a regular file, or
+ throws an exception if not.
+</p>
+
+<h3 class="function"><a name="check_existing_file_or_link-1">check_existing_file_or_link/1</a></h3>
+<div class="spec">
+<p><code>check_existing_file_or_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Checks that the specified path entry exists and is either a regular
+ file or a symbolic link, or throws an exception if not.
+</p>
+
 <h3 class="function"><a name="close-1">close/1</a></h3>
 <div class="spec">
-<p><tt>close(File::<a href="#type-file">file()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>close(File::<a href="#type-file">file()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Closes the specified file reference.</p>
 
@@ -769,7 +835,7 @@ string.</p>
 
 <h3 class="function"><a name="close-2">close/2</a></h3>
 <div class="spec">
-<p><tt>close(File::<a href="#type-file">file()</a>, FailureMode::overcome_failure | throw_if_failed) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>close(File::<a href="#type-file">file()</a>, FailureMode::overcome_failure | throw_if_failed) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Closes the specified file reference.</p>
 
@@ -778,7 +844,7 @@ string.</p>
 
 <h3 class="function"><a name="compress-1">compress/1</a></h3>
 <div class="spec">
-<p><tt>compress(Filename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>compress(Filename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Compresses the specified file: creates a compressed version thereof 
 (using the most efficient, compacity-wise, compression tool available), whose 
@@ -796,7 +862,7 @@ that name already exists, it will be overwritten.</p>
 
 <h3 class="function"><a name="compress-2">compress/2</a></h3>
 <div class="spec">
-<p><tt>compress(Filename::<a href="#type-file_name">file_name()</a>, CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>compress(Filename::<a href="#type-file_name">file_name()</a>, CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Compresses the specified file: creates a compressed version thereof, 
 whose filename, established based on usual conventions, is returned. If a file 
@@ -813,16 +879,27 @@ with that name already exists, it will be overwritten.</p>
 
 <h3 class="function"><a name="convert_to_filename-1">convert_to_filename/1</a></h3>
 <div class="spec">
-<p><tt>convert_to_filename(BinName::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_name">any_file_name()</a></tt><br></p>
+<p><code>convert_to_filename(BinName::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_name">any_file_name()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts the specified name into an acceptable filename, filesystem-wise.</p>
+</div><p><p>Converts the specified name into an acceptable filename (or file path), 
+filesystem-wise.</p>
+
+ Returns the same type of string as the provided one.
+</p>
+
+<h3 class="function"><a name="convert_to_filename_with_extension-2">convert_to_filename_with_extension/2</a></h3>
+<div class="spec">
+<p><code>convert_to_filename_with_extension(Name::<a href="#type-any_string">any_string()</a>, Ext::<a href="#type-extension">extension()</a>) -&gt; <a href="#type-any_file_name">any_file_name()</a></code><br></p>
+<p> </p>
+</div><p><p>Converts the specified name into an acceptable filename (or file path), 
+filesystem-wise.</p>
 
  Returns the same type of string as the provided one.
 </p>
 
 <h3 class="function"><a name="copy_as_regular_file_in-2">copy_as_regular_file_in/2</a></h3>
 <div class="spec">
-<p><tt>copy_as_regular_file_in(SourcePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>copy_as_regular_file_in(SourcePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Copies the actual regular file specified - either directly a regular 
 file, or a regular file ultimately pointed to by any specified symbolic link - 
@@ -836,7 +913,7 @@ returning the full path of the copied file.</p>
 
 <h3 class="function"><a name="copy_file-2">copy_file/2</a></h3>
 <div class="spec">
-<p><tt>copy_file(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>copy_file(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Copies the specified file to a given destination filename (not a 
 directory name, see copy_file_in/2 for that), overwriting any previous file.</p>
@@ -848,7 +925,7 @@ directory name, see copy_file_in/2 for that), overwriting any previous file.</p>
 
 <h3 class="function"><a name="copy_file_if_existing-2">copy_file_if_existing/2</a></h3>
 <div class="spec">
-<p><tt>copy_file_if_existing(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>copy_file_if_existing(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Copies the specified file to a given destination iff this source file is 
 already existing.</p>
@@ -860,7 +937,7 @@ already existing.</p>
 
 <h3 class="function"><a name="copy_file_in-2">copy_file_in/2</a></h3>
 <div class="spec">
-<p><tt>copy_file_in(SourcePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>copy_file_in(SourcePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Copies the specified file in the specified destination directory, 
 overwriting any previous file, and returning the full path of the copied file.</p>
@@ -872,13 +949,13 @@ overwriting any previous file, and returning the full path of the copied file.</
 
 <h3 class="function"><a name="copy_tree-2">copy_tree/2</a></h3>
 <div class="spec">
-<p><tt>copy_tree(SourceTreePath::<a href="#type-any_directory_path">any_directory_path()</a>, TargetDirectory::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>copy_tree(SourceTreePath::<a href="#type-any_directory_path">any_directory_path()</a>, TargetDirectory::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Copies the specified source tree in specified target directory.</p>
 
 <h3 class="function"><a name="create_directory-1">create_directory/1</a></h3>
 <div class="spec">
-<p><tt>create_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>create_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates the specified directory ("mkdir"), without creating any 
 intermediate (parent) directory that would not exist.</p>
@@ -889,7 +966,7 @@ intermediate (parent) directory that would not exist.</p>
 
 <h3 class="function"><a name="create_directory-2">create_directory/2</a></h3>
 <div class="spec">
-<p><tt>create_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>, X2::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>create_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>, X2::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates the specified directory.</p>
 
@@ -905,7 +982,7 @@ directory will be created.</p>
 
 <h3 class="function"><a name="create_directory_if_not_existing-1">create_directory_if_not_existing/1</a></h3>
 <div class="spec">
-<p><tt>create_directory_if_not_existing(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>create_directory_if_not_existing(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates the specified directory (but not any parent thereof), if not 
 already existing.</p>
@@ -915,7 +992,7 @@ already existing.</p>
 
 <h3 class="function"><a name="create_directory_if_not_existing-2">create_directory_if_not_existing/2</a></h3>
 <div class="spec">
-<p><tt>create_directory_if_not_existing(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>, ParentCreation::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>create_directory_if_not_existing(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>, ParentCreation::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates the specified directory (and, if specified, any needed parent as 
 well), if not already existing.</p>
@@ -925,7 +1002,7 @@ well), if not already existing.</p>
 
 <h3 class="function"><a name="create_empty_file-1">create_empty_file/1</a></h3>
 <div class="spec">
-<p><tt>create_empty_file(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>create_empty_file(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates an empty file bearing the specified filename (other use of 
 touch).</p>
@@ -942,7 +1019,7 @@ of use as well.</p>
 
 <h3 class="function"><a name="create_link-2">create_link/2</a></h3>
 <div class="spec">
-<p><tt>create_link(TargetPath::<a href="#type-any_path">any_path()</a>, NewLinkPath::<a href="#type-link_path">link_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>create_link(TargetPath::<a href="#type-any_path">any_path()</a>, NewLinkPath::<a href="#type-link_path">link_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a symbolic link pointing to the specified target path, at the 
 specified new (link) path.</p>
@@ -956,7 +1033,7 @@ specified new (link) path.</p>
 
 <h3 class="function"><a name="create_non_clashing_file-0">create_non_clashing_file/0</a></h3>
 <div class="spec">
-<p><tt>create_non_clashing_file() -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>create_non_clashing_file() -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates on the filesystem a file whose path is guaranteed not to clash 
 with any other.</p>
@@ -970,7 +1047,7 @@ with any other.</p>
 
 <h3 class="function"><a name="create_preserving-2">create_preserving/2</a></h3>
 <div class="spec">
-<p><tt>create_preserving(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></tt><br></p>
+<p><code>create_preserving(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></code><br></p>
 <p> </p>
 </div><p>Opens for a creation from scratch the specified file with the specified
  options (the 'write' one being implied and automatically added here); if the
@@ -981,7 +1058,7 @@ with any other.</p>
 
 <h3 class="function"><a name="create_preserving-3">create_preserving/3</a></h3>
 <div class="spec">
-<p><tt>create_preserving(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-ustring">ustring()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></tt><br></p>
+<p><code>create_preserving(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-ustring">ustring()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></code><br></p>
 <p> </p>
 </div><p>Opens for a creation from scratch the specified file with the specified
  options (the 'write' one being implied and automatically added here); if the
@@ -992,7 +1069,7 @@ with any other.</p>
 
 <h3 class="function"><a name="create_temporary_directory-0">create_temporary_directory/0</a></h3>
 <div class="spec">
-<p><tt>create_temporary_directory() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>create_temporary_directory() -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a non-previously existing temporary directory, and returns its 
 full path.</p>
@@ -1002,7 +1079,7 @@ full path.</p>
 
 <h3 class="function"><a name="decompress-1">decompress/1</a></h3>
 <div class="spec">
-<p><tt>decompress(Filename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>decompress(Filename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Decompresses the specified compressed file, expected to bear the 
 extension corresponding to the implicit, most compact format: recreates the 
@@ -1027,7 +1104,7 @@ name foo.extension_of(MY_FORMAT) into an uncompressed version of it named
 
 <h3 class="function"><a name="decompress-2">decompress/2</a></h3>
 <div class="spec">
-<p><tt>decompress(ZipFilename::<a href="#type-file_name">file_name()</a>, CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>decompress(ZipFilename::<a href="#type-file_name">file_name()</a>, CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Decompresses the specified compressed file, expected to bear the 
 extension corresponding to the specified format: recreates the original, 
@@ -1051,20 +1128,22 @@ name foo.extension_of(MY_FORMAT) into an uncompressed version of it named
 
 <h3 class="function"><a name="ensure_path_is_absolute-1">ensure_path_is_absolute/1</a></h3>
 <div class="spec">
-<p><tt>ensure_path_is_absolute(Path::<a href="#type-path">path()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p><p><tt>ensure_path_is_absolute(Path::<a href="#type-bin_path">bin_path()</a>) -&gt; <a href="#type-bin_path">bin_path()</a></tt><br></p>
+<p><code>ensure_path_is_absolute(Path::<a href="#type-path">path()</a>) -&gt; <a href="#type-path">path()</a></code><br></p><p><code>ensure_path_is_absolute(Path::<a href="#type-bin_path">bin_path()</a>) -&gt; <a href="#type-bin_path">bin_path()</a></code><br></p>
 <p> </p>
 <p> </p>
 </div><p><p>Returns an absolute, normalised path corresponding to the specified path.</p>
 
  <p>Returns a string of the same type as the specified one.</p>
 
- If it is not already absolute, it will made so by using the current working
- directory.
+ <p>If it is not already absolute, it will made so by using the current working 
+directory.</p>
+
+ Acts a bit like the realpath command.
 </p>
 
 <h3 class="function"><a name="ensure_path_is_absolute-2">ensure_path_is_absolute/2</a></h3>
 <div class="spec">
-<p><tt>ensure_path_is_absolute(TargetPath::<a href="#type-any_path">any_path()</a>, BasePath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>ensure_path_is_absolute(TargetPath::<a href="#type-any_path">any_path()</a>, BasePath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an absolute, normalised path corresponding to the specified 
 target path, using base path as root directory (this must be an absolute path) 
@@ -1079,7 +1158,7 @@ binary.</p>
 
 <h3 class="function"><a name="escape_path-1">escape_path/1</a></h3>
 <div class="spec">
-<p><tt>escape_path(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_string">any_string()</a></tt><br></p>
+<p><code>escape_path(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_string">any_string()</a></code><br></p>
 <p> </p>
 </div><p><p>Escapes specified path so that it can safely be included as a seralised 
 (string) content.</p>
@@ -1089,13 +1168,13 @@ binary.</p>
 
 <h3 class="function"><a name="exists-1">exists/1</a></h3>
 <div class="spec">
-<p><tt>exists(EntryName::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>exists(EntryName::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether specified file entry exists, regardless of its type.</p>
 
 <h3 class="function"><a name="file_to_zipped_term-1">file_to_zipped_term/1</a></h3>
 <div class="spec">
-<p><tt>file_to_zipped_term(Filename::<a href="#type-file_name">file_name()</a>) -&gt; binary()</tt><br></p>
+<p><code>file_to_zipped_term(Filename::<a href="#type-file_name">file_name()</a>) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Reads in memory the file specified from its filename, zips the 
 corresponding term, and returns it, as a compressed binary.</p>
@@ -1109,7 +1188,7 @@ corresponding term, and returns it, as a compressed binary.</p>
 
 <h3 class="function"><a name="files_to_zipped_term-1">files_to_zipped_term/1</a></h3>
 <div class="spec">
-<p><tt>files_to_zipped_term(FilenameList::[<a href="#type-file_name">file_name()</a>]) -&gt; binary()</tt><br></p>
+<p><code>files_to_zipped_term(FilenameList::[<a href="#type-file_name">file_name()</a>]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Reads in memory the files specified from their filenames (as plain 
 strings), zips the corresponding term, and returns it.</p>
@@ -1120,7 +1199,7 @@ strings), zips the corresponding term, and returns it.</p>
 
 <h3 class="function"><a name="files_to_zipped_term-2">files_to_zipped_term/2</a></h3>
 <div class="spec">
-<p><tt>files_to_zipped_term(FilenameList::[<a href="#type-file_name">file_name()</a>], BaseDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; binary()</tt><br></p>
+<p><code>files_to_zipped_term(FilenameList::[<a href="#type-file_name">file_name()</a>], BaseDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Reads in memory the files specified from their filenames (as plain 
 strings), assuming their path is relative to the specified base directory, 
@@ -1132,7 +1211,7 @@ zips the corresponding term, and returns it.</p>
 
 <h3 class="function"><a name="filter_by_excluded_suffixes-2">filter_by_excluded_suffixes/2</a></h3>
 <div class="spec">
-<p><tt>filter_by_excluded_suffixes(Paths::[<a href="#type-any_path">any_path()</a>], ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-any_path">any_path()</a>]</tt><br></p>
+<p><code>filter_by_excluded_suffixes(Paths::[<a href="#type-any_path">any_path()</a>], ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-any_path">any_path()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list containing all paths in the specified list (in an
  unspecified order) that do not match any of the specified suffixes.
@@ -1140,7 +1219,7 @@ zips the corresponding term, and returns it.</p>
 
 <h3 class="function"><a name="filter_by_extension-2">filter_by_extension/2</a></h3>
 <div class="spec">
-<p><tt>filter_by_extension(Filenames::[<a href="#type-file_path">file_path()</a>], Extension::<a href="#type-extension">extension()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>filter_by_extension(Filenames::[<a href="#type-file_path">file_path()</a>], Extension::<a href="#type-extension">extension()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list containing all elements of the Filenames list whose
  extension is the specified one (e.g. ".dat").
@@ -1148,7 +1227,7 @@ zips the corresponding term, and returns it.</p>
 
 <h3 class="function"><a name="filter_by_extensions-2">filter_by_extensions/2</a></h3>
 <div class="spec">
-<p><tt>filter_by_extensions(Filenames::[<a href="#type-file_path">file_path()</a>], Extensions::[<a href="#type-extension">extension()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>filter_by_extensions(Filenames::[<a href="#type-file_path">file_path()</a>], Extensions::[<a href="#type-extension">extension()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list containing all elements of Filenames list whose extension
  corresponds to one of the specified extensions (e.g. [".dat", ".png"]).
@@ -1156,7 +1235,7 @@ zips the corresponding term, and returns it.</p>
 
 <h3 class="function"><a name="filter_by_included_suffixes-2">filter_by_included_suffixes/2</a></h3>
 <div class="spec">
-<p><tt>filter_by_included_suffixes(Paths::[<a href="#type-any_path">any_path()</a>], IncludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-any_path">any_path()</a>]</tt><br></p>
+<p><code>filter_by_included_suffixes(Paths::[<a href="#type-any_path">any_path()</a>], IncludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-any_path">any_path()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list containing all paths in the specified list (in an
  unspecified order) that match any of the specified suffixes.
@@ -1164,7 +1243,7 @@ zips the corresponding term, and returns it.</p>
 
 <h3 class="function"><a name="find_directories_from-1">find_directories_from/1</a></h3>
 <div class="spec">
-<p><tt>find_directories_from(RootDir::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; [<a href="#type-directory_name">directory_name()</a>]</tt><br></p>
+<p><code>find_directories_from(RootDir::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; [<a href="#type-directory_name">directory_name()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all directories found from the root, in the whole 
 subtree (that is recursively).</p>
@@ -1175,7 +1254,7 @@ subtree (that is recursively).</p>
 
 <h3 class="function"><a name="find_files_from-1">find_files_from/1</a></h3>
 <div class="spec">
-<p><tt>find_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and symlinks) found from the 
 root, in the whole subtree (that is recursively).</p>
@@ -1190,7 +1269,7 @@ are ignored.</p>
 
 <h3 class="function"><a name="find_files_from-2">find_files_from/2</a></h3>
 <div class="spec">
-<p><tt>find_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, IncludeSymlinks::boolean()) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, IncludeSymlinks::boolean()) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and, if requested, symlinks) 
 found from the root, in the whole subtree (that is recursively).</p>
@@ -1205,7 +1284,7 @@ are ignored.</p>
 
 <h3 class="function"><a name="find_files_from-3">find_files_from/3</a></h3>
 <div class="spec">
-<p><tt>find_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, IncludeSymlinks::boolean(), IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-any_file_path">any_file_path()</a>]</tt><br></p>
+<p><code>find_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, IncludeSymlinks::boolean(), IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-any_file_path">any_file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and, if requested, symlinks) 
 found from the root, in the whole subtree (that is recursively).</p>
@@ -1221,7 +1300,7 @@ general [any_file_path()], otherwise it is [file_path()].</p>
 
 <h3 class="function"><a name="find_files_with_excluded_dirs-2">find_files_with_excluded_dirs/2</a></h3>
 <div class="spec">
-<p><tt>find_files_with_excluded_dirs(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_excluded_dirs(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and symlinks) found from the 
 root, in the whole subtree (that is recursively), with specified directories 
@@ -1246,7 +1325,7 @@ encoded are notified thanks to a warning trace, and then are ignored.</p>
 
 <h3 class="function"><a name="find_files_with_excluded_dirs-3">find_files_with_excluded_dirs/3</a></h3>
 <div class="spec">
-<p><tt>find_files_with_excluded_dirs(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>], IncludeSymlinks::boolean()) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_excluded_dirs(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>], IncludeSymlinks::boolean()) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and, if requested, symlinks) 
 found from the root, in the whole subtree (that is recursively), with 
@@ -1271,7 +1350,7 @@ encoded are notified thanks to a warning trace, and then are ignored.</p>
 
 <h3 class="function"><a name="find_files_with_excluded_dirs-4">find_files_with_excluded_dirs/4</a></h3>
 <div class="spec">
-<p><tt>find_files_with_excluded_dirs(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>], IncludeSymlinks::boolean(), IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_excluded_dirs(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>], IncludeSymlinks::boolean(), IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and, if requested, symlinks) 
 found from the root, in the whole subtree (that is recursively), with 
@@ -1298,7 +1377,7 @@ encoded are managed according to the IfImproperEncoding parameter; if set to
 
 <h3 class="function"><a name="find_files_with_excluded_dirs_and_suffixes-3">find_files_with_excluded_dirs_and_suffixes/3</a></h3>
 <div class="spec">
-<p><tt>find_files_with_excluded_dirs_and_suffixes(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>], ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_excluded_dirs_and_suffixes(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedDirs::[<a href="#type-directory_path">directory_path()</a>], ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and symlinks) found from the 
 root, in the whole subtree (that is recursively), with specified directories 
@@ -1323,7 +1402,7 @@ trace, and then are ignored.</p>
 
 <h3 class="function"><a name="find_files_with_excluded_suffixes-2">find_files_with_excluded_suffixes/2</a></h3>
 <div class="spec">
-<p><tt>find_files_with_excluded_suffixes(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_excluded_suffixes(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and symlinks) found from the 
 root which do not match any of the specified suffixes, in the whole subtree 
@@ -1338,7 +1417,7 @@ notified thanks to a warning trace, and then are ignored.</p>
 
 <h3 class="function"><a name="find_files_with_excluded_suffixes-3">find_files_with_excluded_suffixes/3</a></h3>
 <div class="spec">
-<p><tt>find_files_with_excluded_suffixes(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>], IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_excluded_suffixes(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, ExcludedSuffixes::[<a href="#type-any_suffix">any_suffix()</a>], IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and symlinks) found from the 
 root which do not match any of the specified suffixes, in the whole subtree 
@@ -1355,7 +1434,7 @@ if set to 'include', the return type of this function is the more general
 
 <h3 class="function"><a name="find_files_with_extension_from-2">find_files_with_extension_from/2</a></h3>
 <div class="spec">
-<p><tt>find_files_with_extension_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, Extension::<a href="#type-extension">extension()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_extension_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, Extension::<a href="#type-extension">extension()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and symlinks) found from the 
 root with specified extension, in the whole subtree (that is recursively).</p>
@@ -1370,7 +1449,7 @@ ignored.</p>
 
 <h3 class="function"><a name="find_files_with_extension_from-3">find_files_with_extension_from/3</a></h3>
 <div class="spec">
-<p><tt>find_files_with_extension_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, Extension::<a href="#type-extension">extension()</a>, IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_files_with_extension_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, Extension::<a href="#type-extension">extension()</a>, IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all files (regular ones and symlinks) found from the 
 root with specified extension, in the whole subtree (that is recursively).</p>
@@ -1386,7 +1465,7 @@ if set to 'include', the return type of this function is the more general
 
 <h3 class="function"><a name="find_links_from-1">find_links_from/1</a></h3>
 <div class="spec">
-<p><tt>find_links_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_links_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all symlinks found from the root, in the whole subtree 
 (that is recursively).</p>
@@ -1401,7 +1480,7 @@ are ignored.</p>
 
 <h3 class="function"><a name="find_links_from-2">find_links_from/2</a></h3>
 <div class="spec">
-<p><tt>find_links_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_links_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>, IfImproperEncoding::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all symlinks found from the root, in the whole subtree 
 (that is recursively).</p>
@@ -1417,7 +1496,7 @@ general [any_file_path()], otherwise it is [file_path()].</p>
 
 <h3 class="function"><a name="find_regular_files_from-1">find_regular_files_from/1</a></h3>
 <div class="spec">
-<p><tt>find_regular_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>find_regular_files_from(RootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all regular files (hence not including symlinks) found 
 from the root, in the whole subtree (that is recursively).</p>
@@ -1432,7 +1511,7 @@ are ignored.</p>
 
 <h3 class="function"><a name="from_permission_mask-1">from_permission_mask/1</a></h3>
 <div class="spec">
-<p><tt>from_permission_mask(Mask::<a href="#type-permission_mask">permission_mask()</a>) -&gt; [<a href="#type-permission">permission()</a>]</tt><br></p>
+<p><code>from_permission_mask(Mask::<a href="#type-permission_mask">permission_mask()</a>) -&gt; [<a href="#type-permission">permission()</a>]</code><br></p>
 <p> </p>
 </div><p>Decodes the specified permission mask into a list of the corresponding
  permissions.
@@ -1440,9 +1519,9 @@ are ignored.</p>
 
 <h3 class="function"><a name="get_base_path-1">get_base_path/1</a></h3>
 <div class="spec">
-<p><tt>get_base_path(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>get_base_path(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the complete leading, "directory" part of specified path, 
+</div><p><p>Returns the complete leading, "directory" part of the specified path, 
 that is the one with all its element but the last one.</p>
 
  <p>For example "/aaa/bbb/ccc" =          
@@ -1457,9 +1536,24 @@ clearer).</p>
  See get_last_path_element/1 for the counterpart function.
 </p>
 
+<h3 class="function"><a name="get_base_path-2">get_base_path/2</a></h3>
+<div class="spec">
+<p><code>get_base_path(AnyPath::<a href="#type-any_path">any_path()</a>, Depth::<a href="#type-depth">depth()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the leading part of the specified path, obtained at the specified 
+depth, that is when the specified number of bottom-level elements have been 
+chopped.</p>
+
+ <p>For example "/aaa/bbb" =          
+file_utils:get_base_path("/aaa/bbb/ccc/foobar.txt", _Depth=2).</p>
+
+ Note that the return type is the same of the input path, i.e. plain string or
+ binary string.
+</p>
+
 <h3 class="function"><a name="get_bin_current_directory-0">get_bin_current_directory/0</a></h3>
 <div class="spec">
-<p><tt>get_bin_current_directory() -&gt; <a href="#type-bin_directory_path">bin_directory_path()</a></tt><br></p>
+<p><code>get_bin_current_directory() -&gt; <a href="#type-bin_directory_path">bin_directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the current directory, as a binary string.</p>
 
@@ -1468,25 +1562,30 @@ clearer).</p>
 
 <h3 class="function"><a name="get_cache_directory-1">get_cache_directory/1</a></h3>
 <div class="spec">
-<p><tt>get_cache_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_cache_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the path location intended for the storage of transient data
- files that the specified application may perform on the local machine, that is
- any cache that it may use.
+</div><p>Returns the directory path location intended for the storage of transient
+ data files that the specified application may perform on the local machine,
+ that is any cache that it may use.
 </p>
 
 <h3 class="function"><a name="get_configuration_directory-1">get_configuration_directory/1</a></h3>
 <div class="spec">
-<p><tt>get_configuration_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_configuration_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the path location intended for the storage of persistent
- configuration files that the specified application may perform on the local
- machine.
+</div><p><p>Returns the main directory path location intended for the storage of 
+persistent user-level configuration files that the specified application may 
+perform on the local machine.</p>
+
+ <p>Does not check whether this directory exists, and of course a configuration 
+file of interest may or may not be available there.</p>
+
+ May return for example "~/.config/foobar/0.0.1".
 </p>
 
 <h3 class="function"><a name="get_current_directory-0">get_current_directory/0</a></h3>
 <div class="spec">
-<p><tt>get_current_directory() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_current_directory() -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the current directory, as a plain string.</p>
 
@@ -1495,7 +1594,7 @@ clearer).</p>
 
 <h3 class="function"><a name="get_data_directory-1">get_data_directory/1</a></h3>
 <div class="spec">
-<p><tt>get_data_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_data_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p>Returns the path location intended for the storage of persistent data
  files that the specified application may perform on the local machine.
@@ -1503,7 +1602,7 @@ clearer).</p>
 
 <h3 class="function"><a name="get_default_encoding-0">get_default_encoding/0</a></h3>
 <div class="spec">
-<p><tt>get_default_encoding() -&gt; <a href="system_utils.html#type-encoding">system_utils:encoding()</a></tt><br></p>
+<p><code>get_default_encoding() -&gt; <a href="system_utils.html#type-encoding">system_utils:encoding()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the default recommended encoding, for example when needing to 
 open a file for writing.</p>
@@ -1515,7 +1614,7 @@ open a file for writing.</p>
 
 <h3 class="function"><a name="get_default_encoding_option-0">get_default_encoding_option/0</a></h3>
 <div class="spec">
-<p><tt>get_default_encoding_option() -&gt; <a href="system_utils.html#type-encoding_option">system_utils:encoding_option()</a></tt><br></p>
+<p><code>get_default_encoding_option() -&gt; <a href="system_utils.html#type-encoding_option">system_utils:encoding_option()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the default recommended option encoding option, for example when 
 needing to open a file for writing - should such an option be used.</p>
@@ -1527,7 +1626,7 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_dotted_extension_for-1">get_dotted_extension_for/1</a></h3>
 <div class="spec">
-<p><tt>get_dotted_extension_for(CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-dotted_extension">dotted_extension()</a></tt><br></p>
+<p><code>get_dotted_extension_for(CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-dotted_extension">dotted_extension()</a></code><br></p>
 <p> </p>
 </div><p>Returns the dotted file extension (e.g. ".xz", not just "xz")
  corresponding to filenames compressed with specified format.
@@ -1535,7 +1634,7 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_extension-1">get_extension/1</a></h3>
 <div class="spec">
-<p><tt>get_extension(Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-extension">extension()</a> | no_extension</tt><br></p>
+<p><code>get_extension(Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-extension">extension()</a> | no_extension</code><br></p>
 <p> </p>
 </div><p><p>Returns the (last) extension of the specified file path.</p>
 
@@ -1544,7 +1643,7 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_extension_for-1">get_extension_for/1</a></h3>
 <div class="spec">
-<p><tt>get_extension_for(CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-extension">extension()</a></tt><br></p>
+<p><code>get_extension_for(CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-extension">extension()</a></code><br></p>
 <p> </p>
 </div><p>Returns the file extension corresponding to filenames compressed with
  specified format.
@@ -1552,7 +1651,7 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_extensions-1">get_extensions/1</a></h3>
 <div class="spec">
-<p><tt>get_extensions(Filename::<a href="#type-file_path">file_path()</a>) -&gt; [<a href="#type-extension">extension()</a>] | no_extension</tt><br></p>
+<p><code>get_extensions(Filename::<a href="#type-file_path">file_path()</a>) -&gt; [<a href="#type-extension">extension()</a>] | no_extension</code><br></p>
 <p> </p>
 </div><p><p>Returns the (ordered) extension(s) of the specified file path.</p>
 
@@ -1561,7 +1660,7 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_extra_configuration_directories-1">get_extra_configuration_directories/1</a></h3>
 <div class="spec">
-<p><tt>get_extra_configuration_directories(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p><code>get_extra_configuration_directories(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; [<a href="#type-directory_path">directory_path()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the extra path locations intended for the storage of persistent
  configuration files that the specified application may perform on the local
@@ -1570,7 +1669,7 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_extra_data_directories-1">get_extra_data_directories/1</a></h3>
 <div class="spec">
-<p><tt>get_extra_data_directories(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p><code>get_extra_data_directories(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; [<a href="#type-directory_path">directory_path()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the extra path locations intended for the storage of persistent
  data files that the specified application may perform on the local machine.
@@ -1578,7 +1677,7 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_first_existing_directory_in-1">get_first_existing_directory_in/1</a></h3>
 <div class="spec">
-<p><tt>get_first_existing_directory_in(DirPaths::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-any_directory_path">any_directory_path()</a></tt><br></p>
+<p><code>get_first_existing_directory_in(DirPaths::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-any_directory_path">any_directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the first (if any) existing directory found in the specified 
 list, or throws an exception if none is found.</p>
@@ -1590,9 +1689,22 @@ symbolic link.</p>
  only one of them being relevant.
 </p>
 
+<h3 class="function"><a name="get_first_file_or_link_for-2">get_first_file_or_link_for/2</a></h3>
+<div class="spec">
+<p><code>get_first_file_or_link_for(TargetFilename::<a href="#type-any_file_name">any_file_name()</a>, CandidateDirs::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-any_file_path">any_file_path()</a>)</code><br></p>
+<p> </p>
+</div><p><p>Returns, as a full path, the first occurrence (if any) of the specified 
+filename found (as a regular file or a symbolic link) through the specified 
+(ordered) list of directories.</p>
+
+ For example get_first_file_or_link_for("foobar.etf", ["/home/prefs",
+ "/var/config"]) may return "/var/config/foobar.etf", if this file exists and
+ "/home/prefs/foobar.etf" does not.
+</p>
+
 <h3 class="function"><a name="get_group_of-1">get_group_of/1</a></h3>
 <div class="spec">
-<p><tt>get_group_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="system_utils.html#type-group_id">system_utils:group_id()</a></tt><br></p>
+<p><code>get_group_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="system_utils.html#type-group_id">system_utils:group_id()</a></code><br></p>
 <p> </p>
 </div><p>Returns the group identifier (gid) of the group of the specified file
  entry.
@@ -1600,25 +1712,25 @@ symbolic link.</p>
 
 <h3 class="function"><a name="get_image_extensions-0">get_image_extensions/0</a></h3>
 <div class="spec">
-<p><tt>get_image_extensions() -&gt; [<a href="#type-extension">extension()</a>]</tt><br></p>
+<p><code>get_image_extensions() -&gt; [<a href="#type-extension">extension()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the known file extensions that refer to image files.</p>
 
 <h3 class="function"><a name="get_image_file_gif-1">get_image_file_gif/1</a></h3>
 <div class="spec">
-<p><tt>get_image_file_gif(Image::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p>
+<p><code>get_image_file_gif(Image::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-path">path()</a></code><br></p>
 <p> </p>
 </div><p>Returns the image path corresponding to the specified file.</p>
 
 <h3 class="function"><a name="get_image_file_png-1">get_image_file_png/1</a></h3>
 <div class="spec">
-<p><tt>get_image_file_png(Image::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p>
+<p><code>get_image_file_png(Image::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-path">path()</a></code><br></p>
 <p> </p>
 </div><p>Returns the image path corresponding to the specified file.</p>
 
 <h3 class="function"><a name="get_last_modification_time-1">get_last_modification_time/1</a></h3>
 <div class="spec">
-<p><tt>get_last_modification_time(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="time_utils.html#type-posix_seconds">time_utils:posix_seconds()</a></tt><br></p>
+<p><code>get_last_modification_time(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="time_utils.html#type-posix_seconds">time_utils:posix_seconds()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the last time at which the content of specified file entry was 
 modified (not counting attribute or permission changes), according to the 
@@ -1630,7 +1742,7 @@ filesystem.</p>
 
 <h3 class="function"><a name="get_last_path_element-1">get_last_path_element/1</a></h3>
 <div class="spec">
-<p><tt>get_last_path_element(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path_element">any_path_element()</a></tt><br></p>
+<p><code>get_last_path_element(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path_element">any_path_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the final, "file" part of specified path, that is its last 
 element, as a one-element path, corresponding either to a file or a directory.</p>
@@ -1649,7 +1761,7 @@ and hopefully clearer).</p>
 
 <h3 class="function"><a name="get_log_directory-1">get_log_directory/1</a></h3>
 <div class="spec">
-<p><tt>get_log_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_log_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p>Returns the path location intended for the storage of transient log files
  that the specified application may perform on the local machine.
@@ -1657,7 +1769,7 @@ and hopefully clearer).</p>
 
 <h3 class="function"><a name="get_longest_common_path-1">get_longest_common_path/1</a></h3>
 <div class="spec">
-<p><tt>get_longest_common_path(DirPaths::[<a href="#type-any_path">any_path()</a>]) -&gt; {<a href="#type-any_path">any_path()</a>, [<a href="#type-any_path">any_path()</a>]}</tt><br></p>
+<p><code>get_longest_common_path(DirPaths::[<a href="#type-any_path">any_path()</a>]) -&gt; {<a href="#type-any_path">any_path()</a>, [<a href="#type-any_path">any_path()</a>]}</code><br></p>
 <p> </p>
 </div><p><p>Returns a pair made of the longest path common to all specified directory 
 paths, and the corresponding suffixes, that is an (unordered) list of the 
@@ -1674,9 +1786,27 @@ returns:
  path elements, not individual characters.
 </p>
 
+<h3 class="function"><a name="get_most_suitable_configuration_directory-1">get_most_suitable_configuration_directory/1</a></h3>
+<div class="spec">
+<p><code>get_most_suitable_configuration_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-directory_path">directory_path()</a>)</code><br></p>
+<p> </p>
+</div><p><p>Returns the best, existing directory path intended for the storage of 
+persistent user-level configuration files that the specified application may 
+perform on the local machine: looks up in turn the candidate directories, by 
+decreasing priority order, and returns the relevant, most suitable one (if 
+any).</p>
+
+ <p>Of course a configuration file of interest may or may not be available there, 
+which may limit the interest of this function; see then 
+preferences:get_most_suitable_configuration_file/1.</p>
+
+ May return for example "~/.config/foobar/0.0.1" (if existing),
+ otherwise "~/.config/foobar" (if existing), otherwise 'undefined'.
+</p>
+
 <h3 class="function"><a name="get_non_clashing_entry_name_from-1">get_non_clashing_entry_name_from/1</a></h3>
 <div class="spec">
-<p><tt>get_non_clashing_entry_name_from(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>get_non_clashing_entry_name_from(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a path deriving from the specified one (and of the same type) so 
 that it is unique, meaning that it does not clash with any pre-existing entry.</p>
@@ -1689,7 +1819,7 @@ path will result in potential race conditions and risks of collisions.</p>
 
 <h3 class="function"><a name="get_owner_of-1">get_owner_of/1</a></h3>
 <div class="spec">
-<p><tt>get_owner_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="system_utils.html#type-user_id">system_utils:user_id()</a></tt><br></p>
+<p><code>get_owner_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="system_utils.html#type-user_id">system_utils:user_id()</a></code><br></p>
 <p> </p>
 </div><p>Returns the user identifier (uid) of the owner of the specified file
  entry.
@@ -1697,7 +1827,7 @@ path will result in potential race conditions and risks of collisions.</p>
 
 <h3 class="function"><a name="get_permissions_of-1">get_permissions_of/1</a></h3>
 <div class="spec">
-<p><tt>get_permissions_of(EntryPath::<a href="#type-any_path">any_path()</a>) -&gt; [<a href="#type-permission">permission()</a>]</tt><br></p>
+<p><code>get_permissions_of(EntryPath::<a href="#type-any_path">any_path()</a>) -&gt; [<a href="#type-permission">permission()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the (UNIX) permissions associated to the specified filesystem
  entry.
@@ -1705,7 +1835,7 @@ path will result in potential race conditions and risks of collisions.</p>
 
 <h3 class="function"><a name="get_shortest_unique_ending_paths-2">get_shortest_unique_ending_paths/2</a></h3>
 <div class="spec">
-<p><tt>get_shortest_unique_ending_paths(Path::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; {<a href="#type-any_path">any_path()</a>, <a href="#type-any_path">any_path()</a>}</tt><br></p>
+<p><code>get_shortest_unique_ending_paths(Path::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; {<a href="#type-any_path">any_path()</a>, <a href="#type-any_path">any_path()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Returns a pair made of the shortest ending paths that allows to 
 discriminate between the specified paths (expected to be of the same string 
@@ -1718,13 +1848,13 @@ type).</p>
 
 <h3 class="function"><a name="get_size-1">get_size/1</a></h3>
 <div class="spec">
-<p><tt>get_size(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt><br></p>
+<p><code>get_size(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code><br></p>
 <p> </p>
 </div><p>Returns the size, in bytes, of the specified file.</p>
 
 <h3 class="function"><a name="get_type_of-1">get_type_of/1</a></h3>
 <div class="spec">
-<p><tt>get_type_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-entry_type">entry_type()</a></tt><br></p>
+<p><code>get_type_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-entry_type">entry_type()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the (direct) type of the specified file entry (hence may return 
 'symlink' if the path of a symbolic link is specified).</p>
@@ -1735,7 +1865,7 @@ type).</p>
 
 <h3 class="function"><a name="has_matching_suffix-2">has_matching_suffix/2</a></h3>
 <div class="spec">
-<p><tt>has_matching_suffix(Path::<a href="#type-any_path">any_path()</a>, Suffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; boolean()</tt><br></p>
+<p><code>has_matching_suffix(Path::<a href="#type-any_path">any_path()</a>, Suffixes::[<a href="#type-any_suffix">any_suffix()</a>]) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether specified path matches one of the specified suffixes.</p>
 
@@ -1743,7 +1873,7 @@ type).</p>
 
 <h3 class="function"><a name="hide-1">hide/1</a></h3>
 <div class="spec">
-<p><tt>hide(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>hide(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Hides the specified file: renames it to a conventionally-deriving name, 
 to have it out of the way; throws an exception if the resulting file already 
@@ -1754,7 +1884,7 @@ exists.</p>
 
 <h3 class="function"><a name="hide-2">hide/2</a></h3>
 <div class="spec">
-<p><tt>hide(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>hide(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Hides the specified file: renames it based on the specified suffix, to 
 have it out of the way; throws an exception if the resulting file already 
@@ -1765,7 +1895,7 @@ exists.</p>
 
 <h3 class="function"><a name="hide_overwriting-1">hide_overwriting/1</a></h3>
 <div class="spec">
-<p><tt>hide_overwriting(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>hide_overwriting(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Hides the specified file: renames it to a conventionally-deriving name, 
 to have it out of the way; if the resulting file already exists, it is 
@@ -1776,7 +1906,7 @@ overwritten.</p>
 
 <h3 class="function"><a name="hide_overwriting-2">hide_overwriting/2</a></h3>
 <div class="spec">
-<p><tt>hide_overwriting(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>hide_overwriting(ToHidePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Hides the specified file: renames it to a conventionally-deriving name, 
 to have it out of the way; if the resulting file already exists, it is 
@@ -1787,7 +1917,7 @@ overwritten.</p>
 
 <h3 class="function"><a name="is_absolute_path-1">is_absolute_path/1</a></h3>
 <div class="spec">
-<p><tt>is_absolute_path(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_absolute_path(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified path is an absolute one.</p>
 
@@ -1796,7 +1926,7 @@ overwritten.</p>
 
 <h3 class="function"><a name="is_directory-1">is_directory/1</a></h3>
 <div class="spec">
-<p><tt>is_directory(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_directory(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry, supposedly existing, is a 
 directory.</p>
@@ -1807,7 +1937,7 @@ directory.</p>
 
 <h3 class="function"><a name="is_existing_directory-1">is_existing_directory/1</a></h3>
 <div class="spec">
-<p><tt>is_existing_directory(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_existing_directory(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry exists and is a directory.</p>
 
@@ -1816,7 +1946,7 @@ directory.</p>
 
 <h3 class="function"><a name="is_existing_directory_or_link-1">is_existing_directory_or_link/1</a></h3>
 <div class="spec">
-<p><tt>is_existing_directory_or_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_existing_directory_or_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry exists and is a directory or a 
 symbolic link.</p>
@@ -1826,7 +1956,7 @@ symbolic link.</p>
 
 <h3 class="function"><a name="is_existing_file-1">is_existing_file/1</a></h3>
 <div class="spec">
-<p><tt>is_existing_file(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_existing_file(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry exists and is a regular file.</p>
 
@@ -1835,7 +1965,7 @@ symbolic link.</p>
 
 <h3 class="function"><a name="is_existing_file_or_link-1">is_existing_file_or_link/1</a></h3>
 <div class="spec">
-<p><tt>is_existing_file_or_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_existing_file_or_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry exists and is either a regular 
 file or a symbolic link.</p>
@@ -1845,7 +1975,7 @@ file or a symbolic link.</p>
 
 <h3 class="function"><a name="is_existing_link-1">is_existing_link/1</a></h3>
 <div class="spec">
-<p><tt>is_existing_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_existing_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry exists and is a symbolic file.</p>
 
@@ -1854,7 +1984,7 @@ file or a symbolic link.</p>
 
 <h3 class="function"><a name="is_file-1">is_file/1</a></h3>
 <div class="spec">
-<p><tt>is_file(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_file(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry, supposedly existing, is a 
 regular file.</p>
@@ -1868,7 +1998,7 @@ exception will be thrown.</p>
 
 <h3 class="function"><a name="is_file_reference-1">is_file_reference/1</a></h3>
 <div class="spec">
-<p><tt>is_file_reference(FilePid::term()) -&gt; boolean()</tt><br></p>
+<p><code>is_file_reference(FilePid::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified term is a file reference (pseudo-guard).</p>
 
@@ -1877,7 +2007,7 @@ exception will be thrown.</p>
 
 <h3 class="function"><a name="is_leaf_among-2">is_leaf_among/2</a></h3>
 <div class="spec">
-<p><tt>is_leaf_among(LeafName::<a href="#type-leaf_name">leaf_name()</a>, PathList::[<a href="#type-path">path()</a>]) -&gt; false | <a href="#type-path">path()</a></tt><br></p>
+<p><code>is_leaf_among(LeafName::<a href="#type-leaf_name">leaf_name()</a>, PathList::[<a href="#type-path">path()</a>]) -&gt; false | <a href="#type-path">path()</a></code><br></p>
 <p> </p>
 </div><p><p>Tells whether specified basename (e.g. a pathless filename) is among the 
 specified list of full paths; returns either false or the first full path 
@@ -1890,7 +2020,7 @@ found corresponding to that leaf element.</p>
 
 <h3 class="function"><a name="is_link-1">is_link/1</a></h3>
 <div class="spec">
-<p><tt>is_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry, supposedly existing, is a 
 symbolic file.</p>
@@ -1900,7 +2030,7 @@ symbolic file.</p>
 
 <h3 class="function"><a name="is_owner_executable-1">is_owner_executable/1</a></h3>
 <div class="spec">
-<p><tt>is_owner_executable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_owner_executable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry (can be either a regular file or 
 a symbolic link) exists and is executable for its current owner - not telling 
@@ -1913,7 +2043,7 @@ anything about whether the current user can execute it.</p>
 
 <h3 class="function"><a name="is_owner_readable-1">is_owner_readable/1</a></h3>
 <div class="spec">
-<p><tt>is_owner_readable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_owner_readable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry (can be either a regular file or 
 a symbolic link) exists and is readable for its current owner - not telling 
@@ -1926,7 +2056,7 @@ anything about whether the current user can read it.</p>
 
 <h3 class="function"><a name="is_owner_writable-1">is_owner_writable/1</a></h3>
 <div class="spec">
-<p><tt>is_owner_writable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_owner_writable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry (can be either a regular file or 
 a symbolic link) exists and is writable for its current owner) - not telling 
@@ -1939,7 +2069,7 @@ anything about whether the current user can write it.</p>
 
 <h3 class="function"><a name="is_user_executable-1">is_user_executable/1</a></h3>
 <div class="spec">
-<p><tt>is_user_executable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_user_executable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry exists and is executable for the 
 current user (can be either a regular file or a symbolic link).</p>
@@ -1951,7 +2081,7 @@ current user (can be either a regular file or a symbolic link).</p>
 
 <h3 class="function"><a name="is_user_readable-1">is_user_readable/1</a></h3>
 <div class="spec">
-<p><tt>is_user_readable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_user_readable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry (can be either a regular file or 
 a symbolic link) exists and is readable for the current user .</p>
@@ -1961,7 +2091,7 @@ a symbolic link) exists and is readable for the current user .</p>
 
 <h3 class="function"><a name="is_user_writable-1">is_user_writable/1</a></h3>
 <div class="spec">
-<p><tt>is_user_writable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_user_writable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified path entry (can be either a regular file or 
 a symbolic link) exists and is writable for the current user.</p>
@@ -1971,7 +2101,7 @@ a symbolic link) exists and is writable for the current user.</p>
 
 <h3 class="function"><a name="join-1">join/1</a></h3>
 <div class="spec">
-<p><tt>join(ComponentList::[<a href="#type-any_path_element">any_path_element()</a>]) -&gt; <a href="#type-path">path()</a></tt><br></p>
+<p><code>join(ComponentList::[<a href="#type-any_path_element">any_path_element()</a>]) -&gt; <a href="#type-path">path()</a></code><br></p>
 <p> </p>
 </div><p><p>Joins the specified list of path elements.</p>
 
@@ -1994,7 +2124,7 @@ is returned in all cases.</p>
 
 <h3 class="function"><a name="join-2">join/2</a></h3>
 <div class="spec">
-<p><tt>join(FirstPath::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p>
+<p><code>join(FirstPath::<a href="#type-any_path">any_path()</a>, SecondPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-path">path()</a></code><br></p>
 <p> </p>
 </div><p><p>Joins the two specified path elements, returns a corresponding plain 
 string.</p>
@@ -2019,7 +2149,7 @@ returned in all cases.</p>
 
 <h3 class="function"><a name="latin1_file_to_unicode-1">latin1_file_to_unicode/1</a></h3>
 <div class="spec">
-<p><tt>latin1_file_to_unicode(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>latin1_file_to_unicode(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Converts in-place the specified file, whose current encoding is expected
  to be Latin1, to Unicode.
@@ -2027,7 +2157,7 @@ returned in all cases.</p>
 
 <h3 class="function"><a name="list_dir_elements-1">list_dir_elements/1</a></h3>
 <div class="spec">
-<p><tt>list_dir_elements(DirName::<a href="#type-directory_name">directory_name()</a>) -&gt; {[<a href="#type-file_name">file_name()</a>], [<a href="#type-file_name">file_name()</a>], [<a href="#type-directory_name">directory_name()</a>], [<a href="#type-file_name">file_name()</a>], [<a href="#type-file_name">file_name()</a>]}</tt><br></p>
+<p><code>list_dir_elements(DirName::<a href="#type-directory_name">directory_name()</a>) -&gt; {[<a href="#type-file_name">file_name()</a>], [<a href="#type-file_name">file_name()</a>], [<a href="#type-directory_name">directory_name()</a>], [<a href="#type-file_name">file_name()</a>], [<a href="#type-file_name">file_name()</a>]}</code><br></p>
 <p> </p>
 </div><p><p>Returns a tuple containing five lists corresponding to the per-type 
 dispatching of all filesystem elements local to specified directory (hence not 
@@ -2046,7 +2176,7 @@ elemen</p>
 
 <h3 class="function"><a name="list_dir_elements-2">list_dir_elements/2</a></h3>
 <div class="spec">
-<p><tt>list_dir_elements(DirName::<a href="#type-directory_name">directory_name()</a>, ImproperEncodingAction::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; {[<a href="#type-any_file_name">any_file_name()</a>], [<a href="#type-any_file_name">any_file_name()</a>], [<a href="#type-any_directory_name">any_directory_name()</a>], [<a href="#type-any_file_name">any_file_name()</a>], [<a href="#type-any_file_name">any_file_name()</a>]}</tt><br></p>
+<p><code>list_dir_elements(DirName::<a href="#type-directory_name">directory_name()</a>, ImproperEncodingAction::<a href="#type-improper_encoding_action">improper_encoding_action()</a>) -&gt; {[<a href="#type-any_file_name">any_file_name()</a>], [<a href="#type-any_file_name">any_file_name()</a>], [<a href="#type-any_directory_name">any_directory_name()</a>], [<a href="#type-any_file_name">any_file_name()</a>], [<a href="#type-any_file_name">any_file_name()</a>]}</code><br></p>
 <p> </p>
 </div><p><p>Returns a tuple containing five lists corresponding to the per-type 
 dispatching of all filesystem elements local to specified directory (hence not 
@@ -2067,13 +2197,13 @@ handled.</p>
 
 <h3 class="function"><a name="list_permission_pairs-0">list_permission_pairs/0</a></h3>
 <div class="spec">
-<p><tt>list_permission_pairs() -&gt; [{<a href="#type-permission">permission()</a>, <a href="#type-permission_mask">permission_mask()</a>}]</tt><br></p>
+<p><code>list_permission_pairs() -&gt; [{<a href="#type-permission">permission()</a>, <a href="#type-permission_mask">permission_mask()</a>}]</code><br></p>
 <p> </p>
 </div><p>Lists all known permission types, as {Perm,Mask} pairs.</p>
 
 <h3 class="function"><a name="make_relative-1">make_relative/1</a></h3>
 <div class="spec">
-<p><tt>make_relative(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>make_relative(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p>Returns a version of the specified path that is relative to the current
  directory; returns the same type (plain or binary string) as the one of the
@@ -2082,7 +2212,7 @@ handled.</p>
 
 <h3 class="function"><a name="make_relative-2">make_relative/2</a></h3>
 <div class="spec">
-<p><tt>make_relative(Path::<a href="#type-any_path">any_path()</a>, RefDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>make_relative(Path::<a href="#type-any_path">any_path()</a>, RefDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p>Returns a version of the first specified path that is relative to the
  specified second reference directory; returns the same type (plain or binary
@@ -2091,7 +2221,7 @@ handled.</p>
 
 <h3 class="function"><a name="move_file-2">move_file/2</a></h3>
 <div class="spec">
-<p><tt>move_file(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>move_file(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Moves the specified file or symbolic link so that it is now designated by 
 specified path.</p>
@@ -2106,7 +2236,7 @@ exist already</p>
 
 <h3 class="function"><a name="normalise_path-1">normalise_path/1</a></h3>
 <div class="spec">
-<p><tt>normalise_path(Path::<a href="#type-path">path()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p><p><tt>normalise_path(Path::<a href="#type-bin_path">bin_path()</a>) -&gt; <a href="#type-bin_path">bin_path()</a></tt><br></p>
+<p><code>normalise_path(Path::<a href="#type-path">path()</a>) -&gt; <a href="#type-path">path()</a></code><br></p><p><code>normalise_path(Path::<a href="#type-bin_path">bin_path()</a>) -&gt; <a href="#type-bin_path">bin_path()</a></code><br></p>
 <p> </p>
 <p> </p>
 </div><p><p>Normalises specified path (canonicalises it), by translating it so that 
@@ -2120,11 +2250,11 @@ no intermediate, superfluous '.' or '..' is present afterwards.</p>
 
 <h3 class="function"><a name="open-2">open/2</a></h3>
 <div class="spec">
-<p><tt>open(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></tt><br></p>
+<p><code>open(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></code><br></p>
 <p> </p>
 </div><p><p>Opens the file corresponding to the specified path, with the specified
  list of options (as listed for file:open/2 in
- <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>, that is: read, write, append, 
+ <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><code>http://erlang.org/doc/man/file.html#open-2</code></a>, that is: read, write, append, 
 exclusive, raw, etc).</p>
 
  <p>See read_terms/1 if planning to read that content as terms later, notably with 
@@ -2146,11 +2276,11 @@ the filesystem.</p>
 
 <h3 class="function"><a name="open-3">open/3</a></h3>
 <div class="spec">
-<p><tt>open(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>], AttemptMode::try_once | try_endlessly | try_endlessly_safer) -&gt; <a href="#type-file">file()</a></tt><br></p>
+<p><code>open(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>], AttemptMode::try_once | try_endlessly | try_endlessly_safer) -&gt; <a href="#type-file">file()</a></code><br></p>
 <p> </p>
 </div><p><p>Opens the file corresponding to the specified path (first parameter) with
  the specified list of options (second parameter; refer to file:open/2 for
- detailed documentation, see <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>).</p>
+ detailed documentation, see <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><code>http://erlang.org/doc/man/file.html#open-2</code></a>).</p>
 
  <p>Third parameter is the "attempt mode", either 'try_once', 'try_endlessly' or 
 'try_endlessly_safer', depending respectively on whether we want to try to 
@@ -2182,7 +2312,7 @@ made to desynchronize these processes to smooth the use of descriptors.</p>
 
 <h3 class="function"><a name="path_to_variable_name-1">path_to_variable_name/1</a></h3>
 <div class="spec">
-<p><tt>path_to_variable_name(Filename::<a href="#type-path">path()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>path_to_variable_name(Filename::<a href="#type-path">path()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Converts specified path (full filename, like '/home/jack/test.txt' or 
 './media/test.txt') into a variable name licit in most programming languages 
@@ -2198,7 +2328,7 @@ made to desynchronize these processes to smooth the use of descriptors.</p>
 
 <h3 class="function"><a name="path_to_variable_name-2">path_to_variable_name/2</a></h3>
 <div class="spec">
-<p><tt>path_to_variable_name(T::<a href="#type-path">path()</a>, Prefix::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>path_to_variable_name(T::<a href="#type-path">path()</a>, Prefix::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Converts specified path (full filename, like '/home/jack/test.txt' or 
 './media/test.txt') into a variable name licit in most programming languages 
@@ -2209,7 +2339,7 @@ made to desynchronize these processes to smooth the use of descriptors.</p>
 
 <h3 class="function"><a name="read-2">read/2</a></h3>
 <div class="spec">
-<p><tt>read(File::<a href="#type-file">file()</a>, Count::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; {ok, <a href="#type-ustring">ustring()</a> | binary()} | eof</tt><br></p>
+<p><code>read(File::<a href="#type-file">file()</a>, Count::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; {ok, <a href="#type-ustring">ustring()</a> | binary()} | eof</code><br></p>
 <p> </p>
 </div><p><p>Reads the specified number of bytes/characters from the specified file.</p>
 
@@ -2222,7 +2352,7 @@ all could be read.</p>
 
 <h3 class="function"><a name="read_etf_file-1">read_etf_file/1</a></h3>
 <div class="spec">
-<p><tt>read_etf_file(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [term()]</tt><br></p>
+<p><code>read_etf_file(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [term()]</code><br></p>
 <p> </p>
 </div><p><p>Reads the specified file, supposedly in ETF format (Erlang Term Format): 
 tries to parse a list of terms (one per line, terminating with a dot) from it 
@@ -2244,7 +2374,7 @@ utf8} option, or have been written with content already properly encoded
 
 <h3 class="function"><a name="read_lines-1">read_lines/1</a></h3>
 <div class="spec">
-<p><tt>read_lines(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [<a href="#type-ustring">ustring()</a>]</tt><br></p>
+<p><code>read_lines(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [<a href="#type-ustring">ustring()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Reads the content of the specified file, expected to be a text one, based 
 on its filename specified as any kind of string (plain, binary, atom, etc) and 
@@ -2253,13 +2383,13 @@ failure.</p>
 
  Each returned line has any (trailing) newline(s) removed (knowing that the
  last one may or may not have a newline). See
- <a href="https://erlang.org/doc/man/file.html#read_line-1" target="_top"><tt>https://erlang.org/doc/man/file.html#read_line-1</tt></a> for more details regarding
+ <a href="https://erlang.org/doc/man/file.html#read_line-1" target="_top"><code>https://erlang.org/doc/man/file.html#read_line-1</code></a> for more details regarding
  end-of-line characters.
 </p>
 
 <h3 class="function"><a name="read_terms-1">read_terms/1</a></h3>
 <div class="spec">
-<p><tt>read_terms(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [term()]</tt><br></p>
+<p><code>read_terms(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [term()]</code><br></p>
 <p> </p>
 </div><p><p>Reads the specified file supposedly in ETF format (Erlang Term Format): 
 tries to parse a list of terms (one per line, terminating with a dot) from it 
@@ -2281,7 +2411,7 @@ utf8} option, or have been written with content already properly encoded
 
 <h3 class="function"><a name="read_whole-1">read_whole/1</a></h3>
 <div class="spec">
-<p><tt>read_whole(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; binary()</tt><br></p>
+<p><code>read_whole(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Reads the content of the specified file, based on its filename specified 
 as any kind of string (plain, binary, atom, etc), and returns the 
@@ -2292,7 +2422,7 @@ corresponding binary, or throws an exception on failure.</p>
 
 <h3 class="function"><a name="remove_directories-1">remove_directories/1</a></h3>
 <div class="spec">
-<p><tt>remove_directories(DirectoryPaths::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_directories(DirectoryPaths::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes the specified (possibly non-empty) directories as a whole 
 (i.e. including its full content), recursively (so: behaves mostly like the 
@@ -2305,7 +2435,7 @@ corresponding binary, or throws an exception on failure.</p>
 
 <h3 class="function"><a name="remove_directories_if_existing-1">remove_directories_if_existing/1</a></h3>
 <div class="spec">
-<p><tt>remove_directories_if_existing(DirectoryPaths::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_directories_if_existing(DirectoryPaths::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes, if they exist, the specified (possibly non-empty) directories as 
 a whole (i.e. including its full content), recursively (so: behaves mostly 
@@ -2318,7 +2448,7 @@ like the 'rm -rf ' shell command; of course to use with care).</p>
 
 <h3 class="function"><a name="remove_directory-1">remove_directory/1</a></h3>
 <div class="spec">
-<p><tt>remove_directory(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_directory(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes the specified (possibly non-empty) directory as a whole 
 (i.e. including its full content), recursively (so: behaves mostly like the 
@@ -2331,7 +2461,7 @@ like the 'rm -rf ' shell command; of course to use with care).</p>
 
 <h3 class="function"><a name="remove_directory_if_existing-1">remove_directory_if_existing/1</a></h3>
 <div class="spec">
-<p><tt>remove_directory_if_existing(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_directory_if_existing(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes, if it exists, the specified (possibly non-empty) directory as a 
 whole (i.e. including its full content), recursively (so: behaves mostly like 
@@ -2344,7 +2474,7 @@ the 'rm -rf ' shell command; of course to use with care).</p>
 
 <h3 class="function"><a name="remove_empty_directory-1">remove_empty_directory/1</a></h3>
 <div class="spec">
-<p><tt>remove_empty_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_empty_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Removes the specified directory, which must be empty (so: behaves mostly
  like the 'rmdir' shell command).
@@ -2352,7 +2482,7 @@ the 'rm -rf ' shell command; of course to use with care).</p>
 
 <h3 class="function"><a name="remove_empty_path-1">remove_empty_path/1</a></h3>
 <div class="spec">
-<p><tt>remove_empty_path(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_empty_path(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes all (supposedly) empty directories pertaining to the specified 
 local, relative directory path, that is this path (e.g. a/b/c) and all its 
@@ -2366,7 +2496,7 @@ shell command.</p>
 
 <h3 class="function"><a name="remove_empty_tree-1">remove_empty_tree/1</a></h3>
 <div class="spec">
-<p><tt>remove_empty_tree(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_empty_tree(DirectoryPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Removes all (supposedly) empty directories found from specified
  directory, expected to be the root of a tree that contains only (possibly
@@ -2375,18 +2505,19 @@ shell command.</p>
 
 <h3 class="function"><a name="remove_extension-1">remove_extension/1</a></h3>
 <div class="spec">
-<p><tt>remove_extension(FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>remove_extension(FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p><p><code>remove_extension(FilePath::<a href="#type-bin_file_path">bin_file_path()</a>) -&gt; <a href="#type-bin_file_path">bin_file_path()</a></code><br></p>
+<p> </p>
 <p> </p>
 </div><p><p>Removes the (last) extension (regardless of its actual value) of the 
 specified file path.</p>
 
  For example "/home/jack/rosie.tmp" =
- remove_extension("/home/jack/rosie.tmp.ttf")
+   remove_extension("/home/jack/rosie.tmp.ttf")
 </p>
 
 <h3 class="function"><a name="remove_extension-2">remove_extension/2</a></h3>
 <div class="spec">
-<p><tt>remove_extension(FilePath::<a href="#type-file_path">file_path()</a>, ExpectedExtension::<a href="#type-extension">extension()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>remove_extension(BinFilePath::<a href="#type-any_file_path">any_file_path()</a>, ExpectedExtension::<a href="#type-extension">extension()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Checks that the (last) extension of the specified file path is the 
 specified one, and returns that path once this extension has been removed.</p>
@@ -2397,7 +2528,7 @@ specified one, and returns that path once this extension has been removed.</p>
 
 <h3 class="function"><a name="remove_file-1">remove_file/1</a></h3>
 <div class="spec">
-<p><tt>remove_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes (deletes) the specified file (be them regular files or symbolic 
 links), specified as any kind of string.</p>
@@ -2408,7 +2539,7 @@ links), specified as any kind of string.</p>
 
 <h3 class="function"><a name="remove_file_if_existing-1">remove_file_if_existing/1</a></h3>
 <div class="spec">
-<p><tt>remove_file_if_existing(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_file_if_existing(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Removes the specified regular file, specified as any kind of string, iff
  it is already existing, otherwise does nothing.
@@ -2416,7 +2547,7 @@ links), specified as any kind of string.</p>
 
 <h3 class="function"><a name="remove_file_or_link_if_existing-1">remove_file_or_link_if_existing/1</a></h3>
 <div class="spec">
-<p><tt>remove_file_or_link_if_existing(FileOrLinkPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_file_or_link_if_existing(FileOrLinkPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes (deletes) the specified file (regular or symbolic link), 
 specified as any kind of string, iff it is already existing, otherwise does 
@@ -2427,7 +2558,7 @@ nothing.</p>
 
 <h3 class="function"><a name="remove_files-1">remove_files/1</a></h3>
 <div class="spec">
-<p><tt>remove_files(FilePaths::[<a href="#type-any_file_path">any_file_path()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_files(FilePaths::[<a href="#type-any_file_path">any_file_path()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes (deletes) the specified files (be them regular files or symbolic 
 links), specified as a list of any kind of strings.</p>
@@ -2438,7 +2569,7 @@ links), specified as a list of any kind of strings.</p>
 
 <h3 class="function"><a name="remove_files_if_existing-1">remove_files_if_existing/1</a></h3>
 <div class="spec">
-<p><tt>remove_files_if_existing(FilePaths::[<a href="#type-any_file_path">any_file_path()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_files_if_existing(FilePaths::[<a href="#type-any_file_path">any_file_path()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Removes each of the specified regular files, in the specified list of any
  kind of strings, iff it is already existing.
@@ -2446,7 +2577,7 @@ links), specified as a list of any kind of strings.</p>
 
 <h3 class="function"><a name="remove_symlink-1">remove_symlink/1</a></h3>
 <div class="spec">
-<p><tt>remove_symlink(SymlinkPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_symlink(SymlinkPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes (deletes) the specified symbolic link, specified as any kind of 
 string.</p>
@@ -2459,7 +2590,7 @@ not).</p>
 
 <h3 class="function"><a name="remove_symlink_if_existing-1">remove_symlink_if_existing/1</a></h3>
 <div class="spec">
-<p><tt>remove_symlink_if_existing(SymlinkPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_symlink_if_existing(SymlinkPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes (deletes) the specified symbolic link, specified as any kind of 
 string, iff it is already existing, otherwise does nothing.</p>
@@ -2472,7 +2603,7 @@ not).</p>
 
 <h3 class="function"><a name="remove_upper_levels_and_extension-1">remove_upper_levels_and_extension/1</a></h3>
 <div class="spec">
-<p><tt>remove_upper_levels_and_extension(FilePath) -&gt; any()</tt></p>
+<p><code>remove_upper_levels_and_extension(FilePath) -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Removes all upper levels of a path (absolute or not), as well as the 
 extension of the resulting file name.</p>
@@ -2483,7 +2614,7 @@ extension of the resulting file name.</p>
 
 <h3 class="function"><a name="rename-2">rename/2</a></h3>
 <div class="spec">
-<p><tt>rename(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>rename(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Renames the specified file.</p>
 
@@ -2492,7 +2623,7 @@ extension of the resulting file name.</p>
 
 <h3 class="function"><a name="rename_preserving-2">rename_preserving/2</a></h3>
 <div class="spec">
-<p><tt>rename_preserving(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>rename_preserving(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Renames the specified file; if the destination file already exists, 
 renames it first by suffixing '.previous' to its name (then overwriting any 
@@ -2504,7 +2635,7 @@ renaming.</p>
 
 <h3 class="function"><a name="rename_preserving-3">rename_preserving/3</a></h3>
 <div class="spec">
-<p><tt>rename_preserving(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p><code>rename_preserving(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>, HidingSuffix::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Renames the specified file; if the destination file already exists, 
 renames it first by adding the specified suffix to its name (then overwriting 
@@ -2516,7 +2647,7 @@ renaming.</p>
 
 <h3 class="function"><a name="replace_extension-3">replace_extension/3</a></h3>
 <div class="spec">
-<p><tt>replace_extension(FilePath::<a href="#type-file_path">file_path()</a>, SourceExtension::<a href="#type-extension">extension()</a>, TargetExtension::<a href="#type-extension">extension()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>replace_extension(FilePath::<a href="#type-file_path">file_path()</a>, SourceExtension::<a href="#type-extension">extension()</a>, TargetExtension::<a href="#type-extension">extension()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a new file path whose extension has been updated.</p>
 
@@ -2529,21 +2660,28 @@ return "/home/jack/rosie.wav".</p>
 
 <h3 class="function"><a name="resolve_any_path-1">resolve_any_path/1</a></h3>
 <div class="spec">
-<p><tt>resolve_any_path(BinPath::<a href="#type-possibly_resolvable_path">possibly_resolvable_path()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p>
+<p><code>resolve_any_path(BinPath::<a href="#type-possibly_resolvable_path">possibly_resolvable_path()</a>) -&gt; <a href="#type-path">path()</a></code><br></p>
 <p> </p>
-</div><p>Resolves the specified path - either a standard one or a resolvable one -
- in all cases as a plain, standard path.
+</div><p><p>Resolves the specified path - either a standard one or a resolvable one - 
+in all cases as a plain, standard path.</p>
+
+ For example resolve_any_path([home, "computer-info", short_hostname,
+ "info.txt"]) may return "/home/john/computer-info/hurricane/info.txt".
 </p>
 
 <h3 class="function"><a name="resolve_path-1">resolve_path/1</a></h3>
 <div class="spec">
-<p><tt>resolve_path(ResolvablePath::<a href="#type-resolvable_path">resolvable_path()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p>
+<p><code>resolve_path(ResolvablePath::<a href="#type-resolvable_path">resolvable_path()</a>) -&gt; <a href="#type-path">path()</a></code><br></p>
 <p> </p>
-</div><p>Resolves the specified resolvable path as a standard path.</p>
+</div><p><p>Resolves the specified resolvable path as a standard path.</p>
+
+ For example resolve_path([home, "computer-info", short_hostname, "info.txt"])
+ may return "/home/john/computer-info/hurricane/info.txt".
+</p>
 
 <h3 class="function"><a name="resolve_symlink_fully-1">resolve_symlink_fully/1</a></h3>
 <div class="spec">
-<p><tt>resolve_symlink_fully(SymlinkPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>resolve_symlink_fully(SymlinkPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p>Resolves fully the specified symbolic link: returns the entry it points
  ultimately to (therefore this entry cannot be a symbolic link), or throws an
@@ -2554,7 +2692,7 @@ return "/home/jack/rosie.wav".</p>
 
 <h3 class="function"><a name="resolve_symlink_once-1">resolve_symlink_once/1</a></h3>
 <div class="spec">
-<p><tt>resolve_symlink_once(SymlinkPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p><code>resolve_symlink_once(SymlinkPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></code><br></p>
 <p> </p>
 </div><p>Resolves the specified symbolic link once: returns the entry (potentially
  another symbolic link) it points to.
@@ -2562,7 +2700,7 @@ return "/home/jack/rosie.wav".</p>
 
 <h3 class="function"><a name="resolve_type_of-1">resolve_type_of/1</a></h3>
 <div class="spec">
-<p><tt>resolve_type_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-entry_type">entry_type()</a></tt><br></p>
+<p><code>resolve_type_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-entry_type">entry_type()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the actual, ultimate type of the specified file entry (hence may 
 not return 'symlink').</p>
@@ -2573,7 +2711,7 @@ not return 'symlink').</p>
 
 <h3 class="function"><a name="set_current_directory-1">set_current_directory/1</a></h3>
 <div class="spec">
-<p><tt>set_current_directory(DirPath::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_current_directory(DirPath::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets the specified directory as current directory.</p>
 
@@ -2582,13 +2720,13 @@ not return 'symlink').</p>
 
 <h3 class="function"><a name="split-1">split/1</a></h3>
 <div class="spec">
-<p><tt>split(Path::<a href="#type-any_path">any_path()</a>) -&gt; [<a href="#type-any_path_element">any_path_element()</a>]</tt><br></p>
+<p><code>split(Path::<a href="#type-any_path">any_path()</a>) -&gt; [<a href="#type-any_path_element">any_path_element()</a>]</code><br></p>
 <p> </p>
 </div><p>Splits the specified path in elements, returned as a list.</p>
 
 <h3 class="function"><a name="split_path-1">split_path/1</a></h3>
 <div class="spec">
-<p><tt>split_path(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; {<a href="#type-any_path">any_path()</a>, <a href="#type-any_path_element">any_path_element()</a>}</tt><br></p>
+<p><code>split_path(AnyPath::<a href="#type-any_path">any_path()</a>) -&gt; {<a href="#type-any_path">any_path()</a>, <a href="#type-any_path_element">any_path_element()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Splits the specified path into a full base directory path and a final 
 entry (filename or directory name).</p>
@@ -2599,7 +2737,7 @@ entry (filename or directory name).</p>
 
 <h3 class="function"><a name="to_permission_mask-1">to_permission_mask/1</a></h3>
 <div class="spec">
-<p><tt>to_permission_mask(PermissionList::<a href="#type-permission">permission()</a> | [<a href="#type-permission">permission()</a>]) -&gt; <a href="#type-permission_mask">permission_mask()</a></tt><br></p>
+<p><code>to_permission_mask(PermissionList::<a href="#type-permission">permission()</a> | [<a href="#type-permission">permission()</a>]) -&gt; <a href="#type-permission_mask">permission_mask()</a></code><br></p>
 <p> </p>
 </div><p>Encodes the specified symbolic permission(s) into its/their low-level
  counterpart mask(s).
@@ -2607,7 +2745,7 @@ entry (filename or directory name).</p>
 
 <h3 class="function"><a name="touch-1">touch/1</a></h3>
 <div class="spec">
-<p><tt>touch(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>touch(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Updates the modification time (the last time at which its content was 
 reported as modified according to the filesystem) of the specified file entry, 
@@ -2621,7 +2759,7 @@ times.</p>
 
 <h3 class="function"><a name="try_copy_file-2">try_copy_file/2</a></h3>
 <div class="spec">
-<p><tt>try_copy_file(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></tt><br></p>
+<p><code>try_copy_file(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Copies the specified file to a given destination filename (not a 
 directory name, see copy_file_in/2 for that), overwriting any previous file.</p>
@@ -2636,7 +2774,7 @@ as new files).</p>
 
 <h3 class="function"><a name="update_with_keywords-3">update_with_keywords/3</a></h3>
 <div class="spec">
-<p><tt>update_with_keywords(OriginalFilePath::<a href="#type-any_file_path">any_file_path()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>, TranslationTable::<a href="text_utils.html#type-translation_table">text_utils:translation_table()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>update_with_keywords(OriginalFilePath::<a href="#type-any_file_path">any_file_path()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>, TranslationTable::<a href="text_utils.html#type-translation_table">text_utils:translation_table()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Updates the specified file with the specified keywords, that is copies 
 the original file into a target, updated one (supposedly non-already 
@@ -2654,7 +2792,7 @@ table:new([{"hello", "goodbye"}, {"Blue", "Red"}])).</p>
 
 <h3 class="function"><a name="update_with_keywords-4">update_with_keywords/4</a></h3>
 <div class="spec">
-<p><tt>update_with_keywords(OriginalFilePath::<a href="#type-any_file_path">any_file_path()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>, TranslationTable::<a href="text_utils.html#type-translation_table">text_utils:translation_table()</a>, EncodingOpts::<a href="system_utils.html#type-encoding_options">system_utils:encoding_options()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>update_with_keywords(OriginalFilePath::<a href="#type-any_file_path">any_file_path()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>, TranslationTable::<a href="text_utils.html#type-translation_table">text_utils:translation_table()</a>, EncodingOpts::<a href="system_utils.html#type-encoding_options">system_utils:encoding_options()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Updates the specified file with the specified keywords, that is copies 
 the original file into a target, updated one (supposedly non-already 
@@ -2668,7 +2806,7 @@ table corresponding to that key).</p>
 
 <h3 class="function"><a name="write-2">write/2</a></h3>
 <div class="spec">
-<p><tt>write(File::<a href="#type-file">file()</a>, Content::iodata()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write(File::<a href="#type-file">file()</a>, Content::iodata()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified byte-oriented content in the specified file.</p>
 
@@ -2682,7 +2820,7 @@ normal mode as well).</p>
 
 <h3 class="function"><a name="write_direct_terms-2">write_direct_terms/2</a></h3>
 <div class="spec">
-<p><tt>write_direct_terms(File::<a href="#type-file">file()</a>, Terms::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_direct_terms(File::<a href="#type-file">file()</a>, Terms::[term()]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes directly the specified terms int the specified already opened 
 file, in the ETF format.</p>
@@ -2694,7 +2832,7 @@ file, in the ETF format.</p>
 
 <h3 class="function"><a name="write_etf_file-2">write_etf_file/2</a></h3>
 <div class="spec">
-<p><tt>write_etf_file(Terms::[term()], AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_etf_file(Terms::[term()], AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified terms in the specified file, in the ETF format, with 
 no specific header or footer.</p>
@@ -2706,7 +2844,7 @@ no specific header or footer.</p>
 
 <h3 class="function"><a name="write_etf_file-4">write_etf_file/4</a></h3>
 <div class="spec">
-<p><tt>write_etf_file(Terms::[term()], Header::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Footer::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_etf_file(Terms::[term()], Header::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Footer::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified terms in the specified file, in the ETF format, with 
 the specified header and footer.</p>
@@ -2718,7 +2856,7 @@ the specified header and footer.</p>
 
 <h3 class="function"><a name="write_terms-2">write_terms/2</a></h3>
 <div class="spec">
-<p><tt>write_terms(Terms::[term()], AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_terms(Terms::[term()], AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified terms in the specified file, in the ETF format, with 
 no specific header or footer.</p>
@@ -2730,7 +2868,7 @@ no specific header or footer.</p>
 
 <h3 class="function"><a name="write_terms-4">write_terms/4</a></h3>
 <div class="spec">
-<p><tt>write_terms(Terms::[term()], Header::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Footer::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_terms(Terms::[term()], Header::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Footer::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified terms in the specified file, in the ETF format, with 
 the specified header and footer.</p>
@@ -2740,7 +2878,7 @@ the specified header and footer.</p>
 
 <h3 class="function"><a name="write_ustring-2">write_ustring/2</a></h3>
 <div class="spec">
-<p><tt>write_ustring(File::<a href="#type-file">file()</a>, Str::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_ustring(File::<a href="#type-file">file()</a>, Str::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified Unicode string in the specified file.</p>
 
@@ -2756,7 +2894,7 @@ use: 'write_ustring( File, Str, _FormatValues=[] )'.</p>
 
 <h3 class="function"><a name="write_ustring-3">write_ustring/3</a></h3>
 <div class="spec">
-<p><tt>write_ustring(File::<a href="#type-file">file()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_ustring(File::<a href="#type-file">file()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified formatted content in the specified file.</p>
 
@@ -2765,7 +2903,7 @@ use: 'write_ustring( File, Str, _FormatValues=[] )'.</p>
 
 <h3 class="function"><a name="write_whole-2">write_whole/2</a></h3>
 <div class="spec">
-<p><tt>write_whole(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Content::<a href="#type-ustring">ustring()</a> | binary()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_whole(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Content::<a href="#type-ustring">ustring()</a> | binary()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified content in the specified file, whose path is 
 specified as any kind of string, using a default encoding if a plain string is 
@@ -2780,7 +2918,7 @@ specified.</p>
 
 <h3 class="function"><a name="write_whole-3">write_whole/3</a></h3>
 <div class="spec">
-<p><tt>write_whole(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, StringContent::<a href="#type-ustring">ustring()</a> | binary(), Modes::[<a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-mode">file:mode()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>write_whole(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, StringContent::<a href="#type-ustring">ustring()</a> | binary(), Modes::[<a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-mode">file:mode()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified content in the file whose path is specified as any 
 kind of string, using the specified modes options, and applying before a 
@@ -2799,7 +2937,7 @@ potential unwanted encoding.</p>
 
 <h3 class="function"><a name="write_whole_in_non_clashing-1">write_whole_in_non_clashing/1</a></h3>
 <div class="spec">
-<p><tt>write_whole_in_non_clashing(Content::<a href="#type-ustring">ustring()</a> | binary()) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>write_whole_in_non_clashing(Content::<a href="#type-ustring">ustring()</a> | binary()) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes the specified content in a new file, whose path is chosen not to 
 clash with any other (typically a temporary file), and returns that path.</p>
@@ -2809,7 +2947,7 @@ clash with any other (typically a temporary file), and returns that path.</p>
 
 <h3 class="function"><a name="zipped_term_to_unzipped_file-1">zipped_term_to_unzipped_file/1</a></h3>
 <div class="spec">
-<p><tt>zipped_term_to_unzipped_file(ZippedTerm::binary()) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>zipped_term_to_unzipped_file(ZippedTerm::binary()) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Reads the specified binary, extracts the zipped file in it and writes it 
 on disk, in the current directory.</p>
@@ -2819,7 +2957,7 @@ on disk, in the current directory.</p>
 
 <h3 class="function"><a name="zipped_term_to_unzipped_file-2">zipped_term_to_unzipped_file/2</a></h3>
 <div class="spec">
-<p><tt>zipped_term_to_unzipped_file(ZippedTerm::binary(), TargetFilename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>zipped_term_to_unzipped_file(ZippedTerm::binary(), TargetFilename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Reads the specified binary, extracts the zipped file in it and writes it 
 on disk, in the current directory, under the specified filename instead of 
@@ -2832,7 +2970,7 @@ under the filename stored in the zip archive.</p>
 
 <h3 class="function"><a name="zipped_term_to_unzipped_files-1">zipped_term_to_unzipped_files/1</a></h3>
 <div class="spec">
-<p><tt>zipped_term_to_unzipped_files(ZippedTerm::binary()) -&gt; [<a href="#type-file_name">file_name()</a>]</tt><br></p>
+<p><code>zipped_term_to_unzipped_files(ZippedTerm::binary()) -&gt; [<a href="#type-file_name">file_name()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Reads the specified binary, extracts the zipped files stored in it and 
 writes them on disk, in the current directory.</p>
@@ -2842,7 +2980,7 @@ writes them on disk, in the current directory.</p>
 
 <h3 class="function"><a name="zipped_term_to_unzipped_files-2">zipped_term_to_unzipped_files/2</a></h3>
 <div class="spec">
-<p><tt>zipped_term_to_unzipped_files(ZippedTerm::binary(), TargetDirectory::<a href="#type-directory_name">directory_name()</a>) -&gt; [<a href="#type-file_name">file_name()</a>]</tt><br></p>
+<p><code>zipped_term_to_unzipped_files(ZippedTerm::binary(), TargetDirectory::<a href="#type-directory_name">directory_name()</a>) -&gt; [<a href="#type-file_name">file_name()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Reads the specified binary, extracts the zipped files in it and writes 
 them on disk, in the specified directory.</p>

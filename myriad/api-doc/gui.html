@@ -32,74 +32,74 @@ OpenGL), for classical applications and interactive multimedia ones
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_distance">any_distance()</a></h3>
-<p><tt>any_distance() = <a href="linear.html#type-any_distance">linear:any_distance()</a></tt></p>
+<p><code>any_distance() = <a href="linear.html#type-any_distance">linear:any_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_height">any_height()</a></h3>
-<p><tt>any_height() = <a href="#type-any_length">any_length()</a></tt></p>
+<p><code>any_height() = <a href="#type-any_length">any_length()</a></code></p>
 <p> An height, as a number (integer or floating-point) of pixels.</p>
 
 <h3 class="typedecl"><a name="type-any_length">any_length()</a></h3>
-<p><tt>any_length() = <a href="#type-any_distance">any_distance()</a></tt></p>
+<p><code>any_length() = <a href="#type-any_distance">any_distance()</a></code></p>
 <p> A length, as a number (integer or floating-point) of pixels.</p>
 
 <h3 class="typedecl"><a name="type-any_width">any_width()</a></h3>
-<p><tt>any_width() = <a href="#type-any_length">any_length()</a></tt></p>
+<p><code>any_width() = <a href="#type-any_length">any_length()</a></code></p>
 <p> A width, as a number (integer or floating-point) of pixels.</p>
 
 <h3 class="typedecl"><a name="type-aspect_ratio">aspect_ratio()</a></h3>
-<p><tt>aspect_ratio() = <a href="#type-ratio">ratio()</a></tt></p>
+<p><code>aspect_ratio() = <a href="#type-ratio">ratio()</a></code></p>
 <p> An aspect ratio, typically of a screen, equal to Width/Height.</p>
 
 <h3 class="typedecl"><a name="type-backend_environment">backend_environment()</a></h3>
-<p><b>abstract datatype</b>: <tt>backend_environment()</tt></p>
+<p><b>abstract datatype</b>: <code>backend_environment()</code></p>
 <p> An (opaque) environment used by a GUI backend.</p>
 
 <h3 class="typedecl"><a name="type-backend_event">backend_event()</a></h3>
-<p><tt>backend_event() = <a href="gui_event.html#type-wx_event">gui_event:wx_event()</a></tt></p>
+<p><code>backend_event() = <a href="gui_event.html#type-wx_event">gui_event:wx_event()</a></code></p>
 <p> A (supposedly opaque) backend GUI event.</p>
 
 <h3 class="typedecl"><a name="type-backend_identifier">backend_identifier()</a></h3>
-<p><tt>backend_identifier() = gs | wx | atom()</tt></p>
+<p><code>backend_identifier() = gs | wx | atom()</code></p>
 <p> Identifier of a graphical backend.</p>
 
 <h3 class="typedecl"><a name="type-backend_information">backend_information()</a></h3>
-<p><tt>backend_information() = {<a href="#type-backend_identifier">backend_identifier()</a>, <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a>}</tt></p>
+<p><code>backend_information() = {<a href="#type-backend_identifier">backend_identifier()</a>, <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a>}</code></p>
 <p> Information regarding a graphical backend.</p>
 
 <h3 class="typedecl"><a name="type-column_count">column_count()</a></h3>
-<p><tt>column_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>column_count() = <a href="#type-count">count()</a></code></p>
 <p> A number of columns.</p>
 
 <h3 class="typedecl"><a name="type-construction_parameters">construction_parameters()</a></h3>
-<p><tt>construction_parameters() = [term()]</tt></p>
+<p><code>construction_parameters() = [term()]</code></p>
 <p> The construction parameters of a MyriadGUI object.</p>
 
 <h3 class="typedecl"><a name="type-controller_pid">controller_pid()</a></h3>
-<p><tt>controller_pid() = pid()</tt></p>
+<p><code>controller_pid() = pid()</code></p>
 <p> The PID of a process whose role is to be a Controller in the sense of the MVC
  pattern.</p>
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><tt>coordinate() = <a href="#type-integer_coordinate">integer_coordinate()</a></tt></p>
+<p><code>coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></code></p>
 <p> Here, for a GUI, coordinates are an integer number of pixels.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-debug_level">debug_level()</a></h3>
-<p><tt>debug_level() = <a href="#type-debug_level_opt">debug_level_opt()</a> | [<a href="#type-debug_level_opt">debug_level_opt()</a>]</tt></p>
+<p><code>debug_level() = <a href="#type-debug_level_opt">debug_level_opt()</a> | [<a href="#type-debug_level_opt">debug_level_opt()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-debug_level_opt">debug_level_opt()</a></h3>
-<p><tt>debug_level_opt() = none | calls | life_cycle</tt></p>
+<p><code>debug_level_opt() = none | calls | life_cycle</code></p>
 <p><p> Mapped internally to 'none', 'verbose', 'trace', etc.</p>
 
  See convert_debug_level/1.</p>
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><tt>dimensions() = <a href="linear_2D.html#type-integer_rect_dimensions">linear_2D:integer_rect_dimensions()</a></tt></p>
+<p><code>dimensions() = <a href="linear_2D.html#type-integer_rect_dimensions">linear_2D:integer_rect_dimensions()</a></code></p>
 <p><p> Dimensions in pixels, as {IntegerWidth,IntegerHeight}.</p>
 
  Note that in general size() shall be preferred to this type, notably to
@@ -107,43 +107,43 @@ OpenGL), for classical applications and interactive multimedia ones
  textures or to express dimensions in general.</p>
 
 <h3 class="typedecl"><a name="type-direction">direction()</a></h3>
-<p><tt>direction() = <a href="#type-orientation">orientation()</a> | both</tt></p>
+<p><code>direction() = <a href="#type-orientation">orientation()</a> | both</code></p>
 <p> A direction, for example to maximise a widget in a container.</p>
 
 <h3 class="typedecl"><a name="type-error_message">error_message()</a></h3>
-<p><tt>error_message() = term()</tt></p>
+<p><code>error_message() = term()</code></p>
 
 
 <h3 class="typedecl"><a name="type-event_callback">event_callback()</a></h3>
-<p><tt>event_callback() = <a href="gui_event.html#type-event_callback">gui_event:event_callback()</a></tt></p>
+<p><code>event_callback() = <a href="gui_event.html#type-event_callback">gui_event:event_callback()</a></code></p>
 <p> Shorthand type.</p>
 
 <h3 class="typedecl"><a name="type-event_subscriber">event_subscriber()</a></h3>
-<p><tt>event_subscriber() = <a href="gui_event.html#type-event_subscriber">gui_event:event_subscriber()</a></tt></p>
+<p><code>event_subscriber() = <a href="gui_event.html#type-event_subscriber">gui_event:event_subscriber()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-event_subscription_opt">event_subscription_opt()</a></h3>
-<p><tt>event_subscription_opt() = {id, <a href="#type-id">id()</a>} | {last_id, <a href="#type-id">id()</a>} | trap_event | propagate_event | callback | {callback, <a href="#type-event_callback">event_callback()</a>} | {user_data, <a href="#type-user_data">user_data()</a>}</tt></p>
+<p><code>event_subscription_opt() = {id, <a href="#type-id">id()</a>} | {last_id, <a href="#type-id">id()</a>} | trap_event | propagate_event | callback | {callback, <a href="#type-event_callback">event_callback()</a>} | {user_data, <a href="#type-user_data">user_data()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-event_subscription_options">event_subscription_options()</a></h3>
-<p><tt>event_subscription_options() = <a href="#type-event_subscription_opt">event_subscription_opt()</a> | [<a href="#type-event_subscription_opt">event_subscription_opt()</a>]</tt></p>
+<p><code>event_subscription_options() = <a href="#type-event_subscription_opt">event_subscription_opt()</a> | [<a href="#type-event_subscription_opt">event_subscription_opt()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-event_subscription_spec">event_subscription_spec()</a></h3>
-<p><tt>event_subscription_spec() = <a href="gui_event.html#type-event_subscription_spec">gui_event:event_subscription_spec()</a></tt></p>
+<p><code>event_subscription_spec() = <a href="gui_event.html#type-event_subscription_spec">gui_event:event_subscription_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-event_type">event_type()</a></h3>
-<p><tt>event_type() = <a href="gui_event.html#type-event_type">gui_event:event_type()</a></tt></p>
+<p><code>event_type() = <a href="gui_event.html#type-event_type">gui_event:event_type()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-event_unsubscription_spec">event_unsubscription_spec()</a></h3>
-<p><tt>event_unsubscription_spec() = <a href="gui_event.html#type-event_unsubscription_spec">gui_event:event_unsubscription_spec()</a></tt></p>
+<p><code>event_unsubscription_spec() = <a href="gui_event.html#type-event_unsubscription_spec">gui_event:event_unsubscription_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-fps">fps()</a></h3>
-<p><tt>fps() = <a href="#type-count">count()</a></tt></p>
+<p><code>fps() = <a href="#type-count">count()</a></code></p>
 <p><p> A number of frames per second.</p>
 
  <p>The old Charlie Chaplin movies were shot at 16 frames per second and are 
@@ -153,49 +153,49 @@ noticeably jerky.</p>
  60; beyond 120 fps has no real interest, as it exceeds eye perception.</p>
 
 <h3 class="typedecl"><a name="type-gui_env_designator">gui_env_designator()</a></h3>
-<p><tt>gui_env_designator() = <a href="environment.html#type-env_designator">environment:env_designator()</a></tt></p>
+<p><code>gui_env_designator() = <a href="environment.html#type-env_designator">environment:env_designator()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_env_info">gui_env_info()</a></h3>
-<p><tt>gui_env_info() = <a href="environment.html#type-env_info">environment:env_info()</a></tt></p>
+<p><code>gui_env_info() = <a href="environment.html#type-env_info">environment:env_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_env_pid">gui_env_pid()</a></h3>
-<p><tt>gui_env_pid() = <a href="environment.html#type-env_pid">environment:env_pid()</a></tt></p>
+<p><code>gui_env_pid() = <a href="environment.html#type-env_pid">environment:env_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_event_object">gui_event_object()</a></h3>
-<p><tt>gui_event_object() = <a href="gui_event.html#type-gui_event_object">gui_event:gui_event_object()</a></tt></p>
+<p><code>gui_event_object() = <a href="gui_event.html#type-gui_event_object">gui_event:gui_event_object()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_object">gui_object()</a></h3>
-<p><tt>gui_object() = <a href="#type-wx_object">wx_object()</a> | <a href="#type-myriad_object_ref">myriad_object_ref()</a></tt></p>
+<p><code>gui_object() = <a href="#type-wx_object">wx_object()</a> | <a href="#type-myriad_object_ref">myriad_object_ref()</a></code></p>
 <p> Reference to a GUI object (often designated as "widget" here), somewhat akin
  to a PID (e.g. {wx_ref, 35, wxFrame, []} or {myriad_object_ref, myr_canvas,
  12}).</p>
 
 <h3 class="typedecl"><a name="type-gui_object_key">gui_object_key()</a></h3>
-<p><tt>gui_object_key() = <a href="gui_event.html#type-gui_object_key">gui_event:gui_object_key()</a></tt></p>
+<p><code>gui_object_key() = <a href="gui_event.html#type-gui_object_key">gui_event:gui_object_key()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><tt>height() = <a href="#type-length">length()</a></tt></p>
+<p><code>height() = <a href="#type-length">length()</a></code></p>
 <p> An height, as an integer number of pixels.</p>
 
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
-<p><tt>id() = <a href="gui_id.html#type-id">gui_id:id()</a></tt></p>
+<p><code>id() = <a href="gui_id.html#type-id">gui_id:id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-id_allocator_pid">id_allocator_pid()</a></h3>
-<p><tt>id_allocator_pid() = <a href="gui_id.html#type-id_allocator_pid">gui_id:id_allocator_pid()</a></tt></p>
+<p><code>id_allocator_pid() = <a href="gui_id.html#type-id_allocator_pid">gui_id:id_allocator_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_distance">integer_distance()</a></h3>
-<p><tt>integer_distance() = <a href="linear.html#type-integer_distance">linear:integer_distance()</a></tt></p>
+<p><code>integer_distance() = <a href="linear.html#type-integer_distance">linear:integer_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><tt>label() = <a href="ui.html#type-label">ui:label()</a></tt></p>
+<p><code>label() = <a href="ui.html#type-label">ui:label()</a></code></p>
 <p><p> A label, typically of a widget.</p>
 
  Control characters can be used (e.g. <code>"\n"</code>, <code>"\t"</code>), and
@@ -206,116 +206,116 @@ noticeably jerky.</p>
  character, you need to double it, i.e. to use <code>"&amp;&amp;"</code>.</p>
 
 <h3 class="typedecl"><a name="type-length">length()</a></h3>
-<p><tt>length() = <a href="#type-integer_distance">integer_distance()</a></tt></p>
+<p><code>length() = <a href="#type-integer_distance">integer_distance()</a></code></p>
 <p> A length, as an integer number of pixels.</p>
 
 <h3 class="typedecl"><a name="type-loop_pid">loop_pid()</a></h3>
-<p><tt>loop_pid() = pid()</tt></p>
+<p><code>loop_pid() = pid()</code></p>
 <p> The PID of the MyriadGUI main loop.</p>
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-model_pid">model_pid()</a></h3>
-<p><tt>model_pid() = pid()</tt></p>
+<p><code>model_pid() = pid()</code></p>
 <p> The PID of a process whose role is to be a Model in the sense of the MVC
  pattern.</p>
 
 <h3 class="typedecl"><a name="type-myriad_instance_id">myriad_instance_id()</a></h3>
-<p><tt>myriad_instance_id() = <a href="gui_id.html#type-myriad_instance_id">gui_id:myriad_instance_id()</a></tt></p>
+<p><code>myriad_instance_id() = <a href="gui_id.html#type-myriad_instance_id">gui_id:myriad_instance_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-myriad_object_ref">myriad_object_ref()</a></h3>
-<p><tt>myriad_object_ref() = #myriad_object_ref{object_type = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, myriad_instance_id = <a href="gui_id.html#type-myriad_instance_id">gui_id:myriad_instance_id()</a>}</tt></p>
+<p><code>myriad_object_ref() = #myriad_object_ref{object_type = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, myriad_instance_id = <a href="gui_id.html#type-myriad_instance_id">gui_id:myriad_instance_id()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-myriad_object_state">myriad_object_state()</a></h3>
-<p><tt>myriad_object_state() = <a href="gui_canvas.html#type-canvas_state">gui_canvas:canvas_state()</a></tt></p>
+<p><code>myriad_object_state() = <a href="gui_canvas.html#type-canvas_state">gui_canvas:canvas_state()</a></code></p>
 <p> Records the actual state of a MyriadGUI object.</p>
 
 <h3 class="typedecl"><a name="type-myriad_object_type">myriad_object_type()</a></h3>
-<p><tt>myriad_object_type() = myr_canvas</tt></p>
+<p><code>myriad_object_type() = myr_canvas</code></p>
 <p> The additional widget types introduced by Myriad.</p>
 
 <h3 class="typedecl"><a name="type-object_type">object_type()</a></h3>
-<p><tt>object_type() = <a href="#type-wx_object_type">wx_object_type()</a> | <a href="#type-myriad_object_type">myriad_object_type()</a></tt></p>
+<p><code>object_type() = <a href="#type-wx_object_type">wx_object_type()</a> | <a href="#type-myriad_object_type">myriad_object_type()</a></code></p>
 <p> Internal, overall types for all GUI objects.</p>
 
 <h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
-<p><tt>orientation() = vertical | horizontal</tt></p>
+<p><code>orientation() = vertical | horizontal</code></p>
 <p> A vertical orientation means piling elements top to bottom for example, while
  an horizontal one means left to right, for example.</p>
 
 <h3 class="typedecl"><a name="type-parent">parent()</a></h3>
-<p><tt>parent() = <a href="#type-widget">widget()</a></tt></p>
+<p><code>parent() = <a href="#type-widget">widget()</a></code></p>
 <p> The parent (widget) of a widget, as they tend to form a hierarchy.</p>
 
 <h3 class="typedecl"><a name="type-point">point()</a></h3>
-<p><tt>point() = <a href="point2.html#type-integer_point2">point2:integer_point2()</a></tt></p>
+<p><code>point() = <a href="point2.html#type-integer_point2">point2:integer_point2()</a></code></p>
 <p> A pixel-wise (tuple-based) GUI point (as point2:point2() would allow for
  floating-point coordinates).</p>
 
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
-<p><tt>position() = <a href="#type-point">point()</a> | auto</tt></p>
+<p><code>position() = <a href="#type-point">point()</a> | auto</code></p>
 <p> Position, in pixel coordinates, typically of a widget.</p>
 
 <h3 class="typedecl"><a name="type-ratio">ratio()</a></h3>
-<p><tt>ratio() = <a href="math_utils.html#type-ratio">math_utils:ratio()</a></tt></p>
+<p><code>ratio() = <a href="math_utils.html#type-ratio">math_utils:ratio()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-row_count">row_count()</a></h3>
-<p><tt>row_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>row_count() = <a href="#type-count">count()</a></code></p>
 <p> A number of rows.</p>
 
 <h3 class="typedecl"><a name="type-service">service()</a></h3>
-<p><tt>service() = mouse</tt></p>
+<p><code>service() = mouse</code></p>
 <p> The various MyriadGUI services that may or may not be enabled.</p>
 
 <h3 class="typedecl"><a name="type-size">size()</a></h3>
-<p><tt>size() = <a href="#type-dimensions">dimensions()</a></tt></p>
+<p><code>size() = <a href="#type-dimensions">dimensions()</a></code></p>
 <p> Size, typically of a widget.</p>
 
 <h3 class="typedecl"><a name="type-sizing">sizing()</a></h3>
-<p><tt>sizing() = <a href="#type-size">size()</a> | auto</tt></p>
+<p><code>sizing() = <a href="#type-size">size()</a> | auto</code></p>
 <p> Sizing information, typically of a widget.</p>
 
 <h3 class="typedecl"><a name="type-title">title()</a></h3>
-<p><tt>title() = <a href="ui.html#type-title">ui:title()</a></tt></p>
+<p><code>title() = <a href="ui.html#type-title">ui:title()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
-<p><tt>user_data() = any()</tt></p>
+<p><code>user_data() = any()</code></p>
 <p> User data, as specified in an event subscription/callback.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-view_pid">view_pid()</a></h3>
-<p><tt>view_pid() = pid()</tt></p>
+<p><code>view_pid() = pid()</code></p>
 <p> The PID of a process whose role is to be a View in the sense of the MVC
  pattern.</p>
 
 <h3 class="typedecl"><a name="type-widget">widget()</a></h3>
-<p><tt>widget() = <a href="gui_widget.html#type-widget">gui_widget:widget()</a></tt></p>
+<p><code>widget() = <a href="gui_widget.html#type-widget">gui_widget:widget()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
-<p><tt>width() = <a href="#type-length">length()</a></tt></p>
+<p><code>width() = <a href="#type-length">length()</a></code></p>
 <p> A width, as an integer number of pixels.</p>
 
 <h3 class="typedecl"><a name="type-wx_object">wx_object()</a></h3>
-<p><b>abstract datatype</b>: <tt>wx_object()</tt></p>
+<p><b>abstract datatype</b>: <code>wx_object()</code></p>
 <p> MyriadGUI-level type for a wx_object(), that is a #wx_ref record.</p>
 
 <h3 class="typedecl"><a name="type-wx_object_type">wx_object_type()</a></h3>
-<p><tt>wx_object_type() = object | event_handler | window | control | button | toggle_button | bitmap_button | panel | gl_canvas | status_bar | top_level_window | dialog | frame | sizer | bitmap | memory_device_context</tt></p>
+<p><code>wx_object_type() = object | event_handler | window | control | button | toggle_button | bitmap_button | panel | gl_canvas | status_bar | top_level_window | dialog | frame | sizer | bitmap | menu | toolbar | memory_device_context</code></p>
 <p> MyriadGUI-translated version of a native wx type, that is of the
  wx_native_object_type(); for example 'window', instead of 'wxWindow'.</p>
 
 <h3 class="typedecl"><a name="type-wx_server">wx_server()</a></h3>
-<p><tt>wx_server() = <a href="#type-gui_object">gui_object()</a></tt></p>
+<p><code>wx_server() = <a href="#type-gui_object">gui_object()</a></code></p>
 <p> Alias to designate more clearly the wx server.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -364,11 +364,12 @@ default no event propagation is enabled.</td></tr>
  type(s) are generated by the specified (source) object, a transient process is
  spawned and executes the specified event callback function, before
  terminating.</td></tr>
-<tr><td valign="top"><a href="#set_as_controller-1">set_as_controller/1</a></td><td>Sets the current process as the controller of the specified GUI object.</td></tr>
+<tr><td valign="top"><a href="#set_as_controller-1">set_as_controller/1</a></td><td>Sets the current process as the controller of the specified GUI object
+ handle.</td></tr>
 <tr><td valign="top"><a href="#set_backend_environment-1">set_backend_environment/1</a></td><td>Sets the specified backend environment for the calling process, so that 
 it can make use of the corresponding backend.</td></tr>
 <tr><td valign="top"><a href="#set_controller-2">set_controller/2</a></td><td>Sets the process of specified PID as the controller of the specified GUI
- object.</td></tr>
+ object handle.</td></tr>
 <tr><td valign="top"><a href="#set_debug_level-1">set_debug_level/1</a></td><td>Sets the debug level(s) of the GUI.</td></tr>
 <tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts the MyriadGUI subsystem, with all optional services; returns the 
 information regarding its environment.</td></tr>
@@ -397,7 +398,7 @@ current handler.</td></tr>
 
 <h3 class="function"><a name="batch-1">batch/1</a></h3>
 <div class="spec">
-<p><tt>batch(GUIFun::function()) -&gt; term()</tt><br></p>
+<p><code>batch(GUIFun::function()) -&gt; term()</code><br></p>
 <p> </p>
 </div><p><p>Batches the sequence of GUI operations encasulated by the specified 
 function, and returns the value this function returned.</p>
@@ -411,7 +412,7 @@ commands is invoked.</p>
 
 <h3 class="function"><a name="check_orientation-1">check_orientation/1</a></h3>
 <div class="spec">
-<p><tt>check_orientation(Other::term()) -&gt; <a href="#type-orientation">orientation()</a></tt><br></p>
+<p><code>check_orientation(Other::term()) -&gt; <a href="#type-orientation">orientation()</a></code><br></p>
 <p> </p>
 </div><p>Checks the specified orientation, returns it if it is a legit one,
  otherwise throws an exception.
@@ -419,7 +420,7 @@ commands is invoked.</p>
 
 <h3 class="function"><a name="create_gui_environment-1">create_gui_environment/1</a></h3>
 <div class="spec">
-<p><tt>create_gui_environment(Services::[<a href="#type-service">service()</a>]) -&gt; <a href="#type-gui_env_info">gui_env_info()</a></tt><br></p>
+<p><code>create_gui_environment(Services::[<a href="#type-service">service()</a>]) -&gt; <a href="#type-gui_env_info">gui_env_info()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates and initialises the MyriadGUI environment server; returns the 
 information of the just created MyriadGUI environment.</p>
@@ -430,7 +431,7 @@ information of the just created MyriadGUI environment.</p>
 
 <h3 class="function"><a name="create_gui_environment-2">create_gui_environment/2</a></h3>
 <div class="spec">
-<p><tt>create_gui_environment(Services::[<a href="#type-service">service()</a>], MaybeIdAllocPid::<a href="#type-maybe">maybe</a>(<a href="#type-id_allocator_pid">id_allocator_pid()</a>)) -&gt; <a href="#type-gui_env_info">gui_env_info()</a></tt><br></p>
+<p><code>create_gui_environment(Services::[<a href="#type-service">service()</a>], MaybeIdAllocPid::<a href="#type-maybe">maybe</a>(<a href="#type-id_allocator_pid">id_allocator_pid()</a>)) -&gt; <a href="#type-gui_env_info">gui_env_info()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates and initialises the MyriadGUI environment server; returns the 
 information of the just created MyriadGUI environment.</p>
@@ -441,25 +442,25 @@ information of the just created MyriadGUI environment.</p>
 
 <h3 class="function"><a name="destruct_gui_environment-0">destruct_gui_environment/0</a></h3>
 <div class="spec">
-<p><tt>destruct_gui_environment() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_gui_environment() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the MyriadGUI environment server.</p>
 
 <h3 class="function"><a name="destruct_gui_environment-1">destruct_gui_environment/1</a></h3>
 <div class="spec">
-<p><tt>destruct_gui_environment(GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_gui_environment(GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified environment server.</p>
 
 <h3 class="function"><a name="event_interception_callback-2">event_interception_callback/2</a></h3>
 <div class="spec">
-<p><tt>event_interception_callback(WxEventRecord::<a href="gui_event.html#type-wx_event">gui_event:wx_event()</a>, WxEventObject::<a href="http://www.erlang.org/edoc/doc/wx/doc/wxEvent.html#type-wxEvent">wxEvent:wxEvent()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>event_interception_callback(WxEventRecord::<a href="gui_event.html#type-wx_event">gui_event:wx_event()</a>, WxEventObject::<a href="http://www.erlang.org/edoc/doc/wx/doc/wxEvent.html#type-wxEvent">wxEvent:wxEvent()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="execute_instance_creation-2">execute_instance_creation/2</a></h3>
 <div class="spec">
-<p><tt>execute_instance_creation(ObjectType::<a href="#type-myriad_object_type">myriad_object_type()</a>, ConstructionParams::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; <a href="#type-myriad_object_ref">myriad_object_ref()</a></tt><br></p>
+<p><code>execute_instance_creation(ObjectType::<a href="#type-myriad_object_type">myriad_object_type()</a>, ConstructionParams::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; <a href="#type-myriad_object_ref">myriad_object_ref()</a></code><br></p>
 <p> </p>
 </div><p>Requests the creation of the specified instance (that will be done from
  the MyriadGUI main loop), and returns the corresponding GUI object reference.
@@ -467,7 +468,7 @@ information of the just created MyriadGUI environment.</p>
 
 <h3 class="function"><a name="execute_instance_destruction-2">execute_instance_destruction/2</a></h3>
 <div class="spec">
-<p><tt>execute_instance_destruction(ObjectType::<a href="#type-myriad_object_type">myriad_object_type()</a>, InstanceId::<a href="#type-myriad_instance_id">myriad_instance_id()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>execute_instance_destruction(ObjectType::<a href="#type-myriad_object_type">myriad_object_type()</a>, InstanceId::<a href="#type-myriad_instance_id">myriad_instance_id()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Requests the destruction of the specified instance (that will be done 
 from the MyriadGUI main loop).</p>
@@ -477,7 +478,7 @@ from the MyriadGUI main loop).</p>
 
 <h3 class="function"><a name="generate_support_modules-0">generate_support_modules/0</a></h3>
 <div class="spec">
-<p><tt>generate_support_modules() -&gt; no_return()</tt><br></p>
+<p><code>generate_support_modules() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>To be called by the 'gui_generated.beam' automatic make target in order
  to generate, here, a (single) module to share the MyriadGUI base constants.
@@ -485,7 +486,7 @@ from the MyriadGUI main loop).</p>
 
 <h3 class="function"><a name="get_backend_environment-0">get_backend_environment/0</a></h3>
 <div class="spec">
-<p><tt>get_backend_environment() -&gt; <a href="#type-backend_environment">backend_environment()</a></tt><br></p>
+<p><code>get_backend_environment() -&gt; <a href="#type-backend_environment">backend_environment()</a></code><br></p>
 <p> </p>
 </div><p>Gets the backend environment currently used by the calling process,
  typically to transmit it to any other process in order to enable it to use
@@ -494,13 +495,13 @@ from the MyriadGUI main loop).</p>
 
 <h3 class="function"><a name="get_backend_information-0">get_backend_information/0</a></h3>
 <div class="spec">
-<p><tt>get_backend_information() -&gt; <a href="#type-backend_information">backend_information()</a></tt><br></p>
+<p><code>get_backend_information() -&gt; <a href="#type-backend_information">backend_information()</a></code><br></p>
 <p> </p>
 </div><p>Returns information regarding the graphical backend in use.</p>
 
 <h3 class="function"><a name="get_environment_server-0">get_environment_server/0</a></h3>
 <div class="spec">
-<p><tt>get_environment_server() -&gt; <a href="#type-gui_env_pid">gui_env_pid()</a></tt><br></p>
+<p><code>get_environment_server() -&gt; <a href="#type-gui_env_pid">gui_env_pid()</a></code><br></p>
 <p> </p>
 </div><p>Returns the PID of the supposedly already-running MyriadGUI environment
  server.
@@ -508,7 +509,7 @@ from the MyriadGUI main loop).</p>
 
 <h3 class="function"><a name="get_id_allocator_pid-0">get_id_allocator_pid/0</a></h3>
 <div class="spec">
-<p><tt>get_id_allocator_pid() -&gt; <a href="#type-id_allocator_pid">id_allocator_pid()</a></tt><br></p>
+<p><code>get_id_allocator_pid() -&gt; <a href="#type-id_allocator_pid">id_allocator_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Fetches (from the MyriadGUI environment) the PID of the process in charge 
 of running the MyriadGUI identifier allocation process.</p>
@@ -522,7 +523,7 @@ sending.</p>
 
 <h3 class="function"><a name="get_id_allocator_pid-1">get_id_allocator_pid/1</a></h3>
 <div class="spec">
-<p><tt>get_id_allocator_pid(GUIEnvDesignator::<a href="#type-gui_env_designator">gui_env_designator()</a>) -&gt; <a href="#type-id_allocator_pid">id_allocator_pid()</a></tt><br></p>
+<p><code>get_id_allocator_pid(GUIEnvDesignator::<a href="#type-gui_env_designator">gui_env_designator()</a>) -&gt; <a href="#type-id_allocator_pid">id_allocator_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Fetches from the specified environment the PID of the process in charge 
 of running the MyriadGUI identifier allocation process.</p>
@@ -536,7 +537,7 @@ sending.</p>
 
 <h3 class="function"><a name="get_main_loop_pid-0">get_main_loop_pid/0</a></h3>
 <div class="spec">
-<p><tt>get_main_loop_pid() -&gt; <a href="#type-loop_pid">loop_pid()</a></tt><br></p>
+<p><code>get_main_loop_pid() -&gt; <a href="#type-loop_pid">loop_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Fetches (from the MyriadGUI environment) the PID of the process in charge 
 of running the main MyriadGUI loop.</p>
@@ -546,7 +547,7 @@ of running the main MyriadGUI loop.</p>
 
 <h3 class="function"><a name="get_main_loop_pid-1">get_main_loop_pid/1</a></h3>
 <div class="spec">
-<p><tt>get_main_loop_pid(GUIEnvDesignator::<a href="#type-gui_env_designator">gui_env_designator()</a>) -&gt; <a href="#type-loop_pid">loop_pid()</a></tt><br></p>
+<p><code>get_main_loop_pid(GUIEnvDesignator::<a href="#type-gui_env_designator">gui_env_designator()</a>) -&gt; <a href="#type-loop_pid">loop_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Fetches from the specified environment the PID of the process in charge 
 of running the main MyriadGUI loop.</p>
@@ -556,25 +557,25 @@ of running the main MyriadGUI loop.</p>
 
 <h3 class="function"><a name="is_available-0">is_available/0</a></h3>
 <div class="spec">
-<p><tt>is_available() -&gt; boolean()</tt><br></p>
+<p><code>is_available() -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether this user-interface backend is available.</p>
 
 <h3 class="function"><a name="object_key_to_string-1">object_key_to_string/1</a></h3>
 <div class="spec">
-<p><tt>object_key_to_string(X1::<a href="#type-gui_object_key">gui_object_key()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>object_key_to_string(X1::<a href="#type-gui_object_key">gui_object_key()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified GUI object key.</p>
 
 <h3 class="function"><a name="object_to_string-1">object_to_string/1</a></h3>
 <div class="spec">
-<p><tt>object_to_string(Myriad_object_ref::<a href="#type-gui_object">gui_object()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>object_to_string(Myriad_object_ref::<a href="#type-gui_object">gui_object()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified GUI object.</p>
 
 <h3 class="function"><a name="propagate_event-1">propagate_event/1</a></h3>
 <div class="spec">
-<p><tt>propagate_event(GUIEventObject::<a href="#type-gui_event_object">gui_event_object()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>propagate_event(GUIEventObject::<a href="#type-gui_event_object">gui_event_object()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Propagates the specified event upward in the widget hierarchy, so that it 
 can be processed by parent handlers knowing that, for some event types, by 
@@ -600,7 +601,7 @@ propagating it in the backend thanks to this function.</p>
 
 <h3 class="function"><a name="register_event_callback-3">register_event_callback/3</a></h3>
 <div class="spec">
-<p><tt>register_event_callback(SourceGUIObject::<a href="#type-gui_object">gui_object()</a>, MaybeListEventType::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), EventCallbackFun::<a href="#type-event_callback">event_callback()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>register_event_callback(SourceGUIObject::<a href="#type-gui_object">gui_object()</a>, MaybeListEventType::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), EventCallbackFun::<a href="#type-event_callback">event_callback()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Registers the specified event callback, so that, when the specified event
  type(s) are generated by the specified (source) object, a transient process is
@@ -610,7 +611,7 @@ propagating it in the backend thanks to this function.</p>
 
 <h3 class="function"><a name="register_event_callback-4">register_event_callback/4</a></h3>
 <div class="spec">
-<p><tt>register_event_callback(SourceGUIObject::<a href="#type-gui_object">gui_object()</a>, EventType::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), EventCallbackFun::<a href="#type-event_callback">event_callback()</a>, MaybeUserData::<a href="#type-maybe">maybe</a>(<a href="#type-user_data">user_data()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>register_event_callback(SourceGUIObject::<a href="#type-gui_object">gui_object()</a>, EventType::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), EventCallbackFun::<a href="#type-event_callback">event_callback()</a>, MaybeUserData::<a href="#type-maybe">maybe</a>(<a href="#type-user_data">user_data()</a>)) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Registers the specified event callback, so that, when the specified event
  type(s) are generated by the specified (source) object, a transient process is
@@ -620,13 +621,15 @@ propagating it in the backend thanks to this function.</p>
 
 <h3 class="function"><a name="set_as_controller-1">set_as_controller/1</a></h3>
 <div class="spec">
-<p><tt>set_as_controller(Object::<a href="#type-gui_object">gui_object()</a>) -&gt; <a href="#type-gui_object">gui_object()</a></tt><br></p>
+<p><code>set_as_controller(Object::<a href="#type-gui_object">gui_object()</a>) -&gt; <a href="#type-gui_object">gui_object()</a></code><br></p>
 <p> </p>
-</div><p>Sets the current process as the controller of the specified GUI object.</p>
+</div><p>Sets the current process as the controller of the specified GUI object
+ handle.
+</p>
 
 <h3 class="function"><a name="set_backend_environment-1">set_backend_environment/1</a></h3>
 <div class="spec">
-<p><tt>set_backend_environment(WxEnv::<a href="#type-backend_environment">backend_environment()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_backend_environment(WxEnv::<a href="#type-backend_environment">backend_environment()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets the specified backend environment for the calling process, so that 
 it can make use of the corresponding backend.</p>
@@ -637,21 +640,21 @@ it can make use of the corresponding backend.</p>
 
 <h3 class="function"><a name="set_controller-2">set_controller/2</a></h3>
 <div class="spec">
-<p><tt>set_controller(Object::<a href="#type-gui_object">gui_object()</a>, ControllerPid::pid()) -&gt; <a href="#type-gui_object">gui_object()</a></tt><br></p>
+<p><code>set_controller(Object::<a href="#type-gui_object">gui_object()</a>, ControllerPid::pid()) -&gt; <a href="#type-gui_object">gui_object()</a></code><br></p>
 <p> </p>
 </div><p>Sets the process of specified PID as the controller of the specified GUI
- object.
+ object handle.
 </p>
 
 <h3 class="function"><a name="set_debug_level-1">set_debug_level/1</a></h3>
 <div class="spec">
-<p><tt>set_debug_level(DebugLevels::<a href="#type-debug_level">debug_level()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_debug_level(DebugLevels::<a href="#type-debug_level">debug_level()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the debug level(s) of the GUI.</p>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><tt>start() -&gt; <a href="#type-gui_env_info">gui_env_info()</a></tt><br></p>
+<p><code>start() -&gt; <a href="#type-gui_env_info">gui_env_info()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the MyriadGUI subsystem, with all optional services; returns the 
 information regarding its environment.</p>
@@ -662,7 +665,7 @@ information regarding its environment.</p>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><tt>start(Services::[<a href="#type-service">service()</a>] | <a href="#type-debug_level">debug_level()</a>) -&gt; <a href="#type-gui_env_info">gui_env_info()</a></tt><br></p>
+<p><code>start(Services::[<a href="#type-service">service()</a>] | <a href="#type-debug_level">debug_level()</a>) -&gt; <a href="#type-gui_env_info">gui_env_info()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the MyriadGUI subsystem, with the specified services, or with all 
 services while setting specified debug level; returns the information 
@@ -674,13 +677,13 @@ regarding its environment.</p>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><tt>stop() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>stop() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Stops the GUI subsystem.</p>
 
 <h3 class="function"><a name="subscribe_to_events-1">subscribe_to_events/1</a></h3>
 <div class="spec">
-<p><tt>subscribe_to_events(SubscribedEvents::<a href="#type-event_subscription_spec">event_subscription_spec()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>subscribe_to_events(SubscribedEvents::<a href="#type-event_subscription_spec">event_subscription_spec()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Subscribes the current, calling process to the specified kind of events, 
 resulting in corresponding MyriadGUI callback messages being received whenever 
@@ -730,7 +733,7 @@ done by the backend.</p>
 
 <h3 class="function"><a name="subscribe_to_events-2">subscribe_to_events/2</a></h3>
 <div class="spec">
-<p><tt>subscribe_to_events(SubscribedEvents::<a href="#type-event_subscription_spec">event_subscription_spec()</a>, SubscriberDesignator::<a href="#type-event_subscriber">event_subscriber()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>subscribe_to_events(SubscribedEvents::<a href="#type-event_subscription_spec">event_subscription_spec()</a>, SubscriberDesignator::<a href="#type-event_subscriber">event_subscriber()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Subscribes the specified process to the specified kind of events, 
 resulting in corresponding MyriadGUI callback messages being received whenever 
@@ -742,7 +745,7 @@ such events occur, like:
 
 <h3 class="function"><a name="trap_event-1">trap_event/1</a></h3>
 <div class="spec">
-<p><tt>trap_event(GUIEventObject::<a href="#type-gui_event_object">gui_event_object()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>trap_event(GUIEventObject::<a href="#type-gui_event_object">gui_event_object()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Traps the specified event: does not propagate it upward in the widget 
 hierarchy, thus considering that it has been processed once for all by the 
@@ -765,7 +768,7 @@ corresponding event type does not already imply trapping and if the
 type. See also https://howtos.esperide.org/Erlang.html#using-wx for more 
 clarifications about when trapping events is of use.</p>
 
- <p>Note: to be called from an event handler, i.e. at least from a process which 
+ <p>Note: to be called from an event handler, i.e. at least from a process that 
 set the wx environment.</p>
 
  See propagate_event/1 for the opposite operation (forcing the propagation of
@@ -774,7 +777,7 @@ set the wx environment.</p>
 
 <h3 class="function"><a name="unsubscribe_from_events-1">unsubscribe_from_events/1</a></h3>
 <div class="spec">
-<p><tt>unsubscribe_from_events(UnsubscribedEvents::<a href="#type-event_unsubscription_spec">event_unsubscription_spec()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>unsubscribe_from_events(UnsubscribedEvents::<a href="#type-event_unsubscription_spec">event_unsubscription_spec()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Unsubscribes the current, calling process from the specified kind of
  events (event type and emitter), like {onWindowClosed, MyFrame}.
@@ -782,7 +785,7 @@ set the wx environment.</p>
 
 <h3 class="function"><a name="unsubscribe_from_events-2">unsubscribe_from_events/2</a></h3>
 <div class="spec">
-<p><tt>unsubscribe_from_events(UnsubscribedEvents::<a href="#type-event_unsubscription_spec">event_unsubscription_spec()</a>, SubscribedDesignator::<a href="#type-event_subscriber">event_subscriber()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>unsubscribe_from_events(UnsubscribedEvents::<a href="#type-event_unsubscription_spec">event_unsubscription_spec()</a>, SubscribedDesignator::<a href="#type-event_subscriber">event_subscriber()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Subscribes the specified process from the specified kind of events (event
  type and emitter), like {onWindowClosed, MyFrame}.

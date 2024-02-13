@@ -30,97 +30,97 @@ base dialogs.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-caption">caption()</a></h3>
-<p><tt>caption() = <a href="ui.html#type-caption">ui:caption()</a></tt></p>
+<p><code>caption() = <a href="ui.html#type-caption">ui:caption()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-choice_designator">choice_designator()</a></h3>
-<p><tt>choice_designator() = <a href="ui.html#type-choice_designator">ui:choice_designator()</a></tt></p>
+<p><code>choice_designator() = <a href="ui.html#type-choice_designator">ui:choice_designator()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-choice_spec">choice_spec()</a></h3>
-<p><tt>choice_spec() = <a href="ui.html#type-choice_spec">ui:choice_spec()</a></tt></p>
+<p><code>choice_spec() = <a href="ui.html#type-choice_spec">ui:choice_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></h3>
-<p><tt>color_by_decimal_with_alpha() = <a href="gui_color.html#type-color_by_decimal_with_alpha">gui_color:color_by_decimal_with_alpha()</a></tt></p>
+<p><code>color_by_decimal_with_alpha() = <a href="gui_color.html#type-color_by_decimal_with_alpha">gui_color:color_by_decimal_with_alpha()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color_selection_dialog">color_selection_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>color_selection_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>color_selection_dialog()</code></p>
 <p> A dialog allowing to select a color.</p>
 
 <h3 class="typedecl"><a name="type-dialog">dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>dialog()</code></p>
 <p><p> Any type of dialog.</p>
 
  This is a window that can be shown in a modal way (GUI-blocking), or modeless.</p>
 
 <h3 class="typedecl"><a name="type-dialog_return_code">dialog_return_code()</a></h3>
-<p><tt>dialog_return_code() = ok_returned | cancel_returned | yes_returned | no_returned</tt></p>
+<p><code>dialog_return_code() = ok_returned | cancel_returned | yes_returned | no_returned</code></p>
 <p> A return code obtained when showing a dialog in a modal way.</p>
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+<p><code>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-directory_selection_dialog">directory_selection_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>directory_selection_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>directory_selection_dialog()</code></p>
 <p> A dialog allowing to select a local directory.</p>
 
 <h3 class="typedecl"><a name="type-directory_selection_dialog_option">directory_selection_dialog_option()</a></h3>
-<p><tt>directory_selection_dialog_option() = {caption, <a href="#type-caption">caption()</a>} | {style, [<a href="#type-message_dialog_style">message_dialog_style()</a>]} | {default_dir, <a href="#type-any_directory_path">any_directory_path()</a>} | {position, <a href="#type-point">point()</a>} | {size, <a href="#type-dimensions">dimensions()</a>}</tt></p>
+<p><code>directory_selection_dialog_option() = {caption, <a href="#type-caption">caption()</a>} | {style, [<a href="#type-message_dialog_style">message_dialog_style()</a>]} | {default_dir, <a href="#type-any_directory_path">any_directory_path()</a>} | {position, <a href="#type-point">point()</a>} | {size, <a href="#type-dimensions">dimensions()</a>}</code></p>
 <p> An option for the creation of a directory-selection dialog.</p>
 
 <h3 class="typedecl"><a name="type-directory_selection_dialog_style">directory_selection_dialog_style()</a></h3>
-<p><tt>directory_selection_dialog_style() = only_existing_directory | enable_directory_creation | change_working_dir | show_hidden_directories</tt></p>
+<p><code>directory_selection_dialog_style() = only_existing_directory | enable_directory_creation | change_working_dir | show_hidden_directories</code></p>
 
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_selection_dialog">file_selection_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>file_selection_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>file_selection_dialog()</code></p>
 <p> A dialog allowing to select a local file.</p>
 
 <h3 class="typedecl"><a name="type-file_selection_dialog_option">file_selection_dialog_option()</a></h3>
-<p><tt>file_selection_dialog_option() = {message, <a href="#type-message">message()</a>} | {style, [<a href="#type-file_selection_dialog_style">file_selection_dialog_style()</a>]} | {default_dir, <a href="#type-any_directory_path">any_directory_path()</a>} | {default_file, <a href="#type-any_file_path">any_file_path()</a>} | {match_filter, <a href="#type-match_filter">match_filter()</a>} | {position, <a href="#type-point">point()</a>} | {size, <a href="#type-dimensions">dimensions()</a>}</tt></p>
+<p><code>file_selection_dialog_option() = {message, <a href="#type-message">message()</a>} | {style, [<a href="#type-file_selection_dialog_style">file_selection_dialog_style()</a>]} | {default_dir, <a href="#type-any_directory_path">any_directory_path()</a>} | {default_file, <a href="#type-any_file_path">any_file_path()</a>} | {match_filter, <a href="#type-match_filter">match_filter()</a>} | {position, <a href="#type-point">point()</a>} | {size, <a href="#type-dimensions">dimensions()</a>}</code></p>
 <p> An option for the creation of a file-selection dialog.</p>
 
 <h3 class="typedecl"><a name="type-file_selection_dialog_style">file_selection_dialog_style()</a></h3>
-<p><tt>file_selection_dialog_style() = open_file | save_file | confirm_overwrite | follow_no_link | only_existing_file | multiple_files | change_working_dir | preview_selected | show_hidden_files</tt></p>
+<p><code>file_selection_dialog_style() = open_file | save_file | confirm_overwrite | follow_no_link | only_existing_file | multiple_files | change_working_dir | preview_selected | show_hidden_files</code></p>
 
 
 <h3 class="typedecl"><a name="type-font">font()</a></h3>
-<p><tt>font() = <a href="gui_font.html#type-font">gui_font:font()</a></tt></p>
+<p><code>font() = <a href="gui_font.html#type-font">gui_font:font()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-font_selection_dialog">font_selection_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>font_selection_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>font_selection_dialog()</code></p>
 <p> A dialog allowing to select a font installed on the system, and its size.</p>
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><tt>label() = <a href="ui.html#type-label">ui:label()</a></tt></p>
+<p><code>label() = <a href="ui.html#type-label">ui:label()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-match_filter">match_filter()</a></h3>
-<p><tt>match_filter() = <a href="#type-any_string">any_string()</a></tt></p>
+<p><code>match_filter() = <a href="#type-any_string">any_string()</a></code></p>
 <p><p> A specification of matching expressions, based on wildcards (*, ?).</p>
 
  <p>Entries are separated with semicolons (";"), and if a pipe ("|") is specified, 
@@ -133,74 +133,74 @@ it is ignored together with all preceding characters in this entry.</p>
  selection.</p>
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = <a href="ui.html#type-message">ui:message()</a></tt></p>
+<p><code>message() = <a href="ui.html#type-message">ui:message()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-message_dialog">message_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>message_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>message_dialog()</code></p>
 <p> A dialog displaying a message and a few buttons.</p>
 
 <h3 class="typedecl"><a name="type-message_dialog_option">message_dialog_option()</a></h3>
-<p><tt>message_dialog_option() = {caption, <a href="#type-caption">caption()</a>} | {style, [<a href="#type-message_dialog_style">message_dialog_style()</a>]} | {position, <a href="#type-point">point()</a>}</tt></p>
+<p><code>message_dialog_option() = {caption, <a href="#type-caption">caption()</a>} | {style, [<a href="#type-message_dialog_style">message_dialog_style()</a>]} | {position, <a href="#type-point">point()</a>}</code></p>
 <p> An option for the creation of a message dialog.</p>
 
 <h3 class="typedecl"><a name="type-message_dialog_style">message_dialog_style()</a></h3>
-<p><tt>message_dialog_style() = ok_button | cancel_button | yes_no_buttons | help_button | default_is_no | default_is_cancel | default_is_ok | no_icon | error_icon | warning_icon | question_icon | information_icon | security_icon | stay_on_top | center</tt></p>
+<p><code>message_dialog_style() = ok_button | cancel_button | yes_no_buttons | help_button | default_is_no | default_is_cancel | default_is_ok | no_icon | error_icon | warning_icon | question_icon | information_icon | security_icon | stay_on_top | center</code></p>
 
 
 <h3 class="typedecl"><a name="type-multi_choice_dialog">multi_choice_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>multi_choice_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>multi_choice_dialog()</code></p>
 <p> A dialog allowing the user to select multiple options from a set thereof.</p>
 
 <h3 class="typedecl"><a name="type-multi_choice_dialog_option">multi_choice_dialog_option()</a></h3>
-<p><tt>multi_choice_dialog_option() = {style, [<a href="#type-multi_choice_dialog_style">multi_choice_dialog_style()</a>]} | {position, <a href="#type-point">point()</a>}</tt></p>
+<p><code>multi_choice_dialog_option() = {style, [<a href="#type-multi_choice_dialog_style">multi_choice_dialog_style()</a>]} | {position, <a href="#type-point">point()</a>}</code></p>
 <p> An option for the creation of a multiple-choice dialog.</p>
 
 <h3 class="typedecl"><a name="type-multi_choice_dialog_style">multi_choice_dialog_style()</a></h3>
-<p><tt>multi_choice_dialog_style() = ok_button | cancel_button | center</tt></p>
+<p><code>multi_choice_dialog_style() = ok_button | cancel_button | center</code></p>
 <p> A style element of a multiple-choice dialog.</p>
 
 <h3 class="typedecl"><a name="type-parent">parent()</a></h3>
-<p><tt>parent() = <a href="gui.html#type-parent">gui:parent()</a></tt></p>
+<p><code>parent() = <a href="gui.html#type-parent">gui:parent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point">point()</a></h3>
-<p><tt>point() = <a href="gui.html#type-point">gui:point()</a></tt></p>
+<p><code>point() = <a href="gui.html#type-point">gui:point()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-single_choice_dialog">single_choice_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>single_choice_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>single_choice_dialog()</code></p>
 <p><p> A dialog allowing the user to select a single option among a set thereof.</p>
 
  Double-clicking on a list item is equivalent to single-clicking and then
  pressing OK.</p>
 
 <h3 class="typedecl"><a name="type-single_choice_dialog_option">single_choice_dialog_option()</a></h3>
-<p><tt>single_choice_dialog_option() = {style, [<a href="#type-single_choice_dialog_style">single_choice_dialog_style()</a>]} | {position, <a href="#type-point">point()</a>}</tt></p>
+<p><code>single_choice_dialog_option() = {style, [<a href="#type-single_choice_dialog_style">single_choice_dialog_style()</a>]} | {position, <a href="#type-point">point()</a>}</code></p>
 <p> An option for the creation of a single-choice dialog.</p>
 
 <h3 class="typedecl"><a name="type-single_choice_dialog_style">single_choice_dialog_style()</a></h3>
-<p><tt>single_choice_dialog_style() = ok_button | cancel_button | center</tt></p>
+<p><code>single_choice_dialog_style() = ok_button | cancel_button | center</code></p>
 <p> A style element of a single-choice dialog.</p>
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
-<p><tt>text() = <a href="gui_text.html#type-text">gui_text:text()</a></tt></p>
+<p><code>text() = <a href="gui_text.html#type-text">gui_text:text()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-text_entry_dialog">text_entry_dialog()</a></h3>
-<p><b>abstract datatype</b>: <tt>text_entry_dialog()</tt></p>
+<p><b>abstract datatype</b>: <code>text_entry_dialog()</code></p>
 <p> A dialog allowing the user to enter a (line of) text.</p>
 
 <h3 class="typedecl"><a name="type-text_entry_dialog_option">text_entry_dialog_option()</a></h3>
-<p><tt>text_entry_dialog_option() = {caption, <a href="#type-caption">caption()</a>} | {style, [<a href="#type-text_entry_dialog_style">text_entry_dialog_style()</a>]} | {initial_text, <a href="#type-text">text()</a>} | {position, <a href="#type-point">point()</a>}</tt></p>
+<p><code>text_entry_dialog_option() = {caption, <a href="#type-caption">caption()</a>} | {style, [<a href="#type-text_entry_dialog_style">text_entry_dialog_style()</a>]} | {initial_text, <a href="#type-text">text()</a>} | {position, <a href="#type-point">point()</a>}</code></p>
 <p> An option for the creation of a text entry dialog.</p>
 
 <h3 class="typedecl"><a name="type-text_entry_dialog_style">text_entry_dialog_style()</a></h3>
-<p><tt>text_entry_dialog_style() = ok_button | cancel_button | center</tt></p>
+<p><code>text_entry_dialog_style() = ok_button | cancel_button | center</code></p>
 <p> A style element of a text-entry dialog.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -270,19 +270,19 @@ in the requested state.</td></tr>
 
 <h3 class="function"><a name="create_for_color_selection-1">create_for_color_selection/1</a></h3>
 <div class="spec">
-<p><tt>create_for_color_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-color_selection_dialog">color_selection_dialog()</a></tt><br></p>
+<p><code>create_for_color_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-color_selection_dialog">color_selection_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer to select a color.</p>
 
 <h3 class="function"><a name="create_for_directory_selection-1">create_for_directory_selection/1</a></h3>
 <div class="spec">
-<p><tt>create_for_directory_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-directory_selection_dialog">directory_selection_dialog()</a></tt><br></p>
+<p><code>create_for_directory_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-directory_selection_dialog">directory_selection_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer to select a directory.</p>
 
 <h3 class="function"><a name="create_for_directory_selection-2">create_for_directory_selection/2</a></h3>
 <div class="spec">
-<p><tt>create_for_directory_selection(DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-directory_selection_dialog_option">directory_selection_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-directory_selection_dialog">directory_selection_dialog()</a></tt><br></p>
+<p><code>create_for_directory_selection(DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-directory_selection_dialog_option">directory_selection_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-directory_selection_dialog">directory_selection_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer to select a directory, based on the
  specified options.
@@ -290,13 +290,13 @@ in the requested state.</td></tr>
 
 <h3 class="function"><a name="create_for_file_selection-1">create_for_file_selection/1</a></h3>
 <div class="spec">
-<p><tt>create_for_file_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-file_selection_dialog">file_selection_dialog()</a></tt><br></p>
+<p><code>create_for_file_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-file_selection_dialog">file_selection_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer to select a file.</p>
 
 <h3 class="function"><a name="create_for_file_selection-2">create_for_file_selection/2</a></h3>
 <div class="spec">
-<p><tt>create_for_file_selection(DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-file_selection_dialog_option">file_selection_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-file_selection_dialog">file_selection_dialog()</a></tt><br></p>
+<p><code>create_for_file_selection(DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-file_selection_dialog_option">file_selection_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-file_selection_dialog">file_selection_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer to select a file, based on the specified
  options.
@@ -304,7 +304,7 @@ in the requested state.</td></tr>
 
 <h3 class="function"><a name="create_for_font_selection-1">create_for_font_selection/1</a></h3>
 <div class="spec">
-<p><tt>create_for_font_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-font_selection_dialog">font_selection_dialog()</a></tt><br></p>
+<p><code>create_for_font_selection(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-font_selection_dialog">font_selection_dialog()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a dialog that will offer to select one of the known fonts, 
 together with its size.</p>
@@ -314,13 +314,13 @@ together with its size.</p>
 
 <h3 class="function"><a name="create_for_message-2">create_for_message/2</a></h3>
 <div class="spec">
-<p><tt>create_for_message(Message::<a href="#type-message">message()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-message_dialog">message_dialog()</a></tt><br></p>
+<p><code>create_for_message(Message::<a href="#type-message">message()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-message_dialog">message_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog displaying the specified message.</p>
 
 <h3 class="function"><a name="create_for_message-3">create_for_message/3</a></h3>
 <div class="spec">
-<p><tt>create_for_message(Message::<a href="#type-message">message()</a>, Opts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-message_dialog_option">message_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-message_dialog">message_dialog()</a></tt><br></p>
+<p><code>create_for_message(Message::<a href="#type-message">message()</a>, Opts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-message_dialog_option">message_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-message_dialog">message_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog displaying the specified message, with specified
  options.
@@ -328,7 +328,7 @@ together with its size.</p>
 
 <h3 class="function"><a name="create_for_multi_choice-4">create_for_multi_choice/4</a></h3>
 <div class="spec">
-<p><tt>create_for_multi_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-multi_choice_dialog">multi_choice_dialog()</a></tt><br></p>
+<p><code>create_for_multi_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-multi_choice_dialog">multi_choice_dialog()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a dialog that will offer the user to select multiple-choice 
 options among the specified ones.</p>
@@ -338,7 +338,7 @@ options among the specified ones.</p>
 
 <h3 class="function"><a name="create_for_multi_choice-5">create_for_multi_choice/5</a></h3>
 <div class="spec">
-<p><tt>create_for_multi_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-multi_choice_dialog_option">multi_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-multi_choice_dialog">multi_choice_dialog()</a></tt><br></p>
+<p><code>create_for_multi_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-multi_choice_dialog_option">multi_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-multi_choice_dialog">multi_choice_dialog()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a dialog that will offer the user to select multiple-choice 
 options among the specified ones.</p>
@@ -348,7 +348,7 @@ options among the specified ones.</p>
 
 <h3 class="function"><a name="create_for_multi_choice-6">create_for_multi_choice/6</a></h3>
 <div class="spec">
-<p><tt>create_for_multi_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, InitialChoiceDesignators::[<a href="#type-choice_designator">choice_designator()</a>], DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-multi_choice_dialog_option">multi_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-multi_choice_dialog">multi_choice_dialog()</a></tt><br></p>
+<p><code>create_for_multi_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, InitialChoiceDesignators::[<a href="#type-choice_designator">choice_designator()</a>], DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-multi_choice_dialog_option">multi_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-multi_choice_dialog">multi_choice_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer the user to select multiple-choice
  options among the specified ones, with the designated ones already selected.
@@ -356,7 +356,7 @@ options among the specified ones.</p>
 
 <h3 class="function"><a name="create_for_single_choice-4">create_for_single_choice/4</a></h3>
 <div class="spec">
-<p><tt>create_for_single_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-single_choice_dialog">single_choice_dialog()</a></tt><br></p>
+<p><code>create_for_single_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-single_choice_dialog">single_choice_dialog()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a dialog that will offer the user to select a single choice 
 option among the specified ones.</p>
@@ -369,7 +369,7 @@ option among the specified ones.</p>
 
 <h3 class="function"><a name="create_for_single_choice-5">create_for_single_choice/5</a></h3>
 <div class="spec">
-<p><tt>create_for_single_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-single_choice_dialog_option">single_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-single_choice_dialog">single_choice_dialog()</a></tt><br></p>
+<p><code>create_for_single_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-single_choice_dialog_option">single_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-single_choice_dialog">single_choice_dialog()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a dialog that will offer the user to select a single choice 
 option among the specified ones.</p>
@@ -382,7 +382,7 @@ option among the specified ones.</p>
 
 <h3 class="function"><a name="create_for_single_choice-6">create_for_single_choice/6</a></h3>
 <div class="spec">
-<p><tt>create_for_single_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, InitialChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-single_choice_dialog_option">single_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-single_choice_dialog">single_choice_dialog()</a></tt><br></p>
+<p><code>create_for_single_choice(Message::<a href="#type-message">message()</a>, Caption::<a href="#type-caption">caption()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>, InitialChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-single_choice_dialog_option">single_choice_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-single_choice_dialog">single_choice_dialog()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a dialog that will offer the user to select a single choice 
 option among the specified ones, with the specified one being selected 
@@ -394,7 +394,7 @@ initially.</p>
 
 <h3 class="function"><a name="create_for_text_entry-2">create_for_text_entry/2</a></h3>
 <div class="spec">
-<p><tt>create_for_text_entry(Label::<a href="#type-label">label()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-text_entry_dialog">text_entry_dialog()</a></tt><br></p>
+<p><code>create_for_text_entry(Label::<a href="#type-label">label()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-text_entry_dialog">text_entry_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer the user to enter a text, while
  displaying the specified label.
@@ -402,7 +402,7 @@ initially.</p>
 
 <h3 class="function"><a name="create_for_text_entry-3">create_for_text_entry/3</a></h3>
 <div class="spec">
-<p><tt>create_for_text_entry(Label::<a href="#type-label">label()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-text_entry_dialog_option">text_entry_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-text_entry_dialog">text_entry_dialog()</a></tt><br></p>
+<p><code>create_for_text_entry(Label::<a href="#type-label">label()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-text_entry_dialog_option">text_entry_dialog_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-text_entry_dialog">text_entry_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer the user to enter a text with the
  specified options, while displaying the specified label.
@@ -410,7 +410,7 @@ initially.</p>
 
 <h3 class="function"><a name="create_for_text_entry-4">create_for_text_entry/4</a></h3>
 <div class="spec">
-<p><tt>create_for_text_entry(Label::<a href="#type-label">label()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-text_entry_dialog_option">text_entry_dialog_option()</a>), InitialText::<a href="#type-text">text()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-text_entry_dialog">text_entry_dialog()</a></tt><br></p>
+<p><code>create_for_text_entry(Label::<a href="#type-label">label()</a>, DialogOpts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-text_entry_dialog_option">text_entry_dialog_option()</a>), InitialText::<a href="#type-text">text()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-text_entry_dialog">text_entry_dialog()</a></code><br></p>
 <p> </p>
 </div><p>Creates a dialog that will offer the user to enter a text with the
  specified options, while displaying the specified label, and once having set
@@ -419,55 +419,55 @@ initially.</p>
 
 <h3 class="function"><a name="destruct_for_color_selection-1">destruct_for_color_selection/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_color_selection(ColSelDialog::<a href="#type-color_selection_dialog">color_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_color_selection(ColSelDialog::<a href="#type-color_selection_dialog">color_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified color-selection dialog.</p>
 
 <h3 class="function"><a name="destruct_for_directory_selection-1">destruct_for_directory_selection/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_directory_selection(DirSelDialog::<a href="#type-directory_selection_dialog">directory_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_directory_selection(DirSelDialog::<a href="#type-directory_selection_dialog">directory_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified directory-selection dialog.</p>
 
 <h3 class="function"><a name="destruct_for_file_selection-1">destruct_for_file_selection/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_file_selection(FileSelectionDialog::<a href="#type-file_selection_dialog">file_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_file_selection(FileSelectionDialog::<a href="#type-file_selection_dialog">file_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified file-selection dialog.</p>
 
 <h3 class="function"><a name="destruct_for_font_selection-1">destruct_for_font_selection/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_font_selection(FontSelDialog::<a href="#type-font_selection_dialog">font_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_font_selection(FontSelDialog::<a href="#type-font_selection_dialog">font_selection_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified font-selection dialog.</p>
 
 <h3 class="function"><a name="destruct_for_message-1">destruct_for_message/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_message(MsgDialog::<a href="#type-message_dialog">message_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_message(MsgDialog::<a href="#type-message_dialog">message_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified message dialog.</p>
 
 <h3 class="function"><a name="destruct_for_multi_choice-1">destruct_for_multi_choice/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_multi_choice(MultiChoiceDialog::<a href="#type-multi_choice_dialog">multi_choice_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_multi_choice(MultiChoiceDialog::<a href="#type-multi_choice_dialog">multi_choice_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified multi-choice dialog.</p>
 
 <h3 class="function"><a name="destruct_for_single_choice-1">destruct_for_single_choice/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_single_choice(SingleChoiceDialog::<a href="#type-single_choice_dialog">single_choice_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_single_choice(SingleChoiceDialog::<a href="#type-single_choice_dialog">single_choice_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified single-choice dialog.</p>
 
 <h3 class="function"><a name="destruct_for_text_entry-1">destruct_for_text_entry/1</a></h3>
 <div class="spec">
-<p><tt>destruct_for_text_entry(TextEntryDialog::<a href="#type-text_entry_dialog">text_entry_dialog()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_for_text_entry(TextEntryDialog::<a href="#type-text_entry_dialog">text_entry_dialog()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified text-entry dialog.</p>
 
 <h3 class="function"><a name="get_choice_designator-2">get_choice_designator/2</a></h3>
 <div class="spec">
-<p><tt>get_choice_designator(SingleChoiceDialog::<a href="#type-single_choice_dialog">single_choice_dialog()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></tt><br></p>
+<p><code>get_choice_designator(SingleChoiceDialog::<a href="#type-single_choice_dialog">single_choice_dialog()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></code><br></p>
 <p> </p>
 </div><p>Returns the designator of the option choice made based on the specified
  single-choice dialog.
@@ -475,7 +475,7 @@ initially.</p>
 
 <h3 class="function"><a name="get_choice_designators-2">get_choice_designators/2</a></h3>
 <div class="spec">
-<p><tt>get_choice_designators(MultiChoiceDialog::<a href="#type-multi_choice_dialog">multi_choice_dialog()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; [<a href="#type-choice_designator">choice_designator()</a>]</tt><br></p>
+<p><code>get_choice_designators(MultiChoiceDialog::<a href="#type-multi_choice_dialog">multi_choice_dialog()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; [<a href="#type-choice_designator">choice_designator()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the designators (in unspecified order) of the choices made based
  on the specified multi-choice dialog.
@@ -483,19 +483,19 @@ initially.</p>
 
 <h3 class="function"><a name="get_entered_text-1">get_entered_text/1</a></h3>
 <div class="spec">
-<p><tt>get_entered_text(TextEntryDialog::<a href="#type-text_entry_dialog">text_entry_dialog()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p><code>get_entered_text(TextEntryDialog::<a href="#type-text_entry_dialog">text_entry_dialog()</a>) -&gt; <a href="#type-text">text()</a></code><br></p>
 <p> </p>
 </div><p>Returns the text present in the specified text-entry dialog.</p>
 
 <h3 class="function"><a name="get_selected_color-1">get_selected_color/1</a></h3>
 <div class="spec">
-<p><tt>get_selected_color(ColSelDialog::<a href="#type-color_selection_dialog">color_selection_dialog()</a>) -&gt; <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></tt><br></p>
+<p><code>get_selected_color(ColSelDialog::<a href="#type-color_selection_dialog">color_selection_dialog()</a>) -&gt; <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></code><br></p>
 <p> </p>
 </div><p>Returns the RGBA definition of the selected color.</p>
 
 <h3 class="function"><a name="get_selected_directory-1">get_selected_directory/1</a></h3>
 <div class="spec">
-<p><tt>get_selected_directory(DirSelDialog::<a href="#type-directory_selection_dialog">directory_selection_dialog()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_selected_directory(DirSelDialog::<a href="#type-directory_selection_dialog">directory_selection_dialog()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the full path of the selected directory.</p>
 
@@ -505,7 +505,7 @@ initially.</p>
 
 <h3 class="function"><a name="get_selected_file-1">get_selected_file/1</a></h3>
 <div class="spec">
-<p><tt>get_selected_file(FileSelectionDialog::<a href="#type-file_selection_dialog">file_selection_dialog()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>get_selected_file(FileSelectionDialog::<a href="#type-file_selection_dialog">file_selection_dialog()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the full path (directory and filename) of the selected file.</p>
 
@@ -514,7 +514,7 @@ initially.</p>
 
 <h3 class="function"><a name="get_selected_files-1">get_selected_files/1</a></h3>
 <div class="spec">
-<p><tt>get_selected_files(FileSelectionDialog::<a href="#type-file_selection_dialog">file_selection_dialog()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>get_selected_files(FileSelectionDialog::<a href="#type-file_selection_dialog">file_selection_dialog()</a>) -&gt; [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns the full path (directory and filename) of the selected files.</p>
 
@@ -523,13 +523,13 @@ initially.</p>
 
 <h3 class="function"><a name="get_selected_font-1">get_selected_font/1</a></h3>
 <div class="spec">
-<p><tt>get_selected_font(FontSelDialog::<a href="#type-font_selection_dialog">font_selection_dialog()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p><code>get_selected_font(FontSelDialog::<a href="#type-font_selection_dialog">font_selection_dialog()</a>) -&gt; <a href="#type-font">font()</a></code><br></p>
 <p> </p>
 </div><p>Returns the selected font.</p>
 
 <h3 class="function"><a name="set_default_text-2">set_default_text/2</a></h3>
 <div class="spec">
-<p><tt>set_default_text(TextEntryDialog::<a href="#type-text_entry_dialog">text_entry_dialog()</a>, Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_default_text(TextEntryDialog::<a href="#type-text_entry_dialog">text_entry_dialog()</a>, Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the default, initially present, text of the specified text-entry
  dialog.
@@ -537,7 +537,7 @@ initially.</p>
 
 <h3 class="function"><a name="set_selected_choice-3">set_selected_choice/3</a></h3>
 <div class="spec">
-<p><tt>set_selected_choice(SingleChoiceDialog::<a href="#type-single_choice_dialog">single_choice_dialog()</a>, ChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_selected_choice(SingleChoiceDialog::<a href="#type-single_choice_dialog">single_choice_dialog()</a>, ChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>, ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the initially selected choice option of the specified single-choice
  dialog.
@@ -545,7 +545,7 @@ initially.</p>
 
 <h3 class="function"><a name="set_selected_choices-3">set_selected_choices/3</a></h3>
 <div class="spec">
-<p><tt>set_selected_choices(MultiChoiceDialog::<a href="#type-multi_choice_dialog">multi_choice_dialog()</a>, ChoiceDesignators::[<a href="#type-choice_designator">choice_designator()</a>], ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_selected_choices(MultiChoiceDialog::<a href="#type-multi_choice_dialog">multi_choice_dialog()</a>, ChoiceDesignators::[<a href="#type-choice_designator">choice_designator()</a>], ChoiceSpec::<a href="#type-choice_spec">choice_spec()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the initially selected option choices of the specified
  multiple-choice dialog.
@@ -553,7 +553,7 @@ initially.</p>
 
 <h3 class="function"><a name="show-1">show/1</a></h3>
 <div class="spec">
-<p><tt>show(Dialog::<a href="#type-dialog">dialog()</a>) -&gt; boolean()</tt><br></p>
+<p><code>show(Dialog::<a href="#type-dialog">dialog()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Shows the specified dialog in a modeless way; returns true if the dialog 
 has been shown or hidden, or false if nothing was done because it already was 
@@ -564,7 +564,7 @@ in the requested state.</p>
 
 <h3 class="function"><a name="show_modal-1">show_modal/1</a></h3>
 <div class="spec">
-<p><tt>show_modal(Dialog::<a href="#type-dialog">dialog()</a>) -&gt; <a href="#type-dialog_return_code">dialog_return_code()</a></tt><br></p>
+<p><code>show_modal(Dialog::<a href="#type-dialog">dialog()</a>) -&gt; <a href="#type-dialog_return_code">dialog_return_code()</a></code><br></p>
 <p> </p>
 </div><p><p>Shows the specified dialog in a modal way.</p>
 

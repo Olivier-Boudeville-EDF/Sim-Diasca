@@ -20,11 +20,11 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast">ast()</a></h3>
-<p><tt>ast() = <a href="ast_base.html#type-ast">ast_base:ast()</a></tt></p>
+<p><code>ast() = <a href="ast_base.html#type-ast">ast_base:ast()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_location">ast_location()</a></h3>
-<p><tt>ast_location() = <a href="ast_base.html#type-form_location">ast_base:form_location()</a> | {locate_at, <a href="#type-section_marker">section_marker()</a>} | {locate_after, <a href="ast_base.html#type-form_location">ast_base:form_location()</a>}</tt></p>
+<p><code>ast_location() = <a href="ast_base.html#type-form_location">ast_base:form_location()</a> | {locate_at, <a href="#type-section_marker">section_marker()</a>} | {locate_after, <a href="ast_base.html#type-form_location">ast_base:form_location()</a>}</code></p>
 <p><p> Location of a form in an AST, so that the order of forms can be recreated.</p>
 
  <p>We use sortable identifiers so that any number of new forms can be introduced 
@@ -55,15 +55,15 @@ specified form.</p>
  at a given marker or after a given form.</p>
 
 <h3 class="typedecl"><a name="type-attribute">attribute()</a></h3>
-<p><tt>attribute() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt></p>
+<p><code>attribute() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code></p>
 <p> Parse-level attribute.</p>
 
 <h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
-<p><tt>attribute_name() = atom()</tt></p>
+<p><code>attribute_name() = atom()</code></p>
 <p> The name of a (parse-level) attribute (e.g. '-my_attribute( my_value ).').</p>
 
 <h3 class="typedecl"><a name="type-attribute_table">attribute_table()</a></h3>
-<p><tt>attribute_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-attribute_name">attribute_name()</a>, [{<a href="#type-attribute_value">attribute_value()</a>, <a href="#type-located_form">located_form()</a>}])</tt></p>
+<p><code>attribute_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-attribute_name">attribute_name()</a>, [{<a href="#type-attribute_value">attribute_value()</a>, <a href="#type-located_form">located_form()</a>}])</code></p>
 <p><p> For easy access to the values and AST forms associated to a parse attribute, 
 from its name.</p>
 
@@ -71,30 +71,30 @@ from its name.</p>
  forms of the various '-dialyzer( XXX ).' found in a source file.</p>
 
 <h3 class="typedecl"><a name="type-attribute_value">attribute_value()</a></h3>
-<p><tt>attribute_value() = term()</tt></p>
+<p><code>attribute_value() = term()</code></p>
 <p> The value of a (parse-level) attribute (e.g. '-my_attribute( my_value ).').</p>
 
 <h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
-<p><tt>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></tt></p>
+<p><code>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-compile_option_entry">compile_option_entry()</a></h3>
-<p><tt>compile_option_entry() = <a href="#type-compile_option_name">compile_option_name()</a> | {<a href="#type-compile_option_name">compile_option_name()</a>, <a href="#type-compile_option_value">compile_option_value()</a>}</tt></p>
+<p><code>compile_option_entry() = <a href="#type-compile_option_name">compile_option_name()</a> | {<a href="#type-compile_option_name">compile_option_name()</a>, <a href="#type-compile_option_value">compile_option_value()</a>}</code></p>
 <p> As typically obtained from options fed to a parse-transform.</p>
 
 <h3 class="typedecl"><a name="type-compile_option_name">compile_option_name()</a></h3>
-<p><tt>compile_option_name() = atom()</tt></p>
+<p><code>compile_option_name() = atom()</code></p>
 <p> For example inline, export_all, etc.</p>
 
 <h3 class="typedecl"><a name="type-compile_option_table">compile_option_table()</a></h3>
-<p><tt>compile_option_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-compile_option_name">compile_option_name()</a>, <a href="#type-maybe">maybe</a>([<a href="#type-compile_option_value">compile_option_value()</a>]))</tt></p>
+<p><code>compile_option_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-compile_option_name">compile_option_name()</a>, <a href="#type-maybe">maybe</a>([<a href="#type-compile_option_value">compile_option_value()</a>]))</code></p>
 <p><p> For easy access to compilation information:</p>
 
  Note that an option specified without a value (e.g. -Dmy_token on the command
  line) will be associated to the 'undefined' value.</p>
 
 <h3 class="typedecl"><a name="type-compile_option_value">compile_option_value()</a></h3>
-<p><tt>compile_option_value() = term()</tt></p>
+<p><code>compile_option_value() = term()</code></p>
 <p><p> In some cases (at least when it is specified from the command-line), a 
 compilation option is a triplet (e.g. -Dmy_other_test_token=51 is translated, 
 in terms of a parse-transform option, as: {d,my_other_test_token,51}).</p>
@@ -103,13 +103,13 @@ in terms of a parse-transform option, as: {d,my_other_test_token,51}).</p>
  {my_other_test_token,51}.</p>
 
 <h3 class="typedecl"><a name="type-error">error()</a></h3>
-<p><tt>error() = {<a href="ast_scan.html#type-scan_context">ast_scan:scan_context()</a>, <a href="ast_scan.html#type-error_report">ast_scan:error_report()</a>}</tt></p>
+<p><code>error() = {<a href="ast_scan.html#type-scan_context">ast_scan:scan_context()</a>, <a href="ast_scan.html#type-error_report">ast_scan:error_report()</a>}</code></p>
 <p><p> All relevant information about an error found in an AST:</p>
 
  (note: includes warnings)</p>
 
 <h3 class="typedecl"><a name="type-field_table">field_table()</a></h3>
-<p><tt>field_table() = [{<a href="basic_utils.html#type-field_name">basic_utils:field_name()</a>, <a href="ast_record.html#type-field_definition">ast_record:field_definition()</a>}]</tt></p>
+<p><code>field_table() = [{<a href="basic_utils.html#type-field_name">basic_utils:field_name()</a>, <a href="ast_record.html#type-field_definition">ast_record:field_definition()</a>}]</code></p>
 <p><p> A table associating to a given field of a record its description.</p>
 
  The ?table type (usually map_hashtable) cannot be used, as it does not
@@ -117,15 +117,15 @@ in terms of a parse-transform option, as: {d,my_other_test_token,51}).</p>
  tuple-records according to their rank in the corresponding list.</p>
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-form">form()</a></h3>
-<p><tt>form() = <a href="ast_base.html#type-form">ast_base:form()</a></tt></p>
+<p><code>form() = <a href="ast_base.html#type-form">ast_base:form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_export_table">function_export_table()</a></h3>
-<p><tt>function_export_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-file_loc">file_loc()</a>, [<a href="#type-function_id">function_id()</a>]})</tt></p>
+<p><code>function_export_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-file_loc">file_loc()</a>, [<a href="#type-function_id">function_id()</a>]})</code></p>
 <p><p> A table associating, to a given AST location, the corresponding line/column in 
 the source file (to recreate the corresponding export form) and a list of the 
 identifiers of the functions to declare exported there.</p>
@@ -138,32 +138,32 @@ identifiers of the functions to declare exported there.</p>
  - the 'export_all' compile attribute may also have been set in compile options</p>
 
 <h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
-<p><tt>function_id() = <a href="meta_utils.html#type-function_id">meta_utils:function_id()</a></tt></p>
+<p><code>function_id() = <a href="meta_utils.html#type-function_id">meta_utils:function_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_import_table">function_import_table()</a></h3>
-<p><tt>function_import_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, [<a href="#type-function_id">function_id()</a>])</tt></p>
+<p><code>function_import_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, [<a href="#type-function_id">function_id()</a>])</code></p>
 <p> A table referencing, for each module listed, a list of the functions that are
  imported from it by the current module.</p>
 
 <h3 class="typedecl"><a name="type-function_info">function_info()</a></h3>
-<p><tt>function_info() = #function_info{name = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a>, arity = arity(), ast_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-located_function_spec">ast_info:located_function_spec()</a>), callback = boolean(), exported = [<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>]}</tt></p>
+<p><code>function_info() = #function_info{name = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a>, arity = arity(), ast_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-located_function_spec">ast_info:located_function_spec()</a>), callback = boolean(), exported = [<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>]}</code></p>
 
 
 <h3 class="typedecl"><a name="type-function_table">function_table()</a></h3>
-<p><tt>function_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-function_id">function_id()</a>, <a href="#type-function_info">function_info()</a>)</tt></p>
+<p><code>function_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-function_id">function_id()</a>, <a href="#type-function_info">function_info()</a>)</code></p>
 <p> A table associating to each function identifier a full function information.</p>
 
 <h3 class="typedecl"><a name="type-indentation_level">indentation_level()</a></h3>
-<p><tt>indentation_level() = <a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a></tt></p>
+<p><code>indentation_level() = <a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-located_ast">located_ast()</a></h3>
-<p><tt>located_ast() = [<a href="#type-located_form">located_form()</a>]</tt></p>
+<p><code>located_ast() = [<a href="#type-located_form">located_form()</a>]</code></p>
 <p> An AST including location information.</p>
 
 <h3 class="typedecl"><a name="type-located_form">located_form()</a></h3>
-<p><tt>located_form() = {<a href="#type-ast_location">ast_location()</a>, <a href="#type-form">form()</a>}</tt></p>
+<p><code>located_form() = {<a href="#type-ast_location">ast_location()</a>, <a href="#type-form">form()</a>}</code></p>
 <p><p> When processing an AST (e.g. read from a BEAM file), the order of the forms 
 matters (for example to report compile errors, which are relative to a context 
 defined by the last '-file' attribute previously encountered, i.e. like 
@@ -176,41 +176,41 @@ same order.</p>
  order in the original AST.</p>
 
 <h3 class="typedecl"><a name="type-located_function_spec">located_function_spec()</a></h3>
-<p><tt>located_function_spec() = {<a href="#type-ast_location">ast_location()</a>, <a href="meta_utils.html#type-function_spec">meta_utils:function_spec()</a>}</tt></p>
+<p><code>located_function_spec() = {<a href="#type-ast_location">ast_location()</a>, <a href="meta_utils.html#type-function_spec">meta_utils:function_spec()</a>}</code></p>
 <p> Located type specification of a function.</p>
 
 <h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
-<p><tt>maybe(T) = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(T)</tt></p>
+<p><code>maybe(T) = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-module_entry">module_entry()</a></h3>
-<p><tt>module_entry() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>({<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, <a href="ast_info.html#type-located_form">ast_info:located_form()</a>})</tt></p>
+<p><code>module_entry() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>({<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, <a href="ast_info.html#type-located_form">ast_info:located_form()</a>})</code></p>
 
 
 <h3 class="typedecl"><a name="type-module_info">module_info()</a></h3>
-<p><tt>module_info() = #module_info{module = <a href="#type-module_entry">module_entry()</a>, compilation_options = <a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>, compilation_option_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], parse_attributes = <a href="ast_info.html#type-attribute_table">ast_info:attribute_table()</a>, remote_spec_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], includes = [<a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a>], include_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], type_exports = <a href="ast_info.html#type-type_export_table">ast_info:type_export_table()</a>, types = <a href="ast_info.html#type-type_table">ast_info:type_table()</a>, records = <a href="ast_info.html#type-record_table">ast_info:record_table()</a>, function_imports = <a href="ast_info.html#type-function_import_table">ast_info:function_import_table()</a>, function_imports_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], function_exports = <a href="ast_info.html#type-function_export_table">ast_info:function_export_table()</a>, functions = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, optional_callbacks_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], last_file_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-located_form">ast_info:located_form()</a>), markers = <a href="ast_info.html#type-section_marker_table">ast_info:section_marker_table()</a>, errors = [<a href="ast_info.html#type-error">ast_info:error()</a>], unhandled_forms = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>]}</tt></p>
+<p><code>module_info() = #module_info{module = <a href="#type-module_entry">module_entry()</a>, compilation_options = <a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>, compilation_option_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], parse_attributes = <a href="ast_info.html#type-attribute_table">ast_info:attribute_table()</a>, remote_spec_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], includes = [<a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a>], include_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], type_exports = <a href="ast_info.html#type-type_export_table">ast_info:type_export_table()</a>, types = <a href="ast_info.html#type-type_table">ast_info:type_table()</a>, records = <a href="ast_info.html#type-record_table">ast_info:record_table()</a>, function_imports = <a href="ast_info.html#type-function_import_table">ast_info:function_import_table()</a>, function_imports_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], function_exports = <a href="ast_info.html#type-function_export_table">ast_info:function_export_table()</a>, functions = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, optional_callbacks_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], last_file_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-located_form">ast_info:located_form()</a>), markers = <a href="ast_info.html#type-section_marker_table">ast_info:section_marker_table()</a>, errors = [<a href="ast_info.html#type-error">ast_info:error()</a>], unhandled_forms = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>]}</code></p>
 
 
 <h3 class="typedecl"><a name="type-record_definition">record_definition()</a></h3>
-<p><tt>record_definition() = {<a href="#type-field_table">field_table()</a>, <a href="#type-ast_location">ast_location()</a>, <a href="#type-file_loc">file_loc()</a>}</tt></p>
+<p><code>record_definition() = {<a href="#type-field_table">field_table()</a>, <a href="#type-ast_location">ast_location()</a>, <a href="#type-file_loc">file_loc()</a>}</code></p>
 <p> The full definition of a record.</p>
 
 <h3 class="typedecl"><a name="type-record_table">record_table()</a></h3>
-<p><tt>record_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="basic_utils.html#type-record_name">basic_utils:record_name()</a>, <a href="#type-record_definition">record_definition()</a>)</tt></p>
+<p><code>record_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="basic_utils.html#type-record_name">basic_utils:record_name()</a>, <a href="#type-record_definition">record_definition()</a>)</code></p>
 <p> A table associating to each record name the description of the corresponding
  record.</p>
 
 <h3 class="typedecl"><a name="type-section_marker">section_marker()</a></h3>
-<p><tt>section_marker() = begin_marker | module_marker | export_types_marker | export_functions_marker | import_functions_marker | definition_records_marker | definition_types_marker | definition_functions_marker | end_marker</tt></p>
+<p><code>section_marker() = begin_marker | module_marker | export_types_marker | export_functions_marker | import_functions_marker | definition_records_marker | definition_types_marker | definition_functions_marker | end_marker</code></p>
 
 
 <h3 class="typedecl"><a name="type-section_marker_table">section_marker_table()</a></h3>
-<p><tt>section_marker_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-section_marker">section_marker()</a>, <a href="#type-ast_location">ast_location()</a>)</tt></p>
+<p><code>section_marker_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-section_marker">section_marker()</a>, <a href="#type-ast_location">ast_location()</a>)</code></p>
 <p> A table storing the actual locations corresponding to the standard section
  markers.</p>
 
 <h3 class="typedecl"><a name="type-type_export_table">type_export_table()</a></h3>
-<p><tt>type_export_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-file_loc">file_loc()</a>, [<a href="#type-type_id">type_id()</a>]})</tt></p>
+<p><code>type_export_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-file_loc">file_loc()</a>, [<a href="#type-type_id">type_id()</a>]})</code></p>
 <p><p> A table associating, to a given location, the corresponding line/column in the 
 source file (to recreate the corresponding export form) and a list of the 
 identifiers of the types to declare exported there.</p>
@@ -223,19 +223,19 @@ in a module_info'types' field; see: add_type/2 and remove_type/2</p>
  - [ type_id() ] used, not a set, to better preserve order</p>
 
 <h3 class="typedecl"><a name="type-type_id">type_id()</a></h3>
-<p><tt>type_id() = <a href="type_utils.html#type-type_id">type_utils:type_id()</a></tt></p>
+<p><code>type_id() = <a href="type_utils.html#type-type_id">type_utils:type_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-type_info">type_info()</a></h3>
-<p><tt>type_info() = #type_info{name = <a href="type_utils.html#type-type_name">type_utils:type_name()</a>, variables = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>([<a href="ast_type.html#type-ast_variable_pattern">ast_type:ast_variable_pattern()</a>]), opaque = boolean(), ast_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), definition = <a href="ast_type.html#type-ast_type">ast_type:ast_type()</a>, exported = [<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>]}</tt></p>
+<p><code>type_info() = #type_info{name = <a href="type_utils.html#type-type_name">type_utils:type_name()</a>, variables = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>([<a href="ast_type.html#type-ast_variable_pattern">ast_type:ast_variable_pattern()</a>]), opaque = boolean(), ast_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), definition = <a href="ast_type.html#type-ast_type">ast_type:ast_type()</a>, exported = [<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>]}</code></p>
 
 
 <h3 class="typedecl"><a name="type-type_table">type_table()</a></h3>
-<p><tt>type_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-type_id">type_id()</a>, <a href="#type-type_info">type_info()</a>)</tt></p>
+<p><code>type_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-type_id">type_id()</a>, <a href="#type-type_info">type_info()</a>)</code></p>
 <p> A table associating to each type identifier a full type information.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -348,13 +348,13 @@ indentation level.</td></tr>
 
 <h3 class="function"><a name="check_module_info-1">check_module_info/1</a></h3>
 <div class="spec">
-<p><tt>check_module_info(Module_info::<a href="#type-module_info">module_info()</a>) -&gt; <a href="basic_utils.html#type-void">basic_utils:void()</a></tt><br></p>
+<p><code>check_module_info(Module_info::<a href="#type-module_info">module_info()</a>) -&gt; <a href="basic_utils.html#type-void">basic_utils:void()</a></code><br></p>
 <p> </p>
 </div><p>Checks the correctness of specified module information.</p>
 
 <h3 class="function"><a name="compilation_options_to_string-3">compilation_options_to_string/3</a></h3>
 <div class="spec">
-<p><tt>compilation_options_to_string(CompileTable::<a href="#type-compile_option_table">compile_option_table()</a>, CompileOptDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>compilation_options_to_string(CompileTable::<a href="#type-compile_option_table">compile_option_table()</a>, CompileOptDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of compilation options, based on a
  default indentation level.
@@ -362,7 +362,7 @@ indentation level.</td></tr>
 
 <h3 class="function"><a name="compilation_options_to_string-4">compilation_options_to_string/4</a></h3>
 <div class="spec">
-<p><tt>compilation_options_to_string(CompileTable::<a href="#type-compile_option_table">compile_option_table()</a>, CompileOptDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>compilation_options_to_string(CompileTable::<a href="#type-compile_option_table">compile_option_table()</a>, CompileOptDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of compilation options, with specified
  indentation level.
@@ -370,7 +370,7 @@ indentation level.</td></tr>
 
 <h3 class="function"><a name="ensure_function_exported-4">ensure_function_exported/4</a></h3>
 <div class="spec">
-<p><tt>ensure_function_exported(FunId::<a href="#type-function_id">function_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>, ExportTable::<a href="#type-function_export_table">function_export_table()</a>) -&gt; <a href="#type-function_export_table">function_export_table()</a></tt><br></p>
+<p><code>ensure_function_exported(FunId::<a href="#type-function_id">function_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>, ExportTable::<a href="#type-function_export_table">function_export_table()</a>) -&gt; <a href="#type-function_export_table">function_export_table()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that the specified function is exported at the specified
  AST location(s).
@@ -378,7 +378,7 @@ indentation level.</td></tr>
 
 <h3 class="function"><a name="ensure_function_not_exported-3">ensure_function_not_exported/3</a></h3>
 <div class="spec">
-<p><tt>ensure_function_not_exported(FunId::<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ExportTable::<a href="#type-function_export_table">function_export_table()</a>) -&gt; <a href="#type-function_export_table">function_export_table()</a></tt><br></p>
+<p><code>ensure_function_not_exported(FunId::<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ExportTable::<a href="#type-function_export_table">function_export_table()</a>) -&gt; <a href="#type-function_export_table">function_export_table()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that specified function is not exported at the specified AST
  location(s), in the specified function export table (un-export said function).
@@ -386,13 +386,13 @@ indentation level.</td></tr>
 
 <h3 class="function"><a name="ensure_type_exported-4">ensure_type_exported/4</a></h3>
 <div class="spec">
-<p><tt>ensure_type_exported(TypeId::<a href="#type-type_id">type_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>, ExportTable::<a href="#type-type_export_table">type_export_table()</a>) -&gt; <a href="#type-type_export_table">type_export_table()</a></tt><br></p>
+<p><code>ensure_type_exported(TypeId::<a href="#type-type_id">type_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>, ExportTable::<a href="#type-type_export_table">type_export_table()</a>) -&gt; <a href="#type-type_export_table">type_export_table()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that the specified type is exported at the specified location(s).</p>
 
 <h3 class="function"><a name="ensure_type_not_exported-3">ensure_type_not_exported/3</a></h3>
 <div class="spec">
-<p><tt>ensure_type_not_exported(TypeId::<a href="#type-type_id">type_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ExportTable::<a href="#type-type_export_table">type_export_table()</a>) -&gt; <a href="#type-type_export_table">type_export_table()</a></tt><br></p>
+<p><code>ensure_type_not_exported(TypeId::<a href="#type-type_id">type_id()</a>, ExportLocs::[<a href="#type-ast_location">ast_location()</a>], ExportTable::<a href="#type-type_export_table">type_export_table()</a>) -&gt; <a href="#type-type_export_table">type_export_table()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that specified type is not exported at the specified AST
  location(s).
@@ -400,13 +400,13 @@ indentation level.</td></tr>
 
 <h3 class="function"><a name="errors_to_string-2">errors_to_string/2</a></h3>
 <div class="spec">
-<p><tt>errors_to_string(Errors::[<a href="#type-error">error()</a>], IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>errors_to_string(Errors::[<a href="#type-error">error()</a>], IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of specified errors.</p>
 
 <h3 class="function"><a name="extract_module_info_from_ast-1">extract_module_info_from_ast/1</a></h3>
 <div class="spec">
-<p><tt>extract_module_info_from_ast(AST::<a href="#type-ast">ast()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p><code>extract_module_info_from_ast(AST::<a href="#type-ast">ast()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
 <p> </p>
 </div><p><p>Processes the specified AST relative to a whole module, and returns the 
 corresponding information gathered.</p>
@@ -418,7 +418,7 @@ corresponding information gathered.</p>
 
 <h3 class="function"><a name="field_to_string-3">field_to_string/3</a></h3>
 <div class="spec">
-<p><tt>field_to_string(FieldName, FieldType, DefaultValue) -&gt; any()</tt></p>
+<p><code>field_to_string(FieldName, FieldType, DefaultValue) -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Returns a textual representation of specified record field.</p>
 
@@ -427,7 +427,7 @@ corresponding information gathered.</p>
 
 <h3 class="function"><a name="fields_to_strings-1">fields_to_strings/1</a></h3>
 <div class="spec">
-<p><tt>fields_to_strings(FieldTable::<a href="#type-field_table">field_table()</a>) -&gt; [<a href="#type-ustring">ustring()</a>]</tt><br></p>
+<p><code>fields_to_strings(FieldTable::<a href="#type-field_table">field_table()</a>) -&gt; [<a href="#type-ustring">ustring()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of textual representations for each of the record fields
  in specified table.
@@ -435,7 +435,7 @@ corresponding information gathered.</p>
 
 <h3 class="function"><a name="forms_to_string-3">forms_to_string/3</a></h3>
 <div class="spec">
-<p><tt>forms_to_string(LocForms::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>forms_to_string(LocForms::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual representation of the specified forms, if requested, 
 and using specified indentation level.</p>
@@ -445,13 +445,13 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="function_id_to_string-1">function_id_to_string/1</a></h3>
 <div class="spec">
-<p><tt>function_id_to_string(X1::<a href="#type-function_id">function_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>function_id_to_string(X1::<a href="#type-function_id">function_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified function identifier.</p>
 
 <h3 class="function"><a name="function_imports_to_string-4">function_imports_to_string/4</a></h3>
 <div class="spec">
-<p><tt>function_imports_to_string(FunctionImportTable::<a href="#type-function_import_table">function_import_table()</a>, FunctionImportDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>function_imports_to_string(FunctionImportTable::<a href="#type-function_import_table">function_import_table()</a>, FunctionImportDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified function imports, with
  specified indentation level.
@@ -459,7 +459,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="function_info_to_string-1">function_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>function_info_to_string(FunctionInfo::<a href="#type-function_info">function_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>function_info_to_string(FunctionInfo::<a href="#type-function_info">function_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified function information, not
  including its forms (clauses), with a default indentation level.
@@ -467,7 +467,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="function_info_to_string-2">function_info_to_string/2</a></h3>
 <div class="spec">
-<p><tt>function_info_to_string(FunctionInfo::<a href="#type-function_info">function_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>function_info_to_string(FunctionInfo::<a href="#type-function_info">function_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified function information,
  including its forms (clauses) if specified, with a default indentation level.
@@ -475,13 +475,13 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="function_info_to_string-3">function_info_to_string/3</a></h3>
 <div class="spec">
-<p><tt>function_info_to_string(Function_info::<a href="#type-function_info">function_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>function_info_to_string(Function_info::<a href="#type-function_info">function_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified function information.</p>
 
 <h3 class="function"><a name="functions_to_string-3">functions_to_string/3</a></h3>
 <div class="spec">
-<p><tt>functions_to_string(FunctionTable::<a href="#type-function_table">function_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>functions_to_string(FunctionTable::<a href="#type-function_table">function_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified functions, with
  specified indentation level.
@@ -489,7 +489,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_definition_function_location-0">get_default_definition_function_location/0</a></h3>
 <div class="spec">
-<p><tt>get_default_definition_function_location() -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_definition_function_location() -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new functions may be
  defined, as an indirect location.
@@ -497,7 +497,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_definition_function_location-1">get_default_definition_function_location/1</a></h3>
 <div class="spec">
-<p><tt>get_default_definition_function_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_definition_function_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new functions may be
  defined, as an immediate location.
@@ -505,7 +505,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_definition_record_location-0">get_default_definition_record_location/0</a></h3>
 <div class="spec">
-<p><tt>get_default_definition_record_location() -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_definition_record_location() -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new records may be
  defined, as an indirect location.
@@ -513,7 +513,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_definition_record_location-1">get_default_definition_record_location/1</a></h3>
 <div class="spec">
-<p><tt>get_default_definition_record_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_definition_record_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new records may be
  defined, as an immediate location.
@@ -521,7 +521,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_definition_type_location-0">get_default_definition_type_location/0</a></h3>
 <div class="spec">
-<p><tt>get_default_definition_type_location() -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_definition_type_location() -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new types may be defined,
  as an indirect location.
@@ -529,7 +529,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_definition_type_location-1">get_default_definition_type_location/1</a></h3>
 <div class="spec">
-<p><tt>get_default_definition_type_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_definition_type_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new types may be defined,
  as an immediate location.
@@ -537,7 +537,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_export_function_location-0">get_default_export_function_location/0</a></h3>
 <div class="spec">
-<p><tt>get_default_export_function_location() -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_export_function_location() -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new functions may be
  exported, as an indirect location.
@@ -545,7 +545,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_export_function_location-1">get_default_export_function_location/1</a></h3>
 <div class="spec">
-<p><tt>get_default_export_function_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_export_function_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new functions may be
  exported, as an immediate location.
@@ -553,7 +553,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_export_type_location-0">get_default_export_type_location/0</a></h3>
 <div class="spec">
-<p><tt>get_default_export_type_location() -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_export_type_location() -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new types may be exported,
  as an indirect location.
@@ -561,7 +561,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_export_type_location-1">get_default_export_type_location/1</a></h3>
 <div class="spec">
-<p><tt>get_default_export_type_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_export_type_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which new types may be exported,
  as an immediate location.
@@ -569,7 +569,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_import_function_location-0">get_default_import_function_location/0</a></h3>
 <div class="spec">
-<p><tt>get_default_import_function_location() -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_import_function_location() -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which functions may be imported,
  as an indirect location.
@@ -577,7 +577,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_import_function_location-1">get_default_import_function_location/1</a></h3>
 <div class="spec">
-<p><tt>get_default_import_function_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_import_function_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location at which functions may be imported,
  as an immediate location.
@@ -585,7 +585,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_module_location-0">get_default_module_location/0</a></h3>
 <div class="spec">
-<p><tt>get_default_module_location() -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_module_location() -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location designating where forms can be be
  added just after the declaration of the module name, as an indirect location.
@@ -593,7 +593,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="get_default_module_location-1">get_default_module_location/1</a></h3>
 <div class="spec">
-<p><tt>get_default_module_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></tt><br></p>
+<p><code>get_default_module_location(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ast_location">ast_location()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conventional AST location designating where forms can be be
  added just after the declaration of the module name, as an immediate location.
@@ -601,7 +601,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="includes_to_string-3">includes_to_string/3</a></h3>
 <div class="spec">
-<p><tt>includes_to_string(Includes::[<a href="#type-bin_file_path">bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>includes_to_string(Includes::[<a href="#type-bin_file_path">bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified includes, based on a
  default indentation level.
@@ -609,7 +609,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="includes_to_string-4">includes_to_string/4</a></h3>
 <div class="spec">
-<p><tt>includes_to_string(Includes::[<a href="#type-bin_file_path">bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>includes_to_string(Includes::[<a href="#type-bin_file_path">bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified includes, with
  specified indentation level.
@@ -617,7 +617,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="init_module_info-0">init_module_info/0</a></h3>
 <div class="spec">
-<p><tt>init_module_info() -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p><code>init_module_info() -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
 <p> </p>
 </div><p>Returns a new, blank instance of the module_info record, typically to be
  fed with an input AST afterwards.
@@ -625,7 +625,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="interpret_options-2">interpret_options/2</a></h3>
 <div class="spec">
-<p><tt>interpret_options(OptionList::[<a href="#type-compile_option_entry">compile_option_entry()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p><code>interpret_options(OptionList::[<a href="#type-compile_option_entry">compile_option_entry()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
 <p> </p>
 </div><p>Interprets the specified compilation options, that were typically
  specified through the command-line.
@@ -633,13 +633,13 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="last_file_loc_to_string-1">last_file_loc_to_string/1</a></h3>
 <div class="spec">
-<p><tt>last_file_loc_to_string(LastFileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-located_form">located_form()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>last_file_loc_to_string(LastFileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-located_form">located_form()</a>)) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of a module last line / line count.</p>
 
 <h3 class="function"><a name="located_ast_to_string-1">located_ast_to_string/1</a></h3>
 <div class="spec">
-<p><tt>located_ast_to_string(AST::<a href="#type-located_ast">located_ast()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>located_ast_to_string(AST::<a href="#type-located_ast">located_ast()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of the specified located AST.</p>
 
@@ -648,25 +648,25 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="location_to_string-1">location_to_string/1</a></h3>
 <div class="spec">
-<p><tt>location_to_string(Location::<a href="#type-ast_location">ast_location()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>location_to_string(Location::<a href="#type-ast_location">ast_location()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified location.</p>
 
 <h3 class="function"><a name="markers_to_string-1">markers_to_string/1</a></h3>
 <div class="spec">
-<p><tt>markers_to_string(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>markers_to_string(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the known section markers.</p>
 
 <h3 class="function"><a name="markers_to_string-2">markers_to_string/2</a></h3>
 <div class="spec">
-<p><tt>markers_to_string(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>, IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>markers_to_string(MarkerTable::<a href="#type-section_marker_table">section_marker_table()</a>, IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the known section markers.</p>
 
 <h3 class="function"><a name="module_entry_to_string-2">module_entry_to_string/2</a></h3>
 <div class="spec">
-<p><tt>module_entry_to_string(ModuleEntry::<a href="#type-module_entry">module_entry()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>module_entry_to_string(ModuleEntry::<a href="#type-module_entry">module_entry()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the name of the module corresponding
  to specified entry, possibly with forms.
@@ -674,7 +674,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="module_info_to_string-1">module_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>module_info_to_string(ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>module_info_to_string(ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of specified module information, not 
 including forms, and based on a default indentation level.</p>
@@ -684,7 +684,7 @@ including forms, and based on a default indentation level.</p>
 
 <h3 class="function"><a name="module_info_to_string-2">module_info_to_string/2</a></h3>
 <div class="spec">
-<p><tt>module_info_to_string(ModuleInfo::<a href="#type-module_info">module_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>module_info_to_string(ModuleInfo::<a href="#type-module_info">module_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of specified module information, including 
 forms if requested, and based on a default indentation level.</p>
@@ -694,7 +694,7 @@ forms if requested, and based on a default indentation level.</p>
 
 <h3 class="function"><a name="module_info_to_string-3">module_info_to_string/3</a></h3>
 <div class="spec">
-<p><tt>module_info_to_string(Module_info::<a href="#type-module_info">module_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>module_info_to_string(Module_info::<a href="#type-module_info">module_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of specified module information, including 
 forms if requested, and with specified indentation level.</p>
@@ -704,7 +704,7 @@ forms if requested, and with specified indentation level.</p>
 
 <h3 class="function"><a name="optional_callbacks_to_string-3">optional_callbacks_to_string/3</a></h3>
 <div class="spec">
-<p><tt>optional_callbacks_to_string(OptCallbacksDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>optional_callbacks_to_string(OptCallbacksDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified optional callbacks,
  based on a default indentation level.
@@ -712,7 +712,7 @@ forms if requested, and with specified indentation level.</p>
 
 <h3 class="function"><a name="parse_attribute_table_to_string-2">parse_attribute_table_to_string/2</a></h3>
 <div class="spec">
-<p><tt>parse_attribute_table_to_string(ParseAttributeTable::<a href="#type-attribute_table">attribute_table()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>parse_attribute_table_to_string(ParseAttributeTable::<a href="#type-attribute_table">attribute_table()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified parse-attribute table,
  based on a default indentation level.
@@ -720,7 +720,7 @@ forms if requested, and with specified indentation level.</p>
 
 <h3 class="function"><a name="parse_attribute_table_to_string-3">parse_attribute_table_to_string/3</a></h3>
 <div class="spec">
-<p><tt>parse_attribute_table_to_string(ParseAttributeTable::<a href="#type-attribute_table">attribute_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>parse_attribute_table_to_string(ParseAttributeTable::<a href="#type-attribute_table">attribute_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified parse-attribute table,
  with specified indentation level.
@@ -728,13 +728,13 @@ forms if requested, and with specified indentation level.</p>
 
 <h3 class="function"><a name="recompose_ast_from_module_info-1">recompose_ast_from_module_info/1</a></h3>
 <div class="spec">
-<p><tt>recompose_ast_from_module_info(Module_info::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
+<p><code>recompose_ast_from_module_info(Module_info::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-ast">ast()</a></code><br></p>
 <p> </p>
 </div><p>Recomposes an AST from the specified module information.</p>
 
 <h3 class="function"><a name="records_to_string-1">records_to_string/1</a></h3>
 <div class="spec">
-<p><tt>records_to_string(RecordTable::<a href="#type-record_table">record_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>records_to_string(RecordTable::<a href="#type-record_table">record_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified records, based on a
  default indentation level.
@@ -742,7 +742,7 @@ forms if requested, and with specified indentation level.</p>
 
 <h3 class="function"><a name="records_to_string-2">records_to_string/2</a></h3>
 <div class="spec">
-<p><tt>records_to_string(RecordTable::<a href="#type-record_table">record_table()</a>, IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>records_to_string(RecordTable::<a href="#type-record_table">record_table()</a>, IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual representation of the specified records, with specified 
 indentation level.</p>
@@ -752,7 +752,7 @@ indentation level.</p>
 
 <h3 class="function"><a name="remote_spec_definitions_to_string-3">remote_spec_definitions_to_string/3</a></h3>
 <div class="spec">
-<p><tt>remote_spec_definitions_to_string(RemoteSpecDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>remote_spec_definitions_to_string(RemoteSpecDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified definitions of remote
  specifications, with specified indentation level.
@@ -760,7 +760,7 @@ indentation level.</p>
 
 <h3 class="function"><a name="type_exports_to_string-2">type_exports_to_string/2</a></h3>
 <div class="spec">
-<p><tt>type_exports_to_string(TypeExportTable::<a href="#type-type_export_table">type_export_table()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>type_exports_to_string(TypeExportTable::<a href="#type-type_export_table">type_export_table()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified type exports, based on
  a default indentation level.
@@ -768,7 +768,7 @@ indentation level.</p>
 
 <h3 class="function"><a name="type_exports_to_string-3">type_exports_to_string/3</a></h3>
 <div class="spec">
-<p><tt>type_exports_to_string(TypeExportTable::<a href="#type-type_export_table">type_export_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>type_exports_to_string(TypeExportTable::<a href="#type-type_export_table">type_export_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified type exports, with
  specified indentation level.
@@ -776,25 +776,25 @@ indentation level.</p>
 
 <h3 class="function"><a name="type_id_to_string-1">type_id_to_string/1</a></h3>
 <div class="spec">
-<p><tt>type_id_to_string(X1::<a href="#type-type_id">type_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>type_id_to_string(X1::<a href="#type-type_id">type_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified type identifier.</p>
 
 <h3 class="function"><a name="type_info_to_string-1">type_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>type_info_to_string(TypeInfo::<a href="#type-type_info">type_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>type_info_to_string(TypeInfo::<a href="#type-type_info">type_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified type information.</p>
 
 <h3 class="function"><a name="type_info_to_string-3">type_info_to_string/3</a></h3>
 <div class="spec">
-<p><tt>type_info_to_string(Type_info::<a href="#type-type_info">type_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>type_info_to_string(Type_info::<a href="#type-type_info">type_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified type information.</p>
 
 <h3 class="function"><a name="types_to_string-3">types_to_string/3</a></h3>
 <div class="spec">
-<p><tt>types_to_string(TypeTable::<a href="#type-type_table">type_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>types_to_string(TypeTable::<a href="#type-type_table">type_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified type table, with
  specified indentation level.
@@ -802,13 +802,13 @@ indentation level.</p>
 
 <h3 class="function"><a name="unhandled_forms_to_string-3">unhandled_forms_to_string/3</a></h3>
 <div class="spec">
-<p><tt>unhandled_forms_to_string(UnhandledForms::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>unhandled_forms_to_string(UnhandledForms::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of specified unhandled forms.</p>
 
 <h3 class="function"><a name="write_module_info_to_file-2">write_module_info_to_file/2</a></h3>
 <div class="spec">
-<p><tt>write_module_info_to_file(ModuleInfo::<a href="#type-module_info">module_info()</a>, FilePath::<a href="file_utils.html#type-file_path">file_utils:file_path()</a>) -&gt; <a href="basic_utils.html#type-void">basic_utils:void()</a></tt><br></p>
+<p><code>write_module_info_to_file(ModuleInfo::<a href="#type-module_info">module_info()</a>, FilePath::<a href="file_utils.html#type-file_path">file_utils:file_path()</a>) -&gt; <a href="basic_utils.html#type-void">basic_utils:void()</a></code><br></p>
 <p> </p>
 </div><p><p>Writes specified module_info record into specified (text) file.</p>
 

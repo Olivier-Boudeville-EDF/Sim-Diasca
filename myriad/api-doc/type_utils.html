@@ -25,69 +25,69 @@ ASTs.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-counters">counters()</a></h3>
-<p><tt>counters() = <a href="#type-tuple">tuple</a>(<a href="#type-count">count()</a>)</tt></p>
+<p><code>counters() = <a href="#type-tuple">tuple</a>(<a href="#type-count">count()</a>)</code></p>
 <p> A tuple containing counters.</p>
 
 <h3 class="typedecl"><a name="type-explicit_type">explicit_type()</a></h3>
-<p><tt>explicit_type() = <a href="#type-type">type()</a></tt></p>
+<p><code>explicit_type() = <a href="#type-type">type()</a></code></p>
 <p> An explicit type is a type that has been fully resolved in terms of built-in
  constructs; it is thus autonomous, self-standing.</p>
 
 <h3 class="typedecl"><a name="type-float32">float32()</a></h3>
-<p><tt>float32() = float()</tt></p>
+<p><code>float32() = float()</code></p>
 <p><p> A single-precision, IEEE 754 32-bit base-2 floating-point value.</p>
 
  <p>Exact for all integers with up to 7 decimal digits, and for any 2^N for an 
 integer number N in [-149,127].</p>
 
- <p>See <a href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format" target="_top"><tt>https://en.wikipedia.org/wiki/Single-precision_floating-point_format</tt></a> for 
+ <p>See <a href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format" target="_top"><code>https://en.wikipedia.org/wiki/Single-precision_floating-point_format</code></a> for 
 more information.</p>
 
  Note that in Erlang this datatype does not exist as such, only floars are
  float64() ones.</p>
 
 <h3 class="typedecl"><a name="type-float64">float64()</a></h3>
-<p><tt>float64() = float()</tt></p>
+<p><code>float64() = float()</code></p>
 <p><p> A binary64/double-precision, IEEE 754 64-bit base-2 floating-point value.</p>
 
  <p>Exact notably for integers from -2^253 to 2^253 (-9,007,199,254,740,992 to 
 9,007,199,254,740,992).</p>
 
- See <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format" target="_top"><tt>https://en.wikipedia.org/wiki/Double-precision_floating-point_format</tt></a> for
+ See <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format" target="_top"><code>https://en.wikipedia.org/wiki/Double-precision_floating-point_format</code></a> for
  more information.</p>
 
 <h3 class="typedecl"><a name="type-int16">int16()</a></h3>
-<p><tt>int16() = <a href="#type-uint16">uint16()</a> | <a href="#type-sint16">sint16()</a></tt></p>
+<p><code>int16() = <a href="#type-uint16">uint16()</a> | <a href="#type-sint16">sint16()</a></code></p>
 <p> 16-bit integer, potentially ranging from -32,768 to 65,535 (both included).</p>
 
 <h3 class="typedecl"><a name="type-int32">int32()</a></h3>
-<p><tt>int32() = <a href="#type-uint32">uint32()</a> | <a href="#type-sint32">sint32()</a></tt></p>
+<p><code>int32() = <a href="#type-uint32">uint32()</a> | <a href="#type-sint32">sint32()</a></code></p>
 <p> 32-bit integer, potentially ranging from -2,147,483,648 to 4,294,967,295 (both
  included).</p>
 
 <h3 class="typedecl"><a name="type-int64">int64()</a></h3>
-<p><tt>int64() = <a href="#type-uint64">uint64()</a> | <a href="#type-sint64">sint64()</a></tt></p>
+<p><code>int64() = <a href="#type-uint64">uint64()</a> | <a href="#type-sint64">sint64()</a></code></p>
 <p> 64-bit integer, potentially ranging from -9,223,372,036,854,775,808 to
  18,446,744,073,709,551,615 (both included).</p>
 
 <h3 class="typedecl"><a name="type-int8">int8()</a></h3>
-<p><tt>int8() = <a href="#type-uint8">uint8()</a> | <a href="#type-sint8">sint8()</a></tt></p>
+<p><code>int8() = <a href="#type-uint8">uint8()</a> | <a href="#type-sint8">sint8()</a></code></p>
 <p> 8-bit integer, potentially ranging from -128 to 255 (both included).</p>
 
 <h3 class="typedecl"><a name="type-level">level()</a></h3>
-<p><tt>level() = <a href="basic_utils.html#type-level">basic_utils:level()</a></tt></p>
+<p><code>level() = <a href="basic_utils.html#type-level">basic_utils:level()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-low_level_type">low_level_type()</a></h3>
-<p><tt>low_level_type() = uint8 | sint8 | uint16 | sint16 | uint32 | sint32 | uint64 | sint64 | float32 | float64</tt></p>
+<p><code>low_level_type() = uint8 | sint8 | uint16 | sint16 | uint32 | sint32 | uint64 | sint64 | float32 | float64</code></p>
 <p><p> Designates lower-level types, with a prefix and a size in bits.</p>
 
  <p>Following prefixes are defined: 
@@ -98,15 +98,15 @@ more information.</p>
  floating-point values).</p>
 
 <h3 class="typedecl"><a name="type-map">map()</a></h3>
-<p><tt>map(_K, _V) = map()</tt></p>
+<p><code>map(_K, _V) = map()</code></p>
 <p> As (maps:)map/2 does not even exist apparently, at least not since 18.0.</p>
 
 <h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
-<p><tt>maybe(T) = T | undefined</tt></p>
+<p><code>maybe(T) = T | undefined</code></p>
 
 
 <h3 class="typedecl"><a name="type-nesting_depth">nesting_depth()</a></h3>
-<p><tt>nesting_depth() = {<a href="#type-count">count()</a>, <a href="#type-count">count()</a>}</tt></p>
+<p><code>nesting_depth() = {<a href="#type-count">count()</a>, <a href="#type-count">count()</a>}</code></p>
 <p><p> Description of a nesting depth reached when parsing a type description.</p>
 
  It is in pratice a {P,B} pair, where P is the parenthesis depth (that is the
@@ -114,15 +114,15 @@ more information.</p>
  the bracket depth (ie the same principle, for "[]" instead of for "()").</p>
 
 <h3 class="typedecl"><a name="type-non_negative_float">non_negative_float()</a></h3>
-<p><tt>non_negative_float() = float()</tt></p>
+<p><code>non_negative_float() = float()</code></p>
 <p> A float that is positive or null.</p>
 
 <h3 class="typedecl"><a name="type-pair">pair()</a></h3>
-<p><tt>pair() = <a href="pair.html#type-pair">pair:pair()</a></tt></p>
+<p><code>pair() = <a href="pair.html#type-pair">pair:pair()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-permanent_term">permanent_term()</a></h3>
-<p><tt>permanent_term() = integer() | float() | atom() | boolean() | binary() | [<a href="#type-permanent_term">permanent_term()</a>] | <a href="#type-tuple">tuple</a>(<a href="#type-permanent_term">permanent_term()</a>) | <a href="#type-map">map</a>(<a href="#type-permanent_term">permanent_term()</a>, <a href="#type-permanent_term">permanent_term()</a>)</tt></p>
+<p><code>permanent_term() = integer() | float() | atom() | boolean() | binary() | [<a href="#type-permanent_term">permanent_term()</a>] | <a href="#type-tuple">tuple</a>(<a href="#type-permanent_term">permanent_term()</a>) | <a href="#type-map">map</a>(<a href="#type-permanent_term">permanent_term()</a>, <a href="#type-permanent_term">permanent_term()</a>)</code></p>
 <p><p> Designates values that are permanent, that is that are context-free, not 
 runtime-specific and can be reproduced (e.g. serialised).</p>
 
@@ -133,51 +133,51 @@ terms.</p>
  Permanent terms are the opposite of transient ones.</p>
 
 <h3 class="typedecl"><a name="type-pid_ref">pid_ref()</a></h3>
-<p><tt>pid_ref() = <a href="naming_utils.html#type-local_designator">naming_utils:local_designator()</a></tt></p>
+<p><code>pid_ref() = <a href="naming_utils.html#type-local_designator">naming_utils:local_designator()</a></code></p>
 <p> Any kind of reference onto a process.</p>
 
 <h3 class="typedecl"><a name="type-positive_float">positive_float()</a></h3>
-<p><tt>positive_float() = float()</tt></p>
+<p><code>positive_float() = float()</code></p>
 <p> A float that is strictly positive.</p>
 
 <h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
-<p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+<p><code>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-primitive_type_description">primitive_type_description()</a></h3>
-<p><tt>primitive_type_description() = atom | binary | boolean | float | function | integer | list | map | pid | port | record | reference | tuple</tt></p>
+<p><code>primitive_type_description() = atom | binary | boolean | float | function | integer | list | map | pid | port | record | reference | tuple</code></p>
 
 
 <h3 class="typedecl"><a name="type-record">record()</a></h3>
-<p><tt>record() = tuple()</tt></p>
+<p><code>record() = tuple()</code></p>
 <p> Designates a record instance, to discriminate from a mere tuple.</p>
 
 <h3 class="typedecl"><a name="type-record_tag">record_tag()</a></h3>
-<p><tt>record_tag() = atom()</tt></p>
+<p><code>record_tag() = atom()</code></p>
 <p> The first (atom) element of the tuple corresponding to a record instance.  For
  example #my_point{ x=1, y=2 } is actually {my_point, 1, 2} and thus my_point
  is the corresponding record tag.</p>
 
 <h3 class="typedecl"><a name="type-sint16">sint16()</a></h3>
-<p><tt>sint16() = -32768..32767</tt></p>
+<p><code>sint16() = -32768..32767</code></p>
 <p> Signed 16-bit integer, ranging from -32,768 to 32,767 (both included).</p>
 
 <h3 class="typedecl"><a name="type-sint32">sint32()</a></h3>
-<p><tt>sint32() = -2147483648..2147483647</tt></p>
+<p><code>sint32() = -2147483648..2147483647</code></p>
 <p> Signed 32-bit integer, ranging from -2,147,483,648 to 2,147,483,647 (both
  included).</p>
 
 <h3 class="typedecl"><a name="type-sint64">sint64()</a></h3>
-<p><tt>sint64() = -9223372036854775808..9223372036854775807</tt></p>
+<p><code>sint64() = -9223372036854775808..9223372036854775807</code></p>
 <p> Signed 64-bit integer, ranging from -9,223,372,036,854,775,808 to
  9,223,372,036,854,775,807 (both included).</p>
 
 <h3 class="typedecl"><a name="type-sint8">sint8()</a></h3>
-<p><tt>sint8() = -128..127</tt></p>
+<p><code>sint8() = -128..127</code></p>
 <p> Signed 8-bit integer, ranging from -128 to 127 (both included).</p>
 
 <h3 class="typedecl"><a name="type-transient_term">transient_term()</a></h3>
-<p><tt>transient_term() = pid() | port() | reference() | function()</tt></p>
+<p><code>transient_term() = pid() | port() | reference() | function()</code></p>
 <p><p> Designates values that are transient, that is that are runtime-specific and 
 cannot be reproduced a priori.</p>
 
@@ -190,25 +190,25 @@ transient term.</p>
  Transient terms are the opposite of permanent ones.</p>
 
 <h3 class="typedecl"><a name="type-triplet">triplet()</a></h3>
-<p><tt>triplet() = {any(), any(), any()}</tt></p>
+<p><code>triplet() = {any(), any(), any()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
-<p><tt>tuple(_T, _S) = tuple()</tt></p>
+<p><code>tuple(_T, _S) = tuple()</code></p>
 <p> Designates an uniform tuple of the specified size, that is a tuple whose
  S elements are all of the type T.</p>
 
 <h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
-<p><tt>tuple(_T) = tuple()</tt></p>
+<p><code>tuple(_T) = tuple()</code></p>
 <p> Designates an uniform tuple (of unspecified size), that is a tuple whose
  elements are all of the specified type T.</p>
 
 <h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
-<p><tt>tuploid(T) = tuple() | T</tt></p>
+<p><code>tuploid(T) = tuple() | T</code></p>
 <p> Probably that such a tuple would contain at least an element of type T.</p>
 
 <h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
-<p><tt>tuploid() = <a href="#type-tuploid">tuploid</a>(term())</tt></p>
+<p><code>tuploid() = <a href="#type-tuploid">tuploid</a>(term())</code></p>
 <p><p> We name tuploid a pseudo-tuple, that is a value that is either an actual tuple 
 or a single, standalone term, designated as a "basic tuploid".</p>
 
@@ -216,7 +216,7 @@ or a single, standalone term, designated as a "basic tuploid".</p>
  is MyTerm, not {MyTerm}.</p>
 
 <h3 class="typedecl"><a name="type-type">type()</a></h3>
-<p><tt>type() = term()</tt></p>
+<p><code>type() = term()</code></p>
 <p><p> Internal, "formal", actual programmatic description of a type according to our 
 conventions: type-as-a-term (either contextual or explicit, F2 or F3), relying 
 on a translated version of the textual type (which is for example: 
@@ -293,7 +293,7 @@ instance of a specified type</p>
  <p>For example "-type a() :: [foobar()]." yields: '{attribute,1,type, {a,{type,1,    
 list,[{user_type,1,foobar,[]}]},[]}}'.</p>
 
- <p>See also <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>.</p>
+ <p>See also <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a>.</p>
 
  <p>Finally, a direct string representation can be converted into a type(); maybe 
 writing a parser may not mandatory, as "{float(), atom()}" may be a string 
@@ -309,14 +309,14 @@ will return the expected: {list, [{tuple, [{float, []}, {boolean, []}]}]}</p>
  what the count() type is.</p>
 
 <h3 class="typedecl"><a name="type-type_arity">type_arity()</a></h3>
-<p><tt>type_arity() = <a href="#type-count">count()</a></tt></p>
+<p><code>type_arity() = <a href="#type-count">count()</a></code></p>
 <p> Number of types a (possibly polymorphic) type depends on (possibly zero for
  plain types).</p>
 
 <h3 class="typedecl"><a name="type-type_description">type_description()</a></h3>
-<p><tt>type_description() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>type_description() = <a href="#type-ustring">ustring()</a></code></p>
 <p><p> Textual type description: type-as-a-string, inspired from the syntax used for
- type specifications (<a href="http://erlang.org/doc/reference_manual/typespec.html" target="_top"><tt>http://erlang.org/doc/reference_manual/typespec.html</tt></a>), 
+ type specifications (<a href="http://erlang.org/doc/reference_manual/typespec.html" target="_top"><code>http://erlang.org/doc/reference_manual/typespec.html</code></a>), 
 yet different. Notably, monomorphic types do not end with empty parentheses 
 (e.g. "integer", not "integer()") and atoms are always surrounded by simple 
 quotes (e.g. "'an_atom'|'another_one'").</p>
@@ -324,35 +324,35 @@ quotes (e.g. "'an_atom'|'another_one'").</p>
  For example: "[{float, boolean}]".</p>
 
 <h3 class="typedecl"><a name="type-type_id">type_id()</a></h3>
-<p><tt>type_id() = {<a href="#type-type_name">type_name()</a>, <a href="#type-type_arity">type_arity()</a>}</tt></p>
+<p><code>type_id() = {<a href="#type-type_name">type_name()</a>, <a href="#type-type_arity">type_arity()</a>}</code></p>
 <p> Analoguous to function_id/0.</p>
 
 <h3 class="typedecl"><a name="type-type_name">type_name()</a></h3>
-<p><tt>type_name() = atom()</tt></p>
+<p><code>type_name() = atom()</code></p>
 <p><p> Describes the name of a type (without the names of the types it depends on, 
 for polymorphic ones).</p>
 
  For example 'my_count'.</p>
 
 <h3 class="typedecl"><a name="type-uint16">uint16()</a></h3>
-<p><tt>uint16() = 0..65535</tt></p>
+<p><code>uint16() = 0..65535</code></p>
 <p> Non-negative 16-bit integer, ranging from 0 to 65,535 (both included).</p>
 
 <h3 class="typedecl"><a name="type-uint32">uint32()</a></h3>
-<p><tt>uint32() = 0..4294967295</tt></p>
+<p><code>uint32() = 0..4294967295</code></p>
 <p> Non-negative 32-bit integer, ranging from 0 to 4,294,967,295 (both included).</p>
 
 <h3 class="typedecl"><a name="type-uint64">uint64()</a></h3>
-<p><tt>uint64() = 0..18446744073709551615</tt></p>
+<p><code>uint64() = 0..18446744073709551615</code></p>
 <p> Non-negative 64-bit integer, ranging from 0 to 18,446,744,073,709,551,615
  (both included).</p>
 
 <h3 class="typedecl"><a name="type-uint8">uint8()</a></h3>
-<p><tt>uint8() = 0..255</tt></p>
+<p><code>uint8() = 0..255</code></p>
 <p> Non-negative 8-bit integer, ranging from 0 to 255 (both included).</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -482,61 +482,61 @@ whitespaces) corresponding to specified type.</td></tr>
 
 <h3 class="function"><a name="add_to_counter-3">add_to_counter/3</a></h3>
 <div class="spec">
-<p><tt>add_to_counter(ToAdd::number(), CounterIndex::<a href="#type-positive_index">positive_index()</a>, Counters::<a href="#type-counters">counters()</a>) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p><code>add_to_counter(ToAdd::number(), CounterIndex::<a href="#type-positive_index">positive_index()</a>, Counters::<a href="#type-counters">counters()</a>) -&gt; <a href="#type-counters">counters()</a></code><br></p>
 <p> </p>
 </div><p>Adds the specified value to the specified counter.</p>
 
 <h3 class="function"><a name="are_binaries-1">are_binaries/1</a></h3>
 <div class="spec">
-<p><tt>are_binaries(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_binaries(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of binaries.</p>
 
 <h3 class="function"><a name="are_floats-1">are_floats/1</a></h3>
 <div class="spec">
-<p><tt>are_floats(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_floats(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of floats.</p>
 
 <h3 class="function"><a name="are_integers-1">are_integers/1</a></h3>
 <div class="spec">
-<p><tt>are_integers(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_integers(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of integers.</p>
 
 <h3 class="function"><a name="are_maybe_floats-1">are_maybe_floats/1</a></h3>
 <div class="spec">
-<p><tt>are_maybe_floats(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_maybe_floats(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of maybe-floats.</p>
 
 <h3 class="function"><a name="are_maybe_integers-1">are_maybe_integers/1</a></h3>
 <div class="spec">
-<p><tt>are_maybe_integers(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_maybe_integers(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of maybe-integers.</p>
 
 <h3 class="function"><a name="are_maybe_numbers-1">are_maybe_numbers/1</a></h3>
 <div class="spec">
-<p><tt>are_maybe_numbers(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_maybe_numbers(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of maybe-numbers.</p>
 
 <h3 class="function"><a name="are_numbers-1">are_numbers/1</a></h3>
 <div class="spec">
-<p><tt>are_numbers(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_numbers(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of numbers.</p>
 
 <h3 class="function"><a name="are_positive_floats-1">are_positive_floats/1</a></h3>
 <div class="spec">
-<p><tt>are_positive_floats(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_positive_floats(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified term is a list of positive floats.</p>
 
 <h3 class="function"><a name="are_types_identical-2">are_types_identical/2</a></h3>
 <div class="spec">
-<p><tt>are_types_identical(Type::<a href="#type-type">type()</a>, SecondType::<a href="#type-type">type()</a>) -&gt; boolean()</tt><br></p>
+<p><code>are_types_identical(Type::<a href="#type-type">type()</a>, SecondType::<a href="#type-type">type()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the two specified types are the same (ie designate the same
  actual type, are aliases).
@@ -544,7 +544,7 @@ whitespaces) corresponding to specified type.</td></tr>
 
 <h3 class="function"><a name="augment_tuploid-2">augment_tuploid/2</a></h3>
 <div class="spec">
-<p><tt>augment_tuploid(Tuploid::<a href="#type-tuploid">tuploid()</a>, ExtraTerm::term()) -&gt; <a href="#type-tuploid">tuploid()</a></tt><br></p>
+<p><code>augment_tuploid(Tuploid::<a href="#type-tuploid">tuploid()</a>, ExtraTerm::term()) -&gt; <a href="#type-tuploid">tuploid()</a></code><br></p>
 <p> </p>
 </div><p><p>Augments the specified tuploid with the specified term, placed as new 
 last element.</p>
@@ -560,19 +560,19 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_atom-1">check_atom/1</a></h3>
 <div class="spec">
-<p><tt>check_atom(Atom::term()) -&gt; atom()</tt><br></p>
+<p><code>check_atom(Atom::term()) -&gt; atom()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is an atom indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_atoms-1">check_atoms/1</a></h3>
 <div class="spec">
-<p><tt>check_atoms(Atoms::term()) -&gt; [atom()]</tt><br></p>
+<p><code>check_atoms(Atoms::term()) -&gt; [atom()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of atoms indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_binaries-1">check_binaries/1</a></h3>
 <div class="spec">
-<p><tt>check_binaries(Binaries::term()) -&gt; [binary()]</tt><br></p>
+<p><code>check_binaries(Binaries::term()) -&gt; [binary()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of binaries indeed, and returns
  it.
@@ -580,32 +580,32 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_binary-1">check_binary/1</a></h3>
 <div class="spec">
-<p><tt>check_binary(Binary::term()) -&gt; binary()</tt><br></p>
+<p><code>check_binary(Binary::term()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a binary indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_boolean-1">check_boolean/1</a></h3>
 <div class="spec">
-<p><tt>check_boolean(Other::term()) -&gt; atom()</tt><br></p>
+<p><code>check_boolean(Other::term()) -&gt; atom()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a boolean indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_booleans-1">check_booleans/1</a></h3>
 <div class="spec">
-<p><tt>check_booleans(Booleans::term()) -&gt; [boolean()]</tt><br></p>
+<p><code>check_booleans(Booleans::term()) -&gt; [boolean()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of booleans indeed, and returns
  it.</p>
 
 <h3 class="function"><a name="check_float-1">check_float/1</a></h3>
 <div class="spec">
-<p><tt>check_float(Float::term()) -&gt; float()</tt><br></p>
+<p><code>check_float(Float::term()) -&gt; float()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a float indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_floats-1">check_floats/1</a></h3>
 <div class="spec">
-<p><tt>check_floats(Floats::term()) -&gt; [float()]</tt><br></p>
+<p><code>check_floats(Floats::term()) -&gt; [float()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of floats indeed, and returns
  it.
@@ -613,13 +613,13 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_integer-1">check_integer/1</a></h3>
 <div class="spec">
-<p><tt>check_integer(Int::term()) -&gt; integer()</tt><br></p>
+<p><code>check_integer(Int::term()) -&gt; integer()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is an integer indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_integers-1">check_integers/1</a></h3>
 <div class="spec">
-<p><tt>check_integers(Integers::term()) -&gt; [integer()]</tt><br></p>
+<p><code>check_integers(Integers::term()) -&gt; [integer()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of integers indeed, and returns
  it.
@@ -627,25 +627,25 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_list-1">check_list/1</a></h3>
 <div class="spec">
-<p><tt>check_list(List::term()) -&gt; list()</tt><br></p>
+<p><code>check_list(List::term()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_map-1">check_map/1</a></h3>
 <div class="spec">
-<p><tt>check_map(Map::term()) -&gt; map()</tt><br></p>
+<p><code>check_map(Map::term()) -&gt; map()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a map indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_maybe_float-1">check_maybe_float/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_float(F::term()) -&gt; <a href="#type-maybe">maybe</a>(float())</tt><br></p>
+<p><code>check_maybe_float(F::term()) -&gt; <a href="#type-maybe">maybe</a>(float())</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a maybe-float indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_maybe_floats-1">check_maybe_floats/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_floats(MaybeFloats::term()) -&gt; [<a href="#type-maybe">maybe</a>(float())]</tt><br></p>
+<p><code>check_maybe_floats(MaybeFloats::term()) -&gt; [<a href="#type-maybe">maybe</a>(float())]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of maybe-floats indeed, and
  returns it.
@@ -653,13 +653,13 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_maybe_integer-1">check_maybe_integer/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_integer(Int::term()) -&gt; <a href="#type-maybe">maybe</a>(integer())</tt><br></p>
+<p><code>check_maybe_integer(Int::term()) -&gt; <a href="#type-maybe">maybe</a>(integer())</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a maybe-integer indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_maybe_integers-1">check_maybe_integers/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_integers(MaybeIntegers::term()) -&gt; [<a href="#type-maybe">maybe</a>(integer())]</tt><br></p>
+<p><code>check_maybe_integers(MaybeIntegers::term()) -&gt; [<a href="#type-maybe">maybe</a>(integer())]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of maybe-integers indeed, and
  returns it.
@@ -667,13 +667,13 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_maybe_number-1">check_maybe_number/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_number(Num::term()) -&gt; <a href="#type-maybe">maybe</a>(number())</tt><br></p>
+<p><code>check_maybe_number(Num::term()) -&gt; <a href="#type-maybe">maybe</a>(number())</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a maybe-number indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_maybe_numbers-1">check_maybe_numbers/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_numbers(MaybeNumbers::term()) -&gt; [<a href="#type-maybe">maybe</a>(number())]</tt><br></p>
+<p><code>check_maybe_numbers(MaybeNumbers::term()) -&gt; [<a href="#type-maybe">maybe</a>(number())]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of maybe-numbers indeed, and
  returns it.
@@ -681,7 +681,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_maybe_pid-1">check_maybe_pid/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_pid(Pid::term()) -&gt; <a href="#type-maybe">maybe</a>(pid())</tt><br></p>
+<p><code>check_maybe_pid(Pid::term()) -&gt; <a href="#type-maybe">maybe</a>(pid())</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a PID indeed or the 'undefined' atom,
  and returns it.
@@ -689,7 +689,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_maybe_positive_float-1">check_maybe_positive_float/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_positive_float(Float::term()) -&gt; <a href="#type-maybe">maybe</a>(float())</tt><br></p>
+<p><code>check_maybe_positive_float(Float::term()) -&gt; <a href="#type-maybe">maybe</a>(float())</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a maybe-(positive float) indeed, and
  returns it.
@@ -697,7 +697,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_maybe_positive_integer-1">check_maybe_positive_integer/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_positive_integer(Int::term()) -&gt; <a href="#type-maybe">maybe</a>(pos_integer())</tt><br></p>
+<p><code>check_maybe_positive_integer(Int::term()) -&gt; <a href="#type-maybe">maybe</a>(pos_integer())</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a positive or null integer or the
  'undefined' atom, and returns it.
@@ -705,7 +705,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_maybe_strictly_positive_float-1">check_maybe_strictly_positive_float/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_strictly_positive_float(Float::term()) -&gt; <a href="#type-maybe">maybe</a>(float())</tt><br></p>
+<p><code>check_maybe_strictly_positive_float(Float::term()) -&gt; <a href="#type-maybe">maybe</a>(float())</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a maybe-(strictly positive float)
  indeed, and returns it.
@@ -713,13 +713,13 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_number-1">check_number/1</a></h3>
 <div class="spec">
-<p><tt>check_number(Num::term()) -&gt; number()</tt><br></p>
+<p><code>check_number(Num::term()) -&gt; number()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a number indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_numbers-1">check_numbers/1</a></h3>
 <div class="spec">
-<p><tt>check_numbers(Numbers::term()) -&gt; [number()]</tt><br></p>
+<p><code>check_numbers(Numbers::term()) -&gt; [number()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of numbers indeed, and returns
  it.
@@ -727,19 +727,19 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_pid-1">check_pid/1</a></h3>
 <div class="spec">
-<p><tt>check_pid(Pid::term()) -&gt; pid()</tt><br></p>
+<p><code>check_pid(Pid::term()) -&gt; pid()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a PID indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_pids-1">check_pids/1</a></h3>
 <div class="spec">
-<p><tt>check_pids(Pids::term()) -&gt; [pid()]</tt><br></p>
+<p><code>check_pids(Pids::term()) -&gt; [pid()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of PIDs indeed, and returns it.</p>
 
 <h3 class="function"><a name="check_positive_float-1">check_positive_float/1</a></h3>
 <div class="spec">
-<p><tt>check_positive_float(Float::term()) -&gt; float()</tt><br></p>
+<p><code>check_positive_float(Float::term()) -&gt; float()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a positive (or null) float indeed, and
  returns it.
@@ -747,7 +747,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_positive_floats-1">check_positive_floats/1</a></h3>
 <div class="spec">
-<p><tt>check_positive_floats(Floats::term()) -&gt; [float()]</tt><br></p>
+<p><code>check_positive_floats(Floats::term()) -&gt; [float()]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a list of positive (or null) floats
  indeed, and returns it.
@@ -755,7 +755,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_positive_integer-1">check_positive_integer/1</a></h3>
 <div class="spec">
-<p><tt>check_positive_integer(Int::term()) -&gt; pos_integer()</tt><br></p>
+<p><code>check_positive_integer(Int::term()) -&gt; pos_integer()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a positive or null integer, and returns
  it.
@@ -763,7 +763,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_positive_number-1">check_positive_number/1</a></h3>
 <div class="spec">
-<p><tt>check_positive_number(Num::term()) -&gt; number()</tt><br></p>
+<p><code>check_positive_number(Num::term()) -&gt; number()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a positive or null number indeed, and
  returns it.
@@ -771,7 +771,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_strictly_positive_float-1">check_strictly_positive_float/1</a></h3>
 <div class="spec">
-<p><tt>check_strictly_positive_float(Float::term()) -&gt; float()</tt><br></p>
+<p><code>check_strictly_positive_float(Float::term()) -&gt; float()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a strictly positive float indeed, and
  returns it.
@@ -779,7 +779,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_strictly_positive_integer-1">check_strictly_positive_integer/1</a></h3>
 <div class="spec">
-<p><tt>check_strictly_positive_integer(Int::term()) -&gt; pos_integer()</tt><br></p>
+<p><code>check_strictly_positive_integer(Int::term()) -&gt; pos_integer()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a strictly positive integer, and
  returns it.
@@ -787,7 +787,7 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_strictly_positive_number-1">check_strictly_positive_number/1</a></h3>
 <div class="spec">
-<p><tt>check_strictly_positive_number(Num::term()) -&gt; number()</tt><br></p>
+<p><code>check_strictly_positive_number(Num::term()) -&gt; number()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a strictly positive number indeed, and
  returns it.
@@ -795,13 +795,13 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
 <h3 class="function"><a name="check_tuple-1">check_tuple/1</a></h3>
 <div class="spec">
-<p><tt>check_tuple(Tuple::term()) -&gt; tuple()</tt><br></p>
+<p><code>check_tuple(Tuple::term()) -&gt; tuple()</code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a tuple indeed, and returns it.</p>
 
 <h3 class="function"><a name="description_to_type-1">description_to_type/1</a></h3>
 <div class="spec">
-<p><tt>description_to_type(TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; <a href="#type-type">type()</a></tt><br></p>
+<p><code>description_to_type(TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; <a href="#type-type">type()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the actual type corresponding to specified type description: 
 parses the specified string to determine the type described therein.</p>
@@ -812,13 +812,13 @@ parses the specified string to determine the type described therein.</p>
 
 <h3 class="function"><a name="ensure_binary-1">ensure_binary/1</a></h3>
 <div class="spec">
-<p><tt>ensure_binary(S::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>ensure_binary(S::term()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that the specified term is a binary string, and returns it.</p>
 
 <h3 class="function"><a name="ensure_ceiled_integer-1">ensure_ceiled_integer/1</a></h3>
 <div class="spec">
-<p><tt>ensure_ceiled_integer(N::number()) -&gt; integer()</tt><br></p>
+<p><code>ensure_ceiled_integer(N::number()) -&gt; integer()</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified term is an integer, and returns it.</p>
 
@@ -827,7 +827,7 @@ parses the specified string to determine the type described therein.</p>
 
 <h3 class="function"><a name="ensure_float-1">ensure_float/1</a></h3>
 <div class="spec">
-<p><tt>ensure_float(N::number()) -&gt; float()</tt><br></p>
+<p><code>ensure_float(N::number()) -&gt; float()</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified term is a float, and returns it.</p>
 
@@ -838,7 +838,7 @@ parses the specified string to determine the type described therein.</p>
 
 <h3 class="function"><a name="ensure_floored_integer-1">ensure_floored_integer/1</a></h3>
 <div class="spec">
-<p><tt>ensure_floored_integer(N::number()) -&gt; integer()</tt><br></p>
+<p><code>ensure_floored_integer(N::number()) -&gt; integer()</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified term is an integer, and returns it.</p>
 
@@ -847,7 +847,7 @@ parses the specified string to determine the type described therein.</p>
 
 <h3 class="function"><a name="ensure_integer-1">ensure_integer/1</a></h3>
 <div class="spec">
-<p><tt>ensure_integer(N::number()) -&gt; integer()</tt><br></p>
+<p><code>ensure_integer(N::number()) -&gt; integer()</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified term is an integer, and returns it.</p>
 
@@ -856,7 +856,7 @@ parses the specified string to determine the type described therein.</p>
 
 <h3 class="function"><a name="ensure_positive_float-1">ensure_positive_float/1</a></h3>
 <div class="spec">
-<p><tt>ensure_positive_float(F::number()) -&gt; float()</tt><br></p>
+<p><code>ensure_positive_float(F::number()) -&gt; float()</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified term is a positive (possibly null) float, and 
 returns it.</p>
@@ -866,7 +866,7 @@ returns it.</p>
 
 <h3 class="function"><a name="ensure_rounded_integer-1">ensure_rounded_integer/1</a></h3>
 <div class="spec">
-<p><tt>ensure_rounded_integer(N::number()) -&gt; integer()</tt><br></p>
+<p><code>ensure_rounded_integer(N::number()) -&gt; integer()</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified term is an integer, and returns it.</p>
 
@@ -875,18 +875,18 @@ returns it.</p>
 
 <h3 class="function"><a name="ensure_string-1">ensure_string/1</a></h3>
 <div class="spec">
-<p><tt>ensure_string(S::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>ensure_string(S::term()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that the specified term is a string, and returns it.</p>
 
 <h3 class="function"><a name="get_ast_simple_builtin_types-0">get_ast_simple_builtin_types/0</a></h3>
 <div class="spec">
-<p><tt>get_ast_simple_builtin_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p><code>get_ast_simple_builtin_types() -&gt; [<a href="#type-type_name">type_name()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of the possible types for immediate values (typically 
 found in an AST like, like 'undefined' in: {atom,42,undefined}).</p>
 
- <p>From <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>:</p>
+ <p>From <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a>:</p>
 
  <p>"There are five kinds of atomic literals, which are represented in the same 
 way in patterns, expressions, and guards:</p>
@@ -907,25 +907,25 @@ Rep(L) = {string,LINE,[C_1, ..., C_k]}."</p>
 
 <h3 class="function"><a name="get_elementary_types-0">get_elementary_types/0</a></h3>
 <div class="spec">
-<p><tt>get_elementary_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p><code>get_elementary_types() -&gt; [<a href="#type-type_name">type_name()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the elementary, "atomic" types.</p>
 
 <h3 class="function"><a name="get_immediate_types-0">get_immediate_types/0</a></h3>
 <div class="spec">
-<p><tt>get_immediate_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p><code>get_immediate_types() -&gt; [<a href="#type-type_name">type_name()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the possible types for immediate values.</p>
 
 <h3 class="function"><a name="get_last_tuple_element-1">get_last_tuple_element/1</a></h3>
 <div class="spec">
-<p><tt>get_last_tuple_element(Tuple::tuple()) -&gt; term()</tt><br></p>
+<p><code>get_last_tuple_element(Tuple::tuple()) -&gt; term()</code><br></p>
 <p> </p>
 </div><p>Returns the last element of the specified tuple.</p>
 
 <h3 class="function"><a name="get_low_level_type_size-1">get_low_level_type_size/1</a></h3>
 <div class="spec">
-<p><tt>get_low_level_type_size(X1::<a href="#type-low_level_type">low_level_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p><code>get_low_level_type_size(X1::<a href="#type-low_level_type">low_level_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
 <p> </p>
 </div><p>Returns the number of bytes used by each value of the specified low-level
  type.
@@ -933,13 +933,13 @@ Rep(L) = {string,LINE,[C_1, ..., C_k]}."</p>
 
 <h3 class="function"><a name="get_record_tag-1">get_record_tag/1</a></h3>
 <div class="spec">
-<p><tt>get_record_tag(RecordTuple::<a href="#type-record">record()</a>) -&gt; <a href="#type-record_tag">record_tag()</a></tt><br></p>
+<p><code>get_record_tag(RecordTuple::<a href="#type-record">record()</a>) -&gt; <a href="#type-record_tag">record_tag()</a></code><br></p>
 <p> </p>
 </div><p>Returns the tag of the specified record instance.</p>
 
 <h3 class="function"><a name="get_simple_builtin_types-0">get_simple_builtin_types/0</a></h3>
 <div class="spec">
-<p><tt>get_simple_builtin_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p><code>get_simple_builtin_types() -&gt; [<a href="#type-type_name">type_name()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the built-in, non-polymorphic types that can be
  typically found in AST forms.
@@ -947,7 +947,7 @@ Rep(L) = {string,LINE,[C_1, ..., C_k]}."</p>
 
 <h3 class="function"><a name="get_type_of-1">get_type_of/1</a></h3>
 <div class="spec">
-<p><tt>get_type_of(Term::term()) -&gt; <a href="#type-primitive_type_description">primitive_type_description()</a></tt><br></p>
+<p><code>get_type_of(Term::term()) -&gt; <a href="#type-primitive_type_description">primitive_type_description()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an atom describing, as precisely as possible, the overall type of 
 the specified primitive term.</p>
@@ -967,19 +967,19 @@ may be seen of being of multiple types).</p>
 
 <h3 class="function"><a name="increment_counter-2">increment_counter/2</a></h3>
 <div class="spec">
-<p><tt>increment_counter(CounterIndex::<a href="#type-positive_index">positive_index()</a>, Counters::<a href="#type-counters">counters()</a>) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p><code>increment_counter(CounterIndex::<a href="#type-positive_index">positive_index()</a>, Counters::<a href="#type-counters">counters()</a>) -&gt; <a href="#type-counters">counters()</a></code><br></p>
 <p> </p>
 </div><p>Increments the specified counter.</p>
 
 <h3 class="function"><a name="initialise_counters-1">initialise_counters/1</a></h3>
 <div class="spec">
-<p><tt>initialise_counters(Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p><code>initialise_counters(Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-counters">counters()</a></code><br></p>
 <p> </p>
 </div><p>Initialises the specified number of counters to zero.</p>
 
 <h3 class="function"><a name="initialise_counters-2">initialise_counters/2</a></h3>
 <div class="spec">
-<p><tt>initialise_counters(Count::<a href="#type-count">count()</a>, InitValue::integer()) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p><code>initialise_counters(Count::<a href="#type-count">count()</a>, InitValue::integer()) -&gt; <a href="#type-counters">counters()</a></code><br></p>
 <p> </p>
 </div><p>Initialises the specified number of counters to the specified (initial)
  value.
@@ -987,7 +987,7 @@ may be seen of being of multiple types).</p>
 
 <h3 class="function"><a name="interpret_type_of-1">interpret_type_of/1</a></h3>
 <div class="spec">
-<p><tt>interpret_type_of(Term::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_type_of(Term::term()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing, in a user-friendly manner, the type of the
  specified term (up to one level of nesting detailed).
@@ -995,7 +995,7 @@ may be seen of being of multiple types).</p>
 
 <h3 class="function"><a name="interpret_type_of-2">interpret_type_of/2</a></h3>
 <div class="spec">
-<p><tt>interpret_type_of(Term::term(), MaxNestingLevel::<a href="#type-level">level()</a> | infinite) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_type_of(Term::term(), MaxNestingLevel::<a href="#type-level">level()</a> | infinite) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing, in a user-friendly manner, the type of the
  specified term, up to the specified nesting level (either a positive integer
@@ -1004,7 +1004,7 @@ may be seen of being of multiple types).</p>
 
 <h3 class="function"><a name="is_homogeneous-1">is_homogeneous/1</a></h3>
 <div class="spec">
-<p><tt>is_homogeneous(List::list() | tuple()) -&gt; {true, <a href="#type-primitive_type_description">primitive_type_description()</a>} | {false, {<a href="#type-primitive_type_description">primitive_type_description()</a>, <a href="#type-primitive_type_description">primitive_type_description()</a>}}</tt><br></p>
+<p><code>is_homogeneous(List::list() | tuple()) -&gt; {true, <a href="#type-primitive_type_description">primitive_type_description()</a>} | {false, {<a href="#type-primitive_type_description">primitive_type_description()</a>, <a href="#type-primitive_type_description">primitive_type_description()</a>}}</code><br></p>
 <p> </p>
 </div><p><p>Tells whether specified non-empty monomorphic container (list or tuple) 
 is homogeneous in terms of type, ie whether all its elements are of the same 
@@ -1016,7 +1016,7 @@ type.</p>
 
 <h3 class="function"><a name="is_homogeneous-2">is_homogeneous/2</a></h3>
 <div class="spec">
-<p><tt>is_homogeneous(List::list() | tuple(), Type::<a href="#type-primitive_type_description">primitive_type_description()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_homogeneous(List::list() | tuple(), Type::<a href="#type-primitive_type_description">primitive_type_description()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether specified non-empty monomorphic container (list or tuple)
  is homogeneous in terms of type, that is whether all its elements are of the
@@ -1025,7 +1025,7 @@ type.</p>
 
 <h3 class="function"><a name="is_of_described_type-2">is_of_described_type/2</a></h3>
 <div class="spec">
-<p><tt>is_of_described_type(Term::term(), TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_of_described_type(Term::term(), TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified term is of specified textually-described 
 type.</p>
@@ -1035,7 +1035,7 @@ type.</p>
 
 <h3 class="function"><a name="is_of_type-2">is_of_type/2</a></h3>
 <div class="spec">
-<p><tt>is_of_type(Term::term(), Type::<a href="#type-type">type()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_of_type(Term::term(), Type::<a href="#type-type">type()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether specified term is of specified type (predicate).</p>
 
@@ -1046,13 +1046,13 @@ type.</p>
 
 <h3 class="function"><a name="is_transient-1">is_transient/1</a></h3>
 <div class="spec">
-<p><tt>is_transient(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>is_transient(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified term is, just by itself, a transient one.</p>
 
 <h3 class="function"><a name="is_type-1">is_type/1</a></h3>
 <div class="spec">
-<p><tt>is_type(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>is_type(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether specified term designates a type (ie a type() instance).</p>
 
@@ -1061,7 +1061,7 @@ type.</p>
 
 <h3 class="function"><a name="share-1">share/1</a></h3>
 <div class="spec">
-<p><tt>share(Other::term()) -&gt; term()</tt><br></p>
+<p><code>share(Other::term()) -&gt; term()</code><br></p>
 <p> </p>
 </div><p><p>Improves the compactness of the specified term ("compresses it"): returns 
 it once the sharing of its sub-terms has been favored (equal term, but 
@@ -1081,7 +1081,7 @@ external source (e.g. from file).</p>
 
 <h3 class="function"><a name="share-2">share/2</a></h3>
 <div class="spec">
-<p><tt>share(X::term(), Y::term()) -&gt; <a href="#type-pair">pair()</a></tt><br></p>
+<p><code>share(X::term(), Y::term()) -&gt; <a href="#type-pair">pair()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the two specified terms as a pair favoring the in-memory sharing 
 of its elements, if they are equal.</p>
@@ -1096,7 +1096,7 @@ multiple times).</p>
 
 <h3 class="function"><a name="share-3">share/3</a></h3>
 <div class="spec">
-<p><tt>share(X::term(), Y::term(), Z::term()) -&gt; <a href="#type-triplet">triplet()</a></tt><br></p>
+<p><code>share(X::term(), Y::term(), Z::term()) -&gt; <a href="#type-triplet">triplet()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the three specified terms as a triplet favoring the in-memory 
 sharing of its elements, if they are equal.</p>
@@ -1111,13 +1111,13 @@ multiple times).</p>
 
 <h3 class="function"><a name="tokenise_per_union-1">tokenise_per_union/1</a></h3>
 <div class="spec">
-<p><tt>tokenise_per_union(TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; [<a href="#type-type_description">type_description()</a>]</tt><br></p>
+<p><code>tokenise_per_union(TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; [<a href="#type-type_description">type_description()</a>]</code><br></p>
 <p> </p>
 </div><p>Splits the specified type description according to union delimiters</p>
 
 <h3 class="function"><a name="type_to_description-1">type_to_description/1</a></h3>
 <div class="spec">
-<p><tt>type_to_description(Type::<a href="#type-type">type()</a>) -&gt; <a href="#type-type_description">type_description()</a></tt><br></p>
+<p><code>type_to_description(Type::<a href="#type-type">type()</a>) -&gt; <a href="#type-type_description">type_description()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the type description (in canonical form, notably without 
 whitespaces) corresponding to specified type.</p>
@@ -1128,7 +1128,7 @@ whitespaces) corresponding to specified type.</p>
 
 <h3 class="function"><a name="type_to_string-1">type_to_string/1</a></h3>
 <div class="spec">
-<p><tt>type_to_string(Type::<a href="#type-type">type()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>type_to_string(Type::<a href="#type-type">type()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified type.</p>
 <hr>

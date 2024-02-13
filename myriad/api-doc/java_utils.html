@@ -24,75 +24,75 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-java_bytecode_filename">java_bytecode_filename()</a></h3>
-<p><tt>java_bytecode_filename() = <a href="#type-file_name">file_name()</a></tt></p>
+<p><code>java_bytecode_filename() = <a href="#type-file_name">file_name()</a></code></p>
 <p> The name of a Java compiled file (e.g. "Foobar.class").</p>
 
 <h3 class="typedecl"><a name="type-java_classname">java_classname()</a></h3>
-<p><tt>java_classname() = atom()</tt></p>
+<p><code>java_classname() = atom()</code></p>
 <p> The name of a Java class (e.g. 'Foobar').</p>
 
 <h3 class="typedecl"><a name="type-java_fully_qualified_classname">java_fully_qualified_classname()</a></h3>
-<p><tt>java_fully_qualified_classname() = <a href="#type-java_classname">java_classname()</a> | {<a href="#type-java_package_name">java_package_name()</a>, <a href="#type-java_classname">java_classname()</a>}</tt></p>
+<p><code>java_fully_qualified_classname() = <a href="#type-java_classname">java_classname()</a> | {<a href="#type-java_package_name">java_package_name()</a>, <a href="#type-java_classname">java_classname()</a>}</code></p>
 <p> Designates as precisely as possible a Java class.</p>
 
 <h3 class="typedecl"><a name="type-java_mbox_pid">java_mbox_pid()</a></h3>
-<p><tt>java_mbox_pid() = pid()</tt></p>
+<p><code>java_mbox_pid() = pid()</code></p>
 <p> PID associated to a Java mailbox (a Java-based pseudo-process).</p>
 
 <h3 class="typedecl"><a name="type-java_package_name">java_package_name()</a></h3>
-<p><tt>java_package_name() = atom()</tt></p>
+<p><code>java_package_name() = atom()</code></p>
 <p> The name of a Java package (e.g. 'org.foobar.research.someteam').</p>
 
 <h3 class="typedecl"><a name="type-java_source_filename">java_source_filename()</a></h3>
-<p><tt>java_source_filename() = <a href="#type-file_name">file_name()</a></tt></p>
+<p><code>java_source_filename() = <a href="#type-file_name">file_name()</a></code></p>
 <p> The name of a Java source file (e.g. "Foobar.java").</p>
 
 <h3 class="typedecl"><a name="type-java_string_classname">java_string_classname()</a></h3>
-<p><tt>java_string_classname() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>java_string_classname() = <a href="#type-ustring">ustring()</a></code></p>
 <p> The name of a Java class, as a string (e.g. "Foobar").</p>
 
 <h3 class="typedecl"><a name="type-java_string_package_name">java_string_package_name()</a></h3>
-<p><tt>java_string_package_name() = atom()</tt></p>
+<p><code>java_string_package_name() = atom()</code></p>
 <p> The name of a Java package, as a string (e.g. "org.foobar.research.someteam").</p>
 
 <h3 class="typedecl"><a name="type-method_name">method_name()</a></h3>
-<p><tt>method_name() = atom()</tt></p>
+<p><code>method_name() = atom()</code></p>
 <p> Designates a method to trigger on the Java side.</p>
 
 <h3 class="typedecl"><a name="type-method_parameters">method_parameters()</a></h3>
-<p><tt>method_parameters() = [any()]</tt></p>
+<p><code>method_parameters() = [any()]</code></p>
 <p> The parameters of a method triggered on the Java side.</p>
 
 <h3 class="typedecl"><a name="type-oneway_name">oneway_name()</a></h3>
-<p><tt>oneway_name() = <a href="#type-method_name">method_name()</a></tt></p>
+<p><code>oneway_name() = <a href="#type-method_name">method_name()</a></code></p>
 <p> Designates a oneway to trigger on the Java side.</p>
 
 <h3 class="typedecl"><a name="type-oneway_parameters">oneway_parameters()</a></h3>
-<p><tt>oneway_parameters() = [any()]</tt></p>
+<p><code>oneway_parameters() = [any()]</code></p>
 <p> The parameters of a oneway triggered on the Java side.</p>
 
 <h3 class="typedecl"><a name="type-request_name">request_name()</a></h3>
-<p><tt>request_name() = <a href="#type-method_name">method_name()</a></tt></p>
+<p><code>request_name() = <a href="#type-method_name">method_name()</a></code></p>
 <p> Designates a request to trigger on the Java side.</p>
 
 <h3 class="typedecl"><a name="type-request_parameters">request_parameters()</a></h3>
-<p><tt>request_parameters() = [any()]</tt></p>
+<p><code>request_parameters() = [any()]</code></p>
 <p> The parameters of a request triggered on the Java side.</p>
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><tt>request_result() = any()</tt></p>
+<p><code>request_result() = any()</code></p>
 <p> The result from a request that was sent to Java.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -114,7 +114,7 @@ class it implements, according to the naming conventions used by the language.</
 
 <h3 class="function"><a name="classname_to_bytecode_filename-1">classname_to_bytecode_filename/1</a></h3>
 <div class="spec">
-<p><tt>classname_to_bytecode_filename(Classname::<a href="#type-java_classname">java_classname()</a> | <a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-java_bytecode_filename">java_bytecode_filename()</a></tt><br></p>
+<p><code>classname_to_bytecode_filename(Classname::<a href="#type-java_classname">java_classname()</a> | <a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-java_bytecode_filename">java_bytecode_filename()</a></code><br></p>
 <p> </p>
 </div><p><p>Deduces the (root) name of a Java bytecode file from the name of the 
 class it implements, according to the naming conventions used by the language.</p>
@@ -126,7 +126,7 @@ class it implements, according to the naming conventions used by the language.</
 
 <h3 class="function"><a name="execute_request-3">execute_request/3</a></h3>
 <div class="spec">
-<p><tt>execute_request(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestParameters::<a href="#type-request_parameters">request_parameters()</a>) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p><code>execute_request(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestParameters::<a href="#type-request_parameters">request_parameters()</a>) -&gt; <a href="#type-request_result">request_result()</a></code><br></p>
 <p> </p>
 </div><p>Sends for execution the specified request to the specified Java
  pseudo-process, and collects (synchronously) the corresponding result.
@@ -134,13 +134,13 @@ class it implements, according to the naming conventions used by the language.</
 
 <h3 class="function"><a name="fully_qualified_classname_to_string-1">fully_qualified_classname_to_string/1</a></h3>
 <div class="spec">
-<p><tt>fully_qualified_classname_to_string(Classname::<a href="#type-java_fully_qualified_classname">java_fully_qualified_classname()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>fully_qualified_classname_to_string(Classname::<a href="#type-java_fully_qualified_classname">java_fully_qualified_classname()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of specified fully qualified classname.</p>
 
 <h3 class="function"><a name="get_beam_directories_for_binding-0">get_beam_directories_for_binding/0</a></h3>
 <div class="spec">
-<p><tt>get_beam_directories_for_binding() -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p><code>get_beam_directories_for_binding() -&gt; [<a href="#type-directory_path">directory_path()</a>]</code><br></p>
 <p> </p>
 </div><p>Finds the BEAM locations of all the dependencies required for binding to
  Java.
@@ -148,19 +148,19 @@ class it implements, according to the naming conventions used by the language.</
 
 <h3 class="function"><a name="send_oneway-3">send_oneway/3</a></h3>
 <div class="spec">
-<p><tt>send_oneway(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayParameters::<a href="#type-oneway_parameters">oneway_parameters()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_oneway(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayParameters::<a href="#type-oneway_parameters">oneway_parameters()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sends the specified oneway to the specified Java pseudo-process.</p>
 
 <h3 class="function"><a name="send_request-3">send_request/3</a></h3>
 <div class="spec">
-<p><tt>send_request(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestParameters::<a href="#type-request_parameters">request_parameters()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_request(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestParameters::<a href="#type-request_parameters">request_parameters()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sends the specified request to the specified Java pseudo-process.</p>
 
 <h3 class="function"><a name="wait_for_request_result-2">wait_for_request_result/2</a></h3>
 <div class="spec">
-<p><tt>wait_for_request_result(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, MethodName::<a href="#type-method_name">method_name()</a>) -&gt; any()</tt><br></p>
+<p><code>wait_for_request_result(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, MethodName::<a href="#type-method_name">method_name()</a>) -&gt; any()</code><br></p>
 <p> </p>
 </div><p>Receives a message from the Java world, usually in answer to a
  send_oneway/3 call having used the same MethodName argument, and tries to

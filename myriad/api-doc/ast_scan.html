@@ -20,33 +20,33 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast">ast()</a></h3>
-<p><tt>ast() = <a href="ast_base.html#type-ast">ast_base:ast()</a></tt></p>
+<p><code>ast() = <a href="ast_base.html#type-ast">ast_base:ast()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-error_report">error_report()</a></h3>
-<p><tt>error_report() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>error_report() = <a href="#type-ustring">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-form_context">form_context()</a></h3>
-<p><tt>form_context() = <a href="ast_base.html#type-form_context">ast_base:form_context()</a></tt></p>
+<p><code>form_context() = <a href="ast_base.html#type-form_context">ast_base:form_context()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_info">module_info()</a></h3>
-<p><tt>module_info() = <a href="ast_info.html#type-module_info">ast_info:module_info()</a></tt></p>
+<p><code>module_info() = <a href="ast_info.html#type-module_info">ast_info:module_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-parse_attribute_name">parse_attribute_name()</a></h3>
-<p><tt>parse_attribute_name() = atom()</tt></p>
+<p><code>parse_attribute_name() = atom()</code></p>
 <p><p> Name of any parse attribute.</p>
 
  (typically in Form={attribute, FileLoc, AttributeName, AttributeValue})</p>
 
 <h3 class="typedecl"><a name="type-scan_context">scan_context()</a></h3>
-<p><tt>scan_context() = {<a href="ast_base.html#type-file_reference">ast_base:file_reference()</a>, <a href="ast_base.html#type-line">ast_base:line()</a>}</tt></p>
+<p><code>scan_context() = {<a href="ast_base.html#type-file_reference">ast_base:file_reference()</a>, <a href="ast_base.html#type-line">ast_base:line()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -60,19 +60,19 @@
 
 <h3 class="function"><a name="check_parse_attribute_name-1">check_parse_attribute_name/1</a></h3>
 <div class="spec">
-<p><tt>check_parse_attribute_name(Name::term()) -&gt; <a href="#type-parse_attribute_name">parse_attribute_name()</a></tt><br></p>
+<p><code>check_parse_attribute_name(Name::term()) -&gt; <a href="#type-parse_attribute_name">parse_attribute_name()</a></code><br></p>
 <p> </p>
 </div><p>Checks that specified parse attribute name is legit.</p>
 
 <h3 class="function"><a name="check_parse_attribute_name-2">check_parse_attribute_name/2</a></h3>
 <div class="spec">
-<p><tt>check_parse_attribute_name(Name::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-parse_attribute_name">parse_attribute_name()</a></tt><br></p>
+<p><code>check_parse_attribute_name(Name::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-parse_attribute_name">parse_attribute_name()</a></code><br></p>
 <p> </p>
 </div><p>Checks that specified parse attribute name is legit.</p>
 
 <h3 class="function"><a name="scan-1">scan/1</a></h3>
 <div class="spec">
-<p><tt>scan(AST::<a href="#type-ast">ast()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p><code>scan(AST::<a href="#type-ast">ast()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
 <p> </p>
 </div><p>Scans the specified AST, expected to correspond to a module definition,
  and returns the corresponding module_info record.

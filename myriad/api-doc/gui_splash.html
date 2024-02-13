@@ -1,0 +1,330 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_splash</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_splash</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Support for <b>splash screens</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Support for <b>splash screens</b>.</p>
+
+ <p>Basic splash screens just display images, whereas more complex ones are 
+dynamically built from elements that can include versions, release dates, etc.</p>
+
+ <p>In all cases they are to be displayed as soon as possible (when created, which 
+returns the PID of their controller process), and will be dismissed and fully 
+deallocated/terminated as soon as that process will receive a removal message.</p>
+
+ <p>Depending on text length and font size, the size of images may help avoiding 
+the collision of texts.</p>
+
+ Refer to the gui_splash_test module for an example of use.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_image_path">any_image_path()</a></h3>
+<p><code>any_image_path() = <a href="gui_image.html#type-any_image_path">gui_image:any_image_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-basic_splash_info">basic_splash_info()</a></h3>
+<p><code>basic_splash_info() = #basic_splash_info{splash_frame = <a href="#type-frame">frame()</a>, splash_panel = <a href="#type-splash_panel">splash_panel()</a>, backbuffer = <a href="#type-bitmap">bitmap()</a>, image_bitmap = <a href="#type-bitmap">bitmap()</a>}</code></p>
+<p> Information to be kept by an application using a basic splash screen.</p>
+
+<h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
+<p><code>bitmap() = <a href="gui_bitmap.html#type-bitmap">gui_bitmap:bitmap()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-color">color()</a></h3>
+<p><code>color() = <a href="gui_color.html#type-color">gui_color:color()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-dynamic_splash_info">dynamic_splash_info()</a></h3>
+<p><code>dynamic_splash_info() = #dynamic_splash_info{splash_frame = <a href="#type-frame">frame()</a>, splash_panel = <a href="#type-splash_panel">splash_panel()</a>, symbol_bitmap = <a href="#type-bitmap">bitmap()</a>, main_bitmap = <a href="#type-bitmap">bitmap()</a>}</code></p>
+<p> Information to be kept by an application using a dynamic splash screen.</p>
+
+<h3 class="typedecl"><a name="type-frame">frame()</a></h3>
+<p><code>frame() = <a href="gui_frame.html#type-frame">gui_frame:frame()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-panel">panel()</a></h3>
+<p><code>panel() = <a href="gui_panel.html#type-panel">gui_panel:panel()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><code>parent() = <a href="gui.html#type-parent">gui:parent()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-removal_message">removal_message()</a></h3>
+<p><code>removal_message() = removeSplash</code></p>
+<p> The atom to be received by a controller to dismiss its splash screen and
+ terminate.</p>
+
+<h3 class="typedecl"><a name="type-scale_factor">scale_factor()</a></h3>
+<p><code>scale_factor() = <a href="math_utils.html#type-scale_factor">math_utils:scale_factor()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><code>size() = <a href="gui.html#type-size">gui:size()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-splash_info">splash_info()</a></h3>
+<p><code>splash_info() = <a href="#type-basic_splash_info">basic_splash_info()</a></code></p>
+<p> Information regarding a splash screen so that it can be properly managed.</p>
+
+<h3 class="typedecl"><a name="type-splash_panel">splash_panel()</a></h3>
+<p><code>splash_panel() = <a href="#type-panel">panel()</a></code></p>
+<p> A panel used by a splash screen.</p>
+
+<h3 class="typedecl"><a name="type-width">width()</a></h3>
+<p><code>width() = <a href="gui.html#type-width">gui:width()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create_basic-2">create_basic/2</a></td><td>Creates a basic splash screen that will display the specified image on a 
+minimalist frame created on top of the specified parent (typically a frame, 
+probably the main one), and returns the associated splash information, for 
+future use (event management).</td></tr>
+<tr><td valign="top"><a href="#create_basic-3">create_basic/3</a></td><td>Creates a basic splash screen that will display the specified image 
+once scaled (uniformously) at the specified factor (typically in ]0,1[ to 
+shrink a too large image) on a minimalist frame on top of the specified parent 
+(typically a frame, probably the main one), and returns the associated splash 
+information, for future use (event management).</td></tr>
+<tr><td valign="top"><a href="#create_dynamic-12">create_dynamic/12</a></td><td>Creates a dynamic splash screen displaying the specified information on a 
+minimalist frame on top of the specified parent (typically a frame, probably 
+the main one), and returns the associated splash information, for future use 
+(event management).</td></tr>
+<tr><td valign="top"><a href="#create_dynamic_from_bitmaps-12">create_dynamic_from_bitmaps/12</a></td><td>Creates a dynamic splash screen displaying the specified information on a 
+minimalist frame on top of the specified parent (typically a frame, probably 
+the main one), and returns the associated splash information, for future use 
+(event management).</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the splash screen, based on the specified splash information.</td></tr>
+<tr><td valign="top"><a href="#get_bitmaps-1">get_bitmaps/1</a></td><td>Returns the bitmaps referenced by the specified splash information.</td></tr>
+<tr><td valign="top"><a href="#get_frame-1">get_frame/1</a></td><td>Returns the splash frame, as stored in the specified splash information.</td></tr>
+<tr><td valign="top"><a href="#get_panel-1">get_panel/1</a></td><td>Returns the splash panel, as stored in the specified splash information.</td></tr>
+<tr><td valign="top"><a href="#on_repaint_needed-2">on_repaint_needed/2</a></td><td>Callback to be triggered whenever the application catches a
+ onRepaintNeeded event for the splash panel.</td></tr>
+<tr><td valign="top"><a href="#on_resized-3">on_resized/3</a></td><td>Callback to be triggered whenever the application catches a onResized
+ event for the splash panel.</td></tr>
+<tr><td valign="top"><a href="#remove-1">remove/1</a></td><td>Callback to be triggered whenever the application chooses to remove the
+ corresponding splash screen.</td></tr>
+<tr><td valign="top"><a href="#render_dynamic_splash-12">render_dynamic_splash/12</a></td><td>Creates the necessary widgets in order to fill the specified parent 
+(e.g.</td></tr>
+<tr><td valign="top"><a href="#show-1">show/1</a></td><td>Shows the corresponding splash screen.</td></tr>
+<tr><td valign="top"><a href="#update_panel-2">update_panel/2</a></td><td>Blits the specified bitmap to the specified panel, once cleared.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create_basic-2">create_basic/2</a></h3>
+<div class="spec">
+<p><code>create_basic(ImgPath::<a href="#type-any_image_path">any_image_path()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-basic_splash_info">basic_splash_info()</a></code><br></p>
+<p> </p>
+</div><p><p>Creates a basic splash screen that will display the specified image on a 
+minimalist frame created on top of the specified parent (typically a frame, 
+probably the main one), and returns the associated splash information, for 
+future use (event management).</p>
+
+ <p>The splash screen will be dismissed when the application will call the 
+remove/1 function, typically once fully initialised and ready.</p>
+
+ See the gui_splash_test module for an usage example.
+</p>
+
+<h3 class="function"><a name="create_basic-3">create_basic/3</a></h3>
+<div class="spec">
+<p><code>create_basic(ImgPath::<a href="#type-any_image_path">any_image_path()</a>, ScaleF::<a href="#type-scale_factor">scale_factor()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-basic_splash_info">basic_splash_info()</a></code><br></p>
+<p> </p>
+</div><p><p>Creates a basic splash screen that will display the specified image 
+once scaled (uniformously) at the specified factor (typically in ]0,1[ to 
+shrink a too large image) on a minimalist frame on top of the specified parent 
+(typically a frame, probably the main one), and returns the associated splash 
+information, for future use (event management).</p>
+
+ <p>The splash screen will be dismissed when the application will call the 
+remove/1 function, typically once fully initialised and ready.</p>
+
+ See the gui_splash_test module for an usage example.
+</p>
+
+<h3 class="function"><a name="create_dynamic-12">create_dynamic/12</a></h3>
+<div class="spec">
+<p><code>create_dynamic(SymbolPath::<a href="#type-any_image_path">any_image_path()</a>, TitleStr::<a href="#type-any_string">any_string()</a>, VersionStr::<a href="#type-any_string">any_string()</a>, DescStr::<a href="#type-any_string">any_string()</a>, UrlStr::<a href="#type-any_string">any_string()</a>, TitleBackgroundColor::<a href="#type-color">color()</a>, OverallBackgroundColor::<a href="#type-color">color()</a>, MainPath::<a href="#type-any_image_path">any_image_path()</a>, SpacerWidth::<a href="#type-width">width()</a>, GeneralInfoStr::<a href="#type-any_string">any_string()</a>, CopyrightStr::<a href="#type-any_string">any_string()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-dynamic_splash_info">dynamic_splash_info()</a></code><br></p>
+<p> </p>
+</div><p><p>Creates a dynamic splash screen displaying the specified information on a 
+minimalist frame on top of the specified parent (typically a frame, probably 
+the main one), and returns the associated splash information, for future use 
+(event management).</p>
+
+ <p>The resulting splash screen (heavily inspired from the one of Wings3D) will be 
+rendered with the specified overall background color, and will be organised 
+based on three rows (each described from left to right):</p>
+
+  <p>1. a top row (of the same background color), including (left-to-right):     
+* an icon-like image symbolising the project     
+* then, just afterwards, two lines, on the specified title background     
+color:       
+- top one: with a large font, the title of the project (e.g. "Foobar")       
+followed on its right, with a smaller font, by a version string       
+(e.g. "v1.0.17")       
+- bottom one (finer font): a description of the project (e.g. "Foobar is       
+a Frobnicator with twin acceleration beams")     
+* right-justified: the project URL (e.g. "www.foobar.org")</p>
+
+  <p>2. a middle row displaying (possibly with user-specified horizontal margins -  
+spacers) the project's main representation, as an image, at full size</p>
+
+  <p>3. a bottom row, made of two text displays, on either sides of a spacer:</p>
+
+     <p>* general information (e.g. terms of use) on the left, e.g. "Foobar comes     
+with absolutely no warranty, but is completly free for any kind of use     
+(including commercial).", or "Published by Foobar     
+Software\nhttp://foobar.com"</p>
+
+     <p>* copyright information on the right, i.e. "Copyright (C) 2022-2023 John     
+Doe, James Bond and Others", or "Copyright" ++ [$\s,169] ++ " 2022-2023     
+John Doe\nAll rights reserved"</p>
+
+ <p>The overall width is solely determined by the one of the image in the middle 
+row. Ensure that all other elements are not too wide (e.g. that texts are not 
+too long, knowing that they can be multi-lines).</p>
+
+ <p>The overall height is the sum of the one of the three rows/panels:  
+1. the height of the first row is solely determined by the one of the symbol  
+image  
+2. the height of the second row is solely determined by the one of its (main)  
+image  
+3. the height of the third row is solely determined by the maximum one of the  
+two text displays</p>
+
+ <p>The splash screen will be dismissed when the application will call the 
+remove/1 function.</p>
+
+ <p>Arguments listed roughly in a top-to-bottom image order.</p>
+
+ The resources loaded there (the two bitmaps) should be explcitly destructed by
+ the caller once done with them.
+</p>
+
+<h3 class="function"><a name="create_dynamic_from_bitmaps-12">create_dynamic_from_bitmaps/12</a></h3>
+<div class="spec">
+<p><code>create_dynamic_from_bitmaps(SymbolBitmap::<a href="#type-bitmap">bitmap()</a>, TitleStr::<a href="#type-any_string">any_string()</a>, VersionStr::<a href="#type-any_string">any_string()</a>, DescStr::<a href="#type-any_string">any_string()</a>, UrlStr::<a href="#type-any_string">any_string()</a>, TitleBackgroundColor::<a href="#type-color">color()</a>, OverallBackgroundColor::<a href="#type-color">color()</a>, MainBitmap::<a href="#type-bitmap">bitmap()</a>, SpacerWidth::<a href="#type-width">width()</a>, GeneralInfoStr::<a href="#type-any_string">any_string()</a>, CopyrightStr::<a href="#type-any_string">any_string()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-dynamic_splash_info">dynamic_splash_info()</a></code><br></p>
+<p> </p>
+</div><p><p>Creates a dynamic splash screen displaying the specified information on a 
+minimalist frame on top of the specified parent (typically a frame, probably 
+the main one), and returns the associated splash information, for future use 
+(event management).</p>
+
+ <p>This version uses directly bitmaps as arguments, for example to be used as 
+resources. Refer to create_dynamic/11 for further details.</p>
+
+ <p>Arguments listed roughly in a top-to-bottom image order.</p>
+
+ Does not take ownership of the specified resources (so that for example they
+ can be provided by a resource holder).
+</p>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><code>destruct(Basic_splash_info::<a href="#type-splash_info">splash_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Destructs the splash screen, based on the specified splash information.</p>
+
+ To be cache-compliant, its bitmap resources are not deallocated here, their
+ destruction is to be done by the caller, when appropriate.
+</p>
+
+<h3 class="function"><a name="get_bitmaps-1">get_bitmaps/1</a></h3>
+<div class="spec">
+<p><code>get_bitmaps(Basic_splash_info) -&gt; any()</code></p>
+<p> </p>
+</div><p><p>Returns the bitmaps referenced by the specified splash information.</p>
+
+ Mostly useful so that the bitmaps of a dynamic splash can be destructed by the
+ caller.
+</p>
+
+<h3 class="function"><a name="get_frame-1">get_frame/1</a></h3>
+<div class="spec">
+<p><code>get_frame(Basic_splash_info::<a href="#type-splash_info">splash_info()</a>) -&gt; <a href="#type-frame">frame()</a></code><br></p>
+<p> </p>
+</div><p>Returns the splash frame, as stored in the specified splash information.</p>
+
+<h3 class="function"><a name="get_panel-1">get_panel/1</a></h3>
+<div class="spec">
+<p><code>get_panel(Basic_splash_info::<a href="#type-splash_info">splash_info()</a>) -&gt; <a href="#type-panel">panel()</a></code><br></p>
+<p> </p>
+</div><p>Returns the splash panel, as stored in the specified splash information.</p>
+
+<h3 class="function"><a name="on_repaint_needed-2">on_repaint_needed/2</a></h3>
+<div class="spec">
+<p><code>on_repaint_needed(SplashPanel::<a href="#type-panel">panel()</a>, SplashInfo::<a href="#type-splash_info">splash_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Callback to be triggered whenever the application catches a
+ onRepaintNeeded event for the splash panel.
+</p>
+
+<h3 class="function"><a name="on_resized-3">on_resized/3</a></h3>
+<div class="spec">
+<p><code>on_resized(SplashPanel::<a href="#type-panel">panel()</a>, NewSize::<a href="#type-size">size()</a>, SplashInfo::<a href="#type-splash_info">splash_info()</a>) -&gt; <a href="#type-splash_info">splash_info()</a></code><br></p>
+<p> </p>
+</div><p>Callback to be triggered whenever the application catches a onResized
+ event for the splash panel.
+</p>
+
+<h3 class="function"><a name="remove-1">remove/1</a></h3>
+<div class="spec">
+<p><code>remove(SplashInfo::<a href="#type-splash_info">splash_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Callback to be triggered whenever the application chooses to remove the
+ corresponding splash screen.
+</p>
+
+<h3 class="function"><a name="render_dynamic_splash-12">render_dynamic_splash/12</a></h3>
+<div class="spec">
+<p><code>render_dynamic_splash(SymbolBitmap::<a href="#type-bitmap">bitmap()</a>, TitleStr::<a href="#type-any_string">any_string()</a>, VersionStr::<a href="#type-any_string">any_string()</a>, DescStr::<a href="#type-any_string">any_string()</a>, UrlStr::<a href="#type-any_string">any_string()</a>, TitleBackgroundColor::<a href="#type-color">color()</a>, OverallBackgroundColor::<a href="#type-color">color()</a>, MainBitmap::<a href="#type-bitmap">bitmap()</a>, SpacerWidth::<a href="#type-width">width()</a>, GeneralInfoStr::<a href="#type-any_string">any_string()</a>, CopyrightStr::<a href="#type-any_string">any_string()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-dynamic_splash_info">dynamic_splash_info()</a></code><br></p>
+<p> </p>
+</div><p><p>Creates the necessary widgets in order to fill the specified parent 
+(e.g. a frame, a panel) with the specified splash content.</p>
+
+ Defined for re-use; useful for example to either fill a splash frame (with no
+ title, no 'close' button) or a 'About' window (with a title, a 'close' button,
+ etc.).
+</p>
+
+<h3 class="function"><a name="show-1">show/1</a></h3>
+<div class="spec">
+<p><code>show(Basic_splash_info::<a href="#type-splash_info">splash_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Shows the corresponding splash screen.</p>
+
+ Must be called only after that the parent frame is shown, otherwise the splash
+ screen will not be centered in the parent, but on the whole screen, which
+ generally is not desirable.
+</p>
+
+<h3 class="function"><a name="update_panel-2">update_panel/2</a></h3>
+<div class="spec">
+<p><code>update_panel(TargetPanel::<a href="#type-panel">panel()</a>, SourceBitmap::<a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Blits the specified bitmap to the specified panel, once cleared.</p>
+
+ For example so that a splash panel is updated based on an already-available
+ backbuffer bitmap.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -22,43 +22,43 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_point2">any_point2()</a></h3>
-<p><tt>any_point2() = <a href="point2.html#type-any_point2">point2:any_point2()</a></tt></p>
+<p><code>any_point2() = <a href="point2.html#type-any_point2">point2:any_point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_vertex2">any_vertex2()</a></h3>
-<p><tt>any_vertex2() = <a href="point2.html#type-any_vertex2">point2:any_vertex2()</a></tt></p>
+<p><code>any_vertex2() = <a href="point2.html#type-any_vertex2">point2:any_vertex2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-area">area()</a></h3>
-<p><tt>area() = <a href="linear.html#type-area">linear:area()</a></tt></p>
+<p><code>area() = <a href="linear.html#type-area">linear:area()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bounding_algorithm">bounding_algorithm()</a></h3>
-<p><tt>bounding_algorithm() = <a href="bounding_surface.html#type-bounding_algorithm">bounding_surface:bounding_algorithm()</a></tt></p>
+<p><code>bounding_algorithm() = <a href="bounding_surface.html#type-bounding_algorithm">bounding_surface:bounding_algorithm()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-canvas">canvas()</a></h3>
-<p><tt>canvas() = <a href="gui.html#type-canvas">gui:canvas()</a></tt></p>
+<p><code>canvas() = <a href="gui.html#type-canvas">gui:canvas()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
-<p><tt>color() = <a href="gui_color.html#type-color">gui_color:color()</a></tt></p>
+<p><code>color() = <a href="gui_color.html#type-color">gui_color:color()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
-<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+<p><code>distance() = <a href="linear.html#type-distance">linear:distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-polygon">polygon()</a></h3>
-<p><tt>polygon() = #polygon{vertices = [<a href="point2.html#type-any_vertex2">point2:any_vertex2()</a>], rendering = <a href="option_list.html#type-option_list">option_list:option_list()</a>, bounding_surface = <a href="#type-maybe">maybe</a>(<a href="bounding_surface.html#type-bounding_surface">bounding_surface:bounding_surface()</a>)}</tt></p>
+<p><code>polygon() = #polygon{vertices = [<a href="point2.html#type-any_vertex2">point2:any_vertex2()</a>], rendering = <a href="option_list.html#type-option_list">option_list:option_list()</a>, bounding_surface = <a href="#type-maybe">maybe</a>(<a href="bounding_surface.html#type-bounding_surface">bounding_surface:bounding_surface()</a>)}</code></p>
 <p> Describes a polygon, convex or not, simple or not.</p>
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
-<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+<p><code>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -93,7 +93,7 @@ regard to the specified bounding-surface algorithm.</td></tr>
 
 <h3 class="function"><a name="get_area-1">get_area/1</a></h3>
 <div class="spec">
-<p><tt>get_area(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-area">area()</a></tt><br></p>
+<p><code>get_area(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-area">area()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the (unsigned) area enclosed of the polygon, supposed to be 
 non-self-intersecting and having at least two vertices.</p>
@@ -104,12 +104,12 @@ non-self-intersecting and having at least two vertices.</p>
 then the area would be positive iff vertices were listed in counter-clockwise 
 order.</p>
 
- See <a href="http://en.wikipedia.org/wiki/Polygon#Area_and_centroid" target="_top"><tt>http://en.wikipedia.org/wiki/Polygon#Area_and_centroid</tt></a>.
+ See <a href="http://en.wikipedia.org/wiki/Polygon#Area_and_centroid" target="_top"><code>http://en.wikipedia.org/wiki/Polygon#Area_and_centroid</code></a>.
 </p>
 
 <h3 class="function"><a name="get_diameter-1">get_diameter/1</a></h3>
 <div class="spec">
-<p><tt>get_diameter(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-square_distance">square_distance()</a>}</tt><br></p>
+<p><code>get_diameter(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-square_distance">square_distance()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Returns a polygon diameter, that is two points in the polygon that are at 
 the maximum distance one of the other.</p>
@@ -120,7 +120,7 @@ the maximum distance one of the other.</p>
 
 <h3 class="function"><a name="get_edge_color-1">get_edge_color/1</a></h3>
 <div class="spec">
-<p><tt>get_edge_color(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-color">color()</a>)</tt><br></p>
+<p><code>get_edge_color(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-color">color()</a>)</code><br></p>
 <p> </p>
 </div><p>Returns the current edge color of the specified polygon, if specified,
  otherwise 'undefined'.
@@ -128,7 +128,7 @@ the maximum distance one of the other.</p>
 
 <h3 class="function"><a name="get_fill_color-1">get_fill_color/1</a></h3>
 <div class="spec">
-<p><tt>get_fill_color(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-color">color()</a>)</tt><br></p>
+<p><code>get_fill_color(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-color">color()</a>)</code><br></p>
 <p> </p>
 </div><p>Returns the current fill color of the specified polygon, if specified,
  otherwise 'undefined'.
@@ -136,13 +136,13 @@ the maximum distance one of the other.</p>
 
 <h3 class="function"><a name="get_polygon-1">get_polygon/1</a></h3>
 <div class="spec">
-<p><tt>get_polygon(Vertices::[<a href="#type-any_vertex2">any_vertex2()</a>]) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><code>get_polygon(Vertices::[<a href="#type-any_vertex2">any_vertex2()</a>]) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
 <p> </p>
 </div><p>Returns a new polygon whose vertices are the specified ones.</p>
 
 <h3 class="function"><a name="get_smallest_enclosing_rectangle-1">get_smallest_enclosing_rectangle/1</a></h3>
 <div class="spec">
-<p><tt>get_smallest_enclosing_rectangle(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_point2">any_point2()</a>, <a href="#type-any_point2">any_point2()</a>}</tt><br></p>
+<p><code>get_smallest_enclosing_rectangle(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_point2">any_point2()</a>, <a href="#type-any_point2">any_point2()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Returns the smallest upright rectangle that encompasses the specified 
 polygon.</p>
@@ -153,7 +153,7 @@ polygon.</p>
 
 <h3 class="function"><a name="get_triangle-3">get_triangle/3</a></h3>
 <div class="spec">
-<p><tt>get_triangle(P1::<a href="#type-any_point2">any_point2()</a>, P2::<a href="#type-any_point2">any_point2()</a>, P3::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><code>get_triangle(P1::<a href="#type-any_point2">any_point2()</a>, P2::<a href="#type-any_point2">any_point2()</a>, P3::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
 <p> </p>
 </div><p>Returns a triangle (defined as a polygon) corresponding to the specified
  three vertices.
@@ -161,7 +161,7 @@ polygon.</p>
 
 <h3 class="function"><a name="get_upright_square-2">get_upright_square/2</a></h3>
 <div class="spec">
-<p><tt>get_upright_square(Center::<a href="#type-any_vertex2">any_vertex2()</a>, EdgeLength::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><code>get_upright_square(Center::<a href="#type-any_vertex2">any_vertex2()</a>, EdgeLength::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
 <p> </p>
 </div><p>Returns an upright square corresponding to the specified center and edge
  length.
@@ -169,7 +169,7 @@ polygon.</p>
 
 <h3 class="function"><a name="is_convex-1">is_convex/1</a></h3>
 <div class="spec">
-<p><tt>is_convex(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_convex(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified polygon is convex (iff true) or concave 
 (otherwise).</p>
@@ -179,7 +179,7 @@ polygon.</p>
 
 <h3 class="function"><a name="is_in_clockwise_order-1">is_in_clockwise_order/1</a></h3>
 <div class="spec">
-<p><tt>is_in_clockwise_order(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_in_clockwise_order(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified polygon has its vertices in clockwise order
  (otherwise they are in counter-clockwise order).
@@ -187,7 +187,7 @@ polygon.</p>
 
 <h3 class="function"><a name="render-2">render/2</a></h3>
 <div class="spec">
-<p><tt>render(Polygon::<a href="#type-polygon">polygon()</a>, Canvas::<a href="#type-canvas">canvas()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>render(Polygon::<a href="#type-polygon">polygon()</a>, Canvas::<a href="#type-canvas">canvas()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Renders specified polygon in specified canvas.</p>
 
@@ -196,13 +196,13 @@ polygon.</p>
 
 <h3 class="function"><a name="set_edge_color-2">set_edge_color/2</a></h3>
 <div class="spec">
-<p><tt>set_edge_color(Color::<a href="#type-color">color()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><code>set_edge_color(Color::<a href="#type-color">color()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
 <p> </p>
 </div><p>Sets the edge color of specified polygon.</p>
 
 <h3 class="function"><a name="set_fill_color-2">set_fill_color/2</a></h3>
 <div class="spec">
-<p><tt>set_fill_color(Color::<a href="#type-color">color()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><code>set_fill_color(Color::<a href="#type-color">color()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets the fill color of the specified polygon.</p>
 
@@ -211,13 +211,13 @@ polygon.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified polygon.</p>
 
 <h3 class="function"><a name="update_bounding_surface-2">update_bounding_surface/2</a></h3>
 <div class="spec">
-<p><tt>update_bounding_surface(X1::<a href="#type-bounding_algorithm">bounding_algorithm()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><code>update_bounding_surface(X1::<a href="#type-bounding_algorithm">bounding_algorithm()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
 <p> </p>
 </div><p><p>Updates, for the specified polygon, its internal bounding surface, with 
 regard to the specified bounding-surface algorithm.</p>

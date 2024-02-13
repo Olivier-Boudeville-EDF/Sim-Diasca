@@ -22,23 +22,23 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-buffer">buffer()</a></h3>
-<p><tt>buffer() = binary()</tt></p>
+<p><code>buffer() = binary()</code></p>
 <p> A (binary) buffer, a series of bytes.</p>
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-crc8_checksum">crc8_checksum()</a></h3>
-<p><tt>crc8_checksum() = byte()</tt></p>
+<p><code>crc8_checksum() = byte()</code></p>
 
 
 <h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
-<p><tt>tuple(T) = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(T)</tt></p>
+<p><code>tuple(T) = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(T)</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -86,19 +86,19 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="compute_crc8_checksum-1">compute_crc8_checksum/1</a></h3>
 <div class="spec">
-<p><tt>compute_crc8_checksum(Binary::binary()) -&gt; <a href="#type-crc8_checksum">crc8_checksum()</a></tt><br></p>
+<p><code>compute_crc8_checksum(Binary::binary()) -&gt; <a href="#type-crc8_checksum">crc8_checksum()</a></code><br></p>
 <p> </p>
 </div><p>Returns the CRC8 checksum corresponding to specified binary.</p>
 
 <h3 class="function"><a name="concatenate-1">concatenate/1</a></h3>
 <div class="spec">
-<p><tt>concatenate(BinStrs::[binary()]) -&gt; binary()</tt><br></p>
+<p><code>concatenate(BinStrs::[binary()]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates the specified binaries into the returned one.</p>
 
 <h3 class="function"><a name="concatenate-2">concatenate/2</a></h3>
 <div class="spec">
-<p><tt>concatenate(Bin1::binary(), Bin2::binary()) -&gt; binary()</tt><br></p>
+<p><code>concatenate(Bin1::binary(), Bin2::binary()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Concatenates the specified binaries into the returned one.</p>
 
@@ -108,7 +108,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="concatenate-3">concatenate/3</a></h3>
 <div class="spec">
-<p><tt>concatenate(OrigBin::binary(), ReplicationCount::<a href="#type-count">count()</a>, ToReplicateBin::binary()) -&gt; binary()</tt><br></p>
+<p><code>concatenate(OrigBin::binary(), ReplicationCount::<a href="#type-count">count()</a>, ToReplicateBin::binary()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates to the specified original binary (on its right) the
  specified number of copies of the second specified binary.
@@ -116,7 +116,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="concatenate_as_float32s-1">concatenate_as_float32s/1</a></h3>
 <div class="spec">
-<p><tt>concatenate_as_float32s(Floats::[float()]) -&gt; binary()</tt><br></p>
+<p><code>concatenate_as_float32s(Floats::[float()]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates the specified floats as 32-bit floats, based on the native
  endianess.
@@ -124,7 +124,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="concatenate_as_float32s-2">concatenate_as_float32s/2</a></h3>
 <div class="spec">
-<p><tt>concatenate_as_float32s(Floats::[float()], Bin::binary()) -&gt; binary()</tt><br></p>
+<p><code>concatenate_as_float32s(Floats::[float()], Bin::binary()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates the specified floats after (not before) the specified
  binary.
@@ -132,7 +132,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="concatenate_as_int32s-1">concatenate_as_int32s/1</a></h3>
 <div class="spec">
-<p><tt>concatenate_as_int32s(Ints::[integer()]) -&gt; binary()</tt><br></p>
+<p><code>concatenate_as_int32s(Ints::[integer()]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates the specified integers as 32-bit integers, based on the
  native endianess.
@@ -140,7 +140,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="concatenate_as_int32s-2">concatenate_as_int32s/2</a></h3>
 <div class="spec">
-<p><tt>concatenate_as_int32s(Ints::[integer()], Bin::binary()) -&gt; binary()</tt><br></p>
+<p><code>concatenate_as_int32s(Ints::[integer()], Bin::binary()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates the specified integers after (not before) the specified
  binary.
@@ -148,7 +148,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="concatenate_as_uint32s-1">concatenate_as_uint32s/1</a></h3>
 <div class="spec">
-<p><tt>concatenate_as_uint32s(Ints::[non_neg_integer()]) -&gt; binary()</tt><br></p>
+<p><code>concatenate_as_uint32s(Ints::[non_neg_integer()]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates the specified positive or null integers as 32-bit unsigned
  integers, based on the native endianess.
@@ -156,7 +156,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="concatenate_as_uint32s-2">concatenate_as_uint32s/2</a></h3>
 <div class="spec">
-<p><tt>concatenate_as_uint32s(UInts::[non_neg_integer()], Bin::binary()) -&gt; binary()</tt><br></p>
+<p><code>concatenate_as_uint32s(UInts::[non_neg_integer()], Bin::binary()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Concatenates the specified positive or null integers after (not before)
  the specified binary.
@@ -164,7 +164,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="create_binary-1">create_binary/1</a></h3>
 <div class="spec">
-<p><tt>create_binary(ByteCount::<a href="#type-byte_size">byte_size()</a>) -&gt; <a href="#type-buffer">buffer()</a></tt><br></p>
+<p><code>create_binary(ByteCount::<a href="#type-byte_size">byte_size()</a>) -&gt; <a href="#type-buffer">buffer()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a (binary) buffer of the specified size, containing only zeroes.</p>
 
@@ -174,13 +174,13 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="get_crc8_table-0">get_crc8_table/0</a></h3>
 <div class="spec">
-<p><tt>get_crc8_table() -&gt; tuple()</tt><br></p>
+<p><code>get_crc8_table() -&gt; tuple()</code><br></p>
 <p> </p>
 </div><p>Returns the table used to compute CRC8.</p>
 
 <h3 class="function"><a name="replicate-2">replicate/2</a></h3>
 <div class="spec">
-<p><tt>replicate(Bin::binary(), Count::<a href="#type-count">count()</a>) -&gt; binary()</tt><br></p>
+<p><code>replicate(Bin::binary(), Count::<a href="#type-count">count()</a>) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p>Returns the binary obtained when concatenating the specified binary the
  specified number of times.
@@ -188,7 +188,7 @@ arbitrary size, as 32-bit unsigned integers, based on the native endianess.</td>
 
 <h3 class="function"><a name="tuples_to_float32s_binary-1">tuples_to_float32s_binary/1</a></h3>
 <div class="spec">
-<p><tt>tuples_to_float32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(float())]) -&gt; binary()</tt><br></p>
+<p><code>tuples_to_float32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(float())]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Returns the binary obtained by serialising in-order all floats specified 
 as tuples of arbitrary size, as 32-bit floats, based on the native endianess.</p>
@@ -201,7 +201,7 @@ as tuples of arbitrary size, as 32-bit floats, based on the native endianess.</p
 
 <h3 class="function"><a name="tuples_to_float32s_binary-2">tuples_to_float32s_binary/2</a></h3>
 <div class="spec">
-<p><tt>tuples_to_float32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(float())], Bin::binary()) -&gt; binary()</tt><br></p>
+<p><code>tuples_to_float32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(float())], Bin::binary()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Returns the binary obtained by appending (on the right) to the specified 
 one the in-order serialisation of all floats specified as tuples of arbitrary 
@@ -216,7 +216,7 @@ Bin)</p>
 
 <h3 class="function"><a name="tuples_to_int32s_binary-1">tuples_to_int32s_binary/1</a></h3>
 <div class="spec">
-<p><tt>tuples_to_int32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(integer())]) -&gt; binary()</tt><br></p>
+<p><code>tuples_to_int32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(integer())]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Returns the binary obtained by serialising in-order all integers 
 specified as tuples of arbitrary size, as 32-bit signed integers, based on the 
@@ -227,7 +227,7 @@ native endianess.</p>
 
 <h3 class="function"><a name="tuples_to_int32s_binary-2">tuples_to_int32s_binary/2</a></h3>
 <div class="spec">
-<p><tt>tuples_to_int32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(integer())], Bin::binary()) -&gt; binary()</tt><br></p>
+<p><code>tuples_to_int32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(integer())], Bin::binary()) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Returns the binary obtained by appending (on the right) to the specified 
 one the in-order serialisation of all integers specified as tuples of 
@@ -238,7 +238,7 @@ arbitrary size, as 32-bit signed integers, based on the native endianess.</p>
 
 <h3 class="function"><a name="tuples_to_uint32s_binary-1">tuples_to_uint32s_binary/1</a></h3>
 <div class="spec">
-<p><tt>tuples_to_uint32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(non_neg_integer())]) -&gt; binary()</tt><br></p>
+<p><code>tuples_to_uint32s_binary(Tuples::[<a href="#type-tuple">tuple</a>(non_neg_integer())]) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Returns the binary obtained by serialising in-order all positive or null 
 integers specified as tuples of arbitrary size, as 32-bit unsigned integers, 
@@ -251,7 +251,7 @@ based on the native endianess.</p>
 
 <h3 class="function"><a name="tuples_to_uint32s_binary-2">tuples_to_uint32s_binary/2</a></h3>
 <div class="spec">
-<p><tt>tuples_to_uint32s_binary(Tuples, AccBin) -&gt; any()</tt></p>
+<p><code>tuples_to_uint32s_binary(Tuples, AccBin) -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Returns the binary obtained by appending (on the right) to the specified 
 one the in-order serialisation of all integers specified as tuples of 

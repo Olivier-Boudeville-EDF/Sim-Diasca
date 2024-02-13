@@ -69,7 +69,7 @@ between its first values and between its second ones.</p>
  with care, as if a given module is generated three times (hence updated/loaded
  twice), the initial module would become 'current', then 'old', and then be
  removed. Any process that would linger in it would then be terminated (see
- <a href="http://www.erlang.org/doc/reference_manual/code_loading.html" target="_top"><tt>http://www.erlang.org/doc/reference_manual/code_loading.html</tt></a>). However, due 
+ <a href="http://www.erlang.org/doc/reference_manual/code_loading.html" target="_top"><code>http://www.erlang.org/doc/reference_manual/code_loading.html</code></a>). However, due 
 to the nature of these modules (just one-shot fully-qualified calls, no 
 recursion or message-waiting construct), this is not expected to happen.</p>
 
@@ -82,15 +82,15 @@ recursion or message-waiting construct), this is not expected to happen.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-conversion_direction">conversion_direction()</a></h3>
-<p><tt>conversion_direction() = first_to_second | second_to_first | both</tt></p>
+<p><code>conversion_direction() = first_to_second | second_to_first | both</code></p>
 
 
 <h3 class="typedecl"><a name="type-element_lookup">element_lookup()</a></h3>
-<p><tt>element_lookup() = strict | maybe</tt></p>
+<p><code>element_lookup() = strict | maybe</code></p>
 <p><p> Returns 'undefined' if element not found 
 Tells how elements shall be looked up.</p>
 
@@ -99,23 +99,23 @@ Tells how elements shall be looked up.</p>
  ambiguity.</p>
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><tt>entries() = [<a href="#type-entry">entry()</a>]</tt></p>
+<p><code>entries() = [<a href="#type-entry">entry()</a>]</code></p>
 <p> Entries that can be fed to a const-bijective table.</p>
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><tt>entry() = {<a href="#type-first_type">first_type()</a>, <a href="#type-second_type">second_type()</a>}</tt></p>
+<p><code>entry() = {<a href="#type-first_type">first_type()</a>, <a href="#type-second_type">second_type()</a>}</code></p>
 <p> An entry to be fed to a const-bijective table.</p>
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-first_type">first_type()</a></h3>
-<p><tt>first_type() = <a href="#type-permanent_term">permanent_term()</a></tt></p>
+<p><code>first_type() = <a href="#type-permanent_term">permanent_term()</a></code></p>
 <p><p> Designates the first elements of the table pairs. 
 A module-based storage cannot hold transient terms.</p>
 
@@ -123,19 +123,19 @@ A module-based storage cannot hold transient terms.</p>
  that are the most internal / higher level.</p>
 
 <h3 class="typedecl"><a name="type-form">form()</a></h3>
-<p><tt>form() = <a href="ast_base.html#type-form">ast_base:form()</a></tt></p>
+<p><code>form() = <a href="ast_base.html#type-form">ast_base:form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-permanent_term">permanent_term()</a></h3>
-<p><tt>permanent_term() = <a href="type_utils.html#type-permanent_term">type_utils:permanent_term()</a></tt></p>
+<p><code>permanent_term() = <a href="type_utils.html#type-permanent_term">type_utils:permanent_term()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-second_type">second_type()</a></h3>
-<p><tt>second_type() = <a href="#type-permanent_term">permanent_term()</a></tt></p>
+<p><code>second_type() = <a href="#type-permanent_term">permanent_term()</a></code></p>
 <p><p> Designates the second elements of the table pairs. 
 A module-based storage cannot hold transient terms.</p>
 
@@ -143,7 +143,7 @@ A module-based storage cannot hold transient terms.</p>
  that are the most external / lower level.</p>
 
 <h3 class="typedecl"><a name="type-topic_name">topic_name()</a></h3>
-<p><tt>topic_name() = atom()</tt></p>
+<p><code>topic_name() = atom()</code></p>
 <p><p> A topic name, designating a specific table shared by a generated module. 
 Example of such topic names: colour, bar_identifier, font_style.</p>
 
@@ -151,7 +151,7 @@ Example of such topic names: colour, bar_identifier, font_style.</p>
  including spaces, dashes, etc.).</p>
 
 <h3 class="typedecl"><a name="type-topic_spec">topic_spec()</a></h3>
-<p><tt>topic_spec(_FirstType, _SecondType) = <a href="#type-topic_spec">topic_spec()</a></tt></p>
+<p><code>topic_spec(_FirstType, _SecondType) = <a href="#type-topic_spec">topic_spec()</a></code></p>
 <p><p> The specification of a topic: name, entries and type of element look-up.</p>
 
  <p>Types specified for clarity.</p>
@@ -159,7 +159,7 @@ Example of such topic names: colour, bar_identifier, font_style.</p>
  The 'strict' element look-up is the default one.</p>
 
 <h3 class="typedecl"><a name="type-topic_spec">topic_spec()</a></h3>
-<p><tt>topic_spec() = {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>} | {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>, <a href="#type-element_lookup">element_lookup()</a>} | {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>, <a href="#type-element_lookup">element_lookup()</a>, <a href="#type-conversion_direction">conversion_direction()</a>}</tt></p>
+<p><code>topic_spec() = {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>} | {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>, <a href="#type-element_lookup">element_lookup()</a>} | {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>, <a href="#type-element_lookup">element_lookup()</a>, <a href="#type-conversion_direction">conversion_direction()</a>}</code></p>
 <p><p> The specification of a topic: name, entries, type of element look-up and 
 supported direction(s) in terms of conversion.</p>
 
@@ -194,19 +194,19 @@ either element of the recorded pairs.</td></tr>
 
 <h3 class="function"><a name="generate_first_clauses-3">generate_first_clauses/3</a></h3>
 <div class="spec">
-<p><tt>generate_first_clauses(Entries, FileLoc, Acc) -&gt; any()</tt></p>
+<p><code>generate_first_clauses(Entries, FileLoc, Acc) -&gt; any()</code></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="generate_footer_form-1">generate_footer_form/1</a></h3>
 <div class="spec">
-<p><tt>generate_footer_form(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></tt><br></p>
+<p><code>generate_footer_form(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></code><br></p>
 <p> </p>
 </div><p>Returns suitable footer forms.</p>
 
 <h3 class="function"><a name="generate_forms-5">generate_forms/5</a></h3>
 <div class="spec">
-<p><tt>generate_forms(TopicName::<a href="#type-topic_name">topic_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>, ConversionDirection::<a href="#type-conversion_direction">conversion_direction()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; [<a href="#type-form">form()</a>]</tt><br></p>
+<p><code>generate_forms(TopicName::<a href="#type-topic_name">topic_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>, ConversionDirection::<a href="#type-conversion_direction">conversion_direction()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; [<a href="#type-form">form()</a>]</code><br></p>
 <p> </p>
 </div><p>Generates the forms corresponding to the specified first/second function
  names, entries and module, depending on the specified look-up.
@@ -214,7 +214,7 @@ either element of the recorded pairs.</td></tr>
 
 <h3 class="function"><a name="generate_header_form-2">generate_header_form/2</a></h3>
 <div class="spec">
-<p><tt>generate_header_form(ModuleName::<a href="#type-module_name">module_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></tt><br></p>
+<p><code>generate_header_form(ModuleName::<a href="#type-module_name">module_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></code><br></p>
 <p> </p>
 </div><p>Returns the header forms corresponding to the specified module, declared
  at the specified file location.
@@ -222,7 +222,7 @@ either element of the recorded pairs.</td></tr>
 
 <h3 class="function"><a name="generate_in_file-2">generate_in_file/2</a></h3>
 <div class="spec">
-<p><tt>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in-file (a BEAM file created in the current directory) a module 
 sharing the specified entries by exporting suitably-generated get_first_for/1 
@@ -239,7 +239,7 @@ recorded pairs.</p>
 
 <h3 class="function"><a name="generate_in_file-3">generate_in_file/3</a></h3>
 <div class="spec">
-<p><tt>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec">topic_spec()</a>], TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec">topic_spec()</a>], TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in-file (a BEAM file created in the specified directory) a 
 module sharing the specified entries by exporting suitably-generated 
@@ -256,7 +256,7 @@ element of the recorded pairs.</p>
 
 <h3 class="function"><a name="generate_in_memory-2">generate_in_memory/2</a></h3>
 <div class="spec">
-<p><tt>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec">topic_spec()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec">topic_spec()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates in memory (only) and loads a module sharing bijectively the 
 specified entries for the specified topic by exporting suitably-generated 
@@ -269,13 +269,13 @@ either element of the recorded pairs.</p>
 
 <h3 class="function"><a name="generate_second_clauses-3">generate_second_clauses/3</a></h3>
 <div class="spec">
-<p><tt>generate_second_clauses(Entries, FileLoc, Acc) -&gt; any()</tt></p>
+<p><code>generate_second_clauses(Entries, FileLoc, Acc) -&gt; any()</code></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="generate_strict_calling_clauses-4">generate_strict_calling_clauses/4</a></h3>
 <div class="spec">
-<p><tt>generate_strict_calling_clauses(ErrorAtom, MaybeFunName, TopicName, FileLoc) -&gt; any()</tt></p>
+<p><code>generate_strict_calling_clauses(ErrorAtom, MaybeFunName, TopicName, FileLoc) -&gt; any()</code></p>
 <p> </p>
 </div>
 <hr>

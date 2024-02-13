@@ -22,60 +22,60 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-canonical_matrix2">canonical_matrix2()</a></h3>
-<p><tt>canonical_matrix2() = #matrix2{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</tt></p>
+<p><code>canonical_matrix2() = #matrix2{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+<p><code>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
-<p><tt>dimension() = <a href="linear.html#type-dimension">linear:dimension()</a></tt></p>
+<p><code>dimension() = <a href="linear.html#type-dimension">linear:dimension()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><tt>dimensions() = <a href="matrix.html#type-dimensions">matrix:dimensions()</a></tt></p>
+<p><code>dimensions() = <a href="matrix.html#type-dimensions">matrix:dimensions()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix">matrix()</a></h3>
-<p><tt>matrix() = <a href="matrix.html#type-matrix">matrix:matrix()</a></tt></p>
+<p><code>matrix() = <a href="matrix.html#type-matrix">matrix:matrix()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix2">matrix2()</a></h3>
-<p><tt>matrix2() = identity_2 | <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt></p>
+<p><code>matrix2() = identity_2 | <a href="#type-canonical_matrix2">canonical_matrix2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+<p><code>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rot_matrix2">rot_matrix2()</a></h3>
-<p><tt>rot_matrix2() = <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt></p>
+<p><code>rot_matrix2() = <a href="#type-canonical_matrix2">canonical_matrix2()</a></code></p>
 <p> A matrix describing a 2D rotation.</p>
 
 <h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
-<p><tt>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></tt></p>
+<p><code>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_matrix">user_matrix()</a></h3>
-<p><tt>user_matrix() = <a href="matrix.html#type-user_matrix">matrix:user_matrix()</a></tt></p>
+<p><code>user_matrix() = <a href="matrix.html#type-user_matrix">matrix:user_matrix()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_matrix2">user_matrix2()</a></h3>
-<p><tt>user_matrix2() = <a href="#type-user_matrix">user_matrix()</a></tt></p>
+<p><code>user_matrix2() = <a href="#type-user_matrix">user_matrix()</a></code></p>
 <p> A matrix2 can be specified as a list of same-size rows (akin to a user
  arbitrary matrix) containing any kind of numerical coordinates.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
-<p><tt>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></tt></p>
+<p><code>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -125,13 +125,13 @@ about the origin of the specified angle with respect to the abscissa (X) axis.</
 
 <h3 class="function"><a name="add-2">add/2</a></h3>
 <div class="spec">
-<p><tt>add(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>add(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the sum of the two specified matrices: M = Ma + Mb.</p>
 
 <h3 class="function"><a name="apply-2">apply/2</a></h3>
 <div class="spec">
-<p><tt>apply(M::<a href="#type-matrix2">matrix2()</a>, V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p><code>apply(M::<a href="#type-matrix2">matrix2()</a>, V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a></code><br></p>
 <p> </p>
 </div><p><p>Applies (on the right) the specified vector V to the specified matrix M: 
 returns M.V.</p>
@@ -141,25 +141,25 @@ returns M.V.</p>
 
 <h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
 <div class="spec">
-<p><tt>are_equal(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; boolean()</tt><br></p>
+<p><code>are_equal(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the two specified (2x2) matrices are equal.</p>
 
 <h3 class="function"><a name="check-1">check/1</a></h3>
 <div class="spec">
-<p><tt>check(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>check(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Checks that the specified matrix is legit, and returns it.</p>
 
 <h3 class="function"><a name="column-2">column/2</a></h3>
 <div class="spec">
-<p><tt>column(ColumnCount::<a href="#type-dimension">dimension()</a>, Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p><code>column(ColumnCount::<a href="#type-dimension">dimension()</a>, Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-vector2">vector2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the specified column of the specified matrix.</p>
 
 <h3 class="function"><a name="comatrix-1">comatrix/1</a></h3>
 <div class="spec">
-<p><tt>comatrix(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>comatrix(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the comatrix of the specified matrix (that is the matrix of its
  cofactors).
@@ -167,13 +167,13 @@ returns M.V.</p>
 
 <h3 class="function"><a name="determinant-1">determinant/1</a></h3>
 <div class="spec">
-<p><tt>determinant(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-scalar">scalar()</a></tt><br></p>
+<p><code>determinant(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-scalar">scalar()</a></code><br></p>
 <p> </p>
 </div><p>Returns the determinant of the specified matrix.</p>
 
 <h3 class="function"><a name="dimension-0">dimension/0</a></h3>
 <div class="spec">
-<p><tt>dimension() -&gt; <a href="#type-dimension">dimension()</a></tt><br></p>
+<p><code>dimension() -&gt; <a href="#type-dimension">dimension()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the dimension of these matrices.</p>
 
@@ -182,7 +182,7 @@ returns M.V.</p>
 
 <h3 class="function"><a name="dimensions-0">dimensions/0</a></h3>
 <div class="spec">
-<p><tt>dimensions() -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p><code>dimensions() -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the dimensions of these matrices.</p>
 
@@ -191,7 +191,7 @@ returns M.V.</p>
 
 <h3 class="function"><a name="from_arbitrary-1">from_arbitrary/1</a></h3>
 <div class="spec">
-<p><tt>from_arbitrary(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>from_arbitrary(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the 2x2 matrix corresponding to the specified
  arbitrary-dimensioned matrix.
@@ -199,7 +199,7 @@ returns M.V.</p>
 
 <h3 class="function"><a name="from_columns-2">from_columns/2</a></h3>
 <div class="spec">
-<p><tt>from_columns(Va::<a href="#type-vector2">vector2()</a>, Vb::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt><br></p>
+<p><code>from_columns(Va::<a href="#type-vector2">vector2()</a>, Vb::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the 2x2 matrix whose columns correspond to the specified 2 2D 
 vectors.</p>
@@ -211,7 +211,7 @@ vectors.</p>
 
 <h3 class="function"><a name="from_coordinates-4">from_coordinates/4</a></h3>
 <div class="spec">
-<p><tt>from_coordinates(M11::<a href="#type-coordinate">coordinate()</a>, M12::<a href="#type-coordinate">coordinate()</a>, M21::<a href="#type-coordinate">coordinate()</a>, M22::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt><br></p>
+<p><code>from_coordinates(M11::<a href="#type-coordinate">coordinate()</a>, M12::<a href="#type-coordinate">coordinate()</a>, M21::<a href="#type-coordinate">coordinate()</a>, M22::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the (2x2, canonical) matrix whose (4) coordinates are the
  specified ones, as listed row after row.
@@ -219,7 +219,7 @@ vectors.</p>
 
 <h3 class="function"><a name="from_rows-2">from_rows/2</a></h3>
 <div class="spec">
-<p><tt>from_rows(Va::<a href="#type-vector2">vector2()</a>, Vb::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt><br></p>
+<p><code>from_rows(Va::<a href="#type-vector2">vector2()</a>, Vb::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the 2x2 matrix whose rows correspond to the specified 2 2D 
 vectors.</p>
@@ -231,46 +231,46 @@ vectors.</p>
 
 <h3 class="function"><a name="get_element-3">get_element/3</a></h3>
 <div class="spec">
-<p><tt>get_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-coordinate">coordinate()</a></tt><br></p>
+<p><code>get_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-coordinate">coordinate()</a></code><br></p>
 <p> </p>
 </div><p>Returns the element at specified row and column of the specified matrix.</p>
 
 <h3 class="function"><a name="identity-0">identity/0</a></h3>
 <div class="spec">
-<p><tt>identity() -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>identity() -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the identity (2x2) matrix.</p>
 
 <h3 class="function"><a name="inverse-1">inverse/1</a></h3>
 <div class="spec">
-<p><tt>inverse(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-matrix2">matrix2()</a>)</tt><br></p>
+<p><code>inverse(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-matrix2">matrix2()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the inverse of the specified matrix, if it is invertible (that is 
 iff its determinant is non-null), otherwise returns undefined.</p>
 
- Note: often the inverse can be obtained differently (ex: by applying reverse
- operations starting from identity) or computed differently (ex: by Gaussian
+ Note: often the inverse can be obtained differently (e.g. by applying reverse
+ operations starting from identity) or computed differently (e.g. by Gaussian
  elimination), or can be replaced by a mere lower–upper (LU) decomposition.
 </p>
 
 <h3 class="function"><a name="mult-1">mult/1</a></h3>
 <div class="spec">
-<p><tt>mult(T::[<a href="#type-matrix2">matrix2()</a>]) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>mult(T::[<a href="#type-matrix2">matrix2()</a>]) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p><p>Multiplies (in-order) the specified matrices.</p>
 
- Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
+ For example mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
 </p>
 
 <h3 class="function"><a name="mult-2">mult/2</a></h3>
 <div class="spec">
-<p><tt>mult(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>mult(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Multiplies the first matrix by the second one: returns Mc = Ma.Mb.</p>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><tt>new(UserMatrix::<a href="#type-user_matrix2">user_matrix2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt><br></p>
+<p><code>new(UserMatrix::<a href="#type-user_matrix2">user_matrix2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns a 2D (canonical) matrix corresponding to the user-specified
  matrix.
@@ -278,13 +278,13 @@ iff its determinant is non-null), otherwise returns undefined.</p>
 
 <h3 class="function"><a name="null-0">null/0</a></h3>
 <div class="spec">
-<p><tt>null() -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt><br></p>
+<p><code>null() -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the null (2x2) matrix.</p>
 
 <h3 class="function"><a name="rotation-1">rotation/1</a></h3>
 <div class="spec">
-<p><tt>rotation(RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-rot_matrix2">rot_matrix2()</a></tt><br></p>
+<p><code>rotation(RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-rot_matrix2">rot_matrix2()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the (2x2) matrix corresponding to a counterclockwise rotation 
 about the origin of the specified angle with respect to the abscissa (X) axis.</p>
@@ -298,19 +298,19 @@ determinant is 1.0.</p>
 
 <h3 class="function"><a name="row-2">row/2</a></h3>
 <div class="spec">
-<p><tt>row(RowCount::<a href="#type-dimension">dimension()</a>, Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p><code>row(RowCount::<a href="#type-dimension">dimension()</a>, Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-vector2">vector2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the specified row of the specified matrix.</p>
 
 <h3 class="function"><a name="scale-2">scale/2</a></h3>
 <div class="spec">
-<p><tt>scale(Matrix2::<a href="#type-matrix2">matrix2()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>scale(Matrix2::<a href="#type-matrix2">matrix2()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Scales specified (2D) matrix of the specified factor.</p>
 
 <h3 class="function"><a name="set_element-4">set_element/4</a></h3>
 <div class="spec">
-<p><tt>set_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Value::<a href="#type-coordinate">coordinate()</a>, Matrix::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>set_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Value::<a href="#type-coordinate">coordinate()</a>, Matrix::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns a matrix identical to the specified one except that its specified
  element at specified location has been set to the specified value.
@@ -318,13 +318,13 @@ determinant is 1.0.</p>
 
 <h3 class="function"><a name="sub-2">sub/2</a></h3>
 <div class="spec">
-<p><tt>sub(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>sub(Ma::<a href="#type-matrix2">matrix2()</a>, Mb::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the subtraction of the two specified matrices: M = Ma - Mb.</p>
 
 <h3 class="function"><a name="to_arbitrary-1">to_arbitrary/1</a></h3>
 <div class="spec">
-<p><tt>to_arbitrary(Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p><code>to_arbitrary(Matrix2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix">matrix()</a></code><br></p>
 <p> </p>
 </div><p>Returns the arbitrary-dimensioned matrix corresponding to the specified
  2x2 matrix.
@@ -332,19 +332,19 @@ determinant is 1.0.</p>
 
 <h3 class="function"><a name="to_canonical-1">to_canonical/1</a></h3>
 <div class="spec">
-<p><tt>to_canonical(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></tt><br></p>
+<p><code>to_canonical(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-canonical_matrix2">canonical_matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the canonical form of the specified 2x2 matrix.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Matrix::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Matrix::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified (2x2) matrix.</p>
 
 <h3 class="function"><a name="transpose-1">transpose/1</a></h3>
 <div class="spec">
-<p><tt>transpose(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p><code>transpose(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-matrix2">matrix2()</a></code><br></p>
 <p> </p>
 </div><p>Returns the transpose of the specified matrix.</p>
 <hr>

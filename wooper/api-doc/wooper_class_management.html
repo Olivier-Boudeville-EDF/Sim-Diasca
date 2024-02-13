@@ -20,11 +20,11 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-class_info">class_info()</a></h3>
-<p><tt>class_info() = <a href="wooper_info.html#type-class_info">wooper_info:class_info()</a></tt></p>
+<p><code>class_info() = <a href="wooper_info.html#type-class_info">wooper_info:class_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_entry">module_entry()</a></h3>
-<p><tt>module_entry() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>({<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, <a href="ast_info.html#type-located_form">ast_info:located_form()</a>})</tt></p>
+<p><code>module_entry() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>({<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, <a href="ast_info.html#type-located_form">ast_info:located_form()</a>})</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -38,19 +38,19 @@
 
 <h3 class="function"><a name="check_classname-1">check_classname/1</a></h3>
 <div class="spec">
-<p><tt>check_classname(Name::any()) -&gt; atom()</tt><br></p>
+<p><code>check_classname(Name::any()) -&gt; atom()</code><br></p>
 <p> </p>
 </div><p>Ensures that specified name is a legit class name, and returns it.</p>
 
 <h3 class="function"><a name="manage_classname-2">manage_classname/2</a></h3>
 <div class="spec">
-<p><tt>manage_classname(ModuleEntry::<a href="#type-module_entry">module_entry()</a>, ClassInfo::<a href="#type-class_info">class_info()</a>) -&gt; <a href="#type-class_info">class_info()</a></tt><br></p>
+<p><code>manage_classname(ModuleEntry::<a href="#type-module_entry">module_entry()</a>, ClassInfo::<a href="#type-class_info">class_info()</a>) -&gt; <a href="#type-class_info">class_info()</a></code><br></p>
 <p> </p>
 </div><p>Registers the corresponding classname into specified class information.</p>
 
 <h3 class="function"><a name="manage_superclasses-1">manage_superclasses/1</a></h3>
 <div class="spec">
-<p><tt>manage_superclasses(ClassInfo::<a href="#type-class_info">class_info()</a>) -&gt; <a href="#type-class_info">class_info()</a></tt><br></p>
+<p><code>manage_superclasses(ClassInfo::<a href="#type-class_info">class_info()</a>) -&gt; <a href="#type-class_info">class_info()</a></code><br></p>
 <p> </p>
 </div><p>Registers the declared superclasses (if any) into specified class
  information.

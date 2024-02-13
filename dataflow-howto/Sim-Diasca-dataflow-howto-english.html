@@ -23,7 +23,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2016-2023 EDF R&amp;D</td>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2016-2024 EDF R&amp;D</td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body">olivier (dot) boudeville (at) edf (dot) fr</td>
 </tr>
@@ -31,9 +31,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body">Thursday, February 25, 2016</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, September 28, 2023</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, February 13, 2024</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.6</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.7</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -208,7 +208,7 @@
 <p>Dataflows of course have an immediate graphical counterpart. The conventional symbols we elected are represented in this key:</p>
 <p><span class="raw-html"><center><img src="dataflow-legend.png" id="responsive-image-intermediate"></img></center></span>
 </p>
-<p>By convention, input ports are in orange, output ports in green, dataflow objects in light purple, dataflow units (ex: processing or mock-up ones) are in light blue and comprise the symbol of their activation policy, and channels are in various shades of blue <a class="footnote-reference" href="#id2" id="id1">[1]</a>.</p>
+<p>By convention, input ports are in orange, output ports in green, dataflow objects in light purple, dataflow units (e.g. processing or mock-up ones) are in light blue and comprise the symbol of their activation policy, and channels are in various shades of blue <a class="footnote-reference" href="#id2" id="id1">[1]</a>.</p>
 <table class="docutils footnote" frame="void" id="id2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -223,9 +223,9 @@
 S:<span class="s1">'http://foobar.org/urban/1.1/energy/demand'</span>
 </pre>
 <ul class="simple">
-<li>the <em>Unit</em> of the value, prefixed with <tt class="docutils literal">&quot;U:&quot;</tt> (ex: <tt class="docutils literal">&quot;U: kW.h&quot;</tt>, or <tt class="docutils literal">&quot;U: <span class="pre">g/Gmol.s^-2&quot;</span></tt>); often the unit information implies a type (described in next point): for example the unit <tt class="docutils literal">&quot;U: W&quot;</tt> implies the type <tt class="docutils literal">&quot;T: float&quot;</tt>; in this case the type information can be safely omitted</li>
-<li>the <em>Type</em> of the values conveyed by the channel, prefixed with <tt class="docutils literal">&quot;T:&quot;</tt> (ex: <tt class="docutils literal">&quot;T: string&quot;</tt> or <tt class="docutils literal">&quot;T: {integer,boolean}&quot;</tt>)</li>
-<li>the <em>Constraints</em> (if any) applying to the exchanged value, as a list of elementary constraints (ex: <tt class="docutils literal">&quot;C: [ <span class="pre">{between,{2.0,8.0}}</span> ]&quot;</tt> means that a single constraint applies to the exchanged values, which is that they must be between 2 and 8)</li>
+<li>the <em>Unit</em> of the value, prefixed with <tt class="docutils literal">&quot;U:&quot;</tt> (e.g. <tt class="docutils literal">&quot;U: kW.h&quot;</tt>, or <tt class="docutils literal">&quot;U: <span class="pre">g/Gmol.s^-2&quot;</span></tt>); often the unit information implies a type (described in next point): for example the unit <tt class="docutils literal">&quot;U: W&quot;</tt> implies the type <tt class="docutils literal">&quot;T: float&quot;</tt>; in this case the type information can be safely omitted</li>
+<li>the <em>Type</em> of the values conveyed by the channel, prefixed with <tt class="docutils literal">&quot;T:&quot;</tt> (e.g. <tt class="docutils literal">&quot;T: string&quot;</tt> or <tt class="docutils literal">&quot;T: {integer,boolean}&quot;</tt>)</li>
+<li>the <em>Constraints</em> (if any) applying to the exchanged value, as a list of elementary constraints (e.g. <tt class="docutils literal">&quot;C: [ <span class="pre">{between,{2.0,8.0}}</span> ]&quot;</tt> means that a single constraint applies to the exchanged values, which is that they must be between 2 and 8)</li>
 </ul>
 <p>These <tt class="docutils literal">SUTC</tt> information shall preferably be specified close to the associated channel (if any) or output port.</p>
 <p>Unit activation, semantics, units, types and constraints are discussed more in-depth later in this document.</p>
@@ -249,7 +249,7 @@ S:<span class="s1">'http://foobar.org/urban/1.1/energy/demand'</span>
 <p>As mentioned, a dataflow is a <em>graph of computations whose evaluation is driven by the availability of the data they are to handle.</em></p>
 <p>In practice, it is a set of interlinked dataflow blocks, typically <a class="reference internal" href="#dataflow-processing-units">dataflow processing units</a> and <a class="reference internal" href="#dataflow-objects">dataflow objects</a>.</p>
 <p>Even though dataflows could remain only implicit data-structures (they would just correspond to an actual set of interlinked dataflow elements), we preferred introducing an actual <strong>dataflow class</strong>, in order to ease the interaction with such instances and provide a reference point.</p>
-<p>So overall operations on a given dataflow (ex: creations, modifications, report inquiries) shall be operated only through its corresponding federating <tt class="docutils literal">class_Dataflow</tt> instance.</p>
+<p>So overall operations on a given dataflow (e.g. creations, modifications, report inquiries) shall be operated only through its corresponding federating <tt class="docutils literal">class_Dataflow</tt> instance.</p>
 <p>Multiple dataflow instances may exist, and they are collectively managed by the overall <a class="reference internal" href="#experiment-manager">experiment manager</a>, introduced later in this document.</p>
 </div>
 <div class="section" id="experiment-definition">
@@ -284,8 +284,8 @@ S:<span class="s1">'http://foobar.org/urban/1.1/energy/demand'</span>
 <p>Following rules apply:</p>
 <ul class="simple">
 <li>a port is either an <strong>input</strong> one (listening to the update of a value conveyed by the corresponding channel) or an <strong>output</strong> one (able to update its corresponding value and notify its registered input listeners); this is reflected by their type (either <tt class="docutils literal">input_port</tt> or <tt class="docutils literal">output_port</tt>)</li>
-<li>each port is <strong>named</strong> (as a non-empty string <a class="footnote-reference" href="#id9" id="id5">[3]</a>, ex: <tt class="docutils literal">&quot;my foobar port&quot;</tt>) and no two input ports of a block can bear the same name, nor output ones can (however an input port and an output port of the same block <em>can</em> have the same name - they will be differentiated by their nature)</li>
-<li>a <strong>port identifier</strong> is defined from a pair made of an identifier of the block that defined it and from the name of that port <a class="footnote-reference" href="#id10" id="id6">[4]</a> (ex: it could be <tt class="docutils literal">(&quot;My <span class="pre">Unit&quot;,&quot;Port</span> 24&quot;)</tt>, or based on more technical identifiers)</li>
+<li>each port is <strong>named</strong> (as a non-empty string <a class="footnote-reference" href="#id9" id="id5">[3]</a>, e.g. <tt class="docutils literal">&quot;my foobar port&quot;</tt>) and no two input ports of a block can bear the same name, nor output ones can (however an input port and an output port of the same block <em>can</em> have the same name - they will be differentiated by their nature)</li>
+<li>a <strong>port identifier</strong> is defined from a pair made of an identifier of the block that defined it and from the name of that port <a class="footnote-reference" href="#id10" id="id6">[4]</a> (e.g. it could be <tt class="docutils literal">(&quot;My <span class="pre">Unit&quot;,&quot;Port</span> 24&quot;)</tt>, or based on more technical identifiers)</li>
 <li>a port (input or output) may either hold a value (arbitrary data can be set; the port is then considered as ready, i.e. as <tt class="docutils literal">set</tt>), or not - in which case it holds the <tt class="docutils literal">unset</tt> symbol (the port is then itself considered as <tt class="docutils literal">unset</tt>)</li>
 <li>an <strong>output</strong> port can be considered as being always unset: as soon as a new value is available, it notifies all its connected input ports and then reverts back to the unset status; therefore the set/unset status can be abstracted out for output ports, which just get punctually activated</li>
 <li>conversely, this status matters for <strong>input</strong> ports: a block starts with all its input ports to <tt class="docutils literal">unset</tt>, and, each time an input port is notified by an output port, this input port switches to <tt class="docutils literal">set</tt>; how a block is to react depending on none, one, some or all of its input ports being set is discussed below</li>
@@ -294,7 +294,7 @@ S:<span class="s1">'http://foobar.org/urban/1.1/energy/demand'</span>
 <li>it gets <strong>connected</strong> (i.e. a channel is created from this output port to an input port) <em>whereas this output port has already been set at least once in the past</em>; then, on channel creation, the latest value it sent will be re-emitted, only to the newly connected input port</li>
 </ul>
 </li>
-<li>ports can convey arbitrary data (i.e. any Erlang term), yet any given port has a <strong>type</strong>, which defines what are the licit the values that it can hold (ex: &quot;this port can be set to any pair of non-negative floats&quot;) <a class="footnote-reference" href="#id11" id="id7">[5]</a></li>
+<li>ports can convey arbitrary data (i.e. any Erlang term), yet any given port has a <strong>type</strong>, which defines what are the licit the values that it can hold (e.g. &quot;this port can be set to any pair of non-negative floats&quot;) <a class="footnote-reference" href="#id11" id="id7">[5]</a></li>
 <li><strong>a block can declare any number of output ports</strong> (possibly none, in which case it is an <em>exit block</em>, a sink)</li>
 <li><strong>a block can declare any number of input ports</strong> (possibly none, in which case it is an <em>entry block</em>, a source)</li>
 <li><strong>a channel links exactly one output port to one input port</strong>, and these two ports shall have the same types, units and semantics (which are the ones of the channel)</li>
@@ -338,7 +338,7 @@ S:<span class="s1">'http://foobar.org/urban/1.1/energy/demand'</span>
 <h2><a class="toc-backref" href="#id96">Type of a Value</a></h2>
 <div class="section" id="type-basics">
 <h3>Type Basics</h3>
-<p>A channel is <strong>typed</strong>, in the sense that all the values that it conveys shall be of the same type (in terms of programming language; ex: a floating-point value), which is the one specified for the channel. The <tt class="docutils literal">T</tt> in <tt class="docutils literal">SUTC</tt> stands for this <em>type</em> information.</p>
+<p>A channel is <strong>typed</strong>, in the sense that all the values that it conveys shall be of the same type (in terms of programming language; e.g. a floating-point value), which is the one specified for the channel. The <tt class="docutils literal">T</tt> in <tt class="docutils literal">SUTC</tt> stands for this <em>type</em> information.</p>
 <p>The <em>name</em> of a type must be a series of alphanumerical characters, in lowercase, starting with an alphabetical one, and possibly containing underscore (<tt class="docutils literal">_</tt>) characters; example of a type name: <tt class="docutils literal">integer</tt> or <tt class="docutils literal">this_is_my_type_name_221</tt>.</p>
 <p>The complete type specification in a dataflow (typically used to describe a port) shall be prefixed with <tt class="docutils literal">&quot;T:&quot;</tt> (for example <tt class="docutils literal">&quot;T: integer&quot;</tt> would mean that the corresponding port handles values of type <tt class="docutils literal">integer</tt>).</p>
 <p>In the absence of <em>unit</em> information (see next section), the <em>type</em> information is mandatory and must be specified by both port endpoints. It may or may not be checked, at build and/or run time.</p>
@@ -420,7 +420,7 @@ be performed in this case).</td>
 <table class="docutils footnote" frame="void" id="id15" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id13">[7]</a></td><td>Note that some types overlap, notably some of them are special cases of others, like integers and numbers. So, for a given value, multiple type specifications apply (ex: <tt class="docutils literal">any</tt> will always match).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id13">[7]</a></td><td>Note that some types overlap, notably some of them are special cases of others, like integers and numbers. So, for a given value, multiple type specifications apply (e.g. <tt class="docutils literal">any</tt> will always match).</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id16" rules="none">
@@ -432,7 +432,7 @@ be performed in this case).</td>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Indiscriminate use of the <tt class="docutils literal">any</tt> type is strictly prohibited;
-typically it should <em>never</em> be used operationally (ex: when defining
+typically it should <em>never</em> be used operationally (e.g. when defining
 actual ports), as it would then be a way of bypassing the type system.</p>
 <p class="last">For advanced users: the main use of <tt class="docutils literal">any</tt> lies in the very specific context of &quot;polymorphic units&quot;, i.e. units that may be able to process values of all kinds of types.</p>
 </div>
@@ -442,8 +442,8 @@ actual ports), as it would then be a way of bypassing the type system.</p>
 <p>These types are not built-in, they are to be specifically derived (possibly by the user directly) from other types (which themselves may be built-in or derived).</p>
 <div class="section" id="type-definition">
 <h4>Type Definition</h4>
-<p>Often, a new type definition has to be used in several occurrences (ex: when having different ports that happen to rely on the same type). Rather than repeating the same type definition each time, we recommend that, as soon as a type definition is used more than once for the same purpose, a (derived) type is defined from it and named one time for all - and then referred to as often as needed.</p>
-<p>Indeed, being (new) types, derived types have their own name (ex:  <tt class="docutils literal">my_own_type</tt>), knowing that the names of all built-in types are reserved.</p>
+<p>Often, a new type definition has to be used in several occurrences (e.g. when having different ports that happen to rely on the same type). Rather than repeating the same type definition each time, we recommend that, as soon as a type definition is used more than once for the same purpose, a (derived) type is defined from it and named one time for all - and then referred to as often as needed.</p>
+<p>Indeed, being (new) types, derived types have their own name (e.g.  <tt class="docutils literal">my_own_type</tt>), knowing that the names of all built-in types are reserved.</p>
 <p>So, in order to define a derived type named <tt class="docutils literal">my_own_type</tt> according to any kind of definition (designated here by <tt class="docutils literal">A_TYPE_DEFINITION</tt>), the following syntax shall be used:</p>
 <pre class="literal-block">
 my_own_type :: A_TYPE_DEFINITION
@@ -490,18 +490,18 @@ vehicle_count :: integer
 <p>Finally, in addition to all the atomic types (built-in or derived) presented above, following built-in <strong>polymorphic types</strong> (types that depend on others) are supported as well:</p>
 <ul class="simple">
 <li><em>list</em> of type <tt class="docutils literal">T</tt>, noted as <tt class="docutils literal">list(T)</tt> or <tt class="docutils literal">[T]</tt>: any kind of (proper, homogeneous) list (empty or not), represented between square brackets, to account for a variable-size sequential container containing values of type <tt class="docutils literal">T</tt><ul>
-<li>ex: <tt class="docutils literal">list(integer)</tt> and <tt class="docutils literal">[integer]</tt> denote the same type, a list containing any number of integers; values of that type can thus be: <tt class="docutils literal"><span class="pre">[4,-17]</span></tt>, <tt class="docutils literal">[]</tt>, etc.</li>
+<li>e.g. <tt class="docutils literal">list(integer)</tt> and <tt class="docutils literal">[integer]</tt> denote the same type, a list containing any number of integers; values of that type can thus be: <tt class="docutils literal"><span class="pre">[4,-17]</span></tt>, <tt class="docutils literal">[]</tt>, etc.</li>
 <li><tt class="docutils literal">list()</tt> refers to any kind of list (alias of <tt class="docutils literal">list(any)</tt>)</li>
 </ul>
 </li>
 <li><em>tuple</em> containing elements of types T1, T2, T3, etc., noted as <tt class="docutils literal"><span class="pre">{T1,T2,T3,...}</span></tt>: any kind of tuple (fixed-size container, homogeneous or not), delimited by curly braces<ul>
-<li>ex: a value of the  <tt class="docutils literal"><span class="pre">{burner_status,float,[bool]}</span></tt> type might be <tt class="docutils literal"><span class="pre">{'burner_on_operation',14.7,['false','false']}</span></tt></li>
-<li><tt class="docutils literal">tuple(T)</tt> refers to tuples whose elements are all of type <tt class="docutils literal">T</tt>, and whose number is not specified (ex: <tt class="docutils literal">{2,46,5}</tt> is of type <tt class="docutils literal">tuple(integer)</tt>), while <tt class="docutils literal">tuple()</tt> refers to any kind of tuple</li>
+<li>e.g. a value of the  <tt class="docutils literal"><span class="pre">{burner_status,float,[bool]}</span></tt> type might be <tt class="docutils literal"><span class="pre">{'burner_on_operation',14.7,['false','false']}</span></tt></li>
+<li><tt class="docutils literal">tuple(T)</tt> refers to tuples whose elements are all of type <tt class="docutils literal">T</tt>, and whose number is not specified (e.g. <tt class="docutils literal">{2,46,5}</tt> is of type <tt class="docutils literal">tuple(integer)</tt>), while <tt class="docutils literal">tuple()</tt> refers to any kind of tuple</li>
 </ul>
 </li>
 <li>in later versions: <em>associative tables</em>, whose keys are of type <tt class="docutils literal">Tk</tt> and values are of type <tt class="docutils literal">Tv</tt>, noted as <tt class="docutils literal">table(Tk,Tv)</tt></li>
 </ul>
-<p>Note that <em>recursive</em> types (ex: a type <tt class="docutils literal">tree</tt> being defined as <tt class="docutils literal">{tree,tree,node_content}</tt>), are, at least currently, not allowed (they can be expressed yet no specific support for them is provided).</p>
+<p>Note that <em>recursive</em> types (e.g. a type <tt class="docutils literal">tree</tt> being defined as <tt class="docutils literal">{tree,tree,node_content}</tt>), are, at least currently, not allowed (they can be expressed yet no specific support for them is provided).</p>
 </div>
 <div class="section" id="implementation-wise">
 <h3>Implementation-wise</h3>
@@ -520,7 +520,7 @@ vehicle_count :: integer
 <tr><td class="label"><a class="fn-backref" href="#id19">[10]</a></td><td>Please refer to the <em>Description of the Management of Units</em> section, in the technical manual of the Myriad layer (in <tt class="docutils literal"><span class="pre">Ceylan-Myriad-Layer-technical-manual-english.pdf</span></tt>).</td></tr>
 </tbody>
 </table>
-<p>In a dataflow, the unit of the values that will be held by a port shall preferably be specified when declaring that port. This is done thanks to a string, prefixed with <tt class="docutils literal">&quot;U:&quot;</tt> (ex: <tt class="docutils literal">&quot;U: kW.h&quot;</tt>, <tt class="docutils literal">&quot;U: <span class="pre">g/Gmol.s^-2&quot;</span></tt> or <tt class="docutils literal">&quot;U: {mm,mm,mm}&quot;</tt> for a 3D vector in millimeters).</p>
+<p>In a dataflow, the unit of the values that will be held by a port shall preferably be specified when declaring that port. This is done thanks to a string, prefixed with <tt class="docutils literal">&quot;U:&quot;</tt> (e.g. <tt class="docutils literal">&quot;U: kW.h&quot;</tt>, <tt class="docutils literal">&quot;U: <span class="pre">g/Gmol.s^-2&quot;</span></tt> or <tt class="docutils literal">&quot;U: {mm,mm,mm}&quot;</tt> for a 3D vector in millimeters).</p>
 <p>Specifying the unit of a scalar value implies declaring its type as <tt class="docutils literal">float</tt>.</p>
 <p>If, for a value, no unit is given, then its type, as discussed in <a class="reference internal" href="#type-of-a-value">Type of a Value</a>, shall be specified.</p>
 </div>
@@ -530,7 +530,7 @@ vehicle_count :: integer
 <p>For example, knowing that a port accepts floating-point values in kilojoules does not tell whether this value corresponds to an energy demand, an actual consumption or a production.</p>
 <p>Therefore this domain-specific information shall be specified separately. It is to be done thanks to the specification of a symbol (similar to a string, corresponding to an Erlang atom), prefixed with <tt class="docutils literal">&quot;S:&quot;</tt>, standing for <strong>semantics</strong> (which is the <tt class="docutils literal">S</tt> in <tt class="docutils literal">SUTC</tt>). For example: <tt class="docutils literal">&quot;S: 'security credentials'&quot;</tt> or <tt class="docutils literal">&quot;S: 'energy_demand'&quot;</tt>.</p>
 <p>We recommend that semantics are specified according to a well-defined, standard format: <a class="reference external" href="https://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a> (standing for <em>Resource Description Framework</em>).</p>
-<p>RDF statements (potentially expressed as RDF triples) about subjects (ex: a block or a port) clarify the intents (made them explicit and expressed in an uniform way) and may allow the use of tools able to perform queries and inference. This may enable, in the future, the automatic checking and even generation of proper dataflows.</p>
+<p>RDF statements (potentially expressed as RDF triples) about subjects (e.g. a block or a port) clarify the intents (made them explicit and expressed in an uniform way) and may allow the use of tools able to perform queries and inference. This may enable, in the future, the automatic checking and even generation of proper dataflows.</p>
 <p>Typically a port semantics is then a <em>subject</em> in RDF parlance, like in:</p>
 <pre class="code bash literal-block">
 S:<span class="s1">'http://foobar.org/urban/1.1/energy/demand'</span>
@@ -552,7 +552,7 @@ S:<span class="s1">'http://foobar.org/urban/1.1/energy/demand'</span>
 <p>They allow to specify a set of rules by which the value must abide.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Unlike most of the other meta-data (ex: semantics or type), constraints are not considered as being intrinsic to a value; they are generally seen as a property (on values) that is enforced at the port level.</p>
+<p class="last">Unlike most of the other meta-data (e.g. semantics or type), constraints are not considered as being intrinsic to a value; they are generally seen as a property (on values) that is enforced at the port level.</p>
 </div>
 <p>The following constraints can be mixed and matched:</p>
 <ul class="simple">
@@ -572,17 +572,17 @@ C: <span class="o">[</span> <span class="o">{</span>between,2020,2040<span class
 </pre>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>As mentioned, for all numerical comparisons (ex: <tt class="docutils literal">greater_than</tt>), the value of interest is expected to be a (scalar) number.</p>
-<p class="last">Otherwise (ex: the value is a triplet, or the value is not a number), the associated constraint is considered as <em>not</em> satisfied.</p>
+<p>As mentioned, for all numerical comparisons (e.g. <tt class="docutils literal">greater_than</tt>), the value of interest is expected to be a (scalar) number.</p>
+<p class="last">Otherwise (e.g. the value is a triplet, or the value is not a number), the associated constraint is considered as <em>not</em> satisfied.</p>
 </div>
 <p>All constraints have to apply (as if they were associated by <tt class="docutils literal">AND</tt> operators). The previous example would thus allow only two possible values, <tt class="docutils literal">2021</tt> and <tt class="docutils literal">2030</tt>.</p>
 <p>Various additional kinds of constraints may be supported, based on encountered needs.</p>
-<p>Constraints are currently parametrised by <em>constants</em> (ex: <tt class="docutils literal">{greather_than,10.0}</tt>); maybe in the future they could also accept <em>references</em> onto other local ports (ex: to compare their values or base some constraints on operations, like <tt class="docutils literal">sum</tt>, performed on their values).</p>
+<p>Constraints are currently parametrised by <em>constants</em> (e.g. <tt class="docutils literal">{greather_than,10.0}</tt>); maybe in the future they could also accept <em>references</em> onto other local ports (e.g. to compare their values or base some constraints on operations, like <tt class="docutils literal">sum</tt>, performed on their values).</p>
 </div>
 <div class="section" id="accuracy-of-a-value">
 <h2><a class="toc-backref" href="#id100">Accuracy of a Value</a></h2>
 <p>This may be the next value-level metadata to be handled by the dataflow infrastructure.</p>
-<p>Depending on various factors like data quality and numerical errors (ex: floating-point rounding), the computed values might show a good precision and many digits, yet a poor <a class="reference external" href="https://en.wikipedia.org/wiki/Accuracy_and_precision">accuracy</a>.</p>
+<p>Depending on various factors like data quality and numerical errors (e.g. floating-point rounding), the computed values might show a good precision and many digits, yet a poor <a class="reference external" href="https://en.wikipedia.org/wiki/Accuracy_and_precision">accuracy</a>.</p>
 <p>The first step to prevent it is to measure how accurate a computation is. This can be evaluated thanks to <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html#689">relative error and ulps</a> (for <em>units in the last place</em>).</p>
 <p>So an accuracy may be associated to each value exchanged over the dataflow, and it may then be updated by each processing unit relying on it.</p>
 <p>By default accuracy is best measured in terms of relative error, as, if ulps are the most natural way to measure rounding error, they are less suitable to analyse the error caused by various formulas.</p>
@@ -692,15 +692,15 @@ C: <span class="o">[</span> <span class="o">{</span>between,2020,2040<span class
 <span id="model-assemblies"></span><h1><a class="toc-backref" href="#id107">On Model Assemblies</a></h1>
 <div class="section" id="defining-the-notion-of-assembly">
 <h2><a class="toc-backref" href="#id108">Defining the Notion of Assembly</a></h2>
-<p>As seen already, within simulations, the target system (ex: a city) is translated into a set of instances of dataflow objects of various types (ex: <tt class="docutils literal">Building</tt>, <tt class="docutils literal">Household</tt>, etc.), on which models - themselves made of a set of instances of processing units of various types (ex: <tt class="docutils literal">EnergyDemand</tt>, <tt class="docutils literal">PollutionExhausted</tt>, etc.), complemented with at least one unit manager - are to operate.</p>
+<p>As seen already, within simulations, the target system (e.g. a city) is translated into a set of instances of dataflow objects of various types (e.g. <tt class="docutils literal">Building</tt>, <tt class="docutils literal">Household</tt>, etc.), on which models - themselves made of a set of instances of processing units of various types (e.g. <tt class="docutils literal">EnergyDemand</tt>, <tt class="docutils literal">PollutionExhausted</tt>, etc.), complemented with at least one unit manager - are to operate.</p>
 <p>The (generally interconnected) set of models involved into a single simulation is named a <strong>model assembly</strong>.</p>
 <p>Assemblies may comprise any number of models: generally at least one, most often multiple ones, since the purpose of this dataflow approach is to perform model coupling.</p>
-<p>Let's from now adopt the convention that a <em>model name</em> is a series of alphanumerical characters (ex: <tt class="docutils literal">FoobarBazv2</tt>) and that its <em>canonical name</em> is the lowercase version of it (ex: <tt class="docutils literal">foobarbazv2</tt>).</p>
+<p>Let's from now adopt the convention that a <em>model name</em> is a series of alphanumerical characters (e.g. <tt class="docutils literal">FoobarBazv2</tt>) and that its <em>canonical name</em> is the lowercase version of it (e.g. <tt class="docutils literal">foobarbazv2</tt>).</p>
 </div>
 <div class="section" id="ad-hoc-assemblies">
 <h2><a class="toc-backref" href="#id109">Ad-hoc Assemblies</a></h2>
-<p>One option is that a <tt class="docutils literal">FoobarBazv2</tt> model is <em>directly</em> integrated in a dataflow thanks to an ad-hoc simulation case for a target assembly, a case whose name could be freely chosen (ex: <tt class="docutils literal">my_foobarbazv2_case.erl</tt>).</p>
-<p>Then, in this simulation case (accounting for the corresponding assembly), all relevant <tt class="docutils literal">FoobarBazv2</tt>-specific settings would have to be directly specified (ex: the elements to deploy for it, the unit managers it is to rely on, etc.); note that these model-specific information would be somewhat hardcoded there.</p>
+<p>One option is that a <tt class="docutils literal">FoobarBazv2</tt> model is <em>directly</em> integrated in a dataflow thanks to an ad-hoc simulation case for a target assembly, a case whose name could be freely chosen (e.g. <tt class="docutils literal">my_foobarbazv2_case.erl</tt>).</p>
+<p>Then, in this simulation case (accounting for the corresponding assembly), all relevant <tt class="docutils literal">FoobarBazv2</tt>-specific settings would have to be directly specified (e.g. the elements to deploy for it, the unit managers it is to rely on, etc.); note that these model-specific information would be somewhat hardcoded there.</p>
 </div>
 <div class="section" id="dynamic-composable-assemblies">
 <h2><a class="toc-backref" href="#id110">Dynamic, Composable Assemblies</a></h2>
@@ -726,7 +726,7 @@ We preferred this format over JSON as the scope of these information is strictly
 </tbody>
 </table>
 <p>Defining the needs of a model as such enables the definition and use of dynamic assemblies, that can be freely be mixed and matched.</p>
-<p>Indeed, should all the models of interest have their configuration file available, defining an assembly would just boil down to specify the names of the models it comprises (ex: <tt class="docutils literal">FoobarBazv2</tt>, <tt class="docutils literal">ACME</tt> and <tt class="docutils literal">ComputeShading</tt>; that's it).</p>
+<p>Indeed, should all the models of interest have their configuration file available, defining an assembly would just boil down to specify the names of the models it comprises (e.g. <tt class="docutils literal">FoobarBazv2</tt>, <tt class="docutils literal">ACME</tt> and <tt class="docutils literal">ComputeShading</tt>; that's it).</p>
 </div>
 <div class="section" id="envisioned-extensions">
 <h2><a class="toc-backref" href="#id111">Envisioned Extensions</a></h2>
@@ -767,7 +767,7 @@ We preferred this format over JSON as the scope of these information is strictly
 <li>two <strong>dataflow probes</strong> (on the right), should specific results have to be extracted from the dataflow (read here from the output ports of some blocks)</li>
 <li>external <strong>state importer and exporter</strong>, supposing here that this simulation is integrated into a wider computation chain (respectively in charge of providing an input state of the world at each time step, and, once evaluated and updated by the dataflow, of reading back this state and possibly transferring it to other, third-party, computational components; they are specialised versions of <a class="reference internal" href="#experiment-entry-and-exit-points">experiment entry and exit points</a>).</li>
 </ul>
-<p>We can see that we have still here a rather high-level, abstract view of the dataflow: types are mentioned (ex: <tt class="docutils literal">Building</tt>) instead of instances (ex: <tt class="docutils literal">building_11</tt>, <tt class="docutils literal">building_12</tt>, etc.), and managers (discussed later in this document) are omitted.</p>
+<p>We can see that we have still here a rather high-level, abstract view of the dataflow: types are mentioned (e.g. <tt class="docutils literal">Building</tt>) instead of instances (e.g. <tt class="docutils literal">building_11</tt>, <tt class="docutils literal">building_12</tt>, etc.), and managers (discussed later in this document) are omitted.</p>
 </div>
 <div class="section" id="a-view-onto-an-actual-simulation">
 <h2><a class="toc-backref" href="#id114">A View Onto an Actual Simulation</a></h2>
@@ -793,9 +793,9 @@ $ make batch
 <div class="section" id="developing-dataflow-elements-in-other-programming-languages">
 <h1><a class="toc-backref" href="#id115">Developing Dataflow Elements in Other Programming Languages</a></h1>
 <p>The dataflow infrastructure, like the rest of Sim-Diasca, uses a single implementation language, <a class="reference external" href="http://erlang.org">Erlang</a>, which may be readily used in order to implement, notably, dataflow processing units.</p>
-<p>However it may be useful to introduce, in one's simulation, dataflow blocks (ex: a set of processing units corresponding to at least one model) that are implemented in other programming languages, especially if they are for the most part already developed and complex: integrating them in a dataflow might involve less efforts than redeveloping them.</p>
+<p>However it may be useful to introduce, in one's simulation, dataflow blocks (e.g. a set of processing units corresponding to at least one model) that are implemented in other programming languages, especially if they are for the most part already developed and complex: integrating them in a dataflow might involve less efforts than redeveloping them.</p>
 <p>To ease these integrations, <strong>language bindings</strong> have been defined, currently for the <tt class="docutils literal">Python</tt> and the <tt class="docutils literal">Java</tt> languages - still to be used from GNU/Linux. These bindings provide <strong>APIs in order to develop dataflow constructs</strong> in these languages and have them take part to the simulations.</p>
-<p>Note that a language binding often induces the use of a specific version of the associated programming language (ex: the Python binding may target a specific version of Python). We tend to prefer the latest stable versions for these languages (as they are generally more stable and provide more features), however in some cases some helper libraries that might be proposed for inclusion by models (for their internal use) may not be updated yet.</p>
+<p>Note that a language binding often induces the use of a specific version of the associated programming language (e.g. the Python binding may target a specific version of Python). We tend to prefer the latest stable versions for these languages (as they are generally more stable and provide more features), however in some cases some helper libraries that might be proposed for inclusion by models (for their internal use) may not be updated yet.</p>
 <p>In that case, should these extra dependencies be acknowledged, a language downgrade <em>may</em> be feasible, until these libraries are made compliant again with the current language version.</p>
 <p>One should refer to the <em>Sim-Diasca Coupling HOWTO</em> for further information regarding how third-party code can be introduced in a Sim-Diasca simulation, whether or not it is done in a dataflow context.</p>
 <p></p>
@@ -804,7 +804,7 @@ $ make batch
 <div class="section" id="general-information">
 <h3>General Information</h3>
 <p>This binding allows to use the <a class="reference external" href="https://www.python.org/">Python</a> programming language, typically to write dataflow processing units.</p>
-<p>The Python version <tt class="docutils literal">3.6.0</tt> (released on December 23rd, 2016) or more recent is to be used. We recommend to stick to the latest stable one (available <a class="reference external" href="https://www.python.org/downloads/">here</a>). Let's designate by <tt class="docutils literal">A.B.C</tt> the actual version of Python that is used (ex: <tt class="docutils literal">A.B.C=3.6.0</tt>).</p>
+<p>The Python version <tt class="docutils literal">3.6.0</tt> (released on December 23rd, 2016) or more recent is to be used. We recommend to stick to the latest stable one (available <a class="reference external" href="https://www.python.org/downloads/">here</a>). Let's designate by <tt class="docutils literal">A.B.C</tt> the actual version of Python that is used (e.g. <tt class="docutils literal">A.B.C=3.6.0</tt>).</p>
 <p>A Python <a class="reference external" href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a>, named <tt class="docutils literal"><span class="pre">sim-diasca-dataflow-env</span></tt>, is provided to ease developments.</p>
 </div>
 <div class="section" id="binding-archive">
@@ -1078,8 +1078,8 @@ $ deactivate
 <li>updating the connectivity of channels and blocks</li>
 <li>creating or destroying input or output ports of a block</li>
 </ul>
-<p>This would be useful as soon as the target system is itself <strong>dynamic</strong> in some way (ex: buildings being created in a city over the years, each building relying on its associated computation units - which thus have to be dynamic as well, at least with varying multiplicities).</p>
-<p>Moreover, often all the overall layout cannot be statically defined, and the dataflow as a whole has to be dynamically connected to the components feeding it or waiting for its outputs (ex: a database reader having to connect in some way to some input ports) - so some amount of <strong>flexibility</strong> is definitively needed.</p>
+<p>This would be useful as soon as the target system is itself <strong>dynamic</strong> in some way (e.g. buildings being created in a city over the years, each building relying on its associated computation units - which thus have to be dynamic as well, at least with varying multiplicities).</p>
+<p>Moreover, often all the overall layout cannot be statically defined, and the dataflow as a whole has to be dynamically connected to the components feeding it or waiting for its outputs (e.g. a database reader having to connect in some way to some input ports) - so some amount of <strong>flexibility</strong> is definitively needed.</p>
 </div>
 <div class="section" id="iteration-specification-iterated-ports">
 <span id="port-iterations"></span><h2><a class="toc-backref" href="#id121">Iteration Specification &amp; Iterated Ports</a></h2>
@@ -1130,8 +1130,8 @@ $ deactivate
 </tbody>
 </table>
 <p><span class="raw-html"></center></span></p>
-<p>In a given dataflow, variable names (ex: <tt class="docutils literal">m</tt>, <tt class="docutils literal">n</tt>, <tt class="docutils literal">o</tt>, etc.) are expected to match. For example, if the variable <tt class="docutils literal">n</tt> is referenced more than once in the dataflow, then all its occurrences refer to the same value (which is let unspecified in the diagram).</p>
-<p>Iterated ports are automatically named by the runtime (ex: <tt class="docutils literal">energy_demand_iterated_1</tt>, <tt class="docutils literal">energy_demand_iterated_2</tt>); they are standard ports and thus their name shall remain an identifier <a class="footnote-reference" href="#id35" id="id34">[17]</a>.</p>
+<p>In a given dataflow, variable names (e.g. <tt class="docutils literal">m</tt>, <tt class="docutils literal">n</tt>, <tt class="docutils literal">o</tt>, etc.) are expected to match. For example, if the variable <tt class="docutils literal">n</tt> is referenced more than once in the dataflow, then all its occurrences refer to the same value (which is let unspecified in the diagram).</p>
+<p>Iterated ports are automatically named by the runtime (e.g. <tt class="docutils literal">energy_demand_iterated_1</tt>, <tt class="docutils literal">energy_demand_iterated_2</tt>); they are standard ports and thus their name shall remain an identifier <a class="footnote-reference" href="#id35" id="id34">[17]</a>.</p>
 <table class="docutils footnote" frame="void" id="id35" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -1144,7 +1144,7 @@ $ deactivate
 <p><span class="raw-html"><center><img src="port-iteration.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p>We can see above that, at any time, the first input iteration shall have between 2 and 7 (included) iterated ports, while the second input iterations is detailed graphically and has exactly 5 iterated ports (<tt class="docutils literal">[5]</tt> is thus implied).</p>
-<p>As for the output iterations, both have a certain number of iterated ports, and, as <tt class="docutils literal">k</tt> is different from <tt class="docutils literal">p</tt>, their respective counts of iterated ports may not match (ex: we can have <tt class="docutils literal">k=2</tt> and <tt class="docutils literal">p=0</tt>).</p>
+<p>As for the output iterations, both have a certain number of iterated ports, and, as <tt class="docutils literal">k</tt> is different from <tt class="docutils literal">p</tt>, their respective counts of iterated ports may not match (e.g. we can have <tt class="docutils literal">k=2</tt> and <tt class="docutils literal">p=0</tt>).</p>
 </div>
 <div class="section" id="in-terms-of-implementation">
 <h3>In Terms of Implementation</h3>
@@ -1172,15 +1172,15 @@ $ deactivate
 </div>
 <div class="section" id="domain-specific-timestamps">
 <h2><a class="toc-backref" href="#id122">Domain-Specific Timestamps</a></h2>
-<p>By default, engine ticks directly translate to a real, quantified simulation time: depending on the starting timestamp and on the selected simulation frequency, a given tick corresponds to an <strong>exact time and date</strong> in the Gregorian calendar (ex: each month and year lasting for the right number of days - not respectively, for example, 30 and 365, a simplification that is done in some cases in order to remain in a constant time-step setting).</p>
-<p>However, in some simulations, models are ruled by such a strange simplified time <a class="footnote-reference" href="#id39" id="id38">[19]</a>, so domain-specific timestamps may be useful. Their general form is <tt class="docutils literal"><span class="pre">{timescale(),index()}</span></tt>, where <tt class="docutils literal">timescale()</tt> designates the selected time granularity for the underlying channel (ex: <tt class="docutils literal">constant_year</tt>, <tt class="docutils literal">month_of_30_days</tt>) and <tt class="docutils literal">index()</tt> is a counter (a positive integer corresponding to as many periods of the specified time granularity).</p>
+<p>By default, engine ticks directly translate to a real, quantified simulation time: depending on the starting timestamp and on the selected simulation frequency, a given tick corresponds to an <strong>exact time and date</strong> in the Gregorian calendar (e.g. each month and year lasting for the right number of days - not respectively, for example, 30 and 365, a simplification that is done in some cases in order to remain in a constant time-step setting).</p>
+<p>However, in some simulations, models are ruled by such a strange simplified time <a class="footnote-reference" href="#id39" id="id38">[19]</a>, so domain-specific timestamps may be useful. Their general form is <tt class="docutils literal"><span class="pre">{timescale(),index()}</span></tt>, where <tt class="docutils literal">timescale()</tt> designates the selected time granularity for the underlying channel (e.g. <tt class="docutils literal">constant_year</tt>, <tt class="docutils literal">month_of_30_days</tt>) and <tt class="docutils literal">index()</tt> is a counter (a positive integer corresponding to as many periods of the specified time granularity).</p>
 <table class="docutils footnote" frame="void" id="id39" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id38">[19]</a></td><td>Even if this oversimplification just by itself yields already significant relative errors (greater than 10%).</td></tr>
 </tbody>
 </table>
-<p>For example, in a simulation some models may be evaluated at a yearly timescale, while others would be at a daily one. Considering that initial year and day have been set beforehand, a timestamp may become <tt class="docutils literal">{yearly,5}</tt> or <tt class="docutils literal">{daily,421}</tt>. This could be used to check that connected ports have indeed the same temporality (ex: no yearly port linked to a daily - a <em>timescale convertor unit</em> needing to be inserted in that case), and that none of such timescale-specific timesteps (i.e. index) went amiss in the channel.</p>
+<p>For example, in a simulation some models may be evaluated at a yearly timescale, while others would be at a daily one. Considering that initial year and day have been set beforehand, a timestamp may become <tt class="docutils literal">{yearly,5}</tt> or <tt class="docutils literal">{daily,421}</tt>. This could be used to check that connected ports have indeed the same temporality (e.g. no yearly port linked to a daily - a <em>timescale convertor unit</em> needing to be inserted in that case), and that none of such timescale-specific timesteps (i.e. index) went amiss in the channel.</p>
 </div>
 <div class="section" id="usefulness-of-cyclic-dataflows">
 <h2><a class="toc-backref" href="#id123">Usefulness of Cyclic Dataflows?</a></h2>
@@ -1196,7 +1196,7 @@ $ deactivate
 <span id="experiment-entry-and-exit-points"></span><h2><a class="toc-backref" href="#id125">Purpose of Experiment Endpoints</a></h2>
 <p>Depending on the project, it may be convenient for a given experiment relying on any number of dataflows to define a pair of components in charge of triggering and terminating its evaluation (typically once a specified number of steps were performed), as points of entry and exit, respectively.</p>
 <p>For that, base classes are provided (<tt class="docutils literal">ExperimentEntryPoint</tt> and <tt class="docutils literal">ExperimentExitPoint</tt>) that are meant, if needed, to be subclassed on a per-project basis.</p>
-<p>The purpose of these (optional) endpoints is to drive multiple dataflow instances, possibly on par with some external software (ex: any overall integration platform).</p>
+<p>The purpose of these (optional) endpoints is to drive multiple dataflow instances, possibly on par with some external software (e.g. any overall integration platform).</p>
 <p>Their impact in the progress of an experiment is discussed next.</p>
 </div>
 <div class="section" id="experiment-progress">
@@ -1207,7 +1207,7 @@ $ deactivate
 <li>a synchronisation stage, detailed in the next sections, occurs: the dataflows are suspended, and the state of the simulated world is updated first, then the computations that shall be applied on it are modified accordingly</li>
 <li>then the dataflows are resumed, and it usually triggers (based on intermediate logical moments, i.e. diascas) in turn (source) dataflow objects and/or processing units</li>
 <li>this may trigger cascading updates of dataflow elements over diascas</li>
-<li>once all evaluations are done, the experiment exit point (another actor) is to wrap up all information and perform any related tick-termination operation (ex: sending an update regarding the newer state of the simulated world to a third-party platform)</li>
+<li>once all evaluations are done, the experiment exit point (another actor) is to wrap up all information and perform any related tick-termination operation (e.g. sending an update regarding the newer state of the simulated world to a third-party platform)</li>
 <li>then the next planned tick begins (usually this corresponds to <tt class="docutils literal">T+1</tt>), and the process continues until a termination criterion is met (typically a final timestamp is reached, or the simulation is notified that no changes are to be expected anymore)</li>
 </ol>
 <table class="docutils footnote" frame="void" id="id41" rules="none">
@@ -1265,22 +1265,22 @@ $ deactivate
 <span id="world-manager"></span><h1><a class="toc-backref" href="#id128">The World Manager and its Dataflow Object Managers</a></h1>
 <div class="section" id="purpose-of-the-world-manager">
 <h2><a class="toc-backref" href="#id129">Purpose of the World Manager</a></h2>
-<p>This manager (singleton instance of the <tt class="docutils literal">WorldManager</tt> class), whose shorthand is <tt class="docutils literal">WM</tt>, is used in order to <strong>create, update and keep track of the simulated world and its structure</strong>; this world is itself made of the target system of interest (ex: a city) and of its context (ex: its associated weather system, the other cities in the vicinity, etc.).</p>
-<p>As a result, the world manager is generic, yet its use is specific to a given modelling structure (ex: to some way of describing a city), and bears no direct relationship with the computations that will be performed on it (one of its purposes is indeed to help uncoupling the description of the world of interest from the models operating on it, so that they can themselves be defined independently, one from another).</p>
+<p>This manager (singleton instance of the <tt class="docutils literal">WorldManager</tt> class), whose shorthand is <tt class="docutils literal">WM</tt>, is used in order to <strong>create, update and keep track of the simulated world and its structure</strong>; this world is itself made of the target system of interest (e.g. a city) and of its context (e.g. its associated weather system, the other cities in the vicinity, etc.).</p>
+<p>As a result, the world manager is generic, yet its use is specific to a given modelling structure (e.g. to some way of describing a city), and bears no direct relationship with the computations that will be performed on it (one of its purposes is indeed to help uncoupling the description of the world of interest from the models operating on it, so that they can themselves be defined independently, one from another).</p>
 <p>This virtual world is to be modelled based on <strong>various types of dataflow objects</strong>. For example, if the target system is a city, then districts, roads, buildings, weather elements, other cities, etc. may be defined (as types first, before planning their instantiaton) in order to represent the whole.</p>
-<p>These dataflow objects, which account for the state of the simulation world, are to be defined <strong>individually</strong> (in terms of internal state; ex: a building has a <tt class="docutils literal">surface</tt> and an <tt class="docutils literal">height</tt> attributes, of corresponding SUTC metadata) and <strong>collectively</strong> (in terms of structure and relationships; ex: a building must be included in a district, and may comprise any number of dwellings).</p>
+<p>These dataflow objects, which account for the state of the simulation world, are to be defined <strong>individually</strong> (in terms of internal state; e.g. a building has a <tt class="docutils literal">surface</tt> and an <tt class="docutils literal">height</tt> attributes, of corresponding SUTC metadata) and <strong>collectively</strong> (in terms of structure and relationships; e.g. a building must be included in a district, and may comprise any number of dwellings).</p>
 </div>
 <div class="section" id="purpose-of-the-object-managers">
 <h2><a class="toc-backref" href="#id130">Purpose of the Object Managers</a></h2>
 <p>For each of these types of dataflow objects, an <strong>object manager</strong>, in charge of taking care of the corresponding dataflow objects (i.e. the instances of that type) must be defined <a class="footnote-reference" href="#id47" id="id46">[23]</a>. For example the <tt class="docutils literal">BuildingManager</tt> will take care of (all) <tt class="docutils literal">Building</tt> instances.</p>
-<p>Note that a given object manager is to take care of <em>at least</em> one type of objects, possibly multiple ones (ex: if deemed more appropriate, a single object manager may be defined in order to take care of the buildings <em>and</em> of the households <em>and</em> and the districts).</p>
+<p>Note that a given object manager is to take care of <em>at least</em> one type of objects, possibly multiple ones (e.g. if deemed more appropriate, a single object manager may be defined in order to take care of the buildings <em>and</em> of the households <em>and</em> and the districts).</p>
 <table class="docutils footnote" frame="void" id="id47" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id46">[23]</a></td><td>All actual dataflow managers are either instances of the <tt class="docutils literal">DataflowObjectManager</tt> class (for the simpler cases), or child classes thereof (ex: to support specifically some kind of associations). All these managers are themselves simulation actors, as interacting with them in the course of the simulation may be necessary (ex: to create new object instances).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id46">[23]</a></td><td>All actual dataflow managers are either instances of the <tt class="docutils literal">DataflowObjectManager</tt> class (for the simpler cases), or child classes thereof (e.g. to support specifically some kind of associations). All these managers are themselves simulation actors, as interacting with them in the course of the simulation may be necessary (e.g. to create new object instances).</td></tr>
 </tbody>
 </table>
-<p>The purpose of an object manager is to be the entry point whenever having to <strong>perform dataflow-level operations on the object instances</strong> of the type(s) it is in charge of (ex: actual buildings): in the course of the simulation, instances may indeed have to be properly created, associated, connected, modified, deleted, etc.</p>
+<p>The purpose of an object manager is to be the entry point whenever having to <strong>perform dataflow-level operations on the object instances</strong> of the type(s) it is in charge of (e.g. actual buildings): in the course of the simulation, instances may indeed have to be properly created, associated, connected, modified, deleted, etc.</p>
 <p>Finally, all dataflow object managers are federated by this <tt class="docutils literal">WM</tt> (<em>World Manager</em>), which is their direct parent, in charge of driving them all.</p>
 <p>The main use of the world manager and of its associated dataflow object managers is the enabling of <strong>external state synchronization</strong>.</p>
 <p>Should, for example, an overall, targeted simulation be actually performed by a pipe-line of platforms (including of course at least the one at hand, which is based on this dataflow infrastructure), at each time step the state of the simulation would need to be updated from these other platforms and, reciprocally, once modified by the dataflow-based one, would need to be passed to the next platforms.</p>
@@ -1299,19 +1299,19 @@ $ deactivate
 </table>
 <p>More precisely:</p>
 <ul class="simple">
-<li>a <strong>creation</strong> event describes the creation of a block, typically of a dataflow object (ex: building B2 being built in the city on the current year)</li>
-<li>a <strong>deletion</strong> event describes the deletion of a block, typically of a dataflow object (ex: district D7 being destructed)</li>
-<li>an <strong>association</strong> event describes the creation of an association between dataflow objects; a <em>binary</em> association is a very common, special case thereof (ex: building B2 is &quot;located in&quot; neighborhood N3)</li>
-<li>a <strong>disassociation</strong> event describes the removal of an association between dataflow objects (ex: household H1 is not &quot;living in&quot; building B2 anymore)</li>
-<li>a <strong>connection</strong> event describes the creation of a dataflow channel between two ports of blocks, from an output one to an input one (ex: from the <tt class="docutils literal">surface</tt> output port of building B6, to the <tt class="docutils literal">average_area</tt> input port of the land-use processing unit L9)</li>
+<li>a <strong>creation</strong> event describes the creation of a block, typically of a dataflow object (e.g. building B2 being built in the city on the current year)</li>
+<li>a <strong>deletion</strong> event describes the deletion of a block, typically of a dataflow object (e.g. district D7 being destructed)</li>
+<li>an <strong>association</strong> event describes the creation of an association between dataflow objects; a <em>binary</em> association is a very common, special case thereof (e.g. building B2 is &quot;located in&quot; neighborhood N3)</li>
+<li>a <strong>disassociation</strong> event describes the removal of an association between dataflow objects (e.g. household H1 is not &quot;living in&quot; building B2 anymore)</li>
+<li>a <strong>connection</strong> event describes the creation of a dataflow channel between two ports of blocks, from an output one to an input one (e.g. from the <tt class="docutils literal">surface</tt> output port of building B6, to the <tt class="docutils literal">average_area</tt> input port of the land-use processing unit L9)</li>
 <li>a <strong>disconnection</strong> event describes the deletion of a dataflow channel that used to exist between two ports</li>
-<li>an <strong>update</strong> event describes the modification of the value of attributes of a dataflow object (ex: for building B2, the <tt class="docutils literal">surface</tt> attribute is set to 120.0 m^2, while its <tt class="docutils literal">inhabitant_count</tt> is set to 7)</li>
+<li>an <strong>update</strong> event describes the modification of the value of attributes of a dataflow object (e.g. for building B2, the <tt class="docutils literal">surface</tt> attribute is set to 120.0 m^2, while its <tt class="docutils literal">inhabitant_count</tt> is set to 7)</li>
 </ul>
 <p>Should, for a given project, the incoming dataflow updates deal only with the <em>state</em> of the simulated world (not directly with the <em>computations</em> themselves - whose changes may be automatically deduced from the state ones at a latter step), only a subset of the types of world events are to be supported (by the world manager), namely all types of events but connections and disconnections.</p>
 </div>
 <div class="section" id="changetrees-and-changesets">
 <h2><a class="toc-backref" href="#id132">Changetrees and Changesets</a></h2>
-<p><strong>A given event may induce any number of other events</strong> (ex: a creation of a building may induce its association with a given district), which themselves may induce in turn other events, and so on.</p>
+<p><strong>A given event may induce any number of other events</strong> (e.g. a creation of a building may induce its association with a given district), which themselves may induce in turn other events, and so on.</p>
 <p>As a result, we define the concept of <em>changetree</em> (an event and all the ones it induces, directly or not) and of <em>changeset</em> (a list of changetrees):</p>
 <p><span class="raw-html"><center><img src="dataflow-changes.png" id="responsive-image-large"></img></center></span>
 </p>
@@ -1330,7 +1330,7 @@ $ deactivate
 <p>Moreover, when an object manager reports to the world manager the completion of event(s), <strong>it may as well inject new events</strong>. For example, if creating a building entails creating three lifts, then the building object manager may inject three additional lift creation events. Then these events will be processed, among the pending others, by the world manager, and thus will be dispatched to the lift object manager. This allows for an indirect communication between object managers, and to embed, if needed, domain-specific rules in order to structure appropriately the state of the simulated system.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>During the whole synchronisation phase, the blocks of the dataflow that are affected (ex: created or updated) are put in stasis, i.e. they are suspended.</p>
+<p>During the whole synchronisation phase, the blocks of the dataflow that are affected (e.g. created or updated) are put in stasis, i.e. they are suspended.</p>
 <p>Otherwise their evaluation could start whereas the dataflow did not reach yet a stable state, which could lead to an incorrect evaluation of the overall dataflow.</p>
 <p class="last">To anticipate a bit, the actual evaluation will take place when the dataflow(s) will resume their suspended blocks, which will happen later - once the experiment manager will have finished its own synchronisation work.</p>
 </div>
@@ -1383,32 +1383,32 @@ $ deactivate
 </tbody>
 </table>
 <p>Let's say for example that, for a given model, we have, among other ones, two types of processing units, <tt class="docutils literal">EnergyDemandUnit</tt> and <tt class="docutils literal">WaterDemandUnit</tt> that are to operate each on a given building.</p>
-<p>A unit manager named <tt class="docutils literal">ResourceDemandUnitManager</tt> may be in charge of all instances of these two types of units, for example so that it can be ensured that the two kinds of demands are appropriately interlinked and applied consistently (ex: exactly to the same buildings).</p>
+<p>A unit manager named <tt class="docutils literal">ResourceDemandUnitManager</tt> may be in charge of all instances of these two types of units, for example so that it can be ensured that the two kinds of demands are appropriately interlinked and applied consistently (e.g. exactly to the same buildings).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Most models rely on multiple types of processing units - yet on a <em>single</em>, unified unit manager instance that drives them all.</p>
 <p>However one can instead define, for a given model, <strong>multiple unit managers</strong>, each in charge of a subset of the types of processing units involved - provided that these unit managers partition these unit types, i.e. that each unit type is driven by exactly one unit manager instance.</p>
-<p>If such a scheme allows the work on the processing units to be split in more autonomous parts, it induces limitations: relying on a single unit manager allows to store in its state <em>all</em> unified information about dataflow objects (based on the world events it listens to) and units (as, for that model, it is their sole manager), which is often necessary to perform proper channel creations (ex: to determine the right instance of processing unit to be connected to a given dataflow object).</p>
-<p class="last">As a result, unit managers tend to define various associative tables, to keep track of which processing unit they created (ex: a pollution computation) in response to the creation of which dataflow object (ex: a car). Unit managers are then able to connect these units adequately, once they are reported as created.</p>
+<p>If such a scheme allows the work on the processing units to be split in more autonomous parts, it induces limitations: relying on a single unit manager allows to store in its state <em>all</em> unified information about dataflow objects (based on the world events it listens to) and units (as, for that model, it is their sole manager), which is often necessary to perform proper channel creations (e.g. to determine the right instance of processing unit to be connected to a given dataflow object).</p>
+<p class="last">As a result, unit managers tend to define various associative tables, to keep track of which processing unit they created (e.g. a pollution computation) in response to the creation of which dataflow object (e.g. a car). Unit managers are then able to connect these units adequately, once they are reported as created.</p>
 </div>
 <p>As a result, each unit manager federates the units of specific types, so that it can perform - for computations and on behalf of the EM - what dataflow object managers perform for the simulated world on behalf of the WM <a class="footnote-reference" href="#id55" id="id54">[27]</a>: <strong>a unit manager will synchronise the computation part of the dataflow regarding these unit types</strong>.</p>
 <table class="docutils footnote" frame="void" id="id55" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id54">[27]</a></td><td>Similarly to object managers, unit managers typically take part to the simulation (ex: they may create processing units) and therefore must be properly synchronized; as such they are simulation actors as well.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id54">[27]</a></td><td>Similarly to object managers, unit managers typically take part to the simulation (e.g. they may create processing units) and therefore must be properly synchronized; as such they are simulation actors as well.</td></tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="mode-of-operation">
 <h2><a class="toc-backref" href="#id137">Mode of Operation</a></h2>
 <p>This synchronisation of the computational part of the dataflow could be explicitly dictated by an external source, as done previously for the part of the dataflow devoted to the description of the state of the simulated system. However, more often than not, <strong>the changes in the computation part may be determined automatically from the changes done on the state part, based on relevant rules</strong>. The purpose of the unit managers is to <em>implement</em> said rules.</p>
-<p>To do so, each unit manager is to declare not only the types of processing units it is to manage (ex: <tt class="docutils literal">ResourceDemandUnitManager</tt> taking care of <tt class="docutils literal">EnergyDemandUnit</tt> and <tt class="docutils literal">WaterDemandUnit</tt>), but also the <strong>world synchronisation events it listens to</strong>, and <strong>how it is to react to them</strong>.</p>
-<p>For example, <tt class="docutils literal">ResourceDemandUnitManager</tt> may request to be notified whenever a building is created and/or whenever the current operating state of a given heat pump changed (ex: from nominal mode to degraded mode). It may then choose to apply the relevant domain-specific actions in order to adapt the computations performed by the dataflow, such as, respectively, creating one instance of <tt class="docutils literal">EnergyDemandUnit</tt> and of <tt class="docutils literal">WaterDemandUnit</tt> and connecting them to the new building, or linking said heat pump to a different processing unit implementing a model corresponding to its new mode of operation (by updating their dataflow connectivity).</p>
+<p>To do so, each unit manager is to declare not only the types of processing units it is to manage (e.g. <tt class="docutils literal">ResourceDemandUnitManager</tt> taking care of <tt class="docutils literal">EnergyDemandUnit</tt> and <tt class="docutils literal">WaterDemandUnit</tt>), but also the <strong>world synchronisation events it listens to</strong>, and <strong>how it is to react to them</strong>.</p>
+<p>For example, <tt class="docutils literal">ResourceDemandUnitManager</tt> may request to be notified whenever a building is created and/or whenever the current operating state of a given heat pump changed (e.g. from nominal mode to degraded mode). It may then choose to apply the relevant domain-specific actions in order to adapt the computations performed by the dataflow, such as, respectively, creating one instance of <tt class="docutils literal">EnergyDemandUnit</tt> and of <tt class="docutils literal">WaterDemandUnit</tt> and connecting them to the new building, or linking said heat pump to a different processing unit implementing a model corresponding to its new mode of operation (by updating their dataflow connectivity).</p>
 <p>In practice, a given unit manager may declare (to the experiment manager) any number of <strong>event match clauses</strong> <a class="footnote-reference" href="#id58" id="id56">[28]</a>, whose granularity can be finely tuned (from a non-discriminating unit manager listening to all events of all types, to one focusing only on very precise matches <a class="footnote-reference" href="#id59" id="id57">[29]</a>).</p>
 <table class="docutils footnote" frame="void" id="id58" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id56">[28]</a></td><td>Refer to <tt class="docutils literal">dataflow_changesets_defines.hrl</tt> for their actual definitions: for each type of event match (ex: <tt class="docutils literal">creation_event_match</tt>), a corresponding datastructure is defined in order to store against which element(s) of the corresponding event the match shall be done (ex: &quot;the (created) object type shall be of type <tt class="docutils literal">Building</tt>, it should occur in the context of this dataflow, involve a dataflow object bearing this external identifier and/or this internal one, specify these construction parameters, etc.).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id56">[28]</a></td><td>Refer to <tt class="docutils literal">dataflow_changesets_defines.hrl</tt> for their actual definitions: for each type of event match (e.g. <tt class="docutils literal">creation_event_match</tt>), a corresponding datastructure is defined in order to store against which element(s) of the corresponding event the match shall be done (e.g. &quot;the (created) object type shall be of type <tt class="docutils literal">Building</tt>, it should occur in the context of this dataflow, involve a dataflow object bearing this external identifier and/or this internal one, specify these construction parameters, etc.).</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id59" rules="none">
@@ -1447,7 +1447,7 @@ $ deactivate
 <p>As such, mock-up units merely <em>associate</em> pre-recorded outputs to inputs, instead of <em>implementing</em> computations allowing to determine the former from the latter ones.</p>
 <p>These mock-up units can act as &quot;termination plugs&quot;, i.e. placeholders inserted in a dataflow in order for example:</p>
 <ul>
-<li><p class="first">to replace an actual unit (ex: to wait until it is delivered)</p>
+<li><p class="first">to replace an actual unit (e.g. to wait until it is delivered)</p>
 </li>
 <li><p class="first">to emulate the context of another unit in order to better test it</p>
 </li>
@@ -1460,7 +1460,7 @@ $ deactivate
 <p>They are instantiated and managed by a <em>unit manager</em>, just like any <em>processing unit</em> would do. The only difference is that, since their construction parameters are slightly different from classical units, they have to be created by dedicated methods that have been added to the <tt class="docutils literal">DataflowUnitManager</tt> class.</p>
 <div class="section" id="definition-of-a-mock-up-unit">
 <h2><a class="toc-backref" href="#id139">Definition of a Mock-up Unit</a></h2>
-<p>A mock-up unit is specified exactly as any other dataflow unit (ex: with a name, a temporality, a description of its input and output ports), yet it has to replace the inner computation logic that would be included in any standard unit by a (static) <strong>association determining its outputs from its inputs</strong>.</p>
+<p>A mock-up unit is specified exactly as any other dataflow unit (e.g. with a name, a temporality, a description of its input and output ports), yet it has to replace the inner computation logic that would be included in any standard unit by a (static) <strong>association determining its outputs from its inputs</strong>.</p>
 <p>This association can be seen as a <strong>simple function</strong> which, based on a given (optional) simulation time and an <em>input match specification</em> operating on its input ports, tells in which state the output ports of this mock-up unit shall be.</p>
 <p>One should note that the result returned by this function (the actual state of the output ports) will depend <strong>only</strong> on its input parameters (the specified time and the input match specs); for example no contextual data can intervene, because this (pure) function is stateless (i.e. it has no memory).</p>
 <p>The general form of this mock-up function is:</p>
@@ -1484,7 +1484,7 @@ $ deactivate
 <h2><a class="toc-backref" href="#id141">Input Match Specification</a></h2>
 <p>This second parameter of the mock-up function allows to specify the <strong>configuration of input ports to which this clause is meant to match</strong>: the match specification describes the possible states in which the input ports of interest for the mock-up unit shall be, for this clause to be selected. That clause determines in turn the state of the output ports that will be consequently retained.</p>
 <p>In practice, an input match spec is an (unordered) list of pairs, whose first element designates an input port, and whose second one specifies the associated state(s) that would match.</p>
-<p>This first element is the name of the input port (ex: <tt class="docutils literal">&quot;I1&quot;</tt>), as, in the context of a unit, it is an identifier (it is unique).</p>
+<p>This first element is the name of the input port (e.g. <tt class="docutils literal">&quot;I1&quot;</tt>), as, in the context of a unit, it is an identifier (it is unique).</p>
 <p>The second element of the pair associated to a listed input port is among:</p>
 <ul class="simple">
 <li>the <tt class="docutils literal">any_state</tt> atom, to specify that the state of this input port will be ignored, i.e. that it may or may not be set (if set, its value will not matter for the clause)</li>
@@ -1656,7 +1656,7 @@ $ deactivate
 <p>Once the clauses are expressed according to this format, one may think of creating mock-up units directly from such a stream of information, without writing any code.</p>
 <p>For that, the DUMF format includes not only these clauses, but also all the other informations that a mock-up unit - as any other processing unit - must provide. Namely:</p>
 <ul class="simple">
-<li>metadata such as its name, the type of this unit (ex: of use for its (unit) manager), etc.</li>
+<li>metadata such as its name, the type of this unit (e.g. of use for its (unit) manager), etc.</li>
 <li>the specification of its input and output ports</li>
 </ul>
 <p>These three blocks of data, with the final addition of the clauses, form a complete description of a mock-up unit, and thus an operational DUMF stream.</p>
@@ -1874,7 +1874,7 @@ $ deactivate
 <div class="section" id="possible-enhancements">
 <h2><a class="toc-backref" href="#id148">Possible Enhancements</a></h2>
 <ul class="simple">
-<li>the patterns recognized could include the state of another input port (ex: <tt class="docutils literal">{I4,I6}</tt> meaning that <tt class="docutils literal">I4</tt> should be in the same state as <tt class="docutils literal">I6</tt>), of course provided that the dependency graph remains acyclic</li>
+<li>the patterns recognized could include the state of another input port (e.g. <tt class="docutils literal">{I4,I6}</tt> meaning that <tt class="docutils literal">I4</tt> should be in the same state as <tt class="docutils literal">I6</tt>), of course provided that the dependency graph remains acyclic</li>
 <li>port names could also be pattern-matched; for example an input match spec could include <tt class="docutils literal"><span class="pre">{&quot;ip_*&quot;,{set,3}}</span></tt> to specify that any input port whose name is prefixed with <tt class="docutils literal">ip_</tt> and that is set to <tt class="docutils literal">3</tt> would validate this part of the match</li>
 <li>during a time-step, a given unit might be triggered any number of times (from none to more than once); even if introducing logical moments (i.e. replacing timesteps with a pair made of a timestep and a logical moment, i.e. a diasca) is probably not desirable, maybe specifying whether a unit is allowed to be triggered once (<tt class="docutils literal">once</tt>) or any number of times (<tt class="docutils literal">always</tt>) could be useful</li>
 </ul>
@@ -1888,11 +1888,11 @@ $ deactivate
 <div class="section" id="preliminary-step-0-remembering-the-basics">
 <h2><a class="toc-backref" href="#id150">Preliminary Step (#0): Remembering the Basics</a></h2>
 <p>Let's recap first the general structure that we target and the features we need to support.</p>
-<p>A model embodies <strong>computations</strong> of some sorts (for example, here, some energy evaluations) that are <strong>intermingled with others</strong> (ex: there may be interrelated evaluations about waste or transportation), the whole <strong>applying to the state of a system</strong> (ex: a city) and <strong>updating it in turn</strong> (ex: all these evaluations are performed for a given year, and the dynamics they capture will lead to an updated city, available for the next simulated year).</p>
+<p>A model embodies <strong>computations</strong> of some sorts (for example, here, some energy evaluations) that are <strong>intermingled with others</strong> (e.g. there may be interrelated evaluations about waste or transportation), the whole <strong>applying to the state of a system</strong> (e.g. a city) and <strong>updating it in turn</strong> (e.g. all these evaluations are performed for a given year, and the dynamics they capture will lead to an updated city, available for the next simulated year).</p>
 <p>To turn such a simulation into a dataflow, both the <strong>state</strong> of the system and the <strong>computations</strong> performed on it have to be modelled thanks to dataflow constructs.</p>
-<p>Here the state is typically modelled based on <strong>Dataflow Objects</strong> (ex: the city as a whole may be hierarchically divided into districts, buildings, households, etc. - each of these urban objects being represented by a dedicated dataflow object instance).</p>
+<p>Here the state is typically modelled based on <strong>Dataflow Objects</strong> (e.g. the city as a whole may be hierarchically divided into districts, buildings, households, etc. - each of these urban objects being represented by a dedicated dataflow object instance).</p>
 <p>The main role of these dataflow objects is to store, thanks to attributes, the relevant state information of these various parts of the system so that the expected computations can be carried, i.e. so that these computations can be fed with the data they need and so that they can as well update that state with their results. As a consequence, <strong>prior to the integration of the computations, an agreement on the structure</strong> (based on dataflow objects) and <strong>on the content</strong> (based on the attributes of these objects) <strong>of the description of the system at hand shall be found</strong>.</p>
-<p>As for the computations (including the ones provided by the <tt class="docutils literal">Foobar</tt> model), they are to be described macroscopically in terms of a set of <strong>Dataflow Processing Units</strong> (ex: a type of unit can correspond to the energy evaluation, whereas another type of unit may take care of waste and transportation).</p>
+<p>As for the computations (including the ones provided by the <tt class="docutils literal">Foobar</tt> model), they are to be described macroscopically in terms of a set of <strong>Dataflow Processing Units</strong> (e.g. a type of unit can correspond to the energy evaluation, whereas another type of unit may take care of waste and transportation).</p>
 <p>Of course <strong>multiple instances of a given type of unit may exist</strong> to account for the underlying multiplicities of dataflow objects. For example, if some computations have to be done strictly on a per building basis, then a corresponding processing unit type may be defined, and a bijection (a one-to-one relationship) between buildings and such unit instances should exist.</p>
 <p>Moreover one can note that not only a given unit type may be instantiated more than once, but also that <strong>such a unit may have to be created and deleted dynamically</strong>, in the course of the simulation. In our example, on a given simulated year the creation of a building in the city shall result in the creation of a related instance of our unit type; conversely, destroying a building shall imply the deletion of its associated unit instance.</p>
 <p>Finally, whether or not urban objects are created or deleted, <em>connections</em> between dataflow elements (processing units and urban objects) are in the general case bound to be modified over simulation time.</p>
@@ -1915,7 +1915,7 @@ $ deactivate
 <table class="docutils footnote" frame="void" id="id77" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id76">[38]</a></td><td>For example any needed <em>living space</em> attribute of a (dataflow object) building shall be defined once for all, instead of introducing as many (attribute) variations of it as there will be different unit types requiring such an information. Otherwise the state of dataflow objects would be bound to become increasingly difficult to maintain, if not silently inconsistent (ex: one version of the livable surface being updated while the others not).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id76">[38]</a></td><td>For example any needed <em>living space</em> attribute of a (dataflow object) building shall be defined once for all, instead of introducing as many (attribute) variations of it as there will be different unit types requiring such an information. Otherwise the state of dataflow objects would be bound to become increasingly difficult to maintain, if not silently inconsistent (e.g. one version of the livable surface being updated while the others not).</td></tr>
 </tbody>
 </table>
 </div>
@@ -1932,8 +1932,8 @@ $ deactivate
 <h2><a class="toc-backref" href="#id153">Step #3: Break the Black Box Into Actual Dataflow Units</a></h2>
 <p>In the previous steps, the <tt class="docutils literal">Foobar</tt> model was seen as a single black box (one &quot;abstract&quot;, logical unit). Now is the time to break the <tt class="docutils literal">Foobar</tt> black box into pieces, and to express them as a set of actual dataflow blocks.</p>
 <p>Indeed, in the general case, for each model <strong>multiple dataflow units are needed</strong> in order to account for the various computational stages and multiplicities that a model must support.</p>
-<p>For example, some aggregations (ex: spatial ones) are often to be done before and after the central, domain-specific computations of the model, and for that they need a varying (runtime-determined) number of input and output ports (ex: an instance of the <tt class="docutils literal">Foobar</tt> model may have to accommodate for any number of energy sources).</p>
-<p>If simple models may be expressed only thanks to a single processing unit relying on <a class="reference internal" href="#port-iterations">port iterations</a>, more complex models often require to be translated into a <em>set of interlinked dataflow units</em>, some of which taking in charge the bulk of the computations while others are in charge of transforming (ex: aggregating, summing, averaging, converting, routing, etc.) information on their behalf.</p>
+<p>For example, some aggregations (e.g. spatial ones) are often to be done before and after the central, domain-specific computations of the model, and for that they need a varying (runtime-determined) number of input and output ports (e.g. an instance of the <tt class="docutils literal">Foobar</tt> model may have to accommodate for any number of energy sources).</p>
+<p>If simple models may be expressed only thanks to a single processing unit relying on <a class="reference internal" href="#port-iterations">port iterations</a>, more complex models often require to be translated into a <em>set of interlinked dataflow units</em>, some of which taking in charge the bulk of the computations while others are in charge of transforming (e.g. aggregating, summing, averaging, converting, routing, etc.) information on their behalf.</p>
 <p>So the outcome of this step is to have a <strong>design</strong> of the <tt class="docutils literal">Foobar</tt> model once it has been translated into <strong>a collection of actual dataflow units</strong> whose superposition provides the combined input and output ports that have been determined in the previous step.</p>
 </div>
 <div class="section" id="step-4-implement-the-corresponding-actual-units">
@@ -1942,7 +1942,7 @@ $ deactivate
 <table class="docutils footnote" frame="void" id="id79" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id78">[39]</a></td><td>Depending on the history of the project, some already available units may be re-used. Similarly, some units may perform fairly standard operations (ex: simple aggregations) and thus may be provided by the dataflow infrastructure as built-in. Usually at least the model-specific computations must be developed.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id78">[39]</a></td><td>Depending on the history of the project, some already available units may be re-used. Similarly, some units may perform fairly standard operations (e.g. simple aggregations) and thus may be provided by the dataflow infrastructure as built-in. Usually at least the model-specific computations must be developed.</td></tr>
 </tbody>
 </table>
 <p>Each newly-introduced processing unit can either be a <em>native</em> unit (i.e. written in Erlang and thus directly developed within the dataflow infrastructure), or a unit relying on a <em>language-specific binding</em>.</p>
@@ -1970,7 +1970,7 @@ $ deactivate
 <ul class="simple">
 <li><tt class="docutils literal">R1</tt>: a description of the overall dataflow must be defined, in which the target model is represented by a single, abstract, dataflow unit; its inbound and outbound channels shall be specified</li>
 <li><tt class="docutils literal">R2</tt>: the target model itself shall be defined in terms of dataflow constructs</li>
-<li><tt class="docutils literal">R3</tt>: the general operational rules apply (ex: compliance with the underlying operating system and libraries)</li>
+<li><tt class="docutils literal">R3</tt>: the general operational rules apply (e.g. compliance with the underlying operating system and libraries)</li>
 </ul>
 <p></p>
 </div>
@@ -1979,21 +1979,21 @@ $ deactivate
 <div class="section" id="id80">
 <h2><a class="toc-backref" href="#id158">Mode of Operation</a></h2>
 <p>As already mentioned and represented in the class diagram below, <strong>processing units</strong> are implemented as instances of the <tt class="docutils literal">DataflowProcessingUnit</tt> class, a child class of the <tt class="docutils literal">DataflowBlock</tt> one, itself a child class of the basic (Sim-Diasca) <tt class="docutils literal">Actor</tt> one (note that, actually, <em>all</em> classes represented on this diagram are child classes - directly or not - of the <tt class="docutils literal">Actor</tt> one).</p>
-<p>Most units are <em>passive</em> actors: they will be solely scheduled if/when some of their input ports are triggered, which, depending on their policy, might result in their activation. Some units (ex: source ones) may be <em>active</em>, in the sense that they may choose to develop a spontaneous behaviour (typically to auto-activate periodically).</p>
+<p>Most units are <em>passive</em> actors: they will be solely scheduled if/when some of their input ports are triggered, which, depending on their policy, might result in their activation. Some units (e.g. source ones) may be <em>active</em>, in the sense that they may choose to develop a spontaneous behaviour (typically to auto-activate periodically).</p>
 <p>A special case of unit has been defined, the <tt class="docutils literal">DataflowMockupUnit</tt>. Such <strong>mock-up unit</strong> provides a generic emulation of a unit, associating output values to input ones based on the data (rules) it has been provided with. It is typically used to develop termination plugs that allow to wait until the implementation of the final unit is ready, and to validate it afterwards.</p>
 <p><strong>Ports</strong> (input and output ones alike) are mere data-structures (records) held by their block (maintaining an associative table for both of them).</p>
 <p>We propose the following convention to name the variables holding a port:</p>
 <ul class="simple">
-<li>the name of the variable shall reflect the name of the corresponding port (ex: if the port is named <tt class="docutils literal">&quot;My distance&quot;</tt>, the variable name may begin with <tt class="docutils literal">MyDistance</tt></li>
-<li>if it is an input port, the variable name may end with <tt class="docutils literal">IPort</tt> (ex: <tt class="docutils literal">MyDistanceIPort</tt>)</li>
-<li>if it is an output port, the variable name may end with <tt class="docutils literal">OPort</tt> (ex: <tt class="docutils literal">MyDistanceOPort</tt>)</li>
+<li>the name of the variable shall reflect the name of the corresponding port (e.g. if the port is named <tt class="docutils literal">&quot;My distance&quot;</tt>, the variable name may begin with <tt class="docutils literal">MyDistance</tt></li>
+<li>if it is an input port, the variable name may end with <tt class="docutils literal">IPort</tt> (e.g. <tt class="docutils literal">MyDistanceIPort</tt>)</li>
+<li>if it is an output port, the variable name may end with <tt class="docutils literal">OPort</tt> (e.g. <tt class="docutils literal">MyDistanceOPort</tt>)</li>
 </ul>
 <p>Implementation-wise, <strong>channels</strong> do not exist per se, they are abstracted out thanks to ports.</p>
-<p>The static channel-related information (ex: <tt class="docutils literal">SUTC</tt>, for semantics, unit, type, constraints) is held by all endpoints (the output port and its linked input ports); as their metadata are checked for compliance when ports get connected, the exchanged values do not include them, since they are automatically checked in turn for compliance at port sending and receiving.</p>
+<p>The static channel-related information (e.g. <tt class="docutils literal">SUTC</tt>, for semantics, unit, type, constraints) is held by all endpoints (the output port and its linked input ports); as their metadata are checked for compliance when ports get connected, the exchanged values do not include them, since they are automatically checked in turn for compliance at port sending and receiving.</p>
 <p>Dataflow <strong>values</strong> are records that store their accuracy, timestamp and, of course, actual value. As always, they are exchanged through actor messages, managed by the engine.</p>
 <p>As for the <strong>dataflow objects</strong>, they unsurprisingly inherit from the <tt class="docutils literal">DataflowObject</tt> class. These actors participate to the description of the simulated world and, thanks to their <strong>dataflow attributes</strong> (special actor attributes that map to a pair of input and output ports), they are ready to be integrated in a dataflow.</p>
-<p>Finally, instances of dataflow objects of a given class (ex: <tt class="docutils literal">Building</tt>) are governed by a <strong>dataflow object manager</strong> specific to this class (ex: <tt class="docutils literal">BuildingManager</tt>). All these managers inherit from the <tt class="docutils literal">DataflowObjectManager</tt> base, abstract class.</p>
-<p>Similarly, all instances of a given type of unit (ex: <tt class="docutils literal">EnergyDemand</tt>) are governed by a <strong>unit manager</strong> specific to this class (ex: <tt class="docutils literal">EnergyDemandManager</tt>), and all these managers inherit from the <tt class="docutils literal">UnitManager</tt> base, abstract class.</p>
+<p>Finally, instances of dataflow objects of a given class (e.g. <tt class="docutils literal">Building</tt>) are governed by a <strong>dataflow object manager</strong> specific to this class (e.g. <tt class="docutils literal">BuildingManager</tt>). All these managers inherit from the <tt class="docutils literal">DataflowObjectManager</tt> base, abstract class.</p>
+<p>Similarly, all instances of a given type of unit (e.g. <tt class="docutils literal">EnergyDemand</tt>) are governed by a <strong>unit manager</strong> specific to this class (e.g. <tt class="docutils literal">EnergyDemandManager</tt>), and all these managers inherit from the <tt class="docutils literal">UnitManager</tt> base, abstract class.</p>
 <p>The overall <strong>dataflow</strong> could have remained implicit (in the sense that no specific instance could have been defined in order to designate it as such, a dataflow being just an abstract concept corresponding to a set of actual, interconnected blocks), yet having it in an explicit form (i.e. as an instance of a well-defined <tt class="docutils literal">Dataflow</tt> class) has been deemed more convenient and future-proof.</p>
 <p>So we end up with the following dataflow-related class hierarchy:</p>
 <p><span class="raw-html"><center><img src="dataflow-class-hierarchy.png" id="responsive-image-large"></img></center></span>
@@ -2011,8 +2011,8 @@ $ deactivate
 </div>
 <div class="section" id="class-or-instance-level-checking">
 <h2><a class="toc-backref" href="#id160">Class or Instance-level Checking</a></h2>
-<p>Any given instance dataflow block (ex: a processing unit) may declare ports, statically or not.</p>
-<p>Ports created statically are usually the same for all instances of that type of dataflow element. So, instead of performing checks (ex: in terms of semantics or types) for each of these instances (that are potentially very numerous), the verification is better done once, at the class level - based on its declarations.</p>
+<p>Any given instance dataflow block (e.g. a processing unit) may declare ports, statically or not.</p>
+<p>Ports created statically are usually the same for all instances of that type of dataflow element. So, instead of performing checks (e.g. in terms of semantics or types) for each of these instances (that are potentially very numerous), the verification is better done once, at the class level - based on its declarations.</p>
 <p>For example, for units, any of them should preferably declare statically these information so that its unit manager can check them at simulation startup <a class="footnote-reference" href="#id82" id="id81">[40]</a>.</p>
 <table class="docutils footnote" frame="void" id="id82" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -2033,7 +2033,7 @@ $ deactivate
 <table class="docutils footnote" frame="void" id="id84" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id83">[41]</a></td><td>For semantics, their name is also their definition (ex: <tt class="docutils literal">'my semantics'</tt>), whereas types have to be specifically defined (ex: <tt class="docutils literal">my_type</tt> is <tt class="docutils literal">[integer]</tt>) before being used (ex: <tt class="docutils literal">my_value</tt> is of type <tt class="docutils literal">my_type</tt>).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id83">[41]</a></td><td>For semantics, their name is also their definition (e.g. <tt class="docutils literal">'my semantics'</tt>), whereas types have to be specifically defined (e.g. <tt class="docutils literal">my_type</tt> is <tt class="docutils literal">[integer]</tt>) before being used (e.g. <tt class="docutils literal">my_value</tt> is of type <tt class="docutils literal">my_type</tt>).</td></tr>
 </tbody>
 </table>
 <p>Defining <tt class="docutils literal">get_port_specifications/0</tt> is recommended, as by design the static information that is reported matches the ports that are initially created. Otherwise explicit checking shall be done when creating the actual initial ports, to ensure their information match any one that would be statically defined thanks to <tt class="docutils literal">get_declared_{semantic,type}s/0</tt>.</p>
@@ -2072,7 +2072,7 @@ $ deactivate
 <h2><a class="toc-backref" href="#id163">Implementation Details</a></h2>
 <p>The dataflow constructs are defined, in the code base, in the <tt class="docutils literal"><span class="pre">sim-diasca/src/core/src/dataflow</span></tt> source tree.</p>
 <p>Traces sent by the dataflow architecture are available in the <tt class="docutils literal">Core.Dataflow</tt> category and its children categories.</p>
-<p>A dataflow initialization file has preferably for extension <tt class="docutils literal">.init</tt> (ex: <tt class="docutils literal"><span class="pre">dataflow-urban-example.init</span></tt>).</p>
+<p>A dataflow initialization file has preferably for extension <tt class="docutils literal">.init</tt> (e.g. <tt class="docutils literal"><span class="pre">dataflow-urban-example.init</span></tt>).</p>
 <p>It generally lists the creations of:</p>
 <ul class="simple">
 <li>the relevant base components, i.e. the WM and its dataflow object managers, the EM and its dataflow unit managers</li>
@@ -2088,14 +2088,14 @@ $ deactivate
 <h2><a class="toc-backref" href="#id165">Annex 1: Design Questions</a></h2>
 <ul class="simple">
 <li>Should all output ports of all blocks of the dataflow emit at each diasca a value, even if it did not change (event-based or synchronous)?; if yes, many useless sendings and schedulings, and not all units have the same temporality, so a year-based one, if included in a simulation with a daily one, would have to change its behaviour; so we preferred opting for an <strong>event-based</strong> mode of operation</li>
-<li>As not all state changes/operations are instantaneous, should <strong>delays</strong> (in diascas or ticks) induced by a block be managed? (ex: ignition spark received, explosion happening 4 milliseconds afterwards)</li>
+<li>As not all state changes/operations are instantaneous, should <strong>delays</strong> (in diascas or ticks) induced by a block be managed? (e.g. ignition spark received, explosion happening 4 milliseconds afterwards)</li>
 <li>Would it be possible and useful that units can be <strong>composed</strong>, i.e. that a given unit can actually be recursively made of sub-units? If such a feature was wanted, then <a class="reference external" href="https://en.wikipedia.org/wiki/Eclipse_Modeling_Framework#Ecore">ecore</a> could be used to define the corresponding system, and two different approaches could be considered:<ul>
-<li>either defining, directly at this dataflow level, <em>nested units</em>, and manage the consequences thereof (ex: when the inputs of a &quot;macro&quot; unit would change, its outputs would change in turn accordingly, yet only <em>after some delay in terms of logical moments</em> (i.e. only once some of them elapsed, with state transitions that may be arbitrarily deferred)</li>
+<li>either defining, directly at this dataflow level, <em>nested units</em>, and manage the consequences thereof (e.g. when the inputs of a &quot;macro&quot; unit would change, its outputs would change in turn accordingly, yet only <em>after some delay in terms of logical moments</em> (i.e. only once some of them elapsed, with state transitions that may be arbitrarily deferred)</li>
 <li>or introduce new, higher-level concepts, such as the one of <em>assemblies</em> that can be nested; an assembly would ultimately translate to a basic, non-nested dataflow, by collapsing a (multi-level, compounded, compact) assembly into a (single-layer, uniform, intricate) dataflow; for that assemblies (either user-defined or generated) would be recursively unboxed and expanded into their parts until only standard dataflow blocks are found (a bit like when going from a higher-level electronic schematics to its full, elementary counterpart at the level of the logic gates)</li>
 </ul>
 </li>
 <li>Should large datastructures have to be carried by channels, maybe these data currently pushed by an output port shall be pulled by the input ports instead? (anyway this will most probably lead to a term duplication anyway)</li>
-<li>If a model deals with a currency (ex: euros, or US dollars of year 2012), is the best approach to have its unit flagged as <tt class="docutils literal">dimensionless</tt> (hence, not <tt class="docutils literal">euro</tt>) and complement this information at the semantics level?</li>
+<li>If a model deals with a currency (e.g. euros, or US dollars of year 2012), is the best approach to have its unit flagged as <tt class="docutils literal">dimensionless</tt> (hence, not <tt class="docutils literal">euro</tt>) and complement this information at the semantics level?</li>
 </ul>
 </div>
 <div class="section" id="annex-2-possible-overall-improvements">
@@ -2106,7 +2106,7 @@ $ deactivate
 <li>a group of ports (<em>portset</em>?) may be represented by a unique, conventional graphical element (a portset is to ports what buses are to channels); more specific activation policies could rely on portsets</li>
 <li>scale hints could be revamped (as a unit may have one scale, its inputs others, and the same for its outputs)</li>
 <li>a consensual, sufficiently expressive language of types should be defined and enforced all the way regarding the values conveyed by the dataflow (such a check is not done currently)</li>
-<li>the state changes of a dataflow may be collected by a process (should this feature be enabled), which could either write them in a file according to a conventional format (ex: <tt class="docutils literal"><span class="pre">*.df-state</span></tt>) or make them available through an ad-hoc http server; in both cases, these information could feed a tool representing graphically (according to the conventions listed in <a class="reference internal" href="#annex-3">annex 3</a>) the state of a dataflow (as an image), or the changes over time of the state of a dataflow (as a video made out of frames, generated with as few layout changes as possible from one to the next)</li>
+<li>the state changes of a dataflow may be collected by a process (should this feature be enabled), which could either write them in a file according to a conventional format (e.g. <tt class="docutils literal"><span class="pre">*.df-state</span></tt>) or make them available through an ad-hoc http server; in both cases, these information could feed a tool representing graphically (according to the conventions listed in <a class="reference internal" href="#annex-3">annex 3</a>) the state of a dataflow (as an image), or the changes over time of the state of a dataflow (as a video made out of frames, generated with as few layout changes as possible from one to the next)</li>
 <li>a support for a Python implementation of unit managers (at least the simplest/most classical ones) could be provided</li>
 </ul>
 </div>
@@ -2154,7 +2154,7 @@ $ deactivate
 <td>Pure blue</td>
 <td><tt class="docutils literal">0000ff</tt></td>
 </tr>
-<tr><td>Lines for shapes (ex: units)</td>
+<tr><td>Lines for shapes (e.g. units)</td>
 <td>Pure black</td>
 <td><tt class="docutils literal">000000</tt></td>
 </tr>

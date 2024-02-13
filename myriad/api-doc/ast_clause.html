@@ -16,27 +16,27 @@
 <h2><a name="description">Description</a></h2><p>Module in charge of <b>handling clauses defined within an AST</b>.</p>
 
  Refer to the "7.5 Clauses" section of
- <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a> for more information.
+ <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a> for more information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_body">ast_body()</a></h3>
-<p><tt>ast_body() = [<a href="#type-ast_expression">ast_expression()</a>, ...]</tt></p>
+<p><code>ast_body() = [<a href="#type-ast_expression">ast_expression()</a>, ...]</code></p>
 <p><p> The description of a body (e.g. of a function clause) in an AST.</p>
 
  "A body B is a non-empty sequence of expressions E_1, ..., E_k, and Rep(B) =
  [Rep(E_1), ..., Rep(E_k)]."</p>
 
 <h3 class="typedecl"><a name="type-ast_case_clause">ast_case_clause()</a></h3>
-<p><tt>ast_case_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></tt></p>
+<p><code>ast_case_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></code></p>
 <p> Describes a case clause in an AST.</p>
 
 <h3 class="typedecl"><a name="type-ast_catch_clause">ast_catch_clause()</a></h3>
-<p><tt>ast_catch_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></tt></p>
+<p><code>ast_catch_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></code></p>
 <p> Describes a catch clause in an AST.</p>
 
 <h3 class="typedecl"><a name="type-ast_clause">ast_clause()</a></h3>
-<p><tt>ast_clause() = <a href="#type-ast_function_clause">ast_function_clause()</a> | <a href="#type-ast_if_clause">ast_if_clause()</a> | <a href="#type-ast_case_clause">ast_case_clause()</a> | <a href="#type-ast_try_clause">ast_try_clause()</a> | <a href="#type-ast_catch_clause">ast_catch_clause()</a></tt></p>
+<p><code>ast_clause() = <a href="#type-ast_function_clause">ast_function_clause()</a> | <a href="#type-ast_if_clause">ast_if_clause()</a> | <a href="#type-ast_case_clause">ast_case_clause()</a> | <a href="#type-ast_try_clause">ast_try_clause()</a> | <a href="#type-ast_catch_clause">ast_catch_clause()</a></code></p>
 <p><p> There are 5 different kinds of clauses in an AST: 
 - function clauses 
 - if clauses 
@@ -47,11 +47,11 @@
  One may note they actually all obey the same structure (same quintuplet).</p>
 
 <h3 class="typedecl"><a name="type-ast_expression">ast_expression()</a></h3>
-<p><tt>ast_expression() = <a href="ast_expression.html#type-ast_expression">ast_expression:ast_expression()</a></tt></p>
+<p><code>ast_expression() = <a href="ast_expression.html#type-ast_expression">ast_expression:ast_expression()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_function_clause">ast_function_clause()</a></h3>
-<p><tt>ast_function_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></tt></p>
+<p><code>ast_function_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></code></p>
 <p><p> Describes a function clause in an AST:</p>
 
  <p>"If C is a function clause ( Ps ) -&gt; B, where Ps is a pattern sequence and B 
@@ -62,11 +62,11 @@ is a body, then Rep(C) = {clause, FILE_LOC, Rep(Ps), [], Rep(B)}.</p>
  {clause, FILE_LOC, Rep(Ps), Rep(Gs), Rep(B)}."</p>
 
 <h3 class="typedecl"><a name="type-ast_generic_clause">ast_generic_clause()</a></h3>
-<p><tt>ast_generic_clause() = {clause, <a href="#type-file_loc">file_loc()</a>, <a href="ast_pattern.html#type-ast_pattern_sequence">ast_pattern:ast_pattern_sequence()</a>, <a href="ast_guard.html#type-ast_guard_sequence">ast_guard:ast_guard_sequence()</a>, <a href="#type-ast_body">ast_body()</a>}</tt></p>
+<p><code>ast_generic_clause() = {clause, <a href="#type-file_loc">file_loc()</a>, <a href="ast_pattern.html#type-ast_pattern_sequence">ast_pattern:ast_pattern_sequence()</a>, <a href="ast_guard.html#type-ast_guard_sequence">ast_guard:ast_guard_sequence()</a>, <a href="#type-ast_body">ast_body()</a>}</code></p>
 <p> Describes a generic (most general) clause in an AST.</p>
 
 <h3 class="typedecl"><a name="type-ast_if_clause">ast_if_clause()</a></h3>
-<p><tt>ast_if_clause() = {clause, <a href="#type-file_loc">file_loc()</a>, [], <a href="ast_guard.html#type-ast_guard_sequence">ast_guard:ast_guard_sequence()</a>, <a href="#type-ast_body">ast_body()</a>}</tt></p>
+<p><code>ast_if_clause() = {clause, <a href="#type-file_loc">file_loc()</a>, [], <a href="ast_guard.html#type-ast_guard_sequence">ast_guard:ast_guard_sequence()</a>, <a href="#type-ast_body">ast_body()</a>}</code></p>
 <p><p> Describes an 'if' clause in an AST:</p>
 
  <p>"If C is an if clause Gs -&gt; B, where Gs is a guard sequence and B is a body, 
@@ -75,31 +75,31 @@ then Rep(C) = {clause, FILE_LOC, [], Rep(Gs), Rep(B)}."</p>
  (special case of ast_generic_clause/0, no pattern sequence)</p>
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_try_clause">ast_try_clause()</a></h3>
-<p><tt>ast_try_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></tt></p>
+<p><code>ast_try_clause() = <a href="#type-ast_generic_clause">ast_generic_clause()</a></code></p>
 <p> Describes a try clause in an AST.</p>
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-form_context">form_context()</a></h3>
-<p><tt>form_context() = <a href="ast_base.html#type-form_context">ast_base:form_context()</a></tt></p>
+<p><code>form_context() = <a href="ast_base.html#type-form_context">ast_base:form_context()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_arity">function_arity()</a></h3>
-<p><tt>function_arity() = <a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a></tt></p>
+<p><code>function_arity() = <a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
-<p><tt>function_name() = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a></tt></p>
+<p><code>function_name() = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="meta_utils.html#type-module_name">meta_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="meta_utils.html#type-module_name">meta_utils:module_name()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -128,19 +128,19 @@ terms of name of module and function) remote call.</td></tr>
 
 <h3 class="function"><a name="check_function_clauses-2">check_function_clauses/2</a></h3>
 <div class="spec">
-<p><tt>check_function_clauses(Clauses::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>) -&gt; [<a href="#type-ast_function_clause">ast_function_clause()</a>]</tt><br></p>
+<p><code>check_function_clauses(Clauses::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>) -&gt; [<a href="#type-ast_function_clause">ast_function_clause()</a>]</code><br></p>
 <p> </p>
 </div><p>Checks that the specified function clauses are legit.</p>
 
 <h3 class="function"><a name="check_function_clauses-3">check_function_clauses/3</a></h3>
 <div class="spec">
-<p><tt>check_function_clauses(Clauses::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>, Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="#type-ast_function_clause">ast_function_clause()</a>]</tt><br></p>
+<p><code>check_function_clauses(Clauses::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>, Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="#type-ast_function_clause">ast_function_clause()</a>]</code><br></p>
 <p> </p>
 </div><p>Checks that specified function clauses are legit.</p>
 
 <h3 class="function"><a name="forge_local_call-3">forge_local_call/3</a></h3>
 <div class="spec">
-<p><tt>forge_local_call(FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></tt><br></p>
+<p><code>forge_local_call(FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant representation of the specified local call.</p>
 
@@ -151,7 +151,7 @@ terms of name of module and function) remote call.</td></tr>
 
 <h3 class="function"><a name="forge_local_call-4">forge_local_call/4</a></h3>
 <div class="spec">
-<p><tt>forge_local_call(FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc1::<a href="#type-file_loc">file_loc()</a>, FileLoc2::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></tt><br></p>
+<p><code>forge_local_call(FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc1::<a href="#type-file_loc">file_loc()</a>, FileLoc2::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant representation of the specified local call.</p>
 
@@ -162,7 +162,7 @@ terms of name of module and function) remote call.</td></tr>
 
 <h3 class="function"><a name="forge_remote_call-4">forge_remote_call/4</a></h3>
 <div class="spec">
-<p><tt>forge_remote_call(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></tt><br></p>
+<p><code>forge_remote_call(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant representation of the specified remote call.</p>
 
@@ -174,7 +174,7 @@ terms of name of module and function) remote call.</td></tr>
 
 <h3 class="function"><a name="forge_remote_call-5">forge_remote_call/5</a></h3>
 <div class="spec">
-<p><tt>forge_remote_call(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc1::<a href="#type-file_loc">file_loc()</a>, FileLoc2::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></tt><br></p>
+<p><code>forge_remote_call(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Params::[<a href="#type-ast_expression">ast_expression()</a>], FileLoc1::<a href="#type-file_loc">file_loc()</a>, FileLoc2::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_expression">ast_expression()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant representation of the specified (immediate, in 
 terms of name of module and function) remote call.</p>
@@ -187,7 +187,7 @@ terms of name of module and function) remote call.</p>
 
 <h3 class="function"><a name="transform_body-2">transform_body/2</a></h3>
 <div class="spec">
-<p><tt>transform_body(BodyExprs::<a href="#type-ast_body">ast_body()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_body">ast_body()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_body(BodyExprs::<a href="#type-ast_body">ast_body()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_body">ast_body()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified AST body.</p>
 
@@ -197,7 +197,7 @@ terms of name of module and function) remote call.</p>
 
 <h3 class="function"><a name="transform_case_clause-2">transform_case_clause/2</a></h3>
 <div class="spec">
-<p><tt>transform_case_clause(Clause::<a href="#type-ast_case_clause">ast_case_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_case_clause">ast_case_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_case_clause(Clause::<a href="#type-ast_case_clause">ast_case_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_case_clause">ast_case_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified 'case' clause.</p>
 
@@ -213,13 +213,13 @@ sequence, and B is a body, then Rep(C) =
 
 <h3 class="function"><a name="transform_case_clauses-2">transform_case_clauses/2</a></h3>
 <div class="spec">
-<p><tt>transform_case_clauses(CaseClauses::[<a href="#type-ast_case_clause">ast_case_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_case_clause">ast_case_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_case_clauses(CaseClauses::[<a href="#type-ast_case_clause">ast_case_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_case_clause">ast_case_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms the specified list of 'case' clauses.</p>
 
 <h3 class="function"><a name="transform_catch_clause-2">transform_catch_clause/2</a></h3>
 <div class="spec">
-<p><tt>transform_catch_clause(Clause::<a href="#type-ast_catch_clause">ast_catch_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_catch_clause">ast_catch_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_catch_clause(Clause::<a href="#type-ast_catch_clause">ast_catch_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_catch_clause">ast_catch_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified catch clause.</p>
 
@@ -235,19 +235,19 @@ Rep(C) = {clause, FILE_LOC, [Rep({throw,P,_})], [], Rep(B)}."</p>
 
 <h3 class="function"><a name="transform_catch_clauses-2">transform_catch_clauses/2</a></h3>
 <div class="spec">
-<p><tt>transform_catch_clauses(CatchClauses::[<a href="#type-ast_catch_clause">ast_catch_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_catch_clause">ast_catch_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_catch_clauses(CatchClauses::[<a href="#type-ast_catch_clause">ast_catch_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_catch_clause">ast_catch_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms the specified list of 'catch' clauses.</p>
 
 <h3 class="function"><a name="transform_clause_default-2">transform_clause_default/2</a></h3>
 <div class="spec">
-<p><tt>transform_clause_default(Clause, Transforms) -&gt; any()</tt></p>
+<p><code>transform_clause_default(Clause, Transforms) -&gt; any()</code></p>
 <p> </p>
 </div><p>Default transformation applied to function clauses.</p>
 
 <h3 class="function"><a name="transform_function_clause-2">transform_function_clause/2</a></h3>
 <div class="spec">
-<p><tt>transform_function_clause(Clause::<a href="#type-ast_function_clause">ast_function_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_function_clause">ast_function_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_function_clause(Clause::<a href="#type-ast_function_clause">ast_function_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_function_clause">ast_function_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified function clause.</p>
 
@@ -264,13 +264,13 @@ Rep(B)}."</p>
 
 <h3 class="function"><a name="transform_function_clauses-2">transform_function_clauses/2</a></h3>
 <div class="spec">
-<p><tt>transform_function_clauses(FunctionClauses::[<a href="#type-ast_function_clause">ast_function_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_function_clause">ast_function_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_function_clauses(FunctionClauses::[<a href="#type-ast_function_clause">ast_function_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_function_clause">ast_function_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms the specified list of function clauses.</p>
 
 <h3 class="function"><a name="transform_if_clause-2">transform_if_clause/2</a></h3>
 <div class="spec">
-<p><tt>transform_if_clause(Clause::<a href="#type-ast_if_clause">ast_if_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_if_clause">ast_if_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_if_clause(Clause::<a href="#type-ast_if_clause">ast_if_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_if_clause">ast_if_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified 'if' clause.</p>
 
@@ -282,19 +282,19 @@ then Rep(C) = {clause, FILE_LOC, [], Rep(Gs), Rep(B)}."</p>
 
 <h3 class="function"><a name="transform_if_clauses-2">transform_if_clauses/2</a></h3>
 <div class="spec">
-<p><tt>transform_if_clauses(IfClauses::[<a href="#type-ast_if_clause">ast_if_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_if_clause">ast_if_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_if_clauses(IfClauses::[<a href="#type-ast_if_clause">ast_if_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_if_clause">ast_if_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms the specified list of 'if' clauses.</p>
 
 <h3 class="function"><a name="transform_try_clause-2">transform_try_clause/2</a></h3>
 <div class="spec">
-<p><tt>transform_try_clause(TryClause::<a href="#type-ast_try_clause">ast_try_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_try_clause">ast_try_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_try_clause(TryClause::<a href="#type-ast_try_clause">ast_try_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_try_clause">ast_try_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms the specified try clause.</p>
 
 <h3 class="function"><a name="transform_try_clauses-2">transform_try_clauses/2</a></h3>
 <div class="spec">
-<p><tt>transform_try_clauses(TryClauses::[<a href="#type-ast_try_clause">ast_try_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_try_clause">ast_try_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_try_clauses(TryClauses::[<a href="#type-ast_try_clause">ast_try_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_try_clause">ast_try_clause()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms the specified list of try clauses.</p>
 <hr>

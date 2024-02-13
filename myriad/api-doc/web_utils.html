@@ -24,219 +24,219 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-activation_switch">activation_switch()</a></h3>
-<p><tt>activation_switch() = <a href="basic_utils.html#type-activation_switch">basic_utils:activation_switch()</a></tt></p>
+<p><code>activation_switch() = <a href="basic_utils.html#type-activation_switch">basic_utils:activation_switch()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_uri">any_uri()</a></h3>
-<p><tt>any_uri() = <a href="#type-uri">uri()</a> | <a href="#type-bin_uri">bin_uri()</a></tt></p>
+<p><code>any_uri() = <a href="#type-uri">uri()</a> | <a href="#type-bin_uri">bin_uri()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_url">any_url()</a></h3>
-<p><tt>any_url() = <a href="#type-url">url()</a> | <a href="#type-bin_url">bin_url()</a></tt></p>
+<p><code>any_url() = <a href="#type-url">url()</a> | <a href="#type-bin_url">bin_url()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-api_endpoint">api_endpoint()</a></h3>
-<p><tt>api_endpoint() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>api_endpoint() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p><p> The API endpoint (with no deployment-related prefix such as 
 "https://francecentral.") of a given service.</p>
 
  For example <code>&lt;&lt;"api.cognitive.microsoft.com/sts/v1.0/issuetoken"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-azure_instance_info">azure_instance_info()</a></h3>
-<p><tt>azure_instance_info() = #azure_instance_info{instance_key = <a href="web_utils.html#type-azure_instance_key">web_utils:azure_instance_key()</a>, instance_location = <a href="web_utils.html#type-azure_instance_location">web_utils:azure_instance_location()</a>}</tt></p>
+<p><code>azure_instance_info() = #azure_instance_info{instance_key = <a href="web_utils.html#type-azure_instance_key">web_utils:azure_instance_key()</a>, instance_location = <a href="web_utils.html#type-azure_instance_location">web_utils:azure_instance_location()</a>}</code></p>
 <p> Information regarding an instance hosted by the Microsoft Azure cloud
  provider.</p>
 
 <h3 class="typedecl"><a name="type-azure_instance_key">azure_instance_key()</a></h3>
-<p><tt>azure_instance_key() = <a href="#type-instance_key">instance_key()</a></tt></p>
+<p><code>azure_instance_key() = <a href="#type-instance_key">instance_key()</a></code></p>
 <p> The key of a Microsoft Azure instance.
  For example <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-azure_instance_location">azure_instance_location()</a></h3>
-<p><tt>azure_instance_location() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>azure_instance_location() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> The location of a Microsoft Azure instance.
  For example <code>&lt;&lt;"francecentral"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-bin_body">bin_body()</a></h3>
-<p><tt>bin_body() = binary()</tt></p>
+<p><code>bin_body() = binary()</code></p>
 <p> A body in binary form, which is the recommended one.</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_uri">bin_uri()</a></h3>
-<p><tt>bin_uri() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_uri() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_url">bin_url()</a></h3>
-<p><tt>bin_url() = <a href="#type-bin_uri">bin_uri()</a></tt></p>
+<p><code>bin_url() = <a href="#type-bin_uri">bin_uri()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-body">body()</a></h3>
-<p><tt>body() = <a href="#type-string_body">string_body()</a> | <a href="#type-bin_body">bin_body()</a></tt></p>
+<p><code>body() = <a href="#type-string_body">string_body()</a> | <a href="#type-bin_body">bin_body()</a></code></p>
 <p> The body of a HTTP message. The binary form is strongly recommended (more
  compact, and, more importantly, a lot less problematic regarding encodings).</p>
 
 <h3 class="typedecl"><a name="type-cloud_instance_info">cloud_instance_info()</a></h3>
-<p><tt>cloud_instance_info() = <a href="#type-azure_instance_info">azure_instance_info()</a></tt></p>
+<p><code>cloud_instance_info() = <a href="#type-azure_instance_info">azure_instance_info()</a></code></p>
 <p> Information regarding an instance hosted by a cloud provider.</p>
 
 <h3 class="typedecl"><a name="type-cloud_provider">cloud_provider()</a></h3>
-<p><tt>cloud_provider() = azure | aws | google_cloud</tt></p>
+<p><code>cloud_provider() = azure | aws | google_cloud</code></p>
 
 
 <h3 class="typedecl"><a name="type-content_type">content_type()</a></h3>
-<p><tt>content_type() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>content_type() = <a href="#type-ustring">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-headers">headers()</a></h3>
-<p><tt>headers() = <a href="#type-headers_as_list">headers_as_list()</a> | <a href="#type-headers_as_maps">headers_as_maps()</a></tt></p>
+<p><code>headers() = <a href="#type-headers_as_list">headers_as_list()</a> | <a href="#type-headers_as_maps">headers_as_maps()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-headers_as_list">headers_as_list()</a></h3>
-<p><tt>headers_as_list() = <a href="#type-old_style_options">old_style_options()</a></tt></p>
+<p><code>headers_as_list() = <a href="#type-old_style_options">old_style_options()</a></code></p>
 <p> Example: {"User-Agent", "Godzilla The Mighty"}.</p>
 
 <h3 class="typedecl"><a name="type-headers_as_maps">headers_as_maps()</a></h3>
-<p><tt>headers_as_maps() = <a href="#type-new_style_options">new_style_options()</a></tt></p>
+<p><code>headers_as_maps() = <a href="#type-new_style_options">new_style_options()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-html_element">html_element()</a></h3>
-<p><tt>html_element() = <a href="#type-any_string">any_string()</a></tt></p>
+<p><code>html_element() = <a href="#type-any_string">any_string()</a></code></p>
 <p> For example "<p>Hello!</p>".</p>
 
 <h3 class="typedecl"><a name="type-http_option">http_option()</a></h3>
-<p><tt>http_option() = any()</tt></p>
+<p><code>http_option() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-http_options">http_options()</a></h3>
-<p><tt>http_options() = <a href="#type-options_for_httpc">options_for_httpc()</a> | <a href="#type-map_options">map_options()</a></tt></p>
+<p><code>http_options() = <a href="#type-options_for_httpc">options_for_httpc()</a> | <a href="#type-map_options">map_options()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-http_status_class">http_status_class()</a></h3>
-<p><tt>http_status_class() = informational_response | successful | redirection | client_error | server_error</tt></p>
+<p><code>http_status_class() = informational_response | successful | redirection | client_error | server_error</code></p>
 
 
 <h3 class="typedecl"><a name="type-http_status_code">http_status_code()</a></h3>
-<p><tt>http_status_code() = non_neg_integer()</tt></p>
+<p><code>http_status_code() = non_neg_integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-instance_key">instance_key()</a></h3>
-<p><tt>instance_key() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>instance_key() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> The key of an instance hosted by a cloud provider.
  For example <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-json_body">json_body()</a></h3>
-<p><tt>json_body() = <a href="#type-body">body()</a></tt></p>
+<p><code>json_body() = <a href="#type-body">body()</a></code></p>
 <p> Encoded in JSON.</p>
 
 <h3 class="typedecl"><a name="type-list_options">list_options()</a></h3>
-<p><tt>list_options() = [{atom(), term()}]</tt></p>
+<p><code>list_options() = [{atom(), term()}]</code></p>
 
 
 <h3 class="typedecl"><a name="type-location">location()</a></h3>
-<p><tt>location() = atom()</tt></p>
+<p><code>location() = atom()</code></p>
 
 
 <h3 class="typedecl"><a name="type-map_options">map_options()</a></h3>
-<p><tt>map_options() = <a href="#type-table">table()</a></tt></p>
+<p><code>map_options() = <a href="#type-table">table()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-media_type">media_type()</a></h3>
-<p><tt>media_type() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/unicode.html#type-chardata">unicode:chardata()</a></tt></p>
+<p><code>media_type() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/unicode.html#type-chardata">unicode:chardata()</a></code></p>
 <p><p> A media type (formerly known as "MIME type").</p>
 
  <p>For example "audio/ogg".</p>
 
- Refer to <a href="https://en.wikipedia.org/wiki/Media_type" target="_top"><tt>https://en.wikipedia.org/wiki/Media_type</tt></a>.</p>
+ Refer to <a href="https://en.wikipedia.org/wiki/Media_type" target="_top"><code>https://en.wikipedia.org/wiki/Media_type</code></a>.</p>
 
 <h3 class="typedecl"><a name="type-method">method()</a></h3>
-<p><tt>method() = <a href="rest_utils.html#type-method">rest_utils:method()</a></tt></p>
+<p><code>method() = <a href="rest_utils.html#type-method">rest_utils:method()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-new_style_options">new_style_options()</a></h3>
-<p><tt>new_style_options() = <a href="type_utils.html#type-map">type_utils:map</a>(<a href="#type-bin_string">bin_string()</a>, <a href="#type-bin_string">bin_string()</a>)</tt></p>
+<p><code>new_style_options() = <a href="type_utils.html#type-map">type_utils:map</a>(<a href="#type-bin_string">bin_string()</a>, <a href="#type-bin_string">bin_string()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-nonce">nonce()</a></h3>
-<p><tt>nonce() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>nonce() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-old_style_options">old_style_options()</a></h3>
-<p><tt>old_style_options() = [{Field::<a href="#type-ustring">ustring()</a>, Value::<a href="#type-ustring">ustring()</a>}]</tt></p>
+<p><code>old_style_options() = [{Field::<a href="#type-ustring">ustring()</a>, Value::<a href="#type-ustring">ustring()</a>}]</code></p>
 
 
 <h3 class="typedecl"><a name="type-option_list">option_list()</a></h3>
-<p><tt>option_list() = <a href="option_list.html#type-option_list">option_list:option_list()</a></tt></p>
+<p><code>option_list() = <a href="option_list.html#type-option_list">option_list:option_list()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-options_for_httpc">options_for_httpc()</a></h3>
-<p><tt>options_for_httpc() = [<a href="#type-http_option">http_option()</a>]</tt></p>
+<p><code>options_for_httpc() = [<a href="#type-http_option">http_option()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-path">path()</a></h3>
-<p><tt>path() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>path() = <a href="#type-ustring">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-protocol_type">protocol_type()</a></h3>
-<p><tt>protocol_type() = http | https | ftp</tt></p>
+<p><code>protocol_type() = http | https | ftp</code></p>
 <p> The possible protocols (schemes) for an URL (use uri_string:parse/1 to extract
  it).</p>
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><tt>request_result() = {<a href="#type-http_status_code">http_status_code()</a>, <a href="#type-headers_as_maps">headers_as_maps()</a>, <a href="#type-bin_body">bin_body()</a>} | {error, <a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>}</tt></p>
+<p><code>request_result() = {<a href="#type-http_status_code">http_status_code()</a>, <a href="#type-headers_as_maps">headers_as_maps()</a>, <a href="#type-bin_body">bin_body()</a>} | {error, <a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-service_endpoint">service_endpoint()</a></h3>
-<p><tt>service_endpoint() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>service_endpoint() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p><p> The full, readily usable endpoint of a given service.</p>
 
  For example
  <code>&lt;&lt;"https://francecentral.api.cognitive.microsoft.com/sts/v1.0/issuetoken"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-ssl_opt">ssl_opt()</a></h3>
-<p><tt>ssl_opt() = no_ssl | ssl</tt></p>
+<p><code>ssl_opt() = no_ssl | ssl</code></p>
 <p> Tells whether the SSL support is needed (typically for https).</p>
 
 <h3 class="typedecl"><a name="type-ssl_options">ssl_options()</a></h3>
-<p><tt>ssl_options() = <a href="#type-list_options">list_options()</a></tt></p>
+<p><code>ssl_options() = <a href="#type-list_options">list_options()</a></code></p>
 <p> map_options().</p>
 
 <h3 class="typedecl"><a name="type-string_body">string_body()</a></h3>
-<p><tt>string_body() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>string_body() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A body as a plain string (beware to encodings).</p>
 
 <h3 class="typedecl"><a name="type-uri">uri()</a></h3>
-<p><tt>uri() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>uri() = <a href="#type-ustring">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-url">url()</a></h3>
-<p><tt>url() = <a href="#type-uri">uri()</a></tt></p>
+<p><code>url() = <a href="#type-uri">uri()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-url_info">url_info()</a></h3>
-<p><tt>url_info() = #url_info{protocol = <a href="web_utils.html#type-protocol_type">web_utils:protocol_type()</a>, host_identifier = <a href="net_utils.html#type-host_identifier">net_utils:host_identifier()</a>, port = <a href="#type-maybe">maybe</a>(<a href="net_utils.html#type-net_port">net_utils:net_port()</a>), path = <a href="web_utils.html#type-path">web_utils:path()</a>}</tt></p>
+<p><code>url_info() = #url_info{protocol = <a href="web_utils.html#type-protocol_type">web_utils:protocol_type()</a>, host_identifier = <a href="net_utils.html#type-host_identifier">net_utils:host_identifier()</a>, port = <a href="#type-maybe">maybe</a>(<a href="net_utils.html#type-net_port">net_utils:net_port()</a>), path = <a href="web_utils.html#type-path">web_utils:path()</a>}</code></p>
 <p> Full information about an URL (prefer uri_string:uri_map() now).</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -292,13 +292,13 @@ fragment.</td></tr>
 
 <h3 class="function"><a name="cloud_instance_info_to_string-1">cloud_instance_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>cloud_instance_info_to_string(Azure_instance_info::<a href="#type-cloud_instance_info">cloud_instance_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>cloud_instance_info_to_string(Azure_instance_info::<a href="#type-cloud_instance_info">cloud_instance_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified cloud instance.</p>
 
 <h3 class="function"><a name="download_file-2">download_file/2</a></h3>
 <div class="spec">
-<p><tt>download_file(Url::<a href="#type-url">url()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>download_file(Url::<a href="#type-url">url()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Downloads the file designated by the specified URL, in the specified 
 directory (under its name in URL), with no specific HTTP options, and returns 
@@ -312,7 +312,7 @@ _TargetDir="/tmp") shall result in a "/tmp/baz.txt" file.</p>
 
 <h3 class="function"><a name="download_file-3">download_file/3</a></h3>
 <div class="spec">
-<p><tt>download_file(Url::<a href="#type-url">url()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>download_file(Url::<a href="#type-url">url()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Downloads the file designated by specified URL, in the specified 
 directory (under its name in URL), with specified HTTP options, and returns 
@@ -330,7 +330,7 @@ _TargetDir="/tmp", HttpOptions  shall result in a "/tmp/baz.txt" file.</p>
 
 <h3 class="function"><a name="encode_as_url-1">encode_as_url/1</a></h3>
 <div class="spec">
-<p><tt>encode_as_url(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>encode_as_url(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Encodes specified list of {Key, Value} pairs so that it can used into an 
 URL.</p>
@@ -350,13 +350,13 @@ http://stackoverflow.com/questions/114196/url-encode-in-erlang</p>
 
 <h3 class="function"><a name="encode_element_as_url-1">encode_element_as_url/1</a></h3>
 <div class="spec">
-<p><tt>encode_element_as_url(E::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>encode_element_as_url(E::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Encodes specified element so that it can be used in an URL.</p>
 
 <h3 class="function"><a name="escape_as_html_content-1">escape_as_html_content/1</a></h3>
 <div class="spec">
-<p><tt>escape_as_html_content(BinString::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-html_element">html_element()</a></tt><br></p>
+<p><code>escape_as_html_content(BinString::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-html_element">html_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Escapes specified text, so that it can be included safely as an HTML 
 content.</p>
@@ -366,7 +366,7 @@ content.</p>
 
 <h3 class="function"><a name="escape_as_url-1">escape_as_url/1</a></h3>
 <div class="spec">
-<p><tt>escape_as_url(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>escape_as_url(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Escapes specified list of {Key,Value} pairs so that it can used into some 
 URL.</p>
@@ -377,7 +377,7 @@ URL.</p>
 
 <h3 class="function"><a name="escape_term_as_html_content-1">escape_term_as_html_content/1</a></h3>
 <div class="spec">
-<p><tt>escape_term_as_html_content(Term::term()) -&gt; <a href="#type-html_element">html_element()</a></tt><br></p>
+<p><code>escape_term_as_html_content(Term::term()) -&gt; <a href="#type-html_element">html_element()</a></code><br></p>
 <p> </p>
 </div><p>Escapes specified term (most probably non-string), so that it can be
  included safely as an HTML content.
@@ -385,7 +385,7 @@ URL.</p>
 
 <h3 class="function"><a name="get-3">get/3</a></h3>
 <div class="spec">
-<p><tt>get(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p><code>get(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>) -&gt; <a href="#type-request_result">request_result()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends a (synchronous) HTTP/1.1 client GET request.</p>
 
@@ -400,7 +400,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="get_azure_instance_information-2">get_azure_instance_information/2</a></h3>
 <div class="spec">
-<p><tt>get_azure_instance_information(InstKey::<a href="#type-azure_instance_key">azure_instance_key()</a>, InstLoc::<a href="#type-azure_instance_location">azure_instance_location()</a>) -&gt; <a href="#type-azure_instance_info">azure_instance_info()</a></tt><br></p>
+<p><code>get_azure_instance_information(InstKey::<a href="#type-azure_instance_key">azure_instance_key()</a>, InstLoc::<a href="#type-azure_instance_location">azure_instance_location()</a>) -&gt; <a href="#type-azure_instance_info">azure_instance_info()</a></code><br></p>
 <p> </p>
 </div><p>Returns a Microsoft Azure instance information based on the specified
  settings.
@@ -408,7 +408,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="get_http_status_class-1">get_http_status_class/1</a></h3>
 <div class="spec">
-<p><tt>get_http_status_class(StatusCode::<a href="#type-http_status_code">http_status_code()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-http_status_class">http_status_class()</a>)</tt><br></p>
+<p><code>get_http_status_class(StatusCode::<a href="#type-http_status_code">http_status_code()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-http_status_class">http_status_class()</a>)</code><br></p>
 <p> </p>
 </div><p>Returns the status class (if any) corresponding to the specified HTTP
  status code.
@@ -416,7 +416,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="get_last_path_element-1">get_last_path_element/1</a></h3>
 <div class="spec">
-<p><tt>get_last_path_element(Url::<a href="#type-url">url()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>get_last_path_element(Url::<a href="#type-url">url()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the last element, the final path "filename" pointed by specified 
 URL.</p>
@@ -427,7 +427,7 @@ URL.</p>
 
 <h3 class="function"><a name="get_ordered_list-1">get_ordered_list/1</a></h3>
 <div class="spec">
-<p><tt>get_ordered_list(Elements::[<a href="#type-html_element">html_element()</a>]) -&gt; <a href="#type-html_element">html_element()</a></tt><br></p>
+<p><code>get_ordered_list(Elements::[<a href="#type-html_element">html_element()</a>]) -&gt; <a href="#type-html_element">html_element()</a></code><br></p>
 <p> </p>
 </div><p>Returns the HTML code of an ordered (numbered bullets) list corresponding
  to specified list of elements.
@@ -435,7 +435,7 @@ URL.</p>
 
 <h3 class="function"><a name="get_ssl_verify_options-0">get_ssl_verify_options/0</a></h3>
 <div class="spec">
-<p><tt>get_ssl_verify_options() -&gt; <a href="#type-ssl_options">ssl_options()</a></tt><br></p>
+<p><code>get_ssl_verify_options() -&gt; <a href="#type-ssl_options">ssl_options()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns default SSL options regarding the verification of remote peers 
 for HTTPS connections.</p>
@@ -445,7 +445,7 @@ for HTTPS connections.</p>
 
 <h3 class="function"><a name="get_ssl_verify_options-1">get_ssl_verify_options/1</a></h3>
 <div class="spec">
-<p><tt>get_ssl_verify_options(Switch::<a href="#type-activation_switch">activation_switch()</a>) -&gt; <a href="#type-ssl_options">ssl_options()</a></tt><br></p>
+<p><code>get_ssl_verify_options(Switch::<a href="#type-activation_switch">activation_switch()</a>) -&gt; <a href="#type-ssl_options">ssl_options()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns SSL options regarding the verification of remote peers for HTTPS 
 connections:</p>
@@ -462,7 +462,7 @@ connections:</p>
 
 <h3 class="function"><a name="get_unordered_list-1">get_unordered_list/1</a></h3>
 <div class="spec">
-<p><tt>get_unordered_list(Elements::[<a href="#type-html_element">html_element()</a>]) -&gt; <a href="#type-html_element">html_element()</a></tt><br></p>
+<p><code>get_unordered_list(Elements::[<a href="#type-html_element">html_element()</a>]) -&gt; <a href="#type-html_element">html_element()</a></code><br></p>
 <p> </p>
 </div><p>Returns the HTML code of an unordered list corresponding to specified
  list of elements.
@@ -470,22 +470,22 @@ connections:</p>
 
 <h3 class="function"><a name="http_status_class_to_string-1">http_status_class_to_string/1</a></h3>
 <div class="spec">
-<p><tt>http_status_class_to_string(Other::<a href="#type-maybe">maybe</a>(<a href="#type-http_status_class">http_status_class()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>http_status_class_to_string(Other::<a href="#type-maybe">maybe</a>(<a href="#type-http_status_class">http_status_class()</a>)) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of specified HTTP status class.</p>
 
 <h3 class="function"><a name="interpret_http_status_code-1">interpret_http_status_code/1</a></h3>
 <div class="spec">
-<p><tt>interpret_http_status_code(StatusCode::<a href="#type-http_status_code">http_status_code()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_http_status_code(StatusCode::<a href="#type-http_status_code">http_status_code()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of the specified HTTP code.</p>
 
- Source: <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_top"><tt>https://en.wikipedia.org/wiki/List_of_HTTP_status_codes</tt></a>.
+ Source: <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_top"><code>https://en.wikipedia.org/wiki/List_of_HTTP_status_codes</code></a>.
 </p>
 
 <h3 class="function"><a name="post-3">post/3</a></h3>
 <div class="spec">
-<p><tt>post(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p><code>post(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>) -&gt; <a href="#type-request_result">request_result()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends a (synchronous, body-less) HTTP/1.1 client POST request.</p>
 
@@ -500,7 +500,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="post-4">post/4</a></h3>
 <div class="spec">
-<p><tt>post(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-body">body()</a>)) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p><code>post(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-body">body()</a>)) -&gt; <a href="#type-request_result">request_result()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends a (synchronous) HTTP/1.1 client POST request.</p>
 
@@ -519,7 +519,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="post-5">post/5</a></h3>
 <div class="spec">
-<p><tt>post(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-body">body()</a>), MaybeContentType::<a href="#type-maybe">maybe</a>(<a href="#type-content_type">content_type()</a>)) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p><code>post(Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-body">body()</a>), MaybeContentType::<a href="#type-maybe">maybe</a>(<a href="#type-content_type">content_type()</a>)) -&gt; <a href="#type-request_result">request_result()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends a (synchronous) HTTP/1.1 client POST request.</p>
 
@@ -538,7 +538,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="request-6">request/6</a></h3>
 <div class="spec">
-<p><tt>request(Method::<a href="#type-method">method()</a>, Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-bin_body">bin_body()</a>), MaybeContentType::<a href="#type-maybe">maybe</a>(<a href="#type-content_type">content_type()</a>)) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p><code>request(Method::<a href="#type-method">method()</a>, Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-bin_body">bin_body()</a>), MaybeContentType::<a href="#type-maybe">maybe</a>(<a href="#type-content_type">content_type()</a>)) -&gt; <a href="#type-request_result">request_result()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends a (synchronous) HTTP/1.1 client request (GET or POST).</p>
 
@@ -553,7 +553,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><tt>start() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the HTTP support, with default settings.</p>
 
@@ -563,7 +563,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><tt>start(Option::<a href="#type-ssl_opt">ssl_opt()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start(Option::<a href="#type-ssl_opt">ssl_opt()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the HTTP support, with specified settings.</p>
 
@@ -573,13 +573,13 @@ web_utils:get_ssl_verify_options()} pair.</p>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><tt>stop() -&gt; any()</tt></p>
+<p><code>stop() -&gt; <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></code><br></p>
 <p> </p>
 </div><p>Stops the HTTP support.</p>
 
 <h3 class="function"><a name="string_to_uri_map-1">string_to_uri_map/1</a></h3>
 <div class="spec">
-<p><tt>string_to_uri_map(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/uri_string.html#type-uri_map">uri_string:uri_map()</a></tt><br></p>
+<p><code>string_to_uri_map(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/uri_string.html#type-uri_map">uri_string:uri_map()</a></code><br></p>
 <p> </p>
 </div><p><p>Decodes specified string into an URI map, by extracting all relevant 
 information: protocol (scheme), user information, host, port, path and 
@@ -590,7 +590,7 @@ fragment.</p>
 
 <h3 class="function"><a name="string_to_url_info-1">string_to_url_info/1</a></h3>
 <div class="spec">
-<p><tt>string_to_url_info(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-url_info">url_info()</a></tt><br></p>
+<p><code>string_to_url_info(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-url_info">url_info()</a></code><br></p>
 <p> </p>
 </div><p><p>Decodes specified string into an url_info record, by extracting protocol 
 (scheme), host, port and path information.</p>
@@ -604,7 +604,7 @@ lost.</p>
 
 <h3 class="function"><a name="url_info_to_string-1">url_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>url_info_to_string(Url_info::<a href="#type-url_info">url_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>url_info_to_string(Url_info::<a href="#type-url_info">url_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing the specified URL information.</p>
 <hr>

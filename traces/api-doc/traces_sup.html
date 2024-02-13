@@ -12,7 +12,7 @@
 <h1>Module traces_sup</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the <b>root OTP supervisor</b> of Traces.
 
-<p><b>Behaviours:</b> <a href="supervisor.html"><tt>supervisor</tt></a>.</p>
+<p><b>Behaviours:</b> <a href="supervisor.html"><code>supervisor</code></a>.</p>
 
 <h2><a name="description">Description</a></h2><p>Module implementing the <b>root OTP supervisor</b> of Traces.</p>
 
@@ -26,15 +26,15 @@ traces_bridge_sup module.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-init_arg_list">init_arg_list()</a></h3>
-<p><tt>init_arg_list() = [boolean() | <a href="#type-registration_scope">registration_scope()</a>]</tt></p>
+<p><code>init_arg_list() = [boolean() | <a href="#type-registration_scope">registration_scope()</a>]</code></p>
 <p> Actually exactly [TraceSupervisorWanted, AggRegScope].</p>
 
 <h3 class="typedecl"><a name="type-init_args">init_args()</a></h3>
-<p><tt>init_args() = {boolean() | <a href="#type-registration_scope">registration_scope()</a>}</tt></p>
+<p><code>init_args() = {boolean() | <a href="#type-registration_scope">registration_scope()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-registration_scope">registration_scope()</a></h3>
-<p><tt>registration_scope() = <a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a></tt></p>
+<p><code>registration_scope() = <a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -48,7 +48,7 @@ supervision bridge.</td></tr>
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><tt>init(X1::{boolean() | <a href="#type-registration_scope">registration_scope()</a>}) -&gt; {ok, {<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a>, [<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-child_spec">supervisor:child_spec()</a>]}}</tt><br></p>
+<p><code>init(X1::{boolean() | <a href="#type-registration_scope">registration_scope()</a>}) -&gt; {ok, {<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a>, [<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-child_spec">supervisor:child_spec()</a>]}}</code><br></p>
 <p> </p>
 </div><p>Callback to initialise the Traces supervisor bridge (supervised by this
  root supervisor), typically in answer to start_link/1 above being executed.
@@ -56,7 +56,7 @@ supervision bridge.</td></tr>
 
 <h3 class="function"><a name="start_link-1">start_link/1</a></h3>
 <div class="spec">
-<p><tt>start_link(TraceInitArgs::<a href="#type-init_args">init_args()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-startlink_ret">supervisor:startlink_ret()</a></tt><br></p>
+<p><code>start_link(TraceInitArgs::<a href="#type-init_args">init_args()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-startlink_ret">supervisor:startlink_ret()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts and links the Traces root supervisor, creating in turn a proper 
 supervision bridge.</p>

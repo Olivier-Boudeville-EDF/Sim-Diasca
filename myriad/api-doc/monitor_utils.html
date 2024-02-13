@@ -22,7 +22,7 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-monitor_info">monitor_info()</a></h3>
-<p><tt>monitor_info() = <a href="basic_utils.html#type-exit_reason">basic_utils:exit_reason()</a> | noproc | noconnection</tt></p>
+<p><code>monitor_info() = <a href="basic_utils.html#type-exit_reason">basic_utils:exit_reason()</a> | noproc | noconnection</code></p>
 <p><p> This information may be:</p>
 
  <p>- the exit reason of the process</p>
@@ -33,43 +33,43 @@
  resides)</p>
 
 <h3 class="typedecl"><a name="type-monitor_node_info">monitor_node_info()</a></h3>
-<p><tt>monitor_node_info() = <a href="list_table.html#type-list_table">list_table:list_table()</a></tt></p>
+<p><code>monitor_node_info() = <a href="list_table.html#type-list_table">list_table:list_table()</a></code></p>
 <p> See net_kernel:monitor_nodes/2 for more information.</p>
 
 <h3 class="typedecl"><a name="type-monitor_node_option">monitor_node_option()</a></h3>
-<p><tt>monitor_node_option() = {node_type, <a href="net_utils.html#type-node_type">net_utils:node_type()</a>} | nodedown_reason</tt></p>
+<p><code>monitor_node_option() = {node_type, <a href="net_utils.html#type-node_type">net_utils:node_type()</a>} | nodedown_reason</code></p>
 
 
 <h3 class="typedecl"><a name="type-monitor_reference">monitor_reference()</a></h3>
-<p><tt>monitor_reference() = reference()</tt></p>
+<p><code>monitor_reference() = reference()</code></p>
 <p> Not allowed to be shortened into a local reference/0 type.</p>
 
 <h3 class="typedecl"><a name="type-monitored_clock">monitored_clock()</a></h3>
-<p><tt>monitored_clock() = clock_service</tt></p>
+<p><code>monitored_clock() = clock_service</code></p>
 <p> Monitoring time offsets.</p>
 
 <h3 class="typedecl"><a name="type-monitored_element">monitored_element()</a></h3>
-<p><tt>monitored_element() = <a href="#type-monitored_process">monitored_process()</a> | <a href="#type-monitored_port">monitored_port()</a> | <a href="#type-monitored_clock">monitored_clock()</a></tt></p>
+<p><code>monitored_element() = <a href="#type-monitored_process">monitored_process()</a> | <a href="#type-monitored_port">monitored_port()</a> | <a href="#type-monitored_clock">monitored_clock()</a></code></p>
 <p> An actual element being monitored.</p>
 
 <h3 class="typedecl"><a name="type-monitored_element_type">monitored_element_type()</a></h3>
-<p><tt>monitored_element_type() = process | port | clock</tt></p>
+<p><code>monitored_element_type() = process | port | clock</code></p>
 <p> The types of elements that can be monitored.</p>
 
 <h3 class="typedecl"><a name="type-monitored_port">monitored_port()</a></h3>
-<p><tt>monitored_port() = port() | <a href="#type-registered_name">registered_name()</a></tt></p>
+<p><code>monitored_port() = port() | <a href="#type-registered_name">registered_name()</a></code></p>
 <p> Monitoring an Erlang port.</p>
 
 <h3 class="typedecl"><a name="type-monitored_process">monitored_process()</a></h3>
-<p><tt>monitored_process() = pid() | <a href="#type-registered_process_identifier">registered_process_identifier()</a></tt></p>
+<p><code>monitored_process() = pid() | <a href="#type-registered_process_identifier">registered_process_identifier()</a></code></p>
 <p> Monitoring an Erlang process.</p>
 
 <h3 class="typedecl"><a name="type-registered_name">registered_name()</a></h3>
-<p><tt>registered_name() = <a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a></tt></p>
+<p><code>registered_name() = <a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-registered_process_identifier">registered_process_identifier()</a></h3>
-<p><tt>registered_process_identifier() = <a href="#type-registered_name">registered_name()</a> | {<a href="#type-registered_name">registered_name()</a>, node()}</tt></p>
+<p><code>registered_process_identifier() = <a href="#type-registered_name">registered_name()</a> | {<a href="#type-registered_name">registered_name()</a>, node()}</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -83,7 +83,7 @@ messages.</td></tr>
 
 <h3 class="function"><a name="monitor_nodes-1">monitor_nodes/1</a></h3>
 <div class="spec">
-<p><tt>monitor_nodes(DoStartNewSubscription::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>monitor_nodes(DoStartNewSubscription::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Subscribes or unsubscribes the calling process to node status change 
 messages.</p>
@@ -93,7 +93,7 @@ messages.</p>
 
 <h3 class="function"><a name="monitor_nodes-2">monitor_nodes/2</a></h3>
 <div class="spec">
-<p><tt>monitor_nodes(DoStartNewSubscription::boolean(), Options::[<a href="#type-monitor_node_option">monitor_node_option()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>monitor_nodes(DoStartNewSubscription::boolean(), Options::[<a href="#type-monitor_node_option">monitor_node_option()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Subscribes or unsubscribes the calling process to node status change 
 messages.</p>

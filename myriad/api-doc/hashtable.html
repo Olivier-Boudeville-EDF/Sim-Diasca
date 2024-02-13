@@ -41,79 +41,79 @@ only them)</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
-<p><tt>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></tt></p>
+<p><code>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-atom_entry">atom_entry()</a></h3>
-<p><tt>atom_entry() = <a href="#type-entry">entry</a>(atom(), term())</tt></p>
+<p><code>atom_entry() = <a href="#type-entry">entry</a>(atom(), term())</code></p>
 <p> Very common, including in proplists.</p>
 
 <h3 class="typedecl"><a name="type-bucket">bucket()</a></h3>
-<p><tt>bucket(K, V) = [<a href="#type-entries">entries</a>(K, V)]</tt></p>
+<p><code>bucket(K, V) = [<a href="#type-entries">entries</a>(K, V)]</code></p>
 
 
 <h3 class="typedecl"><a name="type-bucket">bucket()</a></h3>
-<p><tt>bucket() = [<a href="#type-entries">entries()</a>]</tt></p>
+<p><code>bucket() = [<a href="#type-entries">entries()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-bucket_count">bucket_count()</a></h3>
-<p><tt>bucket_count() = pos_integer()</tt></p>
+<p><code>bucket_count() = pos_integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-bullet">bullet()</a></h3>
-<p><tt>bullet() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> A type of bullet (ex: " * ").</p>
+<p><code>bullet() = <a href="#type-ustring">ustring()</a></code></p>
+<p> A type of bullet (e.g. " * ").</p>
 
 <h3 class="typedecl"><a name="type-default_value">default_value()</a></h3>
-<p><tt>default_value() = term()</tt></p>
+<p><code>default_value() = term()</code></p>
 <p> A default value, associated to a key.</p>
 
 <h3 class="typedecl"><a name="type-description_type">description_type()</a></h3>
-<p><tt>description_type() = <a href="#type-bullet">bullet()</a> | user_friendly | full | internal</tt></p>
+<p><code>description_type() = <a href="#type-bullet">bullet()</a> | user_friendly | full | internal</code></p>
 
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><tt>entries(K, V) = [{K, V}]</tt></p>
+<p><code>entries(K, V) = [{K, V}]</code></p>
 
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><tt>entries() = [<a href="#type-entry">entry()</a>]</tt></p>
+<p><code>entries() = [<a href="#type-entry">entry()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><tt>entry(K, V) = {K, V}</tt></p>
+<p><code>entry(K, V) = {K, V}</code></p>
 
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><tt>entry() = {<a href="#type-key">key()</a>, <a href="#type-value">value()</a>}</tt></p>
+<p><code>entry() = {<a href="#type-key">key()</a>, <a href="#type-value">value()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-entry_count">entry_count()</a></h3>
-<p><tt>entry_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>entry_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-hashtable">hashtable()</a></h3>
-<p><b>abstract datatype</b>: <tt>hashtable()</tt></p>
+<p><b>abstract datatype</b>: <code>hashtable()</code></p>
 
 
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
-<p><tt>key() = term()</tt></p>
+<p><code>key() = term()</code></p>
 <p> Not necessarily an atom, a key can be any term.</p>
 
 <h3 class="typedecl"><a name="type-maybe_entries">maybe_entries()</a></h3>
-<p><tt>maybe_entries() = [<a href="#type-maybe_entry">maybe_entry()</a>]</tt></p>
+<p><code>maybe_entries() = [<a href="#type-maybe_entry">maybe_entry()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_entry">maybe_entry()</a></h3>
-<p><tt>maybe_entry() = {<a href="#type-key">key()</a>, <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)}</tt></p>
+<p><code>maybe_entry() = {<a href="#type-key">key()</a>, <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
-<p><tt>value() = term()</tt></p>
+<p><code>value() = term()</code></p>
 <p> Any value associated to a key.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -170,7 +170,7 @@ contained in this hashtable.</td></tr>
 <tr><td valign="top"><a href="#new_with_buckets-1">new_with_buckets/1</a></td><td>Returns an empty hashtable dimensioned with the specified number of
  buckets.</td></tr>
 <tr><td valign="top"><a href="#optimise-1">optimise/1</a></td><td>Optimises this hashtable with regard to its load factor (see
- <a href="http://en.wikipedia.org/wiki/Hash_table#Load_factor" target="_top"><tt>http://en.wikipedia.org/wiki/Hash_table#Load_factor</tt></a>).</td></tr>
+ <a href="http://en.wikipedia.org/wiki/Hash_table#Load_factor" target="_top"><code>http://en.wikipedia.org/wiki/Hash_table#Load_factor</code></a>).</td></tr>
 <tr><td valign="top"><a href="#optimise_unconditionally-4">optimise_unconditionally/4</a></td><td>Performs an optimisation of the specified hashtable.</td></tr>
 <tr><td valign="top"><a href="#pop_from_entry-2">pop_from_entry/2</a></td><td>Pops the head of the value (supposed to be a list) associated to
  specified key, and returns a pair made of the popped head and of the new
@@ -196,7 +196,7 @@ false, if false will be true.</td></tr>
 
 <h3 class="function"><a name="add_diagnosed_entries-2">add_diagnosed_entries/2</a></h3>
 <div class="spec">
-<p><tt>add_diagnosed_entries(Entries::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-hashtable">hashtable()</a>, added | updated}</tt><br></p>
+<p><code>add_diagnosed_entries(Entries::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-hashtable">hashtable()</a>, added | updated}</code><br></p>
 <p> </p>
 </div><p><p>Adds the specified list of key/value pairs into the specified hashtable, 
 and returns an updated diagnosis.</p>
@@ -207,7 +207,7 @@ and returns an updated diagnosis.</p>
 
 <h3 class="function"><a name="add_diagnosed_entry-3">add_diagnosed_entry/3</a></h3>
 <div class="spec">
-<p><tt>add_diagnosed_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-hashtable">hashtable()</a>, added | updated}</tt><br></p>
+<p><code>add_diagnosed_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-hashtable">hashtable()</a>, added | updated}</code><br></p>
 <p> </p>
 </div><p><p>Adds the specified key/value pair into the specified hashtable, and 
 returns an update diagnosis.</p>
@@ -218,7 +218,7 @@ returns an update diagnosis.</p>
 
 <h3 class="function"><a name="add_entries-2">add_entries/2</a></h3>
 <div class="spec">
-<p><tt>add_entries(EntryList::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>add_entries(EntryList::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Adds the specified list of key/value pairs into the specified hashtable.</p>
 
@@ -228,7 +228,7 @@ returns an update diagnosis.</p>
 
 <h3 class="function"><a name="add_entry-3">add_entry/3</a></h3>
 <div class="spec">
-<p><tt>add_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>add_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Adds the specified key/value pair into the specified hashtable.</p>
 
@@ -238,7 +238,7 @@ returns an update diagnosis.</p>
 
 <h3 class="function"><a name="add_to_entry-3">add_to_entry/3</a></h3>
 <div class="spec">
-<p><tt>add_to_entry(Key::<a href="#type-key">key()</a>, Value::number(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>add_to_entry(Key::<a href="#type-key">key()</a>, Value::number(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Adds the specified value to the value, supposed to be numerical, 
 associated to specified key.</p>
@@ -249,7 +249,7 @@ associated to specified key.</p>
 
 <h3 class="function"><a name="append_to_entry-3">append_to_entry/3</a></h3>
 <div class="spec">
-<p><tt>append_to_entry(Key::<a href="#type-key">key()</a>, Element::term(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>append_to_entry(Key::<a href="#type-key">key()</a>, Element::term(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Appends the specified element to the value, supposed to be a list, 
 associated to specified key.</p>
@@ -262,7 +262,7 @@ associated to specified key.</p>
 
 <h3 class="function"><a name="delete_from_entry-3">delete_from_entry/3</a></h3>
 <div class="spec">
-<p><tt>delete_from_entry(Key::<a href="#type-key">key()</a>, Element::term(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>delete_from_entry(Key::<a href="#type-key">key()</a>, Element::term(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Deletes the first match of the specified element in the value associated 
 to specified key, this value being assumed to be a list.</p>
@@ -274,13 +274,13 @@ to specified key, this value being assumed to be a list.</p>
 
 <h3 class="function"><a name="display-1">display/1</a></h3>
 <div class="spec">
-<p><tt>display(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified hashtable on the standard output.</p>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><tt>display(Title::<a href="#type-ustring">ustring()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display(Title::<a href="#type-ustring">ustring()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified hashtable on the standard output, with the
  specified title on top.
@@ -288,17 +288,17 @@ to specified key, this value being assumed to be a list.</p>
 
 <h3 class="function"><a name="enumerate-1">enumerate/1</a></h3>
 <div class="spec">
-<p><tt>enumerate(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></tt><br></p>
+<p><code>enumerate(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a flat list whose elements are all the key/value pairs of the 
 hashtable, in no particular order.</p>
 
- Ex: <code>[{K1,V1}, {K2,V2}, ...]</code>.
+ For example <code>[{K1,V1}, {K2,V2}, ...]</code>.
 </p>
 
 <h3 class="function"><a name="extract_entry-2">extract_entry/2</a></h3>
 <div class="spec">
-<p><tt>extract_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-hashtable">hashtable()</a>}</tt><br></p>
+<p><code>extract_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-hashtable">hashtable()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Extracts the specified entry from specified hashtable: returns the 
 associated value and removes that entry from the table.</p>
@@ -309,7 +309,7 @@ associated value and removes that entry from the table.</p>
 
 <h3 class="function"><a name="fold_on_entries-3">fold_on_entries/3</a></h3>
 <div class="spec">
-<p><tt>fold_on_entries(Fun::fun((<a href="#type-entry">entry()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>), InitialAcc::<a href="#type-accumulator">accumulator()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></tt><br></p>
+<p><code>fold_on_entries(Fun::fun((<a href="#type-entry">entry()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>), InitialAcc::<a href="#type-accumulator">accumulator()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></code><br></p>
 <p> </p>
 </div><p><p>Folds the specified anonymous function on all entries of the specified 
 hashtable.</p>
@@ -321,7 +321,7 @@ hashtable.</p>
 
 <h3 class="function"><a name="get_all_values-2">get_all_values/2</a></h3>
 <div class="spec">
-<p><tt>get_all_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p><code>get_all_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table, ensuring all entries have been read, 
@@ -330,13 +330,13 @@ otherwise throwing an exception.</p>
  <p>The key/value pairs are expected to exist already, otherwise an exception is 
 raised.</p>
 
- Ex: <code>[Color=red, Age=23, Mass=51] = hashtable:get_all_values([color, age,
-         mass], [{color, red}, {mass, 51}, {age, 23}])</code>.
+ For example <code>[Color=red, Age=23, Mass=51] = hashtable:get_all_values([color,
+   age, mass], [{color, red}, {mass, 51}, {age, 23}])</code>.
 </p>
 
 <h3 class="function"><a name="get_ideal_bucket_count-1">get_ideal_bucket_count/1</a></h3>
 <div class="spec">
-<p><tt>get_ideal_bucket_count(EntryCount::<a href="#type-entry_count">entry_count()</a>) -&gt; <a href="#type-bucket_count">bucket_count()</a></tt><br></p>
+<p><code>get_ideal_bucket_count(EntryCount::<a href="#type-entry_count">entry_count()</a>) -&gt; <a href="#type-bucket_count">bucket_count()</a></code><br></p>
 <p> </p>
 </div><p>Returns the ideal number of buckets needed for specified number of
  entries.
@@ -344,7 +344,7 @@ raised.</p>
 
 <h3 class="function"><a name="get_value-2">get_value/2</a></h3>
 <div class="spec">
-<p><tt>get_value(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p><code>get_value(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></code><br></p>
 <p> </p>
 </div><p><p>Retrieves the value corresponding to specified (existing) key, and 
 returns it directly.</p>
@@ -355,7 +355,7 @@ returns it directly.</p>
 
 <h3 class="function"><a name="get_value_with_default-3">get_value_with_default/3</a></h3>
 <div class="spec">
-<p><tt>get_value_with_default(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p><code>get_value_with_default(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></code><br></p>
 <p> </p>
 </div><p>Looks for the specified entry in specified table and, if found, returns
  the associated value; otherwise returns the specified default value.
@@ -363,7 +363,7 @@ returns it directly.</p>
 
 <h3 class="function"><a name="get_values-2">get_values/2</a></h3>
 <div class="spec">
-<p><tt>get_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p><code>get_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table.</p>
@@ -371,19 +371,19 @@ returns it directly.</p>
  <p>The key/value pairs are expected to exist already, otherwise an exception is 
 raised.</p>
 
- Ex: <code>[Color, Age, Mass] = hashtable:get_values([color, age, mass],
+ For example <code>[Color, Age, Mass] = hashtable:get_values([color, age, mass],
            MyTable])</code>.
 </p>
 
 <h3 class="function"><a name="has_entry-2">has_entry/2</a></h3>
 <div class="spec">
-<p><tt>has_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; boolean()</tt><br></p>
+<p><code>has_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified key exists in the table.</p>
 
 <h3 class="function"><a name="is_empty-1">is_empty/1</a></h3>
 <div class="spec">
-<p><tt>is_empty(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_empty(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified hashtable is empty (not storing any
  key/value pair).
@@ -391,13 +391,13 @@ raised.</p>
 
 <h3 class="function"><a name="keys-1">keys/1</a></h3>
 <div class="spec">
-<p><tt>keys(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-key">key()</a>]</tt><br></p>
+<p><code>keys(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-key">key()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list containing all the keys of this hashtable.</p>
 
 <h3 class="function"><a name="lookup_entry-2">lookup_entry/2</a></h3>
 <div class="spec">
-<p><tt>lookup_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; key_not_found | {value, <a href="#type-value">value()</a>}</tt><br></p>
+<p><code>lookup_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; key_not_found | {value, <a href="#type-value">value()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Looks-up the specified entry (designated by its key) in specified 
 hashtable.</p>
@@ -409,7 +409,7 @@ hashtable.</p>
 
 <h3 class="function"><a name="map_on_entries-2">map_on_entries/2</a></h3>
 <div class="spec">
-<p><tt>map_on_entries(Fun::fun((<a href="#type-entry">entry()</a>) -&gt; <a href="#type-entry">entry()</a>), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>map_on_entries(Fun::fun((<a href="#type-entry">entry()</a>) -&gt; <a href="#type-entry">entry()</a>), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Applies (maps) the specified anonymous function to each of the key-value 
 entries contained in this hashtable.</p>
@@ -419,7 +419,7 @@ enumerate the content of the hashtable and iterate on it (hence without having
 to duplicate the whole content in memory).</p>
 
  <p>Note: as the fun may return modified keys, the whole structure of the 
-hashtable may change (ex: different buckets used for replaced entries, 
+hashtable may change (e.g. different buckets used for replaced entries, 
 colliding keys resulting in having less entries afterwards, etc.).</p>
 
  One may request the returned hashtable to be optimised after this call.
@@ -427,7 +427,7 @@ colliding keys resulting in having less entries afterwards, etc.).</p>
 
 <h3 class="function"><a name="map_on_values-2">map_on_values/2</a></h3>
 <div class="spec">
-<p><tt>map_on_values(Fun::fun((<a href="#type-value">value()</a>) -&gt; <a href="#type-value">value()</a>), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>map_on_values(Fun::fun((<a href="#type-value">value()</a>) -&gt; <a href="#type-value">value()</a>), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Applies (maps) the specified anonymous function to each of the values 
 contained in this hashtable.</p>
@@ -442,7 +442,7 @@ to duplicate the whole content in memory).</p>
 
 <h3 class="function"><a name="merge-2">merge/2</a></h3>
 <div class="spec">
-<p><tt>merge(HashtableBase::<a href="#type-hashtable">hashtable()</a>, HashtableAdd::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>merge(HashtableBase::<a href="#type-hashtable">hashtable()</a>, HashtableAdd::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p>Returns a new hashtable, which started from HashtableBase and was
  enriched with the HashtableAdd entries whose keys where not already in
@@ -452,7 +452,7 @@ to duplicate the whole content in memory).</p>
 
 <h3 class="function"><a name="must_optimise-2">must_optimise/2</a></h3>
 <div class="spec">
-<p><tt>must_optimise(EntryCount::<a href="#type-entry_count">entry_count()</a>, BucketCount::<a href="#type-bucket_count">bucket_count()</a>) -&gt; boolean()</tt><br></p>
+<p><code>must_optimise(EntryCount::<a href="#type-entry_count">entry_count()</a>, BucketCount::<a href="#type-bucket_count">bucket_count()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether an optimisation ought to be triggered.</p>
 
@@ -462,13 +462,13 @@ to duplicate the whole content in memory).</p>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>
 <div class="spec">
-<p><tt>new() -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>new() -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p>Returns an empty hashtable dimensioned for the default number of entries.</p>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><tt>new(ExpectedNumberOfEntries::<a href="#type-entry_count">entry_count()</a> | <a href="#type-entries">entries()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>new(ExpectedNumberOfEntries::<a href="#type-entry_count">entry_count()</a> | <a href="#type-entries">entries()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p>Returns an empty hashtable dimensioned for the specified expected number
  of entries.
@@ -476,7 +476,7 @@ to duplicate the whole content in memory).</p>
 
 <h3 class="function"><a name="new_with_buckets-1">new_with_buckets/1</a></h3>
 <div class="spec">
-<p><tt>new_with_buckets(NumberOfBuckets::<a href="#type-bucket_count">bucket_count()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>new_with_buckets(NumberOfBuckets::<a href="#type-bucket_count">bucket_count()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p>Returns an empty hashtable dimensioned with the specified number of
  buckets.
@@ -484,10 +484,10 @@ to duplicate the whole content in memory).</p>
 
 <h3 class="function"><a name="optimise-1">optimise/1</a></h3>
 <div class="spec">
-<p><tt>optimise(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>optimise(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Optimises this hashtable with regard to its load factor (see
- <a href="http://en.wikipedia.org/wiki/Hash_table#Load_factor" target="_top"><tt>http://en.wikipedia.org/wiki/Hash_table#Load_factor</tt></a>).</p>
+ <a href="http://en.wikipedia.org/wiki/Hash_table#Load_factor" target="_top"><code>http://en.wikipedia.org/wiki/Hash_table#Load_factor</code></a>).</p>
 
  To be called whenever the size of a given hashtable is not expected to change
  substantially. The principle is to determine the optimal number of buckets for
@@ -498,13 +498,13 @@ to duplicate the whole content in memory).</p>
 
 <h3 class="function"><a name="optimise_unconditionally-4">optimise_unconditionally/4</a></h3>
 <div class="spec">
-<p><tt>optimise_unconditionally(EntryCount::<a href="#type-entry_count">entry_count()</a>, CurrentBucketCount::<a href="#type-bucket_count">bucket_count()</a>, Entries::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>optimise_unconditionally(EntryCount::<a href="#type-entry_count">entry_count()</a>, CurrentBucketCount::<a href="#type-bucket_count">bucket_count()</a>, Entries::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p>Performs an optimisation of the specified hashtable.</p>
 
 <h3 class="function"><a name="pop_from_entry-2">pop_from_entry/2</a></h3>
 <div class="spec">
-<p><tt>pop_from_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {term(), <a href="#type-hashtable">hashtable()</a>}</tt><br></p>
+<p><code>pop_from_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {term(), <a href="#type-hashtable">hashtable()</a>}</code><br></p>
 <p> </p>
 </div><p>Pops the head of the value (supposed to be a list) associated to
  specified key, and returns a pair made of the popped head and of the new
@@ -513,7 +513,7 @@ to duplicate the whole content in memory).</p>
 
 <h3 class="function"><a name="remove_diagnosed_entry-2">remove_diagnosed_entry/2</a></h3>
 <div class="spec">
-<p><tt>remove_diagnosed_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {deleted, <a href="#type-hashtable">hashtable()</a>} | unchanged</tt><br></p>
+<p><code>remove_diagnosed_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {deleted, <a href="#type-hashtable">hashtable()</a>} | unchanged</code><br></p>
 <p> </p>
 </div><p><p>Removes the specified key/value pair, as designated by the key, from the 
 specified hashtable.</p>
@@ -525,7 +525,7 @@ specified hashtable.</p>
 
 <h3 class="function"><a name="remove_entry-2">remove_entry/2</a></h3>
 <div class="spec">
-<p><tt>remove_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>remove_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes the specified key/value pair, as designated by the key, from the 
 specified hashtable.</p>
@@ -537,7 +537,7 @@ specified hashtable.</p>
 
 <h3 class="function"><a name="select_entries-2">select_entries/2</a></h3>
 <div class="spec">
-<p><tt>select_entries(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></tt><br></p>
+<p><code>select_entries(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></code><br></p>
 <p> </p>
 </div><p>Returns a list of key/value pairs corresponding to the list of specified
  keys, or throws a badmatch is at least one key is not found.
@@ -545,7 +545,7 @@ specified hashtable.</p>
 
 <h3 class="function"><a name="size-1">size/1</a></h3>
 <div class="spec">
-<p><tt>size(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-entry_count">entry_count()</a></tt><br></p>
+<p><code>size(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-entry_count">entry_count()</a></code><br></p>
 <p> </p>
 </div><p>Returns the size (number of entries, namely of key/value pairs) of the
  specified table.
@@ -553,7 +553,7 @@ specified hashtable.</p>
 
 <h3 class="function"><a name="subtract_from_entry-3">subtract_from_entry/3</a></h3>
 <div class="spec">
-<p><tt>subtract_from_entry(Key::<a href="#type-key">key()</a>, Value::number(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>subtract_from_entry(Key::<a href="#type-key">key()</a>, Value::number(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Subtracts the specified value to the value, supposed to be numerical, 
 associated to specified key.</p>
@@ -564,13 +564,13 @@ associated to specified key.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified hashtable.</p>
 
 <h3 class="function"><a name="to_string-2">to_string/2</a></h3>
 <div class="spec">
-<p><tt>to_string(Hashtable::<a href="#type-hashtable">hashtable()</a>, DescriptionType::<a href="#type-description_type">description_type()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Hashtable::<a href="#type-hashtable">hashtable()</a>, DescriptionType::<a href="#type-description_type">description_type()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of the specified hashtable.</p>
 
@@ -581,7 +581,7 @@ associated to specified key.</p>
 
 <h3 class="function"><a name="toggle_entry-2">toggle_entry/2</a></h3>
 <div class="spec">
-<p><tt>toggle_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
+<p><code>toggle_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></code><br></p>
 <p> </p>
 </div><p><p>Toggles the boolean value associated with specified key: if true will be 
 false, if false will be true.</p>
@@ -592,11 +592,12 @@ false, if false will be true.</p>
 
 <h3 class="function"><a name="values-1">values/1</a></h3>
 <div class="spec">
-<p><tt>values(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p><code>values(Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list containing all the values of this hashtable.</p>
 
- Ex: useful if the key was used as an index to generate this table first.
+ For example useful if the key was used as an index to generate this table
+ first.
 </p>
 <hr>
 

@@ -1,0 +1,552 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gephi_support</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gephi_support</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Support for the <b>Gephi</b> facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Support for the <b>Gephi</b> facilities.</p>
+
+ <p>Gephi is an open source tool to visualise and explore all kinds of graphs and 
+networks.</p>
+
+ <p>See gephi_support_test.erl for the corresponding test, and the Gephi official
+ website <a href="https://gephi.org/" target="_top"><code>https://gephi.org/</code></a> for further information.</p>
+
+ For the vast majority of the services defined here, an instance of a Gephi
+ server is expected to have been configured and launched beforehand, both
+ according to our conventions.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_project_name">any_project_name()</a></h3>
+<p><code>any_project_name() = <a href="#type-project_name">project_name()</a> | <a href="#type-bin_project_name">bin_project_name()</a></code></p>
+<p> The name of a Gephi project, typically one that shall be loaded.</p>
+
+<h3 class="typedecl"><a name="type-any_project_path">any_project_path()</a></h3>
+<p><code>any_project_path() = <a href="#type-any_file_path">any_file_path()</a></code></p>
+<p><p> Any user-specified path to a Gephi project file, from which a project name may 
+be deduced.</p>
+
+ For example the "/tmp/foo/my_project.gephi" path is to correspond to the
+ "my_project" project.</p>
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_workspace_name">any_workspace_name()</a></h3>
+<p><code>any_workspace_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> The name of a Gephi workspace, in a project.</p>
+
+<h3 class="typedecl"><a name="type-base_url">base_url()</a></h3>
+<p><code>base_url() = <a href="#type-bin_url">bin_url()</a></code></p>
+<p> A precomputed base URL, used to send requests more efficiently.</p>
+
+<h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
+<p><code>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_gephi_server_host">bin_gephi_server_host()</a></h3>
+<p><code>bin_gephi_server_host() = <a href="net_utils.html#type-possibly_local_bin_hostname">net_utils:possibly_local_bin_hostname()</a></code></p>
+<p> To designate internally the host of a Gephi server.</p>
+
+<h3 class="typedecl"><a name="type-bin_project_name">bin_project_name()</a></h3>
+<p><code>bin_project_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> The name of a Gephi project, typically one that shall be loaded. For example,
+ a <code>&lt;&lt;"Foobar"&gt;&gt;</code> project name would refer to a "Foobar.gephi" project file.</p>
+
+<h3 class="typedecl"><a name="type-bin_project_path">bin_project_path()</a></h3>
+<p><code>bin_project_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
+<p><p> A user-specified path to a Gephi project file, from which a project name may 
+be deduced.</p>
+
+ For example the <code>&lt;&lt;"/tmp/foo/my_project.gephi"&gt;&gt;</code> path is to correspond to the
+ "my_project" project.</p>
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_url">bin_url()</a></h3>
+<p><code>bin_url() = <a href="web_utils.html#type-bin_url">web_utils:bin_url()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_workspace_name">bin_workspace_name()</a></h3>
+<p><code>bin_workspace_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> The name of a Gephi workspace, in a project.</p>
+
+<h3 class="typedecl"><a name="type-edge_id">edge_id()</a></h3>
+<p><code>edge_id() = <a href="#type-element_id">element_id()</a></code></p>
+<p> The identifier of a graph edge.</p>
+
+<h3 class="typedecl"><a name="type-element_id">element_id()</a></h3>
+<p><code>element_id() = <a href="#type-string_like">string_like()</a></code></p>
+<p><p> The identifier of a graph element.</p>
+
+ This is a node, an edge or a property.</p>
+
+<h3 class="typedecl"><a name="type-element_label">element_label()</a></h3>
+<p><code>element_label() = <a href="#type-any_string">any_string()</a></code></p>
+<p> A label that can be associated to a graph element.</p>
+
+<h3 class="typedecl"><a name="type-extension">extension()</a></h3>
+<p><code>extension() = <a href="file_utils.html#type-extension">file_utils:extension()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-gephi_server_host">gephi_server_host()</a></h3>
+<p><code>gephi_server_host() = <a href="net_utils.html#type-possibly_local_hostname">net_utils:possibly_local_hostname()</a></code></p>
+<p> To designate the host of a Gephi server.</p>
+
+<h3 class="typedecl"><a name="type-gephi_server_info">gephi_server_info()</a></h3>
+<p><code>gephi_server_info() = #gephi_server_info{host = <a href="#type-bin_gephi_server_host">bin_gephi_server_host()</a>, port = <a href="#type-gephi_server_port">gephi_server_port()</a>, project_path = <a href="#type-maybe">maybe</a>(<a href="#type-bin_project_path">bin_project_path()</a>), workspace = <a href="#type-bin_workspace_name">bin_workspace_name()</a>, base_url = <a href="#type-base_url">base_url()</a>}</code></p>
+<p><p> Information to designate an instance of a Gephi server, typically in order to 
+access it from the network.</p>
+
+ Record not shared through an header file, as the get_server_info/* functions
+ shall be used instead.</p>
+
+<h3 class="typedecl"><a name="type-gephi_server_port">gephi_server_port()</a></h3>
+<p><code>gephi_server_port() = <a href="net_utils.html#type-tcp_port">net_utils:tcp_port()</a></code></p>
+<p> A (TCP) port at which a Gephi instance may run.</p>
+
+<h3 class="typedecl"><a name="type-graph_color">graph_color()</a></h3>
+<p><code>graph_color() = <a href="#type-rgb_hexastring">rgb_hexastring()</a></code></p>
+<p><p> A color, typically of a graph element.</p>
+
+ Note that colors shall be defined like for HTML (e.g. as "#0000ff"); "blue" or
+ 'blue' will make Gephi fail (with a black window area).</p>
+
+<h3 class="typedecl"><a name="type-graph_value">graph_value()</a></h3>
+<p><code>graph_value() = boolean() | number() | <a href="#type-any_string">any_string()</a></code></p>
+<p><p> A value, possibly associated to a given timestamp in a graph.</p>
+
+ It would be interesting to determine whether other datatypes can be accepted
+ (e.g. booleans, non-scalar types); apparently any value whose stringification
+ (with ~p) is directly a valid JSON value would do.</p>
+
+<h3 class="typedecl"><a name="type-node_id">node_id()</a></h3>
+<p><code>node_id() = <a href="#type-element_id">element_id()</a></code></p>
+<p> The identifier of a graph node.</p>
+
+<h3 class="typedecl"><a name="type-project_name">project_name()</a></h3>
+<p><code>project_name() = <a href="#type-ustring">ustring()</a></code></p>
+<p> The name of a Gephi project, typically one that shall be loaded. For example,
+ a "Foobar" project name would refer to a "Foobar.gephi" project file.</p>
+
+<h3 class="typedecl"><a name="type-project_path">project_path()</a></h3>
+<p><code>project_path() = <a href="#type-file_path">file_path()</a></code></p>
+<p><p> A user-specified path to a Gephi project file, from which a project name may 
+be deduced.</p>
+
+ For example the "/tmp/foo/my_project.gephi" path is to correspond to the
+ "my_project" project.</p>
+
+<h3 class="typedecl"><a name="type-property_id">property_id()</a></h3>
+<p><code>property_id() = <a href="#type-element_id">element_id()</a></code></p>
+<p> The identifier of a node property; for example "label", <code>&lt;&lt;"color"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-property_table">property_table()</a></h3>
+<p><code>property_table() = <a href="#type-table">table</a>(<a href="#type-property_id">property_id()</a>, <a href="#type-property_value">property_value()</a>)</code></p>
+<p> A table storing a set of property id/value pairs.</p>
+
+<h3 class="typedecl"><a name="type-property_value">property_value()</a></h3>
+<p><code>property_value() = <a href="#type-graph_value">graph_value()</a></code></p>
+<p> A value that can be assigned to a property.</p>
+
+<h3 class="typedecl"><a name="type-rgb_hexastring">rgb_hexastring()</a></h3>
+<p><code>rgb_hexastring() = <a href="gui_color.html#type-rgb_hexastring">gui_color:rgb_hexastring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-server_availability">server_availability()</a></h3>
+<p><code>server_availability() = ok | time_out</code></p>
+<p> Availability outcome regarding a Gephi server lookup.</p>
+
+<h3 class="typedecl"><a name="type-string_like">string_like()</a></h3>
+<p><code>string_like() = <a href="text_utils.html#type-string_like">text_utils:string_like()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tcp_port">tcp_port()</a></h3>
+<p><code>tcp_port() = <a href="net_utils.html#type-tcp_port">net_utils:tcp_port()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
+<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-timestamp">timestamp()</a></h3>
+<p><code>timestamp() = <a href="#type-graph_value">graph_value()</a></code></p>
+<p> Possibly a float in [0.0, 1.0], an integer number of seconds, an ISO 8601
+ string like "2000-01-01T00:00:00Z".</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-workspace_name">workspace_name()</a></h3>
+<p><code>workspace_name() = <a href="#type-ustring">ustring()</a></code></p>
+<p> The name of a Gephi workspace (for example "Siclone"), in a project.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_edge-5">add_edge/5</a></td><td>Adds an edge whose identifier is specified, together with the identifiers
+ of the first node and the second one, telling whether it is a directed edge
+ (from first node to second one), in the context of the specified Gephi
+ instance.</td></tr>
+<tr><td valign="top"><a href="#add_edge-6">add_edge/6</a></td><td>Adds an edge whose identifier is specified, together with the identifiers
+ of the first node and the second one, telling whether it is a directed edge
+ (from first node to second one) and what its color is, in the context of the
+ specified Gephi instance.</td></tr>
+<tr><td valign="top"><a href="#add_edge-7">add_edge/7</a></td><td>Adds an edge whose identifier is specified, together with the identifiers
+ of the first node and the second one, telling whether it is a directed edge
+ (from first node to second one) and what its label and color are, in the
+ context of the specified Gephi instance.</td></tr>
+<tr><td valign="top"><a href="#add_node-2">add_node/2</a></td><td>Adds a node whose identifier is specified, in the context of the
+ specified Gephi instance.</td></tr>
+<tr><td valign="top"><a href="#add_node-3">add_node/3</a></td><td>Adds a node whose identifier and label are specified, in the context of
+ the specified Gephi instance.</td></tr>
+<tr><td valign="top"><a href="#add_node-4">add_node/4</a></td><td>Adds a node whose identifier, label or color are specified, in the
+ context of the specified Gephi instance.</td></tr>
+<tr><td valign="top"><a href="#clean_up_server-2">clean_up_server/2</a></td><td>Cleans-up the filesystem context of the Gephi server.</td></tr>
+<tr><td valign="top"><a href="#get_gephi_extension-0">get_gephi_extension/0</a></td><td>Returns the file extension that Gephi projects are expected to use.</td></tr>
+<tr><td valign="top"><a href="#get_project_name_from_path-1">get_project_name_from_path/1</a></td><td>Deduces the Gephi project name from the path of the specified project
+ file.</td></tr>
+<tr><td valign="top"><a href="#get_server_default_tcp_port-0">get_server_default_tcp_port/0</a></td><td>Returns the default TCP port expected to be used by a Gephi server.</td></tr>
+<tr><td valign="top"><a href="#get_server_info-1">get_server_info/1</a></td><td>Returns relevant information to connect to the specified workspace of a
+ Gephi server expected to run on the local host, on the default port (so no
+ specific project is to be specified).</td></tr>
+<tr><td valign="top"><a href="#get_server_info-2">get_server_info/2</a></td><td>Returns relevant information to connect to the specified workspace of the
+ specified Gephi server, expected to run on the specified host, on the default
+ port (so no specific project is to be specified).</td></tr>
+<tr><td valign="top"><a href="#get_server_info-3">get_server_info/3</a></td><td>Returns relevant information to connect to the specified workspace of the
+ specified Gephi server, expected to run on the specified host, on the
+ specified port (so no specific project is to be specified).</td></tr>
+<tr><td valign="top"><a href="#get_server_info-4">get_server_info/4</a></td><td>Returns relevant information to connect to the specified workspace of the 
+specified Gephi server, expected to run on the specified host, on the 
+specified port, with a project path specified.</td></tr>
+<tr><td valign="top"><a href="#is_available-0">is_available/0</a></td><td>Tells whether Gephi is available, that is whether its server may be
+ available.</td></tr>
+<tr><td valign="top"><a href="#launch_server-1">launch_server/1</a></td><td>Launches in the background (on the local host) a Gephi server, relying on 
+the specified project file, using the default user directory.</td></tr>
+<tr><td valign="top"><a href="#launch_server-2">launch_server/2</a></td><td>Launches in the background (on the local host) a Gephi server, relying on 
+the specified user directory and project file.</td></tr>
+<tr><td valign="top"><a href="#launch_server_if_needed-2">launch_server_if_needed/2</a></td><td>Launches in the background (on the local host) a Gephi server, relying on 
+the specified project file, using the default user directory, only if needed, 
+that is if no prior instance thereof is detected.</td></tr>
+<tr><td valign="top"><a href="#launch_server_if_needed-3">launch_server_if_needed/3</a></td><td>Launches in the background (on the local host) a Gephi server, relying on 
+the specified user directory and project file, only if needed, that is if no 
+prior instance thereof is detected.</td></tr>
+<tr><td valign="top"><a href="#server_info_to_string-1">server_info_to_string/1</a></td><td>Returns a textual description of the specified server information.</td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts the Gephi (client-side) support.</td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the Gephi (client-side) support.</td></tr>
+<tr><td valign="top"><a href="#update_edge_properties-3">update_edge_properties/3</a></td><td>Updates the specified properties of the specified edge to the constant
+ (timestamp-less) values defined in the specified table.</td></tr>
+<tr><td valign="top"><a href="#update_edge_property-4">update_edge_property/4</a></td><td>Updates the specified property of the specified edge to the specified
+ constant (timestamp-less) value.</td></tr>
+<tr><td valign="top"><a href="#update_edge_property-5">update_edge_property/5</a></td><td>Updates the specified property of the specified edge to the specified
+ value for the specified timestamp.</td></tr>
+<tr><td valign="top"><a href="#update_node_properties-3">update_node_properties/3</a></td><td>Updates the specified properties of the specified node to the constant
+ (timestamp-less) values defined in the specified table.</td></tr>
+<tr><td valign="top"><a href="#update_node_properties-4">update_node_properties/4</a></td><td>Updates the specified properties of the specified node to the specified
+ values for the specified timestamp.</td></tr>
+<tr><td valign="top"><a href="#update_node_property-4">update_node_property/4</a></td><td>Updates the specified property of the specified node to the specified
+ constant (timestamp-less) value.</td></tr>
+<tr><td valign="top"><a href="#update_node_property-5">update_node_property/5</a></td><td>Updates the specified property of the specified node to the specified
+ value for the specified timestamp.</td></tr>
+<tr><td valign="top"><a href="#wait_server-1">wait_server/1</a></td><td>Waits until the designated (Gephi) server seems available, using a 
+default time-out: returns whether it was found available.</td></tr>
+<tr><td valign="top"><a href="#wait_server-2">wait_server/2</a></td><td>Waits until the designated (Gephi) server seems available, within the 
+specified time-out: returns whether it was found available.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_edge-5">add_edge/5</a></h3>
+<div class="spec">
+<p><code>add_edge(EdgeId::<a href="#type-edge_id">edge_id()</a>, FirstNodeId::<a href="#type-node_id">node_id()</a>, SecondNodeId::<a href="#type-node_id">node_id()</a>, IsDirected::boolean(), SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Adds an edge whose identifier is specified, together with the identifiers
+ of the first node and the second one, telling whether it is a directed edge
+ (from first node to second one), in the context of the specified Gephi
+ instance.
+</p>
+
+<h3 class="function"><a name="add_edge-6">add_edge/6</a></h3>
+<div class="spec">
+<p><code>add_edge(EdgeId::<a href="#type-edge_id">edge_id()</a>, EdgeColor::<a href="#type-graph_color">graph_color()</a>, FirstNodeId::<a href="#type-node_id">node_id()</a>, SecondNodeId::<a href="#type-node_id">node_id()</a>, IsDirected::boolean(), SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Adds an edge whose identifier is specified, together with the identifiers
+ of the first node and the second one, telling whether it is a directed edge
+ (from first node to second one) and what its color is, in the context of the
+ specified Gephi instance.
+</p>
+
+<h3 class="function"><a name="add_edge-7">add_edge/7</a></h3>
+<div class="spec">
+<p><code>add_edge(EdgeId::<a href="#type-edge_id">edge_id()</a>, EdgeLabel::<a href="#type-element_label">element_label()</a>, EdgeColor::<a href="#type-graph_color">graph_color()</a>, FirstNodeId::<a href="#type-node_id">node_id()</a>, SecondNodeId::<a href="#type-node_id">node_id()</a>, IsDirected::boolean(), SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Adds an edge whose identifier is specified, together with the identifiers
+ of the first node and the second one, telling whether it is a directed edge
+ (from first node to second one) and what its label and color are, in the
+ context of the specified Gephi instance.
+</p>
+
+<h3 class="function"><a name="add_node-2">add_node/2</a></h3>
+<div class="spec">
+<p><code>add_node(NodeId::<a href="#type-node_id">node_id()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Adds a node whose identifier is specified, in the context of the
+ specified Gephi instance.
+</p>
+
+<h3 class="function"><a name="add_node-3">add_node/3</a></h3>
+<div class="spec">
+<p><code>add_node(NodeId::<a href="#type-node_id">node_id()</a>, NodeLabel::<a href="#type-element_label">element_label()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Adds a node whose identifier and label are specified, in the context of
+ the specified Gephi instance.
+</p>
+
+<h3 class="function"><a name="add_node-4">add_node/4</a></h3>
+<div class="spec">
+<p><code>add_node(NodeId::<a href="#type-node_id">node_id()</a>, NodeLabel::<a href="#type-element_label">element_label()</a>, NodeColor::<a href="#type-graph_color">graph_color()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Adds a node whose identifier, label or color are specified, in the
+ context of the specified Gephi instance.
+</p>
+
+<h3 class="function"><a name="clean_up_server-2">clean_up_server/2</a></h3>
+<div class="spec">
+<p><code>clean_up_server(ProjectPath::<a href="#type-project_path">project_path()</a>, UserDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Cleans-up the filesystem context of the Gephi server.</p>
+
+<h3 class="function"><a name="get_gephi_extension-0">get_gephi_extension/0</a></h3>
+<div class="spec">
+<p><code>get_gephi_extension() -&gt; <a href="#type-extension">extension()</a></code><br></p>
+<p> </p>
+</div><p>Returns the file extension that Gephi projects are expected to use.</p>
+
+<h3 class="function"><a name="get_project_name_from_path-1">get_project_name_from_path/1</a></h3>
+<div class="spec">
+<p><code>get_project_name_from_path(BinProjectPath::<a href="#type-any_project_path">any_project_path()</a>) -&gt; <a href="#type-project_name">project_name()</a></code><br></p>
+<p> </p>
+</div><p>Deduces the Gephi project name from the path of the specified project
+ file.
+</p>
+
+<h3 class="function"><a name="get_server_default_tcp_port-0">get_server_default_tcp_port/0</a></h3>
+<div class="spec">
+<p><code>get_server_default_tcp_port() -&gt; <a href="#type-tcp_port">tcp_port()</a></code><br></p>
+<p> </p>
+</div><p>Returns the default TCP port expected to be used by a Gephi server.</p>
+
+<h3 class="function"><a name="get_server_info-1">get_server_info/1</a></h3>
+<div class="spec">
+<p><code>get_server_info(WorkspaceName::<a href="#type-any_workspace_name">any_workspace_name()</a>) -&gt; <a href="#type-gephi_server_info">gephi_server_info()</a></code><br></p>
+<p> </p>
+</div><p>Returns relevant information to connect to the specified workspace of a
+ Gephi server expected to run on the local host, on the default port (so no
+ specific project is to be specified).
+</p>
+
+<h3 class="function"><a name="get_server_info-2">get_server_info/2</a></h3>
+<div class="spec">
+<p><code>get_server_info(Hostname::<a href="#type-gephi_server_host">gephi_server_host()</a>, WorkspaceName::<a href="#type-any_workspace_name">any_workspace_name()</a>) -&gt; <a href="#type-gephi_server_info">gephi_server_info()</a></code><br></p>
+<p> </p>
+</div><p>Returns relevant information to connect to the specified workspace of the
+ specified Gephi server, expected to run on the specified host, on the default
+ port (so no specific project is to be specified).
+</p>
+
+<h3 class="function"><a name="get_server_info-3">get_server_info/3</a></h3>
+<div class="spec">
+<p><code>get_server_info(Hostname::<a href="#type-gephi_server_host">gephi_server_host()</a>, ServerPort::<a href="#type-gephi_server_port">gephi_server_port()</a>, WorkspaceName::<a href="#type-any_workspace_name">any_workspace_name()</a>) -&gt; <a href="#type-gephi_server_info">gephi_server_info()</a></code><br></p>
+<p> </p>
+</div><p>Returns relevant information to connect to the specified workspace of the
+ specified Gephi server, expected to run on the specified host, on the
+ specified port (so no specific project is to be specified).
+</p>
+
+<h3 class="function"><a name="get_server_info-4">get_server_info/4</a></h3>
+<div class="spec">
+<p><code>get_server_info(Hostname::<a href="#type-gephi_server_host">gephi_server_host()</a>, ServerPort::<a href="#type-gephi_server_port">gephi_server_port()</a>, MaybeProjectPath::<a href="#type-maybe">maybe</a>(<a href="#type-any_project_path">any_project_path()</a>), WorkspaceName::<a href="#type-any_workspace_name">any_workspace_name()</a>) -&gt; <a href="#type-gephi_server_info">gephi_server_info()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns relevant information to connect to the specified workspace of the 
+specified Gephi server, expected to run on the specified host, on the 
+specified port, with a project path specified.</p>
+
+ If requested, the availability of the specified host will be checked (with
+ ping), provided it is not the local one.
+</p>
+
+<h3 class="function"><a name="is_available-0">is_available/0</a></h3>
+<div class="spec">
+<p><code>is_available() -&gt; boolean()</code><br></p>
+<p> </p>
+</div><p>Tells whether Gephi is available, that is whether its server may be
+ available.
+</p>
+
+<h3 class="function"><a name="launch_server-1">launch_server/1</a></h3>
+<div class="spec">
+<p><code>launch_server(ProjectPath::<a href="#type-project_path">project_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Launches in the background (on the local host) a Gephi server, relying on 
+the specified project file, using the default user directory.</p>
+
+ Note that the server may not be immediately available.
+</p>
+
+<h3 class="function"><a name="launch_server-2">launch_server/2</a></h3>
+<div class="spec">
+<p><code>launch_server(ProjectPath::<a href="#type-project_path">project_path()</a>, UserDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Launches in the background (on the local host) a Gephi server, relying on 
+the specified user directory and project file.</p>
+
+ Note that the server may not be immediately available.
+</p>
+
+<h3 class="function"><a name="launch_server_if_needed-2">launch_server_if_needed/2</a></h3>
+<div class="spec">
+<p><code>launch_server_if_needed(ProjectPath::<a href="#type-project_path">project_path()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Launches in the background (on the local host) a Gephi server, relying on 
+the specified project file, using the default user directory, only if needed, 
+that is if no prior instance thereof is detected.</p>
+
+ Note that the server may not be immediately available.
+</p>
+
+<h3 class="function"><a name="launch_server_if_needed-3">launch_server_if_needed/3</a></h3>
+<div class="spec">
+<p><code>launch_server_if_needed(ProjectPath::<a href="#type-project_path">project_path()</a>, UserDir::<a href="#type-any_directory_path">any_directory_path()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Launches in the background (on the local host) a Gephi server, relying on 
+the specified user directory and project file, only if needed, that is if no 
+prior instance thereof is detected.</p>
+
+ Note that the server may not be immediately available.
+</p>
+
+<h3 class="function"><a name="server_info_to_string-1">server_info_to_string/1</a></h3>
+<div class="spec">
+<p><code>server_info_to_string(Gephi_server_info::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified server information.</p>
+
+<h3 class="function"><a name="start-0">start/0</a></h3>
+<div class="spec">
+<p><code>start() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Starts the Gephi (client-side) support.</p>
+
+<h3 class="function"><a name="stop-0">stop/0</a></h3>
+<div class="spec">
+<p><code>stop() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Stops the Gephi (client-side) support.</p>
+
+<h3 class="function"><a name="update_edge_properties-3">update_edge_properties/3</a></h3>
+<div class="spec">
+<p><code>update_edge_properties(EdgeId::<a href="#type-edge_id">edge_id()</a>, PropertyTable::<a href="#type-property_table">property_table()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Updates the specified properties of the specified edge to the constant
+ (timestamp-less) values defined in the specified table.
+</p>
+
+<h3 class="function"><a name="update_edge_property-4">update_edge_property/4</a></h3>
+<div class="spec">
+<p><code>update_edge_property(EdgeId::<a href="#type-edge_id">edge_id()</a>, PropertyId::<a href="#type-property_id">property_id()</a>, PropertyValue::<a href="#type-graph_value">graph_value()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Updates the specified property of the specified edge to the specified
+ constant (timestamp-less) value.
+</p>
+
+<h3 class="function"><a name="update_edge_property-5">update_edge_property/5</a></h3>
+<div class="spec">
+<p><code>update_edge_property(EdgeId::<a href="#type-edge_id">edge_id()</a>, PropertyId::<a href="#type-property_id">property_id()</a>, PropertyValue::<a href="#type-graph_value">graph_value()</a>, Timestamp::<a href="#type-timestamp">timestamp()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Updates the specified property of the specified edge to the specified
+ value for the specified timestamp.
+</p>
+
+<h3 class="function"><a name="update_node_properties-3">update_node_properties/3</a></h3>
+<div class="spec">
+<p><code>update_node_properties(NodeId::<a href="#type-node_id">node_id()</a>, PropertyTable::<a href="#type-property_table">property_table()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Updates the specified properties of the specified node to the constant
+ (timestamp-less) values defined in the specified table.
+</p>
+
+<h3 class="function"><a name="update_node_properties-4">update_node_properties/4</a></h3>
+<div class="spec">
+<p><code>update_node_properties(NodeId::<a href="#type-node_id">node_id()</a>, PropertyTable::<a href="#type-property_table">property_table()</a>, Timestamp::<a href="#type-timestamp">timestamp()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Updates the specified properties of the specified node to the specified
+ values for the specified timestamp.
+</p>
+
+<h3 class="function"><a name="update_node_property-4">update_node_property/4</a></h3>
+<div class="spec">
+<p><code>update_node_property(NodeId::<a href="#type-node_id">node_id()</a>, PropertyId::<a href="#type-property_id">property_id()</a>, PropertyValue::<a href="#type-graph_value">graph_value()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Updates the specified property of the specified node to the specified
+ constant (timestamp-less) value.
+</p>
+
+<h3 class="function"><a name="update_node_property-5">update_node_property/5</a></h3>
+<div class="spec">
+<p><code>update_node_property(NodeId::<a href="#type-node_id">node_id()</a>, PropertyId::<a href="#type-property_id">property_id()</a>, PropertyValue::<a href="#type-graph_value">graph_value()</a>, Timestamp::<a href="#type-timestamp">timestamp()</a>, SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p>Updates the specified property of the specified node to the specified
+ value for the specified timestamp.
+</p>
+
+<h3 class="function"><a name="wait_server-1">wait_server/1</a></h3>
+<div class="spec">
+<p><code>wait_server(SrvInfo::<a href="#type-gephi_server_info">gephi_server_info()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div><p><p>Waits until the designated (Gephi) server seems available, using a 
+default time-out: returns whether it was found available.</p>
+
+ Note that any server running on the corresponding TCP port will be supposed to
+ be a Gephi one.
+</p>
+
+<h3 class="function"><a name="wait_server-2">wait_server/2</a></h3>
+<div class="spec">
+<p><code>wait_server(Gephi_server_info::<a href="#type-gephi_server_info">gephi_server_info()</a>, Timeout::<a href="#type-time_out">time_out()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div><p><p>Waits until the designated (Gephi) server seems available, within the 
+specified time-out: returns whether it was found available.</p>
+
+ Note that any server running on the corresponding TCP port will be supposed to
+ be a Gephi one.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

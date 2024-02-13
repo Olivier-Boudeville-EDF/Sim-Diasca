@@ -30,56 +30,64 @@ platform-specific, readily-usable graphical content.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_image_path">any_image_path()</a></h3>
-<p><tt>any_image_path() = <a href="#type-any_file_path">any_file_path()</a></tt></p>
+<p><code>any_image_path() = <a href="#type-any_file_path">any_file_path()</a></code></p>
 <p> Any kind of path to an image.</p>
 
 <h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
-<p><tt>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></tt></p>
+<p><code>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_image_path">bin_image_path()</a></h3>
-<p><tt>bin_image_path() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p><code>bin_image_path() = <a href="#type-bin_file_path">bin_file_path()</a></code></p>
 <p> A path to an image, as a binary string.</p>
 
 <h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
-<p><tt>bitmap() = <a href="gui_bitmap.html#type-bitmap">gui_bitmap:bitmap()</a></tt></p>
+<p><code>bitmap() = <a href="gui_bitmap.html#type-bitmap">gui_bitmap:bitmap()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
-<p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
+<p><code>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+<p><code>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-extension">extension()</a></h3>
+<p><code>extension() = <a href="file_utils.html#type-extension">file_utils:extension()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><tt>height() = <a href="gui.html#type-height">gui:height()</a></tt></p>
+<p><code>height() = <a href="gui.html#type-height">gui:height()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-icon">icon()</a></h3>
-<p><b>abstract datatype</b>: <tt>icon()</tt></p>
+<p><b>abstract datatype</b>: <code>icon()</code></p>
 <p> A small rectangular bitmap usually used for denoting a minimised application.</p>
 
 <h3 class="typedecl"><a name="type-image">image()</a></h3>
-<p><b>abstract datatype</b>: <tt>image()</tt></p>
+<p><b>abstract datatype</b>: <code>image()</code></p>
 <p><p> An image is a bitmap buffer of RGB bytes with an optional buffer for the alpha 
 bytes.</p>
 
  It is thus generic, independent from platforms and image file formats (as
  opposed to bitmaps).</p>
 
+<h3 class="typedecl"><a name="type-image_bitmap_format">image_bitmap_format()</a></h3>
+<p><code>image_bitmap_format() = png | jpeg | bmp | gif | pcx | tiff | tga | pnm | iff | xpm | ico | cur | ani</code></p>
+<p> Designates a supported file format able to store bitmap images.</p>
+
 <h3 class="typedecl"><a name="type-image_format">image_format()</a></h3>
-<p><tt>image_format() = png | jpeg | bmp | gif | pcx | tiff | tga | pnm | iff | xpm | ico | cur | ani</tt></p>
-<p><p> Designates a supported file format able to store images.</p>
+<p><code>image_format() = <a href="#type-image_bitmap_format">image_bitmap_format()</a> | <a href="#type-image_vector_format">image_vector_format()</a></code></p>
+<p><p> Designates a supported file format able to store (bitmap or vector) images.</p>
 
  <p>We prefer telling explicitly the type rather than trying to guess it from the 
 extension of a filename, as it is clearer and more reliable.</p>
@@ -90,39 +98,43 @@ for more image formats and to
 https://docs.wxwidgets.org/stable/classwx_image.html for the available image 
 handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
- We recommend PNG for bitmap-like images (as lossless) and JPEG for
- snapshot-like image (as is lossy but compact).</p>
+ We recommend PNG for bitmap-like images (as lossless), JPEG for snapshot-like
+ images (as is lossy but compact) and SVG for vector-based images.</p>
 
 <h3 class="typedecl"><a name="type-image_path">image_path()</a></h3>
-<p><tt>image_path() = <a href="#type-file_path">file_path()</a></tt></p>
+<p><code>image_path() = <a href="#type-file_path">file_path()</a></code></p>
 <p> A path to an image, as a plain string.</p>
 
 <h3 class="typedecl"><a name="type-image_quality">image_quality()</a></h3>
-<p><tt>image_quality() = normal | high</tt></p>
+<p><code>image_quality() = normal | high</code></p>
 <p> The requested quality for an image operation (e.g. for a scaling).</p>
 
+<h3 class="typedecl"><a name="type-image_vector_format">image_vector_format()</a></h3>
+<p><code>image_vector_format() = svg</code></p>
+<p> Designates a supported file format able to store vector-based images.</p>
+
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
-<p><tt>orientation() = <a href="gui.html#type-orientation">gui:orientation()</a></tt></p>
+<p><code>orientation() = <a href="gui.html#type-orientation">gui:orientation()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rgba_color_buffer">rgba_color_buffer()</a></h3>
-<p><tt>rgba_color_buffer() = <a href="gui_color.html#type-rgba_color_buffer">gui_color:rgba_color_buffer()</a></tt></p>
+<p><code>rgba_color_buffer() = <a href="gui_color.html#type-rgba_color_buffer">gui_color:rgba_color_buffer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-standard_icon_name_id">standard_icon_name_id()</a></h3>
-<p><tt>standard_icon_name_id() = <a href="gui.html#type-standard_icon_name_id">gui:standard_icon_name_id()</a></tt></p>
+<p><code>standard_icon_name_id() = <a href="gui.html#type-standard_icon_name_id">gui:standard_icon_name_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
-<p><tt>width() = <a href="gui.html#type-width">gui:width()</a></tt></p>
+<p><code>width() = <a href="gui.html#type-width">gui:width()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -131,9 +143,12 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 <tr><td valign="top"><a href="#create_bitmap-1">create_bitmap/1</a></td><td>Returns a bitmap created from the specified image path.</td></tr>
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Declares that the specified image can be destructed.</td></tr>
 <tr><td valign="top"><a href="#destruct_multiple-1">destruct_multiple/1</a></td><td>Declares that the specified images can be destructed.</td></tr>
-<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of this image.</td></tr>
+<tr><td valign="top"><a href="#get_height-1">get_height/1</a></td><td>Returns the height of the specified image.</td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of the specified image.</td></tr>
 <tr><td valign="top"><a href="#get_standard_icon-1">get_standard_icon/1</a></td><td>Returns the standard icon corresponding to the specified identifier.</td></tr>
+<tr><td valign="top"><a href="#get_width-1">get_width/1</a></td><td>Returns the width of the specified image.</td></tr>
 <tr><td valign="top"><a href="#has_alpha-1">has_alpha/1</a></td><td>Tells whether the specified image has an alpha channel.</td></tr>
+<tr><td valign="top"><a href="#image_format_to_extension-1">image_format_to_extension/1</a></td><td>Returns the file extension corresponding to the specified image format.</td></tr>
 <tr><td valign="top"><a href="#load-2">load/2</a></td><td>Loads the image stored in the specified file in the specified image
  instance, trying to auto-detect the image format of that file.</td></tr>
 <tr><td valign="top"><a href="#load-3">load/3</a></td><td>Loads the image stored in the specified file into the specified image
@@ -151,8 +166,9 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
  file, according to the specified image format.</td></tr>
 <tr><td valign="top"><a href="#scale-3">scale/3</a></td><td>Scales the specified image to the specified dimensions, with a default
  quality.</td></tr>
-<tr><td valign="top"><a href="#scale-4">scale/4</a></td><td>Scales the specified image to the specified dimensions, with specified
- quality.</td></tr>
+<tr><td valign="top"><a href="#scale-4">scale/4</a></td><td>Scales the specified image to the specified dimensions, with the
+ specified quality.</td></tr>
+<tr><td valign="top"><a href="#to_bitmap-1">to_bitmap/1</a></td><td>Returns a bitmap corresponding to the specified image.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified image.</td></tr>
 </table>
 
@@ -160,7 +176,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="colorize-2">colorize/2</a></h3>
 <div class="spec">
-<p><tt>colorize(SrcBuffer::<a href="#type-rgba_color_buffer">rgba_color_buffer()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-rgba_color_buffer">rgba_color_buffer()</a></tt><br></p>
+<p><code>colorize(SrcBuffer::<a href="#type-rgba_color_buffer">rgba_color_buffer()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-rgba_color_buffer">rgba_color_buffer()</a></code><br></p>
 <p> </p>
 </div><p>Returns a colorized image, that is an image of the specified color,
  modulated by the alpha coordinates found in the specified RGBA buffer.
@@ -168,13 +184,13 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="create_bitmap-1">create_bitmap/1</a></h3>
 <div class="spec">
-<p><tt>create_bitmap(ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
+<p><code>create_bitmap(ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></code><br></p>
 <p> </p>
 </div><p>Returns a bitmap created from the specified image path.</p>
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><tt>destruct(Image::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-image">image()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct(Image::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-image">image()</a>)) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares that the specified image can be destructed.</p>
 
@@ -184,7 +200,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="destruct_multiple-1">destruct_multiple/1</a></h3>
 <div class="spec">
-<p><tt>destruct_multiple(Images::[<a href="#type-image">image()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_multiple(Images::[<a href="#type-image">image()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares that the specified images can be destructed.</p>
 
@@ -192,27 +208,49 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
  deallocations.
 </p>
 
+<h3 class="function"><a name="get_height-1">get_height/1</a></h3>
+<div class="spec">
+<p><code>get_height(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-height">height()</a></code><br></p>
+<p> </p>
+</div><p>Returns the height of the specified image.</p>
+
 <h3 class="function"><a name="get_size-1">get_size/1</a></h3>
 <div class="spec">
-<p><tt>get_size(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p><code>get_size(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
 <p> </p>
-</div><p>Returns the size of this image.</p>
+</div><p>Returns the size of the specified image.</p>
 
 <h3 class="function"><a name="get_standard_icon-1">get_standard_icon/1</a></h3>
 <div class="spec">
-<p><tt>get_standard_icon(StdIconId::<a href="#type-standard_icon_name_id">standard_icon_name_id()</a>) -&gt; <a href="#type-icon">icon()</a></tt><br></p>
+<p><code>get_standard_icon(StdIconId::<a href="#type-standard_icon_name_id">standard_icon_name_id()</a>) -&gt; <a href="#type-icon">icon()</a></code><br></p>
 <p> </p>
 </div><p>Returns the standard icon corresponding to the specified identifier.</p>
 
+<h3 class="function"><a name="get_width-1">get_width/1</a></h3>
+<div class="spec">
+<p><code>get_width(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-width">width()</a></code><br></p>
+<p> </p>
+</div><p>Returns the width of the specified image.</p>
+
 <h3 class="function"><a name="has_alpha-1">has_alpha/1</a></h3>
 <div class="spec">
-<p><tt>has_alpha(Image::<a href="#type-image">image()</a>) -&gt; boolean()</tt><br></p>
+<p><code>has_alpha(Image::<a href="#type-image">image()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified image has an alpha channel.</p>
 
+<h3 class="function"><a name="image_format_to_extension-1">image_format_to_extension/1</a></h3>
+<div class="spec">
+<p><code>image_format_to_extension(ImgFormat::<a href="#type-image_format">image_format()</a>) -&gt; <a href="#type-extension">extension()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the file extension corresponding to the specified image format.</p>
+
+ Note though that often the specified atom may be used directly, instead of the
+ corresponding plain string.
+</p>
+
 <h3 class="function"><a name="load-2">load/2</a></h3>
 <div class="spec">
-<p><tt>load(Image::<a href="#type-image">image()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>load(Image::<a href="#type-image">image()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Loads the image stored in the specified file in the specified image
  instance, trying to auto-detect the image format of that file.
@@ -220,7 +258,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="load-3">load/3</a></h3>
 <div class="spec">
-<p><tt>load(Image::<a href="#type-image">image()</a>, ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>load(Image::<a href="#type-image">image()</a>, ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Loads the image stored in the specified file into the specified image
  instance, expecting the image format of the file to be the specified one.
@@ -228,7 +266,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="load_from_file-1">load_from_file/1</a></h3>
 <div class="spec">
-<p><tt>load_from_file(AnyImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
+<p><code>load_from_file(AnyImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-image">image()</a></code><br></p>
 <p> </p>
 </div><p>Creates an image instance whose content is read from the specified file,
  trying to auto-detect the image format of that file.
@@ -236,7 +274,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="load_from_file-2">load_from_file/2</a></h3>
 <div class="spec">
-<p><tt>load_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, AnyImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
+<p><code>load_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, AnyImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-image">image()</a></code><br></p>
 <p> </p>
 </div><p>Creates an image instance whose content is read from the specified file,
  expecting the image format of the file to be specified one.
@@ -244,7 +282,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="mirror-2">mirror/2</a></h3>
 <div class="spec">
-<p><tt>mirror(Image::<a href="#type-image">image()</a>, Orientation::<a href="#type-orientation">orientation()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
+<p><code>mirror(Image::<a href="#type-image">image()</a>, Orientation::<a href="#type-orientation">orientation()</a>) -&gt; <a href="#type-image">image()</a></code><br></p>
 <p> </p>
 </div><p>Flips the specified image: returns a new image, corresponding to the
  specified one once mirrored as requested.
@@ -252,7 +290,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="save-2">save/2</a></h3>
 <div class="spec">
-<p><tt>save(Image::<a href="#type-image">image()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>save(Image::<a href="#type-image">image()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Saves the image stored in the specified image instance in the specified
  file, trying to auto-detect the image format for that file, based on its
@@ -261,7 +299,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="save-3">save/3</a></h3>
 <div class="spec">
-<p><tt>save(Image::<a href="#type-image">image()</a>, ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>save(Image::<a href="#type-image">image()</a>, ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Saves the image stored in the specified image instance in the specified
  file, according to the specified image format.
@@ -269,7 +307,7 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="scale-3">scale/3</a></h3>
 <div class="spec">
-<p><tt>scale(Image::<a href="#type-image">image()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>scale(Image::<a href="#type-image">image()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Scales the specified image to the specified dimensions, with a default
  quality.
@@ -277,15 +315,24 @@ handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
 
 <h3 class="function"><a name="scale-4">scale/4</a></h3>
 <div class="spec">
-<p><tt>scale(Image::<a href="#type-image">image()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Quality::<a href="#type-image_quality">image_quality()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>scale(Image::<a href="#type-image">image()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Quality::<a href="#type-image_quality">image_quality()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
-</div><p>Scales the specified image to the specified dimensions, with specified
- quality.
+</div><p>Scales the specified image to the specified dimensions, with the
+ specified quality.
+</p>
+
+<h3 class="function"><a name="to_bitmap-1">to_bitmap/1</a></h3>
+<div class="spec">
+<p><code>to_bitmap(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns a bitmap corresponding to the specified image.</p>
+
+ Does not alter that image.
 </p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified image.</p>
 <hr>

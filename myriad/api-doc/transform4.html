@@ -20,32 +20,32 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
-<p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
+<p><code>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
+<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+<p><code>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-transform4">transform4()</a></h3>
-<p><tt>transform4() = #transform4{matrix = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a>, inverse = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a>}</tt></p>
+<p><code>transform4() = #transform4{matrix = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a>, inverse = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a>}</code></p>
 <p> A 4x4 transformation, storing both its corresponding 4x4 matrix and its
  inverse.</p>
 
 <h3 class="typedecl"><a name="type-unit_vector3">unit_vector3()</a></h3>
-<p><tt>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></tt></p>
+<p><code>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
-<p><tt>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></tt></p>
+<p><code>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -80,7 +80,7 @@ referential R1).</td></tr>
 
 <h3 class="function"><a name="basis_change-3">basis_change/3</a></h3>
 <div class="spec">
-<p><tt>basis_change(O2InR1::<a href="#type-point3">point3()</a>, FwdDir2InR1::<a href="#type-vector3">vector3()</a>, UpDir2InR1::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>basis_change(O2InR1::<a href="#type-point3">point3()</a>, FwdDir2InR1::<a href="#type-vector3">vector3()</a>, UpDir2InR1::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a transition transformation whose reference matrix is a 
 change-of-basis matrix from the current referential (R1) to one (R2) whose 
@@ -96,7 +96,7 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="get_inverse-1">get_inverse/1</a></h3>
 <div class="spec">
-<p><tt>get_inverse(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p><code>get_inverse(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the inverse of the matrix corresponding to the specified
  transformation.
@@ -104,7 +104,7 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="get_reference-1">get_reference/1</a></h3>
 <div class="spec">
-<p><tt>get_reference(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p><code>get_reference(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the reference matrix corresponding to the specified
  transformation.
@@ -112,19 +112,19 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="identity-0">identity/0</a></h3>
 <div class="spec">
-<p><tt>identity() -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>identity() -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the (4D) identity transformation.</p>
 
 <h3 class="function"><a name="inverse-1">inverse/1</a></h3>
 <div class="spec">
-<p><tt>inverse(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>inverse(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the inverse transformation of the specified one.</p>
 
 <h3 class="function"><a name="mult-1">mult/1</a></h3>
 <div class="spec">
-<p><tt>mult(Transforms::[<a href="#type-transform4">transform4()</a>]) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>mult(Transforms::[<a href="#type-transform4">transform4()</a>]) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the transformation corresponding to the in-order multiplication
  of the specified ones.
@@ -132,7 +132,7 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="mult-2">mult/2</a></h3>
 <div class="spec">
-<p><tt>mult(Transform4::<a href="#type-transform4">transform4()</a>, X2::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>mult(Transform4::<a href="#type-transform4">transform4()</a>, X2::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the transformation corresponding to the in-order multiplication
  of the two specified ones.
@@ -140,7 +140,7 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><tt>new(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>new(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the (4D) identity transformation whose reference matrix is the
  specified one.
@@ -148,7 +148,7 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="rotate-2">rotate/2</a></h3>
 <div class="spec">
-<p><tt>rotate(Transform4::<a href="#type-transform4">transform4()</a>, MRot::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>rotate(Transform4::<a href="#type-transform4">transform4()</a>, MRot::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the specified transformation once composed with an additional
  rotation (applied last) directly specified as a matrix.
@@ -156,7 +156,7 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="rotate-3">rotate/3</a></h3>
 <div class="spec">
-<p><tt>rotate(Transform::<a href="#type-transform4">transform4()</a>, UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>rotate(Transform::<a href="#type-transform4">transform4()</a>, UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the specified transformation once composed with an additional
  rotation (applied last), specified as a (unit) axis and an angle.
@@ -164,7 +164,7 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="scale-2">scale/2</a></h3>
 <div class="spec">
-<p><tt>scale(Transform4::<a href="#type-transform4">transform4()</a>, VS::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>scale(Transform4::<a href="#type-transform4">transform4()</a>, VS::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the specified transformation once composed with an additional
  scaling (applied last), specified as a vector (of non-null factors).
@@ -172,13 +172,13 @@ P2 = P1-&gt;2.P1.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified (4x4) transformation.</p>
 
 <h3 class="function"><a name="translate-2">translate/2</a></h3>
 <div class="spec">
-<p><tt>translate(Transform4::<a href="#type-transform4">transform4()</a>, VT::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p><code>translate(Transform4::<a href="#type-transform4">transform4()</a>, VT::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the specified transformation once composed with an additional
  translation (applied last) of the specified 3D vector.

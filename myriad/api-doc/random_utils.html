@@ -24,17 +24,17 @@ exponential, gaussian, etc.) or user-defined, arbitrary ones.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-alias_table">alias_table()</a></h3>
-<p><b>abstract datatype</b>: <tt>alias_table()</tt></p>
+<p><b>abstract datatype</b>: <code>alias_table()</code></p>
 <p> The static information corresponding to a random law in charge of producing
  samples according to the specified discrete probability distribution, based on
  the alias method.</p>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-arbitrary_law_data">arbitrary_law_data()</a></h3>
-<p><tt>arbitrary_law_data() = {<a href="#type-arbitrary_law_pseudo_spec">arbitrary_law_pseudo_spec()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>arbitrary_law_data() = {<a href="#type-arbitrary_law_pseudo_spec">arbitrary_law_pseudo_spec()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p><p> The definition of an arbitrary law.</p>
 
  Quite like arbitrary_law_spec/0, except for the string type, the PDF that is
@@ -42,13 +42,13 @@ exponential, gaussian, etc.) or user-defined, arbitrary ones.</p>
  precomputed alias table stored.</p>
 
 <h3 class="typedecl"><a name="type-arbitrary_law_pseudo_spec">arbitrary_law_pseudo_spec()</a></h3>
-<p><tt>arbitrary_law_pseudo_spec() = {arbitrary, Name::<a href="#type-bin_string">bin_string()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-maybe">maybe</a>(<a href="#type-bounds">bounds()</a>)}</tt></p>
+<p><code>arbitrary_law_pseudo_spec() = {arbitrary, Name::<a href="#type-bin_string">bin_string()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-maybe">maybe</a>(<a href="#type-bounds">bounds()</a>)}</code></p>
 <p><p> A (pseudo) specification for an arbitrary law, to be stored in a law data.</p>
 
 </p>
 
 <h3 class="typedecl"><a name="type-arbitrary_law_spec">arbitrary_law_spec()</a></h3>
-<p><tt>arbitrary_law_spec() = {arbitrary, Name::<a href="#type-any_string">any_string()</a>, <a href="#type-discrete_probability_distribution">discrete_probability_distribution()</a> | <a href="#type-full_pdf_info">full_pdf_info()</a>}</tt></p>
+<p><code>arbitrary_law_spec() = {arbitrary, Name::<a href="#type-any_string">any_string()</a>, <a href="#type-discrete_probability_distribution">discrete_probability_distribution()</a> | <a href="#type-full_pdf_info">full_pdf_info()</a>}</code></p>
 <p><p> User-level specification of an arbitrary random law.</p>
 
  It includes its name, and one way of performing a reverse sampling of it:
@@ -59,16 +59,16 @@ exponential, gaussian, etc.) or user-defined, arbitrary ones.</p>
   specified</p>
 
 <h3 class="typedecl"><a name="type-beta_2p_law_data">beta_2p_law_data()</a></h3>
-<p><tt>beta_2p_law_data() = {<a href="#type-beta_2p_law_settings">beta_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>beta_2p_law_data() = {<a href="#type-beta_2p_law_settings">beta_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like beta_2p_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-beta_2p_law_settings">beta_2p_law_settings()</a></h3>
-<p><tt>beta_2p_law_settings() = {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>beta_2p_law_settings() = {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Beta law.</p>
 
 <h3 class="typedecl"><a name="type-beta_2p_law_spec">beta_2p_law_spec()</a></h3>
-<p><tt>beta_2p_law_spec() = {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>} | {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_beta_2p_law_spec">full_beta_2p_law_spec()</a></tt></p>
+<p><code>beta_2p_law_spec() = {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>} | {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_beta_2p_law_spec">full_beta_2p_law_spec()</a></code></p>
 <p><p> The Beta law (of the first kind) with two shape parameters, Alpha &gt; 0 and Beta 
 &gt; 0.</p>
 
@@ -79,38 +79,42 @@ interval.</p>
  https://reliability.readthedocs.io/en/latest/Equations%20of%20supported%20distributions.html#beta-distribution</p>
 
 <h3 class="typedecl"><a name="type-beta_2p_pdf">beta_2p_pdf()</a></h3>
-<p><tt>beta_2p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>beta_2p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the two-parameter Beta distribution.</p>
 
 <h3 class="typedecl"><a name="type-beta_law_data">beta_law_data()</a></h3>
-<p><tt>beta_law_data() = <a href="#type-beta_2p_law_data">beta_2p_law_data()</a></tt></p>
+<p><code>beta_law_data() = <a href="#type-beta_2p_law_data">beta_2p_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-beta_pdf">beta_pdf()</a></h3>
-<p><tt>beta_pdf() = <a href="#type-beta_2p_pdf">beta_2p_pdf()</a></tt></p>
+<p><code>beta_pdf() = <a href="#type-beta_2p_pdf">beta_2p_pdf()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bounds">bounds()</a></h3>
-<p><tt>bounds() = <a href="math_utils.html#type-bounds">math_utils:bounds()</a></tt></p>
+<p><code>bounds() = <a href="math_utils.html#type-bounds">math_utils:bounds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-dhms">dhms()</a></h3>
+<p><code>dhms() = <a href="unit_utils.html#type-dhms">unit_utils:dhms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-discrete_probability_distribution">discrete_probability_distribution()</a></h3>
-<p><tt>discrete_probability_distribution() = <a href="#type-discrete_probability_distribution">discrete_probability_distribution</a>(any())</tt></p>
+<p><code>discrete_probability_distribution() = <a href="#type-discrete_probability_distribution">discrete_probability_distribution</a>(any())</code></p>
 <p><p> The specification of a discrete probability distribution of unknown sample 
 type.</p>
 
  For example: [{'red', 0.1}, {'blue', 0.2}, {'green', 0.6}].</p>
 
 <h3 class="typedecl"><a name="type-discrete_probability_distribution">discrete_probability_distribution()</a></h3>
-<p><tt>discrete_probability_distribution(T) = [<a href="#type-sample_entry">sample_entry</a>(T)]</tt></p>
+<p><code>discrete_probability_distribution(T) = [<a href="#type-sample_entry">sample_entry</a>(T)]</code></p>
 <p><p> The specification of a discrete probability distribution (a.k.a. frequency 
 distribution) whose samples are of the specified type.</p>
 
@@ -133,11 +137,11 @@ probability_like()) function over at least a part of its domain.</p>
  It may no be normalised.</p>
 
 <h3 class="typedecl"><a name="type-exponential_1p_law_data">exponential_1p_law_data()</a></h3>
-<p><tt>exponential_1p_law_data() = {<a href="#type-exponential_1p_law_spec">exponential_1p_law_spec()</a> | <a href="#type-exponential_law_spec">exponential_law_spec()</a>, undefined}</tt></p>
+<p><code>exponential_1p_law_data() = {<a href="#type-exponential_1p_law_spec">exponential_1p_law_spec()</a> | <a href="#type-exponential_law_spec">exponential_law_spec()</a>, undefined}</code></p>
 
 
 <h3 class="typedecl"><a name="type-exponential_1p_law_spec">exponential_1p_law_spec()</a></h3>
-<p><tt>exponential_1p_law_spec() = {exponential_1p, Lambda::<a href="#type-rate">rate()</a>}</tt></p>
+<p><code>exponential_1p_law_spec() = {exponential_1p, Lambda::<a href="#type-rate">rate()</a>}</code></p>
 <p><p> The exponential law with one parameter is fully determined when its single, 
 "rate" parameter (Lambda&gt;0) is given.</p>
 
@@ -149,15 +153,15 @@ integral is 1.</p>
  Refer to https://en.wikipedia.org/wiki/Exponential_distribution.</p>
 
 <h3 class="typedecl"><a name="type-exponential_1p_pdf">exponential_1p_pdf()</a></h3>
-<p><tt>exponential_1p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>exponential_1p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the exponential distribution with one parameter.</p>
 
 <h3 class="typedecl"><a name="type-exponential_2p_law_data">exponential_2p_law_data()</a></h3>
-<p><tt>exponential_2p_law_data() = {<a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>exponential_2p_law_data() = {<a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-exponential_2p_law_spec">exponential_2p_law_spec()</a></h3>
-<p><tt>exponential_2p_law_spec() = {exponential_2p, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>} | {exponential_2p, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a></tt></p>
+<p><code>exponential_2p_law_spec() = {exponential_2p, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>} | {exponential_2p, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a></code></p>
 <p><p> The exponential law with two parameters is fully determined when its two 
 "rate" parameters (Lambda&gt;0 and Gamma&gt;0) are given.</p>
 
@@ -167,186 +171,191 @@ integral is 1.</p>
  https://reliability.readthedocs.io/en/latest/API/Fitters/Fit_Exponential_2P.html.</p>
 
 <h3 class="typedecl"><a name="type-exponential_2p_pdf">exponential_2p_pdf()</a></h3>
-<p><tt>exponential_2p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>exponential_2p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the exponential distribution with two parameters.</p>
 
 <h3 class="typedecl"><a name="type-exponential_law_data">exponential_law_data()</a></h3>
-<p><tt>exponential_law_data() = <a href="#type-exponential_1p_law_data">exponential_1p_law_data()</a> | <a href="#type-exponential_2p_law_data">exponential_2p_law_data()</a></tt></p>
+<p><code>exponential_law_data() = <a href="#type-exponential_1p_law_data">exponential_1p_law_data()</a> | <a href="#type-exponential_2p_law_data">exponential_2p_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-exponential_law_spec">exponential_law_spec()</a></h3>
-<p><tt>exponential_law_spec() = {exponential, Lambda::<a href="#type-rate">rate()</a>}</tt></p>
+<p><code>exponential_law_spec() = {exponential, Lambda::<a href="#type-rate">rate()</a>}</code></p>
 <p> Alternative to exponential_1p_law_spec/0.</p>
 
 <h3 class="typedecl"><a name="type-exponential_pdf">exponential_pdf()</a></h3>
-<p><tt>exponential_pdf() = <a href="#type-exponential_1p_pdf">exponential_1p_pdf()</a> | <a href="#type-exponential_2p_pdf">exponential_2p_pdf()</a></tt></p>
+<p><code>exponential_pdf() = <a href="#type-exponential_1p_pdf">exponential_1p_pdf()</a> | <a href="#type-exponential_2p_pdf">exponential_2p_pdf()</a></code></p>
 <p> A PDF of an exponential distribution.</p>
 
 <h3 class="typedecl"><a name="type-float_sample">float_sample()</a></h3>
-<p><tt>float_sample() = <a href="#type-sample">sample</a>(float())</tt></p>
+<p><code>float_sample() = <a href="#type-sample">sample</a>(float())</code></p>
 <p> Designates a floating-point sample value.</p>
 
 <h3 class="typedecl"><a name="type-full_beta_2p_law_spec">full_beta_2p_law_spec()</a></h3>
-<p><tt>full_beta_2p_law_spec() = {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_beta_2p_law_spec() = {beta_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Canonical, most complete Beta law specification with two parameters.
  Refer to beta_2p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_beta_law_spec">full_beta_law_spec()</a></h3>
-<p><tt>full_beta_law_spec() = <a href="#type-full_beta_2p_law_spec">full_beta_2p_law_spec()</a></tt></p>
+<p><code>full_beta_law_spec() = <a href="#type-full_beta_2p_law_spec">full_beta_2p_law_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a></h3>
-<p><tt>full_exponential_2p_law_spec() = {exponential_2p, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_exponential_2p_law_spec() = {exponential_2p, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Canonical, most complete Exponential-2p law specification with two parameters.
  Refer to exponential_2p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_exponential_law_spec">full_exponential_law_spec()</a></h3>
-<p><tt>full_exponential_law_spec() = <a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a></tt></p>
+<p><code>full_exponential_law_spec() = <a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-full_gamma_2p_law_spec">full_gamma_2p_law_spec()</a></h3>
-<p><tt>full_gamma_2p_law_spec() = {gamma_2p, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_gamma_2p_law_spec() = {gamma_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Canonical, most complete Gamma law specification with two parameters.
  Refer to gamma_2p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_gamma_3p_law_spec">full_gamma_3p_law_spec()</a></h3>
-<p><tt>full_gamma_3p_law_spec() = {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_gamma_3p_law_spec() = {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Canonical, most complete Gamma law specification with three parameters.
  Refer to gamma_3p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_gamma_law_spec">full_gamma_law_spec()</a></h3>
-<p><tt>full_gamma_law_spec() = <a href="#type-full_gamma_2p_law_spec">full_gamma_2p_law_spec()</a> | <a href="#type-full_gamma_3p_law_spec">full_gamma_3p_law_spec()</a></tt></p>
+<p><code>full_gamma_law_spec() = <a href="#type-full_gamma_2p_law_spec">full_gamma_2p_law_spec()</a> | <a href="#type-full_gamma_3p_law_spec">full_gamma_3p_law_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-full_gumbel_2p_law_spec">full_gumbel_2p_law_spec()</a></h3>
-<p><tt>full_gumbel_2p_law_spec() = {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_gumbel_2p_law_spec() = {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Gumbel law specification with two parameters.</p>
 
  Refer to gumbel_2p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_integer_uniform_law_spec">full_integer_uniform_law_spec()</a></h3>
-<p><tt>full_integer_uniform_law_spec() = {integer_uniform, Nmin::integer(), Nmax::integer()}</tt></p>
+<p><code>full_integer_uniform_law_spec() = {integer_uniform, Nmin::integer(), Nmax::integer()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-full_loglogistic_2p_law_spec">full_loglogistic_2p_law_spec()</a></h3>
-<p><tt>full_loglogistic_2p_law_spec() = {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_loglogistic_2p_law_spec() = {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Log-logistic law specification with two parameters.</p>
 
  Refer to loglogistic_2p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_loglogistic_3p_law_spec">full_loglogistic_3p_law_spec()</a></h3>
-<p><tt>full_loglogistic_3p_law_spec() = {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_loglogistic_3p_law_spec() = {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Loglogistic law specification with three parameters.</p>
 
  Refer to loglogistic_3p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_lognormal_2p_law_spec">full_lognormal_2p_law_spec()</a></h3>
-<p><tt>full_lognormal_2p_law_spec() = {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_lognormal_2p_law_spec() = {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Log-normal law specification with two parameters.</p>
 
  Refer to lognormal_2p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_lognormal_3p_law_spec">full_lognormal_3p_law_spec()</a></h3>
-<p><tt>full_lognormal_3p_law_spec() = {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_lognormal_3p_law_spec() = {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Lognormal law specification with three parameters.</p>
 
  Refer to lognormal_3p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_pdf_info">full_pdf_info()</a></h3>
-<p><tt>full_pdf_info() = {<a href="#type-pdf">pdf()</a>, <a href="#type-sample_count">sample_count()</a>, SampleBounds::<a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_pdf_info() = {<a href="#type-pdf">pdf()</a>, <a href="#type-sample_count">sample_count()</a>, SampleBounds::<a href="#type-bounds">bounds()</a>}</code></p>
 <p> Most complete information regarding a PDF to be used in order to define an
  arbitrary law.</p>
 
 <h3 class="typedecl"><a name="type-full_uniform_law_spec">full_uniform_law_spec()</a></h3>
-<p><tt>full_uniform_law_spec() = {uniform, Min::float(), Max::float()}</tt></p>
+<p><code>full_uniform_law_spec() = {uniform, Min::float(), Max::float()}</code></p>
 <p> Canonical, most complete uniform law specification.</p>
 
 <h3 class="typedecl"><a name="type-full_weibull_2p_law_spec">full_weibull_2p_law_spec()</a></h3>
-<p><tt>full_weibull_2p_law_spec() = {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_weibull_2p_law_spec() = {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Weibull law specification with two parameters.</p>
 
  Refer to weibull_2p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_weibull_3p_law_spec">full_weibull_3p_law_spec()</a></h3>
-<p><tt>full_weibull_3p_law_spec() = {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_weibull_3p_law_spec() = {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Weibull law specification with three parameters.</p>
 
  Refer to weibull_3p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_weibull_cr_law_spec">full_weibull_cr_law_spec()</a></h3>
-<p><tt>full_weibull_cr_law_spec() = {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_weibull_cr_law_spec() = {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Weibull CR law specification, with three parameters.</p>
 
  Refer to weibull_cr_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_weibull_ds_law_spec">full_weibull_ds_law_spec()</a></h3>
-<p><tt>full_weibull_ds_law_spec() = {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_weibull_ds_law_spec() = {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Weibull DS law specification, with three parameters.</p>
 
  Refer to weibull_ds_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_weibull_dszi_law_spec">full_weibull_dszi_law_spec()</a></h3>
-<p><tt>full_weibull_dszi_law_spec() = {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_weibull_dszi_law_spec() = {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Weibull DSZI law specification, with four parameters.</p>
 
  Refer to weibull_dszi_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_weibull_law_spec">full_weibull_law_spec()</a></h3>
-<p><tt>full_weibull_law_spec() = <a href="#type-full_weibull_2p_law_spec">full_weibull_2p_law_spec()</a> | <a href="#type-full_weibull_3p_law_spec">full_weibull_3p_law_spec()</a> | <a href="#type-full_weibull_cr_law_spec">full_weibull_cr_law_spec()</a> | <a href="#type-full_weibull_ds_law_spec">full_weibull_ds_law_spec()</a> | <a href="#type-full_weibull_dszi_law_spec">full_weibull_dszi_law_spec()</a> | <a href="#type-full_weibull_mixture_law_spec">full_weibull_mixture_law_spec()</a> | <a href="#type-full_weibull_zi_law_spec">full_weibull_zi_law_spec()</a></tt></p>
+<p><code>full_weibull_law_spec() = <a href="#type-full_weibull_2p_law_spec">full_weibull_2p_law_spec()</a> | <a href="#type-full_weibull_3p_law_spec">full_weibull_3p_law_spec()</a> | <a href="#type-full_weibull_cr_law_spec">full_weibull_cr_law_spec()</a> | <a href="#type-full_weibull_ds_law_spec">full_weibull_ds_law_spec()</a> | <a href="#type-full_weibull_dszi_law_spec">full_weibull_dszi_law_spec()</a> | <a href="#type-full_weibull_mixture_law_spec">full_weibull_mixture_law_spec()</a> | <a href="#type-full_weibull_zi_law_spec">full_weibull_zi_law_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-full_weibull_mixture_law_spec">full_weibull_mixture_law_spec()</a></h3>
-<p><tt>full_weibull_mixture_law_spec() = {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_weibull_mixture_law_spec() = {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Weibull mixture law specification, with five 
 parameters.</p>
 
  Refer to weibull_mixture_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-full_weibull_zi_law_spec">full_weibull_zi_law_spec()</a></h3>
-<p><tt>full_weibull_zi_law_spec() = {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>full_weibull_zi_law_spec() = {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p><p> Canonical, most complete Weibull ZI law specification with three parameters.</p>
 
  Refer to weibull_zi_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-gamma_2p_law_data">gamma_2p_law_data()</a></h3>
-<p><tt>gamma_2p_law_data() = {<a href="#type-gamma_2p_law_settings">gamma_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>gamma_2p_law_data() = {<a href="#type-gamma_2p_law_settings">gamma_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-gamma_2p_law_settings">gamma_2p_law_settings()</a></h3>
-<p><tt>gamma_2p_law_settings() = {gamma_2p, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>gamma_2p_law_settings() = {gamma_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Gamma-2p laws.</p>
 
 <h3 class="typedecl"><a name="type-gamma_2p_law_spec">gamma_2p_law_spec()</a></h3>
-<p><tt>gamma_2p_law_spec() = {gamma_2p, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>} | {gamma_2p, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_gamma_2p_law_spec">full_gamma_2p_law_spec()</a></tt></p>
-<p><p> The Gamma law with two parameters, whose K &gt; 0 is the shape parameter and 
-Theta &gt; 0 is the scale parameter.</p>
+<p><code>gamma_2p_law_spec() = {gamma_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>} | {gamma_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_gamma_2p_law_spec">full_gamma_2p_law_spec()</a></code></p>
+<p><p> The Gamma law with two parameters, whose Alpha &gt; 0 (sometimes denoted K) is 
+the shape parameter and Beta &gt; 0 (sometimes denoted Theta) is the scale 
+parameter.</p>
 
  <p>A sample count and specific bounds can be specified.</p>
 
- See also https://en.wikipedia.org/wiki/Gamma_distribution and
- https://reliawiki.org/index.php/The_Gamma_Distribution.</p>
+ <p>See also https://en.wikipedia.org/wiki/Gamma_distribution and 
+https://reliawiki.org/index.php/The_Gamma_Distribution.</p>
+
+ gamma_2p corresponds to a gamma_3p for which Theta=0.</p>
 
 <h3 class="typedecl"><a name="type-gamma_2p_pdf">gamma_2p_pdf()</a></h3>
-<p><tt>gamma_2p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>gamma_2p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the two-parameter Gamma distribution.</p>
 
 <h3 class="typedecl"><a name="type-gamma_3p_law_data">gamma_3p_law_data()</a></h3>
-<p><tt>gamma_3p_law_data() = {<a href="#type-gamma_3p_law_settings">gamma_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>gamma_3p_law_data() = {<a href="#type-gamma_3p_law_settings">gamma_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-gamma_3p_law_settings">gamma_3p_law_settings()</a></h3>
-<p><tt>gamma_3p_law_settings() = {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>gamma_3p_law_settings() = {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Gamma-3p laws.</p>
 
 <h3 class="typedecl"><a name="type-gamma_3p_law_spec">gamma_3p_law_spec()</a></h3>
-<p><tt>gamma_3p_law_spec() = {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>} | {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_gamma_3p_law_spec">full_gamma_3p_law_spec()</a></tt></p>
+<p><code>gamma_3p_law_spec() = {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>} | {gamma_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_gamma_3p_law_spec">full_gamma_3p_law_spec()</a></code></p>
 <p><p> The Gamma law with three parameters, whose:</p>
 
- <p>- Alpha &gt; 0 is a shape parameter</p>
+ <p>- Alpha &gt; 0 is the shape parameter</p>
 
- <p>- Beta &gt; 0 is a shape parameter</p>
+ <p>- Beta &gt; 0 is the scale parameter (initially was thought to be a second shape 
+parameter)</p>
 
- <p>- Theta &gt; 0 is the scale parameter</p>
+ <p>- Theta &gt; 0 is the location parameter, as an offset for the abscissa of 
+interest (x -&gt; x-theta)</p>
 
  <p>A sample count and specific bounds can be specified.</p>
 
@@ -354,43 +363,43 @@ Theta &gt; 0 is the scale parameter.</p>
  https://reliawiki.org/index.php/The_Gamma_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-gamma_3p_pdf">gamma_3p_pdf()</a></h3>
-<p><tt>gamma_3p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>gamma_3p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the three-parameter Gamma distribution.</p>
 
 <h3 class="typedecl"><a name="type-gamma_law_data">gamma_law_data()</a></h3>
-<p><tt>gamma_law_data() = <a href="#type-gamma_2p_law_data">gamma_2p_law_data()</a> | <a href="#type-gamma_3p_law_data">gamma_3p_law_data()</a></tt></p>
+<p><code>gamma_law_data() = <a href="#type-gamma_2p_law_data">gamma_2p_law_data()</a> | <a href="#type-gamma_3p_law_data">gamma_3p_law_data()</a></code></p>
 <p> A bit like gamma_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-gamma_pdf">gamma_pdf()</a></h3>
-<p><tt>gamma_pdf() = <a href="#type-gamma_2p_pdf">gamma_2p_pdf()</a> | <a href="#type-gamma_3p_pdf">gamma_3p_pdf()</a></tt></p>
+<p><code>gamma_pdf() = <a href="#type-gamma_2p_pdf">gamma_2p_pdf()</a> | <a href="#type-gamma_3p_pdf">gamma_3p_pdf()</a></code></p>
 <p> A PDF of a Gamma distribution.</p>
 
 <h3 class="typedecl"><a name="type-gaussian_law_data">gaussian_law_data()</a></h3>
-<p><tt>gaussian_law_data() = {<a href="#type-gaussian_law_spec">gaussian_law_spec()</a>, undefined}</tt></p>
+<p><code>gaussian_law_data() = {<a href="#type-gaussian_law_spec">gaussian_law_spec()</a>, undefined}</code></p>
 
 
 <h3 class="typedecl"><a name="type-gaussian_law_spec">gaussian_law_spec()</a></h3>
-<p><tt>gaussian_law_spec() = {gaussian, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</tt></p>
+<p><code>gaussian_law_spec() = {gaussian, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</code></p>
 <p> Synonym for normal_2p_law_spec/0.</p>
 
 <h3 class="typedecl"><a name="type-gaussian_pdf">gaussian_pdf()</a></h3>
-<p><tt>gaussian_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>gaussian_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p><p> A PDF of a Gaussian distribution.</p>
 
  Could be named normal_2p_pdf() as well.</p>
 
 <h3 class="typedecl"><a name="type-gumbel_2p_law_data">gumbel_2p_law_data()</a></h3>
-<p><tt>gumbel_2p_law_data() = {<a href="#type-gumbel_2p_law_settings">gumbel_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>gumbel_2p_law_data() = {<a href="#type-gumbel_2p_law_settings">gumbel_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like gumbel_2p_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-gumbel_2p_law_settings">gumbel_2p_law_settings()</a></h3>
-<p><tt>gumbel_2p_law_settings() = {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>gumbel_2p_law_settings() = {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Gumbel-2p laws.</p>
 
 <h3 class="typedecl"><a name="type-gumbel_2p_law_spec">gumbel_2p_law_spec()</a></h3>
-<p><tt>gumbel_2p_law_spec() = {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>} | {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_gumbel_2p_law_spec">full_gumbel_2p_law_spec()</a></tt></p>
+<p><code>gumbel_2p_law_spec() = {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>} | {gumbel_2p, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_gumbel_2p_law_spec">full_gumbel_2p_law_spec()</a></code></p>
 <p><p> The Gumbel law, with two parameters: Mu, in R, is the location parameter, and 
 Beta &gt; 0 is the scale parameter.</p>
 
@@ -400,33 +409,33 @@ Beta &gt; 0 is the scale parameter.</p>
  https://reliawiki.org/index.php/The_Gumbel/SEV_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-gumbel_2p_pdf">gumbel_2p_pdf()</a></h3>
-<p><tt>gumbel_2p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>gumbel_2p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the two-parameter Gumbel distribution.</p>
 
 <h3 class="typedecl"><a name="type-gumbel_law_data">gumbel_law_data()</a></h3>
-<p><tt>gumbel_law_data() = <a href="#type-gumbel_2p_law_data">gumbel_2p_law_data()</a></tt></p>
+<p><code>gumbel_law_data() = <a href="#type-gumbel_2p_law_data">gumbel_2p_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gumbel_pdf">gumbel_pdf()</a></h3>
-<p><tt>gumbel_pdf() = <a href="#type-gumbel_2p_pdf">gumbel_2p_pdf()</a></tt></p>
+<p><code>gumbel_pdf() = <a href="#type-gumbel_2p_pdf">gumbel_2p_pdf()</a></code></p>
 <p> A PDF of a Gumbel distribution.</p>
 
 <h3 class="typedecl"><a name="type-increment">increment()</a></h3>
-<p><tt>increment() = float()</tt></p>
+<p><code>increment() = float()</code></p>
 <p> The increment added between two discretisation steps.</p>
 
 <h3 class="typedecl"><a name="type-integer_uniform_law_data">integer_uniform_law_data()</a></h3>
-<p><tt>integer_uniform_law_data() = {<a href="#type-full_integer_uniform_law_spec">full_integer_uniform_law_spec()</a>, undefined}</tt></p>
+<p><code>integer_uniform_law_data() = {<a href="#type-full_integer_uniform_law_spec">full_integer_uniform_law_spec()</a>, undefined}</code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_uniform_law_spec">integer_uniform_law_spec()</a></h3>
-<p><tt>integer_uniform_law_spec() = {integer_uniform, Nmax::integer()} | <a href="#type-full_integer_uniform_law_spec">full_integer_uniform_law_spec()</a></tt></p>
+<p><code>integer_uniform_law_spec() = {integer_uniform, Nmax::integer()} | <a href="#type-full_integer_uniform_law_spec">full_integer_uniform_law_spec()</a></code></p>
 <p> A probability distribution with which all declared samples have the same
  probability of being drawn: will return random integers uniformly distributed
  in [Nmin,Nmax] if both bounds are specified, otherwise in [0,Nmax].</p>
 
 <h3 class="typedecl"><a name="type-law_name">law_name()</a></h3>
-<p><tt>law_name() = atom()</tt></p>
+<p><code>law_name() = atom()</code></p>
 <p><p> The name, as an atom, of a type of (unparametrised) law.</p>
 
  <p>For example, 'uniform' or 'weibull_3p'.</p>
@@ -434,16 +443,16 @@ Beta &gt; 0 is the scale parameter.</p>
  Acts as an identifier of this type of laws.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_2p_law_data">loglogistic_2p_law_data()</a></h3>
-<p><tt>loglogistic_2p_law_data() = {<a href="#type-loglogistic_2p_law_settings">loglogistic_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>loglogistic_2p_law_data() = {<a href="#type-loglogistic_2p_law_settings">loglogistic_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like loglogistic_2p_law_spec/0, except that its precomputed alias table
  is stored as well.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_2p_law_settings">loglogistic_2p_law_settings()</a></h3>
-<p><tt>loglogistic_2p_law_settings() = {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>loglogistic_2p_law_settings() = {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Loglogistic-2p laws.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_2p_law_spec">loglogistic_2p_law_spec()</a></h3>
-<p><tt>loglogistic_2p_law_spec() = {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>} | {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_loglogistic_2p_law_spec">full_loglogistic_2p_law_spec()</a></tt></p>
+<p><code>loglogistic_2p_law_spec() = {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>} | {loglogistic_2p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_loglogistic_2p_law_spec">full_loglogistic_2p_law_spec()</a></code></p>
 <p><p> The Log-logistic law, with two parameters: Alpha &gt; 0 (sometimes noted c) is 
 the scale parameter, and Beta &gt; 0 (sometimes noted sigma) is the shape 
 parameter.</p>
@@ -454,20 +463,20 @@ parameter.</p>
  https://reliawiki.org/index.php/The_Loglogistic_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_2p_pdf">loglogistic_2p_pdf()</a></h3>
-<p><tt>loglogistic_2p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>loglogistic_2p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the two-parameter Log-logistic distribution.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_3p_law_data">loglogistic_3p_law_data()</a></h3>
-<p><tt>loglogistic_3p_law_data() = {<a href="#type-loglogistic_3p_law_settings">loglogistic_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>loglogistic_3p_law_data() = {<a href="#type-loglogistic_3p_law_settings">loglogistic_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like loglogistic_3p_law_spec/0, except that its precomputed alias table
  is stored as well.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_3p_law_settings">loglogistic_3p_law_settings()</a></h3>
-<p><tt>loglogistic_3p_law_settings() = {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>loglogistic_3p_law_settings() = {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Loglogistic-3p laws.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_3p_law_spec">loglogistic_3p_law_spec()</a></h3>
-<p><tt>loglogistic_3p_law_spec() = {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::float()} | {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_loglogistic_3p_law_spec">full_loglogistic_3p_law_spec()</a></tt></p>
+<p><code>loglogistic_3p_law_spec() = {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::float()} | {loglogistic_3p, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_loglogistic_3p_law_spec">full_loglogistic_3p_law_spec()</a></code></p>
 <p><p> The Log-logistic law, with three parameters: Alpha &gt; 0 is the scale parameter, 
 Beta &gt; 0 is the shape parameter, Theta is the last one.</p>
 
@@ -477,28 +486,28 @@ Beta &gt; 0 is the shape parameter, Theta is the last one.</p>
  https://reliawiki.org/index.php/The_Loglogistic_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_3p_pdf">loglogistic_3p_pdf()</a></h3>
-<p><tt>loglogistic_3p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>loglogistic_3p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the three-parameter Log-logistic distribution.</p>
 
 <h3 class="typedecl"><a name="type-loglogistic_law_data">loglogistic_law_data()</a></h3>
-<p><tt>loglogistic_law_data() = <a href="#type-loglogistic_2p_law_data">loglogistic_2p_law_data()</a> | <a href="#type-loglogistic_3p_law_data">loglogistic_3p_law_data()</a></tt></p>
+<p><code>loglogistic_law_data() = <a href="#type-loglogistic_2p_law_data">loglogistic_2p_law_data()</a> | <a href="#type-loglogistic_3p_law_data">loglogistic_3p_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-loglogistic_pdf">loglogistic_pdf()</a></h3>
-<p><tt>loglogistic_pdf() = <a href="#type-loglogistic_2p_pdf">loglogistic_2p_pdf()</a> | <a href="#type-loglogistic_3p_pdf">loglogistic_3p_pdf()</a></tt></p>
+<p><code>loglogistic_pdf() = <a href="#type-loglogistic_2p_pdf">loglogistic_2p_pdf()</a> | <a href="#type-loglogistic_3p_pdf">loglogistic_3p_pdf()</a></code></p>
 <p> A PDF of a Log-logistic distribution.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_2p_law_data">lognormal_2p_law_data()</a></h3>
-<p><tt>lognormal_2p_law_data() = {<a href="#type-lognormal_2p_law_settings">lognormal_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>lognormal_2p_law_data() = {<a href="#type-lognormal_2p_law_settings">lognormal_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like lognormal_2p_law_spec/0, except that its precomputed alias table
  is stored as well.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_2p_law_settings">lognormal_2p_law_settings()</a></h3>
-<p><tt>lognormal_2p_law_settings() = {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>lognormal_2p_law_settings() = {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Lognormal-2p laws.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_2p_law_spec">lognormal_2p_law_spec()</a></h3>
-<p><tt>lognormal_2p_law_spec() = {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>} | {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_lognormal_2p_law_spec">full_lognormal_2p_law_spec()</a></tt></p>
+<p><code>lognormal_2p_law_spec() = {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>} | {lognormal_2p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_lognormal_2p_law_spec">full_lognormal_2p_law_spec()</a></code></p>
 <p><p> The Log-normal law, with two parameters: Mu, in R (typically the mean of the 
 natural logarithms of the times-to-failures), and Sigma &gt; 0 (typically the 
 standard deviation of the natural logarithms of the times-to-failure).</p>
@@ -509,20 +518,20 @@ standard deviation of the natural logarithms of the times-to-failure).</p>
  http://reliawiki.org/index.php/The_Lognormal_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_2p_pdf">lognormal_2p_pdf()</a></h3>
-<p><tt>lognormal_2p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>lognormal_2p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the two-parameter Log-normal distribution.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_3p_law_data">lognormal_3p_law_data()</a></h3>
-<p><tt>lognormal_3p_law_data() = {<a href="#type-lognormal_3p_law_settings">lognormal_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>lognormal_3p_law_data() = {<a href="#type-lognormal_3p_law_settings">lognormal_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like lognormal_3p_law_spec/0, except that its precomputed alias table
  is stored as well.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_3p_law_settings">lognormal_3p_law_settings()</a></h3>
-<p><tt>lognormal_3p_law_settings() = {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>lognormal_3p_law_settings() = {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Lognormal-3p laws.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_3p_law_spec">lognormal_3p_law_spec()</a></h3>
-<p><tt>lognormal_3p_law_spec() = {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float()} | {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_lognormal_3p_law_spec">full_lognormal_3p_law_spec()</a></tt></p>
+<p><code>lognormal_3p_law_spec() = {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float()} | {lognormal_3p, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float(), <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_lognormal_3p_law_spec">full_lognormal_3p_law_spec()</a></code></p>
 <p><p> The Log-normal law, with three parameters: Mu, in R (typically the mean of the 
 natural logarithms of the times-to-failures), Sigma &gt; 0 (typically the 
 standard deviation of the natural logarithms of the times-to-failure) and 
@@ -534,26 +543,26 @@ Theta, presumably in R.</p>
  http://reliawiki.org/index.php/The_Lognormal_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_3p_pdf">lognormal_3p_pdf()</a></h3>
-<p><tt>lognormal_3p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>lognormal_3p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the three-parameter Log-normal distribution.</p>
 
 <h3 class="typedecl"><a name="type-lognormal_law_data">lognormal_law_data()</a></h3>
-<p><tt>lognormal_law_data() = <a href="#type-lognormal_2p_law_data">lognormal_2p_law_data()</a> | <a href="#type-lognormal_3p_law_data">lognormal_3p_law_data()</a></tt></p>
+<p><code>lognormal_law_data() = <a href="#type-lognormal_2p_law_data">lognormal_2p_law_data()</a> | <a href="#type-lognormal_3p_law_data">lognormal_3p_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-lognormal_pdf">lognormal_pdf()</a></h3>
-<p><tt>lognormal_pdf() = <a href="#type-lognormal_2p_pdf">lognormal_2p_pdf()</a> | <a href="#type-lognormal_3p_pdf">lognormal_3p_pdf()</a></tt></p>
+<p><code>lognormal_pdf() = <a href="#type-lognormal_2p_pdf">lognormal_2p_pdf()</a> | <a href="#type-lognormal_3p_pdf">lognormal_3p_pdf()</a></code></p>
 <p> A PDF of a Log-normal distribution.</p>
 
 <h3 class="typedecl"><a name="type-mean">mean()</a></h3>
-<p><tt>mean() = number()</tt></p>
+<p><code>mean() = number()</code></p>
 <p><p> An arithmetic mean of a list of numbers, that is the sum of all of the numbers 
 divided by the number of numbers.</p>
 
  See https://en.wikipedia.org/wiki/Mean#Arithmetic_mean_(AM)</p>
 
 <h3 class="typedecl"><a name="type-normal_2p_law_spec">normal_2p_law_spec()</a></h3>
-<p><tt>normal_2p_law_spec() = {normal_2p, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</tt></p>
+<p><code>normal_2p_law_spec() = {normal_2p, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</code></p>
 <p><p> A Gaussian (a.k.a. normal, bell curve) law is fully determined when its two 
 parameters are given:</p>
 
@@ -570,30 +579,30 @@ About 95.4% of the samples (i.e. almost all) are in [Mu-2.Sigma;Mu+2.Sigma].</p>
  Such a Gaussian law could be designated as normal_2p as well.</p>
 
 <h3 class="typedecl"><a name="type-pdf">pdf()</a></h3>
-<p><tt>pdf() = <a href="#type-pdf">pdf</a>(any())</tt></p>
+<p><code>pdf() = <a href="#type-pdf">pdf</a>(any())</code></p>
 <p> A Probability Density Function for samples of unspecified type.</p>
 
 <h3 class="typedecl"><a name="type-pdf">pdf()</a></h3>
-<p><tt>pdf(S) = fun((S) -&gt; <a href="#type-probability_like">probability_like()</a>)</tt></p>
+<p><code>pdf(S) = fun((S) -&gt; <a href="#type-probability_like">probability_like()</a>)</code></p>
 <p><p> A Probability Density Function telling, for a given sample of type S, its 
 corresponding probability-like value.</p>
 
  See also the math_utils:sample* functions and get_samples_from/2.</p>
 
 <h3 class="typedecl"><a name="type-positive_float">positive_float()</a></h3>
-<p><tt>positive_float() = <a href="type_utils.html#type-positive_float">type_utils:positive_float()</a></tt></p>
+<p><code>positive_float() = <a href="type_utils.html#type-positive_float">type_utils:positive_float()</a></code></p>
 <p>-type non_negative_float() :: type_utils:non_negative_float().</p>
 
 <h3 class="typedecl"><a name="type-positive_float_sample">positive_float_sample()</a></h3>
-<p><tt>positive_float_sample() = <a href="#type-sample">sample</a>(float())</tt></p>
+<p><code>positive_float_sample() = <a href="#type-sample">sample</a>(float())</code></p>
 <p> Designates a positive floating-point sample value.</p>
 
 <h3 class="typedecl"><a name="type-positive_integer_exponential_1p_law_data">positive_integer_exponential_1p_law_data()</a></h3>
-<p><tt>positive_integer_exponential_1p_law_data() = {<a href="#type-positive_integer_exponential_1p_law_spec">positive_integer_exponential_1p_law_spec()</a>, undefined}</tt></p>
+<p><code>positive_integer_exponential_1p_law_data() = {<a href="#type-positive_integer_exponential_1p_law_spec">positive_integer_exponential_1p_law_spec()</a>, undefined}</code></p>
 
 
 <h3 class="typedecl"><a name="type-positive_integer_exponential_1p_law_spec">positive_integer_exponential_1p_law_spec()</a></h3>
-<p><tt>positive_integer_exponential_1p_law_spec() = {positive_integer_exponential_1p, Lambda::<a href="#type-rate">rate()</a>}</tt></p>
+<p><code>positive_integer_exponential_1p_law_spec() = {positive_integer_exponential_1p, Lambda::<a href="#type-rate">rate()</a>}</code></p>
 <p><p> An exponential law with one parameter yielding only positive integer samples.</p>
 
  <p>May be useful for example if wanting to draw duration values.</p>
@@ -601,15 +610,15 @@ corresponding probability-like value.</p>
  Refer to exponential_1p_law_spec/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-positive_integer_exponential_law_data">positive_integer_exponential_law_data()</a></h3>
-<p><tt>positive_integer_exponential_law_data() = <a href="#type-positive_integer_exponential_1p_law_data">positive_integer_exponential_1p_law_data()</a></tt></p>
+<p><code>positive_integer_exponential_law_data() = <a href="#type-positive_integer_exponential_1p_law_data">positive_integer_exponential_1p_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-positive_integer_gaussian_law_data">positive_integer_gaussian_law_data()</a></h3>
-<p><tt>positive_integer_gaussian_law_data() = {<a href="#type-positive_integer_gaussian_law_spec">positive_integer_gaussian_law_spec()</a>, undefined}</tt></p>
+<p><code>positive_integer_gaussian_law_data() = {<a href="#type-positive_integer_gaussian_law_spec">positive_integer_gaussian_law_spec()</a>, undefined}</code></p>
 
 
 <h3 class="typedecl"><a name="type-positive_integer_gaussian_law_spec">positive_integer_gaussian_law_spec()</a></h3>
-<p><tt>positive_integer_gaussian_law_spec() = {positive_integer_gaussian, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</tt></p>
+<p><code>positive_integer_gaussian_law_spec() = {positive_integer_gaussian, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</code></p>
 <p><p> A Gaussian (a.k.a. normal, bell curve) law yielding only positive integer 
 samples.</p>
 
@@ -618,22 +627,22 @@ samples.</p>
  Refer to gaussian_law/0 for further details.</p>
 
 <h3 class="typedecl"><a name="type-probability">probability()</a></h3>
-<p><tt>probability() = <a href="math_utils.html#type-probability">math_utils:probability()</a></tt></p>
+<p><code>probability() = <a href="math_utils.html#type-probability">math_utils:probability()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-probability_like">probability_like()</a></h3>
-<p><tt>probability_like() = <a href="math_utils.html#type-probability_like">math_utils:probability_like()</a></tt></p>
+<p><code>probability_like() = <a href="math_utils.html#type-probability_like">math_utils:probability_like()</a></code></p>
 <p><p> Any number that can be interpreted ultimately as a probability, at least 
 relatively to others.</p>
 
  Notably they may not be normalised (with their sum differing from 1.0).</p>
 
 <h3 class="typedecl"><a name="type-random_law_data">random_law_data()</a></h3>
-<p><tt>random_law_data() = {<a href="#type-random_law_settings">random_law_settings()</a>, <a href="#type-maybe">maybe</a>(<a href="#type-alias_table">alias_table()</a>)} | <a href="#type-uniform_law_data">uniform_law_data()</a> | <a href="#type-integer_uniform_law_data">integer_uniform_law_data()</a> | <a href="#type-exponential_law_data">exponential_law_data()</a> | <a href="#type-positive_integer_exponential_law_data">positive_integer_exponential_law_data()</a> | <a href="#type-gamma_law_data">gamma_law_data()</a> | <a href="#type-gumbel_law_data">gumbel_law_data()</a> | <a href="#type-loglogistic_law_data">loglogistic_law_data()</a> | <a href="#type-lognormal_law_data">lognormal_law_data()</a> | <a href="#type-gaussian_law_data">gaussian_law_data()</a> | <a href="#type-positive_integer_gaussian_law_data">positive_integer_gaussian_law_data()</a> | <a href="#type-weibull_law_data">weibull_law_data()</a> | <a href="#type-beta_law_data">beta_law_data()</a> | <a href="#type-arbitrary_law_data">arbitrary_law_data()</a></tt></p>
+<p><code>random_law_data() = {<a href="#type-random_law_settings">random_law_settings()</a>, <a href="#type-maybe">maybe</a>(<a href="#type-alias_table">alias_table()</a>)} | <a href="#type-uniform_law_data">uniform_law_data()</a> | <a href="#type-integer_uniform_law_data">integer_uniform_law_data()</a> | <a href="#type-exponential_law_data">exponential_law_data()</a> | <a href="#type-positive_integer_exponential_law_data">positive_integer_exponential_law_data()</a> | <a href="#type-gamma_law_data">gamma_law_data()</a> | <a href="#type-gumbel_law_data">gumbel_law_data()</a> | <a href="#type-loglogistic_law_data">loglogistic_law_data()</a> | <a href="#type-lognormal_law_data">lognormal_law_data()</a> | <a href="#type-gaussian_law_data">gaussian_law_data()</a> | <a href="#type-positive_integer_gaussian_law_data">positive_integer_gaussian_law_data()</a> | <a href="#type-weibull_law_data">weibull_law_data()</a> | <a href="#type-beta_law_data">beta_law_data()</a> | <a href="#type-arbitrary_law_data">arbitrary_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-random_law_settings">random_law_settings()</a></h3>
-<p><tt>random_law_settings() = tuple()</tt></p>
+<p><code>random_law_settings() = tuple()</code></p>
 <p><p> The internal, law-specific settings of a law.</p>
 
  The first element of the tuple should be the name of the law, whereas its last
@@ -641,11 +650,11 @@ relatively to others.</p>
   {law_name(), ..., sample_count(), bounds() }.</p>
 
 <h3 class="typedecl"><a name="type-random_law_spec">random_law_spec()</a></h3>
-<p><tt>random_law_spec() = <a href="#type-uniform_law_spec">uniform_law_spec()</a> | <a href="#type-full_uniform_law_spec">full_uniform_law_spec()</a> | <a href="#type-integer_uniform_law_spec">integer_uniform_law_spec()</a> | <a href="#type-exponential_1p_law_spec">exponential_1p_law_spec()</a> | <a href="#type-exponential_law_spec">exponential_law_spec()</a> | <a href="#type-exponential_2p_law_spec">exponential_2p_law_spec()</a> | <a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a> | <a href="#type-positive_integer_exponential_1p_law_spec">positive_integer_exponential_1p_law_spec()</a> | <a href="#type-gamma_2p_law_spec">gamma_2p_law_spec()</a> | <a href="#type-full_gamma_2p_law_spec">full_gamma_2p_law_spec()</a> | <a href="#type-gamma_3p_law_spec">gamma_3p_law_spec()</a> | <a href="#type-full_gamma_3p_law_spec">full_gamma_3p_law_spec()</a> | <a href="#type-full_gamma_law_spec">full_gamma_law_spec()</a> | <a href="#type-gaussian_law_spec">gaussian_law_spec()</a> | <a href="#type-normal_2p_law_spec">normal_2p_law_spec()</a> | <a href="#type-positive_integer_gaussian_law_spec">positive_integer_gaussian_law_spec()</a> | <a href="#type-gumbel_2p_law_spec">gumbel_2p_law_spec()</a> | <a href="#type-full_gumbel_2p_law_spec">full_gumbel_2p_law_spec()</a> | <a href="#type-loglogistic_2p_law_spec">loglogistic_2p_law_spec()</a> | <a href="#type-full_loglogistic_2p_law_spec">full_loglogistic_2p_law_spec()</a> | <a href="#type-loglogistic_3p_law_spec">loglogistic_3p_law_spec()</a> | <a href="#type-full_loglogistic_3p_law_spec">full_loglogistic_3p_law_spec()</a> | <a href="#type-lognormal_2p_law_spec">lognormal_2p_law_spec()</a> | <a href="#type-full_lognormal_2p_law_spec">full_lognormal_2p_law_spec()</a> | <a href="#type-lognormal_3p_law_spec">lognormal_3p_law_spec()</a> | <a href="#type-full_lognormal_3p_law_spec">full_lognormal_3p_law_spec()</a> | <a href="#type-weibull_2p_law_spec">weibull_2p_law_spec()</a> | <a href="#type-full_weibull_2p_law_spec">full_weibull_2p_law_spec()</a> | <a href="#type-weibull_3p_law_spec">weibull_3p_law_spec()</a> | <a href="#type-full_weibull_3p_law_spec">full_weibull_3p_law_spec()</a> | <a href="#type-weibull_cr_law_spec">weibull_cr_law_spec()</a> | <a href="#type-full_weibull_cr_law_spec">full_weibull_cr_law_spec()</a> | <a href="#type-weibull_ds_law_spec">weibull_ds_law_spec()</a> | <a href="#type-full_weibull_ds_law_spec">full_weibull_ds_law_spec()</a> | <a href="#type-weibull_dszi_law_spec">weibull_dszi_law_spec()</a> | <a href="#type-full_weibull_dszi_law_spec">full_weibull_dszi_law_spec()</a> | <a href="#type-weibull_mixture_law_spec">weibull_mixture_law_spec()</a> | <a href="#type-full_weibull_mixture_law_spec">full_weibull_mixture_law_spec()</a> | <a href="#type-weibull_zi_law_spec">weibull_zi_law_spec()</a> | <a href="#type-full_weibull_zi_law_spec">full_weibull_zi_law_spec()</a> | <a href="#type-beta_2p_law_spec">beta_2p_law_spec()</a> | <a href="#type-full_beta_2p_law_spec">full_beta_2p_law_spec()</a> | <a href="#type-arbitrary_law_spec">arbitrary_law_spec()</a></tt></p>
+<p><code>random_law_spec() = <a href="#type-uniform_law_spec">uniform_law_spec()</a> | <a href="#type-full_uniform_law_spec">full_uniform_law_spec()</a> | <a href="#type-integer_uniform_law_spec">integer_uniform_law_spec()</a> | <a href="#type-exponential_1p_law_spec">exponential_1p_law_spec()</a> | <a href="#type-exponential_law_spec">exponential_law_spec()</a> | <a href="#type-exponential_2p_law_spec">exponential_2p_law_spec()</a> | <a href="#type-full_exponential_2p_law_spec">full_exponential_2p_law_spec()</a> | <a href="#type-positive_integer_exponential_1p_law_spec">positive_integer_exponential_1p_law_spec()</a> | <a href="#type-gamma_2p_law_spec">gamma_2p_law_spec()</a> | <a href="#type-full_gamma_2p_law_spec">full_gamma_2p_law_spec()</a> | <a href="#type-gamma_3p_law_spec">gamma_3p_law_spec()</a> | <a href="#type-full_gamma_3p_law_spec">full_gamma_3p_law_spec()</a> | <a href="#type-full_gamma_law_spec">full_gamma_law_spec()</a> | <a href="#type-gaussian_law_spec">gaussian_law_spec()</a> | <a href="#type-normal_2p_law_spec">normal_2p_law_spec()</a> | <a href="#type-positive_integer_gaussian_law_spec">positive_integer_gaussian_law_spec()</a> | <a href="#type-gumbel_2p_law_spec">gumbel_2p_law_spec()</a> | <a href="#type-full_gumbel_2p_law_spec">full_gumbel_2p_law_spec()</a> | <a href="#type-loglogistic_2p_law_spec">loglogistic_2p_law_spec()</a> | <a href="#type-full_loglogistic_2p_law_spec">full_loglogistic_2p_law_spec()</a> | <a href="#type-loglogistic_3p_law_spec">loglogistic_3p_law_spec()</a> | <a href="#type-full_loglogistic_3p_law_spec">full_loglogistic_3p_law_spec()</a> | <a href="#type-lognormal_2p_law_spec">lognormal_2p_law_spec()</a> | <a href="#type-full_lognormal_2p_law_spec">full_lognormal_2p_law_spec()</a> | <a href="#type-lognormal_3p_law_spec">lognormal_3p_law_spec()</a> | <a href="#type-full_lognormal_3p_law_spec">full_lognormal_3p_law_spec()</a> | <a href="#type-weibull_2p_law_spec">weibull_2p_law_spec()</a> | <a href="#type-full_weibull_2p_law_spec">full_weibull_2p_law_spec()</a> | <a href="#type-weibull_3p_law_spec">weibull_3p_law_spec()</a> | <a href="#type-full_weibull_3p_law_spec">full_weibull_3p_law_spec()</a> | <a href="#type-weibull_cr_law_spec">weibull_cr_law_spec()</a> | <a href="#type-full_weibull_cr_law_spec">full_weibull_cr_law_spec()</a> | <a href="#type-weibull_ds_law_spec">weibull_ds_law_spec()</a> | <a href="#type-full_weibull_ds_law_spec">full_weibull_ds_law_spec()</a> | <a href="#type-weibull_dszi_law_spec">weibull_dszi_law_spec()</a> | <a href="#type-full_weibull_dszi_law_spec">full_weibull_dszi_law_spec()</a> | <a href="#type-weibull_mixture_law_spec">weibull_mixture_law_spec()</a> | <a href="#type-full_weibull_mixture_law_spec">full_weibull_mixture_law_spec()</a> | <a href="#type-weibull_zi_law_spec">weibull_zi_law_spec()</a> | <a href="#type-full_weibull_zi_law_spec">full_weibull_zi_law_spec()</a> | <a href="#type-beta_2p_law_spec">beta_2p_law_spec()</a> | <a href="#type-full_beta_2p_law_spec">full_beta_2p_law_spec()</a> | <a href="#type-arbitrary_law_spec">arbitrary_law_spec()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-random_state">random_state()</a></h3>
-<p><tt>random_state() = <a href="#type-seed">seed()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/rand.html#type-state">rand:state()</a> | any()</tt></p>
+<p><code>random_state() = <a href="#type-seed">seed()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/rand.html#type-state">rand:state()</a> | any()</code></p>
 <p><p> For simpler generators, the state is just a seed, for all the others the state 
 may be much larger/more complex.</p>
 
@@ -653,54 +662,58 @@ may be much larger/more complex.</p>
  random law, so that samples can be obtained from it.</p>
 
 <h3 class="typedecl"><a name="type-rate">rate()</a></h3>
-<p><tt>rate() = number()</tt></p>
+<p><code>rate() = number()</code></p>
 <p> A rate parameter, typically for the Lambda parameter of the exponential law.</p>
 
 <h3 class="typedecl"><a name="type-sample">sample()</a></h3>
-<p><tt>sample() = <a href="#type-sample">sample</a>(any())</tt></p>
+<p><code>sample() = <a href="#type-sample">sample</a>(any())</code></p>
 <p><p> Designates a sample value of unknown type.</p>
 
  It may be a number or a symbol (for example: 'obverse', 'reverse').</p>
 
 <h3 class="typedecl"><a name="type-sample">sample()</a></h3>
-<p><tt>sample(T) = T</tt></p>
+<p><code>sample(T) = T</code></p>
 <p> The type of a sample that can be drawn from a probability distribution; a
  probability may be indeed associated to any kind of samples (integer ones,
  strings, vectors, etc.).</p>
 
 <h3 class="typedecl"><a name="type-sample_count">sample_count()</a></h3>
-<p><tt>sample_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>sample_count() = <a href="#type-count">count()</a></code></p>
 <p> A number of samples.</p>
 
 <h3 class="typedecl"><a name="type-sample_entry">sample_entry()</a></h3>
-<p><tt>sample_entry() = <a href="#type-sample_entry">sample_entry</a>(any())</tt></p>
+<p><code>sample_entry() = <a href="#type-sample_entry">sample_entry</a>(any())</code></p>
 <p> An entry corresponding to a sample of unspecified type in a probability
  distribution.</p>
 
 <h3 class="typedecl"><a name="type-sample_entry">sample_entry()</a></h3>
-<p><tt>sample_entry(T) = {<a href="#type-sample">sample</a>(T), <a href="#type-probability_like">probability_like()</a>}</tt></p>
+<p><code>sample_entry(T) = {<a href="#type-sample">sample</a>(T), <a href="#type-probability_like">probability_like()</a>}</code></p>
 <p> An entry corresponding to a sample of the specified type in a probability
  distribution.</p>
 
 <h3 class="typedecl"><a name="type-scale">scale()</a></h3>
-<p><tt>scale() = number()</tt></p>
+<p><code>scale() = number()</code></p>
 <p> A scale parameter of a random law.</p>
 
+<h3 class="typedecl"><a name="type-seconds">seconds()</a></h3>
+<p><code>seconds() = <a href="unit_utils.html#type-seconds">unit_utils:seconds()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-seed">seed()</a></h3>
-<p><tt>seed() = {<a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>}</tt></p>
+<p><code>seed() = {<a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>}</code></p>
 <p> A type of seed for random generators.</p>
 
 <h3 class="typedecl"><a name="type-seed_element">seed_element()</a></h3>
-<p><tt>seed_element() = integer()</tt></p>
+<p><code>seed_element() = integer()</code></p>
 <p> Not future-proof enough (e.g. not compliant with other solutions like
  SIMD-oriented Fast Mersenne Twister).</p>
 
 <h3 class="typedecl"><a name="type-shape">shape()</a></h3>
-<p><tt>shape() = number()</tt></p>
+<p><code>shape() = number()</code></p>
 <p> A shape parameter of a random law.</p>
 
 <h3 class="typedecl"><a name="type-standard_deviation">standard_deviation()</a></h3>
-<p><tt>standard_deviation() = <a href="math_utils.html#type-standard_deviation">math_utils:standard_deviation()</a></tt></p>
+<p><code>standard_deviation() = <a href="math_utils.html#type-standard_deviation">math_utils:standard_deviation()</a></code></p>
 <p><p> A measure of the amount of dispersion of a set of values.</p>
 
  <p>It is the square root of its variance.</p>
@@ -708,30 +721,30 @@ may be much larger/more complex.</p>
  See https://en.wikipedia.org/wiki/Standard_deviation</p>
 
 <h3 class="typedecl"><a name="type-uniform_law_data">uniform_law_data()</a></h3>
-<p><tt>uniform_law_data() = {<a href="#type-full_uniform_law_spec">full_uniform_law_spec()</a>, undefined}</tt></p>
+<p><code>uniform_law_data() = {<a href="#type-full_uniform_law_spec">full_uniform_law_spec()</a>, undefined}</code></p>
 
 
 <h3 class="typedecl"><a name="type-uniform_law_spec">uniform_law_spec()</a></h3>
-<p><tt>uniform_law_spec() = {uniform, Min::number(), Max::number()} | {uniform, Max::number()}</tt></p>
+<p><code>uniform_law_spec() = {uniform, Min::number(), Max::number()} | {uniform, Max::number()}</code></p>
 <p> A probability distribution with which all declared samples have the same
  probability of being drawn: will return random floats uniformly distributed
  in [Min,Max] if both bounds are specified, otherwise in [0,Max].</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-weibull_2p_law_data">weibull_2p_law_data()</a></h3>
-<p><tt>weibull_2p_law_data() = {<a href="#type-weibull_2p_law_settings">weibull_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>weibull_2p_law_data() = {<a href="#type-weibull_2p_law_settings">weibull_2p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like weibull_2p_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_2p_law_settings">weibull_2p_law_settings()</a></h3>
-<p><tt>weibull_2p_law_settings() = {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>weibull_2p_law_settings() = {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Weibull-2p laws.</p>
 
 <h3 class="typedecl"><a name="type-weibull_2p_law_spec">weibull_2p_law_spec()</a></h3>
-<p><tt>weibull_2p_law_spec() = {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>} | {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_2p_law_spec">full_weibull_2p_law_spec()</a></tt></p>
+<p><code>weibull_2p_law_spec() = {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>} | {weibull_2p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_2p_law_spec">full_weibull_2p_law_spec()</a></code></p>
 <p><p> The Weibull law with two parameters, whose K &gt; 0 is the shape parameter 
 (sometimes named beta, or slope) and Lambda &gt; 0 is the scale parameter 
 (sometimes named alpha, or eta, or characteristic life).</p>
@@ -742,20 +755,20 @@ may be much larger/more complex.</p>
  https://reliawiki.org/index.php/The_Weibull_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_2p_pdf">weibull_2p_pdf()</a></h3>
-<p><tt>weibull_2p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>weibull_2p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the two-parameter Weibull distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_3p_law_data">weibull_3p_law_data()</a></h3>
-<p><tt>weibull_3p_law_data() = {<a href="#type-weibull_3p_law_settings">weibull_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>weibull_3p_law_data() = {<a href="#type-weibull_3p_law_settings">weibull_3p_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like weibull_3p_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_3p_law_settings">weibull_3p_law_settings()</a></h3>
-<p><tt>weibull_3p_law_settings() = {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>weibull_3p_law_settings() = {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float(), <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Weibull-3p laws.</p>
 
 <h3 class="typedecl"><a name="type-weibull_3p_law_spec">weibull_3p_law_spec()</a></h3>
-<p><tt>weibull_3p_law_spec() = {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float()} | {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float(), <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_3p_law_spec">full_weibull_3p_law_spec()</a></tt></p>
+<p><code>weibull_3p_law_spec() = {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float()} | {weibull_3p, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float(), <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_3p_law_spec">full_weibull_3p_law_spec()</a></code></p>
 <p><p> The Weibull law with three parameters, whose:</p>
 
  <p>- K &gt; 0 is the shape parameter (sometimes named beta, or slope)</p>
@@ -771,20 +784,20 @@ characteristic life)</p>
  https://reliawiki.org/index.php/The_Weibull_Distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_3p_pdf">weibull_3p_pdf()</a></h3>
-<p><tt>weibull_3p_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>weibull_3p_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the three-parameter Weibull distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_cr_law_data">weibull_cr_law_data()</a></h3>
-<p><tt>weibull_cr_law_data() = {<a href="#type-weibull_cr_law_settings">weibull_cr_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>weibull_cr_law_data() = {<a href="#type-weibull_cr_law_settings">weibull_cr_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like weibull_cr_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_cr_law_settings">weibull_cr_law_settings()</a></h3>
-<p><tt>weibull_cr_law_settings() = {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>weibull_cr_law_settings() = {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Weibull-CR laws.</p>
 
 <h3 class="typedecl"><a name="type-weibull_cr_law_spec">weibull_cr_law_spec()</a></h3>
-<p><tt>weibull_cr_law_spec() = {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>} | {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_cr_law_spec">full_weibull_cr_law_spec()</a></tt></p>
+<p><code>weibull_cr_law_spec() = {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>} | {weibull_cr, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_cr_law_spec">full_weibull_cr_law_spec()</a></code></p>
 <p><p> The Weibull CR ("Competing Risks") law, with three parameters: Lambda &gt; 0, K &gt; 
 0 and Theta &gt; 0.</p>
 
@@ -794,20 +807,20 @@ characteristic life)</p>
  https://reliability.readthedocs.io/en/latest/API/Distributions/Competing_Risks_Model.html</p>
 
 <h3 class="typedecl"><a name="type-weibull_cr_pdf">weibull_cr_pdf()</a></h3>
-<p><tt>weibull_cr_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>weibull_cr_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the Weibull-CR distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_ds_law_data">weibull_ds_law_data()</a></h3>
-<p><tt>weibull_ds_law_data() = {<a href="#type-weibull_ds_law_settings">weibull_ds_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>weibull_ds_law_data() = {<a href="#type-weibull_ds_law_settings">weibull_ds_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like weibull_ds_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_ds_law_settings">weibull_ds_law_settings()</a></h3>
-<p><tt>weibull_ds_law_settings() = {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>weibull_ds_law_settings() = {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Weibull-DS laws.</p>
 
 <h3 class="typedecl"><a name="type-weibull_ds_law_spec">weibull_ds_law_spec()</a></h3>
-<p><tt>weibull_ds_law_spec() = {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>} | {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_ds_law_spec">full_weibull_ds_law_spec()</a></tt></p>
+<p><code>weibull_ds_law_spec() = {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>} | {weibull_ds, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_ds_law_spec">full_weibull_ds_law_spec()</a></code></p>
 <p><p> The Weibull DS ("Defective Subpopulation") law, with three parameters: Lambda 
 &gt; 0, K &gt; 0 and Sigma &gt; 0.</p>
 
@@ -818,20 +831,20 @@ characteristic life)</p>
  which discusses DS as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_ds_pdf">weibull_ds_pdf()</a></h3>
-<p><tt>weibull_ds_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>weibull_ds_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the Weibull-DS distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_dszi_law_data">weibull_dszi_law_data()</a></h3>
-<p><tt>weibull_dszi_law_data() = {<a href="#type-weibull_dszi_law_settings">weibull_dszi_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>weibull_dszi_law_data() = {<a href="#type-weibull_dszi_law_settings">weibull_dszi_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like weibull_dszi_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_dszi_law_settings">weibull_dszi_law_settings()</a></h3>
-<p><tt>weibull_dszi_law_settings() = {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>weibull_dszi_law_settings() = {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Weibull-DSZI laws.</p>
 
 <h3 class="typedecl"><a name="type-weibull_dszi_law_spec">weibull_dszi_law_spec()</a></h3>
-<p><tt>weibull_dszi_law_spec() = {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>} | {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_dszi_law_spec">full_weibull_dszi_law_spec()</a></tt></p>
+<p><code>weibull_dszi_law_spec() = {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>} | {weibull_dszi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_dszi_law_spec">full_weibull_dszi_law_spec()</a></code></p>
 <p><p> The Weibull DSZI ("Defective Subpopulation" / "Zero Inflated") law, with four 
 parameters: Lambda &gt; 0, K &gt; 0, Sigma &gt; 0 and Theta &gt; 0.</p>
 
@@ -841,24 +854,24 @@ parameters: Lambda &gt; 0, K &gt; 0, Sigma &gt; 0 and Theta &gt; 0.</p>
  https://reliability.readthedocs.io/en/latest/API/Distributions/DSZI_Model.html.</p>
 
 <h3 class="typedecl"><a name="type-weibull_dszi_pdf">weibull_dszi_pdf()</a></h3>
-<p><tt>weibull_dszi_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>weibull_dszi_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the Weibull-DSZI distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_law_data">weibull_law_data()</a></h3>
-<p><tt>weibull_law_data() = <a href="#type-weibull_2p_law_data">weibull_2p_law_data()</a> | <a href="#type-weibull_3p_law_data">weibull_3p_law_data()</a> | <a href="#type-weibull_cr_law_data">weibull_cr_law_data()</a> | <a href="#type-weibull_ds_law_data">weibull_ds_law_data()</a> | <a href="#type-weibull_dszi_law_data">weibull_dszi_law_data()</a> | <a href="#type-weibull_mixture_law_data">weibull_mixture_law_data()</a> | <a href="#type-weibull_zi_law_data">weibull_zi_law_data()</a></tt></p>
+<p><code>weibull_law_data() = <a href="#type-weibull_2p_law_data">weibull_2p_law_data()</a> | <a href="#type-weibull_3p_law_data">weibull_3p_law_data()</a> | <a href="#type-weibull_cr_law_data">weibull_cr_law_data()</a> | <a href="#type-weibull_ds_law_data">weibull_ds_law_data()</a> | <a href="#type-weibull_dszi_law_data">weibull_dszi_law_data()</a> | <a href="#type-weibull_mixture_law_data">weibull_mixture_law_data()</a> | <a href="#type-weibull_zi_law_data">weibull_zi_law_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-weibull_mixture_law_data">weibull_mixture_law_data()</a></h3>
-<p><tt>weibull_mixture_law_data() = {<a href="#type-weibull_mixture_law_settings">weibull_mixture_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>weibull_mixture_law_data() = {<a href="#type-weibull_mixture_law_settings">weibull_mixture_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like weibull_mixture_law_spec/0, except that its precomputed alias table
  is stored as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_mixture_law_settings">weibull_mixture_law_settings()</a></h3>
-<p><tt>weibull_mixture_law_settings() = {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>weibull_mixture_law_settings() = {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Weibull-mixture laws.</p>
 
 <h3 class="typedecl"><a name="type-weibull_mixture_law_spec">weibull_mixture_law_spec()</a></h3>
-<p><tt>weibull_mixture_law_spec() = {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>} | {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_mixture_law_spec">full_weibull_mixture_law_spec()</a></tt></p>
+<p><code>weibull_mixture_law_spec() = {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>} | {weibull_mixture, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_mixture_law_spec">full_weibull_mixture_law_spec()</a></code></p>
 <p><p> The Weibull mixture law, a combination of two weibull_2p distributions, with a 
 total of five parameters.</p>
 
@@ -867,24 +880,24 @@ total of five parameters.</p>
  See also https://reliability.readthedocs.io/en/latest/Mixture%20models.html</p>
 
 <h3 class="typedecl"><a name="type-weibull_mixture_pdf">weibull_mixture_pdf()</a></h3>
-<p><tt>weibull_mixture_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>weibull_mixture_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the Weibull-mixture distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_pdf">weibull_pdf()</a></h3>
-<p><tt>weibull_pdf() = <a href="#type-weibull_2p_pdf">weibull_2p_pdf()</a> | <a href="#type-weibull_3p_pdf">weibull_3p_pdf()</a> | <a href="#type-weibull_cr_pdf">weibull_cr_pdf()</a> | <a href="#type-weibull_ds_pdf">weibull_ds_pdf()</a> | <a href="#type-weibull_dszi_pdf">weibull_dszi_pdf()</a> | <a href="#type-weibull_mixture_pdf">weibull_mixture_pdf()</a> | <a href="#type-weibull_zi_pdf">weibull_zi_pdf()</a></tt></p>
+<p><code>weibull_pdf() = <a href="#type-weibull_2p_pdf">weibull_2p_pdf()</a> | <a href="#type-weibull_3p_pdf">weibull_3p_pdf()</a> | <a href="#type-weibull_cr_pdf">weibull_cr_pdf()</a> | <a href="#type-weibull_ds_pdf">weibull_ds_pdf()</a> | <a href="#type-weibull_dszi_pdf">weibull_dszi_pdf()</a> | <a href="#type-weibull_mixture_pdf">weibull_mixture_pdf()</a> | <a href="#type-weibull_zi_pdf">weibull_zi_pdf()</a></code></p>
 <p> A PDF of a Weibull distribution.</p>
 
 <h3 class="typedecl"><a name="type-weibull_zi_law_data">weibull_zi_law_data()</a></h3>
-<p><tt>weibull_zi_law_data() = {<a href="#type-weibull_zi_law_settings">weibull_zi_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</tt></p>
+<p><code>weibull_zi_law_data() = {<a href="#type-weibull_zi_law_settings">weibull_zi_law_settings()</a>, <a href="#type-alias_table">alias_table()</a>}</code></p>
 <p> A bit like weibull_zi_law_spec/0, except that its precomputed alias table is
  stored as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_zi_law_settings">weibull_zi_law_settings()</a></h3>
-<p><tt>weibull_zi_law_settings() = {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</tt></p>
+<p><code>weibull_zi_law_settings() = {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>, <a href="#type-bounds">bounds()</a>}</code></p>
 <p> Internal settings of the Weibull-ZI laws.</p>
 
 <h3 class="typedecl"><a name="type-weibull_zi_law_spec">weibull_zi_law_spec()</a></h3>
-<p><tt>weibull_zi_law_spec() = {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>} | {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_zi_law_spec">full_weibull_zi_law_spec()</a></tt></p>
+<p><code>weibull_zi_law_spec() = {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>} | {weibull_zi, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>, <a href="#type-sample_count">sample_count()</a>} | <a href="#type-full_weibull_zi_law_spec">full_weibull_zi_law_spec()</a></code></p>
 <p><p> The Weibull ZI ("Zero Inflated") law with three parameters.</p>
 
  <p>A sample count and specific bounds can be specified.</p>
@@ -894,7 +907,7 @@ total of five parameters.</p>
  which discusses ZI as well.</p>
 
 <h3 class="typedecl"><a name="type-weibull_zi_pdf">weibull_zi_pdf()</a></h3>
-<p><tt>weibull_zi_pdf() = <a href="#type-pdf">pdf()</a></tt></p>
+<p><code>weibull_zi_pdf() = <a href="#type-pdf">pdf()</a></code></p>
 <p> A PDF of the Weibull-ZI distribution.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -920,6 +933,9 @@ Lambda setting.</td></tr>
 <tr><td valign="top"><a href="#get_gaussian_value-2">get_gaussian_value/2</a></td><td>Returns a random value generated from the normal (Gaussian) distribution 
 with specified settings.</td></tr>
 <tr><td valign="top"><a href="#get_gaussian_values-3">get_gaussian_values/3</a></td><td>Returns a list of Count Gaussian values.</td></tr>
+<tr><td valign="top"><a href="#get_lambda_from_mean_time-1">get_lambda_from_mean_time/1</a></td><td>Returns the Lamba parameter of the exponential probability density 
+function corresponding to the specified mean time, expressed as a DHMS value 
+or a number of seconds.</td></tr>
 <tr><td valign="top"><a href="#get_law_name-1">get_law_name/1</a></td><td>Returns the name of the law corresponding to the specified law settings.</td></tr>
 <tr><td valign="top"><a href="#get_law_settings-1">get_law_settings/1</a></td><td>Returns the settings of the law specified by its data.</td></tr>
 <tr><td valign="top"><a href="#get_positive_integer_exponential_1p_value-1">get_positive_integer_exponential_1p_value/1</a></td><td>Returns an exponential (positive) integer random value, with Lambda being 
@@ -987,13 +1003,13 @@ process serialisations).</td></tr>
 
 <h3 class="function"><a name="beta_2p_pdf-3">beta_2p_pdf/3</a></h3>
 <div class="spec">
-<p><tt>beta_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>beta_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="can_be_seeded-0">can_be_seeded/0</a></h3>
 <div class="spec">
-<p><tt>can_be_seeded() -&gt; boolean()</tt><br></p>
+<p><code>can_be_seeded() -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether this random source can be seeded.</p>
 
@@ -1002,7 +1018,7 @@ process serialisations).</td></tr>
 
 <h3 class="function"><a name="check_random_seed-1">check_random_seed/1</a></h3>
 <div class="spec">
-<p><tt>check_random_seed(S::<a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_random_seed(S::<a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Checks that the specified seed is valid.</p>
 
@@ -1012,37 +1028,37 @@ process serialisations).</td></tr>
 
 <h3 class="function"><a name="exponential_1p_pdf-2">exponential_1p_pdf/2</a></h3>
 <div class="spec">
-<p><tt>exponential_1p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-rate">rate()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>exponential_1p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-rate">rate()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="exponential_2p_pdf-3">exponential_2p_pdf/3</a></h3>
 <div class="spec">
-<p><tt>exponential_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>exponential_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-rate">rate()</a>, Gamma::<a href="#type-rate">rate()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="gamma_2p_pdf-3">gamma_2p_pdf/3</a></h3>
 <div class="spec">
-<p><tt>gamma_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, K::<a href="#type-shape">shape()</a>, Theta::<a href="#type-scale">scale()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>gamma_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, K::<a href="#type-shape">shape()</a>, Theta::<a href="#type-scale">scale()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="gamma_3p_pdf-4">gamma_3p_pdf/4</a></h3>
 <div class="spec">
-<p><tt>gamma_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-shape">shape()</a>, Beta::<a href="#type-shape">shape()</a>, Theta::<a href="#type-scale">scale()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>gamma_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-shape">shape()</a>, Beta::<a href="#type-shape">shape()</a>, Theta::<a href="#type-scale">scale()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="gaussian_pdf-3">gaussian_pdf/3</a></h3>
 <div class="spec">
-<p><tt>gaussian_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>gaussian_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="generate_alias_table_from-1">generate_alias_table_from/1</a></h3>
 <div class="spec">
-<p><tt>generate_alias_table_from(DiscreteProbDist::<a href="#type-discrete_probability_distribution">discrete_probability_distribution()</a>) -&gt; <a href="#type-alias_table">alias_table()</a></tt><br></p>
+<p><code>generate_alias_table_from(DiscreteProbDist::<a href="#type-discrete_probability_distribution">discrete_probability_distribution()</a>) -&gt; <a href="#type-alias_table">alias_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a precomputed alias table used in order to produce samples 
 according to the specified discrete probability distribution.</p>
@@ -1065,7 +1081,7 @@ respecting said distribution can be drawn.</p>
 
 <h3 class="function"><a name="get_all_sample_pairs-1">get_all_sample_pairs/1</a></h3>
 <div class="spec">
-<p><tt>get_all_sample_pairs(LS::<a href="#type-random_law_spec">random_law_spec()</a>) -&gt; <a href="#type-discrete_probability_distribution">discrete_probability_distribution()</a></tt><br></p>
+<p><code>get_all_sample_pairs(LS::<a href="#type-random_law_spec">random_law_spec()</a>) -&gt; <a href="#type-discrete_probability_distribution">discrete_probability_distribution()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns, for the specified law specification, all the sample pairs that 
 correspond to it, along with extraneous information.</p>
@@ -1076,7 +1092,7 @@ correspond to it, along with extraneous information.</p>
 
 <h3 class="function"><a name="get_boolean-0">get_boolean/0</a></h3>
 <div class="spec">
-<p><tt>get_boolean() -&gt; boolean()</tt><br></p>
+<p><code>get_boolean() -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns a boolean random value generated from a uniform distribution.</p>
 
@@ -1085,7 +1101,7 @@ correspond to it, along with extraneous information.</p>
 
 <h3 class="function"><a name="get_exponential_1p_pdf-2">get_exponential_1p_pdf/2</a></h3>
 <div class="spec">
-<p><tt>get_exponential_1p_pdf(Lambda::term(), LS::term()) -&gt; {<a href="#type-exponential_1p_pdf">exponential_1p_pdf()</a>, <a href="#type-rate">rate()</a>}</tt><br></p>
+<p><code>get_exponential_1p_pdf(Lambda::term(), LS::term()) -&gt; {<a href="#type-exponential_1p_pdf">exponential_1p_pdf()</a>, <a href="#type-rate">rate()</a>}</code><br></p>
 <p> </p>
 </div><p>Returns the corresponding Exponential-1p PDF, after having checked
  user-supplied parameters.
@@ -1093,7 +1109,7 @@ correspond to it, along with extraneous information.</p>
 
 <h3 class="function"><a name="get_exponential_1p_value-1">get_exponential_1p_value/1</a></h3>
 <div class="spec">
-<p><tt>get_exponential_1p_value(Lambda::<a href="#type-rate">rate()</a>) -&gt; float()</tt><br></p>
+<p><code>get_exponential_1p_value(Lambda::<a href="#type-rate">rate()</a>) -&gt; float()</code><br></p>
 <p> </p>
 </div><p><p>Returns an exponential-1p floating-point random value, with Lambda being 
 the rate parameter.</p>
@@ -1108,7 +1124,7 @@ returned.</p>
 
 <h3 class="function"><a name="get_exponential_1p_values-2">get_exponential_1p_values/2</a></h3>
 <div class="spec">
-<p><tt>get_exponential_1p_values(Lambda::<a href="#type-rate">rate()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [float()]</tt><br></p>
+<p><code>get_exponential_1p_values(Lambda::<a href="#type-rate">rate()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [float()]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of Count exponential-1p values according to the specified 
 Lambda setting.</p>
@@ -1118,7 +1134,7 @@ Lambda setting.</p>
 
 <h3 class="function"><a name="get_gaussian_value-2">get_gaussian_value/2</a></h3>
 <div class="spec">
-<p><tt>get_gaussian_value(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; float()</tt><br></p>
+<p><code>get_gaussian_value(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; float()</code><br></p>
 <p> </p>
 </div><p><p>Returns a random value generated from the normal (Gaussian) distribution 
 with specified settings.</p>
@@ -1130,7 +1146,7 @@ with specified settings.</p>
 
 <h3 class="function"><a name="get_gaussian_values-3">get_gaussian_values/3</a></h3>
 <div class="spec">
-<p><tt>get_gaussian_values(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [float()]</tt><br></p>
+<p><code>get_gaussian_values(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [float()]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of Count Gaussian values.</p>
 
@@ -1139,21 +1155,33 @@ with specified settings.</p>
  the process dictionary.
 </p>
 
+<h3 class="function"><a name="get_lambda_from_mean_time-1">get_lambda_from_mean_time/1</a></h3>
+<div class="spec">
+<p><code>get_lambda_from_mean_time(MTDHMS::<a href="#type-dhms">dhms()</a> | <a href="#type-seconds">seconds()</a>) -&gt; <a href="#type-rate">rate()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the Lamba parameter of the exponential probability density 
+function corresponding to the specified mean time, expressed as a DHMS value 
+or a number of seconds.</p>
+
+ Typical mean times are the MTTF (Mean Time To Failure) and MTTR (Mean Time to
+ Repair).
+</p>
+
 <h3 class="function"><a name="get_law_name-1">get_law_name/1</a></h3>
 <div class="spec">
-<p><tt>get_law_name(LawSettings::<a href="#type-random_law_settings">random_law_settings()</a>) -&gt; <a href="#type-law_name">law_name()</a></tt><br></p>
+<p><code>get_law_name(LawSettings::<a href="#type-random_law_settings">random_law_settings()</a>) -&gt; <a href="#type-law_name">law_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns the name of the law corresponding to the specified law settings.</p>
 
 <h3 class="function"><a name="get_law_settings-1">get_law_settings/1</a></h3>
 <div class="spec">
-<p><tt>get_law_settings(LawData::<a href="#type-random_law_data">random_law_data()</a>) -&gt; <a href="#type-random_law_settings">random_law_settings()</a></tt><br></p>
+<p><code>get_law_settings(LawData::<a href="#type-random_law_data">random_law_data()</a>) -&gt; <a href="#type-random_law_settings">random_law_settings()</a></code><br></p>
 <p> </p>
 </div><p>Returns the settings of the law specified by its data.</p>
 
 <h3 class="function"><a name="get_positive_integer_exponential_1p_value-1">get_positive_integer_exponential_1p_value/1</a></h3>
 <div class="spec">
-<p><tt>get_positive_integer_exponential_1p_value(Lambda::<a href="#type-rate">rate()</a>) -&gt; non_neg_integer()</tt><br></p>
+<p><code>get_positive_integer_exponential_1p_value(Lambda::<a href="#type-rate">rate()</a>) -&gt; non_neg_integer()</code><br></p>
 <p> </p>
 </div><p><p>Returns an exponential (positive) integer random value, with Lambda being 
 the rate parameter.</p>
@@ -1163,7 +1191,7 @@ the rate parameter.</p>
 
 <h3 class="function"><a name="get_positive_integer_exponential_1p_values-2">get_positive_integer_exponential_1p_values/2</a></h3>
 <div class="spec">
-<p><tt>get_positive_integer_exponential_1p_values(Lambda::<a href="#type-rate">rate()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [non_neg_integer()]</tt><br></p>
+<p><code>get_positive_integer_exponential_1p_values(Lambda::<a href="#type-rate">rate()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [non_neg_integer()]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of Count positive integer exponential-1p values according 
 to the specified Lambda setting.</p>
@@ -1173,7 +1201,7 @@ to the specified Lambda setting.</p>
 
 <h3 class="function"><a name="get_positive_integer_gaussian_value-2">get_positive_integer_gaussian_value/2</a></h3>
 <div class="spec">
-<p><tt>get_positive_integer_gaussian_value(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; non_neg_integer()</tt><br></p>
+<p><code>get_positive_integer_gaussian_value(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; non_neg_integer()</code><br></p>
 <p> </p>
 </div><p><p>Returns a non-negative integer random value generated from the 
 normal (Gaussian) distribution with specified settings.</p>
@@ -1188,7 +1216,7 @@ dictionary.</p>
 
 <h3 class="function"><a name="get_positive_integer_gaussian_values-3">get_positive_integer_gaussian_values/3</a></h3>
 <div class="spec">
-<p><tt>get_positive_integer_gaussian_values(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [non_neg_integer()]</tt><br></p>
+<p><code>get_positive_integer_gaussian_values(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>, Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [non_neg_integer()]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of Count positive integer Gaussian values.</p>
 
@@ -1199,7 +1227,7 @@ dictionary.</p>
 
 <h3 class="function"><a name="get_random_module_name-0">get_random_module_name/0</a></h3>
 <div class="spec">
-<p><tt>get_random_module_name() -&gt; crypto</tt><br></p>
+<p><code>get_random_module_name() -&gt; crypto</code><br></p>
 <p> </p>
 </div><p><p>Returns the name of the module managing the random generation.</p>
 
@@ -1208,7 +1236,7 @@ dictionary.</p>
 
 <h3 class="function"><a name="get_random_seed-0">get_random_seed/0</a></h3>
 <div class="spec">
-<p><tt>get_random_seed() -&gt; <a href="#type-seed">seed()</a></tt><br></p>
+<p><code>get_random_seed() -&gt; <a href="#type-seed">seed()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a seed obtained from the random source in use.</p>
 
@@ -1218,7 +1246,7 @@ dictionary.</p>
 
 <h3 class="function"><a name="get_random_state-0">get_random_state/0</a></h3>
 <div class="spec">
-<p><tt>get_random_state() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-random_state">random_state()</a>)</tt><br></p>
+<p><code>get_random_state() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-random_state">random_state()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the random state of this process (it is useful for example for 
 process serialisations).</p>
@@ -1228,7 +1256,7 @@ process serialisations).</p>
 
 <h3 class="function"><a name="get_random_subset-2">get_random_subset/2</a></h3>
 <div class="spec">
-<p><tt>get_random_subset(ValueCount::<a href="#type-count">count()</a>, InputList::list()) -&gt; list()</tt><br></p>
+<p><code>get_random_subset(ValueCount::<a href="#type-count">count()</a>, InputList::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of the specified number of unique elements drawn from the 
 specified input list (so that there is no duplicate in the returned list).</p>
@@ -1239,7 +1267,7 @@ specified input list (so that there is no duplicate in the returned list).</p>
 
 <h3 class="function"><a name="get_sample_from-1">get_sample_from/1</a></h3>
 <div class="spec">
-<p><tt>get_sample_from(Other::<a href="#type-random_law_data">random_law_data()</a>) -&gt; <a href="#type-sample">sample()</a></tt><br></p>
+<p><code>get_sample_from(Other::<a href="#type-random_law_data">random_law_data()</a>) -&gt; <a href="#type-sample">sample()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a new sample drawn from the discrete probability distribution 
 specified through its (constant) law data (which is thus not returned), this 
@@ -1257,7 +1285,7 @@ of samples declared in the corresponding distribution.</p>
 
 <h3 class="function"><a name="get_samples_from-2">get_samples_from/2</a></h3>
 <div class="spec">
-<p><tt>get_samples_from(Count::<a href="#type-sample_count">sample_count()</a>, LawData::<a href="#type-random_law_data">random_law_data()</a>) -&gt; [<a href="#type-sample">sample()</a>]</tt><br></p>
+<p><code>get_samples_from(Count::<a href="#type-sample_count">sample_count()</a>, LawData::<a href="#type-random_law_data">random_law_data()</a>) -&gt; [<a href="#type-sample">sample()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns the specified number of samples drawn according to the specified 
 law data.</p>
@@ -1267,7 +1295,7 @@ law data.</p>
 
 <h3 class="function"><a name="get_uniform_floating_point_value-1">get_uniform_floating_point_value/1</a></h3>
 <div class="spec">
-<p><tt>get_uniform_floating_point_value(N::number()) -&gt; float()</tt><br></p>
+<p><code>get_uniform_floating_point_value(N::number()) -&gt; float()</code><br></p>
 <p> </p>
 </div><p><p>Returns a floating-point random value in [0.0,N[ generated from an 
 uniform distribution.</p>
@@ -1281,7 +1309,7 @@ floating-point value uniformly distributed between 0.0 (included) and N
 
 <h3 class="function"><a name="get_uniform_floating_point_value-2">get_uniform_floating_point_value/2</a></h3>
 <div class="spec">
-<p><tt>get_uniform_floating_point_value(Nmin::number(), Nmax::number()) -&gt; float()</tt><br></p>
+<p><code>get_uniform_floating_point_value(Nmin::number(), Nmax::number()) -&gt; float()</code><br></p>
 <p> </p>
 </div><p><p>Returns a floating-point random value in [Nmin, Nmax[ generated from an 
 uniform distribution.</p>
@@ -1296,7 +1324,7 @@ dictionary.</p>
 
 <h3 class="function"><a name="get_uniform_value-0">get_uniform_value/0</a></h3>
 <div class="spec">
-<p><tt>get_uniform_value() -&gt; float()</tt><br></p>
+<p><code>get_uniform_value() -&gt; float()</code><br></p>
 <p> </p>
 </div><p><p>Returns a random float uniformly distributed between 0.0 (included) and 
 1.0 (excluded), updating the random state in the process dictionary.</p>
@@ -1306,7 +1334,7 @@ dictionary.</p>
 
 <h3 class="function"><a name="get_uniform_value-1">get_uniform_value/1</a></h3>
 <div class="spec">
-<p><tt>get_uniform_value(N::pos_integer()) -&gt; pos_integer()</tt><br></p>
+<p><code>get_uniform_value(N::pos_integer()) -&gt; pos_integer()</code><br></p>
 <p> </p>
 </div><p><p>Returns an integer random value generated from an uniform distribution.</p>
 
@@ -1319,7 +1347,7 @@ dictionary.</p>
 
 <h3 class="function"><a name="get_uniform_value-2">get_uniform_value/2</a></h3>
 <div class="spec">
-<p><tt>get_uniform_value(Nmin::integer(), Nmax::integer()) -&gt; integer()</tt><br></p>
+<p><code>get_uniform_value(Nmin::integer(), Nmax::integer()) -&gt; integer()</code><br></p>
 <p> </p>
 </div><p><p>Returns an integer random value generated from an uniform distribution in 
 [Nmin,Nmax] (thus with both bounds included), updating the random state in the 
@@ -1330,25 +1358,25 @@ process dictionary.</p>
 
 <h3 class="function"><a name="get_uniform_values-2">get_uniform_values/2</a></h3>
 <div class="spec">
-<p><tt>get_uniform_values(N::pos_integer(), Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [pos_integer()]</tt><br></p>
+<p><code>get_uniform_values(N::pos_integer(), Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [pos_integer()]</code><br></p>
 <p> </p>
 </div><p>Generates a list of Count elements uniformly drawn in [1,N].</p>
 
 <h3 class="function"><a name="get_uniform_values-3">get_uniform_values/3</a></h3>
 <div class="spec">
-<p><tt>get_uniform_values(Nmin::integer(), Nmax::integer(), Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [integer()]</tt><br></p>
+<p><code>get_uniform_values(Nmin::integer(), Nmax::integer(), Count::<a href="#type-sample_count">sample_count()</a>) -&gt; [integer()]</code><br></p>
 <p> </p>
 </div><p>Generates a list of Count elements uniformly drawn in [Nmin,Nmax].</p>
 
 <h3 class="function"><a name="gumbel_2p_pdf-3">gumbel_2p_pdf/3</a></h3>
 <div class="spec">
-<p><tt>gumbel_2p_pdf(S::<a href="#type-float_sample">float_sample()</a>, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>gumbel_2p_pdf(S::<a href="#type-float_sample">float_sample()</a>, Mu::float(), Beta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="initialise_law-1">initialise_law/1</a></h3>
 <div class="spec">
-<p><tt>initialise_law(LS::<a href="#type-random_law_spec">random_law_spec()</a>) -&gt; <a href="#type-random_law_data">random_law_data()</a></tt><br></p>
+<p><code>initialise_law(LS::<a href="#type-random_law_spec">random_law_spec()</a>) -&gt; <a href="#type-random_law_data">random_law_data()</a></code><br></p>
 <p> </p>
 </div><p>Initialises the specified random law from its specification, so that as
  many samples as wanted can be drawn from its returned precomputed data
@@ -1357,13 +1385,13 @@ process dictionary.</p>
 
 <h3 class="function"><a name="law_data_to_string-1">law_data_to_string/1</a></h3>
 <div class="spec">
-<p><tt>law_data_to_string(Other::<a href="#type-random_law_data">random_law_data()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>law_data_to_string(Other::<a href="#type-random_law_data">random_law_data()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified random law data.</p>
 
 <h3 class="function"><a name="law_spec_to_string-1">law_spec_to_string/1</a></h3>
 <div class="spec">
-<p><tt>law_spec_to_string(X1::<a href="#type-random_law_spec">random_law_spec()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>law_spec_to_string(X1::<a href="#type-random_law_spec">random_law_spec()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified random law
  specification.
@@ -1371,31 +1399,31 @@ process dictionary.</p>
 
 <h3 class="function"><a name="loglogistic_2p_pdf-3">loglogistic_2p_pdf/3</a></h3>
 <div class="spec">
-<p><tt>loglogistic_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>loglogistic_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="loglogistic_3p_pdf-4">loglogistic_3p_pdf/4</a></h3>
 <div class="spec">
-<p><tt>loglogistic_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>loglogistic_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Alpha::<a href="#type-positive_float">positive_float()</a>, Beta::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="lognormal_2p_pdf-3">lognormal_2p_pdf/3</a></h3>
 <div class="spec">
-<p><tt>lognormal_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>lognormal_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="lognormal_3p_pdf-4">lognormal_3p_pdf/4</a></h3>
 <div class="spec">
-<p><tt>lognormal_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float()) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>lognormal_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Mu::float(), Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::float()) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="one_of-1">one_of/1</a></h3>
 <div class="spec">
-<p><tt>one_of(ListOfThings::[any()]) -&gt; any()</tt><br></p>
+<p><code>one_of(ListOfThings::[any()]) -&gt; any()</code><br></p>
 <p> </p>
 </div><p>Returns a random element of the specified list, selected according to a
  uniform distribution.
@@ -1403,25 +1431,25 @@ process dictionary.</p>
 
 <h3 class="function"><a name="reset_random_source-1">reset_random_source/1</a></h3>
 <div class="spec">
-<p><tt>reset_random_source(Seed::default_seed | time_based_seed | <a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>reset_random_source(Seed::default_seed | time_based_seed | <a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Resets the random source with a new seed.</p>
 
 <h3 class="function"><a name="sampling_info_to_string-1">sampling_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>sampling_info_to_string(SampleCount::<a href="#type-sample_count">sample_count()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>sampling_info_to_string(SampleCount::<a href="#type-sample_count">sample_count()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified sampling information.</p>
 
 <h3 class="function"><a name="sampling_info_to_string-2">sampling_info_to_string/2</a></h3>
 <div class="spec">
-<p><tt>sampling_info_to_string(SampleCount::<a href="#type-sample_count">sample_count()</a>, Bounds::<a href="#type-bounds">bounds()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>sampling_info_to_string(SampleCount::<a href="#type-sample_count">sample_count()</a>, Bounds::<a href="#type-bounds">bounds()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified sampling information.</p>
 
 <h3 class="function"><a name="set_random_state-1">set_random_state/1</a></h3>
 <div class="spec">
-<p><tt>set_random_state(NewState::<a href="#type-random_state">random_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_random_state(NewState::<a href="#type-random_state">random_state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets the random state of this process (it is useful for example for 
 process serialisations).</p>
@@ -1431,61 +1459,61 @@ process serialisations).</p>
 
 <h3 class="function"><a name="start_random_source-1">start_random_source/1</a></h3>
 <div class="spec">
-<p><tt>start_random_source(X1::default_seed | time_based_seed | <a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_random_source(X1::default_seed | time_based_seed | <a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Starts the random source with specified seeding.</p>
 
 <h3 class="function"><a name="start_random_source-3">start_random_source/3</a></h3>
 <div class="spec">
-<p><tt>start_random_source(A::<a href="#type-seed_element">seed_element()</a>, B::<a href="#type-seed_element">seed_element()</a>, C::<a href="#type-seed_element">seed_element()</a>) -&gt; <a href="#type-random_state">random_state()</a></tt><br></p>
+<p><code>start_random_source(A::<a href="#type-seed_element">seed_element()</a>, B::<a href="#type-seed_element">seed_element()</a>, C::<a href="#type-seed_element">seed_element()</a>) -&gt; <a href="#type-random_state">random_state()</a></code><br></p>
 <p> </p>
 </div><p>Starts the random source with specified seeding.</p>
 
 <h3 class="function"><a name="stop_random_source-0">stop_random_source/0</a></h3>
 <div class="spec">
-<p><tt>stop_random_source() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>stop_random_source() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Stops the random source.</p>
 
 <h3 class="function"><a name="weibull_2p_pdf-3">weibull_2p_pdf/3</a></h3>
 <div class="spec">
-<p><tt>weibull_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>weibull_2p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="weibull_3p_pdf-4">weibull_3p_pdf/4</a></h3>
 <div class="spec">
-<p><tt>weibull_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float()) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>weibull_3p_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, K::<a href="#type-positive_float">positive_float()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, Gamma::float()) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="weibull_cr_pdf-4">weibull_cr_pdf/4</a></h3>
 <div class="spec">
-<p><tt>weibull_cr_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>weibull_cr_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="weibull_ds_pdf-4">weibull_ds_pdf/4</a></h3>
 <div class="spec">
-<p><tt>weibull_ds_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>weibull_ds_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="weibull_dszi_pdf-5">weibull_dszi_pdf/5</a></h3>
 <div class="spec">
-<p><tt>weibull_dszi_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>weibull_dszi_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, Sigma::<a href="#type-positive_float">positive_float()</a>, Theta::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="weibull_mixture_pdf-6">weibull_mixture_pdf/6</a></h3>
 <div class="spec">
-<p><tt>weibull_mixture_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>weibull_mixture_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, P::<a href="#type-positive_float">positive_float()</a>, Lambda1::<a href="#type-positive_float">positive_float()</a>, K1::<a href="#type-positive_float">positive_float()</a>, Lambda2::<a href="#type-positive_float">positive_float()</a>, K2::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="weibull_zi_pdf-4">weibull_zi_pdf/4</a></h3>
 <div class="spec">
-<p><tt>weibull_zi_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></tt><br></p>
+<p><code>weibull_zi_pdf(S::<a href="#type-positive_float_sample">positive_float_sample()</a>, Lambda::<a href="#type-positive_float">positive_float()</a>, K::<a href="#type-positive_float">positive_float()</a>, P::<a href="#type-positive_float">positive_float()</a>) -&gt; <a href="#type-probability">probability()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

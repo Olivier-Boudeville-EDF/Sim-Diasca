@@ -35,11 +35,11 @@ gui_widget:fit_to_sizer/2.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-column_count">column_count()</a></h3>
-<p><tt>column_count() = <a href="gui.html#type-column_count">gui:column_count()</a></tt></p>
+<p><code>column_count() = <a href="gui.html#type-column_count">gui:column_count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-compact_grid_sizer">compact_grid_sizer()</a></h3>
-<p><b>abstract datatype</b>: <tt>compact_grid_sizer()</tt></p>
+<p><b>abstract datatype</b>: <code>compact_grid_sizer()</code></p>
 <p><p> A grid sizer trying to be as compact as possible.</p>
 
  <p>Indeed the width of each column and the height of each row are calculated 
@@ -50,50 +50,50 @@ biggest child.</p>
  is assigned a size different from the one it requested.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-grid_sizer">grid_sizer()</a></h3>
-<p><b>abstract datatype</b>: <tt>grid_sizer()</tt></p>
+<p><b>abstract datatype</b>: <code>grid_sizer()</code></p>
 <p> A grid sizer is a sizer that lays out its children in a two-dimensional table
  with all table fields having the same size, i.e. the width of each field is
  the width of the widest child, the height of each field is the height of the
  tallest child.</p>
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><tt>height() = <a href="gui.html#type-height">gui:height()</a></tt></p>
+<p><code>height() = <a href="gui.html#type-height">gui:height()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><tt>label() = <a href="gui.html#type-label">gui:label()</a></tt></p>
+<p><code>label() = <a href="gui.html#type-label">gui:label()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-length">length()</a></h3>
-<p><tt>length() = <a href="gui.html#type-length">gui:length()</a></tt></p>
+<p><code>length() = <a href="gui.html#type-length">gui:length()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
-<p><tt>orientation() = <a href="gui.html#type-orientation">gui:orientation()</a></tt></p>
+<p><code>orientation() = <a href="gui.html#type-orientation">gui:orientation()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-parent">parent()</a></h3>
-<p><tt>parent() = <a href="gui.html#type-parent">gui:parent()</a></tt></p>
+<p><code>parent() = <a href="gui.html#type-parent">gui:parent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-row_count">row_count()</a></h3>
-<p><tt>row_count() = <a href="gui.html#type-row_count">gui:row_count()</a></tt></p>
+<p><code>row_count() = <a href="gui.html#type-row_count">gui:row_count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-sizer">sizer()</a></h3>
-<p><b>abstract datatype</b>: <tt>sizer()</tt></p>
+<p><b>abstract datatype</b>: <code>sizer()</code></p>
 <p><p> A vertical and/or horizontal virtual (not a widget) container whose elements 
 are dynamically resized.</p>
 
@@ -104,28 +104,28 @@ are dynamically resized.</p>
  that it registered.</p>
 
 <h3 class="typedecl"><a name="type-sizer_child">sizer_child()</a></h3>
-<p><tt>sizer_child() = <a href="#type-widget">widget()</a> | <a href="#type-sizer">sizer()</a></tt></p>
+<p><code>sizer_child() = <a href="#type-widget">widget()</a> | <a href="#type-sizer">sizer()</a></code></p>
 <p><p> An element that can be included in a sizer.</p>
 
  Sizers can thus be included in sizers.</p>
 
 <h3 class="typedecl"><a name="type-sizer_flag_opt">sizer_flag_opt()</a></h3>
-<p><tt>sizer_flag_opt() = default | top_border | bottom_border | left_border | right_border | all_borders | expand_fully | expand_shaped | fixed_size | counted_even_if_hidden | align_center | align_left | align_right | align_top | align_bottom | align_center_vertical | align_center_horizontal</tt></p>
+<p><code>sizer_flag_opt() = default | top_border | bottom_border | left_border | right_border | all_borders | expand_fully | expand_shaped | fixed_size | counted_even_if_hidden | align_center | align_left | align_right | align_top | align_bottom | align_center_vertical | align_center_horizontal</code></p>
 <p><p> A configuration option flag for a sizer.</p>
 
- See <a href="https://docs.wxwidgets.org/stable/classwx_sizer.html" target="_top"><tt>https://docs.wxwidgets.org/stable/classwx_sizer.html</tt></a>.</p>
+ See <a href="https://docs.wxwidgets.org/stable/classwx_sizer.html" target="_top"><code>https://docs.wxwidgets.org/stable/classwx_sizer.html</code></a>.</p>
 
 <h3 class="typedecl"><a name="type-sizer_item">sizer_item()</a></h3>
-<p><b>abstract datatype</b>: <tt>sizer_item()</tt></p>
+<p><b>abstract datatype</b>: <code>sizer_item()</code></p>
 <p> An object in charge of tracking the position, size and other attributes of an
  element of a sizer.</p>
 
 <h3 class="typedecl"><a name="type-sizer_option">sizer_option()</a></h3>
-<p><tt>sizer_option() = {proportion, <a href="#type-weight_factor">weight_factor()</a>} | {border, <a href="#type-width">width()</a>} | {user_data, term()} | <a href="#type-sizer_flag_opt">sizer_flag_opt()</a></tt></p>
-<p> An option when configuring a sizer.</p>
+<p><code>sizer_option() = {proportion, <a href="#type-weight_factor">weight_factor()</a>} | {border_width, <a href="#type-width">width()</a>} | {user_data, term()} | <a href="#type-sizer_flag_opt">sizer_flag_opt()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-weight_factor">weight_factor()</a></h3>
-<p><tt>weight_factor() = non_neg_integer()</tt></p>
+<p><code>weight_factor() = non_neg_integer()</code></p>
 <p><p> A weight factor akin to a proportion, typically of an element (widget or 
 sizer) in a sizer.</p>
 
@@ -134,11 +134,11 @@ sizer) in a sizer.</p>
  of that element relative to the other elements.</p>
 
 <h3 class="typedecl"><a name="type-widget">widget()</a></h3>
-<p><tt>widget() = <a href="gui.html#type-widget">gui:widget()</a></tt></p>
+<p><code>widget() = <a href="gui.html#type-widget">gui:widget()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
-<p><tt>width() = <a href="gui.html#type-width">gui:width()</a></tt></p>
+<p><code>width() = <a href="gui.html#type-width">gui:width()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -176,7 +176,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="add_element-2">add_element/2</a></h3>
 <div class="spec">
-<p><tt>add_element(Sizer::<a href="#type-sizer">sizer()</a>, Element::<a href="#type-sizer_child">sizer_child()</a>) -&gt; <a href="#type-sizer_item">sizer_item()</a></tt><br></p>
+<p><code>add_element(Sizer::<a href="#type-sizer">sizer()</a>, Element::<a href="#type-sizer_child">sizer_child()</a>) -&gt; <a href="#type-sizer_item">sizer_item()</a></code><br></p>
 <p> </p>
 </div><p>Adds the specified element to the specified sizer, and returns the
  corresponding item.
@@ -184,7 +184,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="add_element-3">add_element/3</a></h3>
 <div class="spec">
-<p><tt>add_element(Sizer::<a href="#type-sizer">sizer()</a>, Element::<a href="#type-sizer_child">sizer_child()</a>, Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)) -&gt; <a href="#type-sizer_item">sizer_item()</a></tt><br></p>
+<p><code>add_element(Sizer::<a href="#type-sizer">sizer()</a>, Element::<a href="#type-sizer_child">sizer_child()</a>, Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)) -&gt; <a href="#type-sizer_item">sizer_item()</a></code><br></p>
 <p> </p>
 </div><p>Adds the specified element to the specified sizer with the specified
  option(s), and returns the corresponding item.
@@ -192,7 +192,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="add_elements-2">add_elements/2</a></h3>
 <div class="spec">
-<p><tt>add_elements(Sizer::<a href="#type-sizer">sizer()</a>, Elements::[<a href="#type-sizer_child">sizer_child()</a> | {<a href="#type-sizer_child">sizer_child()</a>, <a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)}]) -&gt; [<a href="#type-sizer_item">sizer_item()</a>]</tt><br></p>
+<p><code>add_elements(Sizer::<a href="#type-sizer">sizer()</a>, Elements::[<a href="#type-sizer_child">sizer_child()</a> | {<a href="#type-sizer_child">sizer_child()</a>, <a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)}]) -&gt; [<a href="#type-sizer_item">sizer_item()</a>]</code><br></p>
 <p> </p>
 </div><p>Adds the specified elements, possibly specified with option(s), to the
  specified sizer, and returns the corresponding items.
@@ -200,7 +200,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="add_elements-3">add_elements/3</a></h3>
 <div class="spec">
-<p><tt>add_elements(Sizer::<a href="#type-sizer">sizer()</a>, Elements::[<a href="#type-sizer_child">sizer_child()</a>], Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)) -&gt; [<a href="#type-sizer_item">sizer_item()</a>]</tt><br></p>
+<p><code>add_elements(Sizer::<a href="#type-sizer">sizer()</a>, Elements::[<a href="#type-sizer_child">sizer_child()</a>], Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)) -&gt; [<a href="#type-sizer_item">sizer_item()</a>]</code><br></p>
 <p> </p>
 </div><p>Adds the specified elements, with the specified common option(s), to the
  specified sizer.
@@ -208,7 +208,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="add_spacer-2">add_spacer/2</a></h3>
 <div class="spec">
-<p><tt>add_spacer(Sizer::<a href="#type-sizer">sizer()</a>, Length::<a href="#type-length">length()</a>) -&gt; <a href="#type-sizer_item">sizer_item()</a></tt><br></p>
+<p><code>add_spacer(Sizer::<a href="#type-sizer">sizer()</a>, Length::<a href="#type-length">length()</a>) -&gt; <a href="#type-sizer_item">sizer_item()</a></code><br></p>
 <p> </p>
 </div><p>Adds to the specified sizer a fixed-size (non-stretchable) spacer child
  of the specified length in both dimensions (hence is square), and returns the
@@ -217,7 +217,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="add_spacer-4">add_spacer/4</a></h3>
 <div class="spec">
-<p><tt>add_spacer(Sizer::<a href="#type-sizer">sizer()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)) -&gt; <a href="#type-sizer_item">sizer_item()</a></tt><br></p>
+<p><code>add_spacer(Sizer::<a href="#type-sizer">sizer()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-sizer_option">sizer_option()</a>)) -&gt; <a href="#type-sizer_item">sizer_item()</a></code><br></p>
 <p> </p>
 </div><p>Adds to the specified sizer a spacer child of the specified dimensions,
  and returns the corresponding item.
@@ -225,7 +225,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="add_stretchable_spacer-1">add_stretchable_spacer/1</a></h3>
 <div class="spec">
-<p><tt>add_stretchable_spacer(Sizer::<a href="#type-sizer">sizer()</a>) -&gt; <a href="#type-sizer_item">sizer_item()</a></tt><br></p>
+<p><code>add_stretchable_spacer(Sizer::<a href="#type-sizer">sizer()</a>) -&gt; <a href="#type-sizer_item">sizer_item()</a></code><br></p>
 <p> </p>
 </div><p>Adds to the specified sizer a stretchable spacer child, and returns the
  corresponding sizer item.
@@ -233,13 +233,13 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="clear-1">clear/1</a></h3>
 <div class="spec">
-<p><tt>clear(Sizer::<a href="#type-sizer">sizer()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>clear(Sizer::<a href="#type-sizer">sizer()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Clears the specified sizer, detaching and deleting all its child widgets.</p>
 
 <h3 class="function"><a name="clear-2">clear/2</a></h3>
 <div class="spec">
-<p><tt>clear(Sizer::<a href="#type-sizer">sizer()</a>, DeleteChildWidgets::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>clear(Sizer::<a href="#type-sizer">sizer()</a>, DeleteChildWidgets::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Clears the specified sizer, detaching all its child widgets, and deleting
  them iff requested.
@@ -247,13 +247,13 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="create-1">create/1</a></h3>
 <div class="spec">
-<p><tt>create(Orientation::<a href="#type-orientation">orientation()</a>) -&gt; <a href="#type-sizer">sizer()</a></tt><br></p>
+<p><code>create(Orientation::<a href="#type-orientation">orientation()</a>) -&gt; <a href="#type-sizer">sizer()</a></code><br></p>
 <p> </p>
 </div><p>Creates a sizer operating along the specified orientation.</p>
 
 <h3 class="function"><a name="create_compact_grid-4">create_compact_grid/4</a></h3>
 <div class="spec">
-<p><tt>create_compact_grid(RowCount::<a href="#type-row_count">row_count()</a>, ColumnCount::<a href="#type-column_count">column_count()</a>, HorizGap::<a href="#type-width">width()</a>, VertGap::<a href="#type-height">height()</a>) -&gt; <a href="#type-compact_grid_sizer">compact_grid_sizer()</a></tt><br></p>
+<p><code>create_compact_grid(RowCount::<a href="#type-row_count">row_count()</a>, ColumnCount::<a href="#type-column_count">column_count()</a>, HorizGap::<a href="#type-width">width()</a>, VertGap::<a href="#type-height">height()</a>) -&gt; <a href="#type-compact_grid_sizer">compact_grid_sizer()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a compact grid sizer.</p>
 
@@ -264,7 +264,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="create_grid-4">create_grid/4</a></h3>
 <div class="spec">
-<p><tt>create_grid(RowCount::<a href="#type-row_count">row_count()</a>, ColumnCount::<a href="#type-column_count">column_count()</a>, HorizGap::<a href="#type-width">width()</a>, VertGap::<a href="#type-height">height()</a>) -&gt; <a href="#type-grid_sizer">grid_sizer()</a></tt><br></p>
+<p><code>create_grid(RowCount::<a href="#type-row_count">row_count()</a>, ColumnCount::<a href="#type-column_count">column_count()</a>, HorizGap::<a href="#type-width">width()</a>, VertGap::<a href="#type-height">height()</a>) -&gt; <a href="#type-grid_sizer">grid_sizer()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a (basic) grid sizer.</p>
 
@@ -275,7 +275,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="create_with_box-2">create_with_box/2</a></h3>
 <div class="spec">
-<p><tt>create_with_box(Orientation::<a href="#type-orientation">orientation()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-sizer">sizer()</a></tt><br></p>
+<p><code>create_with_box(Orientation::<a href="#type-orientation">orientation()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-sizer">sizer()</a></code><br></p>
 <p> </p>
 </div><p>Creates a sizer operating along the specified orientation, within
  specified parent, with a box drawn around.
@@ -283,7 +283,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="create_with_labelled_box-3">create_with_labelled_box/3</a></h3>
 <div class="spec">
-<p><tt>create_with_labelled_box(Orientation::<a href="#type-orientation">orientation()</a>, Label::<a href="#type-label">label()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-sizer">sizer()</a></tt><br></p>
+<p><code>create_with_labelled_box(Orientation::<a href="#type-orientation">orientation()</a>, Label::<a href="#type-label">label()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-sizer">sizer()</a></code><br></p>
 <p> </p>
 </div><p>Creates a sizer operating along the specified orientation, within the
  specified parent, with a box drawn around bearing the specified label.
@@ -291,7 +291,7 @@ sizer) in a sizer.</p>
 
 <h3 class="function"><a name="create_with_labelled_box-4">create_with_labelled_box/4</a></h3>
 <div class="spec">
-<p><tt>create_with_labelled_box(Orientation::<a href="#type-orientation">orientation()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-sizer">sizer()</a></tt><br></p>
+<p><code>create_with_labelled_box(Orientation::<a href="#type-orientation">orientation()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-sizer">sizer()</a></code><br></p>
 <p> </p>
 </div><p>Creates a sizer operating along the specified orientation, within the
  specified parent, with a box drawn around bearing the specified formatted

@@ -22,194 +22,194 @@
  <p>- <code>SQLite3</code> (an optional dependency), through the <a href="https://github.com/alexeyr/erlang-sqlite3">erlang-sqlite3</a> binding</p>
 
  <p>- <code>PostgreSQL</code>, through either its command-line client (psql; the least
- recommended approach) or the epgsql <a href="https://github.com/epgsql/epgsql" target="_top"><tt>https://github.com/epgsql/epgsql</tt></a> binding</p>
+ recommended approach) or the epgsql <a href="https://github.com/epgsql/epgsql" target="_top"><code>https://github.com/epgsql/epgsql</code></a> binding</p>
 
  See <code>sql_support_test.erl</code> for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_database_name">any_database_name()</a></h3>
-<p><tt>any_database_name() = <a href="#type-database_name">database_name()</a> | <a href="#type-bin_database_name">bin_database_name()</a></tt></p>
+<p><code>any_database_name() = <a href="#type-database_name">database_name()</a> | <a href="#type-bin_database_name">bin_database_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_field_name">any_field_name()</a></h3>
-<p><tt>any_field_name() = <a href="#type-field_name">field_name()</a> | <a href="#type-bin_field_name">bin_field_name()</a></tt></p>
+<p><code>any_field_name() = <a href="#type-field_name">field_name()</a> | <a href="#type-bin_field_name">bin_field_name()</a></code></p>
 <p> A field (also designated as 'column' or 'attribute') represents a set of data
  values of a particular type, one value for each record of the table.</p>
 
 <h3 class="typedecl"><a name="type-any_schema_name">any_schema_name()</a></h3>
-<p><tt>any_schema_name() = <a href="#type-schema_name">schema_name()</a> | <a href="#type-bin_schema_name">bin_schema_name()</a></tt></p>
+<p><code>any_schema_name() = <a href="#type-schema_name">schema_name()</a> | <a href="#type-bin_schema_name">bin_schema_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_table_name">any_table_name()</a></h3>
-<p><tt>any_table_name() = <a href="#type-table_name">table_name()</a> | <a href="#type-bin_table_name">bin_table_name()</a></tt></p>
+<p><code>any_table_name() = <a href="#type-table_name">table_name()</a> | <a href="#type-bin_table_name">bin_table_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-backend_name">backend_name()</a></h3>
-<p><tt>backend_name() = sqlite3 | postgresql</tt></p>
+<p><code>backend_name() = sqlite3 | postgresql</code></p>
 <p> The supported SQL backends (as atom names).</p>
 
 <h3 class="typedecl"><a name="type-base_status">base_status()</a></h3>
-<p><tt>base_status() = <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></tt></p>
+<p><code>base_status() = <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_database_name">bin_database_name()</a></h3>
-<p><tt>bin_database_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
-<p> The name of the target database instance. Ex: <code>&lt;&lt;"acme_stock_db"&gt;&gt;</code>.
+<p><code>bin_database_name() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> The name of the target database instance. For example <code>&lt;&lt;"acme_stock_db"&gt;&gt;</code>.
  A database instance is also designated as a catalog.</p>
 
 <h3 class="typedecl"><a name="type-bin_field_name">bin_field_name()</a></h3>
-<p><tt>bin_field_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>bin_field_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A field (also designated as 'column' or 'attribute') represents a set of data
  values of a particular type, one value for each record of the table.</p>
 
 <h3 class="typedecl"><a name="type-bin_schema_name">bin_schema_name()</a></h3>
-<p><tt>bin_schema_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_schema_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> A schema describes the organisation of the tables of a database. It defines a
  namespace of tables, and security boundaries.
- Ex: <code>&lt;&lt;"customer_schema"&gt;&gt;</code>.</p>
+ For example <code>&lt;&lt;"customer_schema"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_table_name">bin_table_name()</a></h3>
-<p><tt>bin_table_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_table_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> A table of a database contains records comprising the same number of fields.</p>
 
 <h3 class="typedecl"><a name="type-connection">connection()</a></h3>
-<p><tt>connection() = any()</tt></p>
+<p><code>connection() = any()</code></p>
 <p> Designates an (opaque, and backend-dependent) connection handle.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-database_access_settings">database_access_settings()</a></h3>
-<p><tt>database_access_settings() = {<a href="#type-database_connection_settings">database_connection_settings()</a>, <a href="#type-database_user_settings">database_user_settings()</a>}</tt></p>
+<p><code>database_access_settings() = {<a href="#type-database_connection_settings">database_connection_settings()</a>, <a href="#type-database_user_settings">database_user_settings()</a>}</code></p>
 <p> All settings necessary to access a database server.</p>
 
 <h3 class="typedecl"><a name="type-database_connection_settings">database_connection_settings()</a></h3>
-<p><tt>database_connection_settings() = #database_connection_settings{host_name = <a href="sql_support.html#type-database_host_name">sql_support:database_host_name()</a>, port = <a href="#type-maybe">maybe</a>(<a href="sql_support.html#type-database_port">sql_support:database_port()</a>), name = <a href="sql_support.html#type-database_name">sql_support:database_name()</a>}</tt></p>
+<p><code>database_connection_settings() = #database_connection_settings{host_name = <a href="sql_support.html#type-database_host_name">sql_support:database_host_name()</a>, port = <a href="#type-maybe">maybe</a>(<a href="sql_support.html#type-database_port">sql_support:database_port()</a>), name = <a href="sql_support.html#type-database_name">sql_support:database_name()</a>}</code></p>
 <p> The settings needed to designate a database server.</p>
 
 <h3 class="typedecl"><a name="type-database_host_name">database_host_name()</a></h3>
-<p><tt>database_host_name() = <a href="net_utils.html#type-string_host_name">net_utils:string_host_name()</a></tt></p>
+<p><code>database_host_name() = <a href="net_utils.html#type-string_host_name">net_utils:string_host_name()</a></code></p>
 <p> Designates the hostname on which a target database server instance is running.
- Ex: "baz.foobar.org."</p>
+ For example "baz.foobar.org."</p>
 
 <h3 class="typedecl"><a name="type-database_name">database_name()</a></h3>
-<p><tt>database_name() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> The name of the target database instance. Ex: "acme_stock_db".
+<p><code>database_name() = <a href="#type-ustring">ustring()</a></code></p>
+<p> The name of the target database instance. For example "acme_stock_db".
  A database instance is also designated as a catalog.</p>
 
 <h3 class="typedecl"><a name="type-database_port">database_port()</a></h3>
-<p><tt>database_port() = <a href="net_utils.html#type-tcp_port">net_utils:tcp_port()</a></tt></p>
+<p><code>database_port() = <a href="net_utils.html#type-tcp_port">net_utils:tcp_port()</a></code></p>
 <p> The (TCP) port at which the target database server instance is running.
- Ex: 5432.</p>
+ For example 5432.</p>
 
 <h3 class="typedecl"><a name="type-database_user_name">database_user_name()</a></h3>
-<p><tt>database_user_name() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> The name of a user of a database server. Ex: "john_smith".</p>
+<p><code>database_user_name() = <a href="#type-ustring">ustring()</a></code></p>
+<p> The name of a user of a database server. For example "john_smith".</p>
 
 <h3 class="typedecl"><a name="type-database_user_password">database_user_password()</a></h3>
-<p><tt>database_user_password() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>database_user_password() = <a href="#type-ustring">ustring()</a></code></p>
 <p> The password of a user of a database server.</p>
 
 <h3 class="typedecl"><a name="type-database_user_settings">database_user_settings()</a></h3>
-<p><tt>database_user_settings() = #database_user_settings{user_name = <a href="sql_support.html#type-database_user_name">sql_support:database_user_name()</a>, user_password = <a href="sql_support.html#type-database_user_password">sql_support:database_user_password()</a>}</tt></p>
+<p><code>database_user_settings() = #database_user_settings{user_name = <a href="sql_support.html#type-database_user_name">sql_support:database_user_name()</a>, user_password = <a href="sql_support.html#type-database_user_password">sql_support:database_user_password()</a>}</code></p>
 <p> The settings corresponding to a given user of a database server.</p>
 
 <h3 class="typedecl"><a name="type-delete_result">delete_result()</a></h3>
-<p><tt>delete_result() = <a href="#type-operation_count">operation_count()</a></tt></p>
+<p><code>delete_result() = <a href="#type-operation_count">operation_count()</a></code></p>
 <p> The result of a delete operation, that is the number of operations performed.</p>
 
 <h3 class="typedecl"><a name="type-field_description">field_description()</a></h3>
-<p><tt>field_description() = #field_description{}</tt></p>
+<p><code>field_description() = #field_description{}</code></p>
 <p> The description of a field (a column).</p>
 
 <h3 class="typedecl"><a name="type-field_name">field_name()</a></h3>
-<p><tt>field_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>field_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A field (also designated as 'column' or 'attribute') represents a set of data
  values of a particular type, one value for each record of the table.</p>
 
 <h3 class="typedecl"><a name="type-field_value">field_value()</a></h3>
-<p><tt>field_value() = <a href="#type-maybe">maybe</a>(<a href="#type-read_binary">read_binary()</a>)</tt></p>
+<p><code>field_value() = <a href="#type-maybe">maybe</a>(<a href="#type-read_binary">read_binary()</a>)</code></p>
 <p> The value of a field in a returned record, that may be 'null', that is
  translated here as 'undefined' (hence the maybe).</p>
 
 <h3 class="typedecl"><a name="type-insert_result">insert_result()</a></h3>
-<p><tt>insert_result() = <a href="#type-operation_count">operation_count()</a></tt></p>
+<p><code>insert_result() = <a href="#type-operation_count">operation_count()</a></code></p>
 <p> The result of an insert operation, that is the number of operations performed.</p>
 
 <h3 class="typedecl"><a name="type-operation_count">operation_count()</a></h3>
-<p><tt>operation_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>operation_count() = <a href="#type-count">count()</a></code></p>
 <p> A number of database operations, typically performed in the context of a
  query.</p>
 
 <h3 class="typedecl"><a name="type-query_format">query_format()</a></h3>
-<p><tt>query_format() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>query_format() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 <p> The format string to compose a query.</p>
 
 <h3 class="typedecl"><a name="type-query_result">query_result()</a></h3>
-<p><tt>query_result() = <a href="#type-select_result">select_result()</a> | <a href="#type-update_result">update_result()</a> | <a href="#type-insert_result">insert_result()</a> | <a href="#type-delete_result">delete_result()</a></tt></p>
+<p><code>query_result() = <a href="#type-select_result">select_result()</a> | <a href="#type-update_result">update_result()</a> | <a href="#type-insert_result">insert_result()</a> | <a href="#type-delete_result">delete_result()</a></code></p>
 <p> The result of the execution of a query.</p>
 
 <h3 class="typedecl"><a name="type-query_string">query_string()</a></h3>
-<p><tt>query_string() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>query_string() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A SQL query, as a string.
- Ex: "select * from customers".</p>
+ For example "select * from customers".</p>
 
 <h3 class="typedecl"><a name="type-query_values">query_values()</a></h3>
-<p><tt>query_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>query_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
 <p> The format values to compose a query.</p>
 
 <h3 class="typedecl"><a name="type-read_binary">read_binary()</a></h3>
-<p><tt>read_binary() = binary()</tt></p>
+<p><code>read_binary() = binary()</code></p>
 <p> Data as directly read, as a (prefixed) binary string containing hexadecimal
  values.</p>
 
 <h3 class="typedecl"><a name="type-record">record()</a></h3>
-<p><tt>record() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-field_value">field_value()</a>)</tt></p>
+<p><code>record() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-field_value">field_value()</a>)</code></p>
 <p> An actual record (a row).</p>
 
 <h3 class="typedecl"><a name="type-schema_name">schema_name()</a></h3>
-<p><tt>schema_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>schema_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A schema describes the organisation of the tables of a database. It defines a
  namespace of tables, and security boundaries.
- Ex: "customer_schema".</p>
+ For example "customer_schema".</p>
 
 <h3 class="typedecl"><a name="type-select_result">select_result()</a></h3>
-<p><tt>select_result() = {[<a href="#type-field_description">field_description()</a>], [<a href="#type-record">record()</a>]}</tt></p>
+<p><code>select_result() = {[<a href="#type-field_description">field_description()</a>], [<a href="#type-record">record()</a>]}</code></p>
 <p> The result of a select operation.</p>
 
 <h3 class="typedecl"><a name="type-table_name">table_name()</a></h3>
-<p><tt>table_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>table_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A table of a database contains records comprising the same number of fields.</p>
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-timestamp">timestamp()</a></h3>
-<p><tt>timestamp() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>timestamp() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A database timestamp.
- Ex: "2021-11-08 13:33:52.895374".</p>
+ For example "2021-11-08 13:33:52.895374".</p>
 
 <h3 class="typedecl"><a name="type-update_result">update_result()</a></h3>
-<p><tt>update_result() = <a href="#type-operation_count">operation_count()</a></tt></p>
+<p><code>update_result() = <a href="#type-operation_count">operation_count()</a></code></p>
 <p> The result of an update operation, that is the number of operations performed.</p>
 
 <h3 class="typedecl"><a name="type-user_id">user_id()</a></h3>
-<p><tt>user_id() = <a href="#type-count">count()</a></tt></p>
+<p><code>user_id() = <a href="#type-count">count()</a></code></p>
 <p> Any notion of user identifier.</p>
 
 <h3 class="typedecl"><a name="type-user_name">user_name()</a></h3>
-<p><tt>user_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>user_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Any notion of user identifier.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -244,25 +244,25 @@ instance of the database server designated by the specified connection.</td></tr
 
 <h3 class="function"><a name="close-1">close/1</a></h3>
 <div class="spec">
-<p><tt>close(Conn::<a href="#type-connection">connection()</a>) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>close(Conn::<a href="#type-connection">connection()</a>) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p>Closes the specified database connection.</p>
 
 <h3 class="function"><a name="connect-2">connect/2</a></h3>
 <div class="spec">
-<p><tt>connect(ConnSettings::<a href="#type-database_connection_settings">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings">database_user_settings()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-connection">connection()</a>)</tt><br></p>
+<p><code>connect(ConnSettings::<a href="#type-database_connection_settings">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings">database_user_settings()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-connection">connection()</a>)</code><br></p>
 <p> </p>
 </div><p>Connects to the specified database, with a default time-out.</p>
 
 <h3 class="function"><a name="connect-3">connect/3</a></h3>
 <div class="spec">
-<p><tt>connect(ConnSettings::<a href="#type-database_connection_settings">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings">database_user_settings()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-connection">connection()</a>)</tt><br></p>
+<p><code>connect(ConnSettings::<a href="#type-database_connection_settings">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings">database_user_settings()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-connection">connection()</a>)</code><br></p>
 <p> </p>
 </div><p>Connects to the specified database, with specified time-out.</p>
 
 <h3 class="function"><a name="connection_settings_to_string-1">connection_settings_to_string/1</a></h3>
 <div class="spec">
-<p><tt>connection_settings_to_string(Database_connection_settings::<a href="#type-database_connection_settings">database_connection_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>connection_settings_to_string(Database_connection_settings::<a href="#type-database_connection_settings">database_connection_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified database connection
  settings.
@@ -270,13 +270,13 @@ instance of the database server designated by the specified connection.</td></tr
 
 <h3 class="function"><a name="execute_query-2">execute_query/2</a></h3>
 <div class="spec">
-<p><tt>execute_query(Conn::<a href="#type-connection">connection()</a>, Query::<a href="#type-query_string">query_string()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-query_result">query_result()</a>)</tt><br></p>
+<p><code>execute_query(Conn::<a href="#type-connection">connection()</a>, Query::<a href="#type-query_string">query_string()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-query_result">query_result()</a>)</code><br></p>
 <p> </p>
 </div><p>Executes the specified SQL query based on the specified connection.</p>
 
 <h3 class="function"><a name="execute_query-3">execute_query/3</a></h3>
 <div class="spec">
-<p><tt>execute_query(Conn::<a href="#type-connection">connection()</a>, QueryFormat::<a href="#type-query_format">query_format()</a>, QueryValues::<a href="#type-query_values">query_values()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-query_result">query_result()</a>)</tt><br></p>
+<p><code>execute_query(Conn::<a href="#type-connection">connection()</a>, QueryFormat::<a href="#type-query_format">query_format()</a>, QueryValues::<a href="#type-query_values">query_values()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-query_result">query_result()</a>)</code><br></p>
 <p> </p>
 </div><p>Executes the specified SQL query to formant, based on the specified
  connection.
@@ -284,13 +284,13 @@ instance of the database server designated by the specified connection.</td></tr
 
 <h3 class="function"><a name="get_backend_name-0">get_backend_name/0</a></h3>
 <div class="spec">
-<p><tt>get_backend_name() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-backend_name">backend_name()</a>)</tt><br></p>
+<p><code>get_backend_name() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-backend_name">backend_name()</a>)</code><br></p>
 <p> </p>
 </div><p>Returns the type of the currently used (build-time) SQL backend (if any).</p>
 
 <h3 class="function"><a name="get_data-1">get_data/1</a></h3>
 <div class="spec">
-<p><tt>get_data(ReadBinString::<a href="#type-read_binary">read_binary()</a>) -&gt; binary()</tt><br></p>
+<p><code>get_data(ReadBinString::<a href="#type-read_binary">read_binary()</a>) -&gt; binary()</code><br></p>
 <p> </p>
 </div><p><p>Returns the actual binary that is stored in a database data field, from 
 the one directly read (with is prefixed and in hexadecimal character).</p>
@@ -300,7 +300,7 @@ the one directly read (with is prefixed and in hexadecimal character).</p>
 
 <h3 class="function"><a name="has_backend-1">has_backend/1</a></h3>
 <div class="spec">
-<p><tt>has_backend(BackendName::<a href="#type-backend_name">backend_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>has_backend(BackendName::<a href="#type-backend_name">backend_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether, from the point of view of Myriad, the specified SQL
  backend is available (that is currently and locally, at runtime).
@@ -308,7 +308,7 @@ the one directly read (with is prefixed and in hexadecimal character).</p>
 
 <h3 class="function"><a name="list_database_names-1">list_database_names/1</a></h3>
 <div class="spec">
-<p><tt>list_database_names(Conn::<a href="#type-connection">connection()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_database_name">bin_database_name()</a>])</tt><br></p>
+<p><code>list_database_names(Conn::<a href="#type-connection">connection()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_database_name">bin_database_name()</a>])</code><br></p>
 <p> </p>
 </div><p>Returns a list of all the database instances hosted by the database
  server designated by the specified connection.
@@ -316,7 +316,7 @@ the one directly read (with is prefixed and in hexadecimal character).</p>
 
 <h3 class="function"><a name="list_possible_backend_names-0">list_possible_backend_names/0</a></h3>
 <div class="spec">
-<p><tt>list_possible_backend_names() -&gt; [<a href="#type-backend_name">backend_name()</a>]</tt><br></p>
+<p><code>list_possible_backend_names() -&gt; [<a href="#type-backend_name">backend_name()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the various known SQL backend names (in general; not telling
  whether they are available locally or not).
@@ -324,17 +324,17 @@ the one directly read (with is prefixed and in hexadecimal character).</p>
 
 <h3 class="function"><a name="list_schema_names-2">list_schema_names/2</a></h3>
 <div class="spec">
-<p><tt>list_schema_names(Conn::<a href="#type-connection">connection()</a>, DbInstanceName::<a href="#type-any_database_name">any_database_name()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_schema_name">bin_schema_name()</a>])</tt><br></p>
+<p><code>list_schema_names(Conn::<a href="#type-connection">connection()</a>, DbInstanceName::<a href="#type-any_database_name">any_database_name()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_schema_name">bin_schema_name()</a>])</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of the names of all the existing schemas in the database 
 instance of the database server designated by the specified connection.</p>
 
- Ex: <code>[&lt;&lt;"pg_catalog"&gt;&gt;, &lt;&lt;"information_schema"&gt;&gt;, &lt;&lt;"public"&gt;&gt;]</code>.
+ For example <code>[&lt;&lt;"pg_catalog"&gt;&gt;, &lt;&lt;"information_schema"&gt;&gt;, &lt;&lt;"public"&gt;&gt;]</code>.
 </p>
 
 <h3 class="function"><a name="list_table_names-3">list_table_names/3</a></h3>
 <div class="spec">
-<p><tt>list_table_names(Conn::<a href="#type-connection">connection()</a>, DbInstanceName::<a href="#type-bin_database_name">bin_database_name()</a>, SchemaName::<a href="#type-bin_schema_name">bin_schema_name()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_table_name">bin_table_name()</a>])</tt><br></p>
+<p><code>list_table_names(Conn::<a href="#type-connection">connection()</a>, DbInstanceName::<a href="#type-bin_database_name">bin_database_name()</a>, SchemaName::<a href="#type-bin_schema_name">bin_schema_name()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_table_name">bin_table_name()</a>])</code><br></p>
 <p> </p>
 </div><p>Returns a list of the names of all the existing tables in the specified
  schema of the specified database instance of the database server designated by
@@ -343,19 +343,19 @@ instance of the database server designated by the specified connection.</p>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><tt>start() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Starts (checks and inits) the SQL service support.</p>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><tt>stop() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>stop() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Stops the SQL support.</p>
 
 <h3 class="function"><a name="user_settings_to_string-1">user_settings_to_string/1</a></h3>
 <div class="spec">
-<p><tt>user_settings_to_string(Database_user_settings::<a href="#type-database_user_settings">database_user_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>user_settings_to_string(Database_user_settings::<a href="#type-database_user_settings">database_user_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified database user settings.</p>
 <hr>

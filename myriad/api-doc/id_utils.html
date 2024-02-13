@@ -27,11 +27,11 @@ any two of them.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
-<p><tt>id() = <a href="#type-uuid">uuid()</a> | <a href="#type-integer_id">integer_id()</a> | <a href="#type-sortable_id">sortable_id()</a> | pid() | reference() | term()</tt></p>
+<p><code>id() = <a href="#type-uuid">uuid()</a> | <a href="#type-integer_id">integer_id()</a> | <a href="#type-sortable_id">sortable_id()</a> | pid() | reference() | term()</code></p>
 <p><p> Any type of identifier.</p>
 
  <p>Identifiers may be transient (e.g. PIDs are unique during the life of a VM) or 
@@ -41,19 +41,19 @@ permanent (e.g. UUID), local to a node or global.</p>
  thanks to the base, Erlang term order.</p>
 
 <h3 class="typedecl"><a name="type-identifiable_element">identifiable_element()</a></h3>
-<p><tt>identifiable_element() = any()</tt></p>
+<p><code>identifiable_element() = any()</code></p>
 <p> Any type of element to which an identifier could be associated.</p>
 
 <h3 class="typedecl"><a name="type-identifier_table">identifier_table()</a></h3>
-<p><tt>identifier_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-identifiable_element">identifiable_element()</a>, <a href="#type-sortable_id">sortable_id()</a>)</tt></p>
+<p><code>identifier_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-identifiable_element">identifiable_element()</a>, <a href="#type-sortable_id">sortable_id()</a>)</code></p>
 <p> A table associating, to an element, its sortable identifier.</p>
 
 <h3 class="typedecl"><a name="type-integer_id">integer_id()</a></h3>
-<p><tt>integer_id() = non_neg_integer()</tt></p>
+<p><code>integer_id() = non_neg_integer()</code></p>
 <p> Integer identifiers (e.g. mere counters) start at 1.</p>
 
 <h3 class="typedecl"><a name="type-sortable_id">sortable_id()</a></h3>
-<p><tt>sortable_id() = [non_neg_integer()] | <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>sortable_id() = [non_neg_integer()] | <a href="#type-bin_string">bin_string()</a></code></p>
 <p><p> Corresponds to smart (sortable, insertion-friendly) identifiers, typically 
 represented (externally) as {1}, {2}, {2,1}, {4}, etc.</p>
 
@@ -99,11 +99,11 @@ human-readable as possible.</p>
  Designed to include bounds as well.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-uuid">uuid()</a></h3>
-<p><tt>uuid() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>uuid() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A string UUID (e.g. "ed64ffd4-74ee-43dc-adba-be37ed8735aa").</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -142,7 +142,7 @@ that is the one that is immediately superior to it.</td></tr>
 
 <h3 class="function"><a name="assign_sorted_identifiers-2">assign_sorted_identifiers/2</a></h3>
 <div class="spec">
-<p><tt>assign_sorted_identifiers(ElementsToIdentify::[<a href="#type-identifiable_element">identifiable_element()</a>], IdentifierTable::<a href="#type-identifier_table">identifier_table()</a>) -&gt; <a href="#type-identifier_table">identifier_table()</a></tt><br></p>
+<p><code>assign_sorted_identifiers(ElementsToIdentify::[<a href="#type-identifiable_element">identifiable_element()</a>], IdentifierTable::<a href="#type-identifier_table">identifier_table()</a>) -&gt; <a href="#type-identifier_table">identifier_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Assigns sorted identifiers to the specified elements not being already 
 identified (in the specified table, supposedly having its initial elements 
@@ -166,13 +166,13 @@ given one, for example).</p>
 
 <h3 class="function"><a name="check_sortable_id-1">check_sortable_id/1</a></h3>
 <div class="spec">
-<p><tt>check_sortable_id(Id::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="basic_utils.html#type-void">basic_utils:void()</a></tt><br></p>
+<p><code>check_sortable_id(Id::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="basic_utils.html#type-void">basic_utils:void()</a></code><br></p>
 <p> </p>
 </div><p>Checks that the specified sortable identifier is legit.</p>
 
 <h3 class="function"><a name="generate_uuid-0">generate_uuid/0</a></h3>
 <div class="spec">
-<p><tt>generate_uuid() -&gt; <a href="#type-uuid">uuid()</a></tt><br></p>
+<p><code>generate_uuid() -&gt; <a href="#type-uuid">uuid()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string containing a new universally unique identifier (UUID),
  based on a random source and/or the system clock plus the system's ethernet
@@ -181,7 +181,7 @@ given one, for example).</p>
 
 <h3 class="function"><a name="get_higher_next_depth_sortable_id-1">get_higher_next_depth_sortable_id/1</a></h3>
 <div class="spec">
-<p><tt>get_higher_next_depth_sortable_id(SortId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_higher_next_depth_sortable_id(SortId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a sortable identifier higher than (meaning coming after) the 
 specified one, at a next depth.</p>
@@ -192,7 +192,7 @@ specified one, at a next depth.</p>
 
 <h3 class="function"><a name="get_higher_same_depth_sortable_id-1">get_higher_same_depth_sortable_id/1</a></h3>
 <div class="spec">
-<p><tt>get_higher_same_depth_sortable_id(SortId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_higher_same_depth_sortable_id(SortId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a sortable identifier higher than (meaning coming after) the 
 specified one, yet not finer (that is at the same depth).</p>
@@ -203,7 +203,7 @@ specified one, yet not finer (that is at the same depth).</p>
 
 <h3 class="function"><a name="get_initial_sortable_id-0">get_initial_sortable_id/0</a></h3>
 <div class="spec">
-<p><tt>get_initial_sortable_id() -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_initial_sortable_id() -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p>Returns a relevant, well-chosen initial low sortable identifier, yet not
  the lowest possible so that we can still introduce, if needed, an arbitrary
@@ -212,7 +212,7 @@ specified one, yet not finer (that is at the same depth).</p>
 
 <h3 class="function"><a name="get_next_sortable_id-1">get_next_sortable_id/1</a></h3>
 <div class="spec">
-<p><tt>get_next_sortable_id(Id::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_next_sortable_id(Id::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p>Returns a relevant sortable identifier that is superior to the specified
  one.
@@ -220,7 +220,7 @@ specified one, yet not finer (that is at the same depth).</p>
 
 <h3 class="function"><a name="get_sortable_id_between-2">get_sortable_id_between/2</a></h3>
 <div class="spec">
-<p><tt>get_sortable_id_between(Id::<a href="#type-sortable_id">sortable_id()</a>, HigherId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_sortable_id_between(Id::<a href="#type-sortable_id">sortable_id()</a>, HigherId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a sortable identifier that can be inserted between the two 
 specified ones, which are presumably ordered (first being lower than second).</p>
@@ -233,7 +233,7 @@ identifiers.</p>
 
 <h3 class="function"><a name="get_sortable_id_lower_bound-0">get_sortable_id_lower_bound/0</a></h3>
 <div class="spec">
-<p><tt>get_sortable_id_lower_bound() -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_sortable_id_lower_bound() -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p>Returns the maximum lower bound of sortable identifiers - knowing that
  this value does not pertain to sortable identifiers.
@@ -241,7 +241,7 @@ identifiers.</p>
 
 <h3 class="function"><a name="get_sortable_id_upper_bound-0">get_sortable_id_upper_bound/0</a></h3>
 <div class="spec">
-<p><tt>get_sortable_id_upper_bound() -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_sortable_id_upper_bound() -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p>Returns the minimum upper bound of sortable identifiers - knowing that
  this value does not pertain to sortable identifiers.
@@ -249,7 +249,7 @@ identifiers.</p>
 
 <h3 class="function"><a name="get_successor_sortable_id-1">get_successor_sortable_id/1</a></h3>
 <div class="spec">
-<p><tt>get_successor_sortable_id(SortId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
+<p><code>get_successor_sortable_id(SortId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the immediate successor sortable identifier of the specified one, 
 that is the one that is immediately superior to it.</p>
@@ -262,7 +262,7 @@ inserted between these two - which defeats the purpose of this datatype.</p>
 
 <h3 class="function"><a name="identifier_table_to_string-1">identifier_table_to_string/1</a></h3>
 <div class="spec">
-<p><tt>identifier_table_to_string(IdentifierTable::<a href="#type-identifier_table">identifier_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>identifier_table_to_string(IdentifierTable::<a href="#type-identifier_table">identifier_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of specified table of sortable
  identifiers.
@@ -270,13 +270,13 @@ inserted between these two - which defeats the purpose of this datatype.</p>
 
 <h3 class="function"><a name="sortable_id_to_string-1">sortable_id_to_string/1</a></h3>
 <div class="spec">
-<p><tt>sortable_id_to_string(Id::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>sortable_id_to_string(Id::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified sortable identifier.</p>
 
 <h3 class="function"><a name="sortable_ids_to_string-1">sortable_ids_to_string/1</a></h3>
 <div class="spec">
-<p><tt>sortable_ids_to_string(Ids::[<a href="#type-sortable_id">sortable_id()</a>]) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>sortable_ids_to_string(Ids::[<a href="#type-sortable_id">sortable_id()</a>]) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of specified sortable identifiers.</p>
 <hr>

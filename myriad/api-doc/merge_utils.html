@@ -23,74 +23,74 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-analyzer_pid">analyzer_pid()</a></h3>
-<p><tt>analyzer_pid() = pid()</tt></p>
+<p><code>analyzer_pid() = pid()</code></p>
 <p> The PID of an analyzer process.</p>
 
 <h3 class="typedecl"><a name="type-analyzer_ring">analyzer_ring()</a></h3>
-<p><tt>analyzer_ring() = <a href="ring_utils.html#type-ring">ring_utils:ring</a>(<a href="#type-analyzer_pid">analyzer_pid()</a>)</tt></p>
+<p><code>analyzer_ring() = <a href="ring_utils.html#type-ring">ring_utils:ring</a>(<a href="#type-analyzer_pid">analyzer_pid()</a>)</code></p>
 <p> Ring of analyzer processes.</p>
 
 <h3 class="typedecl"><a name="type-bin_directory_path">bin_directory_path()</a></h3>
-<p><tt>bin_directory_path() = <a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a></tt></p>
+<p><code>bin_directory_path() = <a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
-<p><tt>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></tt></p>
+<p><code>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_fqdn">bin_fqdn()</a></h3>
-<p><tt>bin_fqdn() = <a href="net_utils.html#type-bin_fqdn">net_utils:bin_fqdn()</a></tt></p>
+<p><code>bin_fqdn() = <a href="net_utils.html#type-bin_fqdn">net_utils:bin_fqdn()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-binary_hash">binary_hash()</a></h3>
-<p><tt>binary_hash() = <a href="hash_utils.html#type-binary_hash">hash_utils:binary_hash()</a></tt></p>
+<p><code>binary_hash() = <a href="hash_utils.html#type-binary_hash">hash_utils:binary_hash()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file">file()</a></h3>
-<p><tt>file() = <a href="file_utils.html#type-file">file_utils:file()</a></tt></p>
+<p><code>file() = <a href="file_utils.html#type-file">file_utils:file()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_data">file_data()</a></h3>
-<p><tt>file_data() = #file_data{path = <a href="#type-bin_file_path">bin_file_path()</a>, type = <a href="file_utils.html#type-entry_type">file_utils:entry_type()</a>, size = <a href="#type-byte_size">byte_size()</a>, timestamp = <a href="#type-posix_seconds">posix_seconds()</a>, hash = <a href="#type-binary_hash">binary_hash()</a>}</tt></p>
+<p><code>file_data() = #file_data{path = <a href="#type-bin_file_path">bin_file_path()</a>, type = <a href="file_utils.html#type-entry_type">file_utils:entry_type()</a>, size = <a href="#type-byte_size">byte_size()</a>, timestamp = <a href="#type-posix_seconds">posix_seconds()</a>, hash = <a href="#type-binary_hash">binary_hash()</a>}</code></p>
 <p> Data associated (in-memory) to a given file-like element.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-hash_table">hash_table()</a></h3>
-<p><tt>hash_table() = <a href="#type-table">table</a>(<a href="#type-binary_hash">binary_hash()</a>, [<a href="#type-file_data">file_data()</a>])</tt></p>
+<p><code>hash_table() = <a href="#type-table">table</a>(<a href="#type-binary_hash">binary_hash()</a>, [<a href="#type-file_data">file_data()</a>])</code></p>
 <p><p> Table referencing file entries based on their Hash.</p>
 
  (a list of exactly one file_data record per Hash key, once the tree is
  uniquified)</p>
 
 <h3 class="typedecl"><a name="type-posix_seconds">posix_seconds()</a></h3>
-<p><tt>posix_seconds() = <a href="time_utils.html#type-posix_seconds">time_utils:posix_seconds()</a></tt></p>
+<p><code>posix_seconds() = <a href="time_utils.html#type-posix_seconds">time_utils:posix_seconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-tree_data">tree_data()</a></h3>
-<p><tt>tree_data() = #tree_data{hostname = <a href="#type-bin_fqdn">bin_fqdn()</a>, root = <a href="#type-bin_directory_path">bin_directory_path()</a>, entries = <a href="#type-hash_table">hash_table()</a>, file_count = <a href="#type-count">count()</a>, directory_count = <a href="#type-count">count()</a>, symlink_count = <a href="#type-count">count()</a>, device_count = <a href="#type-count">count()</a>, other_count = <a href="#type-count">count()</a>}</tt></p>
+<p><code>tree_data() = #tree_data{hostname = <a href="#type-bin_fqdn">bin_fqdn()</a>, root = <a href="#type-bin_directory_path">bin_directory_path()</a>, entries = <a href="#type-hash_table">hash_table()</a>, file_count = <a href="#type-count">count()</a>, directory_count = <a href="#type-count">count()</a>, symlink_count = <a href="#type-count">count()</a>, device_count = <a href="#type-count">count()</a>, other_count = <a href="#type-count">count()</a>}</code></p>
 <p> Data associated to a content tree.</p>
 
 <h3 class="typedecl"><a name="type-user_state">user_state()</a></h3>
-<p><tt>user_state() = #user_state{log_file = <a href="#type-maybe">maybe</a>(<a href="#type-file">file()</a>)}</tt></p>
+<p><code>user_state() = #user_state{log_file = <a href="#type-maybe">maybe</a>(<a href="#type-file">file()</a>)}</code></p>
 <p> User-related state.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -115,7 +115,7 @@
 
 <h3 class="function"><a name="create_merge_cache_file_for-3">create_merge_cache_file_for/3</a></h3>
 <div class="spec">
-<p><tt>create_merge_cache_file_for(TreePath::<a href="#type-directory_path">directory_path()</a>, AnalyzerRing::<a href="#type-analyzer_ring">analyzer_ring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-tree_data">tree_data()</a></tt><br></p>
+<p><code>create_merge_cache_file_for(TreePath::<a href="#type-directory_path">directory_path()</a>, AnalyzerRing::<a href="#type-analyzer_ring">analyzer_ring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-tree_data">tree_data()</a></code><br></p>
 <p> </p>
 </div><p>Creates an automatically named merge cache file for specified content
  tree (overwriting any priorly existing merge cache file), and returns that
@@ -124,25 +124,25 @@
 
 <h3 class="function"><a name="display_tree_data-2">display_tree_data/2</a></h3>
 <div class="spec">
-<p><tt>display_tree_data(TreeData::<a href="#type-tree_data">tree_data()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_tree_data(TreeData::<a href="#type-tree_data">tree_data()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays information about specified tree data, with a default prompt.</p>
 
 <h3 class="function"><a name="display_tree_data-3">display_tree_data/3</a></h3>
 <div class="spec">
-<p><tt>display_tree_data(TreeData::<a href="#type-tree_data">tree_data()</a>, Prompt::<a href="ui.html#type-prompt">ui:prompt()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_tree_data(TreeData::<a href="#type-tree_data">tree_data()</a>, Prompt::<a href="ui.html#type-prompt">ui:prompt()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays information about specified tree data, with specified prompt.</p>
 
 <h3 class="function"><a name="file_data_to_string-1">file_data_to_string/1</a></h3>
 <div class="spec">
-<p><tt>file_data_to_string(File_data::<a href="#type-file_data">file_data()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>file_data_to_string(File_data::<a href="#type-file_data">file_data()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified file data.</p>
 
 <h3 class="function"><a name="main-1">main/1</a></h3>
 <div class="spec">
-<p><tt>main(ArgTable::<a href="shell_utils.html#type-argument_table">shell_utils:argument_table()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>main(ArgTable::<a href="shell_utils.html#type-argument_table">shell_utils:argument_table()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sole entry point for this merge service, either triggered by <code>run/0</code> or
  by the associated escript.
@@ -150,7 +150,7 @@
 
 <h3 class="function"><a name="run-0">run/0</a></h3>
 <div class="spec">
-<p><tt>run() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>run() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Typically for testing.</p>
 
@@ -160,37 +160,37 @@
 
 <h3 class="function"><a name="scan-3">scan/3</a></h3>
 <div class="spec">
-<p><tt>scan(BinTreePath::<a href="#type-bin_directory_path">bin_directory_path()</a>, AnalyzerRing::<a href="#type-analyzer_ring">analyzer_ring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-tree_data">tree_data()</a></tt><br></p>
+<p><code>scan(BinTreePath::<a href="#type-bin_directory_path">bin_directory_path()</a>, AnalyzerRing::<a href="#type-analyzer_ring">analyzer_ring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-tree_data">tree_data()</a></code><br></p>
 <p> </p>
 </div><p>Scans specified tree, returning the corresponding datastructure.</p>
 
 <h3 class="function"><a name="trace-2">trace/2</a></h3>
 <div class="spec">
-<p><tt>trace(Message::<a href="#type-ustring">ustring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></tt><br></p>
+<p><code>trace(Message::<a href="#type-ustring">ustring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></code><br></p>
 <p> </p>
 </div><p>Displays (if set so) and logs specified text.</p>
 
 <h3 class="function"><a name="trace-3">trace/3</a></h3>
 <div class="spec">
-<p><tt>trace(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()], UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></tt><br></p>
+<p><code>trace(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()], UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></code><br></p>
 <p> </p>
 </div><p>Displays (if set so) and logs specified formatted text.</p>
 
 <h3 class="function"><a name="trace_debug-2">trace_debug/2</a></h3>
 <div class="spec">
-<p><tt>trace_debug(Message::<a href="#type-ustring">ustring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></tt><br></p>
+<p><code>trace_debug(Message::<a href="#type-ustring">ustring()</a>, UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></code><br></p>
 <p> </p>
 </div><p>Logs specified debug text.</p>
 
 <h3 class="function"><a name="trace_debug-3">trace_debug/3</a></h3>
 <div class="spec">
-<p><tt>trace_debug(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()], UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></tt><br></p>
+<p><code>trace_debug(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()], UserState::<a href="#type-user_state">user_state()</a>) -&gt; <a href="#type-user_state">user_state()</a></code><br></p>
 <p> </p>
 </div><p>Logs specified debug formatted text.</p>
 
 <h3 class="function"><a name="tree_data_to_string-1">tree_data_to_string/1</a></h3>
 <div class="spec">
-<p><tt>tree_data_to_string(TreeData::<a href="#type-tree_data">tree_data()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>tree_data_to_string(TreeData::<a href="#type-tree_data">tree_data()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of specified tree data.</p>
 <hr>

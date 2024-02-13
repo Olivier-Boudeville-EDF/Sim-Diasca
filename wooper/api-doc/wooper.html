@@ -22,231 +22,231 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-access_qualifier">access_qualifier()</a></h3>
-<p><tt>access_qualifier() = public | protected | private</tt></p>
+<p><code>access_qualifier() = public | protected | private</code></p>
 <p> Access qualifier, applying either to a method or to an attribute.</p>
 
 <h3 class="typedecl"><a name="type-ack_term">ack_term()</a></h3>
-<p><tt>ack_term() = term()</tt></p>
+<p><code>ack_term() = term()</code></p>
 <p> A term (often an atom) used to denote an acknowlegment (i.e. a conventional
  symbol to ensure that a request was synchronously executed).</p>
 
 <h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
-<p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
+<p><code>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_entry">attribute_entry()</a></h3>
-<p><tt>attribute_entry() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt></p>
+<p><code>attribute_entry() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
-<p><tt>attribute_name() = atom()</tt></p>
+<p><code>attribute_name() = atom()</code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_qualifier">attribute_qualifier()</a></h3>
-<p><tt>attribute_qualifier() = const</tt></p>
+<p><code>attribute_qualifier() = const</code></p>
 <p> Qualifiers applying to attributes.</p>
 
 <h3 class="typedecl"><a name="type-attribute_type">attribute_type()</a></h3>
-<p><tt>attribute_type() = <a href="type_utils.html#type-type">type_utils:type()</a></tt></p>
+<p><code>attribute_type() = <a href="type_utils.html#type-type">type_utils:type()</a></code></p>
 <p> The type-as-a-term of an attribute.</p>
 
 <h3 class="typedecl"><a name="type-attribute_value">attribute_value()</a></h3>
-<p><tt>attribute_value() = any()</tt></p>
+<p><code>attribute_value() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-caller_pid">caller_pid()</a></h3>
-<p><tt>caller_pid() = pid()</tt></p>
+<p><code>caller_pid() = pid()</code></p>
 <p> PID of a process (not necessarily a WOOPER instance) interacting with such an
  instance (clearer that just pid()).</p>
 
 <h3 class="typedecl"><a name="type-class_key">class_key()</a></h3>
-<p><tt>class_key() = term()</tt></p>
+<p><code>class_key() = term()</code></p>
 <p> The key in the persistent_term registry corresponding to a class, to fetch its
  virtual table.</p>
 
 <h3 class="typedecl"><a name="type-classname">classname()</a></h3>
-<p><tt>classname() = atom()</tt></p>
+<p><code>classname() = atom()</code></p>
 <p> An atom prefixed with 'class_'; could be basic_utils:module_name() as well.</p>
 
 <h3 class="typedecl"><a name="type-const_oneway_return">const_oneway_return()</a></h3>
-<p><tt>const_oneway_return() = <a href="#type-void">void()</a></tt></p>
+<p><code>const_oneway_return() = <a href="#type-void">void()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-const_request_return">const_request_return()</a></h3>
-<p><tt>const_request_return(T) = <a href="#type-request_return">request_return</a>(T)</tt></p>
+<p><code>const_request_return(T) = <a href="#type-request_return">request_return</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-construction_parameter">construction_parameter()</a></h3>
-<p><tt>construction_parameter() = <a href="#type-method_argument">method_argument()</a></tt></p>
+<p><code>construction_parameter() = <a href="#type-method_argument">method_argument()</a></code></p>
 <p> Special case of construction parameters.</p>
 
 <h3 class="typedecl"><a name="type-construction_parameters">construction_parameters()</a></h3>
-<p><tt>construction_parameters() = [<a href="#type-construction_parameter">construction_parameter()</a>]</tt></p>
+<p><code>construction_parameters() = [<a href="#type-construction_parameter">construction_parameter()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-exception_class">exception_class()</a></h3>
-<p><tt>exception_class() = <a href="basic_utils.html#type-exception_class">basic_utils:exception_class()</a></tt></p>
+<p><code>exception_class() = <a href="basic_utils.html#type-exception_class">basic_utils:exception_class()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-exception_term">exception_term()</a></h3>
-<p><tt>exception_term() = <a href="basic_utils.html#type-exception_term">basic_utils:exception_term()</a></tt></p>
+<p><code>exception_term() = <a href="basic_utils.html#type-exception_term">basic_utils:exception_term()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-exit_reason">exit_reason()</a></h3>
-<p><tt>exit_reason() = <a href="basic_utils.html#type-exit_reason">basic_utils:exit_reason()</a></tt></p>
+<p><code>exit_reason() = <a href="basic_utils.html#type-exit_reason">basic_utils:exit_reason()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_export_set">function_export_set()</a></h3>
-<p><tt>function_export_set() = <a href="set_utils.html#type-set">set_utils:set</a>(<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>)</tt></p>
+<p><code>function_export_set() = <a href="set_utils.html#type-set">set_utils:set</a>(<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>)</code></p>
 <p> Allows to record the functions exported by a module (typically the 'wooper'
  one).</p>
 
 <h3 class="typedecl"><a name="type-instance_pid">instance_pid()</a></h3>
-<p><tt>instance_pid() = pid()</tt></p>
+<p><code>instance_pid() = pid()</code></p>
 <p> PID of a WOOPER instance.</p>
 
 <h3 class="typedecl"><a name="type-method_argument">method_argument()</a></h3>
-<p><tt>method_argument() = any()</tt></p>
+<p><code>method_argument() = any()</code></p>
 <p> A method argument can be of any type.</p>
 
 <h3 class="typedecl"><a name="type-method_arguments">method_arguments()</a></h3>
-<p><tt>method_arguments() = <a href="#type-method_argument">method_argument()</a> | [<a href="#type-method_argument">method_argument()</a>]</tt></p>
+<p><code>method_arguments() = <a href="#type-method_argument">method_argument()</a> | [<a href="#type-method_argument">method_argument()</a>]</code></p>
 <p> Standalone (non-list) arguments may also be specified in calls.</p>
 
 <h3 class="typedecl"><a name="type-method_arity">method_arity()</a></h3>
-<p><tt>method_arity() = <a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a></tt></p>
+<p><code>method_arity() = <a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a></code></p>
 <p> Arity of a method (including the initial state parameter).</p>
 
 <h3 class="typedecl"><a name="type-method_id">method_id()</a></h3>
-<p><tt>method_id() = {<a href="#type-method_name">method_name()</a>, <a href="#type-method_arity">method_arity()</a>}</tt></p>
+<p><code>method_id() = {<a href="#type-method_name">method_name()</a>, <a href="#type-method_arity">method_arity()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-method_internal_result">method_internal_result()</a></h3>
-<p><tt>method_internal_result() = any()</tt></p>
+<p><code>method_internal_result() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-method_name">method_name()</a></h3>
-<p><tt>method_name() = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a></tt></p>
+<p><code>method_name() = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a></code></p>
 <p> A method name (e.g. 'setColor').</p>
 
 <h3 class="typedecl"><a name="type-method_qualifier">method_qualifier()</a></h3>
-<p><tt>method_qualifier() = <a href="#type-access_qualifier">access_qualifier()</a> | final | const</tt></p>
+<p><code>method_qualifier() = <a href="#type-access_qualifier">access_qualifier()</a> | final | const</code></p>
 
 
 <h3 class="typedecl"><a name="type-method_qualifiers">method_qualifiers()</a></h3>
-<p><tt>method_qualifiers() = [<a href="#type-method_qualifier">method_qualifier()</a>]</tt></p>
+<p><code>method_qualifiers() = [<a href="#type-method_qualifier">method_qualifier()</a>]</code></p>
 <p> The qualifiers applying to a method.</p>
 
 <h3 class="typedecl"><a name="type-monitor_node_info">monitor_node_info()</a></h3>
-<p><tt>monitor_node_info() = <a href="monitor_utils.html#type-monitor_node_info">monitor_utils:monitor_node_info()</a></tt></p>
+<p><code>monitor_node_info() = <a href="monitor_utils.html#type-monitor_node_info">monitor_utils:monitor_node_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_arity">oneway_arity()</a></h3>
-<p><tt>oneway_arity() = <a href="#type-method_arity">method_arity()</a></tt></p>
+<p><code>oneway_arity() = <a href="#type-method_arity">method_arity()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_call">oneway_call()</a></h3>
-<p><tt>oneway_call() = {<a href="#type-oneway_name">oneway_name()</a>, <a href="#type-method_arguments">method_arguments()</a>} | <a href="#type-oneway_name">oneway_name()</a></tt></p>
+<p><code>oneway_call() = {<a href="#type-oneway_name">oneway_name()</a>, <a href="#type-method_arguments">method_arguments()</a>} | <a href="#type-oneway_name">oneway_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_id">oneway_id()</a></h3>
-<p><tt>oneway_id() = {<a href="#type-oneway_name">oneway_name()</a>, <a href="#type-oneway_arity">oneway_arity()</a>}</tt></p>
+<p><code>oneway_id() = {<a href="#type-oneway_name">oneway_name()</a>, <a href="#type-oneway_arity">oneway_arity()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_name">oneway_name()</a></h3>
-<p><tt>oneway_name() = <a href="#type-method_name">method_name()</a></tt></p>
+<p><code>oneway_name() = <a href="#type-method_name">method_name()</a></code></p>
 <p> Name of a oneway method.</p>
 
 <h3 class="typedecl"><a name="type-oneway_return">oneway_return()</a></h3>
-<p><tt>oneway_return() = <a href="#type-state">state()</a></tt></p>
+<p><code>oneway_return() = <a href="#type-state">state()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-passive_instance">passive_instance()</a></h3>
-<p><tt>passive_instance() = <a href="#type-state">state()</a></tt></p>
+<p><code>passive_instance() = <a href="#type-state">state()</a></code></p>
 <p> A passive instance is a mere state.</p>
 
 <h3 class="typedecl"><a name="type-request_arity">request_arity()</a></h3>
-<p><tt>request_arity() = <a href="#type-method_arity">method_arity()</a></tt></p>
+<p><code>request_arity() = <a href="#type-method_arity">method_arity()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-request_call">request_call()</a></h3>
-<p><tt>request_call() = {<a href="#type-request_name">request_name()</a>, <a href="#type-method_arguments">method_arguments()</a>, <a href="#type-caller_pid">caller_pid()</a>}</tt></p>
+<p><code>request_call() = {<a href="#type-request_name">request_name()</a>, <a href="#type-method_arguments">method_arguments()</a>, <a href="#type-caller_pid">caller_pid()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_id">request_id()</a></h3>
-<p><tt>request_id() = {<a href="#type-request_name">request_name()</a>, <a href="#type-request_arity">request_arity()</a>}</tt></p>
+<p><code>request_id() = {<a href="#type-request_name">request_name()</a>, <a href="#type-request_arity">request_arity()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_name">request_name()</a></h3>
-<p><tt>request_name() = <a href="#type-method_name">method_name()</a></tt></p>
+<p><code>request_name() = <a href="#type-method_name">method_name()</a></code></p>
 <p> Name of a request method.</p>
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><tt>request_result() = <a href="#type-request_result">request_result</a>(any())</tt></p>
+<p><code>request_result() = <a href="#type-request_result">request_result</a>(any())</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><tt>request_result(T) = T</tt></p>
+<p><code>request_result(T) = T</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_return">request_return()</a></h3>
-<p><tt>request_return(T) = {<a href="#type-state">state()</a>, <a href="#type-request_result">request_result</a>(T)}</tt></p>
+<p><code>request_return(T) = {<a href="#type-state">state()</a>, <a href="#type-request_result">request_result</a>(T)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
-<p><tt>requests_outcome() = success | {failure, [pid()]}</tt></p>
+<p><code>requests_outcome() = success | {failure, [pid()]}</code></p>
 
 
 <h3 class="typedecl"><a name="type-stack_trace">stack_trace()</a></h3>
-<p><tt>stack_trace() = <a href="code_utils.html#type-stack_trace">code_utils:stack_trace()</a></tt></p>
+<p><code>stack_trace() = <a href="code_utils.html#type-stack_trace">code_utils:stack_trace()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-state">state()</a></h3>
-<p><tt>state() = #state_holder{virtual_table = <a href="table.html#type-table">table:table()</a>, attribute_table = <a href="table.html#type-table">table:table()</a>, actual_class = <a href="wooper.html#type-classname">wooper:classname()</a>, request_sender = <a href="#type-maybe">maybe</a>(pid())}</tt></p>
+<p><code>state() = #state_holder{virtual_table = <a href="table.html#type-table">table:table()</a>, attribute_table = <a href="table.html#type-table">table:table()</a>, actual_class = <a href="wooper.html#type-classname">wooper:classname()</a>, request_sender = <a href="#type-maybe">maybe</a>(pid())}</code></p>
 
 
 <h3 class="typedecl"><a name="type-static_arity">static_arity()</a></h3>
-<p><tt>static_arity() = <a href="#type-method_arity">method_arity()</a></tt></p>
+<p><code>static_arity() = <a href="#type-method_arity">method_arity()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-static_id">static_id()</a></h3>
-<p><tt>static_id() = {<a href="#type-static_name">static_name()</a>, <a href="#type-static_arity">static_arity()</a>}</tt></p>
+<p><code>static_id() = {<a href="#type-static_name">static_name()</a>, <a href="#type-static_arity">static_arity()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-static_name">static_name()</a></h3>
-<p><tt>static_name() = <a href="#type-method_name">method_name()</a></tt></p>
+<p><code>static_name() = <a href="#type-method_name">method_name()</a></code></p>
 <p> Name of a static method.</p>
 
 <h3 class="typedecl"><a name="type-static_result">static_result()</a></h3>
-<p><tt>static_result() = <a href="#type-static_result">static_result</a>(any())</tt></p>
+<p><code>static_result() = <a href="#type-static_result">static_result</a>(any())</code></p>
 
 
 <h3 class="typedecl"><a name="type-static_result">static_result()</a></h3>
-<p><tt>static_result(T) = T</tt></p>
+<p><code>static_result(T) = T</code></p>
 
 
 <h3 class="typedecl"><a name="type-static_return">static_return()</a></h3>
-<p><tt>static_return(T) = <a href="#type-static_result">static_result</a>(T)</tt></p>
+<p><code>static_return(T) = <a href="#type-static_result">static_result</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
 <p> In milliseconds, if finite.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -450,25 +450,25 @@ specified requested instances, unless the specified time-out is exceeded
 
 <h3 class="function"><a name="addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></h3>
 <div class="spec">
-<p><tt>addKeyValueToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Key::<a href="table.html#type-key">table:key()</a>, Value::<a href="table.html#type-value">table:value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>addKeyValueToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Key::<a href="table.html#type-key">table:key()</a>, Value::<a href="table.html#type-value">table:value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="addToAttribute-3">addToAttribute/3</a></h3>
 <div class="spec">
-<p><tt>addToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>addToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="appendToAttribute-3">appendToAttribute/3</a></h3>
 <div class="spec">
-<p><tt>appendToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>appendToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="check_all_undefined-2">check_all_undefined/2</a></h3>
 <div class="spec">
-<p><tt>check_all_undefined(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_all_undefined(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks that all specified attributes are indeed associated to a value
  equal to 'undefined'.
@@ -476,7 +476,7 @@ specified requested instances, unless the specified time-out is exceeded
 
 <h3 class="function"><a name="check_classname_and_arity-2">check_classname_and_arity/2</a></h3>
 <div class="spec">
-<p><tt>check_classname_and_arity(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_classname_and_arity(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks, for the specified classname and construction parameters, that a
  corresponding module exists and that it has the relevant arity.
@@ -484,7 +484,7 @@ specified requested instances, unless the specified time-out is exceeded
 
 <h3 class="function"><a name="check_instance_of-2">check_instance_of/2</a></h3>
 <div class="spec">
-<p><tt>check_instance_of(Classname::<a href="#type-classname">classname()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_instance_of(Classname::<a href="#type-classname">classname()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks that this instance is an instance of the specified class,
  otherwise throws an exception.
@@ -492,7 +492,7 @@ specified requested instances, unless the specified time-out is exceeded
 
 <h3 class="function"><a name="check_undefined-2">check_undefined/2</a></h3>
 <div class="spec">
-<p><tt>check_undefined(AttributeName::<a href="#type-attribute_name">attribute_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_undefined(AttributeName::<a href="#type-attribute_name">attribute_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks that specified attribute is indeed associated to a value equal to
  'undefined'.
@@ -500,25 +500,25 @@ specified requested instances, unless the specified time-out is exceeded
 
 <h3 class="function"><a name="concatToAttribute-3">concatToAttribute/3</a></h3>
 <div class="spec">
-<p><tt>concatToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, List::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>concatToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, List::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="const_return-0">const_return/0</a></h3>
 <div class="spec">
-<p><tt>const_return() -&gt; no_return()</tt><br></p>
+<p><code>const_return() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>WOOPER terminator for a const oneway method.</p>
 
 <h3 class="function"><a name="const_return_result-1">const_return_result/1</a></h3>
 <div class="spec">
-<p><tt>const_return_result(Value::any()) -&gt; no_return()</tt><br></p>
+<p><code>const_return_result(Value::any()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>WOOPER terminator for a const request method.</p>
 
 <h3 class="function"><a name="construct_and_run-2">construct_and_run/2</a></h3>
 <div class="spec">
-<p><tt>construct_and_run(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; no_return()</tt><br></p>
+<p><code>construct_and_run(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Constructs the initial state of an instance of the specified class, using 
 specified construction parameters, and enters its main loop.</p>
@@ -528,7 +528,7 @@ specified construction parameters, and enters its main loop.</p>
 
 <h3 class="function"><a name="construct_and_run_synchronous-3">construct_and_run_synchronous/3</a></h3>
 <div class="spec">
-<p><tt>construct_and_run_synchronous(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>, SpawnerPid::pid()) -&gt; no_return()</tt><br></p>
+<p><code>construct_and_run_synchronous(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>, SpawnerPid::pid()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Constructs synchronously the initial state of an instance of specified 
 class, using specified construction parameters, and enters its main loop.</p>
@@ -538,13 +538,13 @@ class, using specified construction parameters, and enters its main loop.</p>
 
 <h3 class="function"><a name="construct_passive-2">construct_passive/2</a></h3>
 <div class="spec">
-<p><tt>construct_passive(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; <a href="#type-passive_instance">passive_instance()</a></tt><br></p>
+<p><code>construct_passive(Classname::<a href="#type-classname">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters">construction_parameters()</a>) -&gt; <a href="#type-passive_instance">passive_instance()</a></code><br></p>
 <p> </p>
 </div><p>Constructs a passive instance: returns the initial state thereof.</p>
 
 <h3 class="function"><a name="create_hosting_process-2">create_hosting_process/2</a></h3>
 <div class="spec">
-<p><tt>create_hosting_process(Node::<a href="net_utils.html#type-node_name">net_utils:node_name()</a>, ToLinkWithPid::pid()) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p><code>create_hosting_process(Node::<a href="net_utils.html#type-node_name">net_utils:node_name()</a>, ToLinkWithPid::pid()) -&gt; <a href="#type-instance_pid">instance_pid()</a></code><br></p>
 <p> </p>
 </div><p>Creates (synchronously or not) a blank process, waiting to embody a
  WOOPER instance once it will have received its class and construction
@@ -553,7 +553,7 @@ class, using specified construction parameters, and enters its main loop.</p>
 
 <h3 class="function"><a name="declare_beam_dirs_for_wooper-0">declare_beam_dirs_for_wooper/0</a></h3>
 <div class="spec">
-<p><tt>declare_beam_dirs_for_wooper() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>declare_beam_dirs_for_wooper() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares automatically the relevant BEAM directories in the code path, so 
 that Ceylan-WOOPER can be fully usable from then on.</p>
@@ -572,13 +572,13 @@ and must point to the respective root directories</p>
 
 <h3 class="function"><a name="decrementAttribute-2">decrementAttribute/2</a></h3>
 <div class="spec">
-<p><tt>decrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>decrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="default_down_handler-5">default_down_handler/5</a></h3>
 <div class="spec">
-<p><tt>default_down_handler(MonitorReference::<a href="monitor_utils.html#type-monitor_reference">monitor_utils:monitor_reference()</a>, MonitoredType::<a href="monitor_utils.html#type-monitored_element_type">monitor_utils:monitored_element_type()</a>, MonitoredElement::<a href="monitor_utils.html#type-monitored_element">monitor_utils:monitored_element()</a>, ExitReason::<a href="#type-exit_reason">exit_reason()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>default_down_handler(MonitorReference::<a href="monitor_utils.html#type-monitor_reference">monitor_utils:monitor_reference()</a>, MonitoredType::<a href="monitor_utils.html#type-monitored_element_type">monitor_utils:monitored_element_type()</a>, MonitoredElement::<a href="monitor_utils.html#type-monitored_element">monitor_utils:monitored_element()</a>, ExitReason::<a href="#type-exit_reason">exit_reason()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>WOOPER default DOWN handler, for process monitors.</p>
 
@@ -593,7 +593,7 @@ onWOOPERNodeDisconnection/3 pair (which is node-related).</p>
 
 <h3 class="function"><a name="default_exit_handler-3">default_exit_handler/3</a></h3>
 <div class="spec">
-<p><tt>default_exit_handler(PidOrPort::<a href="basic_utils.html#type-pid_or_port">basic_utils:pid_or_port()</a>, ExitReason::<a href="#type-exit_reason">exit_reason()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>default_exit_handler(PidOrPort::<a href="basic_utils.html#type-pid_or_port">basic_utils:pid_or_port()</a>, ExitReason::<a href="#type-exit_reason">exit_reason()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>WOOPER default EXIT message handler; called if trapping EXIT signals.</p>
 
@@ -607,7 +607,7 @@ oneway.</p>
 
 <h3 class="function"><a name="default_node_down_handler-3">default_node_down_handler/3</a></h3>
 <div class="spec">
-<p><tt>default_node_down_handler(Node::<a href="#type-atom_node_name">atom_node_name()</a>, MonitorNodeInfo::<a href="#type-monitor_node_info">monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>default_node_down_handler(Node::<a href="#type-atom_node_name">atom_node_name()</a>, MonitorNodeInfo::<a href="#type-monitor_node_info">monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>WOOPER default node down handler.</p>
 
@@ -622,7 +622,7 @@ oneway.</p>
 
 <h3 class="function"><a name="default_node_up_handler-3">default_node_up_handler/3</a></h3>
 <div class="spec">
-<p><tt>default_node_up_handler(Node::<a href="#type-atom_node_name">atom_node_name()</a>, MonitorNodeInfo::<a href="#type-monitor_node_info">monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>default_node_up_handler(Node::<a href="#type-atom_node_name">atom_node_name()</a>, MonitorNodeInfo::<a href="#type-monitor_node_info">monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>WOOPER default node up handler.</p>
 
@@ -636,13 +636,13 @@ oneway.</p>
 
 <h3 class="function"><a name="deleteFromAttribute-3">deleteFromAttribute/3</a></h3>
 <div class="spec">
-<p><tt>deleteFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>deleteFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="delete_any_instance_referenced_in-2">delete_any_instance_referenced_in/2</a></h3>
 <div class="spec">
-<p><tt>delete_any_instance_referenced_in(Attributes::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>delete_any_instance_referenced_in(Attributes::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>Deletes (asynchronously: "fire and forget") the WOOPER instance(s) 
 potentially stored in the specified attribute list.</p>
@@ -658,13 +658,13 @@ delete_any_instance_referenced_in(my_pid_attr, State).</p>
 
 <h3 class="function"><a name="delete_passive-1">delete_passive/1</a></h3>
 <div class="spec">
-<p><tt>delete_passive(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>delete_passive(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Deletes the specified passive instance.</p>
 
 <h3 class="function"><a name="delete_synchronously_any_instance_referenced_in-2">delete_synchronously_any_instance_referenced_in/2</a></h3>
 <div class="spec">
-<p><tt>delete_synchronously_any_instance_referenced_in(Attributes::[<a href="#type-attribute_name">attribute_name()</a>] | <a href="#type-attribute_name">attribute_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>delete_synchronously_any_instance_referenced_in(Attributes::[<a href="#type-attribute_name">attribute_name()</a>] | <a href="#type-attribute_name">attribute_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>Deletes (synchronously, in a parallel yet blocking manner) the WOOPER 
 instance(s) potentially stored in specified attribute list (a standalone 
@@ -680,7 +680,7 @@ attribute may be specified as well).</p>
 
 <h3 class="function"><a name="delete_synchronously_instance-1">delete_synchronously_instance/1</a></h3>
 <div class="spec">
-<p><tt>delete_synchronously_instance(InstancePid::<a href="#type-instance_pid">instance_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>delete_synchronously_instance(InstancePid::<a href="#type-instance_pid">instance_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Deletes specified instance synchronously.</p>
 
@@ -689,7 +689,7 @@ attribute may be specified as well).</p>
 
 <h3 class="function"><a name="delete_synchronously_instances-1">delete_synchronously_instances/1</a></h3>
 <div class="spec">
-<p><tt>delete_synchronously_instances(InstanceList::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>delete_synchronously_instances(InstanceList::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Deletes specified instances synchronously (yet in parallel).</p>
 
@@ -701,103 +701,103 @@ regularly write a message on the console if waiting for too long).</p>
 
 <h3 class="function"><a name="executeConstOneway-2">executeConstOneway/2</a></h3>
 <div class="spec">
-<p><tt>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOneway-3">executeConstOneway/3</a></h3>
 <div class="spec">
-<p><tt>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-3">executeConstOnewayAs/3</a></h3>
 <div class="spec">
-<p><tt>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-4">executeConstOnewayAs/4</a></h3>
 <div class="spec">
-<p><tt>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequest-2">executeConstRequest/2</a></h3>
 <div class="spec">
-<p><tt>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequest-3">executeConstRequest/3</a></h3>
 <div class="spec">
-<p><tt>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-3">executeConstRequestAs/3</a></h3>
 <div class="spec">
-<p><tt>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-4">executeConstRequestAs/4</a></h3>
 <div class="spec">
-<p><tt>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOneway-2">executeOneway/2</a></h3>
 <div class="spec">
-<p><tt>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOneway-3">executeOneway/3</a></h3>
 <div class="spec">
-<p><tt>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOnewayAs-3">executeOnewayAs/3</a></h3>
 <div class="spec">
-<p><tt>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOnewayAs-4">executeOnewayAs/4</a></h3>
 <div class="spec">
-<p><tt>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequest-2">executeRequest/2</a></h3>
 <div class="spec">
-<p><tt>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequest-3">executeRequest/3</a></h3>
 <div class="spec">
-<p><tt>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequestAs-3">executeRequestAs/3</a></h3>
 <div class="spec">
-<p><tt>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequestAs-4">executeRequestAs/4</a></h3>
 <div class="spec">
-<p><tt>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="execute_const_oneway-2">execute_const_oneway/2</a></h3>
 <div class="spec">
-<p><tt>execute_const_oneway(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>execute_const_oneway(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Triggers the specified const oneway on the specified passive instance, 
 and returns nothing at all, knowing that the state of this passive instance is 
@@ -810,7 +810,7 @@ expected to remain the same (and thus will not be returned).</p>
 
 <h3 class="function"><a name="execute_const_oneway-3">execute_const_oneway/3</a></h3>
 <div class="spec">
-<p><tt>execute_const_oneway(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>execute_const_oneway(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Triggers specified const oneway on the specified passive instance, and 
 returns nothing at all, knowing that the state of this passive instance is 
@@ -823,7 +823,7 @@ expected to remain the same (and thus will not be returned).</p>
 
 <h3 class="function"><a name="execute_const_request-2">execute_const_request/2</a></h3>
 <div class="spec">
-<p><tt>execute_const_request(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>execute_const_request(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div><p><p>Triggers the specified const request on the specified passive instance, 
 and returns its result, knowing that the state of this passive instance is 
@@ -836,7 +836,7 @@ expected to remain the same (and thus will not be returned).</p>
 
 <h3 class="function"><a name="execute_const_request-3">execute_const_request/3</a></h3>
 <div class="spec">
-<p><tt>execute_const_request(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>execute_const_request(PassiveInstance::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div><p><p>Triggers the specified const request on the specified passive instance, 
 and returns its result, knowing that the state of this passive instance is 
@@ -849,7 +849,7 @@ expected to remain the same (and thus will not be returned).</p>
 
 <h3 class="function"><a name="execute_oneway-2">execute_oneway/2</a></h3>
 <div class="spec">
-<p><tt>execute_oneway(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p><p><tt>execute_oneway(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-passive_instance">passive_instance()</a></tt><br></p>
+<p><code>execute_oneway(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p><p><code>execute_oneway(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-passive_instance">passive_instance()</a></code><br></p>
 <p> </p>
 <p> </p>
 </div><p>Executes the specified argument-less oneway on the specified passive
@@ -858,14 +858,14 @@ expected to remain the same (and thus will not be returned).</p>
 
 <h3 class="function"><a name="execute_oneway-3">execute_oneway/3</a></h3>
 <div class="spec">
-<p><tt>execute_oneway(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p><p><tt>execute_oneway(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-passive_instance">passive_instance()</a></tt><br></p>
+<p><code>execute_oneway(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p><p><code>execute_oneway(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-passive_instance">passive_instance()</a></code><br></p>
 <p> </p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="execute_request-2">execute_request/2</a></h3>
 <div class="spec">
-<p><tt>execute_request(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p><p><tt>execute_request(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="#type-passive_instance">passive_instance()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>execute_request(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-request_result">request_result()</a></code><br></p><p><code>execute_request(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="#type-passive_instance">passive_instance()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 <p> </p>
 </div><p><p>Sends the specified request to the specified (active or passive) 
@@ -877,7 +877,7 @@ none is already waiting among the received messages), and returns it.</p>
 
 <h3 class="function"><a name="execute_request-3">execute_request/3</a></h3>
 <div class="spec">
-<p><tt>execute_request(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p><p><tt>execute_request(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="#type-passive_instance">passive_instance()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>execute_request(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-request_result">request_result()</a></code><br></p><p><code>execute_request(TargetInstancePID::<a href="#type-passive_instance">passive_instance()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="#type-passive_instance">passive_instance()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 <p> </p>
 </div><p><p>Sends the specified request to the specified (active or passive) 
@@ -889,7 +889,7 @@ none is already waiting among the received messages), and returns it.</p>
 
 <h3 class="function"><a name="execute_request-4">execute_request/4</a></h3>
 <div class="spec">
-<p><tt>execute_request(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, ExpectedResult::<a href="#type-method_internal_result">method_internal_result()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>execute_request(TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, ExpectedResult::<a href="#type-method_internal_result">method_internal_result()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified request to the specified instance and waits 
 indefinitively for its specified, expected returned value (supposing none is 
@@ -900,25 +900,25 @@ already waiting among the received messages) that is usually an atom.</p>
 
 <h3 class="function"><a name="getAttribute-2">getAttribute/2</a></h3>
 <div class="spec">
-<p><tt>getAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-attribute_value">attribute_value()</a></tt><br></p>
+<p><code>getAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-attribute_value">attribute_value()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getAttributes-2">getAttributes/2</a></h3>
 <div class="spec">
-<p><tt>getAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value">attribute_value()</a>]</tt><br></p>
+<p><code>getAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value">attribute_value()</a>]</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getMaybeAttribute-2">getMaybeAttribute/2</a></h3>
 <div class="spec">
-<p><tt>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</tt><br></p>
+<p><code>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_all_attributes-1">get_all_attributes/1</a></h3>
 <div class="spec">
-<p><tt>get_all_attributes(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; [<a href="#type-attribute_entry">attribute_entry()</a>]</tt><br></p>
+<p><code>get_all_attributes(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; [<a href="#type-attribute_entry">attribute_entry()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns all the attributes of this instance, as a list of {AttributeName,
  AttributeValue} pairs.
@@ -926,7 +926,7 @@ already waiting among the received messages) that is usually an atom.</p>
 
 <h3 class="function"><a name="get_all_superclasses-1">get_all_superclasses/1</a></h3>
 <div class="spec">
-<p><tt>get_all_superclasses(State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="#type-classname">classname()</a>) -&gt; [<a href="#type-classname">classname()</a>]</tt><br></p>
+<p><code>get_all_superclasses(State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="#type-classname">classname()</a>) -&gt; [<a href="#type-classname">classname()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns all the mother classes (direct or not) of the instance whose 
 state is specified, or of the specified classname.</p>
@@ -947,7 +947,7 @@ than once (list_utils:uniquify/1 may then be used)</p>
 
 <h3 class="function"><a name="get_attribute_pairs-1">get_attribute_pairs/1</a></h3>
 <div class="spec">
-<p><tt>get_attribute_pairs(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; [<a href="#type-attribute_entry">attribute_entry()</a>]</tt><br></p>
+<p><code>get_attribute_pairs(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; [<a href="#type-attribute_entry">attribute_entry()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns the (user-level) attributes known of WOOPER for the specified 
 state (that is all attributes except the ones used internally by WOOPER).</p>
@@ -957,7 +957,7 @@ state (that is all attributes except the ones used internally by WOOPER).</p>
 
 <h3 class="function"><a name="get_class_filename-1">get_class_filename/1</a></h3>
 <div class="spec">
-<p><tt>get_class_filename(Classname::<a href="#type-classname">classname()</a>) -&gt; <a href="file_utils.html#type-filename">file_utils:filename()</a></tt><br></p>
+<p><code>get_class_filename(Classname::<a href="#type-classname">classname()</a>) -&gt; <a href="file_utils.html#type-filename">file_utils:filename()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the source filename associated to the specified class.</p>
 
@@ -966,7 +966,7 @@ state (that is all attributes except the ones used internally by WOOPER).</p>
 
 <h3 class="function"><a name="get_classname-1">get_classname/1</a></h3>
 <div class="spec">
-<p><tt>get_classname(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-classname">classname()</a></tt><br></p>
+<p><code>get_classname(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-classname">classname()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the actual classname of the specified instance.</p>
 
@@ -977,13 +977,13 @@ state (that is all attributes except the ones used internally by WOOPER).</p>
 
 <h3 class="function"><a name="get_execution_target-0">get_execution_target/0</a></h3>
 <div class="spec">
-<p><tt>get_execution_target() -&gt; development</tt><br></p>
+<p><code>get_execution_target() -&gt; development</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_exported_functions_set-0">get_exported_functions_set/0</a></h3>
 <div class="spec">
-<p><tt>get_exported_functions_set() -&gt; <a href="#type-function_export_set">function_export_set()</a></tt><br></p>
+<p><code>get_exported_functions_set() -&gt; <a href="#type-function_export_set">function_export_set()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a set containing pairs whose first element is the name of a 
 function exported from the wooper module, and whose second element is its 
@@ -995,7 +995,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="get_synchronous_time_out-1">get_synchronous_time_out/1</a></h3>
 <div class="spec">
-<p><tt>get_synchronous_time_out(IsDebugMode::boolean()) -&gt; <a href="#type-time_out">time_out()</a></tt><br></p>
+<p><code>get_synchronous_time_out(IsDebugMode::boolean()) -&gt; <a href="#type-time_out">time_out()</a></code><br></p>
 <p> </p>
 </div><p>Returns the time-out to be used for synchronous operations, depending on
  the debug mode.
@@ -1003,19 +1003,19 @@ but have different arities).</p>
 
 <h3 class="function"><a name="hasAttribute-2">hasAttribute/2</a></h3>
 <div class="spec">
-<p><tt>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="incrementAttribute-2">incrementAttribute/2</a></h3>
 <div class="spec">
-<p><tt>incrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>incrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="is_instance_of-2">is_instance_of/2</a></h3>
 <div class="spec">
-<p><tt>is_instance_of(Classname::<a href="#type-classname">classname()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_instance_of(Classname::<a href="#type-classname">classname()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether this instance is an instance of the specified class 
 (directly or indirectly, through inheritance).</p>
@@ -1026,13 +1026,13 @@ but have different arities).</p>
 
 <h3 class="function"><a name="is_wooper_debug-0">is_wooper_debug/0</a></h3>
 <div class="spec">
-<p><tt>is_wooper_debug() -&gt; boolean()</tt><br></p>
+<p><code>is_wooper_debug() -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="log_error-1">log_error/1</a></h3>
 <div class="spec">
-<p><tt>log_error(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>log_error(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error to the user, typically by displaying an
@@ -1041,7 +1041,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_error-2">log_error/2</a></h3>
 <div class="spec">
-<p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error to the user, typically by displaying an
@@ -1050,7 +1050,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_error-3">log_error/3</a></h3>
 <div class="spec">
-<p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>, State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>, State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error about the current WOOPER instance
@@ -1061,7 +1061,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_info-1">log_info/1</a></h3>
 <div class="spec">
-<p><tt>log_info(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>log_info(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Reports (on a best-effort basis) the specified information to the user,
  typically by displaying an information report on the console.
@@ -1069,7 +1069,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_info-2">log_info/2</a></h3>
 <div class="spec">
-<p><tt>log_info(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>log_info(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Reports (on a best-effort basis) the specified information to the user,
  typically by displaying an information report on the console.
@@ -1077,7 +1077,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_warning-1">log_warning/1</a></h3>
 <div class="spec">
-<p><tt>log_warning(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>log_warning(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Reports (on a best-effort basis) the specified warning to the user,
  typically by displaying a warning report on the console.
@@ -1085,7 +1085,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_warning-2">log_warning/2</a></h3>
 <div class="spec">
-<p><tt>log_warning(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>log_warning(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Reports (on a best-effort basis) the specified warning to the user,
  typically by displaying a warning report on the console.
@@ -1093,7 +1093,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="obtain_results_for_request_series-2">obtain_results_for_request_series/2</a></h3>
 <div class="spec">
-<p><tt>obtain_results_for_request_series(Requests::[{<a href="#type-request_name">request_name()</a>, <a href="#type-method_arguments">method_arguments()</a>}], TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>) -&gt; [<a href="#type-request_result">request_result()</a>]</tt><br></p>
+<p><code>obtain_results_for_request_series(Requests::[{<a href="#type-request_name">request_name()</a>, <a href="#type-method_arguments">method_arguments()</a>}], TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>) -&gt; [<a href="#type-request_result">request_result()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Sends directly the specified series of requests (based on their 
 respective names and arguments) to the specified (single) target instance, and 
@@ -1104,7 +1104,7 @@ returns the corresponding results, in the specified order for the requests.</p>
 
 <h3 class="function"><a name="obtain_results_for_requests-3">obtain_results_for_requests/3</a></h3>
 <div class="spec">
-<p><tt>obtain_results_for_requests(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; [<a href="#type-request_result">request_result()</a>]</tt><br></p>
+<p><code>obtain_results_for_requests(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; [<a href="#type-request_result">request_result()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Sends the specified request to all specified instances for execution, in 
 parallel, and returns the corresponding results, in indiscriminate order.</p>
@@ -1120,7 +1120,7 @@ sender.</p>
 
 <h3 class="function"><a name="on_failed_oneway-6">on_failed_oneway/6</a></h3>
 <div class="spec">
-<p><tt>on_failed_oneway(OnewayName::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, ExceptionClass::<a href="#type-exception_class">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term">exception_term()</a>, Stacktrace::<a href="#type-stack_trace">stack_trace()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; no_return()</tt><br></p>
+<p><code>on_failed_oneway(OnewayName::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, ExceptionClass::<a href="#type-exception_class">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term">exception_term()</a>, Stacktrace::<a href="#type-stack_trace">stack_trace()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>Called by WOOPER whenever a oneway fails, to report it on the console and
  to the caller, and have the process instance exit.
@@ -1128,7 +1128,7 @@ sender.</p>
 
 <h3 class="function"><a name="on_failed_request-7">on_failed_request/7</a></h3>
 <div class="spec">
-<p><tt>on_failed_request(RequestName::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid(), ExceptionClass::<a href="#type-exception_class">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term">exception_term()</a>, Stacktrace::<a href="#type-stack_trace">stack_trace()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; no_return()</tt><br></p>
+<p><code>on_failed_request(RequestName::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid(), ExceptionClass::<a href="#type-exception_class">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term">exception_term()</a>, Stacktrace::<a href="#type-stack_trace">stack_trace()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>Called by WOOPER whenever a request fails, to report it on the console
  and to the caller, and have the process instance exit.
@@ -1136,13 +1136,13 @@ sender.</p>
 
 <h3 class="function"><a name="popFromAttribute-2">popFromAttribute/2</a></h3>
 <div class="spec">
-<p><tt>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt><br></p>
+<p><code>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="receive_result-0">receive_result/0</a></h3>
 <div class="spec">
-<p><tt>receive_result() -&gt; <a href="#type-request_result">request_result</a>(any())</tt><br></p>
+<p><code>receive_result() -&gt; <a href="#type-request_result">request_result</a>(any())</code><br></p>
 <p> </p>
 </div><p><p>Returns the result corresponding to the first pending WOOPER request 
 (possibly the latest sent one), or blocks.</p>
@@ -1152,13 +1152,13 @@ sender.</p>
 
 <h3 class="function"><a name="removeAttribute-2">removeAttribute/2</a></h3>
 <div class="spec">
-<p><tt>removeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>removeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="retrieve_virtual_table_key-1">retrieve_virtual_table_key/1</a></h3>
 <div class="spec">
-<p><tt>retrieve_virtual_table_key(Classname::<a href="#type-classname">classname()</a>) -&gt; <a href="#type-class_key">class_key()</a></tt><br></p>
+<p><code>retrieve_virtual_table_key(Classname::<a href="#type-classname">classname()</a>) -&gt; <a href="#type-class_key">class_key()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the key in persistent_term for the virtual table corresponding to 
 the specified class.</p>
@@ -1173,25 +1173,25 @@ happen).</p>
 
 <h3 class="function"><a name="return_state-1">return_state/1</a></h3>
 <div class="spec">
-<p><tt>return_state(State::any()) -&gt; no_return()</tt><br></p>
+<p><code>return_state(State::any()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>WOOPER terminator for a (non-const) oneway method.</p>
 
 <h3 class="function"><a name="return_state_result-2">return_state_result/2</a></h3>
 <div class="spec">
-<p><tt>return_state_result(State::any(), Result::any()) -&gt; no_return()</tt><br></p>
+<p><code>return_state_result(State::any(), Result::any()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>WOOPER terminator for a (non-const) request method.</p>
 
 <h3 class="function"><a name="return_static-1">return_static/1</a></h3>
 <div class="spec">
-<p><tt>return_static(Value::any()) -&gt; no_return()</tt><br></p>
+<p><code>return_static(Value::any()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>WOOPER terminator for a static method.</p>
 
 <h3 class="function"><a name="safe_delete_synchronously_any_instance_referenced_in-2">safe_delete_synchronously_any_instance_referenced_in/2</a></h3>
 <div class="spec">
-<p><tt>safe_delete_synchronously_any_instance_referenced_in(Attributes::[<a href="#type-attribute_name">attribute_name()</a>] | <a href="#type-attribute_name">attribute_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>safe_delete_synchronously_any_instance_referenced_in(Attributes::[<a href="#type-attribute_name">attribute_name()</a>] | <a href="#type-attribute_name">attribute_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>Deletes safely (pre-testing whether the specified process still exists 
 before attempting to delete it, in order to avoid having to wait for a 
@@ -1209,7 +1209,7 @@ standalone attribute may be specified as well instead).</p>
 
 <h3 class="function"><a name="safe_delete_synchronously_instances-1">safe_delete_synchronously_instances/1</a></h3>
 <div class="spec">
-<p><tt>safe_delete_synchronously_instances(InstanceList::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>safe_delete_synchronously_instances(InstanceList::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Deletes specified instances synchronously (yet in parallel), safely, 
 knowing there could be duplicates in the specified list and that some 
@@ -1223,7 +1223,7 @@ regularly write a message on the console if waiting for too long) .</p>
 
 <h3 class="function"><a name="send_acknowledged_oneway_in_turn-5">send_acknowledged_oneway_in_turn/5</a></h3>
 <div class="spec">
-<p><tt>send_acknowledged_oneway_in_turn(OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; [<a href="#type-instance_pid">instance_pid()</a>]</tt><br></p>
+<p><code>send_acknowledged_oneway_in_turn(OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; [<a href="#type-instance_pid">instance_pid()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Triggers a oneway on the specified series of instances, sequentially 
 (with no overlapping of their processing), and returns the ones that failed to 
@@ -1240,7 +1240,7 @@ report on time that they were executed.</p>
 
 <h3 class="function"><a name="send_and_listen-3">send_and_listen/3</a></h3>
 <div class="spec">
-<p><tt>send_and_listen(InstancePid::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, Arguments::<a href="#type-method_arguments">method_arguments()</a>) -&gt; term()</tt><br></p>
+<p><code>send_and_listen(InstancePid::<a href="#type-instance_pid">instance_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, Arguments::<a href="#type-method_arguments">method_arguments()</a>) -&gt; term()</code><br></p>
 <p> </p>
 </div><p><p>Allows to test from the shell an instance by sending it requests (hence 
 needing a receive, whereas the caller is the shell), and waiting for any kind 
@@ -1253,7 +1253,7 @@ of message sent back.</p>
 
 <h3 class="function"><a name="send_request_in_turn-3">send_request_in_turn/3</a></h3>
 <div class="spec">
-<p><tt>send_request_in_turn(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; [<a href="#type-request_result">request_result()</a>]</tt><br></p>
+<p><code>send_request_in_turn(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; [<a href="#type-request_result">request_result()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Triggers in turn a request on the specified series of instances, 
 sequentially (with no overlapping of their processing), and returns their 
@@ -1264,7 +1264,7 @@ respective, ordered results.</p>
 
 <h3 class="function"><a name="send_request_in_turn-4">send_request_in_turn/4</a></h3>
 <div class="spec">
-<p><tt>send_request_in_turn(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>) -&gt; [<a href="#type-request_result">request_result()</a>]</tt><br></p>
+<p><code>send_request_in_turn(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>) -&gt; [<a href="#type-request_result">request_result()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Triggers in turn a request on the specified series of instances, 
 sequentially (with no overlapping of their processing), and returns their 
@@ -1275,7 +1275,7 @@ respective, ordered results.</p>
 
 <h3 class="function"><a name="send_request_series-2">send_request_series/2</a></h3>
 <div class="spec">
-<p><tt>send_request_series(Requests::[{<a href="#type-request_name">request_name()</a>, <a href="#type-method_arguments">method_arguments()</a>}], TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_request_series(Requests::[{<a href="#type-request_name">request_name()</a>, <a href="#type-method_arguments">method_arguments()</a>}], TargetInstancePID::<a href="#type-instance_pid">instance_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends directly the specified series of requests (based on their 
 respective names and arguments) to the specified (single) target instance.</p>
@@ -1288,7 +1288,7 @@ obtain_results_for_request_series/2 to manage requests and results in one go.</p
 
 <h3 class="function"><a name="send_requests-3">send_requests/3</a></h3>
 <div class="spec">
-<p><tt>send_requests(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_requests(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends (in parallel) the specified request (based on its name and 
 arguments) to each of the specified target instances.</p>
@@ -1300,7 +1300,7 @@ arguments) to each of the specified target instances.</p>
 
 <h3 class="function"><a name="send_requests_and_wait_acks-4">send_requests_and_wait_acks/4</a></h3>
 <div class="spec">
-<p><tt>send_requests_and_wait_acks(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_requests_and_wait_acks(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends (in parallel) the specified request (based on its name and 
 arguments) to each of the specified target instances, and waits 
@@ -1312,7 +1312,7 @@ arguments) to each of the specified target instances, and waits
 
 <h3 class="function"><a name="send_requests_and_wait_acks-5">send_requests_and_wait_acks/5</a></h3>
 <div class="spec">
-<p><tt>send_requests_and_wait_acks(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-requests_outcome">requests_outcome()</a></tt><br></p>
+<p><code>send_requests_and_wait_acks(RequestName::<a href="#type-request_name">request_name()</a>, RequestArgs::<a href="#type-method_arguments">method_arguments()</a>, TargetInstancePIDs::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-requests_outcome">requests_outcome()</a></code><br></p>
 <p> </p>
 </div><p>Sends (in parallel) the specified request (based on its name and
  arguments) to each of the specified target instances, and waits for their
@@ -1322,19 +1322,19 @@ arguments) to each of the specified target instances, and waits
 
 <h3 class="function"><a name="setAttribute-3">setAttribute/3</a></h3>
 <div class="spec">
-<p><tt>setAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>setAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="setAttributes-2">setAttributes/2</a></h3>
 <div class="spec">
-<p><tt>setAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>setAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="state_to_string-1">state_to_string/1</a></h3>
 <div class="spec">
-<p><tt>state_to_string(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>state_to_string(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the attributes of the specified
  state.
@@ -1342,25 +1342,25 @@ arguments) to each of the specified target instances, and waits
 
 <h3 class="function"><a name="subtractFromAttribute-3">subtractFromAttribute/3</a></h3>
 <div class="spec">
-<p><tt>subtractFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>subtractFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="swapInAttribute-3">swapInAttribute/3</a></h3>
 <div class="spec">
-<p><tt>swapInAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt><br></p>
+<p><code>swapInAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="toggleAttribute-2">toggleAttribute/2</a></h3>
 <div class="spec">
-<p><tt>toggleAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>toggleAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wait_for_request_acknowledgements-2">wait_for_request_acknowledgements/2</a></h3>
 <div class="spec">
-<p><tt>wait_for_request_acknowledgements(Count::<a href="#type-count">count()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for_request_acknowledgements(Count::<a href="#type-count">count()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Waits (indefinitively) that the specified number of requests returned as
  result the specified acknowledgement term.
@@ -1368,7 +1368,7 @@ arguments) to each of the specified target instances, and waits
 
 <h3 class="function"><a name="wait_for_request_acknowledgements-3">wait_for_request_acknowledgements/3</a></h3>
 <div class="spec">
-<p><tt>wait_for_request_acknowledgements(Count::<a href="#type-count">count()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>, Timeout::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for_request_acknowledgements(Count::<a href="#type-count">count()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>, Timeout::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Waits, with the specified time-out, that the specified number of requests
  returned as result the specified acknowledgement term.
@@ -1376,7 +1376,7 @@ arguments) to each of the specified target instances, and waits
 
 <h3 class="function"><a name="wait_for_request_answers-2">wait_for_request_answers/2</a></h3>
 <div class="spec">
-<p><tt>wait_for_request_answers(RequestedPids::[<a href="#type-instance_pid">instance_pid()</a>], AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-requests_outcome">requests_outcome()</a></tt><br></p>
+<p><code>wait_for_request_answers(RequestedPids::[<a href="#type-instance_pid">instance_pid()</a>], AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-requests_outcome">requests_outcome()</a></code><br></p>
 <p> </p>
 </div><p><p>Waits for an acknowledgement answer, based on specified term and on the 
 PID of each of the specified requested instances, indefinitively (no 
@@ -1391,7 +1391,7 @@ which, if any, did not answer.</p>
 
 <h3 class="function"><a name="wait_for_request_answers-3">wait_for_request_answers/3</a></h3>
 <div class="spec">
-<p><tt>wait_for_request_answers(RequestedPids::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-requests_outcome">requests_outcome()</a></tt><br></p>
+<p><code>wait_for_request_answers(RequestedPids::[<a href="#type-instance_pid">instance_pid()</a>], Timeout::<a href="#type-time_out">time_out()</a>, AckTerm::<a href="#type-ack_term">ack_term()</a>) -&gt; <a href="#type-requests_outcome">requests_outcome()</a></code><br></p>
 <p> </p>
 </div><p><p>Waits for an acknowledgement answer, based on specified term, from the 
 specified requested instances, unless the specified time-out is exceeded 
@@ -1406,43 +1406,43 @@ which, if any, did not answer.</p>
 
 <h3 class="function"><a name="wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></h3>
 <div class="spec">
-<p><tt>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method-3">wooper_execute_method/3</a></h3>
 <div class="spec">
-<p><tt>wooper_execute_method(MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_execute_method(MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
 <div class="spec">
-<p><tt>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_oneway_execution-3">wooper_handle_local_oneway_execution/3</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_request_execution-3">wooper_handle_local_request_execution/3</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_oneway_execution-3">wooper_handle_remote_oneway_execution/3</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_request_execution-4">wooper_handle_remote_request_execution/4</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

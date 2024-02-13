@@ -14,7 +14,7 @@
  the (singleton) trace aggregator is attached to the Traces OTP supervision
  tree, through the Traces root supervisor, defined in the traces_sup module.
 
-<p><b>Behaviours:</b> <a href="supervisor_bridge.html"><tt>supervisor_bridge</tt></a>.</p>
+<p><b>Behaviours:</b> <a href="supervisor_bridge.html"><code>supervisor_bridge</code></a>.</p>
 
 <h2><a name="description">Description</a></h2>Module implementing the <b>OTP supervisor bridge of Traces</b>, so that
  the (singleton) trace aggregator is attached to the Traces OTP supervision
@@ -23,7 +23,7 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-init_args">init_args()</a></h3>
-<p><tt>init_args() = <a href="traces_sup.html#type-init_args">traces_sup:init_args()</a></tt></p>
+<p><code>init_args() = <a href="traces_sup.html#type-init_args">traces_sup:init_args()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -37,7 +37,7 @@
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><tt>init(X1::<a href="#type-init_args">init_args()</a>) -&gt; {ok, pid(), State::term()} | ignore | {error, Error::term()}</tt><br></p>
+<p><code>init(X1::<a href="#type-init_args">init_args()</a>) -&gt; {ok, pid(), State::term()} | ignore | {error, Error::term()}</code><br></p>
 <p> </p>
 </div><p>Callback to initialise this supervisor bridge, typically in answer to
  start_link/1 above being executed.
@@ -45,7 +45,7 @@
 
 <h3 class="function"><a name="start_link-2">start_link/2</a></h3>
 <div class="spec">
-<p><tt>start_link(TraceSupervisorWanted, AggRegScope) -&gt; any()</tt></p>
+<p><code>start_link(TraceSupervisorWanted, AggRegScope) -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Starts and links the Traces supervision bridge to the trace aggregator.</p>
 
@@ -57,7 +57,7 @@ initialisation.</p>
 
 <h3 class="function"><a name="terminate-2">terminate/2</a></h3>
 <div class="spec">
-<p><tt>terminate(Reason::shutdown | term(), State::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>terminate(Reason::shutdown | term(), State::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Callback to terminate this supervisor bridge.</p>
 <hr>

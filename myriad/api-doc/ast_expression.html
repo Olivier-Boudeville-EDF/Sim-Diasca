@@ -15,12 +15,12 @@
 
 <h2><a name="description">Description</a></h2><p>Module in charge of handling <b>expressions defined with an AST</b>.</p>
 
- See <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a> for more information.
+ See <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a> for more information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_expression">ast_expression()</a></h3>
-<p><tt>ast_expression() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></tt></p>
+<p><code>ast_expression() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></code></p>
 <p><p> The description of an expression in an AST, with in-file location information.</p>
 
  <p>For example '{integer, {97,1}, 2}' or '{match, 117, {var,117,'A'}, {atom, 117, 
@@ -32,27 +32,27 @@ foobar}}', etc.</p>
  differ).</p>
 
 <h3 class="typedecl"><a name="type-ast_expressions">ast_expressions()</a></h3>
-<p><tt>ast_expressions() = [<a href="#type-ast_expression">ast_expression()</a>]</tt></p>
+<p><code>ast_expressions() = [<a href="#type-ast_expression">ast_expression()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_integer_expression">ast_integer_expression()</a></h3>
-<p><tt>ast_integer_expression() = <a href="#type-ast_expression">ast_expression()</a></tt></p>
+<p><code>ast_integer_expression() = <a href="#type-ast_expression">ast_expression()</a></code></p>
 <p> An expression that can be evaluated to an integer.</p>
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-expression_kind">expression_kind()</a></h3>
-<p><tt>expression_kind() = call | 'if' | 'case' | match | bin | unary_op | binary_op | simple_receive | receive_with_after | 'try' | remote | 'catch' | cons | lc | bc | tuple | map_creation | map_field_assoc | map_field_exact | record_creation | record_index | record_field | record_field_other | record_update | block | fun_definition | fun_local | fun_mfa_old | fun_mfa | var | nil | named_fun | atomic_literal</tt></p>
+<p><code>expression_kind() = call | 'if' | 'case' | match | bin | unary_op | binary_op | simple_receive | receive_with_after | 'try' | remote | 'catch' | cons | lc | bc | tuple | map_creation | map_field_assoc | map_field_exact | record_creation | record_index | record_field | record_field_other | record_update | block | fun_definition | fun_local | fun_mfa_old | fun_mfa | var | nil | named_fun | atomic_literal</code></p>
 <p> Allows to designate any kind of AST expression.</p>
 
 <h3 class="typedecl"><a name="type-function_ref_expression">function_ref_expression()</a></h3>
-<p><tt>function_ref_expression() = <a href="#type-ast_expression">ast_expression()</a></tt></p>
+<p><code>function_ref_expression() = <a href="#type-ast_expression">ast_expression()</a></code></p>
 <p> Expression designating a reference to a function (local or remote).</p>
 
 <h3 class="typedecl"><a name="type-params_expression">params_expression()</a></h3>
-<p><tt>params_expression() = [<a href="#type-ast_expression">ast_expression()</a>]</tt></p>
+<p><code>params_expression() = [<a href="#type-ast_expression">ast_expression()</a>]</code></p>
 <p> List of expressions corresponding to function parameters.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -64,17 +64,17 @@ foobar}}', etc.</p>
 
 <h3 class="function"><a name="transform_expression-2">transform_expression/2</a></h3>
 <div class="spec">
-<p><tt>transform_expression(E::<a href="#type-ast_expression">ast_expression()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_expression(E::<a href="#type-ast_expression">ast_expression()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms specified expression into a list of expressions.</p>
 
  See section "7.4 Expressions" in
- <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>.
+ <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a>.
 </p>
 
 <h3 class="function"><a name="transform_expressions-2">transform_expressions/2</a></h3>
 <div class="spec">
-<p><tt>transform_expressions(Expressions::[<a href="#type-ast_expression">ast_expression()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_expressions(Expressions::[<a href="#type-ast_expression">ast_expression()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified list of expressions.</p>
 

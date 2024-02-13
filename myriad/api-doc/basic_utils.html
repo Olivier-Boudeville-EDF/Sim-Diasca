@@ -20,119 +20,115 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
-<p><tt>accumulator() = any()</tt></p>
+<p><code>accumulator() = any()</code></p>
 <p><p> Designates an accumulator (of any type), to document typically fold-like 
 operations.</p>
 
  (useful for documentation purposes)</p>
 
 <h3 class="typedecl"><a name="type-activation_switch">activation_switch()</a></h3>
-<p><tt>activation_switch() = enable | disable</tt></p>
+<p><code>activation_switch() = enable | disable</code></p>
 <p> To specify whether a given feature shall be enabled or not.</p>
 
 <h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
-<p><tt>any_version() = <a href="#type-two_digit_version">two_digit_version()</a> | <a href="#type-three_digit_version">three_digit_version()</a> | <a href="#type-four_digit_version">four_digit_version()</a></tt></p>
+<p><code>any_version() = <a href="#type-two_digit_version">two_digit_version()</a> | <a href="#type-three_digit_version">three_digit_version()</a> | <a href="#type-four_digit_version">four_digit_version()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-argument">argument()</a></h3>
-<p><tt>argument() = any()</tt></p>
-
-
-<h3 class="typedecl"><a name="type-arguments">arguments()</a></h3>
-<p><tt>arguments() = [<a href="#type-argument">argument()</a>]</tt></p>
+<p><code>argument() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-atom_key">atom_key()</a></h3>
-<p><tt>atom_key() = atom()</tt></p>
+<p><code>atom_key() = atom()</code></p>
 <p> For tables.</p>
 
 <h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
-<p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
+<p><code>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-base_outcome">base_outcome()</a></h3>
-<p><tt>base_outcome() = ok | <a href="#type-error_term">error_term()</a></tt></p>
+<p><code>base_outcome() = ok | <a href="#type-error_term">error_term()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-base_status">base_status()</a></h3>
-<p><tt>base_status() = ok | <a href="#type-error_term">error_term()</a></tt></p>
+<p><code>base_status() = ok | <a href="#type-error_term">error_term()</a></code></p>
 <p> Tells whether an operation succeeded; if not, an error reason is specified (as
  a term).</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bit_mask">bit_mask()</a></h3>
-<p><tt>bit_mask() = integer()</tt></p>
+<p><code>bit_mask() = integer()</code></p>
 <p> Describes a mask of bits.</p>
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-command_spec">command_spec()</a></h3>
-<p><tt>command_spec() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, <a href="#type-arguments">arguments()</a>}</tt></p>
+<p><code>command_spec() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, [<a href="#type-argument">argument()</a>]}</code></p>
 <p> A command (module-function-arguments).</p>
 
 <h3 class="typedecl"><a name="type-comparison_result">comparison_result()</a></h3>
-<p><tt>comparison_result() = lower | equal | higher</tt></p>
+<p><code>comparison_result() = lower | equal | higher</code></p>
 <p> Possible outcome of a partial-order comparison of two elements.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = non_neg_integer()</tt></p>
+<p><code>count() = non_neg_integer()</code></p>
 <p> Allows to count elements (positive integer, possibly zero).</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_error_reason">diagnosed_error_reason()</a></h3>
-<p><tt>diagnosed_error_reason(T) = {<a href="#type-error_tuploid">error_tuploid</a>(T), <a href="#type-error_message">error_message()</a>}</tt></p>
+<p><code>diagnosed_error_reason(T) = {<a href="#type-error_tuploid">error_tuploid</a>(T), <a href="#type-error_message">error_message()</a>}</code></p>
 <p> An error with its textual diagnosis.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_error_reason">diagnosed_error_reason()</a></h3>
-<p><tt>diagnosed_error_reason() = {<a href="#type-error_tuploid">error_tuploid()</a>, <a href="#type-error_message">error_message()</a>}</tt></p>
+<p><code>diagnosed_error_reason() = {<a href="#type-error_tuploid">error_tuploid()</a>, <a href="#type-error_message">error_message()</a>}</code></p>
 <p> An error with its textual diagnosis.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_error_term">diagnosed_error_term()</a></h3>
-<p><tt>diagnosed_error_term(T) = {error, <a href="#type-diagnosed_error_reason">diagnosed_error_reason</a>(T)}</tt></p>
+<p><code>diagnosed_error_term(T) = {error, <a href="#type-diagnosed_error_reason">diagnosed_error_reason</a>(T)}</code></p>
 <p> A (tagged) error term with a diagnosis.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_error_term">diagnosed_error_term()</a></h3>
-<p><tt>diagnosed_error_term() = {error, <a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>}</tt></p>
+<p><code>diagnosed_error_term() = {error, <a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>}</code></p>
 <p> A (tagged) error term with a diagnosis.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
-<p><tt>diagnosed_fallible(TSuccess, TFailure) = <a href="#type-fallible">fallible</a>(TSuccess, <a href="#type-diagnosed_error_term">diagnosed_error_term</a>(TFailure))</tt></p>
+<p><code>diagnosed_fallible(TSuccess, TFailure) = <a href="#type-fallible">fallible</a>(TSuccess, <a href="#type-diagnosed_error_term">diagnosed_error_term</a>(TFailure))</code></p>
 <p> Thus either {ok,TSuccess} or {error,{TuploidTFailure,ErrorMsg}}.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
-<p><tt>diagnosed_fallible(T) = <a href="#type-fallible">fallible</a>(T, <a href="#type-diagnosed_error_term">diagnosed_error_term()</a>)</tt></p>
+<p><code>diagnosed_fallible(T) = <a href="#type-fallible">fallible</a>(T, <a href="#type-diagnosed_error_term">diagnosed_error_term()</a>)</code></p>
 <p> Thus either {ok,T} or {error,{ErrorTuploid,ErrorMsg}}.</p>
 
 <h3 class="typedecl"><a name="type-error_bin_diagnosis">error_bin_diagnosis()</a></h3>
-<p><tt>error_bin_diagnosis() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>error_bin_diagnosis() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> Designates a binary string explaning an error.</p>
 
 <h3 class="typedecl"><a name="type-error_diagnosis">error_diagnosis()</a></h3>
-<p><tt>error_diagnosis() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>error_diagnosis() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Designates a plain string explaning an error.</p>
 
 <h3 class="typedecl"><a name="type-error_message">error_message()</a></h3>
-<p><tt>error_message() = <a href="#type-error_diagnosis">error_diagnosis()</a> | <a href="#type-error_bin_diagnosis">error_bin_diagnosis()</a></tt></p>
+<p><code>error_message() = <a href="#type-error_diagnosis">error_diagnosis()</a> | <a href="#type-error_bin_diagnosis">error_bin_diagnosis()</a></code></p>
 <p> A textual description associated to an error (typically for richer traces).</p>
 
 <h3 class="typedecl"><a name="type-error_reason">error_reason()</a></h3>
-<p><tt>error_reason() = <a href="#type-reason">reason()</a></tt></p>
+<p><code>error_reason() = <a href="#type-reason">reason()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
-<p><tt>error_term() = <a href="#type-tagged_error">tagged_error()</a> | <a href="#type-error_reason">error_reason()</a></tt></p>
+<p><code>error_term() = <a href="#type-tagged_error">tagged_error()</a> | <a href="#type-error_reason">error_reason()</a></code></p>
 <p> A (possibly tagged) error term. For example 'badarg'.</p>
 
 <h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
-<p><tt>error_tuploid(T) = <a href="type_utils.html#type-tuploid">type_utils:tuploid</a>(T)</tt></p>
+<p><code>error_tuploid(T) = <a href="type_utils.html#type-tuploid">type_utils:tuploid</a>(T)</code></p>
 <p> To specify at least some information about the error type of a tuploid.</p>
 
 <h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
-<p><tt>error_tuploid() = <a href="#type-error_tuploid">error_tuploid</a>(<a href="#type-error_reason">error_reason()</a>)</tt></p>
+<p><code>error_tuploid() = <a href="#type-error_tuploid">error_tuploid</a>(<a href="#type-error_reason">error_reason()</a>)</code></p>
 <p><p> An error pseudo-tuple, that is an error tuple (e.g. {invalid_name,1.0}) or a 
 single error term (instead of a tuple with a single element), preferably an 
 atom (like 'invalid_password'). Typically to be thrown.</p>
@@ -140,34 +136,34 @@ atom (like 'invalid_password'). Typically to be thrown.</p>
  See also: throw_diagnosed/{1,2}.</p>
 
 <h3 class="typedecl"><a name="type-error_type">error_type()</a></h3>
-<p><tt>error_type() = atom()</tt></p>
+<p><code>error_type() = atom()</code></p>
 <p> Designates an error type (a specific, simple error reason), when we know it is
  an atom (often the first element of an error tuple), like 'invalid_name'.</p>
 
 <h3 class="typedecl"><a name="type-exception_class">exception_class()</a></h3>
-<p><tt>exception_class() = throw | exit | error</tt></p>
+<p><code>exception_class() = throw | exit | error</code></p>
 <p> The exception classes that can be raised.</p>
 
 <h3 class="typedecl"><a name="type-exception_term">exception_term()</a></h3>
-<p><tt>exception_term() = term()</tt></p>
+<p><code>exception_term() = term()</code></p>
 <p> Exception term corresponding to a corresponding bound pattern, as in:
     catch ExceptionClass:ExceptionPattern:StackTrace -&gt;</p>
 
 <h3 class="typedecl"><a name="type-execution_context">execution_context()</a></h3>
-<p><tt>execution_context() = development | production</tt></p>
+<p><code>execution_context() = development | production</code></p>
 <p> Runtime-time execution context (not to be mixed up with execution_target/0,
  although gathering the same values - but conveying a different meaning).</p>
 
 <h3 class="typedecl"><a name="type-execution_target">execution_target()</a></h3>
-<p><tt>execution_target() = development | production</tt></p>
+<p><code>execution_target() = development | production</code></p>
 <p> Compile-time execution target (not to be mixed up with execution_context/0).</p>
 
 <h3 class="typedecl"><a name="type-exit_reason">exit_reason()</a></h3>
-<p><tt>exit_reason() = <a href="#type-reason">reason()</a></tt></p>
+<p><code>exit_reason() = <a href="#type-reason">reason()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-external_data">external_data()</a></h3>
-<p><tt>external_data() = term()</tt></p>
+<p><code>external_data() = term()</code></p>
 <p><p> To denote that a piece of data comes from the program boundaries (interfaces 
 with the outside word, possibly in link with the user) and thus may or may not 
 be of the expected type (as long as it has not been checked).</p>
@@ -176,56 +172,60 @@ be of the expected type (as long as it has not been checked).</p>
  compilation warning telling it is "underspecified and therefore meaningless").</p>
 
 <h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
-<p><tt>fallible(TSuccess, TFailure) = {ok, TSuccess} | {error, TFailure}</tt></p>
+<p><code>fallible(TSuccess, TFailure) = {ok, TSuccess} | {error, TFailure}</code></p>
 <p> Return type for operations that may fail (with a sufficient likelihood that no
  exception is to be raised then, thus the choice is left to the caller), when
  wanting to specify the error type as well.</p>
 
 <h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
-<p><tt>fallible(T) = {ok, T} | <a href="#type-error_term">error_term()</a></tt></p>
+<p><code>fallible(T) = {ok, T} | <a href="#type-error_term">error_term()</a></code></p>
 <p> Return type for operations that may fail (with a sufficient likelihood that no
  exception is to be raised then, thus the choice is left to the caller).</p>
 
 <h3 class="typedecl"><a name="type-field_name">field_name()</a></h3>
-<p><tt>field_name() = atom()</tt></p>
+<p><code>field_name() = atom()</code></p>
 <p> The name of a field of a record.</p>
 
 <h3 class="typedecl"><a name="type-finite_time_out">finite_time_out()</a></h3>
-<p><tt>finite_time_out() = <a href="time_utils.html#type-finite_time_out">time_utils:finite_time_out()</a></tt></p>
+<p><code>finite_time_out() = <a href="time_utils.html#type-finite_time_out">time_utils:finite_time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-fixme">fixme()</a></h3>
-<p><tt>fixme() = any()</tt></p>
+<p><code>fixme() = any()</code></p>
 <p> Useful as a temporary type placeholder, during development (easy to grep and
  eliminate afterwards).</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-four_digit_version">four_digit_version()</a></h3>
-<p><tt>four_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
+<p><code>four_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</code></p>
 <p> Version as a quadruplet of integers, typically {MajorVersion, MinorVersion,
  ReleaseVersion, BuildVersion}.</p>
 
 <h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
-<p><tt>function_name() = atom()</tt></p>
+<p><code>function_name() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-io_list_mod">io_list_mod()</a></h3>
+<p><code>io_list_mod() = <a href="text_utils.html#type-io_list">text_utils:io_list()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-layer_name">layer_name()</a></h3>
-<p><tt>layer_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>layer_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> The name of a layer (e.g. "Myriad").</p>
 
 <h3 class="typedecl"><a name="type-level">level()</a></h3>
-<p><tt>level() = non_neg_integer()</tt></p>
+<p><code>level() = non_neg_integer()</code></p>
 <p> Allows to count levels (e.g. indentation ones, nesting ones).</p>
 
 <h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
-<p><tt>maybe(T) = T | undefined</tt></p>
+<p><code>maybe(T) = T | undefined</code></p>
 <p><p> Denotes a value that may be set to one in T, or that may not be set at all.</p>
 
  <p>Note that the type T should not include the 'undefined' atom, otherwise one 
@@ -236,105 +236,106 @@ versus a value not defined at all.</p>
  being set later.</p>
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = any()</tt></p>
+<p><code>message() = any()</code></p>
 <p> Describes an (Erlang, inter-process) messsage.</p>
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = atom()</tt></p>
+<p><code>module_name() = atom()</code></p>
 <p> To distinguish with the built-in type, which can be a parameterised module.</p>
 
 <h3 class="typedecl"><a name="type-ms_period">ms_period()</a></h3>
-<p><tt>ms_period() = <a href="time_utils.html#type-ms_period">time_utils:ms_period()</a></tt></p>
+<p><code>ms_period() = <a href="time_utils.html#type-ms_period">time_utils:ms_period()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-non_null_count">non_null_count()</a></h3>
-<p><tt>non_null_count() = pos_integer()</tt></p>
+<p><code>non_null_count() = pos_integer()</code></p>
 <p> Allows to count elements (strictly positive integer).</p>
 
 <h3 class="typedecl"><a name="type-pid_or_port">pid_or_port()</a></h3>
-<p><tt>pid_or_port() = pid() | port()</tt></p>
+<p><code>pid_or_port() = pid() | port()</code></p>
 <p> Describes a PID or a port.</p>
 
 <h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
-<p><tt>positive_index() = pos_integer()</tt></p>
+<p><code>positive_index() = pos_integer()</code></p>
 <p> For all non-null indices (i.e. the ones that start at 1). This is the
  convention that Myriad enforces as much as possible.</p>
 
 <h3 class="typedecl"><a name="type-process_info_result_item">process_info_result_item()</a></h3>
-<p><tt>process_info_result_item() = any()</tt></p>
+<p><code>process_info_result_item() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-reason">reason()</a></h3>
-<p><tt>reason() = any()</tt></p>
+<p><code>reason() = any()</code></p>
 <p><p> Term designating a reason (which may be any term).</p>
 
  Note: useful to have self-describing types.</p>
 
 <h3 class="typedecl"><a name="type-record_name">record_name()</a></h3>
-<p><tt>record_name() = atom()</tt></p>
+<p><code>record_name() = atom()</code></p>
 <p> The name of a record.</p>
 
 <h3 class="typedecl"><a name="type-safe_maybe">safe_maybe()</a></h3>
-<p><tt>safe_maybe(T) = {just, T} | nothing</tt></p>
-<p><p> Denotes a value that may be set to one of type T (with no restriction on T), 
-or that may not be set at all.</p>
+<p><code>safe_maybe(T) = {just, T} | nothing</code></p>
+<p><p> Denotes a value that may be set to one of type T (with no restriction on T - 
+unlike maybe/1 where T should not include the 'undefined' value), or that may 
+not be set at all.</p>
 
- <p>A bit more expensive than maybe/1.</p>
+ <p>A bit safer and more expensive than maybe/1.</p>
 
  Obviously a nod to Haskell.</p>
 
 <h3 class="typedecl"><a name="type-set">set()</a></h3>
-<p><tt>set(T) = <a href="set_utils.html#type-set">set_utils:set</a>(T)</tt></p>
+<p><code>set(T) = <a href="set_utils.html#type-set">set_utils:set</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-status_code">status_code()</a></h3>
-<p><tt>status_code() = 0..255</tt></p>
+<p><code>status_code() = 0..255</code></p>
 <p> The status code returned by a shell command.</p>
 
 <h3 class="typedecl"><a name="type-tagged_error">tagged_error()</a></h3>
-<p><tt>tagged_error() = {error, <a href="#type-error_reason">error_reason()</a>}</tt></p>
+<p><code>tagged_error() = {error, <a href="#type-error_reason">error_reason()</a>}</code></p>
 <p> The most classical way of reporting an error.</p>
 
 <h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
-<p><tt>three_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
+<p><code>three_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</code></p>
 <p> Version as a triplet of integers, typically {MajorVersion, MinorVersion,
  ReleaseVersion}, or {MajorVersion, Enhancements, BugFixes}, or {MajorVersion,
  MinorVersion, Path} (see semantic versioning, https://semver.org/).</p>
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-two_digit_version">two_digit_version()</a></h3>
-<p><tt>two_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
+<p><code>two_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</code></p>
 <p> Version as a pair of integerss, typically {MajorVersion, MinorVersion}.</p>
 
 <h3 class="typedecl"><a name="type-unchecked_data">unchecked_data()</a></h3>
-<p><tt>unchecked_data() = term()</tt></p>
+<p><code>unchecked_data() = term()</code></p>
 <p> Designates data whose type and value have not been checked yet.</p>
 
 <h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
-<p><tt>user_data() = <a href="#type-external_data">external_data()</a></tt></p>
+<p><code>user_data() = <a href="#type-external_data">external_data()</a></code></p>
 <p> Designates user-specified data (users shall not be trusted either).</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-version">version()</a></h3>
-<p><tt>version() = <a href="#type-three_digit_version">three_digit_version()</a></tt></p>
+<p><code>version() = <a href="#type-three_digit_version">three_digit_version()</a></code></p>
 <p> By default we consider that a version is a triplet of integers.</p>
 
 <h3 class="typedecl"><a name="type-version_number">version_number()</a></h3>
-<p><tt>version_number() = non_neg_integer()</tt></p>
+<p><code>version_number() = non_neg_integer()</code></p>
 <p> A component of a version.</p>
 
 <h3 class="typedecl"><a name="type-void">void()</a></h3>
-<p><tt>void() = any() | void</tt></p>
+<p><code>void() = any() | void</code></p>
 <p><p> To tell that a returned value is not of interest to the caller: 
 (could have been: "-type void() :: 'VoiD' or 'myriad_void'" for example)</p>
 
@@ -348,11 +349,11 @@ toolchain:</p>
 -opaque void() :: any() | 'void'.</p>
 
 <h3 class="typedecl"><a name="type-wildcardable">wildcardable()</a></h3>
-<p><tt>wildcardable(T) = T | any</tt></p>
+<p><code>wildcardable(T) = T | any</code></p>
 <p> To account for wildcard entries.</p>
 
 <h3 class="typedecl"><a name="type-zero_index">zero_index()</a></h3>
-<p><tt>zero_index() = non_neg_integer()</tt></p>
+<p><code>zero_index() = non_neg_integer()</code></p>
 <p> For the indices that may be null, typically starting at zero (e.g. in some
  file formats). Whenever possible, prefer positive_index/0.</p>
 
@@ -421,12 +422,20 @@ size), which describe two version numbers (e.g.</td></tr>
  on the standard output of the console, ensuring as much as possible this
  message is output synchronously, so that it can be output on the console even
  if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#do_nothing-0">do_nothing/0</a></td><td>Does nothing at all, at the expense of a remote call.</td></tr>
 <tr><td valign="top"><a href="#enter_infinite_loop-0">enter_infinite_loop/0</a></td><td>Makes the current process enter in an infinite, mostly idle loop.</td></tr>
+<tr><td valign="top"><a href="#exec-1">exec/1</a></td><td>Executes the exec/0 function from the specified application module.</td></tr>
+<tr><td valign="top"><a href="#exec-2">exec/2</a></td><td>Executes the specified 0-arity function from the specified application 
+module.</td></tr>
+<tr><td valign="top"><a href="#exec-3">exec/3</a></td><td>Executes the specified function from the specified application module, 
+with the specified arguments.</td></tr>
 <tr><td valign="top"><a href="#flush_pending_messages-0">flush_pending_messages/0</a></td><td>Flushes all the messages still in the mailbox of this process.</td></tr>
 <tr><td valign="top"><a href="#flush_pending_messages-1">flush_pending_messages/1</a></td><td>Flushes all the messages still in the mailbox of this process that
  (exactly) match the specified one.</td></tr>
 <tr><td valign="top"><a href="#freeze-0">freeze/0</a></td><td>Freezes the current process immediately.</td></tr>
 <tr><td valign="top"><a href="#get_execution_target-0">get_execution_target/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_myriad_version-0">get_myriad_version/0</a></td><td>Returns the version of the Myriad library being used.</td></tr>
+<tr><td valign="top"><a href="#get_myriad_version_string-0">get_myriad_version_string/0</a></td><td>Returns the version of the Myriad library being used, as a string.</td></tr>
 <tr><td valign="top"><a href="#get_process_info-1">get_process_info/1</a></td><td>Returns all general information regarding specified process (which is
  local or not), provided it is still alive (otherwise returns undefined).</td></tr>
 <tr><td valign="top"><a href="#get_process_info-2">get_process_info/2</a></td><td>Returns the specified information regarding specified process (which is
@@ -462,8 +471,14 @@ about them on the console.</td></tr>
 <tr><td valign="top"><a href="#notify_user-2">notify_user/2</a></td><td>Notifies the user of the specified message, with log output and synthetic 
 voice.</td></tr>
 <tr><td valign="top"><a href="#parse_version-1">parse_version/1</a></td><td>Parses the specified textual version.</td></tr>
+<tr><td valign="top"><a href="#run-1">run/1</a></td><td>Runs the run/0 function from the specified module.</td></tr>
+<tr><td valign="top"><a href="#run-2">run/2</a></td><td>Runs the specified 0-arity function from the specified module.</td></tr>
+<tr><td valign="top"><a href="#run-3">run/3</a></td><td>Runs the specified function from the specified module, with the specified 
+arguments.</td></tr>
 <tr><td valign="top"><a href="#send_to_pid_set-2">send_to_pid_set/2</a></td><td>Sends the specified message to all elements (supposed to be PID) of the 
 specified set, and returns the number of sent messages.</td></tr>
+<tr><td valign="top"><a href="#set_maybe-2">set_maybe/2</a></td><td>Returns the first term is it is not undefined, otherwise returns the 
+second, default, term.</td></tr>
 <tr><td valign="top"><a href="#speak-1">speak/1</a></td><td>Speaks the specified message, using espeak.</td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops smoothly the underlying VM, with a normal, success status code (0).</td></tr>
 <tr><td valign="top"><a href="#stop-1">stop/1</a></td><td>Stops smoothly, synchronously the underlying VM, with specified error 
@@ -509,7 +524,7 @@ ToAdd, WaitedSenderPid}.</td></tr>
 
 <h3 class="function"><a name="are_all_defined-1">are_all_defined/1</a></h3>
 <div class="spec">
-<p><tt>are_all_defined(Elems::[term()]) -&gt; boolean()</tt><br></p>
+<p><code>are_all_defined(Elems::[term()]) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether all the elements specified are defined (that is are not
  equal to the 'undefined' atom).
@@ -517,7 +532,7 @@ ToAdd, WaitedSenderPid}.</td></tr>
 
 <h3 class="function"><a name="assert-1">assert/1</a></h3>
 <div class="spec">
-<p><tt>assert(Expr::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert(Expr::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Asserts that the specified (runtime) expression is true, otherwise throws
  an exception.
@@ -525,7 +540,7 @@ ToAdd, WaitedSenderPid}.</td></tr>
 
 <h3 class="function"><a name="assert_different-2">assert_different/2</a></h3>
 <div class="spec">
-<p><tt>assert_different(Expr::term(), Expr2::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert_different(Expr::term(), Expr2::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Asserts that the specified (runtime) expressions compare different,
  otherwise throws an exception.
@@ -533,7 +548,7 @@ ToAdd, WaitedSenderPid}.</td></tr>
 
 <h3 class="function"><a name="assert_equal-2">assert_equal/2</a></h3>
 <div class="spec">
-<p><tt>assert_equal(Expr::term(), Expr2::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert_equal(Expr::term(), Expr2::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Asserts that the specified (runtime) expressions compare equal, otherwise 
 throws an exception.</p>
@@ -543,7 +558,7 @@ throws an exception.</p>
 
 <h3 class="function"><a name="assert_false-1">assert_false/1</a></h3>
 <div class="spec">
-<p><tt>assert_false(Expr::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert_false(Expr::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Asserts that the specified (runtime) expression is false, otherwise
  throws an exception.
@@ -551,7 +566,7 @@ throws an exception.</p>
 
 <h3 class="function"><a name="assert_true-1">assert_true/1</a></h3>
 <div class="spec">
-<p><tt>assert_true(Expr::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert_true(Expr::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Asserts that the specified (runtime) expression is true, otherwise throws 
 an exception.</p>
@@ -561,7 +576,7 @@ an exception.</p>
 
 <h3 class="function"><a name="check_all_defined-1">check_all_defined/1</a></h3>
 <div class="spec">
-<p><tt>check_all_defined(List::[term()]) -&gt; [term()]</tt><br></p>
+<p><code>check_all_defined(List::[term()]) -&gt; [term()]</code><br></p>
 <p> </p>
 </div><p>Checks that all elements of the specified list are "defined" (not
  'undefined'); returns that list.
@@ -569,7 +584,7 @@ an exception.</p>
 
 <h3 class="function"><a name="check_all_undefined-1">check_all_undefined/1</a></h3>
 <div class="spec">
-<p><tt>check_all_undefined(List::term()) -&gt; [term()]</tt><br></p>
+<p><code>check_all_undefined(List::term()) -&gt; [term()]</code><br></p>
 <p> </p>
 </div><p>Checks that all elements of the specified list are equal to 'undefined';
  returns that list.
@@ -577,13 +592,13 @@ an exception.</p>
 
 <h3 class="function"><a name="check_any_version-1">check_any_version/1</a></h3>
 <div class="spec">
-<p><tt>check_any_version(T::term()) -&gt; <a href="#type-any_version">any_version()</a></tt><br></p>
+<p><code>check_any_version(T::term()) -&gt; <a href="#type-any_version">any_version()</a></code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a any-version, and returns it.</p>
 
 <h3 class="function"><a name="check_defined-1">check_defined/1</a></h3>
 <div class="spec">
-<p><tt>check_defined(Term::term()) -&gt; term()</tt><br></p>
+<p><code>check_defined(Term::term()) -&gt; term()</code><br></p>
 <p> </p>
 </div><p>Checks that specified term is "defined" (not equal to 'undefined');
  returns that term.
@@ -591,7 +606,7 @@ an exception.</p>
 
 <h3 class="function"><a name="check_no_pending_message-0">check_no_pending_message/0</a></h3>
 <div class="spec">
-<p><tt>check_no_pending_message() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_no_pending_message() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Ensures that no message is pending in the mailbox of this process.</p>
 
@@ -602,25 +617,25 @@ an exception.</p>
 
 <h3 class="function"><a name="check_not_undefined-1">check_not_undefined/1</a></h3>
 <div class="spec">
-<p><tt>check_not_undefined(Term::term()) -&gt; term()</tt><br></p>
+<p><code>check_not_undefined(Term::term()) -&gt; term()</code><br></p>
 <p> </p>
 </div><p>Checks that specified term is not 'undefined'; returns that term.</p>
 
 <h3 class="function"><a name="check_three_digit_version-1">check_three_digit_version/1</a></h3>
 <div class="spec">
-<p><tt>check_three_digit_version(T::term()) -&gt; <a href="#type-three_digit_version">three_digit_version()</a></tt><br></p>
+<p><code>check_three_digit_version(T::term()) -&gt; <a href="#type-three_digit_version">three_digit_version()</a></code><br></p>
 <p> </p>
 </div><p>Checks that the specified term is a three-digit version, and returns it.</p>
 
 <h3 class="function"><a name="check_undefined-1">check_undefined/1</a></h3>
 <div class="spec">
-<p><tt>check_undefined(Term::term()) -&gt; undefined</tt><br></p>
+<p><code>check_undefined(Term::term()) -&gt; undefined</code><br></p>
 <p> </p>
 </div><p>Checks that specified term is 'undefined', and returns it.</p>
 
 <h3 class="function"><a name="checkpoint-1">checkpoint/1</a></h3>
 <div class="spec">
-<p><tt>checkpoint(Number::integer()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>checkpoint(Number::integer()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Displays a numbered checkpoint.</p>
 
@@ -629,7 +644,7 @@ an exception.</p>
 
 <h3 class="function"><a name="compare_versions-2">compare_versions/2</a></h3>
 <div class="spec">
-<p><tt>compare_versions(A::<a href="#type-any_version">any_version()</a>, B::<a href="#type-any_version">any_version()</a>) -&gt; equal | first_bigger | second_bigger</tt><br></p>
+<p><code>compare_versions(A::<a href="#type-any_version">any_version()</a>, B::<a href="#type-any_version">any_version()</a>) -&gt; equal | first_bigger | second_bigger</code><br></p>
 <p> </p>
 </div><p><p>Compares the two specified any-versions (expected to be of the same 
 size), which describe two version numbers (e.g. {0,1,0} and {0,1,7}) and 
@@ -640,7 +655,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="crash-0">crash/0</a></h3>
 <div class="spec">
-<p><tt>crash() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>crash() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Crashes the current process immediately.</p>
 
@@ -649,7 +664,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="crash-1">crash/1</a></h3>
 <div class="spec">
-<p><tt>crash(Term::term()) -&gt; any()</tt><br></p>
+<p><code>crash(Term::term()) -&gt; any()</code><br></p>
 <p> </p>
 </div><p><p>Crashes the current process immediately, displaying the specified term.</p>
 
@@ -658,7 +673,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="create_uniform_tuple-2">create_uniform_tuple/2</a></h3>
 <div class="spec">
-<p><tt>create_uniform_tuple(Size::<a href="#type-count">count()</a>, Value::any()) -&gt; tuple()</tt><br></p>
+<p><code>create_uniform_tuple(Size::<a href="#type-count">count()</a>, Value::any()) -&gt; tuple()</code><br></p>
 <p> </p>
 </div><p>Creates a tuple of specified size, all elements having the same,
  specified, value.
@@ -666,7 +681,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="debug-1">debug/1</a></h3>
 <div class="spec">
-<p><tt>debug(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>debug(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays, for debugging purposes, the specified string, ensuring as much
  as possible this message is output synchronously, so that it can be output on
@@ -675,7 +690,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="debug-2">debug/2</a></h3>
 <div class="spec">
-<p><tt>debug(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>debug(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays, for debugging purposes, the specified format string filled
  according tothe specified values, ensuring as much as possible this message is
@@ -685,13 +700,13 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="describe_term-1">describe_term/1</a></h3>
 <div class="spec">
-<p><tt>describe_term(T::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>describe_term(T::term()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Describes specified term in a controlled manner.</p>
 
 <h3 class="function"><a name="display-1">display/1</a></h3>
 <div class="spec">
-<p><tt>display(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified string on the standard output of the console,
  ensuring as much as possible that this message is output synchronously, so
@@ -701,7 +716,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><tt>display(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified format string filled according to the specified
  values on the standard output of the console, ensuring as much as possible
@@ -711,7 +726,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="display_error-1">display_error/1</a></h3>
 <div class="spec">
-<p><tt>display_error(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_error(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified string on the standard error output of the
  console, ensuring as much as possible this message is output synchronously, so
@@ -721,7 +736,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="display_error-2">display_error/2</a></h3>
 <div class="spec">
-<p><tt>display_error(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_error(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified format string filled according to specified values
  on the standard error output of the console, ensuring as much as possible this
@@ -731,7 +746,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="display_process_info-1">display_process_info/1</a></h3>
 <div class="spec">
-<p><tt>display_process_info(PidList::pid() | [pid()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_process_info(PidList::pid() | [pid()]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays information about the process(es) identified by specified
  PID(s).
@@ -739,7 +754,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="display_timed-2">display_timed/2</a></h3>
 <div class="spec">
-<p><tt>display_timed(Message::<a href="#type-ustring">ustring()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_timed(Message::<a href="#type-ustring">ustring()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified string on the standard output of the console,
  ensuring as much as possible that this message is output synchronously, so
@@ -749,7 +764,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="display_timed-3">display_timed/3</a></h3>
 <div class="spec">
-<p><tt>display_timed(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_timed(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the specified format string filled according to specified values
  on the standard output of the console, ensuring as much as possible this
@@ -757,9 +772,18 @@ returns either first_bigger, second_bigger, or equal.</p>
  if the virtual machine is to crash just after.
 </p>
 
+<h3 class="function"><a name="do_nothing-0">do_nothing/0</a></h3>
+<div class="spec">
+<p><code>do_nothing() -&gt; any()</code></p>
+<p> </p>
+</div><p><p>Does nothing at all, at the expense of a remote call.</p>
+
+ May be useful for experiments, for example in link with LCO (Last Call
+ Optimisation).</p>
+
 <h3 class="function"><a name="enter_infinite_loop-0">enter_infinite_loop/0</a></h3>
 <div class="spec">
-<p><tt>enter_infinite_loop() -&gt; any()</tt></p>
+<p><code>enter_infinite_loop() -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Makes the current process enter in an infinite, mostly idle loop.</p>
 
@@ -768,15 +792,47 @@ returns either first_bigger, second_bigger, or equal.</p>
  See also: freeze/0.
 </p>
 
+<h3 class="function"><a name="exec-1">exec/1</a></h3>
+<div class="spec">
+<p><code>exec(ModIOList::<a href="#type-io_list_mod">io_list_mod()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Executes the exec/0 function from the specified application module.</p>
+
+ Designed as a convenient launcher used with 'erl -run', dealing notably best
+ with outputs, error management and stacktraces.
+</p>
+
+<h3 class="function"><a name="exec-2">exec/2</a></h3>
+<div class="spec">
+<p><code>exec(ModIOList::<a href="#type-io_list_mod">io_list_mod()</a>, FunctionName::<a href="#type-function_name">function_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Executes the specified 0-arity function from the specified application 
+module.</p>
+
+ Designed as a convenient launcher used with 'erl -run', dealing notably best
+ with outputs, error management and stacktraces.
+</p>
+
+<h3 class="function"><a name="exec-3">exec/3</a></h3>
+<div class="spec">
+<p><code>exec(ModIOList::<a href="#type-io_list_mod">io_list_mod()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Args::[<a href="#type-argument">argument()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Executes the specified function from the specified application module, 
+with the specified arguments.</p>
+
+ Designed as a convenient launcher used with 'erl -run', dealing notably best
+ with outputs, error management and stacktraces.
+</p>
+
 <h3 class="function"><a name="flush_pending_messages-0">flush_pending_messages/0</a></h3>
 <div class="spec">
-<p><tt>flush_pending_messages() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>flush_pending_messages() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Flushes all the messages still in the mailbox of this process.</p>
 
 <h3 class="function"><a name="flush_pending_messages-1">flush_pending_messages/1</a></h3>
 <div class="spec">
-<p><tt>flush_pending_messages(Message::any()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>flush_pending_messages(Message::any()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Flushes all the messages still in the mailbox of this process that
  (exactly) match the specified one.
@@ -784,7 +840,7 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="freeze-0">freeze/0</a></h3>
 <div class="spec">
-<p><tt>freeze() -&gt; no_return()</tt><br></p>
+<p><code>freeze() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Freezes the current process immediately.</p>
 
@@ -796,13 +852,25 @@ termination occurs.</p>
 
 <h3 class="function"><a name="get_execution_target-0">get_execution_target/0</a></h3>
 <div class="spec">
-<p><tt>get_execution_target() -&gt; development</tt><br></p>
+<p><code>get_execution_target() -&gt; development</code><br></p>
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_myriad_version-0">get_myriad_version/0</a></h3>
+<div class="spec">
+<p><code>get_myriad_version() -&gt; <a href="#type-three_digit_version">three_digit_version()</a></code><br></p>
+<p> </p>
+</div><p>Returns the version of the Myriad library being used.</p>
+
+<h3 class="function"><a name="get_myriad_version_string-0">get_myriad_version_string/0</a></h3>
+<div class="spec">
+<p><code>get_myriad_version_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p> </p>
+</div><p>Returns the version of the Myriad library being used, as a string.</p>
+
 <h3 class="function"><a name="get_process_info-1">get_process_info/1</a></h3>
 <div class="spec">
-<p><tt>get_process_info(Pid::pid()) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-process_info_result_item">process_info_result_item()</a>])</tt><br></p>
+<p><code>get_process_info(Pid::pid()) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-process_info_result_item">process_info_result_item()</a>])</code><br></p>
 <p> </p>
 </div><p>Returns all general information regarding specified process (which is
  local or not), provided it is still alive (otherwise returns undefined).
@@ -810,7 +878,7 @@ termination occurs.</p>
 
 <h3 class="function"><a name="get_process_info-2">get_process_info/2</a></h3>
 <div class="spec">
-<p><tt>get_process_info(Pid::pid(), ItemTerm::<a href="#type-process_info_result_item">process_info_result_item()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-process_info_result_item">process_info_result_item()</a>)</tt><br></p><p><tt>get_process_info(Pid::pid(), ItemTerm::[<a href="#type-process_info_result_item">process_info_result_item()</a>]) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-process_info_result_item">process_info_result_item()</a>])</tt><br></p>
+<p><code>get_process_info(Pid::pid(), ItemTerm::<a href="#type-process_info_result_item">process_info_result_item()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-process_info_result_item">process_info_result_item()</a>)</code><br></p><p><code>get_process_info(Pid::pid(), ItemTerm::[<a href="#type-process_info_result_item">process_info_result_item()</a>]) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-process_info_result_item">process_info_result_item()</a>])</code><br></p>
 <p> </p>
 <p> </p>
 </div><p>Returns the specified information regarding specified process (which is
@@ -819,7 +887,7 @@ termination occurs.</p>
 
 <h3 class="function"><a name="get_process_size-1">get_process_size/1</a></h3>
 <div class="spec">
-<p><tt>get_process_size(Pid::pid()) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p><code>get_process_size(Pid::pid()) -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the total size in (RAM) memory used by specified (local, alive) 
 process, in bytes: this includes call stack, heap, and internal structures.</p>
@@ -830,7 +898,7 @@ process, in bytes: this includes call stack, heap, and internal structures.</p>
 
 <h3 class="function"><a name="get_process_specific_value-0">get_process_specific_value/0</a></h3>
 <div class="spec">
-<p><tt>get_process_specific_value() -&gt; pos_integer()</tt><br></p>
+<p><code>get_process_specific_value() -&gt; pos_integer()</code><br></p>
 <p> </p>
 </div><p><p>Returns a stable, reproducible value (a strictly positive integer) 
 expected to be as much as possible specific to the current (Erlang) process.</p>
@@ -841,7 +909,7 @@ expected to be as much as possible specific to the current (Erlang) process.</p>
 
 <h3 class="function"><a name="get_process_specific_value-1">get_process_specific_value/1</a></h3>
 <div class="spec">
-<p><tt>get_process_specific_value(Pid::pid()) -&gt; pos_integer()</tt><br></p>
+<p><code>get_process_specific_value(Pid::pid()) -&gt; pos_integer()</code><br></p>
 <p> </p>
 </div><p><p>Returns a stable, reproducible value (a strictly positive integer) 
 expected to be as much as possible specific to the specified (Erlang) PID.</p>
@@ -856,7 +924,7 @@ having to generate an integer identifier corresponding to a given process.</p>
 
 <h3 class="function"><a name="get_process_specific_value-2">get_process_specific_value/2</a></h3>
 <div class="spec">
-<p><tt>get_process_specific_value(Min::integer(), Max::integer()) -&gt; integer()</tt><br></p>
+<p><code>get_process_specific_value(Min::integer(), Max::integer()) -&gt; integer()</code><br></p>
 <p> </p>
 </div><p><p>Returns an (Erlang), non-reproducible, process-specific value in 
 [Min,Max[.</p>
@@ -869,7 +937,7 @@ having to generate an integer identifier corresponding to a given process.</p>
 
 <h3 class="function"><a name="get_unix_process_specific_string-0">get_unix_process_specific_string/0</a></h3>
 <div class="spec">
-<p><tt>get_unix_process_specific_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_unix_process_specific_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a string that should be unique for the current UNIX process (of 
 the VM), based on its operating system PID and on millisecond-precise time.</p>
@@ -882,17 +950,21 @@ may happen), and suitable for file creation.</p>
 
 <h3 class="function"><a name="identity-1">identity/1</a></h3>
 <div class="spec">
-<p><tt>identity(Term::term()) -&gt; term()</tt><br></p>
+<p><code>identity(Term::term()) -&gt; term()</code><br></p>
 <p> </p>
 </div><p><p>Identity function: returns its argument as it is.</p>
 
- Useful to avoid having the compiler being too smart by notifying annoying,
- spurious messages (e.g. no clause will ever match) in some tests.
+ Useful to:
+ - avoid having the compiler being too smart by notifying annoying, spurious
+ messages (e.g. no clause will ever match) in some tests
+ - to prevent manually Last-Call Optimisation by calling this function on the
+ result (last expression) of a function, in order that this last function does
+ not disappear from stacktraces
 </p>
 
 <h3 class="function"><a name="ignore_unused-1">ignore_unused/1</a></h3>
 <div class="spec">
-<p><tt>ignore_unused(Term::any()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>ignore_unused(Term::any()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Ignores specified argument.</p>
 
@@ -905,7 +977,7 @@ unused without blocking the compilation.</p>
 
 <h3 class="function"><a name="is_alive-1">is_alive/1</a></h3>
 <div class="spec">
-<p><tt>is_alive(TargetPid::pid() | <a href="#type-ustring">ustring()</a> | <a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_alive(TargetPid::pid() | <a href="#type-ustring">ustring()</a> | <a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified process, designated by its PID, by a textual
  representation of it (like <code>&lt;9092.61.0&gt;</code>) or by a registered name (local 
@@ -919,7 +991,7 @@ this call.</p>
 
 <h3 class="function"><a name="is_alive-2">is_alive/2</a></h3>
 <div class="spec">
-<p><tt>is_alive(TargetPid::pid(), Node::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_alive(TargetPid::pid(), Node::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified process (designated by its PID) supposed to 
 run on specified node (specified as an atom) was still existing at the moment 
@@ -931,7 +1003,7 @@ of this call.</p>
 
 <h3 class="function"><a name="is_alive-3">is_alive/3</a></h3>
 <div class="spec">
-<p><tt>is_alive(TargetPid::pid(), Node::<a href="#type-atom_node_name">atom_node_name()</a>, Verbose::boolean()) -&gt; boolean()</tt><br></p>
+<p><code>is_alive(TargetPid::pid(), Node::<a href="#type-atom_node_name">atom_node_name()</a>, Verbose::boolean()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified process (designated by its PID) supposed to 
 run on specified node (specified as an atom) was still existing at the moment 
@@ -945,14 +1017,14 @@ of this call.</p>
 
 <h3 class="function"><a name="is_debug_mode_enabled-0">is_debug_mode_enabled/0</a></h3>
 <div class="spec">
-<p><tt>is_debug_mode_enabled() -&gt; false</tt><br></p>
+<p><code>is_debug_mode_enabled() -&gt; false</code><br></p>
 <p> </p>
 </div><p>Returns whether the (Myriad-enforced) debug mode is activated for the
  compilation of this module.</p>
 
 <h3 class="function"><a name="notify_pending_messages-0">notify_pending_messages/0</a></h3>
 <div class="spec">
-<p><tt>notify_pending_messages() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>notify_pending_messages() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Reads all pending messages in the mailbox of this process and notifies 
 about them on the console.</p>
@@ -964,7 +1036,7 @@ about them on the console.</p>
 
 <h3 class="function"><a name="notify_user-1">notify_user/1</a></h3>
 <div class="spec">
-<p><tt>notify_user(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>notify_user(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Notifies the user of the specified message, with log output and synthetic
  voice.
@@ -972,7 +1044,7 @@ about them on the console.</p>
 
 <h3 class="function"><a name="notify_user-2">notify_user/2</a></h3>
 <div class="spec">
-<p><tt>notify_user(Message::<a href="#type-format_string">format_string()</a>, FormatList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>notify_user(Message::<a href="#type-format_string">format_string()</a>, FormatList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Notifies the user of the specified message, with log output and synthetic 
 voice.</p>
@@ -982,16 +1054,47 @@ voice.</p>
 
 <h3 class="function"><a name="parse_version-1">parse_version/1</a></h3>
 <div class="spec">
-<p><tt>parse_version(VersionString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-any_version">any_version()</a></tt><br></p>
+<p><code>parse_version(VersionString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-any_version">any_version()</a></code><br></p>
 <p> </p>
 </div><p><p>Parses the specified textual version.</p>
 
  For example "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
 </p>
 
+<h3 class="function"><a name="run-1">run/1</a></h3>
+<div class="spec">
+<p><code>run(ModIOList::<a href="#type-io_list_mod">io_list_mod()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Runs the run/0 function from the specified module.</p>
+
+ Designed as a convenient launcher used with 'erl -run', dealing notably best
+ with outputs, error management and stacktraces.
+</p>
+
+<h3 class="function"><a name="run-2">run/2</a></h3>
+<div class="spec">
+<p><code>run(ModIOList::<a href="#type-io_list_mod">io_list_mod()</a>, FunctionName::<a href="#type-function_name">function_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Runs the specified 0-arity function from the specified module.</p>
+
+ Designed as a convenient launcher used with 'erl -run', dealing notably best
+ with outputs, error management and stacktraces.
+</p>
+
+<h3 class="function"><a name="run-3">run/3</a></h3>
+<div class="spec">
+<p><code>run(ModIOList::<a href="#type-io_list_mod">io_list_mod()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Args::[<a href="#type-argument">argument()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Runs the specified function from the specified module, with the specified 
+arguments.</p>
+
+ Designed as a convenient launcher used with 'erl -run', dealing notably best
+ with outputs, error management and stacktraces.
+</p>
+
 <h3 class="function"><a name="send_to_pid_set-2">send_to_pid_set/2</a></h3>
 <div class="spec">
-<p><tt>send_to_pid_set(Message::term(), PidSet::<a href="#type-set">set</a>(pid())) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p><code>send_to_pid_set(Message::term(), PidSet::<a href="#type-set">set</a>(pid())) -&gt; <a href="#type-count">count()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified message to all elements (supposed to be PID) of the 
 specified set, and returns the number of sent messages.</p>
@@ -999,15 +1102,29 @@ specified set, and returns the number of sent messages.</p>
  (helper)
 </p>
 
+<h3 class="function"><a name="set_maybe-2">set_maybe/2</a></h3>
+<div class="spec">
+<p><code>set_maybe(MaybeTerm::<a href="#type-maybe">maybe</a>(term()), TDef::term()) -&gt; term()</code><br></p>
+<p> </p>
+</div><p><p>Returns the first term is it is not undefined, otherwise returns the 
+second, default, term.</p>
+
+ <p>Allows to apply a default if a maybe-term is not defined.</p>
+
+ <p>For example: <code>ActualX = basic_utils:set_maybe(MaybeX, DefaultX)</code>.</p>
+
+ Ideally the default term would be lazily evaluated.
+</p>
+
 <h3 class="function"><a name="speak-1">speak/1</a></h3>
 <div class="spec">
-<p><tt>speak(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>speak(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Speaks the specified message, using espeak.</p>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><tt>stop() -&gt; no_return()</tt><br></p>
+<p><code>stop() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops smoothly the underlying VM, with a normal, success status code (0).</p>
 
@@ -1016,7 +1133,7 @@ specified set, and returns the number of sent messages.</p>
 
 <h3 class="function"><a name="stop-1">stop/1</a></h3>
 <div class="spec">
-<p><tt>stop(StatusCode::<a href="#type-status_code">status_code()</a>) -&gt; no_return()</tt><br></p>
+<p><code>stop(StatusCode::<a href="#type-status_code">status_code()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops smoothly, synchronously the underlying VM, with specified error 
 code.</p>
@@ -1026,19 +1143,19 @@ code.</p>
 
 <h3 class="function"><a name="stop_on_failure-0">stop_on_failure/0</a></h3>
 <div class="spec">
-<p><tt>stop_on_failure() -&gt; no_return()</tt><br></p>
+<p><code>stop_on_failure() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>Stops smoothly the underlying VM, with a default error status code (1).</p>
 
 <h3 class="function"><a name="stop_on_failure-1">stop_on_failure/1</a></h3>
 <div class="spec">
-<p><tt>stop_on_failure(StatusCode::<a href="#type-status_code">status_code()</a>) -&gt; no_return()</tt><br></p>
+<p><code>stop_on_failure(StatusCode::<a href="#type-status_code">status_code()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>Stops smoothly the underlying VM, with a default error status code (1).</p>
 
 <h3 class="function"><a name="stop_on_success-0">stop_on_success/0</a></h3>
 <div class="spec">
-<p><tt>stop_on_success() -&gt; no_return()</tt><br></p>
+<p><code>stop_on_success() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>Stops smoothly, synchronously the underlying VM, with a normal, success
  status code (0).
@@ -1046,7 +1163,7 @@ code.</p>
 
 <h3 class="function"><a name="throw_diagnosed-1">throw_diagnosed/1</a></h3>
 <div class="spec">
-<p><tt>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>) -&gt; no_return()</tt><br></p>
+<p><code>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Triggers the specified diagnosed error: reports first its embedded 
 diagnosis, then throws this error as an exception.</p>
@@ -1069,7 +1186,7 @@ basic_utils:throw_diagnosed( DiagnosedReason )</p>
 
 <h3 class="function"><a name="throw_diagnosed-2">throw_diagnosed/2</a></h3>
 <div class="spec">
-<p><tt>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>, ExtraErrorTerm::term()) -&gt; no_return()</tt><br></p>
+<p><code>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>, ExtraErrorTerm::term()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Triggers the specified diagnosed error, augmented by specified term: 
 reports first its embedded diagnosis, then throws this error, as an augmented 
@@ -1093,7 +1210,7 @@ basic_utils:throw_diagnosed( DiagnosedReason, Z )</p>
 
 <h3 class="function"><a name="trigger_oom-0">trigger_oom/0</a></h3>
 <div class="spec">
-<p><tt>trigger_oom() -&gt; any()</tt></p>
+<p><code>trigger_oom() -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Triggers a OOM crash, that is a "Out of Memory" error.</p>
 
@@ -1102,7 +1219,7 @@ basic_utils:throw_diagnosed( DiagnosedReason, Z )</p>
 
 <h3 class="function"><a name="wait_for-2">wait_for/2</a></h3>
 <div class="spec">
-<p><tt>wait_for(Message::term(), Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for(Message::term(), Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Waits (indefinitively) for the specified count of the specified message
  to be received.
@@ -1110,7 +1227,7 @@ basic_utils:throw_diagnosed( DiagnosedReason, Z )</p>
 
 <h3 class="function"><a name="wait_for-4">wait_for/4</a></h3>
 <div class="spec">
-<p><tt>wait_for(Message::term(), Count::<a href="#type-count">count()</a>, TimeOutDuration::<a href="#type-milliseconds">milliseconds()</a>, TimeOutFormatString::<a href="#type-format_string">format_string()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for(Message::term(), Count::<a href="#type-count">count()</a>, TimeOutDuration::<a href="#type-milliseconds">milliseconds()</a>, TimeOutFormatString::<a href="#type-format_string">format_string()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Waits (indefinitively) for the specified count of the specified message 
 to be received, displaying repeatedly on the console a notification should the 
@@ -1122,7 +1239,7 @@ duration between two receivings exceed the specified time-out.</p>
 
 <h3 class="function"><a name="wait_for_acks-4">wait_for_acks/4</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for_acks(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1137,7 +1254,7 @@ time-out can be disabled if set to 'infinity').</p>
 
 <h3 class="function"><a name="wait_for_acks-5">wait_for_acks/5</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-time_out">time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for_acks(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-time_out">time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1151,7 +1268,7 @@ period.</p>
 
 <h3 class="function"><a name="wait_for_acks_nothrow-3">wait_for_acks_nothrow/3</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
+<p><code>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</code><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all the expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1166,7 +1283,7 @@ answer within the specified time-out.</p>
 
 <h3 class="function"><a name="wait_for_acks_nothrow-4">wait_for_acks_nothrow/4</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
+<p><code>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</code><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all the expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1181,7 +1298,7 @@ answer within the specified time-out.</p>
 
 <h3 class="function"><a name="wait_for_many_acks-4">wait_for_many_acks/4</a></h3>
 <div class="spec">
-<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected (numerous) senders the specified 
 acknowledgement message.</p>
@@ -1194,7 +1311,7 @@ acknowledgement message.</p>
 
 <h3 class="function"><a name="wait_for_many_acks-5">wait_for_many_acks/5</a></h3>
 <div class="spec">
-<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected (numerous) senders the specified 
 acknowledgement message.</p>
@@ -1204,7 +1321,7 @@ acknowledgement message.</p>
 
 <h3 class="function"><a name="wait_for_summable_acks-5">wait_for_summable_acks/5</a></h3>
 <div class="spec">
-<p><tt>wait_for_summable_acks(WaitedSenders::[pid()], InitialValue::number(), MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; number()</tt><br></p>
+<p><code>wait_for_summable_acks(WaitedSenders::[pid()], InitialValue::number(), MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; number()</code><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of: {AckReceiveAtom, 

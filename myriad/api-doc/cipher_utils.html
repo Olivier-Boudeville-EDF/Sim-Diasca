@@ -22,81 +22,81 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_transform">any_transform()</a></h3>
-<p><tt>any_transform() = <a href="#type-cipher_transform">cipher_transform()</a> | <a href="#type-decipher_transform">decipher_transform()</a></tt></p>
+<p><code>any_transform() = <a href="#type-cipher_transform">cipher_transform()</a> | <a href="#type-decipher_transform">decipher_transform()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-cell">cell()</a></h3>
-<p><tt>cell() = {<a href="#type-state">state()</a>, <a href="#type-letter">letter()</a>}</tt></p>
+<p><code>cell() = {<a href="#type-state">state()</a>, <a href="#type-letter">letter()</a>}</code></p>
 <p> A cell of any inner array, each of these arrays being relative to a given
  input letter and being indexed by the possible machine states.</p>
 
 <h3 class="typedecl"><a name="type-cipher_transform">cipher_transform()</a></h3>
-<p><tt>cipher_transform() = <a href="#type-id_transform">id_transform()</a> | <a href="#type-offset_transform">offset_transform()</a> | <a href="#type-compress_transform">compress_transform()</a> | <a href="#type-insert_random_transform">insert_random_transform()</a> | <a href="#type-delta_combine_transform">delta_combine_transform()</a> | <a href="#type-shuffle_transform">shuffle_transform()</a> | <a href="#type-xor_transform">xor_transform()</a> | <a href="#type-mealy_transform">mealy_transform()</a></tt></p>
+<p><code>cipher_transform() = <a href="#type-id_transform">id_transform()</a> | <a href="#type-offset_transform">offset_transform()</a> | <a href="#type-compress_transform">compress_transform()</a> | <a href="#type-insert_random_transform">insert_random_transform()</a> | <a href="#type-delta_combine_transform">delta_combine_transform()</a> | <a href="#type-shuffle_transform">shuffle_transform()</a> | <a href="#type-xor_transform">xor_transform()</a> | <a href="#type-mealy_transform">mealy_transform()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-compress_transform">compress_transform()</a></h3>
-<p><tt>compress_transform() = {compress, <a href="#type-compression_format">compression_format()</a>}</tt></p>
+<p><code>compress_transform() = {compress, <a href="#type-compression_format">compression_format()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-compression_format">compression_format()</a></h3>
-<p><tt>compression_format() = <a href="file_utils.html#type-compression_format">file_utils:compression_format()</a></tt></p>
+<p><code>compression_format() = <a href="file_utils.html#type-compression_format">file_utils:compression_format()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-decipher_transform">decipher_transform()</a></h3>
-<p><tt>decipher_transform() = <a href="#type-decompress_transform">decompress_transform()</a> | <a href="#type-extract_random_transform">extract_random_transform()</a> | <a href="#type-delta_combine_reverse_transform">delta_combine_reverse_transform()</a> | <a href="#type-reciprocal_shuffle_transform">reciprocal_shuffle_transform()</a></tt></p>
+<p><code>decipher_transform() = <a href="#type-decompress_transform">decompress_transform()</a> | <a href="#type-extract_random_transform">extract_random_transform()</a> | <a href="#type-delta_combine_reverse_transform">delta_combine_reverse_transform()</a> | <a href="#type-reciprocal_shuffle_transform">reciprocal_shuffle_transform()</a></code></p>
 <p> For ciphers which require specific reverse transformations.</p>
 
 <h3 class="typedecl"><a name="type-decompress_transform">decompress_transform()</a></h3>
-<p><tt>decompress_transform() = {decompress, <a href="#type-compression_format">compression_format()</a>}</tt></p>
+<p><code>decompress_transform() = {decompress, <a href="#type-compression_format">compression_format()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-delta_combine_reverse_transform">delta_combine_reverse_transform()</a></h3>
-<p><tt>delta_combine_reverse_transform() = delta_combine_reverse</tt></p>
+<p><code>delta_combine_reverse_transform() = delta_combine_reverse</code></p>
 
 
 <h3 class="typedecl"><a name="type-delta_combine_transform">delta_combine_transform()</a></h3>
-<p><tt>delta_combine_transform() = delta_combine</tt></p>
+<p><code>delta_combine_transform() = delta_combine</code></p>
 
 
 <h3 class="typedecl"><a name="type-extract_random_transform">extract_random_transform()</a></h3>
-<p><tt>extract_random_transform() = {extract_random, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</tt></p>
+<p><code>extract_random_transform() = {extract_random, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-id_transform">id_transform()</a></h3>
-<p><tt>id_transform() = id</tt></p>
+<p><code>id_transform() = id</code></p>
 <p> Just for testing.</p>
 
 <h3 class="typedecl"><a name="type-inner_array">inner_array()</a></h3>
-<p><tt>inner_array() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/array.html#type-array">array:array</a>(<a href="#type-cell">cell()</a>)</tt></p>
+<p><code>inner_array() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/array.html#type-array">array:array</a>(<a href="#type-cell">cell()</a>)</code></p>
 <p> Each array of this type is relative to an input letter, and its cell are
  indexed by states.</p>
 
 <h3 class="typedecl"><a name="type-insert_random_transform">insert_random_transform()</a></h3>
-<p><tt>insert_random_transform() = {insert_random, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</tt></p>
+<p><code>insert_random_transform() = {insert_random, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
-<p><tt>key() = [<a href="#type-any_transform">any_transform()</a>]</tt></p>
+<p><code>key() = [<a href="#type-any_transform">any_transform()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-letter">letter()</a></h3>
-<p><tt>letter() = byte()</tt></p>
+<p><code>letter() = byte()</code></p>
 <p> A letter (of both alphabets, i.e. input and output).</p>
 
 <h3 class="typedecl"><a name="type-mealy_state">mealy_state()</a></h3>
-<p><tt>mealy_state() = pos_integer()</tt></p>
+<p><code>mealy_state() = pos_integer()</code></p>
 <p> A state is defined by a strictly positive integer.</p>
 
 <h3 class="typedecl"><a name="type-mealy_table">mealy_table()</a></h3>
-<p><tt>mealy_table() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/array.html#type-array">array:array</a>(<a href="#type-inner_array">inner_array()</a>)</tt></p>
+<p><code>mealy_table() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/array.html#type-array">array:array</a>(<a href="#type-inner_array">inner_array()</a>)</code></p>
 <p><p> A Mealy table can be seen as a two-dimensional array, whose first dimension is 
 the states of the Machine (in [1,StateCount]) and second is the input alphabet 
 (here letters are bytes, in [0,255]).</p>
@@ -112,35 +112,35 @@ size of the input alphabet, hence 256 of them, in [0,255].</p>
  Each element of these inner arrays corresponds to the aforementioned cell.</p>
 
 <h3 class="typedecl"><a name="type-mealy_transform">mealy_transform()</a></h3>
-<p><tt>mealy_transform() = {mealy, <a href="#type-mealy_state">mealy_state()</a>, <a href="#type-mealy_table">mealy_table()</a>}</tt></p>
+<p><code>mealy_transform() = {mealy, <a href="#type-mealy_state">mealy_state()</a>, <a href="#type-mealy_table">mealy_table()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-offset_transform">offset_transform()</a></h3>
-<p><tt>offset_transform() = {offset, integer()}</tt></p>
+<p><code>offset_transform() = {offset, integer()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-reciprocal_shuffle_transform">reciprocal_shuffle_transform()</a></h3>
-<p><tt>reciprocal_shuffle_transform() = {reciprocal_shuffle, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</tt></p>
+<p><code>reciprocal_shuffle_transform() = {reciprocal_shuffle, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-seed">seed()</a></h3>
-<p><tt>seed() = <a href="random_utils.html#type-seed">random_utils:seed()</a></tt></p>
+<p><code>seed() = <a href="random_utils.html#type-seed">random_utils:seed()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-shuffle_transform">shuffle_transform()</a></h3>
-<p><tt>shuffle_transform() = {shuffle, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</tt></p>
+<p><code>shuffle_transform() = {shuffle, <a href="#type-seed">seed()</a>, <a href="#type-count">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-state">state()</a></h3>
-<p><tt>state() = pos_integer()</tt></p>
+<p><code>state() = pos_integer()</code></p>
 <p> Designates a state of the Mealy machine, starting from 1.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-xor_transform">xor_transform()</a></h3>
-<p><tt>xor_transform() = {'xor', [integer()]}</tt></p>
+<p><code>xor_transform() = {'xor', [integer()]}</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -160,7 +160,7 @@ result in specified target file.</td></tr>
 
 <h3 class="function"><a name="apply_cipher-3">apply_cipher/3</a></h3>
 <div class="spec">
-<p><tt>apply_cipher(C::any(), SourceFilePath::<a href="#type-file_path">file_path()</a>, CipheredFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>apply_cipher(C::any(), SourceFilePath::<a href="#type-file_path">file_path()</a>, CipheredFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Applies specified cipher to specified file.</p>
 
@@ -170,13 +170,13 @@ result in specified target file.</td></tr>
 
 <h3 class="function"><a name="compute_inverse_mealy_table-1">compute_inverse_mealy_table/1</a></h3>
 <div class="spec">
-<p><tt>compute_inverse_mealy_table(Table::<a href="#type-mealy_table">mealy_table()</a>) -&gt; <a href="#type-mealy_table">mealy_table()</a></tt><br></p>
+<p><code>compute_inverse_mealy_table(Table::<a href="#type-mealy_table">mealy_table()</a>) -&gt; <a href="#type-mealy_table">mealy_table()</a></code><br></p>
 <p> </p>
 </div><p>Returns the inverse Mealy table of the specified one.</p>
 
 <h3 class="function"><a name="decrypt-3">decrypt/3</a></h3>
 <div class="spec">
-<p><tt>decrypt(SourceFilePath::<a href="#type-file_path">file_path()</a>, TargetFilePath::<a href="#type-file_path">file_path()</a>, KeyFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>decrypt(SourceFilePath::<a href="#type-file_path">file_path()</a>, TargetFilePath::<a href="#type-file_path">file_path()</a>, KeyFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Decrypts specified source file using specified key file, and writes the 
 result in specified target file.</p>
@@ -186,7 +186,7 @@ result in specified target file.</p>
 
 <h3 class="function"><a name="encrypt-3">encrypt/3</a></h3>
 <div class="spec">
-<p><tt>encrypt(SourceFilePath::<a href="#type-file_path">file_path()</a>, TargetFilePath::<a href="#type-file_path">file_path()</a>, KeyFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>encrypt(SourceFilePath::<a href="#type-file_path">file_path()</a>, TargetFilePath::<a href="#type-file_path">file_path()</a>, KeyFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Encrypts specified source file using specified key file, and writes the 
 result in specified target file.</p>
@@ -196,13 +196,13 @@ result in specified target file.</p>
 
 <h3 class="function"><a name="generate_key-2">generate_key/2</a></h3>
 <div class="spec">
-<p><tt>generate_key(KeyFilePath::<a href="#type-file_path">file_path()</a>, Transforms::[<a href="#type-cipher_transform">cipher_transform()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>generate_key(KeyFilePath::<a href="#type-file_path">file_path()</a>, Transforms::[<a href="#type-cipher_transform">cipher_transform()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Generates a key file.</p>
 
 <h3 class="function"><a name="generate_mealy_table-1">generate_mealy_table/1</a></h3>
 <div class="spec">
-<p><tt>generate_mealy_table(StateCount) -&gt; any()</tt></p>
+<p><code>generate_mealy_table(StateCount) -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Generates a Mealy table for the specified number of states.</p>
 
@@ -211,13 +211,13 @@ result in specified target file.</p>
 
 <h3 class="function"><a name="key_to_string-1">key_to_string/1</a></h3>
 <div class="spec">
-<p><tt>key_to_string(Key::<a href="#type-key">key()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>key_to_string(Key::<a href="#type-key">key()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a description of the specified key.</p>
 
 <h3 class="function"><a name="mealy_table_to_string-1">mealy_table_to_string/1</a></h3>
 <div class="spec">
-<p><tt>mealy_table_to_string(Table::<a href="#type-mealy_table">mealy_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>mealy_table_to_string(Table::<a href="#type-mealy_table">mealy_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of this mealy table.</p>
 <hr>

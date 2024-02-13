@@ -19,29 +19,29 @@
 
  Note that the transform relies on a rather complex and complete traversal of
  the abstract syntax of the AST, inspired from the spec (in
- <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>) and also checked against the
+ <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a>) and also checked against the
  Erlang 'id' parse transformation (see lib/stdlib/examples/erl_id_trans.erl).
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_body">ast_body()</a></h3>
-<p><tt>ast_body() = <a href="ast_clause.html#type-ast_body">ast_clause:ast_body()</a></tt></p>
+<p><code>ast_body() = <a href="ast_clause.html#type-ast_body">ast_clause:ast_body()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_clause">ast_clause()</a></h3>
-<p><tt>ast_clause() = <a href="ast_clause.html#type-ast_clause">ast_clause:ast_clause()</a></tt></p>
+<p><code>ast_clause() = <a href="ast_clause.html#type-ast_clause">ast_clause:ast_clause()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_expression">ast_expression()</a></h3>
-<p><tt>ast_expression() = <a href="ast_expression.html#type-ast_expression">ast_expression:ast_expression()</a></tt></p>
+<p><code>ast_expression() = <a href="ast_expression.html#type-ast_expression">ast_expression:ast_expression()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_transform_function">ast_transform_function()</a></h3>
-<p><tt>ast_transform_function() = <a href="#type-clause_transform_function">clause_transform_function()</a> | <a href="#type-body_transform_function">body_transform_function()</a> | <a href="#type-expression_replacement_function">expression_replacement_function()</a></tt></p>
+<p><code>ast_transform_function() = <a href="#type-clause_transform_function">clause_transform_function()</a> | <a href="#type-body_transform_function">body_transform_function()</a> | <a href="#type-expression_replacement_function">expression_replacement_function()</a></code></p>
 <p> All the kinds of functions able to transform at least a part of an AST.</p>
 
 <h3 class="typedecl"><a name="type-ast_transform_table">ast_transform_table()</a></h3>
-<p><tt>ast_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-transform_trigger">transform_trigger()</a>, <a href="#type-ast_transform_function">ast_transform_function()</a>)</tt></p>
+<p><code>ast_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-transform_trigger">transform_trigger()</a>, <a href="#type-ast_transform_function">ast_transform_function()</a>)</code></p>
 <p><p> Table defining replacements of parts of an input AST.</p>
 
  Note: a full ast_transforms record (not a mere transformation state) is used
@@ -50,15 +50,15 @@
  ast_expression:transform_expressions/2) by themselves.</p>
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><tt>ast_transforms() = #ast_transforms{local_types = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-local_type_transform_table">ast_transform:local_type_transform_table()</a>), remote_types = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-remote_type_transform_table">ast_transform:remote_type_transform_table()</a>), local_calls = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-local_call_transform_table">ast_transform:local_call_transform_table()</a>), remote_calls = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-remote_call_transform_table">ast_transform:remote_call_transform_table()</a>), transformed_module_name = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>), transformed_function_identifier = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>), transform_table = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-ast_transform_table">ast_transform:ast_transform_table()</a>), transformation_state = <a href="ast_transform.html#type-transformation_state">ast_transform:transformation_state()</a>, transform_formatter = <a href="ast_transform.html#type-transform_formatter">ast_transform:transform_formatter()</a>}</tt></p>
+<p><code>ast_transforms() = #ast_transforms{local_types = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-local_type_transform_table">ast_transform:local_type_transform_table()</a>), remote_types = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-remote_type_transform_table">ast_transform:remote_type_transform_table()</a>), local_calls = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-local_call_transform_table">ast_transform:local_call_transform_table()</a>), remote_calls = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-remote_call_transform_table">ast_transform:remote_call_transform_table()</a>), transformed_module_name = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>), transformed_function_identifier = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>), transform_table = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_transform.html#type-ast_transform_table">ast_transform:ast_transform_table()</a>), transformation_state = <a href="ast_transform.html#type-transformation_state">ast_transform:transformation_state()</a>, transform_formatter = <a href="ast_transform.html#type-transform_formatter">ast_transform:transform_formatter()</a>}</code></p>
 <p> All information regarding AST replacements.</p>
 
 <h3 class="typedecl"><a name="type-body_transform_function">body_transform_function()</a></h3>
-<p><tt>body_transform_function() = fun((<a href="#type-ast_body">ast_body()</a>, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_body">ast_body()</a>, <a href="#type-ast_transforms">ast_transforms()</a>})</tt></p>
+<p><code>body_transform_function() = fun((<a href="#type-ast_body">ast_body()</a>, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_body">ast_body()</a>, <a href="#type-ast_transforms">ast_transforms()</a>})</code></p>
 <p> User-supplied function to define how AST bodies shall be transformed.</p>
 
 <h3 class="typedecl"><a name="type-call_replacement">call_replacement()</a></h3>
-<p><tt>call_replacement() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>} | <a href="#type-module_name">module_name()</a></tt></p>
+<p><code>call_replacement() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>} | <a href="#type-module_name">module_name()</a></code></p>
 <p><p> The same arity is kept, and just specifying the module name means that the 
 function name of the call is not to change.</p>
 
@@ -66,152 +66,152 @@ function name of the call is not to change.</p>
  remote call (a priori not a problematic limitation).</p>
 
 <h3 class="typedecl"><a name="type-clause_transform_function">clause_transform_function()</a></h3>
-<p><tt>clause_transform_function() = fun((<a href="#type-ast_clause">ast_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_clause">ast_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>})</tt></p>
+<p><code>clause_transform_function() = fun((<a href="#type-ast_clause">ast_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_clause">ast_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>})</code></p>
 <p> User-supplied function to define how AST clauses shall be transformed.</p>
 
 <h3 class="typedecl"><a name="type-expression_replacement_function">expression_replacement_function()</a></h3>
-<p><tt>expression_replacement_function() = fun((<a href="#type-line">line()</a>, <a href="ast_expression.html#type-function_ref_expression">ast_expression:function_ref_expression()</a>, <a href="ast_expression.html#type-params_expression">ast_expression:params_expression()</a>, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>})</tt></p>
+<p><code>expression_replacement_function() = fun((<a href="#type-line">line()</a>, <a href="ast_expression.html#type-function_ref_expression">ast_expression:function_ref_expression()</a>, <a href="ast_expression.html#type-params_expression">ast_expression:params_expression()</a>, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>})</code></p>
 <p><p> User-supplied function to define how expressions shall be replaced.</p>
 
  (currently describing only call replacements)</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_arity_match">function_arity_match()</a></h3>
-<p><tt>function_arity_match() = arity() | '_'</tt></p>
+<p><code>function_arity_match() = arity() | '_'</code></p>
 
 
 <h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
-<p><tt>function_name() = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a></tt></p>
+<p><code>function_name() = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_name_match">function_name_match()</a></h3>
-<p><tt>function_name_match() = <a href="#type-function_name">function_name()</a> | '_'</tt></p>
+<p><code>function_name_match() = <a href="#type-function_name">function_name()</a> | '_'</code></p>
 
 
 <h3 class="typedecl"><a name="type-line">line()</a></h3>
-<p><tt>line() = <a href="ast_base.html#type-line">ast_base:line()</a></tt></p>
+<p><code>line() = <a href="ast_base.html#type-line">ast_base:line()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-local_call_match">local_call_match()</a></h3>
-<p><tt>local_call_match() = {<a href="#type-function_name_match">function_name_match()</a>, <a href="#type-function_arity_match">function_arity_match()</a>}</tt></p>
+<p><code>local_call_match() = {<a href="#type-function_name_match">function_name_match()</a>, <a href="#type-function_arity_match">function_arity_match()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-local_call_replacement">local_call_replacement()</a></h3>
-<p><tt>local_call_replacement() = <a href="#type-call_replacement">call_replacement()</a> | fun((<a href="#type-function_name">function_name()</a>, arity(), <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-call_replacement">call_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</tt></p>
+<p><code>local_call_replacement() = <a href="#type-call_replacement">call_replacement()</a> | fun((<a href="#type-function_name">function_name()</a>, arity(), <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-call_replacement">call_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</code></p>
 <p> Either we directly set the target module and function names (using same
  arity), or we apply an anonymous function to determine the corresponding
  information, based on context.</p>
 
 <h3 class="typedecl"><a name="type-local_call_transform_table">local_call_transform_table()</a></h3>
-<p><tt>local_call_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-local_call_match">local_call_match()</a>, <a href="#type-local_call_replacement">local_call_replacement()</a>)</tt></p>
+<p><code>local_call_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-local_call_match">local_call_match()</a>, <a href="#type-local_call_replacement">local_call_replacement()</a>)</code></p>
 <p> Table defining replacements of local calls.</p>
 
 <h3 class="typedecl"><a name="type-local_type_id_match">local_type_id_match()</a></h3>
-<p><tt>local_type_id_match() = {<a href="#type-type_name_match">type_name_match()</a>, <a href="#type-type_arity_match">type_arity_match()</a>}</tt></p>
+<p><code>local_type_id_match() = {<a href="#type-type_name_match">type_name_match()</a>, <a href="#type-type_arity_match">type_arity_match()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-local_type_replacement">local_type_replacement()</a></h3>
-<p><tt>local_type_replacement() = <a href="#type-type_replacement">type_replacement()</a> | fun((<a href="#type-type_name">type_name()</a>, <a href="#type-type_arity">type_arity()</a>, <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-type_replacement">type_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</tt></p>
+<p><code>local_type_replacement() = <a href="#type-type_replacement">type_replacement()</a> | fun((<a href="#type-type_name">type_name()</a>, <a href="#type-type_arity">type_arity()</a>, <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-type_replacement">type_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</code></p>
 <p> Either we directly set the target module and type names (using same arity), or
  we apply an anonymous function to determine the corresponding information,
  based on context.</p>
 
 <h3 class="typedecl"><a name="type-local_type_transform_table">local_type_transform_table()</a></h3>
-<p><tt>local_type_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-local_type_id_match">local_type_id_match()</a>, <a href="#type-local_type_replacement">local_type_replacement()</a>)</tt></p>
+<p><code>local_type_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-local_type_id_match">local_type_id_match()</a>, <a href="#type-local_type_replacement">local_type_replacement()</a>)</code></p>
 <p> Table defining replacements of local types.</p>
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="meta_utils.html#type-module_name">meta_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="meta_utils.html#type-module_name">meta_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name_match">module_name_match()</a></h3>
-<p><tt>module_name_match() = <a href="#type-module_name">module_name()</a> | '_'</tt></p>
+<p><code>module_name_match() = <a href="#type-module_name">module_name()</a> | '_'</code></p>
 
 
 <h3 class="typedecl"><a name="type-remote_call_match">remote_call_match()</a></h3>
-<p><tt>remote_call_match() = {<a href="#type-module_name_match">module_name_match()</a>, <a href="#type-function_name_match">function_name_match()</a>, <a href="#type-function_arity_match">function_arity_match()</a>}</tt></p>
+<p><code>remote_call_match() = {<a href="#type-module_name_match">module_name_match()</a>, <a href="#type-function_name_match">function_name_match()</a>, <a href="#type-function_arity_match">function_arity_match()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-remote_call_replacement">remote_call_replacement()</a></h3>
-<p><tt>remote_call_replacement() = <a href="#type-call_replacement">call_replacement()</a> | fun((<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, arity(), <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-call_replacement">call_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</tt></p>
+<p><code>remote_call_replacement() = <a href="#type-call_replacement">call_replacement()</a> | fun((<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, arity(), <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-call_replacement">call_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</code></p>
 <p> Either we directly set the target module and function names (using same
  arity), or we apply an anonymous function to determine the corresponding
  information, based on context.</p>
 
 <h3 class="typedecl"><a name="type-remote_call_transform_table">remote_call_transform_table()</a></h3>
-<p><tt>remote_call_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-remote_call_match">remote_call_match()</a>, <a href="#type-remote_call_replacement">remote_call_replacement()</a>)</tt></p>
+<p><code>remote_call_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-remote_call_match">remote_call_match()</a>, <a href="#type-remote_call_replacement">remote_call_replacement()</a>)</code></p>
 <p> Table defining replacements of remote calls.</p>
 
 <h3 class="typedecl"><a name="type-remote_type_id_match">remote_type_id_match()</a></h3>
-<p><tt>remote_type_id_match() = {<a href="#type-module_name_match">module_name_match()</a>, <a href="#type-type_name_match">type_name_match()</a>, <a href="#type-type_arity_match">type_arity_match()</a>}</tt></p>
+<p><code>remote_type_id_match() = {<a href="#type-module_name_match">module_name_match()</a>, <a href="#type-type_name_match">type_name_match()</a>, <a href="#type-type_arity_match">type_arity_match()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-remote_type_replacement">remote_type_replacement()</a></h3>
-<p><tt>remote_type_replacement() = <a href="#type-type_replacement">type_replacement()</a> | fun((<a href="#type-module_name">module_name()</a>, <a href="#type-type_name">type_name()</a>, <a href="#type-type_arity">type_arity()</a>, <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-type_replacement">type_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</tt></p>
+<p><code>remote_type_replacement() = <a href="#type-type_replacement">type_replacement()</a> | fun((<a href="#type-module_name">module_name()</a>, <a href="#type-type_name">type_name()</a>, <a href="#type-type_arity">type_arity()</a>, <a href="#type-transformation_state">transformation_state()</a>) -&gt; {<a href="#type-type_replacement">type_replacement()</a>, <a href="#type-transformation_state">transformation_state()</a>})</code></p>
 <p> Either we directly set the target module and type names (using same arity), or
  we apply an anonymous function to determine the corresponding information,
  based on context.</p>
 
 <h3 class="typedecl"><a name="type-remote_type_transform_table">remote_type_transform_table()</a></h3>
-<p><tt>remote_type_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-remote_type_id_match">remote_type_id_match()</a>, <a href="#type-remote_type_replacement">remote_type_replacement()</a>)</tt></p>
+<p><code>remote_type_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-remote_type_id_match">remote_type_id_match()</a>, <a href="#type-remote_type_replacement">remote_type_replacement()</a>)</code></p>
 <p> Table defining replacements of remote types.</p>
 
 <h3 class="typedecl"><a name="type-transform_formatter">transform_formatter()</a></h3>
-<p><tt>transform_formatter() = fun((<a href="#type-format_string">format_string()</a>, <a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-ustring">ustring()</a>)</tt></p>
+<p><code>transform_formatter() = fun((<a href="#type-format_string">format_string()</a>, <a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-ustring">ustring()</a>)</code></p>
 <p> Designates a function able to properly format typically the output of
  expression transformation (e.g. when exiting an
  ast_expression:transform_expression/2 clause).</p>
 
 <h3 class="typedecl"><a name="type-transform_fun">transform_fun()</a></h3>
-<p><tt>transform_fun(TargetType) = fun((TargetType, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {TargetType, <a href="#type-ast_transforms">ast_transforms()</a>})</tt></p>
+<p><code>transform_fun(TargetType) = fun((TargetType, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {TargetType, <a href="#type-ast_transforms">ast_transforms()</a>})</code></p>
 <p> Designates the transformation functions that are used to transform differently
  a kind of form (e.g. the one of a bistring, a record, etc.) depending on the
  context (e.g. in a guard, in an expression, etc.).</p>
 
 <h3 class="typedecl"><a name="type-transform_fun">transform_fun()</a></h3>
-<p><tt>transform_fun() = <a href="#type-transform_fun">transform_fun</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</tt></p>
+<p><code>transform_fun() = <a href="#type-transform_fun">transform_fun</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</code></p>
 <p> Designates the transformation functions that are used to transform differently
  a kind of form (e.g. the one of a bistring, a record, etc.) depending on the
  context (e.g. in a guard, in an expression, etc.).</p>
 
 <h3 class="typedecl"><a name="type-transform_trigger">transform_trigger()</a></h3>
-<p><tt>transform_trigger() = <a href="ast_expression.html#type-expression_kind">ast_expression:expression_kind()</a> | clause | body</tt></p>
-<p><p> Lists the contexts that may trigger a transformation function:</p>
+<p><code>transform_trigger() = <a href="ast_expression.html#type-expression_kind">ast_expression:expression_kind()</a> | clause | body</code></p>
+<p><p> Lists the contexts that may trigger a transformation function.</p>
 
  Note that not all triggers are supported, but that adding any lacking one is
  not especially difficult.</p>
 
 <h3 class="typedecl"><a name="type-transformation_state">transformation_state()</a></h3>
-<p><tt>transformation_state() = any()</tt></p>
+<p><code>transformation_state() = any()</code></p>
 <p> Any state that is to be preserved in the course of a transformation (so that
  it may have a memory) and that may be ultimately read (i.e. to be used for its
  inner mode of operation and possibly for the caller's sake as well).</p>
 
 <h3 class="typedecl"><a name="type-type_arity">type_arity()</a></h3>
-<p><tt>type_arity() = <a href="type_utils.html#type-type_arity">type_utils:type_arity()</a></tt></p>
+<p><code>type_arity() = <a href="type_utils.html#type-type_arity">type_utils:type_arity()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-type_arity_match">type_arity_match()</a></h3>
-<p><tt>type_arity_match() = <a href="#type-type_arity">type_arity()</a> | '_'</tt></p>
+<p><code>type_arity_match() = <a href="#type-type_arity">type_arity()</a> | '_'</code></p>
 
 
 <h3 class="typedecl"><a name="type-type_name">type_name()</a></h3>
-<p><tt>type_name() = <a href="type_utils.html#type-type_name">type_utils:type_name()</a></tt></p>
+<p><code>type_name() = <a href="type_utils.html#type-type_name">type_utils:type_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-type_name_match">type_name_match()</a></h3>
-<p><tt>type_name_match() = <a href="#type-type_name">type_name()</a> | '_'</tt></p>
+<p><code>type_name_match() = <a href="#type-type_name">type_name()</a> | '_'</code></p>
 
 
 <h3 class="typedecl"><a name="type-type_replacement">type_replacement()</a></h3>
-<p><tt>type_replacement() = {<a href="#type-module_name">module_name()</a>, <a href="#type-type_name">type_name()</a>} | <a href="#type-module_name">module_name()</a></tt></p>
+<p><code>type_replacement() = {<a href="#type-module_name">module_name()</a>, <a href="#type-type_name">type_name()</a>} | <a href="#type-module_name">module_name()</a></code></p>
 <p><p> The same arity is kept, and just specifying the module name means that the 
 type name is not to change.</p>
 
@@ -219,7 +219,7 @@ type name is not to change.</p>
  remote type (a priori not a problematic limitation).</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -235,19 +235,19 @@ type name is not to change.</p>
 
 <h3 class="function"><a name="ast_transforms_to_string-1">ast_transforms_to_string/1</a></h3>
 <div class="spec">
-<p><tt>ast_transforms_to_string(Ast_transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>ast_transforms_to_string(Ast_transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified AST transforms.</p>
 
 <h3 class="function"><a name="default_formatter-2">default_formatter/2</a></h3>
 <div class="spec">
-<p><tt>default_formatter(FormatString::<a href="#type-format_string">format_string()</a>, FormatValue::<a href="#type-format_values">format_values()</a>) -&gt; <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-ustring">ustring()</a>)</tt><br></p>
+<p><code>default_formatter(FormatString::<a href="#type-format_string">format_string()</a>, FormatValue::<a href="#type-format_values">format_values()</a>) -&gt; <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-ustring">ustring()</a>)</code><br></p>
 <p> </p>
 </div><p>The default transform_formatter() to be used.</p>
 
 <h3 class="function"><a name="get_local_call_transform_table-1">get_local_call_transform_table/1</a></h3>
 <div class="spec">
-<p><tt>get_local_call_transform_table(Replacements::[{<a href="#type-local_call_match">local_call_match()</a>, <a href="#type-call_replacement">call_replacement()</a>}]) -&gt; <a href="#type-local_call_transform_table">local_call_transform_table()</a></tt><br></p>
+<p><code>get_local_call_transform_table(Replacements::[{<a href="#type-local_call_match">local_call_match()</a>, <a href="#type-call_replacement">call_replacement()</a>}]) -&gt; <a href="#type-local_call_transform_table">local_call_transform_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a table describing local call replacements.</p>
 
@@ -275,7 +275,7 @@ it is just the addition (prefix) of a module, as a remote call</p>
 
 <h3 class="function"><a name="get_local_type_transform_table-1">get_local_type_transform_table/1</a></h3>
 <div class="spec">
-<p><tt>get_local_type_transform_table(Replacements::[{<a href="#type-local_type_id_match">local_type_id_match()</a>, <a href="#type-type_replacement">type_replacement()</a>}]) -&gt; <a href="#type-local_type_transform_table">local_type_transform_table()</a></tt><br></p>
+<p><code>get_local_type_transform_table(Replacements::[{<a href="#type-local_type_id_match">local_type_id_match()</a>, <a href="#type-type_replacement">type_replacement()</a>}]) -&gt; <a href="#type-local_type_transform_table">local_type_transform_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a table describing local type replacements.</p>
 
@@ -303,7 +303,7 @@ is just the addition (prefix) of a module, as a remote type</p>
 
 <h3 class="function"><a name="get_remote_call_transform_table-1">get_remote_call_transform_table/1</a></h3>
 <div class="spec">
-<p><tt>get_remote_call_transform_table(Replacements::[{<a href="#type-remote_call_match">remote_call_match()</a>, <a href="#type-call_replacement">call_replacement()</a>}]) -&gt; <a href="#type-remote_call_transform_table">remote_call_transform_table()</a></tt><br></p>
+<p><code>get_remote_call_transform_table(Replacements::[{<a href="#type-remote_call_match">remote_call_match()</a>, <a href="#type-call_replacement">call_replacement()</a>}]) -&gt; <a href="#type-remote_call_transform_table">remote_call_transform_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a table describing remote call replacements.</p>
 
@@ -329,7 +329,7 @@ end }
 
 <h3 class="function"><a name="get_remote_type_transform_table-1">get_remote_type_transform_table/1</a></h3>
 <div class="spec">
-<p><tt>get_remote_type_transform_table(Replacements::[{<a href="#type-remote_type_id_match">remote_type_id_match()</a>, <a href="#type-type_replacement">type_replacement()</a>}]) -&gt; <a href="#type-remote_type_transform_table">remote_type_transform_table()</a></tt><br></p>
+<p><code>get_remote_type_transform_table(Replacements::[{<a href="#type-remote_type_id_match">remote_type_id_match()</a>, <a href="#type-type_replacement">type_replacement()</a>}]) -&gt; <a href="#type-remote_type_transform_table">remote_type_transform_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a table describing remote type replacements.</p>
 

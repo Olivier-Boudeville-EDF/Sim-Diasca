@@ -17,49 +17,50 @@
 <h2><a name="description">Description</a></h2><p>Module in charge of handling <b>bitstrings defined or used within an
  AST</b>.</p>
 
- See <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a> for more information.
+ See <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a> for more information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_element">bin_element()</a></h3>
-<p><tt>bin_element(ContentType) = {bin_element, <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>, ContentType, <a href="#type-maybe_size">maybe_size()</a>, <a href="#type-maybe_type_specifier_list">maybe_type_specifier_list()</a>}</tt></p>
+<p><code>bin_element(ContentType) = {bin_element, <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>, ContentType, <a href="#type-maybe_size">maybe_size()</a>, <a href="#type-maybe_type_specifier_list">maybe_type_specifier_list()</a>}</code></p>
 <p> A binary element within a bitstring constructor, with a specific content type.</p>
 
 <h3 class="typedecl"><a name="type-bin_element">bin_element()</a></h3>
-<p><tt>bin_element() = <a href="#type-bin_element">bin_element</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</tt></p>
+<p><code>bin_element() = <a href="#type-bin_element">bin_element</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</code></p>
 <p> A binary element within a bitstring constructor.</p>
 
 <h3 class="typedecl"><a name="type-constructor">constructor()</a></h3>
-<p><tt>constructor(ContentType) = {bin, <a href="#type-file_loc">file_loc()</a>, [<a href="#type-bin_element">bin_element</a>(ContentType)]}</tt></p>
+<p><code>constructor(ContentType) = {bin, <a href="#type-file_loc">file_loc()</a>, [<a href="#type-bin_element">bin_element</a>(ContentType)]}</code></p>
 <p> General form of a bitstring constructor, as a polymorphic type so that it can
- be specialized for dedicated contexts (ex: in guards, expressions, etc).</p>
+ be specialized for dedicated contexts (for example in guards, expressions,
+ etc.).</p>
 
 <h3 class="typedecl"><a name="type-element_transform_fun">element_transform_fun()</a></h3>
-<p><tt>element_transform_fun() = <a href="ast_transform.html#type-transform_fun">ast_transform:transform_fun</a>(<a href="#type-bin_element">bin_element()</a>)</tt></p>
+<p><code>element_transform_fun() = <a href="ast_transform.html#type-transform_fun">ast_transform:transform_fun</a>(<a href="#type-bin_element">bin_element()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_size">maybe_size()</a></h3>
-<p><tt>maybe_size() = default | <a href="ast_expression.html#type-ast_integer_expression">ast_expression:ast_integer_expression()</a></tt></p>
+<p><code>maybe_size() = default | <a href="ast_expression.html#type-ast_integer_expression">ast_expression:ast_integer_expression()</a></code></p>
 <p> Element size in a bitstring. Actual size maybe be omitted.</p>
 
 <h3 class="typedecl"><a name="type-maybe_type_specifier_list">maybe_type_specifier_list()</a></h3>
-<p><tt>maybe_type_specifier_list() = <a href="#type-tsl">tsl()</a> | default</tt></p>
+<p><code>maybe_type_specifier_list() = <a href="#type-tsl">tsl()</a> | default</code></p>
 <p> An actual TSL may be omitted in some cases.</p>
 
 <h3 class="typedecl"><a name="type-tsl">tsl()</a></h3>
-<p><tt>tsl() = <a href="#type-type_specifier_list">type_specifier_list()</a></tt></p>
+<p><code>tsl() = <a href="#type-type_specifier_list">type_specifier_list()</a></code></p>
 <p> Alias.</p>
 
 <h3 class="typedecl"><a name="type-type_specifier">type_specifier()</a></h3>
-<p><tt>type_specifier() = <a href="type_utils.html#type-type_name">type_utils:type_name()</a> | {<a href="type_utils.html#type-type_name">type_utils:type_name()</a>, integer()}</tt></p>
+<p><code>type_specifier() = <a href="type_utils.html#type-type_name">type_utils:type_name()</a> | {<a href="type_utils.html#type-type_name">type_utils:type_name()</a>, integer()}</code></p>
 <p><p> Bitstring Element Type Specifier.</p>
 
  <p>If TS is a type specifier A, where A is an atom, then Rep(TS) = A.</p>
@@ -70,7 +71,7 @@ then Rep(TS) = {A,Value}.</p>
  Actual type maybe be omitted.</p>
 
 <h3 class="typedecl"><a name="type-type_specifier_list">type_specifier_list()</a></h3>
-<p><tt>type_specifier_list() = [<a href="#type-type_specifier">type_specifier()</a>]</tt></p>
+<p><code>type_specifier_list() = [<a href="#type-type_specifier">type_specifier()</a>]</code></p>
 <p><p> Type Specifier List (TSL).</p>
 
  "A type specifier list TSL for a bitstring element is a sequence of type
@@ -82,25 +83,25 @@ then Rep(TS) = {A,Value}.</p>
 expression.</td></tr>
 <tr><td valign="top"><a href="#transform_bin_elements-3">transform_bin_elements/3</a></td><td>Transforms specified list of binary elements involved in a bitstring
  expression, applying to each element the specified function to perform the
- relevant transformations (that depends on the context; ex: if being in a
- guard, in an expression, etc).</td></tr>
+ relevant transformations (that depends on the context; for example if being in
+ a guard, in an expression, etc.).</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="transform_bin_element-3">transform_bin_element/3</a></h3>
 <div class="spec">
-<p><tt>transform_bin_element(BinElem::<a href="#type-bin_element">bin_element()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>, TransformFun::<a href="#type-element_transform_fun">element_transform_fun()</a>) -&gt; {<a href="#type-bin_element">bin_element()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_bin_element(BinElem::<a href="#type-bin_element">bin_element()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>, TransformFun::<a href="#type-element_transform_fun">element_transform_fun()</a>) -&gt; {<a href="#type-bin_element">bin_element()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms specified binary element involved in a bitstring expression.</p>
 
  Note: context-insensitive function, considering that any kind of expression
- can be found here (ex: a guard test).
+ can be found here (for example a guard test).
 </p>
 
 <h3 class="function"><a name="transform_bin_elements-2">transform_bin_elements/2</a></h3>
 <div class="spec">
-<p><tt>transform_bin_elements(BinElements::[<a href="#type-bin_element">bin_element()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-bin_element">bin_element()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_bin_elements(BinElements::[<a href="#type-bin_element">bin_element()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-bin_element">bin_element()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms specified list of binary elements involved in a bitstring 
 expression.</p>
@@ -110,12 +111,12 @@ expression.</p>
 
 <h3 class="function"><a name="transform_bin_elements-3">transform_bin_elements/3</a></h3>
 <div class="spec">
-<p><tt>transform_bin_elements(BinElements::[<a href="#type-bin_element">bin_element()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>, TransformFun::<a href="#type-element_transform_fun">element_transform_fun()</a>) -&gt; {[<a href="#type-bin_element">bin_element()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_bin_elements(BinElements::[<a href="#type-bin_element">bin_element()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>, TransformFun::<a href="#type-element_transform_fun">element_transform_fun()</a>) -&gt; {[<a href="#type-bin_element">bin_element()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms specified list of binary elements involved in a bitstring
  expression, applying to each element the specified function to perform the
- relevant transformations (that depends on the context; ex: if being in a
- guard, in an expression, etc).
+ relevant transformations (that depends on the context; for example if being in
+ a guard, in an expression, etc.).
 </p>
 <hr>
 

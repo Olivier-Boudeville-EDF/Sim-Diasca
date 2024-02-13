@@ -20,15 +20,19 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-image_path">image_path()</a></h3>
+<p><code>image_path() = <a href="gui_image.html#type-image_path">gui_image:image_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -38,6 +42,12 @@
 <tr><td valign="top"><a href="#fail-1">fail/1</a></td><td>To be called whenever a test is to fail (crash on error) immediately.</td></tr>
 <tr><td valign="top"><a href="#fail-2">fail/2</a></td><td>To be called whenever a test is to fail (crash on error) immediately.</td></tr>
 <tr><td valign="top"><a href="#finished-0">finished/0</a></td><td>To be called when finishing successfully the execution of a test.</td></tr>
+<tr><td valign="top"><a href="#get_myriad_icon_path-0">get_myriad_icon_path/0</a></td><td>Returns a path to the Myriad icon image, supposing the current directory
+ is two levels above the root one, that is typically in a subdirectory of the
+ 'test' one, like 'test/user-interface/'.</td></tr>
+<tr><td valign="top"><a href="#get_myriad_logo_path-0">get_myriad_logo_path/0</a></td><td>Returns a path to the Myriad logo (main representation) image, supposing
+ the current directory is two levels above the root one, that is typically in a
+ subdirectory of the 'test' one, like 'test/user-interface/'.</td></tr>
 <tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts a test; expected to be the first test statement.</td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops a test; expected to be the last test statement in the normal case.</td></tr>
 </table>
@@ -46,13 +56,13 @@
 
 <h3 class="function"><a name="display-1">display/1</a></h3>
 <div class="spec">
-<p><tt>display(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays a test message.</p>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Displays a test message, once formatted.</p>
 
@@ -62,7 +72,7 @@
 
 <h3 class="function"><a name="display_fmt-2">display_fmt/2</a></h3>
 <div class="spec">
-<p><tt>display_fmt(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_fmt(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Displays a test message, once formatted.</p>
 
@@ -74,7 +84,7 @@
 
 <h3 class="function"><a name="fail-1">fail/1</a></h3>
 <div class="spec">
-<p><tt>fail(Reason::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</tt><br></p>
+<p><code>fail(Reason::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>To be called whenever a test is to fail (crash on error) immediately.</p>
 
@@ -83,7 +93,7 @@
 
 <h3 class="function"><a name="fail-2">fail/2</a></h3>
 <div class="spec">
-<p><tt>fail(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</tt><br></p>
+<p><code>fail(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>To be called whenever a test is to fail (crash on error) immediately.</p>
 
@@ -95,13 +105,31 @@ corresponding list of field values.</p>
 
 <h3 class="function"><a name="finished-0">finished/0</a></h3>
 <div class="spec">
-<p><tt>finished() -&gt; no_return()</tt><br></p>
+<p><code>finished() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>To be called when finishing successfully the execution of a test.</p>
 
+<h3 class="function"><a name="get_myriad_icon_path-0">get_myriad_icon_path/0</a></h3>
+<div class="spec">
+<p><code>get_myriad_icon_path() -&gt; <a href="#type-image_path">image_path()</a></code><br></p>
+<p> </p>
+</div><p>Returns a path to the Myriad icon image, supposing the current directory
+ is two levels above the root one, that is typically in a subdirectory of the
+ 'test' one, like 'test/user-interface/'.
+</p>
+
+<h3 class="function"><a name="get_myriad_logo_path-0">get_myriad_logo_path/0</a></h3>
+<div class="spec">
+<p><code>get_myriad_logo_path() -&gt; <a href="#type-image_path">image_path()</a></code><br></p>
+<p> </p>
+</div><p>Returns a path to the Myriad logo (main representation) image, supposing
+ the current directory is two levels above the root one, that is typically in a
+ subdirectory of the 'test' one, like 'test/user-interface/'.
+</p>
+
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><tt>start(Module::module() | [module()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start(Module::module() | [module()]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts a test; expected to be the first test statement.</p>
 
@@ -115,7 +143,7 @@ corresponding list of field values.</p>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><tt>stop() -&gt; no_return()</tt><br></p>
+<p><code>stop() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>Stops a test; expected to be the last test statement in the normal case.</p>
 <hr>

@@ -17,19 +17,23 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><tt>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></tt></p>
+<p><code>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><code>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><tt>height() = <a href="gui.html#type-height">gui:height()</a></tt></p>
+<p><code>height() = <a href="gui.html#type-height">gui:height()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-panel">panel()</a></h3>
-<p><b>abstract datatype</b>: <tt>panel()</tt></p>
+<p><b>abstract datatype</b>: <code>panel()</code></p>
 <p><p> A panel, able to host child widgets and to catch events such as key presses 
 (unlike windows/frames).</p>
 
@@ -42,33 +46,33 @@ accelerator keys.</p>
  Refer to "Panel issues" in gui_event for further information.</p>
 
 <h3 class="typedecl"><a name="type-panel_option">panel_option()</a></h3>
-<p><tt>panel_option() = <a href="#type-window_option">window_option()</a></tt></p>
+<p><code>panel_option() = <a href="#type-window_option">window_option()</a></code></p>
 <p><p> Options for panels.</p>
 
- See <a href="http://docs.wxwidgets.org/stable/classwx_panel.html" target="_top"><tt>http://docs.wxwidgets.org/stable/classwx_panel.html</tt></a>.</p>
+ See <a href="http://docs.wxwidgets.org/stable/classwx_panel.html" target="_top"><code>http://docs.wxwidgets.org/stable/classwx_panel.html</code></a>.</p>
 
 <h3 class="typedecl"><a name="type-panel_options">panel_options()</a></h3>
-<p><tt>panel_options() = <a href="#type-maybe_list">maybe_list</a>(<a href="#type-panel_option">panel_option()</a>)</tt></p>
+<p><code>panel_options() = <a href="#type-maybe_list">maybe_list</a>(<a href="#type-panel_option">panel_option()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-parent">parent()</a></h3>
-<p><tt>parent() = <a href="gui.html#type-parent">gui:parent()</a></tt></p>
+<p><code>parent() = <a href="gui.html#type-parent">gui:parent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
-<p><tt>position() = <a href="gui.html#type-position">gui:position()</a></tt></p>
+<p><code>position() = <a href="gui.html#type-position">gui:position()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-size">size()</a></h3>
-<p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
+<p><code>size() = <a href="gui.html#type-size">gui:size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
-<p><tt>width() = <a href="gui.html#type-width">gui:width()</a></tt></p>
+<p><code>width() = <a href="gui.html#type-width">gui:width()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-window_option">window_option()</a></h3>
-<p><tt>window_option() = <a href="gui_window.html#type-window_option">gui_window:window_option()</a></tt></p>
+<p><code>window_option() = <a href="gui_window.html#type-window_option">gui_window:window_option()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -76,6 +80,8 @@ accelerator keys.</p>
 <tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates a panel, associated to the specified parent.</td></tr>
 <tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a panel, associated to the specified parent and with the
  specified options.</td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td>Creates a panel, associated to the specified parent and with the
+ specified position and dimensions.</td></tr>
 <tr><td valign="top"><a href="#create-4">create/4</a></td><td>Creates a panel, associated to the specified parent and with the
  specified position and dimensions.</td></tr>
 <tr><td valign="top"><a href="#create-5">create/5</a></td><td>Creates a panel, associated to the specified parent and with the
@@ -83,33 +89,42 @@ accelerator keys.</p>
 <tr><td valign="top"><a href="#create-6">create/6</a></td><td>Creates a panel, associated to the specified parent, with the specified
  position, dimensions and options.</td></tr>
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified panel.</td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of the specified panel.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="create-0">create/0</a></h3>
 <div class="spec">
-<p><tt>create() -&gt; <a href="#type-panel">panel()</a></tt><br></p>
+<p><code>create() -&gt; <a href="#type-panel">panel()</a></code><br></p>
 <p> </p>
 </div><p>Creates a panel.</p>
 
 <h3 class="function"><a name="create-1">create/1</a></h3>
 <div class="spec">
-<p><tt>create(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
+<p><code>create(Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></code><br></p>
 <p> </p>
 </div><p>Creates a panel, associated to the specified parent.</p>
 
 <h3 class="function"><a name="create-2">create/2</a></h3>
 <div class="spec">
-<p><tt>create(Options::<a href="#type-panel_options">panel_options()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
+<p><code>create(Options::<a href="#type-panel_options">panel_options()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></code><br></p>
 <p> </p>
 </div><p>Creates a panel, associated to the specified parent and with the
  specified options.
 </p>
 
+<h3 class="function"><a name="create-3">create/3</a></h3>
+<div class="spec">
+<p><code>create(Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></code><br></p>
+<p> </p>
+</div><p>Creates a panel, associated to the specified parent and with the
+ specified position and dimensions.
+</p>
+
 <h3 class="function"><a name="create-4">create/4</a></h3>
 <div class="spec">
-<p><tt>create(Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Options::<a href="#type-panel_options">panel_options()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
+<p><code>create(Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Options::<a href="#type-panel_options">panel_options()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></code><br></p>
 <p> </p>
 </div><p>Creates a panel, associated to the specified parent and with the
  specified position and dimensions.
@@ -117,7 +132,7 @@ accelerator keys.</p>
 
 <h3 class="function"><a name="create-5">create/5</a></h3>
 <div class="spec">
-<p><tt>create(X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
+<p><code>create(X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></code><br></p>
 <p> </p>
 </div><p>Creates a panel, associated to the specified parent and with the
  specified position and dimensions.
@@ -125,7 +140,7 @@ accelerator keys.</p>
 
 <h3 class="function"><a name="create-6">create/6</a></h3>
 <div class="spec">
-<p><tt>create(X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Options::<a href="#type-panel_options">panel_options()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
+<p><code>create(X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Options::<a href="#type-panel_options">panel_options()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-panel">panel()</a></code><br></p>
 <p> </p>
 </div><p>Creates a panel, associated to the specified parent, with the specified
  position, dimensions and options.
@@ -133,9 +148,18 @@ accelerator keys.</p>
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><tt>destruct(Panel::<a href="#type-panel">panel()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct(Panel::<a href="#type-panel">panel()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified panel.</p>
+
+<h3 class="function"><a name="get_size-1">get_size/1</a></h3>
+<div class="spec">
+<p><code>get_size(Panel::<a href="#type-panel">panel()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the size of the specified panel.</p>
+
+ Defined here only for convenience (as gui_widget provides it).
+</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

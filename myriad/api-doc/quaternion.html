@@ -17,44 +17,44 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_coordinate">any_coordinate()</a></h3>
-<p><tt>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></tt></p>
+<p><code>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+<p><code>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
-<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+<p><code>distance() = <a href="linear.html#type-distance">linear:distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
-<p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
+<p><code>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-quaternion">quaternion()</a></h3>
-<p><tt>quaternion() = {A::<a href="#type-coordinate">coordinate()</a>, B::<a href="#type-coordinate">coordinate()</a>, C::<a href="#type-coordinate">coordinate()</a>, D::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+<p><code>quaternion() = {A::<a href="#type-coordinate">coordinate()</a>, B::<a href="#type-coordinate">coordinate()</a>, C::<a href="#type-coordinate">coordinate()</a>, D::<a href="#type-coordinate">coordinate()</a>}</code></p>
 <p> Q = A + B.i + C.j + D.k, where i, j and k are the basic quaternions.
  A quaternion encodes an axis-angle representation of a 3D rotation.</p>
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+<p><code>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rot_matrix3">rot_matrix3()</a></h3>
-<p><tt>rot_matrix3() = <a href="matrix3.html#type-rot_matrix3">matrix3:rot_matrix3()</a></tt></p>
+<p><code>rot_matrix3() = <a href="matrix3.html#type-rot_matrix3">matrix3:rot_matrix3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
-<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+<p><code>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-unit_quaternion">unit_quaternion()</a></h3>
-<p><tt>unit_quaternion() = <a href="#type-quaternion">quaternion()</a></tt></p>
+<p><code>unit_quaternion() = <a href="#type-quaternion">quaternion()</a></code></p>
 <p><p> A unit quaternion, known as versor, is a quaternion of magnitude (norm) 1.0.</p>
 
  <p>For a unit quaternion, its inverse is its conjugate.</p>
@@ -62,19 +62,19 @@
  Defined for documentation purpose.</p>
 
 <h3 class="typedecl"><a name="type-unit_vector3">unit_vector3()</a></h3>
-<p><tt>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></tt></p>
+<p><code>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
-<p><tt>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></tt></p>
+<p><code>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector_quaternion">vector_quaternion()</a></h3>
-<p><tt>vector_quaternion() = <a href="#type-quaternion">quaternion()</a></tt></p>
+<p><code>vector_quaternion() = <a href="#type-quaternion">quaternion()</a></code></p>
 <p><p> A quaternion whose scalar part (A) is null.</p>
 
  Defined for documentation purpose.</p>
@@ -124,7 +124,7 @@ quaternion.</td></tr>
 
 <h3 class="function"><a name="add-2">add/2</a></h3>
 <div class="spec">
-<p><tt>add(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>add(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the sum of the two specified quaternions: Q = Q1 + Q2.</p>
 
@@ -134,7 +134,7 @@ quaternion.</td></tr>
 
 <h3 class="function"><a name="are_close-2">are_close/2</a></h3>
 <div class="spec">
-<p><tt>are_close(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</tt><br></p>
+<p><code>are_close(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the two specified quaternions are close, that is if they
  could be considered as representing the same quaternion (equality operator on
@@ -143,7 +143,7 @@ quaternion.</td></tr>
 
 <h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
 <div class="spec">
-<p><tt>are_equal(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</tt><br></p>
+<p><code>are_equal(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the two specified quaternions are equal, that is if they
  could be considered as representing the same quaternion (equality operator on
@@ -152,13 +152,13 @@ quaternion.</td></tr>
 
 <h3 class="function"><a name="conjugate-1">conjugate/1</a></h3>
 <div class="spec">
-<p><tt>conjugate(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>conjugate(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p>Returns the conjugate of the specified quaternion.</p>
 
 <h3 class="function"><a name="from_vector3-1">from_vector3/1</a></h3>
 <div class="spec">
-<p><tt>from_vector3(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector_quaternion">vector_quaternion()</a></tt><br></p>
+<p><code>from_vector3(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector_quaternion">vector_quaternion()</a></code><br></p>
 <p> </p>
 </div><p>Returns the quaternion obtained from the specified 3D vector, that is the
  vector (a.k.a. imaginary) quaternion whose vector part is this one.
@@ -166,13 +166,13 @@ quaternion.</td></tr>
 
 <h3 class="function"><a name="inverse-1">inverse/1</a></h3>
 <div class="spec">
-<p><tt>inverse(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>inverse(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p>Returns the inverse of the specified quaternion.</p>
 
 <h3 class="function"><a name="is_unitary-1">is_unitary/1</a></h3>
 <div class="spec">
-<p><tt>is_unitary(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_unitary(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether the specified quaternion is unitary, that is whether it
  is of magnitude (norm) 1.0.
@@ -180,13 +180,13 @@ quaternion.</td></tr>
 
 <h3 class="function"><a name="magnitude-1">magnitude/1</a></h3>
 <div class="spec">
-<p><tt>magnitude(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p><code>magnitude(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-distance">distance()</a></code><br></p>
 <p> </p>
 </div><p>Returns the magnitude of the specified quaternion.</p>
 
 <h3 class="function"><a name="mult-2">mult/2</a></h3>
 <div class="spec">
-<p><tt>mult(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>mult(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the (Hamilton) product of the two specified quaternions.</p>
 
@@ -202,7 +202,7 @@ of their coordinates.</p>
 
 <h3 class="function"><a name="negate-1">negate/1</a></h3>
 <div class="spec">
-<p><tt>negate(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>negate(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p><p>Negates the specified quaternion: returns the opposite one (of the same 
 magnitude).</p>
@@ -212,13 +212,13 @@ magnitude).</p>
 
 <h3 class="function"><a name="new-4">new/4</a></h3>
 <div class="spec">
-<p><tt>new(A::<a href="#type-any_coordinate">any_coordinate()</a>, B::<a href="#type-any_coordinate">any_coordinate()</a>, C::<a href="#type-any_coordinate">any_coordinate()</a>, D::<a href="#type-any_coordinate">any_coordinate()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>new(A::<a href="#type-any_coordinate">any_coordinate()</a>, B::<a href="#type-any_coordinate">any_coordinate()</a>, C::<a href="#type-any_coordinate">any_coordinate()</a>, D::<a href="#type-any_coordinate">any_coordinate()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p>Returns a corresponding (checked) quaternion.</p>
 
 <h3 class="function"><a name="normalise-1">normalise/1</a></h3>
 <div class="spec">
-<p><tt>normalise(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-unit_quaternion">unit_quaternion()</a></tt><br></p>
+<p><code>normalise(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-unit_quaternion">unit_quaternion()</a></code><br></p>
 <p> </p>
 </div><p>Normalises the specified non-null quaternion, that is returns it once
  scaled to an unit length (whose magnitude is thus 1.0).
@@ -226,13 +226,13 @@ magnitude).</p>
 
 <h3 class="function"><a name="null-0">null/0</a></h3>
 <div class="spec">
-<p><tt>null() -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>null() -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p>Returns the null quaternion.</p>
 
 <h3 class="function"><a name="rotate-2">rotate/2</a></h3>
 <div class="spec">
-<p><tt>rotate(Q::<a href="#type-unit_quaternion">unit_quaternion()</a>, V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p><code>rotate(Q::<a href="#type-unit_quaternion">unit_quaternion()</a>, V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the specified vector once rotated according to the specified 
 unitary quaternion.</p>
@@ -247,7 +247,7 @@ matrix3:apply(quaternion:to_rot_matrix3(Q), V)</p>
 
 <h3 class="function"><a name="rotation-2">rotation/2</a></h3>
 <div class="spec">
-<p><tt>rotation(UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>rotation(UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the quaternion corresponding to a rotation of the specified angle 
 around the axis specified as a unit vector.</p>
@@ -266,19 +266,19 @@ SO(3).</p>
 
 <h3 class="function"><a name="scale-2">scale/2</a></h3>
 <div class="spec">
-<p><tt>scale(Q::<a href="#type-quaternion">quaternion()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p><code>scale(Q::<a href="#type-quaternion">quaternion()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></code><br></p>
 <p> </p>
 </div><p>Scales the specified quaternion of the specified scalar factor.</p>
 
 <h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
 <div class="spec">
-<p><tt>square_magnitude(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p><code>square_magnitude(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></code><br></p>
 <p> </p>
 </div><p>Returns the square of the magnitude of the specified quaternion.</p>
 
 <h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>
 <div class="spec">
-<p><tt>to_compact_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_compact_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a compact, textual, informal representation of the specified 
 quaternion.</p>
@@ -288,13 +288,13 @@ quaternion.</p>
 
 <h3 class="function"><a name="to_matrix4-1">to_matrix4/1</a></h3>
 <div class="spec">
-<p><tt>to_matrix4(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p><code>to_matrix4(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the 4x4 matrix representation of the specified quaternion.</p>
 
 <h3 class="function"><a name="to_rot_matrix3-1">to_rot_matrix3/1</a></h3>
 <div class="spec">
-<p><tt>to_rot_matrix3(Q::<a href="#type-unit_quaternion">unit_quaternion()</a>) -&gt; <a href="#type-rot_matrix3">rot_matrix3()</a></tt><br></p>
+<p><code>to_rot_matrix3(Q::<a href="#type-unit_quaternion">unit_quaternion()</a>) -&gt; <a href="#type-rot_matrix3">rot_matrix3()</a></code><br></p>
 <p> </p>
 </div><p>Returns the 3x3 rotation matrix corresponding to the specified unitary
  quaternion.
@@ -302,7 +302,7 @@ quaternion.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of specified quaternion; full float
  precision is shown.
@@ -310,7 +310,7 @@ quaternion.</p>
 
 <h3 class="function"><a name="to_user_string-1">to_user_string/1</a></h3>
 <div class="spec">
-<p><tt>to_user_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_user_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual, more user-friendly representation of the specified
  quaternion; full float precision is shown.
@@ -318,7 +318,7 @@ quaternion.</p>
 
 <h3 class="function"><a name="to_vector3-1">to_vector3/1</a></h3>
 <div class="spec">
-<p><tt>to_vector3(Q::<a href="#type-vector_quaternion">vector_quaternion()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p><code>to_vector3(Q::<a href="#type-vector_quaternion">vector_quaternion()</a>) -&gt; <a href="#type-vector3">vector3()</a></code><br></p>
 <p> </p>
 </div><p>Returns the vector part of the specified quaternion, expected to be a
  vector quaternion (that is to have is scalar part null).

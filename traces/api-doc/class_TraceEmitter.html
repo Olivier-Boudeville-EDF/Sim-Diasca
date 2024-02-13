@@ -20,44 +20,44 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-app_timestamp">app_timestamp()</a></h3>
-<p><tt>app_timestamp() = <a href="traces.html#type-app_timestamp">traces:app_timestamp()</a></tt></p>
+<p><code>app_timestamp() = <a href="traces.html#type-app_timestamp">traces:app_timestamp()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_entry">attribute_entry()</a></h3>
-<p><tt>attribute_entry() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt></p>
+<p><code>attribute_entry() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
-<p><tt>attribute_name() = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a></tt></p>
+<p><code>attribute_name() = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_value">attribute_value()</a></h3>
-<p><tt>attribute_value() = <a href="wooper.html#type-attribute_value">wooper:attribute_value()</a></tt></p>
+<p><code>attribute_value() = <a href="wooper.html#type-attribute_value">wooper:attribute_value()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_emitter_categorization">bin_emitter_categorization()</a></h3>
-<p><tt>bin_emitter_categorization() = <a href="traces.html#type-bin_emitter_categorization">traces:bin_emitter_categorization()</a></tt></p>
+<p><code>bin_emitter_categorization() = <a href="traces.html#type-bin_emitter_categorization">traces:bin_emitter_categorization()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-classname">classname()</a></h3>
-<p><tt>classname() = <a href="wooper.html#type-classname">wooper:classname()</a></tt></p>
+<p><code>classname() = <a href="wooper.html#type-classname">wooper:classname()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-emitter_any_categorization">emitter_any_categorization()</a></h3>
-<p><tt>emitter_any_categorization() = <a href="traces.html#type-emitter_any_categorization">traces:emitter_any_categorization()</a></tt></p>
+<p><code>emitter_any_categorization() = <a href="traces.html#type-emitter_any_categorization">traces:emitter_any_categorization()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-emitter_categorization">emitter_categorization()</a></h3>
-<p><tt>emitter_categorization() = <a href="traces.html#type-emitter_categorization">traces:emitter_categorization()</a></tt></p>
+<p><code>emitter_categorization() = <a href="traces.html#type-emitter_categorization">traces:emitter_categorization()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-emitter_init">emitter_init()</a></h3>
-<p><tt>emitter_init() = <a href="#type-emitter_name">emitter_name()</a> | {<a href="#type-emitter_name">emitter_name()</a>, <a href="#type-emitter_categorization">emitter_categorization()</a>}</tt></p>
-<p><p> Initializing a trace emitter is specifying its name to the constructor of its 
+<p><code>emitter_init() = <a href="#type-emitter_name">emitter_name()</a> | {<a href="#type-emitter_name">emitter_name()</a>, <a href="#type-emitter_categorization">emitter_categorization()</a>}</code></p>
+<p><p> Initialising a trace emitter is specifying its name to the constructor of its 
 actual class, which will augment that information with the correspond 
 class-specific emitter categorization. Then, the pair resulting from this 
 one-shot, initial operation will climb up the class hierarchy until reaching 
@@ -66,7 +66,7 @@ the class_TraceEmitter constructor.</p>
  See also the trace_categorize/1 macro.</p>
 
 <h3 class="typedecl"><a name="type-emitter_name">emitter_name()</a></h3>
-<p><tt>emitter_name() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>emitter_name() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 <p><p> The name of a trace emitter.</p>
 
  <p>It is a plain string or a binary one, containing the name of a trace emitter.</p>
@@ -77,76 +77,76 @@ separator).</p>
  For example  "MyObject 16", or <code>&lt;&lt;"First Talker"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-emitter_pid">emitter_pid()</a></h3>
-<p><tt>emitter_pid() = <a href="wooper.html#type-instance_pid">wooper:instance_pid()</a></tt></p>
+<p><code>emitter_pid() = <a href="wooper.html#type-instance_pid">wooper:instance_pid()</a></code></p>
 <p> PID of a trace emitter.</p>
 
 <h3 class="typedecl"><a name="type-instance_pid">instance_pid()</a></h3>
-<p><tt>instance_pid() = pid()</tt></p>
+<p><code>instance_pid() = pid()</code></p>
 
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = <a href="traces.html#type-message">traces:message()</a></tt></p>
+<p><code>message() = <a href="traces.html#type-message">traces:message()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-message_categorization">message_categorization()</a></h3>
-<p><tt>message_categorization() = <a href="traces.html#type-message_categorization">traces:message_categorization()</a></tt></p>
+<p><code>message_categorization() = <a href="traces.html#type-message_categorization">traces:message_categorization()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_argument">method_argument()</a></h3>
-<p><tt>method_argument() = <a href="wooper.html#type-method_argument">wooper:method_argument()</a></tt></p>
+<p><code>method_argument() = <a href="wooper.html#type-method_argument">wooper:method_argument()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_arguments">method_arguments()</a></h3>
-<p><tt>method_arguments() = <a href="wooper.html#type-method_arguments">wooper:method_arguments()</a></tt></p>
+<p><code>method_arguments() = <a href="wooper.html#type-method_arguments">wooper:method_arguments()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_internal_result">method_internal_result()</a></h3>
-<p><tt>method_internal_result() = <a href="wooper.html#type-method_internal_result">wooper:method_internal_result()</a></tt></p>
+<p><code>method_internal_result() = <a href="wooper.html#type-method_internal_result">wooper:method_internal_result()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_name">method_name()</a></h3>
-<p><tt>method_name() = <a href="wooper.html#type-method_name">wooper:method_name()</a></tt></p>
+<p><code>method_name() = <a href="wooper.html#type-method_name">wooper:method_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_name">oneway_name()</a></h3>
-<p><tt>oneway_name() = <a href="wooper.html#type-oneway_name">wooper:oneway_name()</a></tt></p>
+<p><code>oneway_name() = <a href="wooper.html#type-oneway_name">wooper:oneway_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_return">oneway_return()</a></h3>
-<p><tt>oneway_return() = <a href="wooper.html#type-oneway_return">wooper:oneway_return()</a></tt></p>
+<p><code>oneway_return() = <a href="wooper.html#type-oneway_return">wooper:oneway_return()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-preformatted_trace">preformatted_trace()</a></h3>
-<p><tt>preformatted_trace() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>preformatted_trace() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> A preformatted trace that can be sent to the trace aggregator and directly
  stored/written by it.</p>
 
 <h3 class="typedecl"><a name="type-request_name">request_name()</a></h3>
-<p><tt>request_name() = <a href="wooper.html#type-request_name">wooper:request_name()</a></tt></p>
+<p><code>request_name() = <a href="wooper.html#type-request_name">wooper:request_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><tt>request_result() = any()</tt></p>
+<p><code>request_result() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><tt>request_result(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</tt></p>
+<p><code>request_result(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_return">request_return()</a></h3>
-<p><tt>request_return(T) = <a href="wooper.html#type-request_return">wooper:request_return</a>(T)</tt></p>
+<p><code>request_return(T) = <a href="wooper.html#type-request_return">wooper:request_return</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
-<p><tt>requests_outcome() = <a href="wooper.html#type-requests_outcome">wooper:requests_outcome()</a></tt></p>
+<p><code>requests_outcome() = <a href="wooper.html#type-requests_outcome">wooper:requests_outcome()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-trace_severity">trace_severity()</a></h3>
-<p><tt>trace_severity() = <a href="traces.html#type-trace_severity">traces:trace_severity()</a></tt></p>
+<p><code>trace_severity() = <a href="traces.html#type-trace_severity">traces:trace_severity()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -201,6 +201,9 @@ echoing it through basic traces as well.</td></tr>
 <tr><td valign="top"><a href="#send_safe-4">send_safe/4</a></td><td>Sends the specified (unsynchronised) trace message from this emitter.</td></tr>
 <tr><td valign="top"><a href="#send_safe-5">send_safe/5</a></td><td>Sends the specified synchronised trace message that is furthermore 
 echoed, from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_synchronisable-3">send_synchronisable/3</a></td><td>Sends the specified synchronisable trace message from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_synchronisable-4">send_synchronisable/4</a></td><td>Sends the specified synchronisable trace message from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_synchronisable-5">send_synchronisable/5</a></td><td>Sends the specified synchronisable trace message from this emitter.</td></tr>
 <tr><td valign="top"><a href="#send_synchronised-3">send_synchronised/3</a></td><td>Sends the specified synchronised trace message (the synchronisation 
 answer is requested and waited) from this emitter.</td></tr>
 <tr><td valign="top"><a href="#send_synchronised-4">send_synchronised/4</a></td><td>Sends the specified synchronised trace message (the synchronisation 
@@ -215,6 +218,8 @@ answer is requested and awaited) from this emitter.</td></tr>
 <tr><td valign="top"><a href="#sync-1">sync/1</a></td><td>Synchronises the caller with the trace aggregator, ensuring that all 
 (asynchronous) operations it triggered on this aggregator are over.</td></tr>
 <tr><td valign="top"><a href="#toggleAttribute-2">toggleAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wait_for_aggregator_synchronisation-0">wait_for_aggregator_synchronisation/0</a></td><td>Waits for the aggregator to report that a trace synchronisation has been 
+completed.</td></tr>
 <tr><td valign="top"><a href="#wooper_destruct-1">wooper_destruct/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wooper_execute_method-3">wooper_execute_method/3</a></td><td></td></tr>
@@ -231,25 +236,25 @@ answer is requested and awaited) from this emitter.</td></tr>
 
 <h3 class="function"><a name="addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></h3>
 <div class="spec">
-<p><tt>addKeyValueToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Key::<a href="table.html#type-key">table:key()</a>, Value::<a href="table.html#type-value">table:value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>addKeyValueToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Key::<a href="table.html#type-key">table:key()</a>, Value::<a href="table.html#type-value">table:value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="addToAttribute-3">addToAttribute/3</a></h3>
 <div class="spec">
-<p><tt>addToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>addToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="appendToAttribute-3">appendToAttribute/3</a></h3>
 <div class="spec">
-<p><tt>appendToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>appendToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="await_output_completion-0">await_output_completion/0</a></h3>
 <div class="spec">
-<p><tt>await_output_completion() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>await_output_completion() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Awaits for the completion of trace (echoed) outputs.</p>
 
@@ -258,139 +263,139 @@ answer is requested and awaited) from this emitter.</td></tr>
 
 <h3 class="function"><a name="concatToAttribute-3">concatToAttribute/3</a></h3>
 <div class="spec">
-<p><tt>concatToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, List::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>concatToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, List::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="decrementAttribute-2">decrementAttribute/2</a></h3>
 <div class="spec">
-<p><tt>decrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>decrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="deleteFromAttribute-3">deleteFromAttribute/3</a></h3>
 <div class="spec">
-<p><tt>deleteFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>deleteFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOneway-2">executeConstOneway/2</a></h3>
 <div class="spec">
-<p><tt>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOneway-3">executeConstOneway/3</a></h3>
 <div class="spec">
-<p><tt>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-3">executeConstOnewayAs/3</a></h3>
 <div class="spec">
-<p><tt>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-4">executeConstOnewayAs/4</a></h3>
 <div class="spec">
-<p><tt>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequest-2">executeConstRequest/2</a></h3>
 <div class="spec">
-<p><tt>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequest-3">executeConstRequest/3</a></h3>
 <div class="spec">
-<p><tt>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-3">executeConstRequestAs/3</a></h3>
 <div class="spec">
-<p><tt>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-4">executeConstRequestAs/4</a></h3>
 <div class="spec">
-<p><tt>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOneway-2">executeOneway/2</a></h3>
 <div class="spec">
-<p><tt>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOneway-3">executeOneway/3</a></h3>
 <div class="spec">
-<p><tt>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOnewayAs-3">executeOnewayAs/3</a></h3>
 <div class="spec">
-<p><tt>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOnewayAs-4">executeOnewayAs/4</a></h3>
 <div class="spec">
-<p><tt>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequest-2">executeRequest/2</a></h3>
 <div class="spec">
-<p><tt>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequest-3">executeRequest/3</a></h3>
 <div class="spec">
-<p><tt>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequestAs-3">executeRequestAs/3</a></h3>
 <div class="spec">
-<p><tt>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequestAs-4">executeRequestAs/4</a></h3>
 <div class="spec">
-<p><tt>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getAttribute-2">getAttribute/2</a></h3>
 <div class="spec">
-<p><tt>getAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-attribute_value">attribute_value()</a></tt><br></p>
+<p><code>getAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-attribute_value">attribute_value()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getAttributes-2">getAttributes/2</a></h3>
 <div class="spec">
-<p><tt>getAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value">attribute_value()</a>]</tt><br></p>
+<p><code>getAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value">attribute_value()</a>]</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getMaybeAttribute-2">getMaybeAttribute/2</a></h3>
 <div class="spec">
-<p><tt>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</tt><br></p>
+<p><code>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_categorization-1">get_categorization/1</a></h3>
 <div class="spec">
-<p><tt>get_categorization(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-bin_emitter_categorization">bin_emitter_categorization()</a></tt><br></p>
+<p><code>get_categorization(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-bin_emitter_categorization">bin_emitter_categorization()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the categorization of this trace emitter.</p>
 
@@ -399,7 +404,7 @@ answer is requested and awaited) from this emitter.</td></tr>
 
 <h3 class="function"><a name="get_plain_name-1">get_plain_name/1</a></h3>
 <div class="spec">
-<p><tt>get_plain_name(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_plain_name(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the name of this trace emitter, as a plain string (not as a 
 binary).</p>
@@ -409,7 +414,7 @@ binary).</p>
 
 <h3 class="function"><a name="get_short_description-1">get_short_description/1</a></h3>
 <div class="spec">
-<p><tt>get_short_description(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_short_description(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a short description of this trace emitter.</p>
 
@@ -418,7 +423,7 @@ binary).</p>
 
 <h3 class="function"><a name="get_trace_timestamp-1">get_trace_timestamp/1</a></h3>
 <div class="spec">
-<p><tt>get_trace_timestamp(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-app_timestamp">app_timestamp()</a></tt><br></p>
+<p><code>get_trace_timestamp(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-app_timestamp">app_timestamp()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the current trace-level timestamp (that is possibly an execution 
 tick offset), or the atom 'none' if the emitter time is not known.</p>
@@ -428,7 +433,7 @@ tick offset), or the atom 'none' if the emitter time is not known.</p>
 
 <h3 class="function"><a name="get_trace_timestamp_as_binary-1">get_trace_timestamp_as_binary/1</a></h3>
 <div class="spec">
-<p><tt>get_trace_timestamp_as_binary(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-bin_string">bin_string()</a></tt><br></p>
+<p><code>get_trace_timestamp_as_binary(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-bin_string">bin_string()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the current trace-level timestamp, as a binary string.</p>
 
@@ -437,19 +442,19 @@ tick offset), or the atom 'none' if the emitter time is not known.</p>
 
 <h3 class="function"><a name="hasAttribute-2">hasAttribute/2</a></h3>
 <div class="spec">
-<p><tt>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="incrementAttribute-2">incrementAttribute/2</a></h3>
 <div class="spec">
-<p><tt>incrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>incrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><tt>init(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>init(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>Initialises some context-specific information.</p>
 
@@ -458,19 +463,19 @@ tick offset), or the atom 'none' if the emitter time is not known.</p>
 
 <h3 class="function"><a name="is_wooper_debug-0">is_wooper_debug/0</a></h3>
 <div class="spec">
-<p><tt>is_wooper_debug() -&gt; boolean()</tt><br></p>
+<p><code>is_wooper_debug() -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="popFromAttribute-2">popFromAttribute/2</a></h3>
 <div class="spec">
-<p><tt>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt><br></p>
+<p><code>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="register_bridge-1">register_bridge/1</a></h3>
 <div class="spec">
-<p><tt>register_bridge(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>register_bridge(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares additionally a trace bridge in the process of this emitter 
 instance.</p>
@@ -479,24 +484,24 @@ instance.</p>
 Myriad) that are called directly from this instance process, or helper 
 functions with no corresponding WOOPER state, to plug to the same trace 
 aggregator as used by this instance with mostly the same settings, through a 
-corresponding trace bridge.</p>
+corresponding trace bridge (refer to the trace_bridge module).</p>
 
- <p>See also: the register_as_bridge/{2,3} static methods, offered to normal 
-(non-TraceEmitter, probably not even non-WOOPER) processes that nevertheless 
-need to send traces.</p>
+ <p>See also: the register_as_bridge/{2,3} static methods, offered to extra, 
+plain (non-TraceEmitter, probably not even non-WOOPER) processes that 
+nevertheless need to send traces.</p>
 
  (helper)
 </p>
 
 <h3 class="function"><a name="removeAttribute-2">removeAttribute/2</a></h3>
 <div class="spec">
-<p><tt>removeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>removeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="send-3">send/3</a></h3>
 <div class="spec">
-<p><tt>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
 
@@ -510,7 +515,7 @@ categorization.</p>
 
 <h3 class="function"><a name="send-4">send/4</a></h3>
 <div class="spec">
-<p><tt>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
 
@@ -521,7 +526,7 @@ categorization.</p>
 
 <h3 class="function"><a name="send-5">send/5</a></h3>
 <div class="spec">
-<p><tt>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
 
@@ -532,19 +537,19 @@ categorization.</p>
 
 <h3 class="function"><a name="send_categorized_emitter-4">send_categorized_emitter/4</a></h3>
 <div class="spec">
-<p><tt>send_categorized_emitter(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, EmitterCategorization::<a href="#type-emitter_categorization">emitter_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_categorized_emitter(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, EmitterCategorization::<a href="#type-emitter_categorization">emitter_categorization()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="send_named_emitter-4">send_named_emitter/4</a></h3>
 <div class="spec">
-<p><tt>send_named_emitter(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, EmitterName::<a href="#type-emitter_name">emitter_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_named_emitter(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, EmitterName::<a href="#type-emitter_name">emitter_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="send_safe-3">send_safe/3</a></h3>
 <div class="spec">
-<p><tt>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified (unsynchronised) trace message from this emitter, 
 echoing it through basic traces as well.</p>
@@ -559,7 +564,7 @@ categorization.</p>
 
 <h3 class="function"><a name="send_safe-4">send_safe/4</a></h3>
 <div class="spec">
-<p><tt>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
 
@@ -570,7 +575,7 @@ categorization.</p>
 
 <h3 class="function"><a name="send_safe-5">send_safe/5</a></h3>
 <div class="spec">
-<p><tt>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified synchronised trace message that is furthermore 
 echoed, from this emitter.</p>
@@ -581,9 +586,39 @@ requested and awaited).</p>
  (helper)
 </p>
 
+<h3 class="function"><a name="send_synchronisable-3">send_synchronisable/3</a></h3>
+<div class="spec">
+<p><code>send_synchronisable(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Sends the specified synchronisable trace message from this emitter.</p>
+
+ The synchronisation answer is requested yet not awaited here, to allow for any
+ interleaving.
+</p>
+
+<h3 class="function"><a name="send_synchronisable-4">send_synchronisable/4</a></h3>
+<div class="spec">
+<p><code>send_synchronisable(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Sends the specified synchronisable trace message from this emitter.</p>
+
+ The synchronisation answer is requested yet not awaited here, to allow for any
+ interleaving.
+</p>
+
+<h3 class="function"><a name="send_synchronisable-5">send_synchronisable/5</a></h3>
+<div class="spec">
+<p><code>send_synchronisable(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Sends the specified synchronisable trace message from this emitter.</p>
+
+ The synchronisation answer is requested yet not awaited here, to allow for any
+ interleaving.
+</p>
+
 <h3 class="function"><a name="send_synchronised-3">send_synchronised/3</a></h3>
 <div class="spec">
-<p><tt>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified synchronised trace message (the synchronisation 
 answer is requested and waited) from this emitter.</p>
@@ -596,7 +631,7 @@ categorization.</p>
 
 <h3 class="function"><a name="send_synchronised-4">send_synchronised/4</a></h3>
 <div class="spec">
-<p><tt>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified synchronised trace message (the synchronisation 
 answer is requested and waited) from this emitter.</p>
@@ -608,7 +643,7 @@ answer is requested and waited) from this emitter.</p>
 
 <h3 class="function"><a name="send_synchronised-5">send_synchronised/5</a></h3>
 <div class="spec">
-<p><tt>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified synchronised trace message (the synchronisation 
 answer is requested and awaited) from this emitter.</p>
@@ -618,19 +653,19 @@ answer is requested and awaited) from this emitter.</p>
 
 <h3 class="function"><a name="setAttribute-3">setAttribute/3</a></h3>
 <div class="spec">
-<p><tt>setAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>setAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="setAttributes-2">setAttributes/2</a></h3>
 <div class="spec">
-<p><tt>setAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>setAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="set_categorization-2">set_categorization/2</a></h3>
 <div class="spec">
-<p><tt>set_categorization(TraceEmitterAnyCategorization::<a href="#type-emitter_any_categorization">emitter_any_categorization()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>set_categorization(TraceEmitterAnyCategorization::<a href="#type-emitter_any_categorization">emitter_any_categorization()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets the categorization of this trace emitter.</p>
 
@@ -643,19 +678,19 @@ the same category, which is a lot clearer when browsing traces afterwards.</p>
 
 <h3 class="function"><a name="subtractFromAttribute-3">subtractFromAttribute/3</a></h3>
 <div class="spec">
-<p><tt>subtractFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>subtractFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="swapInAttribute-3">swapInAttribute/3</a></h3>
 <div class="spec">
-<p><tt>swapInAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt><br></p>
+<p><code>swapInAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="sync-1">sync/1</a></h3>
 <div class="spec">
-<p><tt>sync(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>sync(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Synchronises the caller with the trace aggregator, ensuring that all 
 (asynchronous) operations it triggered on this aggregator are over.</p>
@@ -666,67 +701,77 @@ the same category, which is a lot clearer when browsing traces afterwards.</p>
 
 <h3 class="function"><a name="toggleAttribute-2">toggleAttribute/2</a></h3>
 <div class="spec">
-<p><tt>toggleAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>toggleAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
+<h3 class="function"><a name="wait_for_aggregator_synchronisation-0">wait_for_aggregator_synchronisation/0</a></h3>
+<div class="spec">
+<p><code>wait_for_aggregator_synchronisation() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p> </p>
+</div><p><p>Waits for the aggregator to report that a trace synchronisation has been 
+completed.</p>
+
+ (helper)
+</p>
+
 <h3 class="function"><a name="wooper_destruct-1">wooper_destruct/1</a></h3>
 <div class="spec">
-<p><tt>wooper_destruct(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>wooper_destruct(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></h3>
 <div class="spec">
-<p><tt>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method-3">wooper_execute_method/3</a></h3>
 <div class="spec">
-<p><tt>wooper_execute_method(MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_execute_method(MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
 <div class="spec">
-<p><tt>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_get_class_specific_attributes-0">wooper_get_class_specific_attributes/0</a></h3>
 <div class="spec">
-<p><tt>wooper_get_class_specific_attributes() -&gt; [<a href="wooper_info.html#type-attribute_spec">wooper_info:attribute_spec()</a>]</tt><br></p>
+<p><code>wooper_get_class_specific_attributes() -&gt; [<a href="wooper_info.html#type-attribute_spec">wooper_info:attribute_spec()</a>]</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_oneway_execution-3">wooper_handle_local_oneway_execution/3</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_request_execution-3">wooper_handle_local_request_execution/3</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><code>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_oneway_execution-3">wooper_handle_remote_oneway_execution/3</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_request_execution-4">wooper_handle_remote_request_execution/4</a></h3>
 <div class="spec">
-<p><tt>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><code>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_main_loop-1">wooper_main_loop/1</a></h3>
 <div class="spec">
-<p><tt>wooper_main_loop(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; deleted</tt><br></p>
+<p><code>wooper_main_loop(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; deleted</code><br></p>
 <p> </p>
 </div>
 <hr>

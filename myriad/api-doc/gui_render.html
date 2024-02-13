@@ -22,115 +22,115 @@ various kinds of device contexts.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_height">any_height()</a></h3>
-<p><tt>any_height() = <a href="gui.html#type-any_height">gui:any_height()</a></tt></p>
+<p><code>any_height() = <a href="gui.html#type-any_height">gui:any_height()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_length">any_length()</a></h3>
-<p><tt>any_length() = <a href="gui.html#type-any_length">gui:any_length()</a></tt></p>
+<p><code>any_length() = <a href="gui.html#type-any_length">gui:any_length()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_width">any_width()</a></h3>
-<p><tt>any_width() = <a href="gui.html#type-any_width">gui:any_width()</a></tt></p>
+<p><code>any_width() = <a href="gui.html#type-any_width">gui:any_width()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_window_device_context">any_window_device_context()</a></h3>
-<p><tt>any_window_device_context() = <a href="#type-window_device_context">window_device_context()</a> | <a href="#type-window">window()</a> | <a href="#type-memory_device_context">memory_device_context()</a> | <a href="#type-image">image()</a></tt></p>
+<p><code>any_window_device_context() = <a href="#type-window_device_context">window_device_context()</a> | <a href="#type-window">window()</a> | <a href="#type-memory_device_context">memory_device_context()</a> | <a href="#type-image">image()</a></code></p>
 <p> Any window-related device context.</p>
 
 <h3 class="typedecl"><a name="type-back_buffer">back_buffer()</a></h3>
-<p><tt>back_buffer() = <a href="#type-memory_device_context">memory_device_context()</a></tt></p>
+<p><code>back_buffer() = <a href="#type-memory_device_context">memory_device_context()</a></code></p>
 <p> A non-displayed buffer to which rendering shall be done, before being made
  visible as a whole, to avoid flicker.</p>
 
 <h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
-<p><tt>bitmap() = <a href="gui_bitmap.html#type-bitmap">gui_bitmap:bitmap()</a></tt></p>
+<p><code>bitmap() = <a href="gui_bitmap.html#type-bitmap">gui_bitmap:bitmap()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-brush">brush()</a></h3>
-<p><b>abstract datatype</b>: <tt>brush()</tt></p>
+<p><b>abstract datatype</b>: <code>brush()</code></p>
 <p> A brush, used to draw elements.</p>
 
 <h3 class="typedecl"><a name="type-buffer">buffer()</a></h3>
-<p><tt>buffer() = <a href="bin_utils.html#type-buffer">bin_utils:buffer()</a></tt></p>
+<p><code>buffer() = <a href="bin_utils.html#type-buffer">bin_utils:buffer()</a></code></p>
 <p> Any type of GUI-related buffer.</p>
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
-<p><tt>color() = <a href="gui_color.html#type-color">gui_color:color()</a></tt></p>
+<p><code>color() = <a href="gui_color.html#type-color">gui_color:color()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
-<p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
+<p><code>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><tt>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></tt></p>
+<p><code>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-device_context">device_context()</a></h3>
-<p><b>abstract datatype</b>: <tt>device_context()</tt></p>
+<p><b>abstract datatype</b>: <code>device_context()</code></p>
 <p> Designates an abstract device where rendering can take place, and which can be
  the source or target of a blit. Akin to a surface in SDL (libsdl).</p>
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+<p><code>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-font">font()</a></h3>
-<p><tt>font() = <a href="gui_font.html#type-font">gui_font:font()</a></tt></p>
+<p><code>font() = <a href="gui_font.html#type-font">gui_font:font()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-graphic_context">graphic_context()</a></h3>
-<p><b>abstract datatype</b>: <tt>graphic_context()</tt></p>
+<p><b>abstract datatype</b>: <code>graphic_context()</code></p>
 <p><p> Corresponds to a GUI object that is drawn upon.</p>
 
  It is created by a renderer; some of them (like Direct2D or Cairo) defer their
  drawing operations; they may be forced by destroying the context.</p>
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><tt>height() = <a href="gui.html#type-height">gui:height()</a></tt></p>
+<p><code>height() = <a href="gui.html#type-height">gui:height()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-image">image()</a></h3>
-<p><tt>image() = <a href="gui_image.html#type-image">gui_image:image()</a></tt></p>
+<p><code>image() = <a href="gui_image.html#type-image">gui_image:image()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-memory_device_context">memory_device_context()</a></h3>
-<p><b>abstract datatype</b>: <tt>memory_device_context()</tt></p>
+<p><b>abstract datatype</b>: <code>memory_device_context()</code></p>
 <p><p> Provides a means of drawing graphics onto a bitmap.</p>
 
  https://docs.wxwidgets.org/stable/classwx_memory_d_c.html</p>
 
 <h3 class="typedecl"><a name="type-os_family">os_family()</a></h3>
-<p><tt>os_family() = <a href="system_utils.html#type-os_family">system_utils:os_family()</a></tt></p>
+<p><code>os_family() = <a href="system_utils.html#type-os_family">system_utils:os_family()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-paint_device_context">paint_device_context()</a></h3>
-<p><b>abstract datatype</b>: <tt>paint_device_context()</tt></p>
+<p><b>abstract datatype</b>: <code>paint_device_context()</code></p>
 <p> Designates a device context allowing to paint on the client area of a window
  from within an onRepaintNeeded event handler.</p>
 
 <h3 class="typedecl"><a name="type-point">point()</a></h3>
-<p><tt>point() = <a href="gui.html#type-point">gui:point()</a></tt></p>
+<p><code>point() = <a href="gui.html#type-point">gui:point()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-widget">widget()</a></h3>
-<p><tt>widget() = <a href="gui.html#type-widget">gui:widget()</a></tt></p>
+<p><code>widget() = <a href="gui.html#type-widget">gui:widget()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
-<p><tt>width() = <a href="gui.html#type-width">gui:width()</a></tt></p>
+<p><code>width() = <a href="gui.html#type-width">gui:width()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-window">window()</a></h3>
-<p><tt>window() = <a href="gui_window.html#type-window">gui_window:window()</a></tt></p>
+<p><code>window() = <a href="gui_window.html#type-window">gui_window:window()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-window_device_context">window_device_context()</a></h3>
-<p><b>abstract datatype</b>: <tt>window_device_context()</tt></p>
+<p><b>abstract datatype</b>: <code>window_device_context()</code></p>
 <p><p> Allows to paint on the whole area of a window (client and decorations). This 
 should normally be constructed as a temporary stack object, and shall never be 
 stored.</p>
@@ -185,7 +185,7 @@ string, using the currently selected font.</td></tr>
 
 <h3 class="function"><a name="blit-5">blit/5</a></h3>
 <div class="spec">
-<p><tt>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Size::<a href="#type-dimensions">dimensions()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
+<p><code>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Size::<a href="#type-dimensions">dimensions()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Blits (copies) the specified area of the source device context at the 
 specified position in the target device context.</p>
@@ -195,7 +195,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="blit-6">blit/6</a></h3>
 <div class="spec">
-<p><tt>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
+<p><code>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Blits (copies) the specified area of the source device context at the 
 specified position in the target device context.</p>
@@ -205,7 +205,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="clear_device_context-1">clear_device_context/1</a></h3>
 <div class="spec">
-<p><tt>clear_device_context(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>clear_device_context(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Clears the specified device context, using the current background brush.
  If none was set, a solid white brush is used.
@@ -213,13 +213,13 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="create_brush-1">create_brush/1</a></h3>
 <div class="spec">
-<p><tt>create_brush(RGBColor::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-brush">brush()</a></tt><br></p>
+<p><code>create_brush(RGBColor::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-brush">brush()</a></code><br></p>
 <p> </p>
 </div><p>Returns a brush of the specified color.</p>
 
 <h3 class="function"><a name="create_graphic_context-1">create_graphic_context/1</a></h3>
 <div class="spec">
-<p><tt>create_graphic_context(DC::<a href="#type-window_device_context">window_device_context()</a>) -&gt; <a href="#type-graphic_context">graphic_context()</a></tt><br></p>
+<p><code>create_graphic_context(DC::<a href="#type-window_device_context">window_device_context()</a>) -&gt; <a href="#type-graphic_context">graphic_context()</a></code><br></p>
 <p> </p>
 </div><p>Returns a graphic context created from the specified window device
  context.
@@ -227,7 +227,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="create_transparent_brush-1">create_transparent_brush/1</a></h3>
 <div class="spec">
-<p><tt>create_transparent_brush(RGBColor::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-brush">brush()</a></tt><br></p>
+<p><code>create_transparent_brush(RGBColor::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-brush">brush()</a></code><br></p>
 <p> </p>
 </div><p>Returns a brush of the specified color, and whose background is
  transparent.
@@ -235,25 +235,25 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="destruct_brush-1">destruct_brush/1</a></h3>
 <div class="spec">
-<p><tt>destruct_brush(Brush::<a href="#type-brush">brush()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_brush(Brush::<a href="#type-brush">brush()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Tells that the specified (reference-counted) brush may be deleted.</p>
 
 <h3 class="function"><a name="destruct_memory_device_context-1">destruct_memory_device_context/1</a></h3>
 <div class="spec">
-<p><tt>destruct_memory_device_context(MemDeviceContext::<a href="#type-memory_device_context">memory_device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_memory_device_context(MemDeviceContext::<a href="#type-memory_device_context">memory_device_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified memory device context.</p>
 
 <h3 class="function"><a name="destruct_paint_device_context-1">destruct_paint_device_context/1</a></h3>
 <div class="spec">
-<p><tt>destruct_paint_device_context(PaintDeviceContext::<a href="#type-paint_device_context">paint_device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct_paint_device_context(PaintDeviceContext::<a href="#type-paint_device_context">paint_device_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified paint device context.</p>
 
 <h3 class="function"><a name="draw_bitmap-4">draw_bitmap/4</a></h3>
 <div class="spec">
-<p><tt>draw_bitmap(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>draw_bitmap(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Draws the specified bitmap onto the specified graphic context, at the
  specified location.
@@ -261,7 +261,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="draw_bitmap-5">draw_bitmap/5</a></h3>
 <div class="spec">
-<p><tt>draw_bitmap(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Dims::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>draw_bitmap(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Dims::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Draws the specified bitmap onto the specified graphic context, at the
  specified location with the specified dimensions.
@@ -269,7 +269,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="draw_bitmap-6">draw_bitmap/6</a></h3>
 <div class="spec">
-<p><tt>draw_bitmap(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>draw_bitmap(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Draws the specified bitmap onto the specified graphic context, at the
  specified location with the specified dimensions.
@@ -277,7 +277,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="draw_text-4">draw_text/4</a></h3>
 <div class="spec">
-<p><tt>draw_text(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>draw_text(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Renders the specified text on the specified graphic context at the
  specified position.
@@ -285,7 +285,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="get_flickerfree_paint_device_context-1">get_flickerfree_paint_device_context/1</a></h3>
 <div class="spec">
-<p><tt>get_flickerfree_paint_device_context(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-paint_device_context">paint_device_context()</a></tt><br></p>
+<p><code>get_flickerfree_paint_device_context(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-paint_device_context">paint_device_context()</a></code><br></p>
 <p> </p>
 </div><p>Returns a flicker-free paint device context corresponding to the
  specified widget, so that its client area can be modified (from an
@@ -294,7 +294,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="get_flickerfree_paint_device_context-2">get_flickerfree_paint_device_context/2</a></h3>
 <div class="spec">
-<p><tt>get_flickerfree_paint_device_context(Widget::<a href="#type-window">window()</a>, OSFamily::<a href="#type-os_family">os_family()</a>) -&gt; <a href="#type-paint_device_context">paint_device_context()</a></tt><br></p>
+<p><code>get_flickerfree_paint_device_context(Widget::<a href="#type-window">window()</a>, OSFamily::<a href="#type-os_family">os_family()</a>) -&gt; <a href="#type-paint_device_context">paint_device_context()</a></code><br></p>
 <p> </p>
 </div><p>Returns a flicker-free device context corresponding to the specified
  widget (on specified OS family), so that its client area can be modified (from
@@ -303,7 +303,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="get_text_dimensions-2">get_text_dimensions/2</a></h3>
 <div class="spec">
-<p><tt>get_text_dimensions(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p><code>get_text_dimensions(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
 <p> </p>
 </div><p>Returns the (integer) dimensions corresponding to the rendering of the
  specified string, using the currently selected font.
@@ -311,7 +311,7 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="get_text_extent-2">get_text_extent/2</a></h3>
 <div class="spec">
-<p><tt>get_text_extent(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-any_width">any_width()</a>, <a href="#type-any_height">any_height()</a>, Descent::<a href="#type-any_length">any_length()</a>, ExternalLeading::<a href="#type-any_length">any_length()</a>}</tt><br></p>
+<p><code>get_text_extent(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-any_width">any_width()</a>, <a href="#type-any_height">any_height()</a>, Descent::<a href="#type-any_length">any_length()</a>, ExternalLeading::<a href="#type-any_length">any_length()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Returns the extent corresponding to the rendering of the specified 
 string, using the currently selected font.</p>
@@ -321,7 +321,7 @@ string, using the currently selected font.</p>
 
 <h3 class="function"><a name="get_text_height-2">get_text_height/2</a></h3>
 <div class="spec">
-<p><tt>get_text_height(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-height">height()</a></tt><br></p>
+<p><code>get_text_height(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-height">height()</a></code><br></p>
 <p> </p>
 </div><p>Returns the (integer) height corresponding to the rendering of the
  specified string, using the currently selected font.
@@ -329,7 +329,7 @@ string, using the currently selected font.</p>
 
 <h3 class="function"><a name="get_text_width-2">get_text_width/2</a></h3>
 <div class="spec">
-<p><tt>get_text_width(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-width">width()</a></tt><br></p>
+<p><code>get_text_width(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Text::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-width">width()</a></code><br></p>
 <p> </p>
 </div><p>Returns the (integer) width corresponding to the rendering of the
  specified string, using the currently selected font.
@@ -337,13 +337,13 @@ string, using the currently selected font.</p>
 
 <h3 class="function"><a name="set_brush-2">set_brush/2</a></h3>
 <div class="spec">
-<p><tt>set_brush(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Brush::<a href="#type-brush">brush()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_brush(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Brush::<a href="#type-brush">brush()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the specified brush for the specified graphic context.</p>
 
 <h3 class="function"><a name="set_font-3">set_font/3</a></h3>
 <div class="spec">
-<p><tt>set_font(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Font::<a href="#type-font">font()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_font(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Font::<a href="#type-font">font()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the font to be used by the specified graphic context, with the
  specified color.
@@ -351,7 +351,7 @@ string, using the currently selected font.</p>
 
 <h3 class="function"><a name="set_font-4">set_font/4</a></h3>
 <div class="spec">
-<p><tt>set_font(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Font::<a href="#type-font">font()</a>, Color::<a href="#type-color">color()</a>, DestructFont::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_font(GraphicContext::<a href="#type-graphic_context">graphic_context()</a>, Font::<a href="#type-font">font()</a>, Color::<a href="#type-color">color()</a>, DestructFont::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the font and color to be used by the specified graphic context,
  then, if requested, destructs that font.

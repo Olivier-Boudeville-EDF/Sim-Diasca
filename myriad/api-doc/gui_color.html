@@ -17,36 +17,36 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-alpha_buffer">alpha_buffer()</a></h3>
-<p><tt>alpha_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
+<p><code>alpha_buffer() = <a href="#type-buffer">buffer()</a></code></p>
 <p><p> A buffer of (only) pixel alpha coordinates, from the top-left pixel to 
 bottom-right one, row per row.</p>
 
  Useful for direct image manipulation.</p>
 
 <h3 class="typedecl"><a name="type-alpha_coordinate">alpha_coordinate()</a></h3>
-<p><tt>alpha_coordinate() = <a href="#type-color_coordinate">color_coordinate()</a></tt></p>
+<p><code>alpha_coordinate() = <a href="#type-color_coordinate">color_coordinate()</a></code></p>
 <p><p> An alpha-transparency color coordinate.</p>
 
  From 0.0 (full transparent) to 1.0 (solid); same as OpenGL conventions.</p>
 
 <h3 class="typedecl"><a name="type-any_color_by_decimal">any_color_by_decimal()</a></h3>
-<p><tt>any_color_by_decimal() = <a href="#type-color_by_decimal">color_by_decimal()</a> | <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></tt></p>
+<p><code>any_color_by_decimal() = <a href="#type-color_by_decimal">color_by_decimal()</a> | <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-buffer">buffer()</a></h3>
-<p><tt>buffer() = <a href="gui.html#type-buffer">gui:buffer()</a></tt></p>
+<p><code>buffer() = <a href="gui.html#type-buffer">gui:buffer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
-<p><tt>color() = <a href="#type-color_by_name">color_by_name()</a> | <a href="#type-color_by_decimal">color_by_decimal()</a></tt></p>
+<p><code>color() = <a href="#type-color_by_name">color_by_name()</a> | <a href="#type-color_by_decimal">color_by_decimal()</a> | <a href="#type-rgb_hexastring">rgb_hexastring()</a></code></p>
 <p> Any kind of RGB color.</p>
 
 <h3 class="typedecl"><a name="type-color_buffer">color_buffer()</a></h3>
-<p><tt>color_buffer() = <a href="#type-rgb_color_buffer">rgb_color_buffer()</a> | <a href="#type-rgba_color_buffer">rgba_color_buffer()</a></tt></p>
+<p><code>color_buffer() = <a href="#type-rgb_color_buffer">rgb_color_buffer()</a> | <a href="#type-rgba_color_buffer">rgba_color_buffer()</a></code></p>
 <p><p> A buffer of pixel colors coded as a sequence of RGB or RGBA binary elements 
 (e.g. RGBRGBRGB..., or RGBARGBARGBA...), from the top-left pixel to 
 bottom-right one, row per row.</p>
@@ -54,50 +54,50 @@ bottom-right one, row per row.</p>
  Useful for direct image manipulation.</p>
 
 <h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
-<p><tt>color_by_decimal() = {Red::byte(), Green::byte(), Blue::byte()}</tt></p>
+<p><code>color_by_decimal() = {Red::byte(), Green::byte(), Blue::byte()}</code></p>
 <p> RGB (integer coordinates, in [0;255]) color; no alpha coordinate here.</p>
 
 <h3 class="typedecl"><a name="type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></h3>
-<p><tt>color_by_decimal_with_alpha() = {Red::byte(), Green::byte(), Blue::byte(), Alpha::byte()}</tt></p>
+<p><code>color_by_decimal_with_alpha() = {Red::byte(), Green::byte(), Blue::byte(), Alpha::byte()}</code></p>
 <p> RGBA (integer coordinates, in [0;255]) color.</p>
 
 <h3 class="typedecl"><a name="type-color_by_name">color_by_name()</a></h3>
-<p><tt>color_by_name() = atom()</tt></p>
+<p><code>color_by_name() = atom()</code></p>
 <p> A color, as designated by an atom (e.g. 'aliceblue'); possibly a logical
- color.</p>
+ color. See get_colors/0 for a list thereof.</p>
 
 <h3 class="typedecl"><a name="type-color_coordinate">color_coordinate()</a></h3>
-<p><tt>color_coordinate() = float()</tt></p>
+<p><code>color_coordinate() = float()</code></p>
 <p><p> Color coordinate, floating-point in [0.0, 1.0].</p>
 
  For example as used and clamped by OpenGL.</p>
 
 <h3 class="typedecl"><a name="type-color_data">color_data()</a></h3>
-<p><b>abstract datatype</b>: <tt>color_data()</tt></p>
+<p><b>abstract datatype</b>: <code>color_data()</code></p>
 <p><p> A wx object representing information regarding a color.</p>
 
  For example {wx_ref,92,wxColourData,[]}.</p>
 
 <h3 class="typedecl"><a name="type-color_depth">color_depth()</a></h3>
-<p><tt>color_depth() = <a href="system_utils.html#type-bit_size">system_utils:bit_size()</a></tt></p>
+<p><code>color_depth() = <a href="system_utils.html#type-bit_size">system_utils:bit_size()</a></code></p>
 <p><p> A color depth, as a positive number of bits.</p>
 
  For example the color depth of a monochrome display is 1.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-logical_color">logical_color()</a></h3>
-<p><tt>logical_color() = <a href="#type-color_by_name">color_by_name()</a></tt></p>
+<p><code>logical_color() = <a href="#type-color_by_name">color_by_name()</a></code></p>
 <p> A logical color, like 'window_frame_color'.</p>
 
 <h3 class="typedecl"><a name="type-pixel_format">pixel_format()</a></h3>
-<p><tt>pixel_format() = rgb | rgba</tt></p>
+<p><code>pixel_format() = rgb | rgba</code></p>
 <p> A specification of a pixel format.</p>
 
 <h3 class="typedecl"><a name="type-render_color">render_color()</a></h3>
-<p><tt>render_color() = <a href="#type-render_rgb_color">render_rgb_color()</a> | <a href="#type-render_rgba_color">render_rgba_color()</a></tt></p>
+<p><code>render_color() = <a href="#type-render_rgb_color">render_rgb_color()</a> | <a href="#type-render_rgba_color">render_rgba_color()</a></code></p>
 <p><p> A floating-point RGB or RGBA color.</p>
 
  <p>The first three components (RGB) shall be encoded with the sRGB transfer 
@@ -106,7 +106,7 @@ function.</p>
  For example useful with OpenGL.</p>
 
 <h3 class="typedecl"><a name="type-render_rgb_color">render_rgb_color()</a></h3>
-<p><tt>render_rgb_color() = {Red::<a href="#type-color_coordinate">color_coordinate()</a>, Green::<a href="#type-color_coordinate">color_coordinate()</a>, Blue::<a href="#type-color_coordinate">color_coordinate()</a>}</tt></p>
+<p><code>render_rgb_color() = {Red::<a href="#type-color_coordinate">color_coordinate()</a>, Green::<a href="#type-color_coordinate">color_coordinate()</a>, Blue::<a href="#type-color_coordinate">color_coordinate()</a>}</code></p>
 <p><p> A floating-point RGB color (whose coordinates are typically in [0.0,1.0]).</p>
 
  <p>The three components shall be encoded with the sRGB transfer function.</p>
@@ -114,7 +114,7 @@ function.</p>
  For example useful with OpenGL.</p>
 
 <h3 class="typedecl"><a name="type-render_rgba_color">render_rgba_color()</a></h3>
-<p><tt>render_rgba_color() = {Red::<a href="#type-color_coordinate">color_coordinate()</a>, Green::<a href="#type-color_coordinate">color_coordinate()</a>, Blue::<a href="#type-color_coordinate">color_coordinate()</a>, Alpha::<a href="#type-alpha_coordinate">alpha_coordinate()</a>}</tt></p>
+<p><code>render_rgba_color() = {Red::<a href="#type-color_coordinate">color_coordinate()</a>, Green::<a href="#type-color_coordinate">color_coordinate()</a>, Blue::<a href="#type-color_coordinate">color_coordinate()</a>, Alpha::<a href="#type-alpha_coordinate">alpha_coordinate()</a>}</code></p>
 <p><p> A floating-point RGBA color.</p>
 
  <p>The first three components (RGB) shall be encoded with the sRGB transfer 
@@ -123,21 +123,30 @@ function.</p>
  For example useful with OpenGL.</p>
 
 <h3 class="typedecl"><a name="type-rgb_color_buffer">rgb_color_buffer()</a></h3>
-<p><tt>rgb_color_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
+<p><code>rgb_color_buffer() = <a href="#type-buffer">buffer()</a></code></p>
 <p><p> A buffer of pixel colors coded as a sequence of RGB binary elements 
 (RGBRGBRGB), from the top-left pixel to bottom-right one, row per row.</p>
 
  Useful for direct image manipulation.</p>
 
+<h3 class="typedecl"><a name="type-rgb_hexastring">rgb_hexastring()</a></h3>
+<p><code>rgb_hexastring() = <a href="#type-ustring">ustring()</a></code></p>
+<p><p> A RGB color that is encoded based on 6 hexadecimal digits in a string, with a 
+"#" prefix (hence is not a text_utils:hexastring/0).</p>
+
+ <p>For example "#3ab001" corresponds to lightgreen.</p>
+
+ Possibly used for HTML content, by gnuplot, etc.</p>
+
 <h3 class="typedecl"><a name="type-rgba_color_buffer">rgba_color_buffer()</a></h3>
-<p><tt>rgba_color_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
+<p><code>rgba_color_buffer() = <a href="#type-buffer">buffer()</a></code></p>
 <p><p> A buffer of pixel colors coded as a sequence of RGBA binary elements 
 (RGBARGBARGBA), from the top-left pixel to bottom-right one, row per row.</p>
 
  Useful for direct image manipulation.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -156,7 +165,7 @@ directly as a triplet of color components.</td></tr>
 
 <h3 class="function"><a name="get_color-1">get_color/1</a></h3>
 <div class="spec">
-<p><tt>get_color(Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-color_by_decimal">color_by_decimal()</a></tt><br></p>
+<p><code>get_color(Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-color_by_decimal">color_by_decimal()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the RGB definition of the color specified by name (atom) or 
 directly as a triplet of color components.</p>
@@ -166,19 +175,19 @@ directly as a triplet of color components.</p>
 
 <h3 class="function"><a name="get_color_for_gnuplot-1">get_color_for_gnuplot/1</a></h3>
 <div class="spec">
-<p><tt>get_color_for_gnuplot(Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_color_for_gnuplot(Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-color">color()</a></code><br></p>
 <p> </p>
 </div><p>Returns a stringified representation for gnuplot of the specified color.</p>
 
 <h3 class="function"><a name="get_colors-0">get_colors/0</a></h3>
 <div class="spec">
-<p><tt>get_colors() -&gt; [{<a href="#type-color_by_name">color_by_name()</a>, <a href="#type-any_color_by_decimal">any_color_by_decimal()</a>}]</tt><br></p>
+<p><code>get_colors() -&gt; [{<a href="#type-color_by_name">color_by_name()</a>, <a href="#type-any_color_by_decimal">any_color_by_decimal()</a>}]</code><br></p>
 <p> </p>
 </div><p>Returns a list of known {color_name, ColorDefinition} associations.</p>
 
 <h3 class="function"><a name="get_logical_color-1">get_logical_color/1</a></h3>
 <div class="spec">
-<p><tt>get_logical_color(LogicalColor::<a href="#type-logical_color">logical_color()</a>) -&gt; <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></tt><br></p>
+<p><code>get_logical_color(LogicalColor::<a href="#type-logical_color">logical_color()</a>) -&gt; <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the RGB definition of the specified logical color.</p>
 
@@ -188,25 +197,25 @@ directly as a triplet of color components.</p>
 
 <h3 class="function"><a name="get_logical_colors-0">get_logical_colors/0</a></h3>
 <div class="spec">
-<p><tt>get_logical_colors() -&gt; [<a href="#type-logical_color">logical_color()</a>]</tt><br></p>
+<p><code>get_logical_colors() -&gt; [<a href="#type-logical_color">logical_color()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the known logical colors.</p>
 
 <h3 class="function"><a name="get_pixel_size-1">get_pixel_size/1</a></h3>
 <div class="spec">
-<p><tt>get_pixel_size(PixelFormat::<a href="#type-pixel_format">pixel_format()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p><code>get_pixel_size(PixelFormat::<a href="#type-pixel_format">pixel_format()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
 <p> </p>
 </div><p>Returns the number of bytes used by each pixel of the specified format.</p>
 
 <h3 class="function"><a name="get_random_colors-1">get_random_colors/1</a></h3>
 <div class="spec">
-<p><tt>get_random_colors(ColorCount::<a href="#type-count">count()</a>) -&gt; [<a href="#type-color_by_decimal">color_by_decimal()</a>]</tt><br></p>
+<p><code>get_random_colors(ColorCount::<a href="#type-count">count()</a>) -&gt; [<a href="#type-color_by_decimal">color_by_decimal()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a random list of the specified number of different colors.</p>
 
 <h3 class="function"><a name="pixel_format_to_string-1">pixel_format_to_string/1</a></h3>
 <div class="spec">
-<p><tt>pixel_format_to_string(PixelFormat::<a href="#type-pixel_format">pixel_format()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>pixel_format_to_string(PixelFormat::<a href="#type-pixel_format">pixel_format()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified pixel format.</p>
 <hr>

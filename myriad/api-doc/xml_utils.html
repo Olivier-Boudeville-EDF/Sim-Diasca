@@ -22,90 +22,90 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_record">attribute_record()</a></h3>
-<p><tt>attribute_record() = #xmlAttribute{}</tt></p>
+<p><code>attribute_record() = #xmlAttribute{}</code></p>
 <p> Stores all information regarding an attribute in an XML tag.</p>
 
 <h3 class="typedecl"><a name="type-comment_record">comment_record()</a></h3>
-<p><tt>comment_record() = #xmlComment{}</tt></p>
+<p><code>comment_record() = #xmlComment{}</code></p>
 <p> Stores all information regarding a comment in an XML document.</p>
 
 <h3 class="typedecl"><a name="type-declaration_record">declaration_record()</a></h3>
-<p><tt>declaration_record() = #xmlDecl{}</tt></p>
+<p><code>declaration_record() = #xmlDecl{}</code></p>
 <p> Stores all information regarding an XML declaration (XML version, encoding,
  etc.).</p>
 
 <h3 class="typedecl"><a name="type-element_record">element_record()</a></h3>
-<p><tt>element_record() = #xmlElement{}</tt></p>
+<p><code>element_record() = #xmlElement{}</code></p>
 <p> Stores all information regarding an element (notably having a content) in an
  XML document.</p>
 
 <h3 class="typedecl"><a name="type-instruction_record">instruction_record()</a></h3>
-<p><tt>instruction_record() = #xmlPI{}</tt></p>
+<p><code>instruction_record() = #xmlPI{}</code></p>
 <p> Stores all information regarding a processing instruction in an XML document.</p>
 
 <h3 class="typedecl"><a name="type-io_list">io_list()</a></h3>
-<p><tt>io_list() = <a href="text_utils.html#type-io_list">text_utils:io_list()</a></tt></p>
+<p><code>io_list() = <a href="text_utils.html#type-io_list">text_utils:io_list()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-text_record">text_record()</a></h3>
-<p><tt>text_record() = #xmlText{}</tt></p>
+<p><code>text_record() = #xmlText{}</code></p>
 <p> Stores all information regarding a direct text in an XML document.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-xml_attribute">xml_attribute()</a></h3>
-<p><tt>xml_attribute() = {<a href="#type-xml_attribute_name">xml_attribute_name()</a>, <a href="#type-xml_attribute_value">xml_attribute_value()</a>} | <a href="#type-attribute_record">attribute_record()</a></tt></p>
+<p><code>xml_attribute() = {<a href="#type-xml_attribute_name">xml_attribute_name()</a>, <a href="#type-xml_attribute_value">xml_attribute_value()</a>} | <a href="#type-attribute_record">attribute_record()</a></code></p>
 <p><p> The description of an attribute of a XML tag.</p>
 
  For example {refCount,"4"} in: <Account refCount="4"> ...</Account></p>
 
 <h3 class="typedecl"><a name="type-xml_attribute_name">xml_attribute_name()</a></h3>
-<p><tt>xml_attribute_name() = atom()</tt></p>
+<p><code>xml_attribute_name() = atom()</code></p>
 <p><p> The name of an attribute of a XML tag; we recommend to use (lower) camelCase 
 for them.</p>
 
  For example 'refCount' in: <Account refCount="4"> ...</Account></p>
 
 <h3 class="typedecl"><a name="type-xml_attribute_value">xml_attribute_value()</a></h3>
-<p><tt>xml_attribute_value() = <a href="#type-io_list">io_list()</a> | atom() | integer()</tt></p>
+<p><code>xml_attribute_value() = <a href="#type-io_list">io_list()</a> | atom() | integer()</code></p>
 <p><p> The value of an attribute of a XML tag.</p>
 
  For example "4" in: <Account refCount="4"> ...</Account></p>
 
 <h3 class="typedecl"><a name="type-xml_content">xml_content()</a></h3>
-<p><tt>xml_content() = [<a href="#type-xml_element">xml_element()</a>]</tt></p>
+<p><code>xml_content() = [<a href="#type-xml_element">xml_element()</a>]</code></p>
 <p><p> An in-memory representation of an XML content, mostly as a tree of markup 
 elements; note that this is always a flat list.</p>
 
  See our 'Usage of xmerl' section for more details and examples.</p>
 
 <h3 class="typedecl"><a name="type-xml_document">xml_document()</a></h3>
-<p><tt>xml_document() = <a href="#type-xml_content">xml_content()</a></tt></p>
+<p><code>xml_document() = <a href="#type-xml_content">xml_content()</a></code></p>
 <p> A full, standalone definition of a XML document.</p>
 
 <h3 class="typedecl"><a name="type-xml_element">xml_element()</a></h3>
-<p><tt>xml_element() = <a href="#type-xml_simple_tag">xml_simple_tag()</a> | <a href="#type-xml_iolist">xml_iolist()</a> | <a href="#type-xml_record">xml_record()</a></tt></p>
+<p><code>xml_element() = <a href="#type-xml_simple_tag">xml_simple_tag()</a> | <a href="#type-xml_iolist">xml_iolist()</a> | <a href="#type-xml_record">xml_record()</a></code></p>
 <p><p> An element of an XML document (top-level or nested).</p>
 
  It can be expressed in simple form (one of the three options based on a
  xml_tag()), as an iolist, or based on one of the five xmerl's records.</p>
 
 <h3 class="typedecl"><a name="type-xml_iolist">xml_iolist()</a></h3>
-<p><tt>xml_iolist() = <a href="#type-io_list">io_list()</a></tt></p>
+<p><code>xml_iolist() = <a href="#type-io_list">io_list()</a></code></p>
 <p> An XML element defined by an iolist.</p>
 
 <h3 class="typedecl"><a name="type-xml_prolog_value">xml_prolog_value()</a></h3>
-<p><tt>xml_prolog_value() = <a href="#type-xml_attribute_value">xml_attribute_value()</a></tt></p>
+<p><code>xml_prolog_value() = <a href="#type-xml_attribute_value">xml_attribute_value()</a></code></p>
 <p><p> The value associated to the 'prolog' attribute within root attributes, 
 typically an (XML-escaped string).</p>
 
@@ -133,33 +133,33 @@ example:</p>
                         namespace=#xmlNamespace{default=SpeciesStr}, ...</p>
 
 <h3 class="typedecl"><a name="type-xml_record">xml_record()</a></h3>
-<p><tt>xml_record() = <a href="#type-text_record">text_record()</a> | <a href="#type-element_record">element_record()</a> | <a href="#type-instruction_record">instruction_record()</a> | <a href="#type-comment_record">comment_record()</a> | <a href="#type-declaration_record">declaration_record()</a></tt></p>
+<p><code>xml_record() = <a href="#type-text_record">text_record()</a> | <a href="#type-element_record">element_record()</a> | <a href="#type-instruction_record">instruction_record()</a> | <a href="#type-comment_record">comment_record()</a> | <a href="#type-declaration_record">declaration_record()</a></code></p>
 <p> The internal records introduced by xmerl in order to denote XML elements.</p>
 
 <h3 class="typedecl"><a name="type-xml_root_attributes">xml_root_attributes()</a></h3>
-<p><tt>xml_root_attributes() = [<a href="#type-xml_attribute">xml_attribute()</a>]</tt></p>
+<p><code>xml_root_attributes() = [<a href="#type-xml_attribute">xml_attribute()</a>]</code></p>
 <p><p> The XML attributes for the root element of an XML document, the implicit 
 parent of the user-specified content.</p>
 
  May notably include a XML prolog attribute.</p>
 
 <h3 class="typedecl"><a name="type-xml_simple_content">xml_simple_content()</a></h3>
-<p><tt>xml_simple_content() = [<a href="#type-xml_simple_tag">xml_simple_tag()</a>]</tt></p>
+<p><code>xml_simple_content() = [<a href="#type-xml_simple_tag">xml_simple_tag()</a>]</code></p>
 <p> An in-memory representation of an XML content, only based on simple tags
  (hence a special case of xml_content/0).</p>
 
 <h3 class="typedecl"><a name="type-xml_simple_tag">xml_simple_tag()</a></h3>
-<p><tt>xml_simple_tag() = <a href="#type-xml_tag">xml_tag()</a> | {<a href="#type-xml_tag">xml_tag()</a>, <a href="#type-xml_content">xml_content()</a>} | {<a href="#type-xml_tag">xml_tag()</a>, [<a href="#type-xml_attribute">xml_attribute()</a>], <a href="#type-xml_content">xml_content()</a>}</tt></p>
+<p><code>xml_simple_tag() = <a href="#type-xml_tag">xml_tag()</a> | {<a href="#type-xml_tag">xml_tag()</a>, <a href="#type-xml_content">xml_content()</a>} | {<a href="#type-xml_tag">xml_tag()</a>, [<a href="#type-xml_attribute">xml_attribute()</a>], <a href="#type-xml_content">xml_content()</a>}</code></p>
 <p> An XML tag, expressed in xmerl's simple form.</p>
 
 <h3 class="typedecl"><a name="type-xml_tag">xml_tag()</a></h3>
-<p><tt>xml_tag() = atom()</tt></p>
+<p><code>xml_tag() = atom()</code></p>
 <p><p> An XML tag; we recommend to use Upper CamelCase (PascalCase) for their name.</p>
 
  For example 'AccountLog' in: <AccountLog level="red">Hello</AccountLog>.</p>
 
 <h3 class="typedecl"><a name="type-xml_text">xml_text()</a></h3>
-<p><tt>xml_text() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>xml_text() = <a href="#type-ustring">ustring()</a></code></p>
 <p><p> A raw string containing XML (including markup), typically at least an extract 
 of an XML document.</p>
 
@@ -192,7 +192,7 @@ using the specified prolog.</td></tr>
 
 <h3 class="function"><a name="get_default_prolog-0">get_default_prolog/0</a></h3>
 <div class="spec">
-<p><tt>get_default_prolog() -&gt; <a href="#type-xml_prolog_value">xml_prolog_value()</a></tt><br></p>
+<p><code>get_default_prolog() -&gt; <a href="#type-xml_prolog_value">xml_prolog_value()</a></code><br></p>
 <p> </p>
 </div><p>Returns the default prolog value, corresponding to:
  <code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;.</code>
@@ -200,7 +200,7 @@ using the specified prolog.</td></tr>
 
 <h3 class="function"><a name="parse_xml_file-1">parse_xml_file/1</a></h3>
 <div class="spec">
-<p><tt>parse_xml_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-xml_content">xml_content()</a></tt><br></p>
+<p><code>parse_xml_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-xml_content">xml_content()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an XML content structure resulting from the scan of the specified 
 file expected to contain an XML document.</p>
@@ -211,7 +211,7 @@ file expected to contain an XML document.</p>
 
 <h3 class="function"><a name="pretty_print_from_file-1">pretty_print_from_file/1</a></h3>
 <div class="spec">
-<p><tt>pretty_print_from_file(XMLFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-xml_text">xml_text()</a></tt><br></p>
+<p><code>pretty_print_from_file(XMLFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-xml_text">xml_text()</a></code><br></p>
 <p> </p>
 </div><p>Pretty-prints the specified XML file: returns a user-friendly string
  corresponding to its content, once its XML has been tidied and clarified for
@@ -220,7 +220,7 @@ file expected to contain an XML document.</p>
 
 <h3 class="function"><a name="pretty_print_from_string-1">pretty_print_from_string/1</a></h3>
 <div class="spec">
-<p><tt>pretty_print_from_string(XMLText::<a href="#type-xml_text">xml_text()</a>) -&gt; <a href="#type-xml_text">xml_text()</a></tt><br></p>
+<p><code>pretty_print_from_string(XMLText::<a href="#type-xml_text">xml_text()</a>) -&gt; <a href="#type-xml_text">xml_text()</a></code><br></p>
 <p> </p>
 </div><p>Pretty-prints the specified XML string (that is a string containing an
  XML document): returns a user-friendly string corresponding to the specified
@@ -230,7 +230,7 @@ file expected to contain an XML document.</p>
 
 <h3 class="function"><a name="string_to_xml-1">string_to_xml/1</a></h3>
 <div class="spec">
-<p><tt>string_to_xml(XMLStr::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-xml_content">xml_content()</a></tt><br></p>
+<p><code>string_to_xml(XMLStr::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-xml_content">xml_content()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an XML content structure resulting from the scan of the specified 
 string expected to contain an XML document.</p>
@@ -241,7 +241,7 @@ string expected to contain an XML document.</p>
 
 <h3 class="function"><a name="to_xml_text-1">to_xml_text/1</a></h3>
 <div class="spec">
-<p><tt>to_xml_text(Text::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_xml_text(Text::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Escapes specified text (not expected to contain markup), so that it can
  be included safely within an XML content.
@@ -249,7 +249,7 @@ string expected to contain an XML document.</p>
 
 <h3 class="function"><a name="xml_to_string-1">xml_to_string/1</a></h3>
 <div class="spec">
-<p><tt>xml_to_string(XMLContent::<a href="#type-xml_content">xml_content()</a>) -&gt; <a href="#type-io_list">io_list()</a></tt><br></p>
+<p><code>xml_to_string(XMLContent::<a href="#type-xml_content">xml_content()</a>) -&gt; <a href="#type-io_list">io_list()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a string corresponding to the specified XML content structure,
  using the default XML prolog, corresponding to:
@@ -261,7 +261,7 @@ string expected to contain an XML document.</p>
 
 <h3 class="function"><a name="xml_to_string-2">xml_to_string/2</a></h3>
 <div class="spec">
-<p><tt>xml_to_string(XMLContent::<a href="#type-xml_content">xml_content()</a>, PrologValue::<a href="#type-xml_prolog_value">xml_prolog_value()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>xml_to_string(XMLContent::<a href="#type-xml_content">xml_content()</a>, PrologValue::<a href="#type-xml_prolog_value">xml_prolog_value()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a string corresponding to the specified XML content structure, 
 using the specified prolog.</p>

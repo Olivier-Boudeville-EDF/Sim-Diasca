@@ -17,35 +17,35 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><tt>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></tt></p>
+<p><code>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-cursor_table">cursor_table()</a></h3>
-<p><tt>cursor_table() = <a href="#type-table">table</a>(<a href="#type-cursor_type">cursor_type()</a>, <a href="#type-wx_cursor_type">wx_cursor_type()</a>)</tt></p>
+<p><code>cursor_table() = <a href="#type-table">table</a>(<a href="#type-cursor_type">cursor_type()</a>, <a href="#type-wx_cursor_type">wx_cursor_type()</a>)</code></p>
 <p> A table storing the correspondance between MyriadGUI and backend cursor types.</p>
 
 <h3 class="typedecl"><a name="type-cursor_type">cursor_type()</a></h3>
-<p><tt>cursor_type() = default | none | blank | stop | arrow | right_arrow | question_arrow | wait_arrow | wait | watch | hand | closed_hand | point_left | point_right | char | cross | ibeam | left_button | middle_button | right_button | magnifier | paintbrush | pencil | spraycan | size_ne_sw | size_ns | size_nw_se | size_we | sizing</tt></p>
+<p><code>cursor_type() = default | none | blank | stop | arrow | right_arrow | question_arrow | wait_arrow | wait | watch | hand | closed_hand | point_left | point_right | char | cross | ibeam | left_button | middle_button | right_button | magnifier | paintbrush | pencil | spraycan | size_ne_sw | size_ns | size_nw_se | size_we | sizing</code></p>
 
 
 <h3 class="typedecl"><a name="type-grab_status">grab_status()</a></h3>
-<p><tt>grab_status() = no_grab | still_grabbed</tt></p>
+<p><code>grab_status() = no_grab | still_grabbed</code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_env_pid">gui_env_pid()</a></h3>
-<p><tt>gui_env_pid() = <a href="gui.html#type-gui_env_pid">gui:gui_env_pid()</a></tt></p>
+<p><code>gui_env_pid() = <a href="gui.html#type-gui_env_pid">gui:gui_env_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-mouse_event_type">mouse_event_type()</a></h3>
-<p><tt>mouse_event_type() = onMouseLeftButtonPressed | onMouseLeftButtonReleased | onMouseLeftButtonDoubleClicked | onMouseMiddleButtonPressed | onMouseMiddleButtonReleased | onMouseMiddleButtonDoubleClicked | onMouseRightButtonPressed | onMouseRightButtonReleased | onMouseRightButtonDoubleClicked | onMouseFourthButtonPressed | onMouseFourthButtonReleased | onMouseFourthButtonDoubleClicked | onMouseFifthButtonPressed | onMouseFifthtButtonReleased | onMouseFifthButtonDoubleClicked | onMouseWheelScrolled | onMouseEnteredWindow | onMouseLeftWindow | onMouseMoved</tt></p>
+<p><code>mouse_event_type() = onMouseLeftButtonPressed | onMouseLeftButtonReleased | onMouseLeftButtonDoubleClicked | onMouseMiddleButtonPressed | onMouseMiddleButtonReleased | onMouseMiddleButtonDoubleClicked | onMouseRightButtonPressed | onMouseRightButtonReleased | onMouseRightButtonDoubleClicked | onMouseFourthButtonPressed | onMouseFourthButtonReleased | onMouseFourthButtonDoubleClicked | onMouseFifthButtonPressed | onMouseFifthtButtonReleased | onMouseFifthButtonDoubleClicked | onMouseWheelScrolled | onMouseEnteredWindow | onMouseLeftWindow | onMouseMoved</code></p>
 
 
 <h3 class="typedecl"><a name="type-window">window()</a></h3>
-<p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
+<p><code>window() = <a href="gui.html#type-window">gui:window()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_cursor_type">wx_cursor_type()</a></h3>
-<p><tt>wx_cursor_type() = non_neg_integer()</tt></p>
+<p><code>wx_cursor_type() = non_neg_integer()</code></p>
 <p> See include/wx.hrl.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -72,19 +72,19 @@ cursors.</td></tr>
 
 <h3 class="function"><a name="cursor_type_to_wx-1">cursor_type_to_wx/1</a></h3>
 <div class="spec">
-<p><tt>cursor_type_to_wx(X1::<a href="#type-cursor_type">cursor_type()</a>) -&gt; <a href="#type-wx_cursor_type">wx_cursor_type()</a></tt><br></p>
+<p><code>cursor_type_to_wx(X1::<a href="#type-cursor_type">cursor_type()</a>) -&gt; <a href="#type-wx_cursor_type">wx_cursor_type()</a></code><br></p>
 <p> </p>
 </div><p>Returns the wx cursor type corresponding to the MyriadGUI specified one.</p>
 
 <h3 class="function"><a name="get_all_mouse_event_types-0">get_all_mouse_event_types/0</a></h3>
 <div class="spec">
-<p><tt>get_all_mouse_event_types() -&gt; [<a href="#type-mouse_event_type">mouse_event_type()</a>]</tt><br></p>
+<p><code>get_all_mouse_event_types() -&gt; [<a href="#type-mouse_event_type">mouse_event_type()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of all types of mouse-related events.</p>
 
 <h3 class="function"><a name="get_event_types_to_trap-0">get_event_types_to_trap/0</a></h3>
 <div class="spec">
-<p><tt>get_event_types_to_trap() -&gt; [<a href="#type-mouse_event_type">mouse_event_type()</a>]</tt><br></p>
+<p><code>get_event_types_to_trap() -&gt; [<a href="#type-mouse_event_type">mouse_event_type()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the types of mouse-related events that shall be trapped
  by default.
@@ -92,25 +92,25 @@ cursors.</td></tr>
 
 <h3 class="function"><a name="grab-1">grab/1</a></h3>
 <div class="spec">
-<p><tt>grab(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>grab(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Have the specified window grab the mouse cursor.</p>
 
 <h3 class="function"><a name="is_grabbed-0">is_grabbed/0</a></h3>
 <div class="spec">
-<p><tt>is_grabbed() -&gt; boolean()</tt><br></p>
+<p><code>is_grabbed() -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the mouse cursor is grabbed.</p>
 
 <h3 class="function"><a name="list_cursor_types-0">list_cursor_types/0</a></h3>
 <div class="spec">
-<p><tt>list_cursor_types() -&gt; [<a href="#type-cursor_type">cursor_type()</a>]</tt><br></p>
+<p><code>list_cursor_types() -&gt; [<a href="#type-cursor_type">cursor_type()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of all the standard mouse cursor types.</p>
 
 <h3 class="function"><a name="register_in_environment-1">register_in_environment/1</a></h3>
 <div class="spec">
-<p><tt>register_in_environment(GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>register_in_environment(GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Registers in the MyriadGUI environment server the mouse-related settings.</p>
 
@@ -119,19 +119,19 @@ cursors.</td></tr>
 
 <h3 class="function"><a name="reset_grab-0">reset_grab/0</a></h3>
 <div class="spec">
-<p><tt>reset_grab() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>reset_grab() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Resets the mouse grabbing, releasing it.</p>
 
 <h3 class="function"><a name="set_cursor-1">set_cursor/1</a></h3>
 <div class="spec">
-<p><tt>set_cursor(CursorType::<a href="#type-cursor_type">cursor_type()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_cursor(CursorType::<a href="#type-cursor_type">cursor_type()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the type of the current mouse cursor.</p>
 
 <h3 class="function"><a name="set_cursor_types-2">set_cursor_types/2</a></h3>
 <div class="spec">
-<p><tt>set_cursor_types(CursorTypes::[<a href="#type-cursor_type">cursor_type()</a>], GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_cursor_types(CursorTypes::[<a href="#type-cursor_type">cursor_type()</a>], GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets in the MyriadGUI environment server the specified standard mouse 
 cursors.</p>
@@ -141,7 +141,7 @@ cursors.</p>
 
 <h3 class="function"><a name="ungrab-2">ungrab/2</a></h3>
 <div class="spec">
-<p><tt>ungrab(X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-grab_status">grab_status()</a></tt><br></p>
+<p><code>ungrab(X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-grab_status">grab_status()</a></code><br></p>
 <p> </p>
 </div><p>Ungrabs the mouse cursor, having it appear (warp) at specified
  coordinates, returns whether it is still grabbed.
@@ -149,13 +149,13 @@ cursors.</p>
 
 <h3 class="function"><a name="unregister_from_environment-1">unregister_from_environment/1</a></h3>
 <div class="spec">
-<p><tt>unregister_from_environment(GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>unregister_from_environment(GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Unregisters the mouse-related settings from the MyriadGUI environment.</p>
 
 <h3 class="function"><a name="warp-3">warp/3</a></h3>
 <div class="spec">
-<p><tt>warp(Window::<a href="#type-window">window()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>warp(Window::<a href="#type-window">window()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Warps (moves) the mouse cursor at the specified location on the specified
  window.

@@ -22,19 +22,19 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><tt>milliseconds() = <a href="time_utils.html#type-milliseconds">time_utils:milliseconds()</a></tt></p>
+<p><code>milliseconds() = <a href="time_utils.html#type-milliseconds">time_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-monitor_pid">monitor_pid()</a></h3>
-<p><tt>monitor_pid() = pid()</tt></p>
+<p><code>monitor_pid() = pid()</code></p>
 <p> The PID of a monitoring process.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -56,7 +56,7 @@ sampling, this length is above the specified threshold.</td></tr>
 
 <h3 class="function"><a name="spawn_message_queue_monitor-1">spawn_message_queue_monitor/1</a></h3>
 <div class="spec">
-<p><tt>spawn_message_queue_monitor(MonitoredPid::pid()) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></tt><br></p>
+<p><code>spawn_message_queue_monitor(MonitoredPid::pid()) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Spawns a process monitoring the length of the message queue of the 
 specified process: returns the PID of an helper process that displays a 
@@ -69,7 +69,7 @@ is above 1000.</p>
 
 <h3 class="function"><a name="spawn_message_queue_monitor-2">spawn_message_queue_monitor/2</a></h3>
 <div class="spec">
-<p><tt>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>)) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></tt><br></p>
+<p><code>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>)) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Spawns a process monitoring the length of the message queue of the 
 specified process: returns the PID of an helper process that displays a 
@@ -82,7 +82,7 @@ sampling each two seconds, this length is above 1000.</p>
 
 <h3 class="function"><a name="spawn_message_queue_monitor-4">spawn_message_queue_monitor/4</a></h3>
 <div class="spec">
-<p><tt>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>), MsgThreshold::<a href="#type-count">count()</a>, SamplingPeriod::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></tt><br></p>
+<p><code>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>), MsgThreshold::<a href="#type-count">count()</a>, SamplingPeriod::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Spawns a process monitoring the length of the message queue of the 
 specified process: returns the PID of an helper process that displays a 

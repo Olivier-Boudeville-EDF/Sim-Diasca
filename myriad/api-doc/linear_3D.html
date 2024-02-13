@@ -20,50 +20,50 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_point3">any_point3()</a></h3>
-<p><tt>any_point3() = <a href="point3.html#type-any_point3">point3:any_point3()</a></tt></p>
+<p><code>any_point3() = <a href="point3.html#type-any_point3">point3:any_point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-hessian_plane3">hessian_plane3()</a></h3>
-<p><tt>hessian_plane3() = {<a href="#type-unit_normal3">unit_normal3()</a>, <a href="#type-factor">factor()</a>}</tt></p>
+<p><code>hessian_plane3() = {<a href="#type-unit_normal3">unit_normal3()</a>, <a href="#type-factor">factor()</a>}</code></p>
 <p><p> A plane in Hessian normal form.</p>
 
- See <a href="http://mathworld.wolfram.com/HessianNormalForm.html" target="_top"><tt>http://mathworld.wolfram.com/HessianNormalForm.html</tt></a>.</p>
+ See <a href="http://mathworld.wolfram.com/HessianNormalForm.html" target="_top"><code>http://mathworld.wolfram.com/HessianNormalForm.html</code></a>.</p>
 
 <h3 class="typedecl"><a name="type-line3">line3()</a></h3>
-<p><tt>line3() = {A::<a href="#type-factor">factor()</a>, B::<a href="#type-factor">factor()</a>, C::<a href="#type-factor">factor()</a>, D::<a href="#type-factor">factor()</a>}</tt></p>
+<p><code>line3() = {A::<a href="#type-factor">factor()</a>, B::<a href="#type-factor">factor()</a>, C::<a href="#type-factor">factor()</a>, D::<a href="#type-factor">factor()</a>}</code></p>
 <p> A 3D line, whose equation A.x + B.y + C.z + D = 0, can be defined by its four
  factors {A,B,C,D}.</p>
 
 <h3 class="typedecl"><a name="type-normal3">normal3()</a></h3>
-<p><tt>normal3() = <a href="vector3.html#type-normal3">vector3:normal3()</a></tt></p>
+<p><code>normal3() = <a href="vector3.html#type-normal3">vector3:normal3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-plane3">plane3()</a></h3>
-<p><tt>plane3() = {<a href="#type-normal3">normal3()</a>, <a href="#type-factor">factor()</a>}</tt></p>
+<p><code>plane3() = {<a href="#type-normal3">normal3()</a>, <a href="#type-factor">factor()</a>}</code></p>
 <p><p> A plane, whose general equation is: A.x + B.y + C.z + D = 0, where:</p>
 
  <p>- P={x,y,z} is a point belonging to this plane 
 - N=[A,B,C] is a (non-necessarily unit) normal vector to this plane 
 - D= -A.x0 - B.y0 - C.z0</p>
 
- <p>See <a href="http://mathworld.wolfram.com/Plane.html" target="_top"><tt>http://mathworld.wolfram.com/Plane.html</tt></a>.</p>
+ <p>See <a href="http://mathworld.wolfram.com/Plane.html" target="_top"><code>http://mathworld.wolfram.com/Plane.html</code></a>.</p>
 
  So a plane may be described as (N,D).</p>
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
+<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-shape">shape()</a></h3>
-<p><tt>shape() = sphere | right_cuboid</tt></p>
+<p><code>shape() = sphere | right_cuboid</code></p>
 <p> Various types of known 3D shapes (basic geometries).</p>
 
 <h3 class="typedecl"><a name="type-unit_normal3">unit_normal3()</a></h3>
-<p><tt>unit_normal3() = <a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a></tt></p>
+<p><code>unit_normal3() = <a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -75,7 +75,7 @@
 
 <h3 class="function"><a name="compute_smallest_enclosing_cuboid-1">compute_smallest_enclosing_cuboid/1</a></h3>
 <div class="spec">
-<p><tt>compute_smallest_enclosing_cuboid(Points::[<a href="#type-any_point3">any_point3()</a>]) -&gt; {<a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>}</tt><br></p>
+<p><code>compute_smallest_enclosing_cuboid(Points::[<a href="#type-any_point3">any_point3()</a>]) -&gt; {<a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Computes the smallest cuboid that encloses the specified list of points.</p>
 
@@ -84,7 +84,7 @@
 
 <h3 class="function"><a name="get_origin-0">get_origin/0</a></h3>
 <div class="spec">
-<p><tt>get_origin() -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p><code>get_origin() -&gt; <a href="#type-point3">point3()</a></code><br></p>
 <p> </p>
 </div><p>Returns the origin of this referential.</p>
 <hr>

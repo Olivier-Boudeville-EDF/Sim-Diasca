@@ -20,11 +20,11 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-form_element">form_element()</a></h3>
-<p><tt>form_element() = <a href="ast_base.html#type-form_element">ast_base:form_element()</a></tt></p>
+<p><code>form_element() = <a href="ast_base.html#type-form_element">ast_base:form_element()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -44,7 +44,7 @@ form elements already) into the AST version of a list.</td></tr>
 
 <h3 class="function"><a name="atoms_to_form-1">atoms_to_form/1</a></h3>
 <div class="spec">
-<p><tt>atoms_to_form(AtomList::[atom()]) -&gt; <a href="#type-form_element">form_element()</a></tt><br></p>
+<p><code>atoms_to_form(AtomList::[atom()]) -&gt; <a href="#type-form_element">form_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the form element corresponding to the specified list of atoms.</p>
 
@@ -54,7 +54,7 @@ form elements already) into the AST version of a list.</td></tr>
 
 <h3 class="function"><a name="enumerated_variables_to_form-1">enumerated_variables_to_form/1</a></h3>
 <div class="spec">
-<p><tt>enumerated_variables_to_form(Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-form_element">form_element()</a></tt><br></p>
+<p><code>enumerated_variables_to_form(Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-form_element">form_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the form element corresponding to the list of variables 
 corresponding to the specified number of such variables.</p>
@@ -68,7 +68,7 @@ enumerated_variables_to_form(2).</p>
 
 <h3 class="function"><a name="form_to_atoms-1">form_to_atoms/1</a></h3>
 <div class="spec">
-<p><tt>form_to_atoms(X1::<a href="#type-form_element">form_element()</a>) -&gt; [atom()]</tt><br></p>
+<p><code>form_to_atoms(X1::<a href="#type-form_element">form_element()</a>) -&gt; [atom()]</code><br></p>
 <p> </p>
 </div><p><p>Returns the list of atoms corresponding to the specified form element.</p>
 
@@ -78,7 +78,7 @@ enumerated_variables_to_form(2).</p>
 
 <h3 class="function"><a name="form_to_list-1">form_to_list/1</a></h3>
 <div class="spec">
-<p><tt>form_to_list(X1::<a href="#type-form_element">form_element()</a>) -&gt; list()</tt><br></p>
+<p><code>form_to_list(X1::<a href="#type-form_element">form_element()</a>) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified AST list into the corresponding plain list.</p>
 
@@ -90,7 +90,7 @@ enumerated_variables_to_form(2).</p>
 
 <h3 class="function"><a name="get_header_params-1">get_header_params/1</a></h3>
 <div class="spec">
-<p><tt>get_header_params(Arity::arity()) -&gt; [<a href="#type-form_element">form_element()</a>]</tt><br></p>
+<p><code>get_header_params(Arity::arity()) -&gt; [<a href="#type-form_element">form_element()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns, as form elements, conventional call parameter names, as form 
 elements, corresponding to a function of the specified arity.</p>
@@ -106,7 +106,7 @@ header, like in 'f(A,B)-&gt;...'.</p>
 
 <h3 class="function"><a name="get_iterated_param_name-1">get_iterated_param_name/1</a></h3>
 <div class="spec">
-<p><tt>get_iterated_param_name(Count::<a href="#type-count">count()</a>) -&gt; atom()</tt><br></p>
+<p><code>get_iterated_param_name(Count::<a href="#type-count">count()</a>) -&gt; atom()</code><br></p>
 <p> </p>
 </div><p><p>Returns, in AST form, a reference to the specified iterated variable.</p>
 
@@ -115,7 +115,7 @@ header, like in 'f(A,B)-&gt;...'.</p>
 
 <h3 class="function"><a name="list_to_form-1">list_to_form/1</a></h3>
 <div class="spec">
-<p><tt>list_to_form(List::list()) -&gt; <a href="#type-form_element">form_element()</a></tt><br></p>
+<p><code>list_to_form(List::list()) -&gt; <a href="#type-form_element">form_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified list (whose elements are typically themselves 
 form elements already) into the AST version of a list.</p>

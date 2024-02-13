@@ -15,21 +15,21 @@
 
 <h2><a name="description">Description</a></h2><p>Module in charge of handling <b>guards defined with an AST</b>.</p>
 
- See the "7.6 Guards" section of <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>
+ See the "7.6 Guards" section of <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a>
  for more information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_atom">ast_atom()</a></h3>
-<p><tt>ast_atom() = <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a></tt></p>
+<p><code>ast_atom() = <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_bitstring_bin_element">ast_bitstring_bin_element()</a></h3>
-<p><tt>ast_bitstring_bin_element() = <a href="ast_bitstring.html#type-bin_element">ast_bitstring:bin_element</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>)</tt></p>
+<p><code>ast_bitstring_bin_element() = <a href="ast_bitstring.html#type-bin_element">ast_bitstring:bin_element</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>)</code></p>
 <p> Defined in the context of a guard.</p>
 
 <h3 class="typedecl"><a name="type-ast_bitstring_constructor">ast_bitstring_constructor()</a></h3>
-<p><tt>ast_bitstring_constructor() = <a href="ast_bitstring.html#type-constructor">ast_bitstring:constructor</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>)</tt></p>
+<p><code>ast_bitstring_constructor() = <a href="ast_bitstring.html#type-constructor">ast_bitstring:constructor</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>)</code></p>
 <p><p> "If Gt is a bitstring constructor <code>&lt;&lt;Gt_1:Size_1/TSL_1, ...,
  Gt_k:Size_k/TSL_k&gt;&gt;</code>, where each Size_i is a guard test and each TSL_i is a 
 type specificer list, then Rep(Gt) = {bin, FILE_LOC, [{bin_element, FILE_LOC, 
@@ -42,14 +42,14 @@ represented by default."</p>
  So apparently a guard test is a recursive type.</p>
 
 <h3 class="typedecl"><a name="type-ast_guard">ast_guard()</a></h3>
-<p><tt>ast_guard() = [<a href="#type-ast_guard_test">ast_guard_test()</a>, ...]</tt></p>
+<p><code>ast_guard() = [<a href="#type-ast_guard_test">ast_guard_test()</a>, ...]</code></p>
 <p><p> The description of a guard in an AST.</p>
 
  "A guard G is a non-empty sequence of guard tests Gt_1, ..., Gt_k, and Rep(G)
  = [Rep(Gt_1), ..., Rep(Gt_k)]."</p>
 
 <h3 class="typedecl"><a name="type-ast_guard_sequence">ast_guard_sequence()</a></h3>
-<p><tt>ast_guard_sequence() = [<a href="#type-ast_guard">ast_guard()</a>]</tt></p>
+<p><code>ast_guard_sequence() = [<a href="#type-ast_guard">ast_guard()</a>]</code></p>
 <p><p> The description of a sequence of guards in an AST.</p>
 
  <p>"A guard sequence Gs is a sequence of guards G_1; ...; G_k, and Rep(Gs) = 
@@ -58,15 +58,15 @@ represented by default."</p>
  For example {call, 102, {atom,102,is_integer}, [{var,102,'X'}]}.</p>
 
 <h3 class="typedecl"><a name="type-ast_guard_test">ast_guard_test()</a></h3>
-<p><tt>ast_guard_test() = <a href="ast_bitstring.html#type-constructor">ast_bitstring:constructor</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>) | {cons, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_guard_test">ast_guard_test()</a>, <a href="#type-ast_guard_test">ast_guard_test()</a>} | {call, <a href="#type-file_loc">file_loc()</a>, {remote, <a href="#type-file_loc">file_loc()</a>, <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>, <a href="#type-ast_atom">ast_atom()</a>} | <a href="#type-ast_atom">ast_atom()</a>, [<a href="#type-ast_guard_test">ast_guard_test()</a>]} | <a href="ast_map.html#type-ast_map_form">ast_map:ast_map_form()</a></tt></p>
+<p><code>ast_guard_test() = <a href="ast_bitstring.html#type-constructor">ast_bitstring:constructor</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>) | {cons, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_guard_test">ast_guard_test()</a>, <a href="#type-ast_guard_test">ast_guard_test()</a>} | {call, <a href="#type-file_loc">file_loc()</a>, {remote, <a href="#type-file_loc">file_loc()</a>, <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>, <a href="#type-ast_atom">ast_atom()</a>} | <a href="#type-ast_atom">ast_atom()</a>, [<a href="#type-ast_guard_test">ast_guard_test()</a>]} | <a href="ast_map.html#type-ast_map_form">ast_map:ast_map_form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -80,7 +80,7 @@ transformations.</td></tr>
 
 <h3 class="function"><a name="transform_guard-2">transform_guard/2</a></h3>
 <div class="spec">
-<p><tt>transform_guard(GuardTests::<a href="#type-ast_guard">ast_guard()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_guard">ast_guard()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_guard(GuardTests::<a href="#type-ast_guard">ast_guard()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_guard">ast_guard()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified guard, operating relevant AST transformations.</p>
 
@@ -90,7 +90,7 @@ transformations.</td></tr>
 
 <h3 class="function"><a name="transform_guard_sequence-2">transform_guard_sequence/2</a></h3>
 <div class="spec">
-<p><tt>transform_guard_sequence(Guards::<a href="#type-ast_guard_sequence">ast_guard_sequence()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_guard_sequence">ast_guard_sequence()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_guard_sequence(Guards::<a href="#type-ast_guard_sequence">ast_guard_sequence()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_guard_sequence">ast_guard_sequence()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms the specified guard sequence, operating relevant AST 
 transformations.</p>
@@ -103,7 +103,7 @@ transformations.</p>
 
 <h3 class="function"><a name="transform_guard_test-2">transform_guard_test/2</a></h3>
 <div class="spec">
-<p><tt>transform_guard_test(GuardTest, Transforms) -&gt; any()</tt></p>
+<p><code>transform_guard_test(GuardTest, Transforms) -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Transforms specified guard test.</p>
 

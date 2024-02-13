@@ -22,53 +22,53 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
-<p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
+<p><code>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-base_status">base_status()</a></h3>
-<p><tt>base_status() = <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></tt></p>
+<p><code>base_status() = <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-code_path">code_path()</a></h3>
-<p><tt>code_path() = [<a href="#type-directory_path">directory_path()</a>]</tt></p>
+<p><code>code_path() = [<a href="#type-directory_path">directory_path()</a>]</code></p>
 <p> The code path used by a language, i.e. a list of directories (as plain
  strings) to scan for runtime elements (Erlang -pa/-pz, Python sys.path with
  PYTHONPATH, Java classpath, etc.).</p>
 
 <h3 class="typedecl"><a name="type-code_path_position">code_path_position()</a></h3>
-<p><tt>code_path_position() = first_position | last_position</tt></p>
+<p><code>code_path_position() = first_position | last_position</code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-define">define()</a></h3>
-<p><tt>define() = <a href="#type-define_name">define_name()</a> | {<a href="#type-define_name">define_name()</a>, <a href="#type-define_value">define_value()</a>}</tt></p>
+<p><code>define() = <a href="#type-define_name">define_name()</a> | {<a href="#type-define_name">define_name()</a>, <a href="#type-define_value">define_value()</a>}</code></p>
 <p> Describes a preprocessor define.</p>
 
 <h3 class="typedecl"><a name="type-define_name">define_name()</a></h3>
-<p><tt>define_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>define_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Name of a preprocessor define.</p>
 
 <h3 class="typedecl"><a name="type-define_value">define_value()</a></h3>
-<p><tt>define_value() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>define_value() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Value of a preprocessor define.</p>
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-env_variable_name">env_variable_name()</a></h3>
-<p><tt>env_variable_name() = <a href="system_utils.html#type-env_variable_name">system_utils:env_variable_name()</a></tt></p>
+<p><code>env_variable_name() = <a href="system_utils.html#type-env_variable_name">system_utils:env_variable_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-error_map">error_map()</a></h3>
-<p><tt>error_map() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-count">count()</a>, <a href="#type-ustring">ustring()</a>)</tt></p>
+<p><code>error_map() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-count">count()</a>, <a href="#type-ustring">ustring()</a>)</code></p>
 <p><p> Argument-level error information in a stacktrace, typicially associated to the 
 'error_info' key in an error_info() term.</p>
 
@@ -76,57 +76,57 @@
  module.</p>
 
 <h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
-<p><tt>error_term() = <a href="basic_utils.html#type-error_term">basic_utils:error_term()</a></tt></p>
+<p><code>error_term() = <a href="basic_utils.html#type-error_term">basic_utils:error_term()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
-<p><tt>function_name() = <a href="basic_utils.html#type-function_name">basic_utils:function_name()</a></tt></p>
+<p><code>function_name() = <a href="basic_utils.html#type-function_name">basic_utils:function_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-md5_sum">md5_sum()</a></h3>
-<p><tt>md5_sum() = <a href="hash_utils.html#type-md5_sum">hash_utils:md5_sum()</a></tt></p>
+<p><code>md5_sum() = <a href="hash_utils.html#type-md5_sum">hash_utils:md5_sum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-possibly_resolvable_path">possibly_resolvable_path()</a></h3>
-<p><tt>possibly_resolvable_path() = <a href="file_utils.html#type-possibly_resolvable_path">file_utils:possibly_resolvable_path()</a></tt></p>
+<p><code>possibly_resolvable_path() = <a href="file_utils.html#type-possibly_resolvable_path">file_utils:possibly_resolvable_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-resolvable_code_path">resolvable_code_path()</a></h3>
-<p><tt>resolvable_code_path() = [<a href="#type-possibly_resolvable_path">possibly_resolvable_path()</a>]</tt></p>
+<p><code>resolvable_code_path() = [<a href="#type-possibly_resolvable_path">possibly_resolvable_path()</a>]</code></p>
 <p> A code path that may comprise plain or resolvable paths.</p>
 
 <h3 class="typedecl"><a name="type-stack_info">stack_info()</a></h3>
-<p><tt>stack_info() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(atom(), term()) | <a href="list_table.html#type-list_table">list_table:list_table</a>(atom(), term())</tt></p>
+<p><code>stack_info() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(atom(), term()) | <a href="list_table.html#type-list_table">list_table:list_table</a>(atom(), term())</code></p>
 <p><p> The last element of a stack item.</p>
 
  For example [{file,file_path()}, {line, meta_utils:line()}].</p>
 
 <h3 class="typedecl"><a name="type-stack_item">stack_item()</a></h3>
-<p><tt>stack_item() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, arity(), <a href="#type-stack_info">stack_info()</a>}</tt></p>
+<p><code>stack_item() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, arity(), <a href="#type-stack_info">stack_info()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-stack_trace">stack_trace()</a></h3>
-<p><tt>stack_trace() = [<a href="#type-stack_item">stack_item()</a>]</tt></p>
+<p><code>stack_trace() = [<a href="#type-stack_item">stack_item()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -229,7 +229,7 @@ it was already set (otherwise does nothing).</td></tr>
 
 <h3 class="function"><a name="code_path_to_string-0">code_path_to_string/0</a></h3>
 <div class="spec">
-<p><tt>code_path_to_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>code_path_to_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of the current code path, sorted in 
 alphabetical order.</p>
@@ -240,13 +240,13 @@ alphabetical order.</p>
 
 <h3 class="function"><a name="code_path_to_string-1">code_path_to_string/1</a></h3>
 <div class="spec">
-<p><tt>code_path_to_string(CodePath::<a href="#type-code_path">code_path()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>code_path_to_string(CodePath::<a href="#type-code_path">code_path()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified code path.</p>
 
 <h3 class="function"><a name="declare_beam_directories-1">declare_beam_directories/1</a></h3>
 <div class="spec">
-<p><tt>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares specified directories as additional code paths where BEAM files 
 will be looked up by the VM, adding them at first position in the code path.</p>
@@ -256,7 +256,7 @@ will be looked up by the VM, adding them at first position in the code path.</p>
 
 <h3 class="function"><a name="declare_beam_directories-2">declare_beam_directories/2</a></h3>
 <div class="spec">
-<p><tt>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>, Pos::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>, Pos::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares specified directories as additional code paths where BEAM files 
 will be looked up by the VM, adding them either at first or last position in 
@@ -267,7 +267,7 @@ the code path.</p>
 
 <h3 class="function"><a name="declare_beam_directory-1">declare_beam_directory/1</a></h3>
 <div class="spec">
-<p><tt>declare_beam_directory(Dir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>declare_beam_directory(Dir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares specified directory as an additional code path where BEAM files 
 will be looked up by the VM, adding it at first position in the code path.</p>
@@ -280,7 +280,7 @@ old position and put first.</p>
 
 <h3 class="function"><a name="declare_beam_directory-2">declare_beam_directory/2</a></h3>
 <div class="spec">
-<p><tt>declare_beam_directory(Dir::<a href="#type-any_directory_path">any_directory_path()</a>, X2::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>declare_beam_directory(Dir::<a href="#type-any_directory_path">any_directory_path()</a>, X2::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares specified directory as an additional code path where BEAM files 
 will be looked up by the VM, adding it as specified, at either first or last 
@@ -299,7 +299,7 @@ first
 
 <h3 class="function"><a name="declare_beam_dirs_for-1">declare_beam_dirs_for/1</a></h3>
 <div class="spec">
-<p><tt>declare_beam_dirs_for(VariableName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>declare_beam_dirs_for(VariableName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares automatically the relevant BEAM directories in the code path so 
 that the layer whose base directory is designated as the value associated to 
@@ -311,7 +311,7 @@ the specified environment variable name is fully usable from then on.</p>
 
 <h3 class="function"><a name="declare_beam_dirs_for_myriad-0">declare_beam_dirs_for_myriad/0</a></h3>
 <div class="spec">
-<p><tt>declare_beam_dirs_for_myriad() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>declare_beam_dirs_for_myriad() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Declares automatically the relevant BEAM directories in the code path so 
 that Ceylan-Myriad can be fully usable from then on.</p>
@@ -327,7 +327,7 @@ corresponding root directory</p>
 
 <h3 class="function"><a name="deploy_modules-2">deploy_modules/2</a></h3>
 <div class="spec">
-<p><tt>deploy_modules(Modules::[module()], Nodes::[<a href="#type-atom_node_name">atom_node_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>deploy_modules(Modules::[module()], Nodes::[<a href="#type-atom_node_name">atom_node_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Deploys the specified list of modules on the specified list of nodes 
 (specified as atoms): sends them these modules (as a binary), and loads them 
@@ -340,7 +340,7 @@ so that they are ready for future use, using a default time-out.</p>
 
 <h3 class="function"><a name="deploy_modules-3">deploy_modules/3</a></h3>
 <div class="spec">
-<p><tt>deploy_modules(Modules::[module()], Nodes::[<a href="#type-atom_node_name">atom_node_name()</a>], Timeout::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>deploy_modules(Modules::[module()], Nodes::[<a href="#type-atom_node_name">atom_node_name()</a>], Timeout::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Deploys the specified list of modules on the specified list of nodes 
 (specified as atoms): sends them these modules (as a binary), and loads them 
@@ -356,13 +356,13 @@ the 'infinity' atom.</p>
 
 <h3 class="function"><a name="display_stacktrace-0">display_stacktrace/0</a></h3>
 <div class="spec">
-<p><tt>display_stacktrace() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>display_stacktrace() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Displays the current stacktrace (not stopping the execution).</p>
 
 <h3 class="function"><a name="ensure_compiled-1">ensure_compiled/1</a></h3>
 <div class="spec">
-<p><tt>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Compiles the specified module, by searching its sources through the code 
 path and requiring Myriad's build system to ensure its BEAM exists.</p>
@@ -373,7 +373,7 @@ path and requiring Myriad's build system to ensure its BEAM exists.</p>
 
 <h3 class="function"><a name="ensure_compiled-2">ensure_compiled/2</a></h3>
 <div class="spec">
-<p><tt>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Ensures that the BEAM file corresponding to the specified module 
 exists in the specified directory.</p>
@@ -384,7 +384,7 @@ exists in the specified directory.</p>
 
 <h3 class="function"><a name="ensure_compiled-3">ensure_compiled/3</a></h3>
 <div class="spec">
-<p><tt>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>, Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>, Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Ensures that the BEAM file corresponding to the specified module 
 exists in the specified directory.</p>
@@ -395,7 +395,7 @@ exists in the specified directory.</p>
 
 <h3 class="function"><a name="find_module_source-1">find_module_source/1</a></h3>
 <div class="spec">
-<p><tt>find_module_source(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-file_path">file_path()</a>)</tt><br></p>
+<p><code>find_module_source(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-file_path">file_path()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Tries to find the source file of the specified module in the current code 
 path.</p>
@@ -405,7 +405,7 @@ path.</p>
 
 <h3 class="function"><a name="get_beam_dirs_for-1">get_beam_dirs_for/1</a></h3>
 <div class="spec">
-<p><tt>get_beam_dirs_for(VariableName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p><code>get_beam_dirs_for(VariableName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-code_path">code_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the (ordered) list of (absolute) runtime BEAM directories 
 obtained from the build system located in the directory designated as the 
@@ -425,7 +425,7 @@ specific extra prerequisite to take into account).</p>
 
 <h3 class="function"><a name="get_beam_dirs_for_myriad-0">get_beam_dirs_for_myriad/0</a></h3>
 <div class="spec">
-<p><tt>get_beam_dirs_for_myriad() -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p><code>get_beam_dirs_for_myriad() -&gt; <a href="#type-code_path">code_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the (ordered) list of (absolute) runtime BEAM directories 
 corresponding to this layer (ie the Ceylan-Myriad one).</p>
@@ -445,7 +445,7 @@ conventions are used.</p>
 
 <h3 class="function"><a name="get_beam_filename-1">get_beam_filename/1</a></h3>
 <div class="spec">
-<p><tt>get_beam_filename(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>get_beam_filename(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns the filename of the BEAM file corresponding to the specified
  module.
@@ -453,7 +453,7 @@ conventions are used.</p>
 
 <h3 class="function"><a name="get_code_for-1">get_code_for/1</a></h3>
 <div class="spec">
-<p><tt>get_code_for(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; {binary(), <a href="#type-file_path">file_path()</a>}</tt><br></p>
+<p><code>get_code_for(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; {binary(), <a href="#type-file_path">file_path()</a>}</code><br></p>
 <p> </p>
 </div><p>Returns, by searching the code path, the in-file object code for
  specified module, ie a {ModuleBinary, ModuleFilename} pair for the module
@@ -462,7 +462,7 @@ conventions are used.</p>
 
 <h3 class="function"><a name="get_code_path-0">get_code_path/0</a></h3>
 <div class="spec">
-<p><tt>get_code_path() -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p><code>get_code_path() -&gt; <a href="#type-code_path">code_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a normalised, representation of the current code path, sorted in 
 alphabetical order (without duplicates).</p>
@@ -473,7 +473,7 @@ alphabetical order (without duplicates).</p>
 
 <h3 class="function"><a name="get_code_path_as_string-0">get_code_path_as_string/0</a></h3>
 <div class="spec">
-<p><tt>get_code_path_as_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_code_path_as_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual representation of the current code path, sorted in 
 alphabetical order.</p>
@@ -485,7 +485,7 @@ alphabetical order.</p>
 
 <h3 class="function"><a name="get_erlang_root_path-0">get_erlang_root_path/0</a></h3>
 <div class="spec">
-<p><tt>get_erlang_root_path() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_erlang_root_path() -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the root directory of Erlang/OTP, where it is installed.</p>
 
@@ -495,7 +495,7 @@ alphabetical order.</p>
 
 <h3 class="function"><a name="get_md5_for_loaded_module-1">get_md5_for_loaded_module/1</a></h3>
 <div class="spec">
-<p><tt>get_md5_for_loaded_module(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></tt><br></p>
+<p><code>get_md5_for_loaded_module(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the MD5 for the specified loaded (in-memory, used by the VM) 
 module.</p>
@@ -505,7 +505,7 @@ module.</p>
 
 <h3 class="function"><a name="get_md5_for_stored_module-1">get_md5_for_stored_module/1</a></h3>
 <div class="spec">
-<p><tt>get_md5_for_stored_module(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></tt><br></p>
+<p><code>get_md5_for_stored_module(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></code><br></p>
 <p> </p>
 </div><p>Returns the MD5 for the specified stored (on filesystem, found through
  the code path) module.
@@ -513,7 +513,7 @@ module.</p>
 
 <h3 class="function"><a name="get_source_filename-1">get_source_filename/1</a></h3>
 <div class="spec">
-<p><tt>get_source_filename(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p><code>get_source_filename(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns the filename of the (Erlang) source file corresponding to the
  specified module.
@@ -521,7 +521,7 @@ module.</p>
 
 <h3 class="function"><a name="get_stacktrace-0">get_stacktrace/0</a></h3>
 <div class="spec">
-<p><tt>get_stacktrace() -&gt; <a href="#type-stack_trace">stack_trace()</a></tt><br></p>
+<p><code>get_stacktrace() -&gt; <a href="#type-stack_trace">stack_trace()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns (without crashing the program) the current stack trace.</p>
 
@@ -530,7 +530,7 @@ module.</p>
 
 <h3 class="function"><a name="get_stacktrace-1">get_stacktrace/1</a></h3>
 <div class="spec">
-<p><tt>get_stacktrace(SkipLastElemCount::<a href="#type-count">count()</a>) -&gt; <a href="#type-stack_trace">stack_trace()</a></tt><br></p>
+<p><code>get_stacktrace(SkipLastElemCount::<a href="#type-count">count()</a>) -&gt; <a href="#type-stack_trace">stack_trace()</a></code><br></p>
 <p> </p>
 </div><p>Returns (without crashing the program) the current stack trace, whose
  SkipLastElemCount first elements have been dropped (to output a cleaner, more
@@ -539,13 +539,13 @@ module.</p>
 
 <h3 class="function"><a name="interpret_error-2">interpret_error/2</a></h3>
 <div class="spec">
-<p><tt>interpret_error(ErrorTerm::<a href="#type-error_term">error_term()</a>, Stacktrace::<a href="#type-stack_trace">stack_trace()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_error(ErrorTerm::<a href="#type-error_term">error_term()</a>, Stacktrace::<a href="#type-stack_trace">stack_trace()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Interprets specified error.</p>
 
 <h3 class="function"><a name="interpret_shortened_stacktrace-1">interpret_shortened_stacktrace/1</a></h3>
 <div class="spec">
-<p><tt>interpret_shortened_stacktrace(SkipLastElemCount::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_shortened_stacktrace(SkipLastElemCount::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a "smart" textual representation of the current stacktrace, once 
 specified extra depth has been skipped (not counting this call).</p>
@@ -556,19 +556,19 @@ specified extra depth has been skipped (not counting this call).</p>
 
 <h3 class="function"><a name="interpret_stacktrace-0">interpret_stacktrace/0</a></h3>
 <div class="spec">
-<p><tt>interpret_stacktrace() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_stacktrace() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a "smart" textual representation of the current stacktrace.</p>
 
 <h3 class="function"><a name="interpret_stacktrace-1">interpret_stacktrace/1</a></h3>
 <div class="spec">
-<p><tt>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace">stack_trace()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace">stack_trace()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a "smart" textual representation of the specified stacktrace.</p>
 
 <h3 class="function"><a name="interpret_stacktrace-2">interpret_stacktrace/2</a></h3>
 <div class="spec">
-<p><tt>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace">stack_trace()</a>, MaybeErrorTerm::<a href="#type-maybe">maybe</a>(<a href="#type-error_term">error_term()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace">stack_trace()</a>, MaybeErrorTerm::<a href="#type-maybe">maybe</a>(<a href="#type-error_term">error_term()</a>)) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a "smart", complete textual description of the specified error
  stacktrace, including any argument-level analysis of the failure, listing just
@@ -577,13 +577,13 @@ specified extra depth has been skipped (not counting this call).</p>
 
 <h3 class="function"><a name="interpret_undef_exception-3">interpret_undef_exception/3</a></h3>
 <div class="spec">
-<p><tt>interpret_undef_exception(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_undef_exception(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Interprets an undef exception, typically after it has been raised.</p>
 
 <h3 class="function"><a name="is_beam_in_path-1">is_beam_in_path/1</a></h3>
 <div class="spec">
-<p><tt>is_beam_in_path(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; not_found | [<a href="#type-file_path">file_path()</a>]</tt><br></p>
+<p><code>is_beam_in_path(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; not_found | [<a href="#type-file_path">file_path()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Tells whether specified module has its BEAM file in the current code 
 path.</p>
@@ -603,7 +603,7 @@ would be loaded for the specified module</p>
 
 <h3 class="function"><a name="is_loaded_module_same_on_filesystem-1">is_loaded_module_same_on_filesystem/1</a></h3>
 <div class="spec">
-<p><tt>is_loaded_module_same_on_filesystem(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_loaded_module_same_on_filesystem(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified (supposedly loaded) module is the same as the
  one found through the code path.
@@ -611,7 +611,7 @@ would be loaded for the specified module</p>
 
 <h3 class="function"><a name="list_beams_in_path-0">list_beams_in_path/0</a></h3>
 <div class="spec">
-<p><tt>list_beams_in_path() -&gt; [<a href="#type-module_name">module_name()</a>]</tt><br></p>
+<p><code>list_beams_in_path() -&gt; [<a href="#type-module_name">module_name()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Lists (in alphabetical order) all modules that exist in the current 
 code path, based on the BEAM files found.</p>
@@ -624,7 +624,7 @@ code path, based on the BEAM files found.</p>
 
 <h3 class="function"><a name="recompile-1">recompile/1</a></h3>
 <div class="spec">
-<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>recompile(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Recompiles forcibly the specified module (even if the build system does 
 not detect a source change; this is typically useful if changing compilation 
@@ -639,7 +639,7 @@ exist.</p>
 
 <h3 class="function"><a name="recompile-2">recompile/2</a></h3>
 <div class="spec">
-<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, ForceRecompilation::boolean()) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, ForceRecompilation::boolean()) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Recompiles forcibly the specified module (even if the build system does 
 not detect a source change; this is typically useful if changing compilation 
@@ -654,7 +654,7 @@ exist.</p>
 
 <h3 class="function"><a name="recompile-3">recompile/3</a></h3>
 <div class="spec">
-<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, ForceRecompilation::boolean(), Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, ForceRecompilation::boolean(), Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Recompiles the specified module, forcibly or not, with the specified 
 preprocessor defines.</p>
@@ -672,7 +672,7 @@ exist.</p>
 
 <h3 class="function"><a name="recompile-4">recompile/4</a></h3>
 <div class="spec">
-<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>, ForceRecompilation::boolean(), Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p><code>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>, ForceRecompilation::boolean(), Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
 <p> </p>
 </div><p><p>Recompiles the specified module, forcibly or not, with the specified 
 preprocessor defines, in the specified directory.</p>
@@ -690,7 +690,7 @@ exist.</p>
 
 <h3 class="function"><a name="remove_beam_directory-1">remove_beam_directory/1</a></h3>
 <div class="spec">
-<p><tt>remove_beam_directory(NameOrDir::<a href="#type-directory_path">directory_path()</a> | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_beam_directory(NameOrDir::<a href="#type-directory_path">directory_path()</a> | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes specified directory (either specified verbatim or designated as 
 the ebin directory of a specified application) from the current code path.</p>
@@ -701,7 +701,7 @@ the ebin directory of a specified application) from the current code path.</p>
 
 <h3 class="function"><a name="remove_beam_directory_if_set-1">remove_beam_directory_if_set/1</a></h3>
 <div class="spec">
-<p><tt>remove_beam_directory_if_set(NameOrDir::<a href="#type-directory_path">directory_path()</a> | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_beam_directory_if_set(NameOrDir::<a href="#type-directory_path">directory_path()</a> | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes specified directory (either specified verbatim or designated as 
 the ebin directory of a specified application) from the current code path, if 
@@ -712,7 +712,7 @@ it was already set (otherwise does nothing).</p>
 
 <h3 class="function"><a name="resolve_code_path-1">resolve_code_path/1</a></h3>
 <div class="spec">
-<p><tt>resolve_code_path(AnyCodePaths::<a href="#type-resolvable_code_path">resolvable_code_path()</a>) -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p><code>resolve_code_path(AnyCodePaths::<a href="#type-resolvable_code_path">resolvable_code_path()</a>) -&gt; <a href="#type-code_path">code_path()</a></code><br></p>
 <p> </p>
 </div><p>Resolves the specified resolvable code path: returns a plain, immediately
  usable code path (of course preserving path order).
@@ -720,13 +720,13 @@ it was already set (otherwise does nothing).</p>
 
 <h3 class="function"><a name="stack_info_to_string-1">stack_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>stack_info_to_string(StackInfo::<a href="#type-stack_info">stack_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>stack_info_to_string(StackInfo::<a href="#type-stack_info">stack_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of specified stack information.</p>
 
 <h3 class="function"><a name="study_function_availability-3">study_function_availability/3</a></h3>
 <div class="spec">
-<p><tt>study_function_availability(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>study_function_availability(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Reports whether the specified function is available, and if not returns
  details in order to facilitate any diagnosis.

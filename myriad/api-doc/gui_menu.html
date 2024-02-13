@@ -19,28 +19,24 @@
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-frame">frame()</a></h3>
-<p><tt>frame() = <a href="gui_window.html#type-frame">gui_window:frame()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-help_info">help_info()</a></h3>
-<p><tt>help_info() = <a href="gui_text.html#type-help_info">gui_text:help_info()</a></tt></p>
+<p><code>help_info() = <a href="gui_text.html#type-help_info">gui_text:help_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
-<p><tt>id() = <a href="gui_id.html#type-id">gui_id:id()</a></tt></p>
+<p><code>id() = <a href="gui_id.html#type-id">gui_id:id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><tt>label() = <a href="gui.html#type-label">gui:label()</a></tt></p>
+<p><code>label() = <a href="gui.html#type-label">gui:label()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-menu">menu()</a></h3>
-<p><b>abstract datatype</b>: <tt>menu()</tt></p>
+<p><b>abstract datatype</b>: <code>menu()</code></p>
 <p><p> The definition of a menu, to be assigned either to a menu bar or to a popup 
 menu.</p>
 
@@ -54,77 +50,81 @@ or to a popup menu.</p>
  a title has to be specified and will take precedence.</p>
 
 <h3 class="typedecl"><a name="type-menu_bar">menu_bar()</a></h3>
-<p><b>abstract datatype</b>: <tt>menu_bar()</tt></p>
+<p><b>abstract datatype</b>: <code>menu_bar()</code></p>
 <p><p> A menu bar is a series of menus in a row, accessible from the top of a frame.</p>
 
  When a frame goes fullscreen, any menu bar it has is hidden.</p>
 
 <h3 class="typedecl"><a name="type-menu_item">menu_item()</a></h3>
-<p><b>abstract datatype</b>: <tt>menu_item()</tt></p>
+<p><b>abstract datatype</b>: <code>menu_item()</code></p>
 <p><p> An entry registered in a menu; possibly a basic item, a submenu or a 
 separator.</p>
 
  Items are added at the current bottom of a menu.</p>
 
 <h3 class="typedecl"><a name="type-menu_item_id">menu_item_id()</a></h3>
-<p><tt>menu_item_id() = <a href="#type-standard_menu_item_name_id">standard_menu_item_name_id()</a> | <a href="#type-id">id()</a></tt></p>
+<p><code>menu_item_id() = <a href="#type-standard_menu_item_name_id">standard_menu_item_name_id()</a> | <a href="#type-id">id()</a></code></p>
 <p> The identifier of a menu item, possibly having a specific, named (standard or
  not) meaning and graphical representation.</p>
 
 <h3 class="typedecl"><a name="type-menu_item_kind">menu_item_kind()</a></h3>
-<p><tt>menu_item_kind() = normal | check | radio | separator | dropdown</tt></p>
+<p><code>menu_item_kind() = normal | check | radio | separator | dropdown</code></p>
 
 
 <h3 class="typedecl"><a name="type-menu_item_label">menu_item_label()</a></h3>
-<p><tt>menu_item_label() = <a href="#type-menu_title">menu_title()</a></tt></p>
+<p><code>menu_item_label() = <a href="#type-menu_title">menu_title()</a></code></p>
 <p> The text to display for a menu item (typically of a menu).</p>
 
 <h3 class="typedecl"><a name="type-menu_item_status">menu_item_status()</a></h3>
-<p><tt>menu_item_status() = enabled | disabled</tt></p>
+<p><code>menu_item_status() = enabled | disabled</code></p>
 <p> Tells whether a menu item is enabled or disabled (greyed out).</p>
 
 <h3 class="typedecl"><a name="type-menu_label">menu_label()</a></h3>
-<p><tt>menu_label() = <a href="#type-menu_title">menu_title()</a></tt></p>
+<p><code>menu_label() = <a href="#type-menu_title">menu_title()</a></code></p>
 <p> The text to display for a menu item (typically of a menu bar).</p>
 
 <h3 class="typedecl"><a name="type-menu_option">menu_option()</a></h3>
-<p><tt>menu_option() = detachable</tt></p>
+<p><code>menu_option() = detachable</code></p>
 <p> An option when creating a menu.</p>
 
 <h3 class="typedecl"><a name="type-menu_style">menu_style()</a></h3>
-<p><tt>menu_style() = detachable</tt></p>
+<p><code>menu_style() = detachable</code></p>
 <p> A style element of a menu, see
- <a href="http://docs.wxwidgets.org/stable/classwx_menu.html" target="_top"><tt>http://docs.wxwidgets.org/stable/classwx_menu.html</tt></a>.</p>
+ <a href="http://docs.wxwidgets.org/stable/classwx_menu.html" target="_top"><code>http://docs.wxwidgets.org/stable/classwx_menu.html</code></a>.</p>
 
 <h3 class="typedecl"><a name="type-menu_title">menu_title()</a></h3>
-<p><tt>menu_title() = <a href="#type-label">label()</a></tt></p>
+<p><code>menu_title() = <a href="#type-label">label()</a></code></p>
 <p><p> The title associated to a menu element.</p>
 
  Use ampersand to denote a shortcut/accelerator character, e.g. <code>"&amp;File"</code> or
  <code>"&amp;Print code"</code>.</p>
 
 <h3 class="typedecl"><a name="type-name_id">name_id()</a></h3>
-<p><tt>name_id() = <a href="gui_id.html#type-name_id">gui_id:name_id()</a></tt></p>
+<p><code>name_id() = <a href="gui_id.html#type-name_id">gui_id:name_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-standard_menu_item_name_id">standard_menu_item_name_id()</a></h3>
-<p><tt>standard_menu_item_name_id() = new_menu_item | open_menu_item | close_menu_item | save_menu_item | save_as_menu_item | revert_to_saved_menu_item | undelete_menu_item | print_menu_item | preview_menu_item | revert_menu_item | edit_menu_item | file_menu_item | properties_menu_item | cut_menu_item | copy_menu_item | paste_menu_item | delete_menu_item | clear_menu_item | find_menu_item | select_all_menu_item | replace_menu_item | replace_all_menu_item | clear_menu_item | ok_menu_item | cancel_menu_item | apply_menu_item | yes_menu_item | no_menu_item | add_menu_item | remove_menu_item | convert_menu_item | execute_menu_item | home_menu_item | refresh_menu_item | stop_menu_item | index_menu_item | select_color_menu_item | select_font_menu_item | forward_menu_item | backward_menu_item | up_menu_item | down_menu_item | top_menu_item | bottom_menu_item | first_menu_item | last_menu_item | jump_to_menu_item | info_menu_item | zoom_factor_one | zoom_factor_fit | zoom_factor_in | zoom_factor_out | undo_menu_item | redo_menu_item | help_menu_item | preferences_menu_item | about_menu_item | floppy_menu_item | hard_disk_menu_item | network_menu_item | bold_menu_item | cdrom_menu_item | indent_menu_item | italic_menu_item | justify_center_menu_item | justify_fill_menu_item | justify_left_menu_item | justify_right_menu_item | sort_ascending_menu_item | sort_descending_menu_item | spell_check_menu_item | strikethrough_menu_item | underline_menu_item | unindent_menu_item | exit_menu_item</tt></p>
+<p><code>standard_menu_item_name_id() = new_menu_item | open_menu_item | close_menu_item | save_menu_item | save_as_menu_item | revert_to_saved_menu_item | undelete_menu_item | print_menu_item | preview_menu_item | revert_menu_item | edit_menu_item | file_menu_item | properties_menu_item | cut_menu_item | copy_menu_item | paste_menu_item | delete_menu_item | clear_menu_item | find_menu_item | select_all_menu_item | replace_menu_item | replace_all_menu_item | clear_menu_item | ok_menu_item | cancel_menu_item | apply_menu_item | yes_menu_item | no_menu_item | add_menu_item | remove_menu_item | convert_menu_item | execute_menu_item | home_menu_item | refresh_menu_item | stop_menu_item | index_menu_item | select_color_menu_item | select_font_menu_item | forward_menu_item | backward_menu_item | up_menu_item | down_menu_item | top_menu_item | bottom_menu_item | first_menu_item | last_menu_item | jump_to_menu_item | info_menu_item | zoom_factor_one | zoom_factor_fit | zoom_factor_in | zoom_factor_out | undo_menu_item | redo_menu_item | help_menu_item | preferences_menu_item | about_menu_item | floppy_menu_item | hard_disk_menu_item | network_menu_item | bold_menu_item | cdrom_menu_item | indent_menu_item | italic_menu_item | justify_center_menu_item | justify_fill_menu_item | justify_left_menu_item | justify_right_menu_item | sort_ascending_menu_item | sort_descending_menu_item | spell_check_menu_item | strikethrough_menu_item | underline_menu_item | unindent_menu_item | exit_menu_item</code></p>
 
 
 <h3 class="typedecl"><a name="type-title">title()</a></h3>
-<p><tt>title() = <a href="gui.html#type-title">gui:title()</a></tt></p>
+<p><code>title() = <a href="gui.html#type-title">gui:title()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-widget">widget()</a></h3>
-<p><tt>widget() = <a href="gui.html#type-widget">gui:widget()</a></tt></p>
+<p><code>widget() = <a href="gui.html#type-widget">gui:widget()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-window">window()</a></h3>
+<p><code>window() = <a href="gui_window.html#type-window">gui_window:window()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_enum">wx_enum()</a></h3>
-<p><tt>wx_enum() = <a href="gui_wx_backend.html#type-wx_enum">gui_wx_backend:wx_enum()</a></tt></p>
+<p><code>wx_enum() = <a href="gui_wx_backend.html#type-wx_enum">gui_wx_backend:wx_enum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
-<p><tt>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></tt></p>
+<p><code>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -159,15 +159,15 @@ popup menu.</td></tr>
  menu bar, or to be used as a popup menu.</td></tr>
 <tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a menu with the specified title and options, either to be
  attached to a menu bar, or to be used as a popup menu.</td></tr>
-<tr><td valign="top"><a href="#create_bar-0">create_bar/0</a></td><td>Creates an empty menu bar, not yet specifically associated to a frame.</td></tr>
-<tr><td valign="top"><a href="#create_bar-1">create_bar/1</a></td><td>Creates an empty menu bar, associated to the specified frame.</td></tr>
+<tr><td valign="top"><a href="#create_bar-0">create_bar/0</a></td><td>Creates an empty menu bar, not yet specifically associated to a window.</td></tr>
+<tr><td valign="top"><a href="#create_bar-1">create_bar/1</a></td><td>Creates an empty menu bar, associated to the specified window.</td></tr>
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified menu.</td></tr>
 <tr><td valign="top"><a href="#get_standard_item_names-0">get_standard_item_names/0</a></td><td>Returns a list of the names of the standard menu item identifiers.</td></tr>
 <tr><td valign="top"><a href="#remove_menu_item-2">remove_menu_item/2</a></td><td>Removes the specified item from the specified menu.</td></tr>
 <tr><td valign="top"><a href="#set_checkable_item-3">set_checkable_item/3</a></td><td>Checks/unchecks the (checkable) menu item specified by its identifier
  (not by its menu item reference).</td></tr>
 <tr><td valign="top"><a href="#set_item_status-3">set_item_status/3</a></td><td>Sets the enabled/disabled status of the specified menu item.</td></tr>
-<tr><td valign="top"><a href="#set_menu_bar-2">set_menu_bar/2</a></td><td>Assigns the specified menu bar to the specified frame.</td></tr>
+<tr><td valign="top"><a href="#set_menu_bar-2">set_menu_bar/2</a></td><td>Assigns the specified menu bar to the specified window.</td></tr>
 <tr><td valign="top"><a href="#to_new_wx_menu_item_id-1">to_new_wx_menu_item_id/1</a></td><td>Converts the specified menu identifier for a new menu item into a
  wx-specific one.</td></tr>
 <tr><td valign="top"><a href="#to_wx_menu_item_id-1">to_wx_menu_item_id/1</a></td><td>Converts the specified menu item identifier (for an already-existing menu
@@ -179,7 +179,7 @@ popup menu.</td></tr>
 
 <h3 class="function"><a name="activate_as_popup-2">activate_as_popup/2</a></h3>
 <div class="spec">
-<p><tt>activate_as_popup(Widget::<a href="#type-widget">widget()</a>, Menu::<a href="#type-menu">menu()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>activate_as_popup(Menu::<a href="#type-menu">menu()</a>, Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Activates the specified menu as a popup one on the specified widget.</p>
 
@@ -188,7 +188,7 @@ popup menu.</td></tr>
 
 <h3 class="function"><a name="add_checkable_item-2">add_checkable_item/2</a></h3>
 <div class="spec">
-<p><tt>add_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p>Creates a menu item that can be toggled/checked, based on the specified
  label, adds it to the specified menu, and returns that menu item.
@@ -196,7 +196,7 @@ popup menu.</td></tr>
 
 <h3 class="function"><a name="add_checkable_item-3">add_checkable_item/3</a></h3>
 <div class="spec">
-<p><tt>add_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a menu item that can be toggled/checked, based on the specified 
 identifier and label, adds it to the specified menu, and returns that menu 
@@ -209,7 +209,7 @@ item.</p>
 
 <h3 class="function"><a name="add_checkable_item-4">add_checkable_item/4</a></h3>
 <div class="spec">
-<p><tt>add_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, HelpInfoStr::<a href="#type-help_info">help_info()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, HelpInfoStr::<a href="#type-help_info">help_info()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a menu item that can be toggled/checked, based on the specified 
 identifier, label and help information, adds it to the specified menu, and 
@@ -222,7 +222,7 @@ returns that menu item.</p>
 
 <h3 class="function"><a name="add_item-2">add_item/2</a></h3>
 <div class="spec">
-<p><tt>add_item(Menu::<a href="#type-menu">menu()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_item(Menu::<a href="#type-menu">menu()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p>Creates a menu item based on the specified label, adds it to the
  specified menu, and returns that menu item.
@@ -230,7 +230,7 @@ returns that menu item.</p>
 
 <h3 class="function"><a name="add_item-3">add_item/3</a></h3>
 <div class="spec">
-<p><tt>add_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a menu item based on the specified identifier and label, adds it 
 to the specified menu, and returns that menu item.</p>
@@ -242,13 +242,13 @@ to the specified menu, and returns that menu item.</p>
 
 <h3 class="function"><a name="add_menu-3">add_menu/3</a></h3>
 <div class="spec">
-<p><tt>add_menu(MenuBar::<a href="#type-menu_bar">menu_bar()</a>, Menu::<a href="#type-menu">menu()</a>, MenuTitle::<a href="#type-title">title()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>add_menu(MenuBar::<a href="#type-menu_bar">menu_bar()</a>, Menu::<a href="#type-menu">menu()</a>, MenuTitle::<a href="#type-title">title()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Adds the specified menu to the specified menu bar.</p>
 
 <h3 class="function"><a name="add_radio_item-3">add_radio_item/3</a></h3>
 <div class="spec">
-<p><tt>add_radio_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_radio_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p><p>Adds the specified radio item to the specified menu, and returns that 
 item.</p>
@@ -263,7 +263,7 @@ checked, all the others are automatically unchecked.</p>
 
 <h3 class="function"><a name="add_radio_item-4">add_radio_item/4</a></h3>
 <div class="spec">
-<p><tt>add_radio_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, HelpInfoStr::<a href="#type-help_info">help_info()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_radio_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, HelpInfoStr::<a href="#type-help_info">help_info()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p><p>Adds the specified labelled item that can be checked to the specified 
 menu, and returns that item.</p>
@@ -275,13 +275,13 @@ menu, and returns that item.</p>
 
 <h3 class="function"><a name="add_separator-1">add_separator/1</a></h3>
 <div class="spec">
-<p><tt>add_separator(Menu::<a href="#type-menu">menu()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>add_separator(Menu::<a href="#type-menu">menu()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p>Adds a separator to the specified menu, and returns that separator.</p>
 
 <h3 class="function"><a name="append_item-2">append_item/2</a></h3>
 <div class="spec">
-<p><tt>append_item(Menu::<a href="#type-menu">menu()</a>, MenuItem::<a href="#type-menu_item">menu_item()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>append_item(Menu::<a href="#type-menu">menu()</a>, MenuItem::<a href="#type-menu_item">menu_item()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p>Appends the specified already-created menu item (not a mere label) to the
  specified menu, and returns a possibly updated version of that menu item.
@@ -289,7 +289,7 @@ menu, and returns that item.</p>
 
 <h3 class="function"><a name="append_submenu-4">append_submenu/4</a></h3>
 <div class="spec">
-<p><tt>append_submenu(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, SubMenu::<a href="#type-menu">menu()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>append_submenu(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, SubMenu::<a href="#type-menu">menu()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p><p>Adds the specified labelled submenu, associated to the specified 
 identifier, to the specified menu, and returns the corresponding menu item.</p>
@@ -301,7 +301,7 @@ identifier, to the specified menu, and returns the corresponding menu item.</p>
 
 <h3 class="function"><a name="append_submenu-5">append_submenu/5</a></h3>
 <div class="spec">
-<p><tt>append_submenu(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, SubMenu::<a href="#type-menu">menu()</a>, HelpInfoStr::<a href="#type-help_info">help_info()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></tt><br></p>
+<p><code>append_submenu(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, MenuItemLabel::<a href="#type-menu_item_label">menu_item_label()</a>, SubMenu::<a href="#type-menu">menu()</a>, HelpInfoStr::<a href="#type-help_info">help_info()</a>) -&gt; <a href="#type-menu_item">menu_item()</a></code><br></p>
 <p> </p>
 </div><p><p>Adds the specified labelled submenu, associated to the specified 
 identifier and help information, to the specified menu, and returns that item.</p>
@@ -313,7 +313,7 @@ identifier and help information, to the specified menu, and returns that item.</
 
 <h3 class="function"><a name="create-0">create/0</a></h3>
 <div class="spec">
-<p><tt>create() -&gt; <a href="#type-menu">menu()</a></tt><br></p>
+<p><code>create() -&gt; <a href="#type-menu">menu()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates a menu, either to be attached to a menu bar, or to be used as a 
 popup menu.</p>
@@ -323,7 +323,7 @@ popup menu.</p>
 
 <h3 class="function"><a name="create-1">create/1</a></h3>
 <div class="spec">
-<p><tt>create(MaybeOptions::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-menu_option">menu_option()</a>)) -&gt; <a href="#type-menu">menu()</a></tt><br></p>
+<p><code>create(MaybeOptions::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-menu_option">menu_option()</a>)) -&gt; <a href="#type-menu">menu()</a></code><br></p>
 <p> </p>
 </div><p>Creates a menu with the specified options, either to be attached to a
  menu bar, or to be used as a popup menu.
@@ -331,7 +331,7 @@ popup menu.</p>
 
 <h3 class="function"><a name="create-2">create/2</a></h3>
 <div class="spec">
-<p><tt>create(Title::<a href="#type-title">title()</a>, MaybeOptions::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-menu_option">menu_option()</a>)) -&gt; <a href="#type-menu">menu()</a></tt><br></p>
+<p><code>create(Title::<a href="#type-title">title()</a>, MaybeOptions::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-menu_option">menu_option()</a>)) -&gt; <a href="#type-menu">menu()</a></code><br></p>
 <p> </p>
 </div><p>Creates a menu with the specified title and options, either to be
  attached to a menu bar, or to be used as a popup menu.
@@ -339,31 +339,31 @@ popup menu.</p>
 
 <h3 class="function"><a name="create_bar-0">create_bar/0</a></h3>
 <div class="spec">
-<p><tt>create_bar() -&gt; <a href="#type-menu_bar">menu_bar()</a></tt><br></p>
+<p><code>create_bar() -&gt; <a href="#type-menu_bar">menu_bar()</a></code><br></p>
 <p> </p>
-</div><p>Creates an empty menu bar, not yet specifically associated to a frame.</p>
+</div><p>Creates an empty menu bar, not yet specifically associated to a window.</p>
 
 <h3 class="function"><a name="create_bar-1">create_bar/1</a></h3>
 <div class="spec">
-<p><tt>create_bar(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-menu_bar">menu_bar()</a></tt><br></p>
+<p><code>create_bar(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-menu_bar">menu_bar()</a></code><br></p>
 <p> </p>
-</div><p>Creates an empty menu bar, associated to the specified frame.</p>
+</div><p>Creates an empty menu bar, associated to the specified window.</p>
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><tt>destruct(Menu::<a href="#type-menu">menu()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct(Menu::<a href="#type-menu">menu()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified menu.</p>
 
 <h3 class="function"><a name="get_standard_item_names-0">get_standard_item_names/0</a></h3>
 <div class="spec">
-<p><tt>get_standard_item_names() -&gt; [<a href="#type-name_id">name_id()</a>]</tt><br></p>
+<p><code>get_standard_item_names() -&gt; [<a href="#type-name_id">name_id()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the names of the standard menu item identifiers.</p>
 
 <h3 class="function"><a name="remove_menu_item-2">remove_menu_item/2</a></h3>
 <div class="spec">
-<p><tt>remove_menu_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>remove_menu_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Removes the specified item from the specified menu.</p>
 
@@ -372,7 +372,7 @@ popup menu.</p>
 
 <h3 class="function"><a name="set_checkable_item-3">set_checkable_item/3</a></h3>
 <div class="spec">
-<p><tt>set_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, SetAsChecked::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_checkable_item(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, SetAsChecked::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks/unchecks the (checkable) menu item specified by its identifier
  (not by its menu item reference).
@@ -380,19 +380,22 @@ popup menu.</p>
 
 <h3 class="function"><a name="set_item_status-3">set_item_status/3</a></h3>
 <div class="spec">
-<p><tt>set_item_status(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, NewEnableStatus::<a href="#type-menu_item_status">menu_item_status()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_item_status(Menu::<a href="#type-menu">menu()</a>, MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>, NewEnableStatus::<a href="#type-menu_item_status">menu_item_status()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the enabled/disabled status of the specified menu item.</p>
 
 <h3 class="function"><a name="set_menu_bar-2">set_menu_bar/2</a></h3>
 <div class="spec">
-<p><tt>set_menu_bar(MenuBar::<a href="#type-menu_bar">menu_bar()</a>, Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_menu_bar(MenuBar::<a href="#type-menu_bar">menu_bar()</a>, Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified menu bar to the specified frame.</p>
+</div><p><p>Assigns the specified menu bar to the specified window.</p>
+
+ Note: to be deprecated soon; use gui_window:set_menu_bar/2 instead.
+</p>
 
 <h3 class="function"><a name="to_new_wx_menu_item_id-1">to_new_wx_menu_item_id/1</a></h3>
 <div class="spec">
-<p><tt>to_new_wx_menu_item_id(MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>) -&gt; <a href="#type-wx_id">wx_id()</a></tt><br></p>
+<p><code>to_new_wx_menu_item_id(MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>) -&gt; <a href="#type-wx_id">wx_id()</a></code><br></p>
 <p> </p>
 </div><p>Converts the specified menu identifier for a new menu item into a
  wx-specific one.
@@ -400,7 +403,7 @@ popup menu.</p>
 
 <h3 class="function"><a name="to_wx_menu_item_id-1">to_wx_menu_item_id/1</a></h3>
 <div class="spec">
-<p><tt>to_wx_menu_item_id(MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>) -&gt; <a href="#type-wx_id">wx_id()</a></tt><br></p>
+<p><code>to_wx_menu_item_id(MenuItemId::<a href="#type-menu_item_id">menu_item_id()</a>) -&gt; <a href="#type-wx_id">wx_id()</a></code><br></p>
 <p> </p>
 </div><p>Converts the specified menu item identifier (for an already-existing menu
  item) into a wx-specific one.
@@ -408,7 +411,7 @@ popup menu.</p>
 
 <h3 class="function"><a name="to_wx_menu_item_kind-1">to_wx_menu_item_kind/1</a></h3>
 <div class="spec">
-<p><tt>to_wx_menu_item_kind(Kind::<a href="#type-menu_item_kind">menu_item_kind()</a>) -&gt; <a href="#type-wx_enum">wx_enum()</a></tt><br></p>
+<p><code>to_wx_menu_item_kind(Kind::<a href="#type-menu_item_kind">menu_item_kind()</a>) -&gt; <a href="#type-wx_enum">wx_enum()</a></code><br></p>
 <p> </p>
 </div><p>Converts the specified kind of menu identifier into a wx-specific one.</p>
 <hr>

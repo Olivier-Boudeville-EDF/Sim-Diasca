@@ -20,52 +20,52 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-field_count">field_count()</a></h3>
-<p><tt>field_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>field_count() = <a href="#type-count">count()</a></code></p>
 <p> A number of fields, typically in a status bar.</p>
 
 <h3 class="typedecl"><a name="type-field_index">field_index()</a></h3>
-<p><tt>field_index() = <a href="#type-positive_index">positive_index()</a></tt></p>
+<p><code>field_index() = <a href="#type-positive_index">positive_index()</a></code></p>
 <p> The index (1 or more) of a field in a status bar.</p>
 
 <h3 class="typedecl"><a name="type-field_width">field_width()</a></h3>
-<p><tt>field_width() = integer()</tt></p>
+<p><code>field_width() = integer()</code></p>
 <p><p> The width of a field in a status bar.</p>
 
  If positive, designates a fixed width, in pixels.
  If negative, designates a width ratio among all variable-width fields.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-frame">frame()</a></h3>
-<p><tt>frame() = <a href="gui_window.html#type-frame">gui_window:frame()</a></tt></p>
+<p><code>frame() = <a href="gui_window.html#type-frame">gui_window:frame()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
-<p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+<p><code>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-status_bar">status_bar()</a></h3>
-<p><b>abstract datatype</b>: <tt>status_bar()</tt></p>
+<p><b>abstract datatype</b>: <code>status_bar()</code></p>
 <p><p> A thin space at the bottom of a frame where texts are typically displayed.</p>
 
  They are very useful to trace events, and can be split in separate fields.</p>
 
 <h3 class="typedecl"><a name="type-status_bar_style">status_bar_style()</a></h3>
-<p><tt>status_bar_style() = normal | flat | raised | sunken</tt></p>
+<p><code>status_bar_style() = normal | flat | raised | sunken</code></p>
 <p> A style element of a status bar.</p>
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
-<p><tt>text() = <a href="gui_text.html#type-text">gui_text:text()</a></tt></p>
+<p><code>text() = <a href="gui_text.html#type-text">gui_text:text()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -90,13 +90,13 @@
 
 <h3 class="function"><a name="create-1">create/1</a></h3>
 <div class="spec">
-<p><tt>create(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-status_bar">status_bar()</a></tt><br></p>
+<p><code>create(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-status_bar">status_bar()</a></code><br></p>
 <p> </p>
 </div><p>Creates and attaches a status bar at the bottom of the specified frame.</p>
 
 <h3 class="function"><a name="create-2">create/2</a></h3>
 <div class="spec">
-<p><tt>create(Frame::<a href="#type-frame">frame()</a>, StatusBarStyles::[<a href="#type-status_bar_style">status_bar_style()</a>]) -&gt; <a href="#type-status_bar">status_bar()</a></tt><br></p>
+<p><code>create(Frame::<a href="#type-frame">frame()</a>, StatusBarStyles::[<a href="#type-status_bar_style">status_bar_style()</a>]) -&gt; <a href="#type-status_bar">status_bar()</a></code><br></p>
 <p> </p>
 </div><p>Creates and attaches a status bar of the specified style at the bottom of
  the specified frame.
@@ -104,13 +104,13 @@
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><tt>destruct(StatusBar::<a href="#type-status_bar">status_bar()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct(StatusBar::<a href="#type-status_bar">status_bar()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified status bar.</p>
 
 <h3 class="function"><a name="push_field_text-3">push_field_text/3</a></h3>
 <div class="spec">
-<p><tt>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Pushes the specified text in the specified field of the specified status
  bar.
@@ -118,13 +118,13 @@
 
 <h3 class="function"><a name="push_field_text-4">push_field_text/4</a></h3>
 <div class="spec">
-<p><tt>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Pushes the specified formatted text in the specified status bar.</p>
 
 <h3 class="function"><a name="push_text-2">push_text/2</a></h3>
 <div class="spec">
-<p><tt>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Pushes the specified text in the (first field of the) specified status
  bar.
@@ -132,7 +132,7 @@
 
 <h3 class="function"><a name="push_text-3">push_text/3</a></h3>
 <div class="spec">
-<p><tt>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Pushes the specified formatted text in the (first field of the) specified
  status bar.
@@ -140,7 +140,7 @@
 
 <h3 class="function"><a name="set_field_count-2">set_field_count/2</a></h3>
 <div class="spec">
-<p><tt>set_field_count(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldCount::<a href="#type-field_count">field_count()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_field_count(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldCount::<a href="#type-field_count">field_count()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the number of fields in which the specified status bar is to be
  (evenly) split.
@@ -148,7 +148,7 @@
 
 <h3 class="function"><a name="set_field_widths-2">set_field_widths/2</a></h3>
 <div class="spec">
-<p><tt>set_field_widths(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldWidths::[<a href="#type-field_width">field_width()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_field_widths(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldWidths::[<a href="#type-field_width">field_width()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the width of the fields of the specified status bar (and thus
  determines their number as well).

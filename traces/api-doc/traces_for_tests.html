@@ -20,11 +20,11 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-aggregator_pid">aggregator_pid()</a></h3>
-<p><tt>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></tt></p>
+<p><code>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -40,7 +40,7 @@ shell.</td></tr>
 
 <h3 class="function"><a name="test_immediate_stop-2">test_immediate_stop/2</a></h3>
 <div class="spec">
-<p><tt>test_immediate_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</tt><br></p>
+<p><code>test_immediate_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops specified test immediately, not waiting for any trace supervisor, 
 stopping the trace aggregator, and finishing on the shell.</p>
@@ -50,7 +50,7 @@ stopping the trace aggregator, and finishing on the shell.</p>
 
 <h3 class="function"><a name="test_start-2">test_start/2</a></h3>
 <div class="spec">
-<p><tt>test_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="class_TraceAggregator.html#type-initialise_supervision">class_TraceAggregator:initialise_supervision()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p><code>test_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="class_TraceAggregator.html#type-initialise_supervision">class_TraceAggregator:initialise_supervision()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the specified test.</p>
 
@@ -70,7 +70,7 @@ known for good, i.e. at its first renaming).</p>
 
 <h3 class="function"><a name="test_stop-3">test_stop/3</a></h3>
 <div class="spec">
-<p><tt>test_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>, WaitForTraceSupervisor::boolean()) -&gt; no_return()</tt><br></p>
+<p><code>test_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>, WaitForTraceSupervisor::boolean()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops the specified test, waiting for the trace supervisor if requested.</p>
 
@@ -78,7 +78,7 @@ known for good, i.e. at its first renaming).</p>
 
 <h3 class="function"><a name="test_stop_on_shell-2">test_stop_on_shell/2</a></h3>
 <div class="spec">
-<p><tt>test_stop_on_shell(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</tt><br></p>
+<p><code>test_stop_on_shell(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops specified test, stopping the trace aggregator and finishing on the 
 shell.</p>

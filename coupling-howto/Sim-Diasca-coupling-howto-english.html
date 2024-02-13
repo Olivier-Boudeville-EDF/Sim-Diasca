@@ -23,7 +23,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2016-2023 EDF R&amp;D</p>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2016-2024 EDF R&amp;D</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body"><p class="first">olivier (dot) boudeville (at) edf (dot) fr</p>
@@ -35,10 +35,10 @@
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body"><p class="first">Tuesday, January 3, 2017</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Thursday, September 28, 2023</p>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Tuesday, February 13, 2024</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.6</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.7</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body"><p class="first">Stable</p>
@@ -158,9 +158,9 @@
 </table>
 <p>As a result these models were not specifically in line with the engine's expectations at various levels; from the most problematic to the least:</p>
 <ul class="simple">
-<li><strong>models had heterogeneous semantics</strong>: their modelling differed from one to another, and also altogether from the engine's ones (ex: some were based on a dataflow logic <a class="footnote-reference" href="#id8" id="id7">[4]</a> rather than on the usual multi-agent, disaggregated approach upon which Sim-Diasca relies; their view on the target system, on space, on time also differed, i.e. they did not obey a common ontology)</li>
+<li><strong>models had heterogeneous semantics</strong>: their modelling differed from one to another, and also altogether from the engine's ones (e.g. some were based on a dataflow logic <a class="footnote-reference" href="#id8" id="id7">[4]</a> rather than on the usual multi-agent, disaggregated approach upon which Sim-Diasca relies; their view on the target system, on space, on time also differed, i.e. they did not obey a common ontology)</li>
 <li>regarding simulation, <strong>models had their own mode of operation</strong>, organization, and conventions regarding their respective creation, state management, scheduling, evaluation, interactions, result generation, etc.</li>
-<li>regarding their software architecture, <strong>models relied on different build-time and runtime environments</strong>: operating systems could differ, programming language were also heterogeneous (ex: some models had been developed in Python, others in Java, inducing the need for the engine to be able to deal simultaneously with multiple programming languages that had to cooperate)</li>
+<li>regarding their software architecture, <strong>models relied on different build-time and runtime environments</strong>: operating systems could differ, programming language were also heterogeneous (e.g. some models had been developed in Python, others in Java, inducing the need for the engine to be able to deal simultaneously with multiple programming languages that had to cooperate)</li>
 </ul>
 <table class="docutils footnote" frame="void" id="id8" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -214,9 +214,9 @@
 <p>Of course none of these four modes of operation strictly prevail over any other, they all have pros and cons, so any choice in this matter is the consequence of an architectural trade-off depending heavily on the model, the engine and the objectives of the project.</p>
 <p>Besides the coupling potential (i.e. the possibility of including that model in numerous interactions, so that the added value expected from the coupling can be fully obtained), other metrics may be of interest in order to select a scheme:</p>
 <ul class="simple">
-<li>the respective efforts that would be needed to integrate that model (ex: development of a pair of translators in the case of black boxes, adaptation or partial rewriting of this model, etc.)</li>
+<li>the respective efforts that would be needed to integrate that model (e.g. development of a pair of translators in the case of black boxes, adaptation or partial rewriting of this model, etc.)</li>
 <li>whether it leads to a fork, a renewal of that model, possibly providing a new version of reference, and whether it is welcome</li>
-<li>the architecture and performances induced by the integration (ex: in most cases, black boxes are stateless, they are executed from scratch at each timestep as a new process, with much file-based I/O involved, while other approaches may rely on a stateful process running permanently on par with the engine and interacting with it, or on a higher-level component directly operated by the engine - each time with different runtime overheads)</li>
+<li>the architecture and performances induced by the integration (e.g. in most cases, black boxes are stateless, they are executed from scratch at each timestep as a new process, with much file-based I/O involved, while other approaches may rely on a stateful process running permanently on par with the engine and interacting with it, or on a higher-level component directly operated by the engine - each time with different runtime overheads)</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -239,7 +239,7 @@
 <ul class="simple">
 <li>the file formats of its inputs</li>
 <li>the file formats of its outputs</li>
-<li>how it should be executed (ex: command-line options, environment variables, dependencies, etc.)</li>
+<li>how it should be executed (e.g. command-line options, environment variables, dependencies, etc.)</li>
 </ul>
 <p>So this model is originally expected to be run (in an appropriate environment) with a command-line akin to:</p>
 <pre class="code bash literal-block">
@@ -292,7 +292,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <li>a right granularity must be found when breaking down the target system into a set of submodels (neither too fine nor too coarse); the perimeter of each black box and the number of their instances must be finely determined</li>
 <li>the closer models are to continuous time, the more difficult their initialisation may be in order to ensure that all black boxes start with common, correct, consistent initial states</li>
 <li>stable, reliable adapters written in higher-level languages (<em>wrappers</em>) are key for efficient couplings (both in terms of design and runtime performances)</li>
-<li>black boxes must have been implemented with scalability in mind, as their memory footprint (ex: because of some solvers) might become very large</li>
+<li>black boxes must have been implemented with scalability in mind, as their memory footprint (e.g. because of some solvers) might become very large</li>
 <li>well describing and documenting the black boxes is crucial to their integration, and often overlooked</li>
 </ul>
 <p></p>
@@ -304,7 +304,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p>Indeed, once triggered, each model instance may, thanks the coupling APIs at its disposal, act quite freely upon the simulation, i.e. mostly by itself and with little to no control of the engine - whereas it is up to the latter to organise, synchronise and control accesses of the numerous actors involved.</p>
 <p>Typically, such a scheme would naturally lead to the adapted models needing to freely perform indiscriminate, blocking read/write operations onto the rest of the simulation (notably onto other model instances), in spite of a technical context that relies on asynchronous, synchronised message passing to provide parallelism.</p>
 <p><strong>Granting such a freedom to models would be done at the expense of the coupling APIs, which would be either very limiting or, more probably, extremely tricky to develop</strong>: these APIs would have to hide the fact that underneath each of their call from the model, the engine would have to make the overall logical time seamlessly progress and perform simulation-level synchronisation.</p>
-<p>Another option would be to <strong>reimplement in the target language the whole applicative protocol that rules a Sim-Diasca actor</strong>, as it is. This would result in, semantically, offering the same API, yet in a translated form (ex: in Python or Java).</p>
+<p>Another option would be to <strong>reimplement in the target language the whole applicative protocol that rules a Sim-Diasca actor</strong>, as it is. This would result in, semantically, offering the same API, yet in a translated form (e.g. in Python or Java).</p>
 <p>Doing so would involve significant effort on the side of the coupling architecture in order to support each new language, and writing the corresponding models would not be easier than using the classical, native route.</p>
 <p>In a parallel context, with an arbitrary number of model instances performing intricate, simultaneous interactions, having the engine being simultaneously driven by each of these actors would be considerably more complex than the default, opposite mode of operation.</p>
 <p>However, if emulating a full-blown Sim-Diasca actor from another language may prove difficult, <strong>there are settings where by design less leeway is granted</strong> to at least some actors, in which case the integration of third-party code and the development of relevant APIs could be significantly eased.</p>
@@ -332,7 +332,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p><strong>Cons</strong>:</p>
 <ul class="simple">
 <li>not all programming languages can be accommodated (but, a priori, C, Java and Python could); yet one full set of APIs would have to be implemented for each supported language</li>
-<li>reversing the control flow - a model &quot;driving&quot; a part of the simulation - is less natural and is more likely to introduce issues (ex: non-termination of the model, cyclic dependency requiring the adapter and/or the adapted model to be reentrant, the whole being prone to deadlock); more generally, the engine would then have no real control onto the behaviour of the model, especially to the calls made through the coupling API; so, unless investing much efforts in the APIs, a misguided model might make a simulation yield wrong results and misbehave in unanticipated ways; moreover masking the consequences of the reversed control flow when developing the coupling API may be quite an endeavour - if achievable at all (possibly <em>not</em> in the general case)</li>
+<li>reversing the control flow - a model &quot;driving&quot; a part of the simulation - is less natural and is more likely to introduce issues (e.g. non-termination of the model, cyclic dependency requiring the adapter and/or the adapted model to be reentrant, the whole being prone to deadlock); more generally, the engine would then have no real control onto the behaviour of the model, especially to the calls made through the coupling API; so, unless investing much efforts in the APIs, a misguided model might make a simulation yield wrong results and misbehave in unanticipated ways; moreover masking the consequences of the reversed control flow when developing the coupling API may be quite an endeavour - if achievable at all (possibly <em>not</em> in the general case)</li>
 <li>the adapted model may need information from other model instances but, conversely, other actors may require information from it; this feature being by design absent from the original model, its adapted version shall probably have to support it explicitly (as its state cannot be guaranteed to be up to date and consistent at any time); the adapter being unlikely to be able to provide this (as in this scheme the model state is kept private to the adapted model), the required modifications onto the model (and to its adapter as well) would be most probably significant and difficult to operate</li>
 </ul>
 <p></p>
@@ -388,7 +388,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p><strong>Cons</strong>:</p>
 <ul class="simple">
 <li>depending on the precise technical approach being used, the stability of the model may affect the one of the simulation (i.e. if the model crashes, it may crash the simulation with little information reported)</li>
-<li>a partly language-specific interconnection scheme must exist; typically the embedded model may be implemented as a shared library (ex: <tt class="docutils literal">.so</tt>, for the most common C-like linkage, thanks to <a class="reference external" href="http://erlang.org/doc/tutorial/nif.html">NIF</a> or linked-in drivers, with little to no extra process involved, and no private state) or, for some languages, higher-level, more integrated solutions (involving generally a separate system process), generally inducing more overhead, exist (refer to the <a class="reference internal" href="#interworking-with-other-programming-languages">Interworking with Other Programming Languages</a> section for more details)</li>
+<li>a partly language-specific interconnection scheme must exist; typically the embedded model may be implemented as a shared library (e.g. <tt class="docutils literal">.so</tt>, for the most common C-like linkage, thanks to <a class="reference external" href="http://erlang.org/doc/tutorial/nif.html">NIF</a> or linked-in drivers, with little to no extra process involved, and no private state) or, for some languages, higher-level, more integrated solutions (involving generally a separate system process), generally inducing more overhead, exist (refer to the <a class="reference internal" href="#interworking-with-other-programming-languages">Interworking with Other Programming Languages</a> section for more details)</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -458,7 +458,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <table class="docutils footnote" frame="void" id="id16" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id15">[8]</a></td><td>The logic of a block may exceed a plain, unconditional series of steps; in the general case an adapter-level algorithm is to be defined (ex: with stateful logic, conditional sections, loops, etc.).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id15">[8]</a></td><td>The logic of a block may exceed a plain, unconditional series of steps; in the general case an adapter-level algorithm is to be defined (e.g. with stateful logic, conditional sections, loops, etc.).</td></tr>
 </tbody>
 </table>
 <p>Of course a bridge must be created between the third-party library and the adapter. As in the general case different, non-Erlang programming languages have to be accommodated, please refer to the <a class="reference internal" href="#interworking-with-other-programming-languages">Interworking with Other Programming Languages</a> section for the corresponding technical details.</p>
@@ -471,7 +471,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p>Another coupling approach can be considered in such a dataflow context: any component can be safely integrated provided that it respects the laws and rules applying to the dataflow at hand.</p>
 <p>For that a dataflow API must have been defined, and be implemented in the programming language that has been chosen in order to develop the model.</p>
 <p><strong>The model would then take the form of a dataflow block, and use directly the various constructs provided by the API</strong>, such as input and output ports, that are implemented by the coupling architecture - and all that developed in one's language of choice.</p>
-<p>Using such a foreign dataflow API allows to stick to one's favorite language (ex: Python or Java), sparing the need of using Erlang - of course on condition that this API has already been implemented in that particular language.</p>
+<p>Using such a foreign dataflow API allows to stick to one's favorite language (e.g. Python or Java), sparing the need of using Erlang - of course on condition that this API has already been implemented in that particular language.</p>
 <p>A drawback is that this approach results in a version of the model that is dedicated to this coupling architecture, and thus cannot be readily used in other contexts.</p>
 </div>
 <div class="section" id="choosing-a-dataflow-option">
@@ -644,7 +644,7 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 <p id="list">Links known to exist:</p>
 <ul class="simple">
 <li>to <tt class="docutils literal">C</tt>: use C nodes, based on an Erlang port</li>
-<li>to any language able to generate a dynamic library with C-like linkage (ex: <tt class="docutils literal">*.so</tt>), like <tt class="docutils literal">C++</tt>: use a linked-in driver (exchanging with it like for a port) or a <a class="reference external" href="http://erlang.org/doc/tutorial/nif.html">NIF</a> (calling directly functions from a library), with little to no overhead (typically extra process) involved</li>
+<li>to any language able to generate a dynamic library with C-like linkage (e.g. <tt class="docutils literal">*.so</tt>), like <tt class="docutils literal">C++</tt>: use a linked-in driver (exchanging with it like for a port) or a <a class="reference external" href="http://erlang.org/doc/tutorial/nif.html">NIF</a> (calling directly functions from a library), with little to no overhead (typically extra process) involved</li>
 <li>to the <tt class="docutils literal">.Net</tt> platform: use OTP.NET, through a port of the JInterface code</li>
 <li>to <tt class="docutils literal">Perl</tt>: use Perl Erlang-Port, through a port</li>
 <li>to <tt class="docutils literal">PHP</tt>: use PHP/Erlang to turn a PHP thread into an Erlang C node</li>
@@ -655,9 +655,9 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 <li>to any shell, or even directly from the command-line: use <tt class="docutils literal">erl_call</tt></li>
 </ul>
 <p>This topic is also addressed in the <a class="reference external" href="http://erlang.org/faq/how_do_i.html#idp32198352">Erlang FAQ</a> and in the <a class="reference external" href="http://erlang.org/doc/tutorial/users_guide.html">Interoperability Tutorial User's Guide</a>.</p>
-<p>Some interworking solutions are quite low-level, they induce little overhead (ex: for linked-in drivers or for NIFs, no extra operating system process is needed) yet they may affect adversely the Erlang VM (should they crash, leak memory, block their associated scheduler or do not terminate), while others offer higher-level, more integrated solutions (for example to transform adequately and transparently the datastructures being exchanged).</p>
+<p>Some interworking solutions are quite low-level, they induce little overhead (e.g. for linked-in drivers or for NIFs, no extra operating system process is needed) yet they may affect adversely the Erlang VM (should they crash, leak memory, block their associated scheduler or do not terminate), while others offer higher-level, more integrated solutions (for example to transform adequately and transparently the datastructures being exchanged).</p>
 <p>In these latter cases, care must be taken about scalability. For example, depending on the number of integrated instances that are involved, too many system processes might be created or too many file descriptors may be opened, as for each port one process is spawned while one file descriptor is used for reading and one is used for writing.</p>
-<p>Custom protocols over IPC (ex: files, pipes, UNIX sockets, Internet ones, etc.), based on the exchange of binary messages, can also always be devised. This would show a priori little advantage over any of the already available standard protocols, yet would allow to add support for virtually any language or exchange channel. Extending <tt class="docutils literal">ErlPort</tt> could be another option.</p>
+<p>Custom protocols over IPC (e.g. files, pipes, UNIX sockets, Internet ones, etc.), based on the exchange of binary messages, can also always be devised. This would show a priori little advantage over any of the already available standard protocols, yet would allow to add support for virtually any language or exchange channel. Extending <tt class="docutils literal">ErlPort</tt> could be another option.</p>
 <p><span class="raw-html"><center><img src="sim-diasca.png" id="responsive-image-small"></img></center></span>
 </p>
 <p><span class="raw-html"><a name="sim_diasca_bottom"></a></span></p>

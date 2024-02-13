@@ -22,40 +22,40 @@ geometry of 3D objects.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-edge_count">edge_count()</a></h3>
-<p><tt>edge_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>edge_count() = <a href="#type-count">count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-face_coloring_type">face_coloring_type()</a></h3>
-<p><tt>face_coloring_type() = per_vertex | per_face</tt></p>
+<p><code>face_coloring_type() = per_vertex | per_face</code></p>
 <p> Defines how a coloring shall be applied to a face.</p>
 
 <h3 class="typedecl"><a name="type-face_count">face_count()</a></h3>
-<p><tt>face_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>face_count() = <a href="#type-count">count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-face_type">face_type()</a></h3>
-<p><tt>face_type() = triangle | quad</tt></p>
+<p><code>face_type() = triangle | quad</code></p>
 <p> The type of the faces of a mesh.</p>
 
 <h3 class="typedecl"><a name="type-indexed_face">indexed_face()</a></h3>
-<p><tt>indexed_face() = [<a href="#type-vertex_indice">vertex_indice()</a>]</tt></p>
+<p><code>indexed_face() = [<a href="#type-vertex_indice">vertex_indice()</a>]</code></p>
 <p><p> Describes a face of a mesh, based on a list of vertices (for example 3 of 
 them, to define a triangle).</p>
 
  Note that usually the vertex order matters (regarding culling).</p>
 
 <h3 class="typedecl"><a name="type-indexed_triangle">indexed_triangle()</a></h3>
-<p><tt>indexed_triangle() = {<a href="#type-vertex_indice">vertex_indice()</a>, <a href="#type-vertex_indice">vertex_indice()</a>, <a href="#type-vertex_indice">vertex_indice()</a>}</tt></p>
+<p><code>indexed_triangle() = {<a href="#type-vertex_indice">vertex_indice()</a>, <a href="#type-vertex_indice">vertex_indice()</a>, <a href="#type-vertex_indice">vertex_indice()</a>}</code></p>
 <p><p> Made of the corresponding three vertices.</p>
 
  Note that usually the vertex order matters (regarding culling).</p>
 
 <h3 class="typedecl"><a name="type-indice">indice()</a></h3>
-<p><tt>indice() = <a href="linear.html#type-indice">linear:indice()</a></tt></p>
+<p><code>indice() = <a href="linear.html#type-indice">linear:indice()</a></code></p>
 <p><p> The indice of an element (e.g. vertex, normal, texture coordinate), typically 
 in a data container such as a list or a binary buffer.</p>
 
@@ -63,44 +63,44 @@ in a data container such as a list or a binary buffer.</p>
  such as glTF).</p>
 
 <h3 class="typedecl"><a name="type-mesh">mesh()</a></h3>
-<p><tt>mesh() = #mesh{vertices = [<a href="point3.html#type-any_vertex3">point3:any_vertex3()</a>], face_type = <a href="mesh.html#type-face_type">mesh:face_type()</a>, faces = [<a href="mesh.html#type-indexed_face">mesh:indexed_face()</a>], normal_type = <a href="mesh.html#type-normal_type">mesh:normal_type()</a>, normals = [<a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a>], rendering_info = <a href="mesh.html#type-rendering_info">mesh:rendering_info()</a>, bounding_volume = <a href="#type-maybe">maybe</a>(<a href="bounding_volume.html#type-bounding_volume">bounding_volume:bounding_volume()</a>)}</tt></p>
+<p><code>mesh() = #mesh{vertices = [<a href="point3.html#type-any_vertex3">point3:any_vertex3()</a>], face_type = <a href="mesh.html#type-face_type">mesh:face_type()</a>, faces = [<a href="mesh.html#type-indexed_face">mesh:indexed_face()</a>], normal_type = <a href="mesh.html#type-normal_type">mesh:normal_type()</a>, normals = [<a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a>], rendering_info = <a href="mesh.html#type-rendering_info">mesh:rendering_info()</a>, bounding_volume = <a href="#type-maybe">maybe</a>(<a href="bounding_volume.html#type-bounding_volume">bounding_volume:bounding_volume()</a>)}</code></p>
 <p> Describes a mesh, convex or not.</p>
 
 <h3 class="typedecl"><a name="type-normal_count">normal_count()</a></h3>
-<p><tt>normal_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>normal_count() = <a href="#type-count">count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-normal_type">normal_type()</a></h3>
-<p><tt>normal_type() = per_vertex | per_face</tt></p>
+<p><code>normal_type() = per_vertex | per_face</code></p>
 <p> Defines to which geometric element a normal corresponds.</p>
 
 <h3 class="typedecl"><a name="type-render_rgb_color">render_rgb_color()</a></h3>
-<p><tt>render_rgb_color() = <a href="gui_color.html#type-render_rgb_color">gui_color:render_rgb_color()</a></tt></p>
+<p><code>render_rgb_color() = <a href="gui_color.html#type-render_rgb_color">gui_color:render_rgb_color()</a></code></p>
 <p>-type canvas() :: gui:canvas().</p>
 
 <h3 class="typedecl"><a name="type-rendering_info">rendering_info()</a></h3>
-<p><tt>rendering_info() = none | {wireframe, EdgeColor::<a href="#type-render_rgb_color">render_rgb_color()</a>, HiddenFaceRemoval::boolean()} | {color, <a href="#type-face_coloring_type">face_coloring_type()</a>, [<a href="#type-render_rgb_color">render_rgb_color()</a>]}</tt></p>
+<p><code>rendering_info() = none | {wireframe, EdgeColor::<a href="#type-render_rgb_color">render_rgb_color()</a>, HiddenFaceRemoval::boolean()} | {color, <a href="#type-face_coloring_type">face_coloring_type()</a>, [<a href="#type-render_rgb_color">render_rgb_color()</a>]}</code></p>
 <p> | { 'texture', ...
  Defines how a mesh shall be rendered.</p>
 
 <h3 class="typedecl"><a name="type-unit_normal3">unit_normal3()</a></h3>
-<p><tt>unit_normal3() = <a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a></tt></p>
+<p><code>unit_normal3() = <a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vertex3">vertex3()</a></h3>
-<p><tt>vertex3() = <a href="point3.html#type-vertex3">point3:vertex3()</a></tt></p>
+<p><code>vertex3() = <a href="point3.html#type-vertex3">point3:vertex3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vertex_count">vertex_count()</a></h3>
-<p><tt>vertex_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>vertex_count() = <a href="#type-count">count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vertex_indice">vertex_indice()</a></h3>
-<p><tt>vertex_indice() = <a href="#type-indice">indice()</a></tt></p>
+<p><code>vertex_indice() = <a href="#type-indice">indice()</a></code></p>
 <p> The indice of a vertex in a container thereof.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -121,7 +121,7 @@ in a data container such as a list or a binary buffer.</p>
 
 <h3 class="function"><a name="create_mesh-6">create_mesh/6</a></h3>
 <div class="spec">
-<p><tt>create_mesh(Vertices::[<a href="#type-vertex3">vertex3()</a>], FaceType::<a href="#type-face_type">face_type()</a>, Faces::[<a href="#type-indexed_face">indexed_face()</a>], NormalType::<a href="#type-normal_type">normal_type()</a>, Normals::[<a href="#type-unit_normal3">unit_normal3()</a>], RenderingInfo::<a href="#type-rendering_info">rendering_info()</a>) -&gt; <a href="#type-mesh">mesh()</a></tt><br></p>
+<p><code>create_mesh(Vertices::[<a href="#type-vertex3">vertex3()</a>], FaceType::<a href="#type-face_type">face_type()</a>, Faces::[<a href="#type-indexed_face">indexed_face()</a>], NormalType::<a href="#type-normal_type">normal_type()</a>, Normals::[<a href="#type-unit_normal3">unit_normal3()</a>], RenderingInfo::<a href="#type-rendering_info">rendering_info()</a>) -&gt; <a href="#type-mesh">mesh()</a></code><br></p>
 <p> </p>
 </div><p>Returns a new mesh whose vertices, faces, normals (of specified type),
  rendering information are the specified ones, with no specific bounding volume
@@ -130,7 +130,7 @@ in a data container such as a list or a binary buffer.</p>
 
 <h3 class="function"><a name="get_vertex_count_for_face_type-1">get_vertex_count_for_face_type/1</a></h3>
 <div class="spec">
-<p><tt>get_vertex_count_for_face_type(FaceType::<a href="#type-face_type">face_type()</a>) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p><code>get_vertex_count_for_face_type(FaceType::<a href="#type-face_type">face_type()</a>) -&gt; <a href="#type-count">count()</a></code><br></p>
 <p> </p>
 </div><p>Returns the number of vertices per face to be expected for the specified
  face type.
@@ -138,7 +138,7 @@ in a data container such as a list or a binary buffer.</p>
 
 <h3 class="function"><a name="indexed_face_to_triangle-1">indexed_face_to_triangle/1</a></h3>
 <div class="spec">
-<p><tt>indexed_face_to_triangle(F::<a href="#type-indexed_face">indexed_face()</a>) -&gt; <a href="#type-indexed_triangle">indexed_triangle()</a></tt><br></p>
+<p><code>indexed_face_to_triangle(F::<a href="#type-indexed_face">indexed_face()</a>) -&gt; <a href="#type-indexed_triangle">indexed_triangle()</a></code><br></p>
 <p> </p>
 </div><p>Returns the indexed triangle corresponding to the specified indexed face
  (thus expected to comprise 3 vertices).
@@ -146,7 +146,7 @@ in a data container such as a list or a binary buffer.</p>
 
 <h3 class="function"><a name="indexed_faces_to_triangles-1">indexed_faces_to_triangles/1</a></h3>
 <div class="spec">
-<p><tt>indexed_faces_to_triangles(Faces::[<a href="#type-indexed_face">indexed_face()</a>]) -&gt; [<a href="#type-indexed_triangle">indexed_triangle()</a>]</tt><br></p>
+<p><code>indexed_faces_to_triangles(Faces::[<a href="#type-indexed_face">indexed_face()</a>]) -&gt; [<a href="#type-indexed_triangle">indexed_triangle()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the indexed triangles corresponding to the specified indexed
  faces (thus expected to comprise 3 vertices each).
@@ -154,13 +154,13 @@ in a data container such as a list or a binary buffer.</p>
 
 <h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>
 <div class="spec">
-<p><tt>to_compact_string(Mesh::<a href="#type-mesh">mesh()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_compact_string(Mesh::<a href="#type-mesh">mesh()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a compact textual description of the specified mesh.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Mesh::<a href="#type-mesh">mesh()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Mesh::<a href="#type-mesh">mesh()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a (rather full) textual description of the specified mesh.</p>
 <hr>

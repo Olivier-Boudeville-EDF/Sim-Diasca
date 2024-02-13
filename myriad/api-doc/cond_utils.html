@@ -20,12 +20,12 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-body">body()</a></h3>
-<p><tt>body() = any()</tt></p>
+<p><code>body() = any()</code></p>
 <p> A non-empty sequence (not a list) of expressions, expressed as a begin/end
  block expression.</p>
 
 <h3 class="typedecl"><a name="type-expression">expression()</a></h3>
-<p><tt>expression() = any()</tt></p>
+<p><code>expression() = any()</code></p>
 <p><p> An expression (possibly a body) that is conditionally enabled.</p>
 
  Note that, if wanting to enable conditionally not a single expression but a
@@ -34,7 +34,7 @@
  value of the last expression).</p>
 
 <h3 class="typedecl"><a name="type-token">token()</a></h3>
-<p><tt>token() = atom()</tt></p>
+<p><code>token() = atom()</code></p>
 <p><p> A token (defined through the command-line), whose definition enables the 
 conditional execution of associated code.</p>
 
@@ -42,22 +42,22 @@ conditional execution of associated code.</p>
  like in: cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).</p>
 
 <h3 class="typedecl"><a name="type-token_expr_table">token_expr_table()</a></h3>
-<p><tt>token_expr_table() = [{<a href="#type-token">token()</a>, <a href="#type-expression">expression()</a>}]</tt></p>
+<p><code>token_expr_table() = [{<a href="#type-token">token()</a>, <a href="#type-expression">expression()</a>}]</code></p>
 <p> A table used to associate an expression to a token value.</p>
 
 <h3 class="typedecl"><a name="type-token_table">token_table()</a></h3>
-<p><tt>token_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-token">token()</a>, <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(term()))</tt></p>
+<p><code>token_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-token">token()</a>, <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(term()))</code></p>
 <p> Table to establish easily whether a token has been defined and, if yes, a
  value (if any; otherwise it is set to 'undefined') that has been associated to
  it.</p>
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
-<p><tt>value() = term()</tt></p>
+<p><code>value() = term()</code></p>
 <p> An (immediate) value associated to a token can actually of various types
  (e.g. atom, integer; as a form of course), as translated by the compiler.</p>
 
 <h3 class="typedecl"><a name="type-void">void()</a></h3>
-<p><tt>void() = <a href="basic_utils.html#type-void">basic_utils:void()</a></tt></p>
+<p><code>void() = <a href="basic_utils.html#type-void">basic_utils:void()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -101,7 +101,7 @@ specified (immediate) values.</td></tr>
 
 <h3 class="function"><a name="assert-1">assert/1</a></h3>
 <div class="spec">
-<p><tt>assert(Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert(Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>If in debug mode, asserts that the specified expression is true, 
 that is evaluates it at runtime and matches it with the atom 'true'.</p>
@@ -115,7 +115,7 @@ that is evaluates it at runtime and matches it with the atom 'true'.</p>
 
 <h3 class="function"><a name="assert-2">assert/2</a></h3>
 <div class="spec">
-<p><tt>assert(Token::<a href="#type-token">token()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert(Token::<a href="#type-token">token()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>If the specified token has been defined through the command-line, asserts 
 that the specified expression is true, ithat is evaluates it at runtime and 
@@ -126,7 +126,7 @@ matches it with the atom 'true'.</p>
 
 <h3 class="function"><a name="assert-3">assert/3</a></h3>
 <div class="spec">
-<p><tt>assert(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>assert(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>If the specified token has been defined through the command-line and set 
 to the specified value, asserts that the specified expression is true, that is 
@@ -137,13 +137,13 @@ evaluates it at runtime and matches it with the atom 'true'.</p>
 
 <h3 class="function"><a name="get_token_table_from-1">get_token_table_from/1</a></h3>
 <div class="spec">
-<p><tt>get_token_table_from(OptionTable::<a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>) -&gt; <a href="#type-token_table">token_table()</a></tt><br></p>
+<p><code>get_token_table_from(OptionTable::<a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>) -&gt; <a href="#type-token_table">token_table()</a></code><br></p>
 <p> </p>
 </div><p>Returns the tokens declared among the compile options.</p>
 
 <h3 class="function"><a name="if_debug-1">if_debug/1</a></h3>
 <div class="spec">
-<p><tt>if_debug(ExpressionIfDebug::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>if_debug(ExpressionIfDebug::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Includes conditionally the specified expression (possibly a body), which
  is enabled iff the debug mode has been set (that is iff the
@@ -152,7 +152,7 @@ evaluates it at runtime and matches it with the atom 'true'.</p>
 
 <h3 class="function"><a name="if_defined-2">if_defined/2</a></h3>
 <div class="spec">
-<p><tt>if_defined(Token::<a href="#type-token">token()</a>, ExpressionIfDefined::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>if_defined(Token::<a href="#type-token">token()</a>, ExpressionIfDefined::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Includes conditionally the specified expression (possibly a body) iff the 
 specified token has been specified.</p>
@@ -181,7 +181,7 @@ said expression to be reported as unused.</p>
 
 <h3 class="function"><a name="if_defined-3">if_defined/3</a></h3>
 <div class="spec">
-<p><tt>if_defined(Token::<a href="#type-token">token()</a>, ExpressionIfDefined::<a href="#type-expression">expression()</a>, ExpressionIfNotDefined::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>if_defined(Token::<a href="#type-token">token()</a>, ExpressionIfDefined::<a href="#type-expression">expression()</a>, ExpressionIfNotDefined::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Includes conditionally one of the specified expressions (possibly 
 bodies), depending on whether the specified token has been defined through the 
@@ -195,7 +195,7 @@ second is.</p>
 
 <h3 class="function"><a name="if_set_to-3">if_set_to/3</a></h3>
 <div class="spec">
-<p><tt>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionIfSetTo::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionIfSetTo::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Includes conditionally one of the specified expressions (possibly 
 bodies), depending on whether the specified token has been defined through the 
@@ -209,7 +209,7 @@ the specified value.</p>
 
 <h3 class="function"><a name="if_set_to-4">if_set_to/4</a></h3>
 <div class="spec">
-<p><tt>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionIfMatching::<a href="#type-expression">expression()</a>, ExpressionOtherwise::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionIfMatching::<a href="#type-expression">expression()</a>, ExpressionOtherwise::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Includes conditionally one of the specified expressions (possibly 
 bodies), depending on whether the specified token has been defined through the 
@@ -224,7 +224,7 @@ is.</p>
 
 <h3 class="function"><a name="switch_execution_target-2">switch_execution_target/2</a></h3>
 <div class="spec">
-<p><tt>switch_execution_target(ExprIfInDevMode::<a href="#type-expression">expression()</a>, ExprIfProdMode::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>switch_execution_target(ExprIfInDevMode::<a href="#type-expression">expression()</a>, ExprIfProdMode::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Includes conditionally either of the specified expressions (possibly 
 bodies), depending on whether the execution target has been defined through 
@@ -239,7 +239,7 @@ expression will be inserted</p>
 
 <h3 class="function"><a name="switch_set_to-2">switch_set_to/2</a></h3>
 <div class="spec">
-<p><tt>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Includes conditionally one of the specified expressions (possibly bodies) 
 listed in the token-expression table, depending on whether the specified token 
@@ -257,7 +257,7 @@ compilation-time error is raised.</p>
 
 <h3 class="function"><a name="switch_set_to-3">switch_set_to/3</a></h3>
 <div class="spec">
-<p><tt>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>, DefaultTokenValue::<a href="#type-value">value()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>, DefaultTokenValue::<a href="#type-value">value()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Includes conditionally one of the specified expressions (possibly bodies) 
 listed in the token-expression table, depending on whether the specified token 

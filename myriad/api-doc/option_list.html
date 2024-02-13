@@ -33,28 +33,28 @@ Operations on option list tend to preserve the order of their entries.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><tt>entries() = <a href="hashtable.html#type-entries">hashtable:entries()</a></tt></p>
+<p><code>entries() = <a href="hashtable.html#type-entries">hashtable:entries()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><tt>entry() = <a href="hashtable.html#type-entry">hashtable:entry()</a></tt></p>
+<p><code>entry() = <a href="hashtable.html#type-entry">hashtable:entry()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
-<p><tt>key() = <a href="hashtable.html#type-key">hashtable:key()</a></tt></p>
+<p><code>key() = <a href="hashtable.html#type-key">hashtable:key()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-option_list">option_list()</a></h3>
-<p><tt>option_list(_K, _V) = <a href="#type-option_list">option_list()</a></tt></p>
+<p><code>option_list(_K, _V) = <a href="#type-option_list">option_list()</a></code></p>
 <p> For better type information (type overriding with different arity used not to
  be permitted).</p>
 
 <h3 class="typedecl"><a name="type-option_list">option_list()</a></h3>
-<p><tt>option_list() = <a href="#type-entries">entries()</a></tt></p>
+<p><code>option_list() = <a href="#type-entries">entries()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
-<p><tt>value() = <a href="hashtable.html#type-value">hashtable:value()</a></tt></p>
+<p><code>value() = <a href="hashtable.html#type-value">hashtable:value()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -81,7 +81,7 @@ list, if found, otherwise (key not found), returns 'undefined'.</td></tr>
 
 <h3 class="function"><a name="enumerate-1">enumerate/1</a></h3>
 <div class="spec">
-<p><tt>enumerate(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-entries">entries()</a></tt><br></p>
+<p><code>enumerate(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-entries">entries()</a></code><br></p>
 <p> </p>
 </div><p>Enumerates specified option list: returns an (ordered) list of {Key,
  Value} pairs, possibly with duplicates.
@@ -89,7 +89,7 @@ list, if found, otherwise (key not found), returns 'undefined'.</td></tr>
 
 <h3 class="function"><a name="extract-2">extract/2</a></h3>
 <div class="spec">
-<p><tt>extract(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-option_list">option_list()</a>}</tt><br></p>
+<p><code>extract(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-option_list">option_list()</a>}</code><br></p>
 <p> </p>
 </div><p>Extracts the entry that is specified by its key from the specified option
  list, and returns either 'undefined' if not entry with that key could be
@@ -101,7 +101,7 @@ list, if found, otherwise (key not found), returns 'undefined'.</td></tr>
 
 <h3 class="function"><a name="get-2">get/2</a></h3>
 <div class="spec">
-<p><tt>get(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p><code>get(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-value">value()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the value associated to the specified key in specified option 
 list.</p>
@@ -111,7 +111,7 @@ list.</p>
 
 <h3 class="function"><a name="lookup-2">lookup/2</a></h3>
 <div class="spec">
-<p><tt>lookup(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)</tt><br></p>
+<p><code>lookup(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the value associated to the specified key in specified option 
 list, if found, otherwise (key not found), returns 'undefined'.</p>
@@ -123,19 +123,19 @@ list, if found, otherwise (key not found), returns 'undefined'.</p>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>
 <div class="spec">
-<p><tt>new() -&gt; <a href="#type-option_list">option_list()</a></tt><br></p>
+<p><code>new() -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
 <p> </p>
 </div><p>Returns an empty option list.</p>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><tt>new(Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-option_list">option_list()</a></tt><br></p>
+<p><code>new(Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
 <p> </p>
 </div><p>Creates an option list from specified list containing {Key,Value} pairs.</p>
 
 <h3 class="function"><a name="set-2">set/2</a></h3>
 <div class="spec">
-<p><tt>set(Entry::<a href="#type-entry">entry()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-option_list">option_list()</a></tt><br></p>
+<p><code>set(Entry::<a href="#type-entry">entry()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets, in the specified option list, the specified entry.</p>
 
@@ -149,13 +149,13 @@ list, if found, otherwise (key not found), returns 'undefined'.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt><br></p>
+<p><code>to_string(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing the specified option list.</p>
 
 <h3 class="function"><a name="update_with-2">update_with/2</a></h3>
 <div class="spec">
-<p><tt>update_with(BaseOptionList::<a href="#type-option_list">option_list()</a>, UpdatingOptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-option_list">option_list()</a></tt><br></p>
+<p><code>update_with(BaseOptionList::<a href="#type-option_list">option_list()</a>, UpdatingOptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
 <p> </p>
 </div><p><p>Updates BaseOptionList with the entries of UpdatingOptionList.</p>
 

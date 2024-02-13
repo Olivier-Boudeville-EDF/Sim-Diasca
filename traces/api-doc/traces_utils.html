@@ -17,28 +17,38 @@ with OTP.
 <h2><a name="description">Description</a></h2><p>Module gathering various <b>trace-related facilities</b>, notably in link 
 with OTP.</p>
 
- Note: not to be mixed up with the trace_utils module from Myriad.
+ This module should not be mixed up with the trace_utils module from Myriad
+ (note that the names of these modules differ, therefore their BEAM files
+ cannot clash).
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-aggregator_pid">aggregator_pid()</a></h3>
-<p><tt>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></tt></p>
+<p><code>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_file_name">bin_file_name()</a></h3>
-<p><tt>bin_file_name() = <a href="file_utils.html#type-bin_file_name">file_utils:bin_file_name()</a></tt></p>
+<p><code>bin_file_name() = <a href="file_utils.html#type-bin_file_name">file_utils:bin_file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-look_up_scope">look_up_scope()</a></h3>
-<p><tt>look_up_scope() = <a href="naming_utils.html#type-look_up_scope">naming_utils:look_up_scope()</a></tt></p>
+<p><code>look_up_scope() = <a href="naming_utils.html#type-look_up_scope">naming_utils:look_up_scope()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-registration_scope">registration_scope()</a></h3>
-<p><tt>registration_scope() = <a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a></tt></p>
+<p><code>registration_scope() = <a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
+<p><code>three_digit_version() = <a href="basic_utils.html#type-three_digit_version">basic_utils:three_digit_version()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -46,6 +56,8 @@ with OTP.</p>
  current context.</td></tr>
 <tr><td valign="top"><a href="#get_aggregator_registration_scope-0">get_aggregator_registration_scope/0</a></td><td>Returns the registration scope that applies to the trace aggregator in
  the current context.</td></tr>
+<tr><td valign="top"><a href="#get_traces_version-0">get_traces_version/0</a></td><td>Returns the version of the Traces library being used.</td></tr>
+<tr><td valign="top"><a href="#get_traces_version_string-0">get_traces_version_string/0</a></td><td>Returns the version of the Traces library being used, as a string.</td></tr>
 <tr><td valign="top"><a href="#name_trace_file_from-1">name_trace_file_from/1</a></td><td>Names the trace file currently managed by the trace aggregator according 
 to the specified module name.</td></tr>
 </table>
@@ -54,7 +66,7 @@ to the specified module name.</td></tr>
 
 <h3 class="function"><a name="get_aggregator_look_up_scope-0">get_aggregator_look_up_scope/0</a></h3>
 <div class="spec">
-<p><tt>get_aggregator_look_up_scope() -&gt; <a href="#type-look_up_scope">look_up_scope()</a></tt><br></p>
+<p><code>get_aggregator_look_up_scope() -&gt; <a href="#type-look_up_scope">look_up_scope()</a></code><br></p>
 <p> </p>
 </div><p>Returns the look-up scope that applies to the trace aggregator in the
  current context.
@@ -62,15 +74,27 @@ to the specified module name.</td></tr>
 
 <h3 class="function"><a name="get_aggregator_registration_scope-0">get_aggregator_registration_scope/0</a></h3>
 <div class="spec">
-<p><tt>get_aggregator_registration_scope() -&gt; <a href="#type-registration_scope">registration_scope()</a></tt><br></p>
+<p><code>get_aggregator_registration_scope() -&gt; <a href="#type-registration_scope">registration_scope()</a></code><br></p>
 <p> </p>
 </div><p>Returns the registration scope that applies to the trace aggregator in
  the current context.
 </p>
 
+<h3 class="function"><a name="get_traces_version-0">get_traces_version/0</a></h3>
+<div class="spec">
+<p><code>get_traces_version() -&gt; <a href="#type-three_digit_version">three_digit_version()</a></code><br></p>
+<p> </p>
+</div><p>Returns the version of the Traces library being used.</p>
+
+<h3 class="function"><a name="get_traces_version_string-0">get_traces_version_string/0</a></h3>
+<div class="spec">
+<p><code>get_traces_version_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p> </p>
+</div><p>Returns the version of the Traces library being used, as a string.</p>
+
 <h3 class="function"><a name="name_trace_file_from-1">name_trace_file_from/1</a></h3>
 <div class="spec">
-<p><tt>name_trace_file_from(ModName::<a href="#type-module_name">module_name()</a>) -&gt; {<a href="#type-bin_file_name">bin_file_name()</a>, <a href="#type-aggregator_pid">aggregator_pid()</a>}</tt><br></p>
+<p><code>name_trace_file_from(ModName::<a href="#type-module_name">module_name()</a>) -&gt; {<a href="#type-bin_file_name">bin_file_name()</a>, <a href="#type-aggregator_pid">aggregator_pid()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Names the trace file currently managed by the trace aggregator according 
 to the specified module name. Returns, if useful, the new trace filename and 

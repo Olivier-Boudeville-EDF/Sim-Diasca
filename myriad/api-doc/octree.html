@@ -32,31 +32,31 @@ etc.).</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
-<p><tt>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></tt></p>
+<p><code>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-content_fold_fun">content_fold_fun()</a></h3>
-<p><tt>content_fold_fun() = fun((<a href="#type-node_content">node_content()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>)</tt></p>
+<p><code>content_fold_fun() = fun((<a href="#type-node_content">node_content()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>)</code></p>
 <p> Describes a function that can be folded onto the content of an octree.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><tt>height() = <a href="#type-count">count()</a></tt></p>
+<p><code>height() = <a href="#type-count">count()</a></code></p>
 <p> The height of an octree, as the maximum number of edges between the root and a
  leaf.</p>
 
 <h3 class="typedecl"><a name="type-node_content">node_content()</a></h3>
-<p><tt>node_content() = <a href="#type-maybe">maybe</a>(any())</tt></p>
+<p><code>node_content() = <a href="#type-maybe">maybe</a>(any())</code></p>
 <p> The content of a node of an octree ('undefined' meaning empty content).</p>
 
 <h3 class="typedecl"><a name="type-octant_id">octant_id()</a></h3>
-<p><tt>octant_id() = {H::<a href="#type-height">height()</a>, Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</tt></p>
+<p><code>octant_id() = {H::<a href="#type-height">height()</a>, Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</code></p>
 <p><p> The identifier of an octant, expressed in terms of octant coordinates.</p>
 
- <p>Ex: { H=2, Xi=-1, Yi=2, Zi=1 }.</p>
+ <p>For example {H=2, Xi=-1, Yi=2, Zi=1}.</p>
 
  For H=0, Xi=Yi=Zi=1.
  For H=1, Xi, Yi, Zi each are either -1 or +1.
@@ -65,26 +65,26 @@ etc.).</p>
  n.</p>
 
 <h3 class="typedecl"><a name="type-octant_index">octant_index()</a></h3>
-<p><tt>octant_index() = integer()</tt></p>
+<p><code>octant_index() = integer()</code></p>
 <p> The index of an octant is a non-null integer.</p>
 
 <h3 class="typedecl"><a name="type-octant_short_id">octant_short_id()</a></h3>
-<p><tt>octant_short_id() = {Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</tt></p>
+<p><code>octant_short_id() = {Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</code></p>
 <p><p> The identifier of an octant at a given height in the octree, expressed in 
 terms of octant coordinates.</p>
 
- Ex: { Xi=-1, Yi=2, Zi=1 }, for H=2.</p>
+ For example {Xi=-1, Yi=2, Zi=1}, for H=2.</p>
 
 <h3 class="typedecl"><a name="type-x_index">x_index()</a></h3>
-<p><tt>x_index() = <a href="#type-octant_index">octant_index()</a></tt></p>
+<p><code>x_index() = <a href="#type-octant_index">octant_index()</a></code></p>
 <p> The index of an octant along the X axis.</p>
 
 <h3 class="typedecl"><a name="type-y_index">y_index()</a></h3>
-<p><tt>y_index() = <a href="#type-octant_index">octant_index()</a></tt></p>
+<p><code>y_index() = <a href="#type-octant_index">octant_index()</a></code></p>
 <p> The index of an octant along the Y axis.</p>
 
 <h3 class="typedecl"><a name="type-z_index">z_index()</a></h3>
-<p><tt>z_index() = <a href="#type-octant_index">octant_index()</a></tt></p>
+<p><code>z_index() = <a href="#type-octant_index">octant_index()</a></code></p>
 <p> The index of an octant along the Z axis.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -96,13 +96,13 @@ terms of octant coordinates.</p>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>
 <div class="spec">
-<p><tt>new() -&gt; any()</tt><br></p>
+<p><code>new() -&gt; any()</code><br></p>
 <p> </p>
 </div><p>Creates an empty (regarding content and octants), sequential, octree.</p>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><tt>new(NodeContent::<a href="#type-node_content">node_content()</a>) -&gt; any()</tt><br></p>
+<p><code>new(NodeContent::<a href="#type-node_content">node_content()</a>) -&gt; any()</code><br></p>
 <p> </p>
 </div><p>Creates a sequential, octree having specified content, and no octants.</p>
 <hr>

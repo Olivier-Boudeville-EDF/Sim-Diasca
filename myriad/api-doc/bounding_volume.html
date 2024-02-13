@@ -26,27 +26,27 @@ management.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-bounding_volume">bounding_volume()</a></h3>
-<p><tt>bounding_volume() = <a href="#type-right_cuboid">right_cuboid()</a> | <a href="#type-sphere">sphere()</a></tt></p>
+<p><code>bounding_volume() = <a href="#type-right_cuboid">right_cuboid()</a> | <a href="#type-sphere">sphere()</a></code></p>
 <p> All supported types of bounding volumes.</p>
 
 <h3 class="typedecl"><a name="type-bounding_volume_type">bounding_volume_type()</a></h3>
-<p><tt>bounding_volume_type() = right_cuboid | sphere</tt></p>
+<p><code>bounding_volume_type() = right_cuboid | sphere</code></p>
 <p> Allows to designate a type of bounding volume.</p>
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
+<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-right_cuboid">right_cuboid()</a></h3>
-<p><tt>right_cuboid() = #right_cuboid{base_vertex = <a href="point3.html#type-point3">point3:point3()</a>, abscissa_length = <a href="linear.html#type-distance">linear:distance()</a>, ordinate_length = <a href="linear.html#type-distance">linear:distance()</a>, elevation_length = <a href="linear.html#type-distance">linear:distance()</a>}</tt></p>
+<p><code>right_cuboid() = #right_cuboid{base_vertex = <a href="point3.html#type-point3">point3:point3()</a>, abscissa_length = <a href="linear.html#type-distance">linear:distance()</a>, ordinate_length = <a href="linear.html#type-distance">linear:distance()</a>, elevation_length = <a href="linear.html#type-distance">linear:distance()</a>}</code></p>
 <p> A bounding volume defined based on a right cuboid.</p>
 
 <h3 class="typedecl"><a name="type-sphere">sphere()</a></h3>
-<p><tt>sphere() = #sphere{center = <a href="point3.html#type-point3">point3:point3()</a>, square_radius = <a href="linear.html#type-square_distance">linear:square_distance()</a>}</tt></p>
+<p><code>sphere() = #sphere{center = <a href="point3.html#type-point3">point3:point3()</a>, square_radius = <a href="linear.html#type-square_distance">linear:square_distance()</a>}</code></p>
 <p> A bounding volume defined based on a sphere.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -61,7 +61,7 @@ on the Minimal Enclosing Sphere (MES) for the specified list of points.</td></tr
 
 <h3 class="function"><a name="get_lazy_bounding_sphere-1">get_lazy_bounding_sphere/1</a></h3>
 <div class="spec">
-<p><tt>get_lazy_bounding_sphere(Points::[<a href="#type-point3">point3()</a>]) -&gt; <a href="#type-sphere">sphere()</a></tt><br></p>
+<p><code>get_lazy_bounding_sphere(Points::[<a href="#type-point3">point3()</a>]) -&gt; <a href="#type-sphere">sphere()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a sphere that is a bounding volume for the specified list of 
 points, which must not be empty.</p>
@@ -74,7 +74,7 @@ one.</p>
 
 <h3 class="function"><a name="get_minimal_enclosing_sphere-1">get_minimal_enclosing_sphere/1</a></h3>
 <div class="spec">
-<p><tt>get_minimal_enclosing_sphere(Points::[<a href="#type-point3">point3()</a>]) -&gt; <a href="#type-sphere">sphere()</a></tt><br></p>
+<p><code>get_minimal_enclosing_sphere(Points::[<a href="#type-point3">point3()</a>]) -&gt; <a href="#type-sphere">sphere()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns {Center, SquareRadius} which defines a bounding volume consisting 
 on the Minimal Enclosing Sphere (MES) for the specified list of points.</p>
@@ -89,7 +89,7 @@ a lot of computations.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Right_cuboid::<a href="#type-bounding_volume">bounding_volume()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Right_cuboid::<a href="#type-bounding_volume">bounding_volume()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified bounding volume.</p>
 <hr>

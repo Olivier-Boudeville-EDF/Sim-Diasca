@@ -20,45 +20,45 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-duplicate_info">duplicate_info()</a></h3>
-<p><tt>duplicate_info() = [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</tt></p>
+<p><code>duplicate_info() = [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</code></p>
 <p> A list of elements reported as duplicated, together with the number (at least
  two) of times they were present in a given container.</p>
 
 <h3 class="typedecl"><a name="type-element">element()</a></h3>
-<p><tt>element() = term()</tt></p>
+<p><code>element() = term()</code></p>
 <p> An element of a list.</p>
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><tt>maybe_list(T) = [T] | T</tt></p>
+<p><code>maybe_list(T) = [T] | T</code></p>
 <p><p> Either a list of terms, or a term by itself.</p>
 
  Note: different from maybe(list()).</p>
 
 <h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
-<p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+<p><code>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></code></p>
 <p> These indexes start at 1.</p>
 
 <h3 class="typedecl"><a name="type-proplist">proplist()</a></h3>
-<p><tt>proplist() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist">proplists:proplist()</a></tt></p>
+<p><code>proplist() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist">proplists:proplist()</a></code></p>
 <p> A list whose elements can be atoms or tuples (not only pairs) whose first
  element is an atom.</p>
 
 <h3 class="typedecl"><a name="type-tagged_list">tagged_list()</a></h3>
-<p><tt>tagged_list(T) = [atom() | {Key::atom(), T}]</tt></p>
+<p><code>tagged_list(T) = [atom() | {Key::atom(), T}]</code></p>
 <p><p> A tagged list is a specific case of proplist, whose tuples are only pairs.</p>
 
  This allows for example supporting the extraction of elements.</p>
 
 <h3 class="typedecl"><a name="type-tagged_list">tagged_list()</a></h3>
-<p><tt>tagged_list() = <a href="#type-tagged_list">tagged_list</a>(<a href="#type-element">element()</a>)</tt></p>
+<p><code>tagged_list() = <a href="#type-tagged_list">tagged_list</a>(<a href="#type-element">element()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -244,7 +244,7 @@ each of the input lists, and adds it to a corresponding tuple.</td></tr>
 
 <h3 class="function"><a name="add_as_heads-2">add_as_heads/2</a></h3>
 <div class="spec">
-<p><tt>add_as_heads(Heads, Lists) -&gt; any()</tt></p>
+<p><code>add_as_heads(Heads, Lists) -&gt; any()</code></p>
 <p> </p>
 </div><p><p>Adds the specified elements as heads of the specified lists.</p>
 
@@ -255,7 +255,7 @@ each of the input lists, and adds it to a corresponding tuple.</td></tr>
 
 <h3 class="function"><a name="append_at_end-2">append_at_end/2</a></h3>
 <div class="spec">
-<p><tt>append_at_end(Elem::<a href="#type-element">element()</a>, L::list()) -&gt; nonempty_list()</tt><br></p>
+<p><code>append_at_end(Elem::<a href="#type-element">element()</a>, L::list()) -&gt; nonempty_list()</code><br></p>
 <p> </p>
 </div><p><p>Appends specified element at the end of specified list, without changing 
 the order of the list.</p>
@@ -268,7 +268,7 @@ the order of the list.</p>
 
 <h3 class="function"><a name="are_atoms-1">are_atoms/1</a></h3>
 <div class="spec">
-<p><tt>are_atoms(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_atoms(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified list contains only atoms.</p>
 
@@ -277,13 +277,13 @@ the order of the list.</p>
 
 <h3 class="function"><a name="are_equal-1">are_equal/1</a></h3>
 <div class="spec">
-<p><tt>are_equal(T::list()) -&gt; boolean()</tt><br></p>
+<p><code>are_equal(T::list()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Returns whether all the elements of the specified list are equal.</p>
 
 <h3 class="function"><a name="are_integers-1">are_integers/1</a></h3>
 <div class="spec">
-<p><tt>are_integers(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_integers(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified list contains only integers.</p>
 
@@ -292,7 +292,7 @@ the order of the list.</p>
 
 <h3 class="function"><a name="are_pids-1">are_pids/1</a></h3>
 <div class="spec">
-<p><tt>are_pids(T::term()) -&gt; boolean()</tt><br></p>
+<p><code>are_pids(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified list contains only PIDs.</p>
 
@@ -301,7 +301,7 @@ the order of the list.</p>
 
 <h3 class="function"><a name="cartesian_product-1">cartesian_product/1</a></h3>
 <div class="spec">
-<p><tt>cartesian_product(OtherLists::[[T]]) -&gt; [[T]]</tt><br></p>
+<p><code>cartesian_product(OtherLists::[[T]]) -&gt; [[T]]</code><br></p>
 <p> </p>
 </div><p><p>Returns the cartesian product of the specified lists (collected in a 
 top-level list).</p>
@@ -312,7 +312,7 @@ top-level list).</p>
 
 <h3 class="function"><a name="check_equal-1">check_equal/1</a></h3>
 <div class="spec">
-<p><tt>check_equal(L::list()) -&gt; list()</tt><br></p>
+<p><code>check_equal(L::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Checks that all the elements of the specified list are equal.</p>
 
@@ -321,7 +321,7 @@ top-level list).</p>
 
 <h3 class="function"><a name="check_integers-1">check_integers/1</a></h3>
 <div class="spec">
-<p><tt>check_integers(Any::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_integers(Any::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Checks that specified argument is a list of integers.</p>
 
@@ -330,7 +330,7 @@ top-level list).</p>
 
 <h3 class="function"><a name="check_strictly_ascending-1">check_strictly_ascending/1</a></h3>
 <div class="spec">
-<p><tt>check_strictly_ascending(List::list()) -&gt; boolean()</tt><br></p>
+<p><code>check_strictly_ascending(List::list()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Checks that the terms in the specified list are in strict (no duplicates) 
 ascending (Erlang) term order.</p>
@@ -342,7 +342,7 @@ ascending (Erlang) term order.</p>
 
 <h3 class="function"><a name="count_occurrences-1">count_occurrences/1</a></h3>
 <div class="spec">
-<p><tt>count_occurrences(List::list()) -&gt; [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</tt><br></p>
+<p><code>count_occurrences(List::list()) -&gt; [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</code><br></p>
 <p> </p>
 </div><p>Counts the number of occurences of all elements in the specified list:
  returns an (unordered) list of {Term,Count} pairs, where each term is
@@ -352,7 +352,7 @@ ascending (Erlang) term order.</p>
 
 <h3 class="function"><a name="delete_all_in-2">delete_all_in/2</a></h3>
 <div class="spec">
-<p><tt>delete_all_in(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p><code>delete_all_in(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a copy of the specified list where all elements matching Elem are 
 deleted, whether or not there is any.</p>
@@ -364,7 +364,7 @@ deleted, whether or not there is any.</p>
 
 <h3 class="function"><a name="delete_existing-2">delete_existing/2</a></h3>
 <div class="spec">
-<p><tt>delete_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p><code>delete_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Returns a copy of the specified list where the first element matching
  Elem is deleted, ensuring that at least one of these elements exists (as
@@ -373,7 +373,7 @@ deleted, whether or not there is any.</p>
 
 <h3 class="function"><a name="delete_existing_elements-2">delete_existing_elements/2</a></h3>
 <div class="spec">
-<p><tt>delete_existing_elements(Elems::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</tt><br></p>
+<p><code>delete_existing_elements(Elems::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Returns a copy of the specified list where the first element matching
  each of the specified elements is deleted, ensuring that at least one of these
@@ -383,7 +383,7 @@ deleted, whether or not there is any.</p>
 
 <h3 class="function"><a name="delete_if_existing-2">delete_if_existing/2</a></h3>
 <div class="spec">
-<p><tt>delete_if_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; not_found | list()</tt><br></p>
+<p><code>delete_if_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; not_found | list()</code><br></p>
 <p> </p>
 </div><p><p>Deletes the first matching of the specified element from the specified 
 list, returning whether an element has been removed, that is either the 
@@ -397,7 +397,7 @@ occurrence of the specified element was removed).</p>
 
 <h3 class="function"><a name="determine_tuple_info-1">determine_tuple_info/1</a></h3>
 <div class="spec">
-<p><tt>determine_tuple_info(TupleList::[tuple()]) -&gt; {<a href="#type-count">count()</a>, <a href="#type-count">count()</a>}</tt><br></p>
+<p><code>determine_tuple_info(TupleList::[tuple()]) -&gt; {<a href="#type-count">count()</a>, <a href="#type-count">count()</a>}</code><br></p>
 <p> </p>
 </div><p>Determines tuple-related information about specified datastructure:
  returns {TupleCount, TupleSize}, supposing the list is made of tuples of
@@ -406,7 +406,7 @@ occurrence of the specified element was removed).</p>
 
 <h3 class="function"><a name="difference-2">difference/2</a></h3>
 <div class="spec">
-<p><tt>difference(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p><code>difference(L1::list(), L2::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Returns the difference between the first specified list and the second,
  that is the elements of the first list that are not in the second one.
@@ -414,7 +414,7 @@ occurrence of the specified element was removed).</p>
 
 <h3 class="function"><a name="differences-2">differences/2</a></h3>
 <div class="spec">
-<p><tt>differences(L1::list(), L2::list()) -&gt; {list(), list()}</tt><br></p>
+<p><code>differences(L1::list(), L2::list()) -&gt; {list(), list()}</code><br></p>
 <p> </p>
 </div><p>Returns the differences between the first specified list and the second,
  as a pair, whose first element corresponds to the elements of the first list
@@ -424,7 +424,7 @@ occurrence of the specified element was removed).</p>
 
 <h3 class="function"><a name="dispatch_in-2">dispatch_in/2</a></h3>
 <div class="spec">
-<p><tt>dispatch_in(SublistCount::<a href="#type-count">count()</a>, List::list()) -&gt; [list()]</tt><br></p>
+<p><code>dispatch_in(SublistCount::<a href="#type-count">count()</a>, List::list()) -&gt; [list()]</code><br></p>
 <p> </p>
 </div><p><p>Dispatches the specified list on the specified number of sublists, each 
 element being in turn placed in the next sublist, until going back at the 
@@ -440,7 +440,7 @@ specified number of sublists (hence all sublists will have the same length).</p>
 
 <h3 class="function"><a name="draw_element-1">draw_element/1</a></h3>
 <div class="spec">
-<p><tt>draw_element(ElementList::list()) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p><code>draw_element(ElementList::list()) -&gt; <a href="#type-element">element()</a></code><br></p>
 <p> </p>
 </div><p>Draws one element at random of the specified list, knowing that they all
  have the same probability of being drawn (uniform probability).
@@ -448,7 +448,7 @@ specified number of sublists (hence all sublists will have the same length).</p>
 
 <h3 class="function"><a name="draw_element-2">draw_element/2</a></h3>
 <div class="spec">
-<p><tt>draw_element(ElementList::list(), Length::<a href="#type-count">count()</a>) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p><code>draw_element(ElementList::list(), ListLength::<a href="#type-count">count()</a>) -&gt; <a href="#type-element">element()</a></code><br></p>
 <p> </p>
 </div><p>Draws one element at random of the specified list, whose length must be
  the specified one (allows to precompute it once for multiple drawings),
@@ -458,7 +458,7 @@ specified number of sublists (hence all sublists will have the same length).</p>
 
 <h3 class="function"><a name="draw_element_weighted-1">draw_element_weighted/1</a></h3>
 <div class="spec">
-<p><tt>draw_element_weighted(ElementList::[{<a href="#type-element">element()</a>, number()}]) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p><code>draw_element_weighted(ElementList::[{<a href="#type-element">element()</a>, number()}]) -&gt; <a href="#type-element">element()</a></code><br></p>
 <p> </p>
 </div><p><p>Draws one element at random of the specified list, which is a list of 
 {Element, Probability} pairs: returns the drawn element, knowing that it will 
@@ -480,7 +480,7 @@ would never be drawn.</p>
 
 <h3 class="function"><a name="draw_elements_from-2">draw_elements_from/2</a></h3>
 <div class="spec">
-<p><tt>draw_elements_from(ElementList::list(), Count::<a href="#type-count">count()</a>) -&gt; list()</tt><br></p>
+<p><code>draw_elements_from(ElementList::list(), Count::<a href="#type-count">count()</a>) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Draws the specified number of elements at random of the specified list, 
 knowing that they all have the same probability of being drawn initially, but 
@@ -494,7 +494,7 @@ drawn up to once.</p>
 
 <h3 class="function"><a name="duplicate-2">duplicate/2</a></h3>
 <div class="spec">
-<p><tt>duplicate(Elem::<a href="#type-element">element()</a>, Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-element">element()</a>]</tt><br></p>
+<p><code>duplicate(Elem::<a href="#type-element">element()</a>, Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-element">element()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list made of the specified number of occurrences of the
  specified element.
@@ -502,13 +502,13 @@ drawn up to once.</p>
 
 <h3 class="function"><a name="duplicate_info_to_string-1">duplicate_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>duplicate_info_to_string(DupPairs::<a href="#type-duplicate_info">duplicate_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>duplicate_info_to_string(DupPairs::<a href="#type-duplicate_info">duplicate_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified duplicate information.</p>
 
 <h3 class="function"><a name="ensure_atoms-1">ensure_atoms/1</a></h3>
 <div class="spec">
-<p><tt>ensure_atoms(Atom) -&gt; any()</tt></p>
+<p><code>ensure_atoms(Atom) -&gt; any()</code></p>
 <p> </p>
 </div><p>Ensures that the specified argument is a list of atoms: encloses any atom
  in a list of its own if not already a list, or check that this list is only
@@ -517,7 +517,7 @@ drawn up to once.</p>
 
 <h3 class="function"><a name="ensure_is_once_in-2">ensure_is_once_in/2</a></h3>
 <div class="spec">
-<p><tt>ensure_is_once_in(Elem::term(), List::list()) -&gt; list()</tt><br></p>
+<p><code>ensure_is_once_in(Elem::term(), List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified element is included once in the specified 
 unordered list (supposed to contain it already up to once).</p>
@@ -527,7 +527,7 @@ unordered list (supposed to contain it already up to once).</p>
 
 <h3 class="function"><a name="ensure_list-1">ensure_list/1</a></h3>
 <div class="spec">
-<p><tt>ensure_list(List::<a href="#type-maybe_list">maybe_list</a>(T)) -&gt; [T]</tt><br></p>
+<p><code>ensure_list(List::<a href="#type-maybe_list">maybe_list</a>(T)) -&gt; [T]</code><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified argument is a list: encloses it in a list of 
 its own if not already a list; respects any original order.</p>
@@ -537,7 +537,7 @@ its own if not already a list; respects any original order.</p>
 
 <h3 class="function"><a name="ensure_pids-1">ensure_pids/1</a></h3>
 <div class="spec">
-<p><tt>ensure_pids(Pid) -&gt; any()</tt></p>
+<p><code>ensure_pids(Pid) -&gt; any()</code></p>
 <p> </p>
 </div><p>Ensures that the specified argument is a list of PIDs: encloses any PID
  in a list of its own if not already a list, or check that this list is only
@@ -546,7 +546,7 @@ its own if not already a list; respects any original order.</p>
 
 <h3 class="function"><a name="ensure_proplist-1">ensure_proplist/1</a></h3>
 <div class="spec">
-<p><tt>ensure_proplist(Atom::<a href="#type-maybe_list">maybe_list</a>(atom() | {atom(), any()})) -&gt; <a href="#type-proplist">proplist()</a></tt><br></p>
+<p><code>ensure_proplist(Atom::<a href="#type-maybe_list">maybe_list</a>(atom() | {atom(), any()})) -&gt; <a href="#type-proplist">proplist()</a></code><br></p>
 <p> </p>
 </div><p>Ensures that the specified argument is a proplist, that is a list of
  atoms or of pairs whose first argument is an atom: encloses any of such
@@ -556,7 +556,7 @@ its own if not already a list; respects any original order.</p>
 
 <h3 class="function"><a name="ensure_tuples-1">ensure_tuples/1</a></h3>
 <div class="spec">
-<p><tt>ensure_tuples(Tuple) -&gt; any()</tt></p>
+<p><code>ensure_tuples(Tuple) -&gt; any()</code></p>
 <p> </p>
 </div><p>Ensures that the specified argument is a list of tuples: encloses any
  tuple in a list of its own if not already a list, or check that this list is
@@ -565,7 +565,7 @@ its own if not already a list; respects any original order.</p>
 
 <h3 class="function"><a name="extract_atom_if_existing-2">extract_atom_if_existing/2</a></h3>
 <div class="spec">
-<p><tt>extract_atom_if_existing(Atom::atom(), TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; not_found | <a href="#type-tagged_list">tagged_list()</a></tt><br></p>
+<p><code>extract_atom_if_existing(Atom::atom(), TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; not_found | <a href="#type-tagged_list">tagged_list()</a></code><br></p>
 <p> </p>
 </div><p>Extracts, from the specified tagged list, the (first occurrence of the)
  of the specified atom: either returns 'not_found' if such an atom was not
@@ -575,7 +575,7 @@ its own if not already a list; respects any original order.</p>
 
 <h3 class="function"><a name="extract_atom_with_default-3">extract_atom_with_default/3</a></h3>
 <div class="spec">
-<p><tt>extract_atom_with_default(Atom::atom(), DefaultValue::<a href="#type-element">element()</a>, TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</tt><br></p>
+<p><code>extract_atom_with_default(Atom::atom(), DefaultValue::<a href="#type-element">element()</a>, TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Extracts, from the specified tagged list, the (first occurrence of the) 
 specified atom if found, otherwise returns the specified default; in all cases 
@@ -589,7 +589,7 @@ returns an element (extracted or default) and a corresponding tagged list.</p>
 
 <h3 class="function"><a name="extract_element_at-2">extract_element_at/2</a></h3>
 <div class="spec">
-<p><tt>extract_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; {<a href="#type-element">element()</a>, list()}</tt><br></p>
+<p><code>extract_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; {<a href="#type-element">element()</a>, list()}</code><br></p>
 <p> </p>
 </div><p><p>Extracts the element of the specified list at the specified index.</p>
 
@@ -600,7 +600,7 @@ returns an element (extracted or default) and a corresponding tagged list.</p>
 
 <h3 class="function"><a name="extract_element_if_existing-2">extract_element_if_existing/2</a></h3>
 <div class="spec">
-<p><tt>extract_element_if_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; false | list()</tt><br></p>
+<p><code>extract_element_if_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; false | list()</code><br></p>
 <p> </p>
 </div><p>Extracts the (first occurrence of the) specified element from the
  specified list, if existing there, then returning the shrunk list (with that
@@ -609,7 +609,7 @@ returns an element (extracted or default) and a corresponding tagged list.</p>
 
 <h3 class="function"><a name="extract_elements_from-2">extract_elements_from/2</a></h3>
 <div class="spec">
-<p><tt>extract_elements_from(ElementList::list(), Count::<a href="#type-count">count()</a>) -&gt; {ExtractedElems::list(), RemainingElems::list()}</tt><br></p>
+<p><code>extract_elements_from(ElementList::list(), Count::<a href="#type-count">count()</a>) -&gt; {ExtractedElems::list(), RemainingElems::list()}</code><br></p>
 <p> </p>
 </div><p><p>Extracts the specified number of elements at random from the specified 
 list, knowing that they all have the same probability of being extracted 
@@ -626,7 +626,7 @@ elements.</p>
 
 <h3 class="function"><a name="extract_last_element-1">extract_last_element/1</a></h3>
 <div class="spec">
-<p><tt>extract_last_element(List::list()) -&gt; {<a href="#type-element">element()</a>, list()}</tt><br></p>
+<p><code>extract_last_element(List::list()) -&gt; {<a href="#type-element">element()</a>, list()}</code><br></p>
 <p> </p>
 </div><p><p>Extracts the last element of the specified (non-empty) list, returning a 
 pair made of that element and of the remainder of the list (in its original 
@@ -638,7 +638,7 @@ order).</p>
 
 <h3 class="function"><a name="extract_pair_if_existing-2">extract_pair_if_existing/2</a></h3>
 <div class="spec">
-<p><tt>extract_pair_if_existing(KeyAtom::atom(), TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; false | {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</tt><br></p>
+<p><code>extract_pair_if_existing(KeyAtom::atom(), TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; false | {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</code><br></p>
 <p> </p>
 </div><p>Extracts, from the specified tagged list, the (first occurrence of the)
  key/value pair specified based on its first atom element (its key): either
@@ -649,7 +649,7 @@ order).</p>
 
 <h3 class="function"><a name="extract_pair_with_default-3">extract_pair_with_default/3</a></h3>
 <div class="spec">
-<p><tt>extract_pair_with_default(KeyAtom::atom(), DefaultValue::<a href="#type-element">element()</a>, TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</tt><br></p>
+<p><code>extract_pair_with_default(KeyAtom::atom(), DefaultValue::<a href="#type-element">element()</a>, TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Extracts, from the specified tagged list, the (first occurrence of the) 
 key/value pair specified based on its first atom element (its key) if found, 
@@ -665,13 +665,13 @@ an element (extracted or default) and a corresponding tagged list.</p>
 
 <h3 class="function"><a name="filter_out_undefined-1">filter_out_undefined/1</a></h3>
 <div class="spec">
-<p><tt>filter_out_undefined(L::list()) -&gt; list()</tt><br></p>
+<p><code>filter_out_undefined(L::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Removes (filters out) all elements equal to 'undefined'; preserves order.</p>
 
 <h3 class="function"><a name="flatten_once-1">flatten_once/1</a></h3>
 <div class="spec">
-<p><tt>flatten_once(List::[list()]) -&gt; list()</tt><br></p>
+<p><code>flatten_once(List::[list()]) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Flattens specified list of lists only once (that is on a single level), 
 as opposed to indefinitively (as done recursively by lists:flatten/1); 
@@ -687,7 +687,7 @@ list_utils:flatten_once(L) should yield [1,2,[3,4]].</p>
 
 <h3 class="function"><a name="flatten_tuples-1">flatten_tuples/1</a></h3>
 <div class="spec">
-<p><tt>flatten_tuples(List::[tuple()]) -&gt; list()</tt><br></p>
+<p><code>flatten_tuples(List::[tuple()]) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Flattens a list of tuples into a simple list of their elements, without 
 tuples and in the same order.</p>
@@ -697,7 +697,7 @@ tuples and in the same order.</p>
 
 <h3 class="function"><a name="get_all_permutations-1">get_all_permutations/1</a></h3>
 <div class="spec">
-<p><tt>get_all_permutations(L::list()) -&gt; [list()]</tt><br></p>
+<p><code>get_all_permutations(L::list()) -&gt; [list()]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all the permutations of the specified list.</p>
 
@@ -707,7 +707,7 @@ tuples and in the same order.</p>
 
 <h3 class="function"><a name="get_duplicates-1">get_duplicates/1</a></h3>
 <div class="spec">
-<p><tt>get_duplicates(List::list()) -&gt; <a href="#type-duplicate_info">duplicate_info()</a></tt><br></p>
+<p><code>get_duplicates(List::list()) -&gt; <a href="#type-duplicate_info">duplicate_info()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the duplicates found in the specified list: returns an 
 (unordered) list of {DuplicatedTerm,DuplicationCount} pairs, where each 
@@ -728,7 +728,7 @@ each.</p>
 
 <h3 class="function"><a name="get_element_at-2">get_element_at/2</a></h3>
 <div class="spec">
-<p><tt>get_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p><code>get_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; <a href="#type-element">element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the element in the list at the specified index, in
  <code>[1..length(List)]</code>.</p>
@@ -749,7 +749,7 @@ hd(List);</p>
 
 <h3 class="function"><a name="get_index_of-2">get_index_of/2</a></h3>
 <div class="spec">
-<p><tt>get_index_of(Element::<a href="#type-element">element()</a>, List::list()) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p><code>get_index_of(Element::<a href="#type-element">element()</a>, List::list()) -&gt; <a href="#type-count">count()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
 the) specified element in the specified list.</p>
@@ -761,7 +761,7 @@ the) specified element in the specified list.</p>
 
 <h3 class="function"><a name="get_last_element-1">get_last_element/1</a></h3>
 <div class="spec">
-<p><tt>get_last_element(List::list()) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p><code>get_last_element(List::list()) -&gt; <a href="#type-element">element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the last element of the specified list.</p>
 
@@ -773,7 +773,7 @@ element suggests a bad code design.</p>
 
 <h3 class="function"><a name="get_maybe_index_of-2">get_maybe_index_of/2</a></h3>
 <div class="spec">
-<p><tt>get_maybe_index_of(Element::<a href="#type-element">element()</a>, List::list()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-count">count()</a>)</tt><br></p>
+<p><code>get_maybe_index_of(Element::<a href="#type-element">element()</a>, List::list()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-count">count()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
 the) specified element in the specified list, or 'undefined' if the element is 
@@ -786,7 +786,7 @@ not found.</p>
 
 <h3 class="function"><a name="get_min_max-1">get_min_max/1</a></h3>
 <div class="spec">
-<p><tt>get_min_max(L::list()) -&gt; {<a href="#type-element">element()</a>, <a href="#type-element">element()</a>}</tt><br></p>
+<p><code>get_min_max(L::list()) -&gt; {<a href="#type-element">element()</a>, <a href="#type-element">element()</a>}</code><br></p>
 <p> </p>
 </div><p>Returns the minimum and maximum values found in the specified list, based
  on the native term order.
@@ -794,7 +794,7 @@ not found.</p>
 
 <h3 class="function"><a name="group_by-2">group_by/2</a></h3>
 <div class="spec">
-<p><tt>group_by(Count::<a href="#type-count">count()</a>, List::list()) -&gt; [list()]</tt><br></p>
+<p><code>group_by(Count::<a href="#type-count">count()</a>, List::list()) -&gt; [list()]</code><br></p>
 <p> </p>
 </div><p><p>Splits the specified list by groups of Count elements.</p>
 
@@ -805,7 +805,7 @@ not found.</p>
 
 <h3 class="function"><a name="has_duplicates-1">has_duplicates/1</a></h3>
 <div class="spec">
-<p><tt>has_duplicates(List) -&gt; any()</tt></p>
+<p><code>has_duplicates(List) -&gt; any()</code></p>
 <p> </p>
 </div><p>Tells whether there are in the specified list elements that are present
  more than once.
@@ -813,7 +813,7 @@ not found.</p>
 
 <h3 class="function"><a name="heads-2">heads/2</a></h3>
 <div class="spec">
-<p><tt>heads(List::list(), N::<a href="#type-count">count()</a>) -&gt; {list(), list()}</tt><br></p>
+<p><code>heads(List::list(), N::<a href="#type-count">count()</a>) -&gt; {list(), list()}</code><br></p>
 <p> </p>
 </div><p><p>Returns a pair made of the N first elements ("heads") of the specified 
 list, and of its remainder (tail).</p>
@@ -825,7 +825,7 @@ list, and of its remainder (tail).</p>
 
 <h3 class="function"><a name="insert_at_all_places-2">insert_at_all_places/2</a></h3>
 <div class="spec">
-<p><tt>insert_at_all_places(E::<a href="#type-element">element()</a>, L::list()) -&gt; [list()]</tt><br></p>
+<p><code>insert_at_all_places(E::<a href="#type-element">element()</a>, L::list()) -&gt; [list()]</code><br></p>
 <p> </p>
 </div><p><p>Returns all the lists obtained from the specified one L, when inserting 
 the specified element at each possible place in L (including before and 
@@ -837,7 +837,7 @@ after).</p>
 
 <h3 class="function"><a name="insert_element_at-3">insert_element_at/3</a></h3>
 <div class="spec">
-<p><tt>insert_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
+<p><code>insert_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Inserts the specified element at the specified position in the specified 
 list.</p>
@@ -848,7 +848,7 @@ list.</p>
 
 <h3 class="function"><a name="intercalate-2">intercalate/2</a></h3>
 <div class="spec">
-<p><tt>intercalate(Elem::<a href="#type-element">element()</a>, TargetList::list()) -&gt; list()</tt><br></p>
+<p><code>intercalate(Elem::<a href="#type-element">element()</a>, TargetList::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Intercalates the specified term between all elements of the specified 
 list.</p>
@@ -862,7 +862,7 @@ list.</p>
 
 <h3 class="function"><a name="intersection-2">intersection/2</a></h3>
 <div class="spec">
-<p><tt>intersection(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p><code>intersection(L1::list(), L2::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns the intersection of the two specified lists, that is the list of 
 all elements that are in both lists.</p>
@@ -872,7 +872,7 @@ all elements that are in both lists.</p>
 
 <h3 class="function"><a name="random_permute-1">random_permute/1</a></h3>
 <div class="spec">
-<p><tt>random_permute(List::list()) -&gt; list()</tt><br></p>
+<p><code>random_permute(List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a random uniform permutation of the specified list.</p>
 
@@ -887,7 +887,7 @@ possible here, hence must be emulated.</p>
 
 <h3 class="function"><a name="random_permute_reciprocal-1">random_permute_reciprocal/1</a></h3>
 <div class="spec">
-<p><tt>random_permute_reciprocal(List::list()) -&gt; list()</tt><br></p>
+<p><code>random_permute_reciprocal(List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a reciprocal random uniform permutation of the specified list, 
 compared to random_permute/1.</p>
@@ -899,7 +899,7 @@ compared to random_permute/1.</p>
 
 <h3 class="function"><a name="reconstruct_tuples-2">reconstruct_tuples/2</a></h3>
 <div class="spec">
-<p><tt>reconstruct_tuples(List::list(), TupleSize::<a href="#type-count">count()</a>) -&gt; [tuple()]</tt><br></p>
+<p><code>reconstruct_tuples(List::list(), TupleSize::<a href="#type-count">count()</a>) -&gt; [tuple()]</code><br></p>
 <p> </p>
 </div><p><p>Reconstructs a list of tuples of specified size from the specified flat 
 list.</p>
@@ -910,7 +910,7 @@ list.</p>
 
 <h3 class="function"><a name="remove_element_at-2">remove_element_at/2</a></h3>
 <div class="spec">
-<p><tt>remove_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
+<p><code>remove_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a list corresponding to the specified one with the element at 
 specified index removed.</p>
@@ -936,7 +936,7 @@ T;</p>
 
 <h3 class="function"><a name="remove_element_from-2">remove_element_from/2</a></h3>
 <div class="spec">
-<p><tt>remove_element_from(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p><code>remove_element_from(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Removes all occurrences (not the first one only: possibly zero, possibly
  more than one) of the specified element from the specified list, and returns
@@ -945,7 +945,7 @@ T;</p>
 
 <h3 class="function"><a name="remove_elements_from-2">remove_elements_from/2</a></h3>
 <div class="spec">
-<p><tt>remove_elements_from(Elems::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</tt><br></p>
+<p><code>remove_elements_from(Elems::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Removes all occurrences (not the first one only: possibly zero, possibly
  more than one) of the specified elements from the specified list, and returns
@@ -954,7 +954,7 @@ T;</p>
 
 <h3 class="function"><a name="remove_first_elements-2">remove_first_elements/2</a></h3>
 <div class="spec">
-<p><tt>remove_first_elements(List::list(), Count::<a href="#type-count">count()</a>) -&gt; list()</tt><br></p>
+<p><code>remove_first_elements(List::list(), Count::<a href="#type-count">count()</a>) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Removes the specified number first elements.</p>
 
@@ -963,7 +963,7 @@ T;</p>
 
 <h3 class="function"><a name="remove_first_occurrence-2">remove_first_occurrence/2</a></h3>
 <div class="spec">
-<p><tt>remove_first_occurrence(Element::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p><code>remove_first_occurrence(Element::<a href="#type-element">element()</a>, List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Deletes up to one occurrence (the first found) of the specified element
  in the specified list, whose order is preserved.
@@ -971,7 +971,7 @@ T;</p>
 
 <h3 class="function"><a name="remove_first_occurrences-2">remove_first_occurrences/2</a></h3>
 <div class="spec">
-<p><tt>remove_first_occurrences(ElementsToRemove::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</tt><br></p>
+<p><code>remove_first_occurrences(ElementsToRemove::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Deletes up to one occurrence (the first found) of each of the specified
  elements, from the specified list, whose order is preserved.
@@ -979,7 +979,7 @@ T;</p>
 
 <h3 class="function"><a name="remove_last_element-1">remove_last_element/1</a></h3>
 <div class="spec">
-<p><tt>remove_last_element(List::list()) -&gt; list()</tt><br></p>
+<p><code>remove_last_element(List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Removes the last element of the specified list.</p>
 
@@ -991,7 +991,7 @@ T;</p>
 
 <h3 class="function"><a name="set_element_at-3">set_element_at/3</a></h3>
 <div class="spec">
-<p><tt>set_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
+<p><code>set_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Returns the specified list with the element at specified index replaced
  by the specified element.
@@ -999,7 +999,7 @@ T;</p>
 
 <h3 class="function"><a name="split_at-2">split_at/2</a></h3>
 <div class="spec">
-<p><tt>split_at(MaxLen::<a href="#type-count">count()</a>, List::list()) -&gt; {list(), list()}</tt><br></p>
+<p><code>split_at(MaxLen::<a href="#type-count">count()</a>, List::list()) -&gt; {list(), list()}</code><br></p>
 <p> </p>
 </div><p><p>Splits the specified (plain) list in two parts (two plain lists, that are 
 returned):</p>
@@ -1013,7 +1013,7 @@ reverse order
 
 <h3 class="function"><a name="subtract_all_duplicates-2">subtract_all_duplicates/2</a></h3>
 <div class="spec">
-<p><tt>subtract_all_duplicates(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p><code>subtract_all_duplicates(L1::list(), L2::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a list equal to L1 except that all elements found in L2 have been 
 removed, even if in L1 they were duplicated.</p>
@@ -1029,7 +1029,7 @@ only the first one) are removed. See also: the '--' operator.</p>
 
 <h3 class="function"><a name="union-2">union/2</a></h3>
 <div class="spec">
-<p><tt>union(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p><code>union(L1::list(), L2::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Returns the union of the two specified lists, that is the list of all
  elements that are in either list.
@@ -1037,7 +1037,7 @@ only the first one) are removed. See also: the '--' operator.</p>
 
 <h3 class="function"><a name="uniquify-1">uniquify/1</a></h3>
 <div class="spec">
-<p><tt>uniquify(List::list()) -&gt; list()</tt><br></p>
+<p><code>uniquify(List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a list whose elements are the ones of the specified list, except 
 that they are unique (all their next duplicates have been removed).</p>
@@ -1050,7 +1050,7 @@ that they are unique (all their next duplicates have been removed).</p>
 
 <h3 class="function"><a name="uniquify_ordered-1">uniquify_ordered/1</a></h3>
 <div class="spec">
-<p><tt>uniquify_ordered(List::list()) -&gt; list()</tt><br></p>
+<p><code>uniquify_ordered(List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div><p><p>Returns a list whose elements are the ones of the specified list, except 
 that they are unique (all their duplicates have been removed), while the order 
@@ -1064,7 +1064,7 @@ in the kept elements is preserved.</p>
 
 <h3 class="function"><a name="unordered_compare-2">unordered_compare/2</a></h3>
 <div class="spec">
-<p><tt>unordered_compare(L1::list(), L2::list()) -&gt; boolean()</tt><br></p>
+<p><code>unordered_compare(L1::list(), L2::list()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Compares the two specified lists with no regard to the order of their
  elements: returns true iff they have the exact same elements (differentiating
@@ -1073,7 +1073,7 @@ in the kept elements is preserved.</p>
 
 <h3 class="function"><a name="zipn-1">zipn/1</a></h3>
 <div class="spec">
-<p><tt>zipn(ListOfLists::[list()]) -&gt; [tuple()]</tt><br></p>
+<p><code>zipn(ListOfLists::[list()]) -&gt; [tuple()]</code><br></p>
 <p> </p>
 </div><p><p>Performs a generalization of zip2, zip3: takes one element at a time of 
 each of the input lists, and adds it to a corresponding tuple.</p>

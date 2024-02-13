@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module physics_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module physics_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>general-purpose basic physics-related</b> 
+facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>general-purpose basic physics-related</b> 
+facilities.</p>
+
+ See also: for units, the unit_utils module.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-kilograms">kilograms()</a></h3>
+<p><code>kilograms() = <a href="unit_utils.html#type-kilograms">unit_utils:kilograms()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-meters">meters()</a></h3>
+<p><code>meters() = <a href="unit_utils.html#type-meters">unit_utils:meters()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-meters_per_second">meters_per_second()</a></h3>
+<p><code>meters_per_second() = <a href="unit_utils.html#type-meters_per_second">unit_utils:meters_per_second()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-time_factor">time_factor()</a></h3>
+<p><code>time_factor() = <a href="#type-factor">factor()</a></code></p>
+<p><p> A ratio between the flow of the proper time of an observer and the overall 
+time coordinate.</p>
+
+ Expected to be in [0,1[; for example ~0 when the observer is close to a black
+ hole, and ~1 when infinitely far from it.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#c-0">c/0</a></td><td>c, the speed of light in vacuum, in m/s.</td></tr>
+<tr><td valign="top"><a href="#e-0">e/0</a></td><td>Electron charge (in absolute value), in kg^(1/2).m^(3/2)/s.</td></tr>
+<tr><td valign="top"><a href="#g-0">g/0</a></td><td>G, the Newtonian constant of gravitation, in N.m^2.kg^−2.</td></tr>
+<tr><td valign="top"><a href="#get_escape_velocity-2">get_escape_velocity/2</a></td><td>Returns the escape velocity, that is the minimum speed needed for a free, 
+non-propelled object to escape at the specified distance from the 
+gravitational influence of a primary body of specified mass, thus reaching an 
+infinite distance from it.</td></tr>
+<tr><td valign="top"><a href="#get_gravitational_acceleration-2">get_gravitational_acceleration/2</a></td><td>Returns the local gravitational acceleration at the specified distance 
+from the center of a spherically symmetric primary body (such as a star or a 
+planet) of the specified mass.</td></tr>
+<tr><td valign="top"><a href="#get_lorentz_factor-1">get_lorentz_factor/1</a></td><td>Returns the Lorentz factor ("gamma"), a quantity that expresses how much 
+the measurements of time, length, and other physical properties change for an 
+object while that object is moving.</td></tr>
+<tr><td valign="top"><a href="#get_schwarzschild_radius-1">get_schwarzschild_radius/1</a></td><td>Returns the Schwarzschild radius, which corresponds to the radius 
+defining the event horizon of a Schwarzschild black hole of the specified 
+mass.</td></tr>
+<tr><td valign="top"><a href="#get_time_factor-2">get_time_factor/2</a></td><td>Returns the time factor that shall be applied to the proper time of an 
+observer located at the specified distance from a primary body of the 
+specified mass, which creates the gravitational field.</td></tr>
+<tr><td valign="top"><a href="#h-0">h/0</a></td><td>Planck's constant, in J.s.</td></tr>
+<tr><td valign="top"><a href="#k_b-0">k_b/0</a></td><td>Boltzmann constant, in J/K.</td></tr>
+<tr><td valign="top"><a href="#m_e-0">m_e/0</a></td><td>Electron mass, in kg.</td></tr>
+<tr><td valign="top"><a href="#m_earth-0">m_earth/0</a></td><td>The mass, in kg, of our planet, the Earth.</td></tr>
+<tr><td valign="top"><a href="#m_n-0">m_n/0</a></td><td>Neutron mass, in kg.</td></tr>
+<tr><td valign="top"><a href="#m_p-0">m_p/0</a></td><td>Proton mass, in kg.</td></tr>
+<tr><td valign="top"><a href="#m_sagittarius_a_star-0">m_sagittarius_a_star/0</a></td><td>The mass, in kg, of Sagittarius A*, the supermassive black hole at the 
+Galactic Center of the Milky Way.</td></tr>
+<tr><td valign="top"><a href="#m_sun-0">m_sun/0</a></td><td>The mass, in kg, of our star, the Sun.</td></tr>
+<tr><td valign="top"><a href="#r_earth-0">r_earth/0</a></td><td>The radius of our planet, the Earth.</td></tr>
+<tr><td valign="top"><a href="#r_sun-0">r_sun/0</a></td><td>The radius of our star, the Sun.</td></tr>
+<tr><td valign="top"><a href="#sigma-0">sigma/0</a></td><td>Stefan-Boltzmann constant, in kg.s^-3.K^-4.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="c-0">c/0</a></h3>
+<div class="spec">
+<p><code>c() -&gt; <a href="#type-meters_per_second">meters_per_second()</a></code><br></p>
+<p> </p>
+</div><p><p>c, the speed of light in vacuum, in m/s.</p>
+
+ <p>The upper limit for the speed at which conventional matter or energy (and thus 
+any signal carrying information) can travel through space.</p>
+
+ <p>This can also be seen as a scale conversion factor for changing distances 
+expressed in terms of units of time to ones in terms of units of space: d=c.t.</p>
+
+ Approximately 300,000 kilometres per second.
+</p>
+
+<h3 class="function"><a name="e-0">e/0</a></h3>
+<div class="spec">
+<p><code>e() -&gt; float()</code><br></p>
+<p> </p>
+</div><p><p>Electron charge (in absolute value), in kg^(1/2).m^(3/2)/s.</p>
+
+ <p>The electric charge carried by a single proton or, equivalently, the magnitude 
+of the negative electric charge carried by a single electron.</p>
+
+ See https://en.wikipedia.org/wiki/Elementary_charge.
+</p>
+
+<h3 class="function"><a name="g-0">g/0</a></h3>
+<div class="spec">
+<p><code>g() -&gt; float()</code><br></p>
+<p> </p>
+</div><p>G, the Newtonian constant of gravitation, in N.m^2.kg^−2.</p>
+
+<h3 class="function"><a name="get_escape_velocity-2">get_escape_velocity/2</a></h3>
+<div class="spec">
+<p><code>get_escape_velocity(Distance::<a href="#type-meters">meters()</a>, Mass::<a href="#type-kilograms">kilograms()</a>) -&gt; <a href="#type-meters_per_second">meters_per_second()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the escape velocity, that is the minimum speed needed for a free, 
+non-propelled object to escape at the specified distance from the 
+gravitational influence of a primary body of specified mass, thus reaching an 
+infinite distance from it.</p>
+
+ See https://en.wikipedia.org/wiki/Escape_velocity.
+</p>
+
+<h3 class="function"><a name="get_gravitational_acceleration-2">get_gravitational_acceleration/2</a></h3>
+<div class="spec">
+<p><code>get_gravitational_acceleration(Distance::<a href="#type-meters">meters()</a>, Mass::<a href="#type-kilograms">kilograms()</a>) -&gt; <a href="#type-meters_per_second">meters_per_second()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the local gravitational acceleration at the specified distance 
+from the center of a spherically symmetric primary body (such as a star or a 
+planet) of the specified mass.</p>
+
+ See https://en.wikipedia.org/wiki/Escape_velocity.
+</p>
+
+<h3 class="function"><a name="get_lorentz_factor-1">get_lorentz_factor/1</a></h3>
+<div class="spec">
+<p><code>get_lorentz_factor(S::<a href="#type-meters_per_second">meters_per_second()</a>) -&gt; <a href="#type-factor">factor()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the Lorentz factor ("gamma"), a quantity that expresses how much 
+the measurements of time, length, and other physical properties change for an 
+object while that object is moving.</p>
+
+ <p>S is the speed, i.e. the magnitude of the relative velocity between the 
+inertial reference frame of the object and the one of the observer.</p>
+
+ See https://en.wikipedia.org/wiki/Lorentz_factor.
+</p>
+
+<h3 class="function"><a name="get_schwarzschild_radius-1">get_schwarzschild_radius/1</a></h3>
+<div class="spec">
+<p><code>get_schwarzschild_radius(Mass::<a href="#type-kilograms">kilograms()</a>) -&gt; <a href="#type-meters">meters()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the Schwarzschild radius, which corresponds to the radius 
+defining the event horizon of a Schwarzschild black hole of the specified 
+mass.</p>
+
+ See https://en.wikipedia.org/wiki/Schwarzschild_radius.
+</p>
+
+<h3 class="function"><a name="get_time_factor-2">get_time_factor/2</a></h3>
+<div class="spec">
+<p><code>get_time_factor(Distance::<a href="#type-meters">meters()</a>, Mass::<a href="#type-kilograms">kilograms()</a>) -&gt; <a href="#type-time_factor">time_factor()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns the time factor that shall be applied to the proper time of an 
+observer located at the specified distance from a primary body of the 
+specified mass, which creates the gravitational field.</p>
+
+ <p>The distance is expected to be greater than the Schwarzschild radius of said 
+primary body.</p>
+
+ See
+ https://en.wikipedia.org/wiki/Gravitational_time_dilation#Outside_a_non-rotating_sphere
+</p>
+
+<h3 class="function"><a name="h-0">h/0</a></h3>
+<div class="spec">
+<p><code>h() -&gt; float()</code><br></p>
+<p> </p>
+</div><p><p>Planck's constant, in J.s.</p>
+
+ <p>A photon's energy is equal to its frequency multiplied by the Planck constant, 
+and the wavelength of a matter wave equals the Planck constant divided by the 
+associated particle momentum.</p>
+
+ See https://en.wikipedia.org/wiki/Planck_constant
+</p>
+
+<h3 class="function"><a name="k_b-0">k_b/0</a></h3>
+<div class="spec">
+<p><code>k_b() -&gt; float()</code><br></p>
+<p> </p>
+</div><p><p>Boltzmann constant, in J/K.</p>
+
+ <p>The proportionality factor that relates the average relative thermal energy 
+of particles in a gas with the thermodynamic temperature of the gas.</p>
+
+ See https://en.wikipedia.org/wiki/Boltzmann_constant.
+</p>
+
+<h3 class="function"><a name="m_e-0">m_e/0</a></h3>
+<div class="spec">
+<p><code>m_e() -&gt; <a href="#type-kilograms">kilograms()</a></code><br></p>
+<p> </p>
+</div><p><p>Electron mass, in kg.</p>
+
+ <p>Mass of a stationary electron, also known as the invariant mass of the 
+electron.</p>
+
+ See https://en.wikipedia.org/wiki/Electron_mass.
+</p>
+
+<h3 class="function"><a name="m_earth-0">m_earth/0</a></h3>
+<div class="spec">
+<p><code>m_earth() -&gt; <a href="#type-kilograms">kilograms()</a></code><br></p>
+<p> </p>
+</div><p><p>The mass, in kg, of our planet, the Earth.</p>
+
+ See https://en.wikipedia.org/wiki/Earth_mass.
+</p>
+
+<h3 class="function"><a name="m_n-0">m_n/0</a></h3>
+<div class="spec">
+<p><code>m_n() -&gt; <a href="#type-kilograms">kilograms()</a></code><br></p>
+<p> </p>
+</div><p><p>Neutron mass, in kg.</p>
+
+ See https://en.wikipedia.org/wiki/Neutron.
+</p>
+
+<h3 class="function"><a name="m_p-0">m_p/0</a></h3>
+<div class="spec">
+<p><code>m_p() -&gt; <a href="#type-kilograms">kilograms()</a></code><br></p>
+<p> </p>
+</div><p><p>Proton mass, in kg.</p>
+
+ See https://en.wikipedia.org/wiki/Proton.
+</p>
+
+<h3 class="function"><a name="m_sagittarius_a_star-0">m_sagittarius_a_star/0</a></h3>
+<div class="spec">
+<p><code>m_sagittarius_a_star() -&gt; <a href="#type-kilograms">kilograms()</a></code><br></p>
+<p> </p>
+</div><p><p>The mass, in kg, of Sagittarius A*, the supermassive black hole at the 
+Galactic Center of the Milky Way.</p>
+
+ See https://en.wikipedia.org/wiki/Sagittarius_A*.
+</p>
+
+<h3 class="function"><a name="m_sun-0">m_sun/0</a></h3>
+<div class="spec">
+<p><code>m_sun() -&gt; <a href="#type-kilograms">kilograms()</a></code><br></p>
+<p> </p>
+</div><p><p>The mass, in kg, of our star, the Sun.</p>
+
+ See https://en.wikipedia.org/wiki/Solar_mass.
+</p>
+
+<h3 class="function"><a name="r_earth-0">r_earth/0</a></h3>
+<div class="spec">
+<p><code>r_earth() -&gt; <a href="#type-meters">meters()</a></code><br></p>
+<p> </p>
+</div><p><p>The radius of our planet, the Earth.</p>
+
+ See https://en.wikipedia.org/wiki/Earth_radius.
+</p>
+
+<h3 class="function"><a name="r_sun-0">r_sun/0</a></h3>
+<div class="spec">
+<p><code>r_sun() -&gt; <a href="#type-meters">meters()</a></code><br></p>
+<p> </p>
+</div><p><p>The radius of our star, the Sun.</p>
+
+ See https://en.wikipedia.org/wiki/Sun_radius.
+</p>
+
+<h3 class="function"><a name="sigma-0">sigma/0</a></h3>
+<div class="spec">
+<p><code>sigma() -&gt; float()</code><br></p>
+<p> </p>
+</div><p><p>Stefan-Boltzmann constant, in kg.s^-3.K^-4.</p>
+
+ <p>The factor of proportionality between the total energy radiated per unit 
+surface area per unit time (also known as the radiant exitance) and the fourth 
+power of the black body's temperature: M = Sigma.T^4.</p>
+
+ See https://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_law.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

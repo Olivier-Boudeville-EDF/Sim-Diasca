@@ -22,7 +22,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2023 EDF R&amp;D</td>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2024 EDF R&amp;D</td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body">olivier (dot) boudeville (at) edf (dot) fr</td>
 </tr>
@@ -30,9 +30,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body">February 2009</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, September 28, 2023</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, February 13, 2024</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.6</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.7</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -114,7 +114,7 @@
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>This document intends to gather information mostly aimed at Sim-Diasca <em>maintainers</em> or <em>contributors</em> - not users. Most people should read the <em>Sim-Diasca Technical Manual</em> first, and possibly the <em>Sim-Diasca Modeller Guide</em> as well.</p>
-<p>However we require that the in-house authors of any simulation element making use of Sim-Diasca's services (ex: models, simulation cases, etc.) respect the conventions presented in the current document, for the sake of the clarity and homogeneity of the code base.</p>
+<p>However we require that the in-house authors of any simulation element making use of Sim-Diasca's services (e.g. models, simulation cases, etc.) respect the conventions presented in the current document, for the sake of the clarity and homogeneity of the code base.</p>
 <p class="last">As we believe that these conventions may benefit to third-party users, we share them as well.</p>
 </div>
 <div class="section" id="sim-diasca-code-conventions">
@@ -200,19 +200,19 @@
 </p>
 <p>The most obvious conventions are:</p>
 <ul class="simple">
-<li>the <strong>settings of the build chain</strong> should be used (ex: with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) <tt class="docutils literal">GNUmakesettings.inc</tt>,  <tt class="docutils literal">GNUmakerules.inc</tt> and <tt class="docutils literal">GNUmakevars.inc</tt> files should be relied upon</li>
+<li>the <strong>settings of the build chain</strong> should be used (e.g. with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) <tt class="docutils literal">GNUmakesettings.inc</tt>,  <tt class="docutils literal">GNUmakerules.inc</tt> and <tt class="docutils literal">GNUmakevars.inc</tt> files should be relied upon</li>
 <li><strong>no warning should be tolerated</strong>; anyway now our build chain treats warnings as (blocking) errors</li>
-<li><strong>test cases</strong> should be developed alongside most if not all modules <a class="footnote-reference" href="#id2" id="id1">[1]</a>; ex: if developing <tt class="docutils literal">class_X.erl</tt>, then probably the <tt class="docutils literal">class_X_test.erl</tt> testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only <strong>integrated tests</strong> can be devised in practice; tests should be gathered in <strong>test suites</strong>, that should be runnable automatically (<tt class="docutils literal">make test</tt>) and fail loudly (and in a blocking manner) at the first error met</li>
+<li><strong>test cases</strong> should be developed alongside most if not all modules <a class="footnote-reference" href="#id2" id="id1">[1]</a>; e.g. if developing <tt class="docutils literal">class_X.erl</tt>, then probably the <tt class="docutils literal">class_X_test.erl</tt> testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (e.g. thanks to pattern matching), not by the person running the test (e.g. who would have to compare visually the actual results with the expected ones); in some cases, only <strong>integrated tests</strong> can be devised in practice; tests should be gathered in <strong>test suites</strong>, that should be runnable automatically (<tt class="docutils literal">make test</tt>) and fail loudly (and in a blocking manner) at the first error met</li>
 <li><strong>multiple levels of quality documentation</strong> should be made available to the code user, and probably be written in parallel to the code; there are at least three documentation levels:<ul>
-<li>lower-level documentation: code should always be <strong>densely commented</strong>, with headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (ex: <tt class="docutils literal"><span class="pre">RegisteredState=...</span></tt> to be preferred to <tt class="docutils literal"><span class="pre">NewState=...</span></tt>), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort</li>
+<li>lower-level documentation: code should always be <strong>densely commented</strong>, with headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (e.g. <tt class="docutils literal"><span class="pre">RegisteredState=...</span></tt> to be preferred to <tt class="docutils literal"><span class="pre">NewState=...</span></tt>), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort</li>
 <li>higher-level <strong>design and/or implementation notes</strong>: they should be available as a set of paragraphs in each source file, before the function definitions, to help understanding how the features are implemented, and why</li>
 <li>high-level <strong>developer and user documentation</strong> should be made available, targeting at least a PDF output, possibly offering a wiki access as well</li>
 </ul>
 </li>
 <li>more generally, <strong>comments</strong> should be clear and precise, numerous, rich and complete (overall, in terms of line counts, we target roughly 1/3 of code, 1/3 of blank lines and 1/3 of comments); all comments shall be written in UK English, start with a single <tt class="docutils literal">%</tt> and be properly word-wrapped (use <tt class="docutils literal"><span class="pre">meta-q</span></tt> with our Emacs settings)</li>
-<li><strong>indentation</strong> should respect, as already explained, the 80-character width and 4-space tabulation; however the default built-in Erlang indentation mode of <tt class="docutils literal">emacs</tt> can hardly be used for that, as it leads to huge width offsets (the <tt class="docutils literal">elisp</tt> code for the emacs indentation will be modified for our need, in the future); the Sim-Diasca conventional indentation should be enforced, preferably automatically (ex: thanks to <tt class="docutils literal">emacs</tt>)</li>
-<li><strong>spacing homogeneity</strong> across Sim-Diasca source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses), arguments should be separated by spaces (ex: <tt class="docutils literal">f( X ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal">f(X) <span class="pre">-&gt;</span> ...</tt>), especially if they are a bit complex (<tt class="docutils literal">f( <span class="pre">A={U,V},</span> B, _C ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal"><span class="pre">f(A={U,V},B,_C)</span> <span class="pre">-&gt;</span> ...</tt>)</li>
-<li>see the <a class="reference internal" href="#using-type-specifications-with-sim-diasca">Using Type Specifications With Sim-Diasca</a> section for <strong>type-related conventions</strong>; at least all exported functions shall have a <tt class="docutils literal"><span class="pre">-spec</span></tt> declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in &quot;semantic&quot; terms rather than on technical ones (ex: <tt class="docutils literal"><span class="pre">-type</span> temperature() :: ...</tt> than <tt class="docutils literal">float()</tt>); developers may refer to, or enrich, <tt class="docutils literal">myriad/src/utils/unit_utils.erl</tt> for that</li>
+<li><strong>indentation</strong> should respect, as already explained, the 80-character width and 4-space tabulation; however the default built-in Erlang indentation mode of <tt class="docutils literal">emacs</tt> can hardly be used for that, as it leads to huge width offsets (the <tt class="docutils literal">elisp</tt> code for the emacs indentation will be modified for our need, in the future); the Sim-Diasca conventional indentation should be enforced, preferably automatically (e.g. thanks to <tt class="docutils literal">emacs</tt>)</li>
+<li><strong>spacing homogeneity</strong> across Sim-Diasca source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses), arguments should be separated by spaces (e.g. <tt class="docutils literal">f( X ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal">f(X) <span class="pre">-&gt;</span> ...</tt>), especially if they are a bit complex (<tt class="docutils literal">f( <span class="pre">A={U,V},</span> B, _C ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal"><span class="pre">f(A={U,V},B,_C)</span> <span class="pre">-&gt;</span> ...</tt>)</li>
+<li>see the <a class="reference internal" href="#using-type-specifications-with-sim-diasca">Using Type Specifications With Sim-Diasca</a> section for <strong>type-related conventions</strong>; at least all exported functions shall have a <tt class="docutils literal"><span class="pre">-spec</span></tt> declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in &quot;semantic&quot; terms rather than on technical ones (e.g. <tt class="docutils literal"><span class="pre">-type</span> temperature() :: ...</tt> than <tt class="docutils literal">float()</tt>); developers may refer to, or enrich, <tt class="docutils literal">myriad/src/utils/unit_utils.erl</tt> for that</li>
 <li>the <strong>latest stable version of Erlang</strong> should be used, preferably built thanks to our <tt class="docutils literal"><span class="pre">myriad/conf/install-erlang.sh</span></tt> script</li>
 </ul>
 <p><span class="raw-html"><center><img src="xkcd-functional.png"></img></center></span>
@@ -223,16 +223,16 @@
 <li>if an helper function is specific to an exported function, it shall be defined just after this function; otherwise it should be defined in the <strong>helper section</strong>, placed just after the definition of the exported functions</li>
 <li>defining distinct (non-overlapping), explicit (with a clear enough name), numerous (statically-defined) <strong>atoms</strong> is cheap; they are generally to be involved in at least one type definition</li>
 <li>the use of <tt class="docutils literal">case ... of ... end</tt> should be preferred to the use of <tt class="docutils literal">if</tt> (never used in our code base)</li>
-<li>we also prefer that the various patterns of a case are indented with exactly one tabulation, and that the closing <tt class="docutils literal">end</tt> lies as much as possible on the left (ex: if having specified <tt class="docutils literal">MyVar = case ... end</tt>, then <tt class="docutils literal">end</tt> should begin at the same column as <tt class="docutils literal">MyVar</tt>); the same applies to <tt class="docutils literal">try ... catch ... end</tt> clauses</li>
-<li>when a term is ignored, instead of using simply <tt class="docutils literal">_</tt>, one should define a <strong>named mute variable</strong> in order to provide more information about this term (ex: <tt class="docutils literal">_TimeManagerPid</tt>); one should then to accidental matching of such names</li>
+<li>we also prefer that the various patterns of a case are indented with exactly one tabulation, and that the closing <tt class="docutils literal">end</tt> lies as much as possible on the left (e.g. if having specified <tt class="docutils literal">MyVar = case ... end</tt>, then <tt class="docutils literal">end</tt> should begin at the same column as <tt class="docutils literal">MyVar</tt>); the same applies to <tt class="docutils literal">try ... catch ... end</tt> clauses</li>
+<li>when a term is ignored, instead of using simply <tt class="docutils literal">_</tt>, one should define a <strong>named mute variable</strong> in order to provide more information about this term (e.g. <tt class="docutils literal">_TimeManagerPid</tt>); one should then to accidental matching of such names</li>
 <li>some conventional variable names are, and may be, extensively used: <tt class="docutils literal">Res</tt> for result, <tt class="docutils literal">H</tt> and <tt class="docutils literal">T</tt> for respectively the head and tail of a list</li>
-<li>when needing an <strong>associative table</strong>, use the <tt class="docutils literal">table</tt> pseudo-module; if needing to store such an instance in an attribute, its name shall be suffixed with <tt class="docutils literal">_table</tt> (ex: <tt class="docutils literal">road_table</tt>); a key/value pair shall be designated as a table <em>entry</em> (ex: variable named as <tt class="docutils literal">RoadEntry</tt>)</li>
+<li>when needing an <strong>associative table</strong>, use the <tt class="docutils literal">table</tt> pseudo-module; if needing to store such an instance in an attribute, its name shall be suffixed with <tt class="docutils literal">_table</tt> (e.g. <tt class="docutils literal">road_table</tt>); a key/value pair shall be designated as a table <em>entry</em> (e.g. variable named as <tt class="docutils literal">RoadEntry</tt>)</li>
 <li>regarding <strong>text</strong>:<ul>
 <li>if a text is to be rather static (constant) and/or if it is to be exchanged between processes, then it should be a <tt class="docutils literal">binary</tt>, and its type shall be declared as <tt class="docutils literal">text_utils:bin_string()</tt></li>
 <li>other, a plain string (<tt class="docutils literal">string()</tt>) shall be used</li>
 </ul>
 </li>
-<li>when defining a non-trivial datastructure, a <strong>record</strong> shall be used (rather than, say, a mere ad-hoc tuple), a corresponding <strong>type</strong> should be then defined (ex: a <tt class="docutils literal">foobar</tt> record leading to a <tt class="docutils literal">foobar()</tt> type), and a <strong>function to describe it</strong> as text shall be provided (ex: <tt class="docutils literal"><span class="pre">-spec</span> <span class="pre">foobar_to_string(foobar())</span> <span class="pre">-&gt;</span> string()</tt>)<ul>
+<li>when defining a non-trivial datastructure, a <strong>record</strong> shall be used (rather than, say, a mere ad-hoc tuple), a corresponding <strong>type</strong> should be then defined (e.g. a <tt class="docutils literal">foobar</tt> record leading to a <tt class="docutils literal">foobar()</tt> type), and a <strong>function to describe it</strong> as text shall be provided (e.g. <tt class="docutils literal"><span class="pre">-spec</span> <span class="pre">foobar_to_string(foobar())</span> <span class="pre">-&gt;</span> string()</tt>)<ul>
 <li><strong>mute variables</strong> should be used as well to document actual parameters; for example <tt class="docutils literal">f(3,7,10)</tt> could preferably be written as a clearer <tt class="docutils literal">f(_Min=3,_Max=7,_Deviation=10)</tt></li>
 </ul>
 </li>
@@ -301,12 +301,12 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 <pre class="code erlang literal-block">
 <span class="p">-</span><span class="ni">spec</span> <span class="n">getFoo</span><span class="p">(</span> <span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">()</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">request_return</span><span class="p">(</span> <span class="n">foo</span><span class="p">()</span> <span class="p">).</span>
 </pre>
-<p>Method names should be spelled in <tt class="docutils literal">CamelCase</tt> (ex: <tt class="docutils literal">getColorOf</tt>, not <tt class="docutils literal">get_color_of</tt>).</p>
-<p>Variables bound to a WOOPER state shall have their name suffixed with <tt class="docutils literal">State</tt>; ex: <tt class="docutils literal">NewState</tt>, <tt class="docutils literal">UpdatedState</tt>, etc.</p>
-<p>To better discriminate between methods and functions (ex: helpers):</p>
+<p>Method names should be spelled in <tt class="docutils literal">CamelCase</tt> (e.g. <tt class="docutils literal">getColorOf</tt>, not <tt class="docutils literal">get_color_of</tt>).</p>
+<p>Variables bound to a WOOPER state shall have their name suffixed with <tt class="docutils literal">State</tt>; e.g. <tt class="docutils literal">NewState</tt>, <tt class="docutils literal">UpdatedState</tt>, etc.</p>
+<p>To better discriminate between methods and functions (e.g. helpers):</p>
 <ul class="simple">
-<li>the latter shall have their name spelled in <tt class="docutils literal">snake_case</tt> (ex: <tt class="docutils literal">update_table</tt>, not <tt class="docutils literal">updateTable</tt>)</li>
-<li>should an helper function have among its parameters the state of an instance (type: <tt class="docutils literal">wooper:state()</tt>; typically either to access directly to attributes or to use trace primitives), this parameter should be listed last (ex: <tt class="docutils literal">update_table(X,Table,State)</tt> instead of <tt class="docutils literal">update_table(State,X,Table)</tt>), so that helpers can be more easily discriminated from member methods, which have such a state as first parameter</li>
+<li>the latter shall have their name spelled in <tt class="docutils literal">snake_case</tt> (e.g. <tt class="docutils literal">update_table</tt>, not <tt class="docutils literal">updateTable</tt>)</li>
+<li>should an helper function have among its parameters the state of an instance (type: <tt class="docutils literal">wooper:state()</tt>; typically either to access directly to attributes or to use trace primitives), this parameter should be listed last (e.g. <tt class="docutils literal">update_table(X,Table,State)</tt> instead of <tt class="docutils literal">update_table(State,X,Table)</tt>), so that helpers can be more easily discriminated from member methods, which have such a state as first parameter</li>
 <li>all class-specific attributes shall be documented in a proper <tt class="docutils literal">class_attributes</tt> define, so that their name, type, meaning and role are described</li>
 </ul>
 <p>Example:</p>
@@ -329,8 +329,8 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 <p>At implementation time, one just has to choose:</p>
 <ul class="simple">
 <li>the trace channel on which the trace should be sent, among: <tt class="docutils literal">fatal</tt>, <tt class="docutils literal">error</tt>, <tt class="docutils literal">warning</tt>, <tt class="docutils literal">info</tt>, <tt class="docutils literal">trace</tt>, <tt class="docutils literal">debug</tt> (from highest priority to lowest)</li>
-<li>if a constant message is to be sent (ex: <tt class="docutils literal"><span class="pre">?warning(&quot;This</span> is a static message&quot;)</tt>), or if it is determined at runtime (ex: <tt class="docutils literal"><span class="pre">?warning_fmt(&quot;There</span> are ~B <span class="pre">apples.&quot;,[Count])</span></tt>)</li>
-<li>if the trace is sent from a method (ex: <tt class="docutils literal"><span class="pre">?info(&quot;Hello&quot;)</span></tt>) or from a constructor (ex: <tt class="docutils literal"><span class="pre">?send_info(MyState,&quot;Hello&quot;)</span></tt> where <tt class="docutils literal">MyState</tt> is a state returned, directly or not, by a <tt class="docutils literal">class_TraceEmitter</tt> constructor)</li>
+<li>if a constant message is to be sent (e.g. <tt class="docutils literal"><span class="pre">?warning(&quot;This</span> is a static message&quot;)</tt>), or if it is determined at runtime (e.g. <tt class="docutils literal"><span class="pre">?warning_fmt(&quot;There</span> are ~B <span class="pre">apples.&quot;,[Count])</span></tt>)</li>
+<li>if the trace is sent from a method (e.g. <tt class="docutils literal"><span class="pre">?info(&quot;Hello&quot;)</span></tt>) or from a constructor (e.g. <tt class="docutils literal"><span class="pre">?send_info(MyState,&quot;Hello&quot;)</span></tt> where <tt class="docutils literal">MyState</tt> is a state returned, directly or not, by a <tt class="docutils literal">class_TraceEmitter</tt> constructor)</li>
 <li>there are other, less commonly used, information that can be specified, as the categorisation (<tt class="docutils literal">_cat</tt> variations, like in <tt class="docutils literal"><span class="pre">?debug_cat(&quot;Hello&quot;,&quot;core.greetings&quot;)</span></tt>), additional timing information (<tt class="docutils literal">_full</tt> variations, like in <tt class="docutils literal"><span class="pre">?trace_full(&quot;Bye&quot;,&quot;core.greetings&quot;,_Tick=121)</span></tt>), etc.</li>
 </ul>
 <p>Once building the simulator, one can configure:</p>
@@ -381,7 +381,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <div class="section" id="proper-actor-creation">
 <h5>Proper Actor Creation</h5>
 <p>An actor can be created either initially (before the simulation is started) or at simulation-time (i.e. in the course of the simulation), as detailed in next sections.</p>
-<p>Calling directly (i.e. from the user code) any <tt class="docutils literal">spawn</tt> variation or any WOOPER <tt class="docutils literal">new</tt> variation (ex: <tt class="docutils literal">remote_new_link</tt>) is totally prohibited: we must rely on the Sim-Diasca mechanisms, and not attempt to bypass them.</p>
+<p>Calling directly (i.e. from the user code) any <tt class="docutils literal">spawn</tt> variation or any WOOPER <tt class="docutils literal">new</tt> variation (e.g. <tt class="docutils literal">remote_new_link</tt>) is totally prohibited: we must rely on the Sim-Diasca mechanisms, and not attempt to bypass them.</p>
 <p>The actual creation will be performed by the load balancer, on a computing node of its choice, and the placement will be fully transparent for the model writer.</p>
 <p>Whether an actor is initial or not, construction parameters are to be supplied for its creation.</p>
 <p>These construction parameters will be specified as a list, for example <tt class="docutils literal">[_Age=5,_Gender=male]</tt>. The matching constructor <em>must</em> then be in the form of:</p>
@@ -484,7 +484,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <span class="n">actors_created</span> <span class="o">=</span> <span class="n">test_receive</span><span class="p">(),</span>
 <span class="p">[...]</span>
 </pre>
-<p>Note that <tt class="docutils literal">test_receive/0</tt> corresponds to a safer form than <tt class="docutils literal">receive {wooper_result, R} <span class="pre">-&gt;</span> R end</tt>. It is logically equivalent, but immune to interfering messages that could be sent to the simulation case by other Sim-Diasca services (ex: notifications from the trace supervisor).</p>
+<p>Note that <tt class="docutils literal">test_receive/0</tt> corresponds to a safer form than <tt class="docutils literal">receive {wooper_result, R} <span class="pre">-&gt;</span> R end</tt>. It is logically equivalent, but immune to interfering messages that could be sent to the simulation case by other Sim-Diasca services (e.g. notifications from the trace supervisor).</p>
 </div>
 </div>
 <div class="section" id="simulation-time-actor-creation">
@@ -516,7 +516,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <li><tt class="docutils literal"><span class="pre">class_Actor:create_initial_actor/{2,3}</span></tt> have <tt class="docutils literal"><span class="pre">class_Actor:create_initial_placed_actor/{3,4}</span></tt> counterparts</li>
 <li><tt class="docutils literal">class_Actor:create_actor/3</tt> has a <tt class="docutils literal">class_Actor:create_placed_actor/4</tt> counterpart</li>
 </ul>
-<p>Except the hint specification, these functions work exactly as their counterpart (ex: w.r.t. the call to <tt class="docutils literal">onActorCreated/5</tt>).</p>
+<p>Except the hint specification, these functions work exactly as their counterpart (e.g. w.r.t. the call to <tt class="docutils literal">onActorCreated/5</tt>).</p>
 <p>For example, if devices in a house were to be modelled, and if a large number of houses was to be simulated, then for house 437, the placement hint (as an atom) <tt class="docutils literal">house_437</tt> could be specified for the house creation, as well for the creation of each of the devices it will contain.</p>
 <p>That way they would be all created and evaluated on the same computing host, exchanging numerous local messages with no need for costly and slow networked messages.</p>
 <p></p>
@@ -554,7 +554,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Note that:</p>
 <ul class="simple">
 <li>should a too short termination delay be chosen by mistake, the simulation engine will do its best to detect it</li>
-<li>if setting up a proper termination happens to be too cumbersome on to many cases, an automatic system might be designed, in order to keep track of inter-model references (ex: like a garbage collector operated on actors, based on reference counting - either PID or AAI); however this mechanism would probably have some major drawbacks by design (complex, expensive because of reference indirections, etc.); moreover having an implicit, dynamic, flexible communication graph is probably more a feature than a limitation</li>
+<li>if setting up a proper termination happens to be too cumbersome on to many cases, an automatic system might be designed, in order to keep track of inter-model references (e.g. like a garbage collector operated on actors, based on reference counting - either PID or AAI); however this mechanism would probably have some major drawbacks by design (complex, expensive because of reference indirections, etc.); moreover having an implicit, dynamic, flexible communication graph is probably more a feature than a limitation</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -630,7 +630,7 @@ triggered termination</td>
 <h4><a class="toc-backref" href="#id44">Basics</a></h4>
 <div class="section" id="simulation-time-of-ticks-and-diascas">
 <h5>Simulation Time: Of Ticks and Diascas</h5>
-<p>Simulation time is fully decorrelated from wall-clock time, and is controlled by the time manager(s): the <tt class="docutils literal">fundamental frequency</tt> of the simulation (ex: 50Hz) leads to a unit time-step (a.k.a. <tt class="docutils literal">simulation tick</tt>) to be defined (ex: 20ms, in simulation time), each time-step lasting, in wall-clock time, for any duration needed so that all relevant actors can be evaluated for that tick.</p>
+<p>Simulation time is fully decorrelated from wall-clock time, and is controlled by the time manager(s): the <tt class="docutils literal">fundamental frequency</tt> of the simulation (e.g. 50Hz) leads to a unit time-step (a.k.a. <tt class="docutils literal">simulation tick</tt>) to be defined (e.g. 20ms, in simulation time), each time-step lasting, in wall-clock time, for any duration needed so that all relevant actors can be evaluated for that tick.</p>
 <p>If that wall-clock duration is smaller than the time-step (the simulation is &quot;faster than the clock&quot;), then the simulation can be <tt class="docutils literal">interactive</tt> (i.e. it can be slowed down on purpose to stay on par with wall-clock time, allowing for example for some human interaction), otherwise it will be in <tt class="docutils literal">batch</tt> mode (running as fast as possible).</p>
 <p>A simulation tick is split into any number of logical moments, named <tt class="docutils literal">diascas</tt>, which are used to solve causality and are not associated to any specific duration by themselves.</p>
 <p>Both ticks and diascas are positive unbounded integers.</p>
@@ -750,7 +750,7 @@ triggered termination</td>
 <p>This root directory has two sub-directories:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">deployed-elements</span></tt>, which corresponds to the content of the simulation package (i.e. both code and data, both for the engine and for the third-party elements, if any)</li>
-<li><tt class="docutils literal">outputs</tt>, which is to contain all live data produced by the simulation (ex: data file, probe reports, etc.); all computing nodes will have directly this directory as working (current) directory</li>
+<li><tt class="docutils literal">outputs</tt>, which is to contain all live data produced by the simulation (e.g. data file, probe reports, etc.); all computing nodes will have directly this directory as working (current) directory</li>
 </ul>
 <p>A simulator which added third-party data to the simulation archive (thanks to the <tt class="docutils literal">additional_elements_to_deploy</tt> field of the deployment settings specified in the simulation case) is able to access to them thanks to <tt class="docutils literal">class_Actor:get_deployed_root_directory/1</tt>.</p>
 <p>For example, if the following was specified:</p>
@@ -827,10 +827,10 @@ $ make my_foobar_case
 </pre>
 <p>Then the specified SII will be used instead of the one that would be determined internally, at runtime, notably to designate:</p>
 <ul class="simple">
-<li>the user and computing nodes (ex: <tt class="docutils literal"><span class="pre">Sim-Diasca-Foobar_Case-john-117-user-node&#64;volt</span></tt>)</li>
-<li>the simulation result tree (ex: <tt class="docutils literal"><span class="pre">Foobar_Case-on-2016-6-14-at-17h-07m-28s-by-john-117</span></tt>)</li>
-<li>the temporary directories (ex: <tt class="docutils literal"><span class="pre">/tmp/sim-diasca-Foobar_Case-2016-6-14-at-15h-12m-18s-117</span></tt>)</li>
-<li>the simulation trace file (ex: <tt class="docutils literal"><span class="pre">Foobar_Case-john-117.traces</span></tt>)</li>
+<li>the user and computing nodes (e.g. <tt class="docutils literal"><span class="pre">Sim-Diasca-Foobar_Case-john-117-user-node&#64;volt</span></tt>)</li>
+<li>the simulation result tree (e.g. <tt class="docutils literal"><span class="pre">Foobar_Case-on-2016-6-14-at-17h-07m-28s-by-john-117</span></tt>)</li>
+<li>the temporary directories (e.g. <tt class="docutils literal"><span class="pre">/tmp/sim-diasca-Foobar_Case-2016-6-14-at-15h-12m-18s-117</span></tt>)</li>
+<li>the simulation trace file (e.g. <tt class="docutils literal"><span class="pre">Foobar_Case-john-117.traces</span></tt>)</li>
 </ul>
 </div>
 <div class="section" id="how-erlang-nodes-are-named">
@@ -876,7 +876,7 @@ $ make my_foobar_case
 </p>
 <p>There is a large choice of both data-structures as such (lists, trees, associative tables, heap, etc.) and of implementations (<tt class="docutils literal">gb_tree</tt>, hashtables, etc.), offering various trade-offs.</p>
 <p>In some occasions, we felt the need to develop our own versions of some of them (see <tt class="docutils literal"><span class="pre">myriad/src/data-management</span></tt> for the most common ones), even if in some cases built-in solutions could provide better trade-offs (thinking to ETS tables- albeit offering a different sharing semantics - and to the process dictionary - which is not the purest and most flexible feature we wanted to rely on).</p>
-<p>We nevertheless use most of the time the built-in data-structures, like <tt class="docutils literal">gb_sets</tt> or <tt class="docutils literal">queues</tt>. When multiple implementations providing the same API are available (ex: for ordered lists), we usually define a (sometimes module-specific) <tt class="docutils literal">list_impl</tt> symbol, allowing to switch easily between similar datastructures.</p>
+<p>We nevertheless use most of the time the built-in data-structures, like <tt class="docutils literal">gb_sets</tt> or <tt class="docutils literal">queues</tt>. When multiple implementations providing the same API are available (e.g. for ordered lists), we usually define a (sometimes module-specific) <tt class="docutils literal">list_impl</tt> symbol, allowing to switch easily between similar datastructures.</p>
 <p>For example:</p>
 <pre class="code erlang literal-block">
 <span class="c">% Defines list_impl:
@@ -887,7 +887,7 @@ $ make my_foobar_case
 </pre>
 <p><span class="raw-html"><center><img src="xkcd-tree.png"></img></center></span>
 </p>
-<p>Similarly, for <strong>algorithms</strong> operating on these data-structures we tend not to reinvent the wheel (ex: <tt class="docutils literal">class_Mesh</tt> uses the <tt class="docutils literal">digraph</tt> module), unless we need specific versions of them (ex: operating on an implicit graph, with user-specified anonymous functions, see <tt class="docutils literal">myriad/src/utils/graph_utils.erl</tt>).</p>
+<p>Similarly, for <strong>algorithms</strong> operating on these data-structures we tend not to reinvent the wheel (e.g. <tt class="docutils literal">class_Mesh</tt> uses the <tt class="docutils literal">digraph</tt> module), unless we need specific versions of them (e.g. operating on an implicit graph, with user-specified anonymous functions, see <tt class="docutils literal">myriad/src/utils/graph_utils.erl</tt>).</p>
 <p><span class="raw-html"><center><img src="xkcd-ineffective_sorts.png"></img></center></span>
 </p>
 </div>
@@ -919,7 +919,7 @@ $ make my_foobar_case
 <ul>
 <li><p class="first">re-activate traces, reverting the content of <tt class="docutils literal">traces/src/class_TraceEmitter.hrl</tt></p>
 </li>
-<li><p class="first">update the time-stamps of all target classes, ex:</p>
+<li><p class="first">update the time-stamps of all target classes, e.g.:</p>
 <p>touch sim-diasca/src/core/src/scheduling/class_DeploymentManager.erl</p>
 </li>
 </ul>
@@ -928,7 +928,7 @@ $ make my_foobar_case
 </li>
 <li><p class="first">possibly: hide <tt class="docutils literal"><span class="pre">~/.ssh/known_hosts</span></tt> to avoid nodes being rejected because of a change in the RSA fingerprint of their key</p>
 </li>
-<li><p class="first">launch in debug mode from the front-end, ex:</p>
+<li><p class="first">launch in debug mode from the front-end, e.g.</p>
 </li>
 </ol>
 <pre class="code bash literal-block">
@@ -943,7 +943,7 @@ sim-diasca/conf/clusters/sim-diasca-launcher.sh --debug
 <div class="section" id="type-specifications-what-for">
 <h3><a class="toc-backref" href="#id61">Type Specifications: What For?</a></h3>
 <p>Adding a type specification (shorthand: <em>spec</em>) to the source code of a function means specifying what are its intended input and output parameters, in terms of number and types. This can be applied to records as well.</p>
-<p>Once all Sim-Diasca code (including prerequisites, like <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt> and <tt class="docutils literal">Traces</tt>) and the one of user applications based on it (ex: <tt class="docutils literal"><span class="pre">Mock-Simulators</span></tt> or any actual simulator) have been instrumented with type specifications (i.e. when all exported functions and records of all modules have a proper spec), then:</p>
+<p>Once all Sim-Diasca code (including prerequisites, like <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt> and <tt class="docutils literal">Traces</tt>) and the one of user applications based on it (e.g. <tt class="docutils literal"><span class="pre">Mock-Simulators</span></tt> or any actual simulator) have been instrumented with type specifications (i.e. when all exported functions and records of all modules have a proper spec), then:</p>
 <ul class="simple">
 <li>static checkings can be done: <a class="reference external" href="http://www.it.uu.se/research/group/hipe/dialyzer">Dialyzer</a> is able to detect various discrepancies (such as type errors, unreachable code, unnecessary tests, etc.) at compile-time (therefore a lot earlier than at runtime, and allowing to examine <em>a priori</em> all code paths)</li>
 <li>more precise and useful documentation can be generated, thanks to <a class="reference external" href="http://erlang.org/doc/apps/edoc/users_guide.html">edoc</a></li>
@@ -956,7 +956,7 @@ sim-diasca/conf/clusters/sim-diasca-launcher.sh --debug
 <h4><a class="toc-backref" href="#id63">Prerequisites</a></h4>
 <div class="section" id="taking-care-of-erlang-otp">
 <h5>Taking Care of Erlang/OTP</h5>
-<p>First of all, type information must have been already extracted from the Erlang/OTP files of the install that will be used, and stored in a PLT (for <em>Persistent Lookup Table</em>) file for later-reuse (this is a preprocessing stage). Such a file is preferably created one time for all for each Erlang environment being used. Therefore a PLT file is better produced as the last step of an Erlang installation (see the <tt class="docutils literal"><span class="pre">--generate-plt</span></tt> option of our <tt class="docutils literal"><span class="pre">install-erlang.sh</span></tt> script, which streamlines it). This operation is rather long (ex: one hour and a half).</p>
+<p>First of all, type information must have been already extracted from the Erlang/OTP files of the install that will be used, and stored in a PLT (for <em>Persistent Lookup Table</em>) file for later-reuse (this is a preprocessing stage). Such a file is preferably created one time for all for each Erlang environment being used. Therefore a PLT file is better produced as the last step of an Erlang installation (see the <tt class="docutils literal"><span class="pre">--generate-plt</span></tt> option of our <tt class="docutils literal"><span class="pre">install-erlang.sh</span></tt> script, which streamlines it). This operation is rather long (e.g. one hour and a half).</p>
 <p>We prefer to have Dialyzer operate on BEAM files (<tt class="docutils literal">*.beam</tt>) rather than on source files (<tt class="docutils literal"><span class="pre">*.hrl/*.erl</span></tt>), as include paths, symbol definitions and parse transforms are better supported this way.</p>
 <p>These BEAM files must have been compiled with debug information (i.e. with the <tt class="docutils literal">+debug_info</tt> compiler option). This is thus the default enforced for the full Sim-Diasca software stack.</p>
 <p>When writing type specifications, one must know what are the built-in ones, in order to re-use them, so that they do not end up being defined more than once, under different names. To do so, one may use our <tt class="docutils literal"><span class="pre">myriad/src/scripts/list-available-types.sh</span></tt> script, like in:</p>
@@ -968,7 +968,7 @@ $ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-
 <div class="section" id="taking-care-of-above-layers">
 <h5>Taking Care of Above Layers</h5>
 <p>Once a PLT is available for Erlang/OTP, PLTs are to be generated for the entire codebase of interest (typically Sim-Diasca and its prerequisites, and possibly user code as well).</p>
-<p>This can be achieved with the <tt class="docutils literal"><span class="pre">generate-all-plt</span></tt> make target, to be run from the root of either a check-out or an install. The script will climb our software stack layer by layer, and generate for each a custom PLT (ex: <tt class="docutils literal">myriad.plt</tt>).</p>
+<p>This can be achieved with the <tt class="docutils literal"><span class="pre">generate-all-plt</span></tt> make target, to be run from the root of either a check-out or an install. The script will climb our software stack layer by layer, and generate for each a custom PLT (e.g. <tt class="docutils literal">myriad.plt</tt>).</p>
 <p>If, for any reason, the PLT of a layer must be (re)generated, simply use the <tt class="docutils literal"><span class="pre">generate-local-plt</span></tt> make target from the root of this layer.</p>
 <p>The generation of a PLT will notably allow to catch discrepancies of calls with regard to the specs of the functions being called.</p>
 <p>Checking specs against the functions they apply to is useful as well. This can be done on any layer through the <tt class="docutils literal"><span class="pre">self-check-against-plt</span></tt> make target.</p>
@@ -983,14 +983,14 @@ $ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-
 <li>type specifications must be defined in all source files</li>
 <li>all exported functions and records defined in headers should have a type spec, and this spec should be specified on the line just before their own definition; local functions and records may or may not have type specs</li>
 <li>these type specs are to be defined as soon as a new function or record is introduced</li>
-<li>as soon as a data-structure is being used more than once (ex: let's suppose a timestamp is being defined as a triplet of positive integers), a user-specific type <em>must</em> be defined (ex: <tt class="docutils literal"><span class="pre">-type</span> MyTimeStamp() :: <span class="pre">{pos_integer(),pos_integer(),pos_integer()}.</span></tt>) and re-used <em>everywhere applicable</em> (ex: <tt class="docutils literal"><span class="pre">-spec</span> get_timestamp() <span class="pre">-&gt;</span> <span class="pre">MyTimeStamp().</span></tt>)</li>
+<li>as soon as a data-structure is being used more than once (e.g. let's suppose a timestamp is being defined as a triplet of positive integers), a user-specific type <em>must</em> be defined (e.g. <tt class="docutils literal"><span class="pre">-type</span> MyTimeStamp() :: <span class="pre">{pos_integer(),pos_integer(),pos_integer()}.</span></tt>) and re-used <em>everywhere applicable</em> (e.g. <tt class="docutils literal"><span class="pre">-spec</span> get_timestamp() <span class="pre">-&gt;</span> <span class="pre">MyTimeStamp().</span></tt>)</li>
 <li>all type definitions (opaque or not) must be declared in a relevant module (least astonishment principle), and must be gathered in a section near the top of the file</li>
 <li>types that may be potentially reused elsewhere must be exported; conversely, relevant types that have been already defined must be reused (instead of being defined multiple times); to know what are the currently known types, use our <tt class="docutils literal"><span class="pre">list-available-types.sh</span></tt> script</li>
 <li>type specs should include no extraneous whitespaces and should respect the usual 80 character wide lines (thus possibly being broken into multiple lines)</li>
-<li>external data (ex: information input by the user) shall be validated, and the checking code must denote these input information as of type <tt class="docutils literal">basic_utils:external_data()</tt>, <tt class="docutils literal">basic_utils:unchecked_data()</tt> or, if appropriate, as a more precise <tt class="docutils literal">basic_utils:user_data()</tt>; these types are all (opaque) aliases for <tt class="docutils literal">term()</tt>; data shall be tagged with their expected type only once they have been validated (as one should certainly not trust the user or more generally any program interface)</li>
+<li>external data (e.g. information input by the user) shall be validated, and the checking code must denote these input information as of type <tt class="docutils literal">basic_utils:external_data()</tt>, <tt class="docutils literal">basic_utils:unchecked_data()</tt> or, if appropriate, as a more precise <tt class="docutils literal">basic_utils:user_data()</tt>; these types are all (opaque) aliases for <tt class="docutils literal">term()</tt>; data shall be tagged with their expected type only once they have been validated (as one should certainly not trust the user or more generally any program interface)</li>
 <li>Dialyzer should be run regularly against the codebase to check frequently whether the sources are correct</li>
 </ul>
-<p>For a larger codebase to instrument with type specs, it may be useful to start first with the specs that can be deduced by Dialyzer from the actual code of functions. This can be done thanks to our <tt class="docutils literal"><span class="pre">add-deduced-type-specs.escript</span></tt> script (in <tt class="docutils literal">myriad/src/scripts</tt>). One should note that these specs are not, in the general case, the ones that the developer would have written (as Dialyzer cannot guess the intent of the original developer), so at least some adaptation work remains (ex: to define reusable types).</p>
+<p>For a larger codebase to instrument with type specs, it may be useful to start first with the specs that can be deduced by Dialyzer from the actual code of functions. This can be done thanks to our <tt class="docutils literal"><span class="pre">add-deduced-type-specs.escript</span></tt> script (in <tt class="docutils literal">myriad/src/scripts</tt>). One should note that these specs are not, in the general case, the ones that the developer would have written (as Dialyzer cannot guess the intent of the original developer), so at least some adaptation work remains (e.g. to define reusable types).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>A developer may <em>overspec</em> or <em>underspec</em>.</p>
@@ -1005,8 +1005,8 @@ $ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-
 <pre class="code bash literal-block">
 $ make clean all generate-local-plt
 </pre>
-<p>This allows to list all the types that are unknown (generally misspelled or not exported) and spot a few kinds of errors (ex: <tt class="docutils literal">Call to missing or unexported function</tt>).</p>
-<p>For a layer <tt class="docutils literal">foo</tt> (ex: <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt>, etc.), one should run from its root directory:</p>
+<p>This allows to list all the types that are unknown (generally misspelled or not exported) and spot a few kinds of errors (e.g. <tt class="docutils literal">Call to missing or unexported function</tt>).</p>
+<p>For a layer <tt class="docutils literal">foo</tt> (e.g. <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt>, etc.), one should run from its root directory:</p>
 <pre class="code bash literal-block">
 $ make self-check-against-plt
 </pre>

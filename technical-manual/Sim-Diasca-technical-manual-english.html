@@ -23,7 +23,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2023 EDF R&amp;D</td>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2024 EDF R&amp;D</td>
 </tr>
 <tr class="field"><th class="field-name">Author:</th><td class="field-body">Olivier Boudeville</td>
 </tr>
@@ -31,9 +31,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Monday, February 8, 2010</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, September 28, 2023</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, February 13, 2024</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.6</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.7</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -2313,8 +2313,8 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 <p>GNU make is open source.</p>
 </div>
 <div class="section" id="version-control-git">
-<h3>Version Control: GIT</h3>
-<p><a class="reference external" href="http://git-scm.com/">GIT</a>, is a free and open source distributed version control system. It allows to keep track of the changes of the Sim-Diasca source code, and to share it among developers.</p>
+<h3>Version Control: Git</h3>
+<p><a class="reference external" href="http://git-scm.com/">Git</a>, is a free and open source distributed version control system. It allows to keep track of the changes of the Sim-Diasca source code, and to share it among developers.</p>
 </div>
 <div class="section" id="docutils">
 <h3>Docutils</h3>
@@ -2341,7 +2341,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 <h3>Architecture</h3>
 <p>With Sim-Diasca, the management of distributed traces is split into the following roles:</p>
 <ul class="simple">
-<li>Each simulated object (model instance, i.e. actor), but also each technical agent or simulation case, may be led to send traces regarding its operation. The vast majority of them are <tt class="docutils literal">TrameEmitter</tt> instances (they inherit from that class, directly or not), other are not instances thereof but nevertheless need to be able to output traces (ex: test cases)</li>
+<li>Each simulated object (model instance, i.e. actor), but also each technical agent or simulation case, may be led to send traces regarding its operation. The vast majority of them are <tt class="docutils literal">TrameEmitter</tt> instances (they inherit from that class, directly or not), other are not instances thereof but nevertheless need to be able to output traces (e.g. test cases)</li>
 <li>The distributed traces have to be collected and aggregated, this is done by a <tt class="docutils literal">TraceAggregator</tt> instance, which supports various output formats. Then overall analysis and search for event correlations are possible</li>
 <li>The simulation user might want to monitor the system, based on the emitted traces. This can be done either at execution-time (in real time) or post-mortem (once the simulation is over), both thanks to a <tt class="docutils literal">TraceSupervisor</tt>, which can run from a remote host; moreover <tt class="docutils literal">TraceListener</tt> instances can be created, so that from any host one can connect to the simulation while it is running, catching up automatically (past traces being sent as a whole initially, in a compressed form, next ones being sent directly, so that none is lacking)</li>
 </ul>
@@ -2350,7 +2350,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 <h3>How to manage the trace-induced overhead</h3>
 <p>Sending, collecting and aggregating traces proves very useful, but this feature demands resources, in terms of processing, memory and bandwidth: most of our models and agents by default emit many traces (they are intentionally very talkative), to help troubleshooting. As this is a distributed trace system, traces are emitted concurrently but at the end must be aggregated sequentially, in order to be consulted as a whole, in a single location. Therefore, beyond some simulation scale - and despite careful design - the trace aggregator is bound to become a bottleneck because of the massive message sending.</p>
 <p>As a consequence, the point has been, for non-critical channels, to be able to disable trace sending as a whole, <em>without any performance penalty</em> compared to the same code in which there would not be any trace sending at all.</p>
-<p>To disable trace sending and incur no runtime overhead, one should ensure that the compile-time make variable <tt class="docutils literal">ENABLE_TRACES</tt> is set to false <a class="footnote-reference" href="#id76" id="id75">[30]</a>. To do so, one should either specify it directly on the command-line (ex: <tt class="docutils literal">make clean all ENABLE_TRACES=false</tt>), or update directly the make files (typically by setting <tt class="docutils literal">ENABLE_TRACES := false</tt> in <tt class="docutils literal">traces/GNUmakevars.inc</tt>). Then everything above WOOPER (i.e. the Traces layer, the Sim-Diasca layer, and the code using it) should be rebuilt, as it is a compile-time (as opposed to runtime) option.</p>
+<p>To disable trace sending and incur no runtime overhead, one should ensure that the compile-time make variable <tt class="docutils literal">ENABLE_TRACES</tt> is set to false <a class="footnote-reference" href="#id76" id="id75">[30]</a>. To do so, one should either specify it directly on the command-line (e.g. <tt class="docutils literal">make clean all ENABLE_TRACES=false</tt>), or update directly the make files (typically by setting <tt class="docutils literal">ENABLE_TRACES := false</tt> in <tt class="docutils literal">traces/GNUmakevars.inc</tt>). Then everything above WOOPER (i.e. the Traces layer, the Sim-Diasca layer, and the code using it) should be rebuilt, as it is a compile-time (as opposed to runtime) option.</p>
 <table class="docutils footnote" frame="void" id="id76" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -2359,7 +2359,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 </table>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p>If wanting to operate a selection on the classes whose instances must be able to send traces while others cannot, one may just keep the default <tt class="docutils literal">ENABLE_TRACES := true</tt> and compile everything with traces disabled (from the root: <tt class="docutils literal">make clean all ENABLE_TRACES=false</tt>, then  update the timestamp of the source files of the cherry-picked classes that are to be allowed to send traces (ex: <tt class="docutils literal">touch class_Foobar.erl</tt>), then run <tt class="docutils literal">make all</tt> from the root of the sources: all classes then rebuilt will have traces enabled.</p>
+<p>If wanting to operate a selection on the classes whose instances must be able to send traces while others cannot, one may just keep the default <tt class="docutils literal">ENABLE_TRACES := true</tt> and compile everything with traces disabled (from the root: <tt class="docutils literal">make clean all ENABLE_TRACES=false</tt>, then  update the timestamp of the source files of the cherry-picked classes that are to be allowed to send traces (e.g. <tt class="docutils literal">touch class_Foobar.erl</tt>), then run <tt class="docutils literal">make all</tt> from the root of the sources: all classes then rebuilt will have traces enabled.</p>
 <p class="last">Of course this can be done the other way round, in order to just select the classes that are to be silenced.</p>
 </div>
 <p>Finally, one should know that, if going for higher simulation scales, traces shall not be the only feature to be appropriately managed. Please refer to the <a class="reference internal" href="#how-should-i-run-larger-simulations">How Should I run larger simulations?</a> section for a description of the relevant measures that shall be taken for that (this includes trace disabling).</p>
@@ -2390,7 +2390,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 <ul>
 <li><p class="first">one time for all, by editing the <tt class="docutils literal">TraceType</tt> define in <tt class="docutils literal">traces/src/traces.hrl</tt> (and then rebuilding all)</p>
 </li>
-<li><p class="first">on a per-case basis, still at compilation-time, by using the <tt class="docutils literal"><span class="pre">?case_start(TraceType)</span></tt> macro (ex: see <tt class="docutils literal">soda_stochastic_integration_test.erl</tt>)</p>
+<li><p class="first">on a per-case basis, still at compilation-time, by using the <tt class="docutils literal"><span class="pre">?case_start(TraceType)</span></tt> macro (e.g. see <tt class="docutils literal">soda_stochastic_integration_test.erl</tt>)</p>
 </li>
 <li><p class="first">at runtime, by specifying the <tt class="docutils literal"><span class="pre">--trace-type</span> TraceSpecType</tt> command-line option, where <tt class="docutils literal">TraceSpecType</tt> is <tt class="docutils literal">logmx</tt>, <tt class="docutils literal">text</tt> or <tt class="docutils literal">pdf</tt>, like in:</p>
 <pre class="literal-block">
@@ -2432,7 +2432,7 @@ $ make foobar_run CMD_LINE_OPT=&quot;--trace-type text --batch&quot;
 <h3>PDF Trace Report</h3>
 <p>When wanting to generate a trace report once the simulation is over - rather than monitoring the traces during the simulation, a PDF output can be retained.</p>
 <p>To do so, in <tt class="docutils literal">traces/src/traces.hrl</tt>, just define <tt class="docutils literal">TraceType</tt> to <tt class="docutils literal">{text_traces,pdf}</tt> instead of the default <tt class="docutils literal">log_mx_traces</tt>, and rebuild everything above <tt class="docutils literal">WOOPER</tt> (i.e. the <tt class="docutils literal">Traces</tt> package, the <tt class="docutils literal"><span class="pre">Sim-Diasca</span></tt> package, and the code using it).</p>
-<p>Then, as soon as the simulation will have stopped, the traces will be properly aggregated and formatted from Sim-Diasca, a PDF being generated and then automatically displayed. This PDF can be useful to share simulation results asynchronously (ex: with remote colleagues).</p>
+<p>Then, as soon as the simulation will have stopped, the traces will be properly aggregated and formatted from Sim-Diasca, a PDF being generated and then automatically displayed. This PDF can be useful to share simulation results asynchronously (e.g. with remote colleagues).</p>
 <p>Only the most interesting trace fields are kept here (a well-chosen subset of the full, actual ones), for the sake of readability.</p>
 <p>Note that this feature implies of course that you have already the proper documentation toolchain installed, which includes the RST converters (<tt class="docutils literal"><span class="pre">python-docutils</span></tt> package) and a PDF viewer (by default, <tt class="docutils literal">evince</tt> will be used).</p>
 <p>In the future, we could imagine an enhancement that would allow to convert a trace file generated for LogMX into a PDF, so that the user can generate a report without having to run again the simulation with different trace settings.</p>
@@ -2457,7 +2457,7 @@ $ make foobar_run CMD_LINE_OPT=&quot;--trace-type text --batch&quot;
 <li>a probe will be created if and only if it is to produce a result of interest for the simulation, i.e. iff it matches the result specification chosen by the user (in the simulation settings); otherwise this probe will be not created at all, sparing 100% of the resources it would require</li>
 <li>their data files for time series all start with an header that lists meta-data like generation date and time, probe name, title, and the description of the curves involved</li>
 </ul>
-<p>As subclassing the basic probe or devising new ones (ex: web-based ones) is relatively straightforward, projects may start with built-in probes and define in their course specialised ones.</p>
+<p>As subclassing the basic probe or devising new ones (e.g. web-based ones) is relatively straightforward, projects may start with built-in probes and define in their course specialised ones.</p>
 <p>Another popular option is to switch to dedicated plotting/rendering libraries when post-processing the data resulting from the simulation. Then, in the simulation case of interest, the <tt class="docutils literal">data_only</tt> producer option might be specified in the patterns listed in the <tt class="docutils literal">result_specification</tt> field of the <tt class="docutils literal">simulation_settings</tt> record , in which case only the corresponding data files (<tt class="docutils literal">*.dat</tt> files) will be produced (no <tt class="docutils literal">*.png</tt> plot files).</p>
 <div class="section" id="generic-probe">
 <h3>Generic Probe</h3>
@@ -2514,15 +2514,15 @@ root hard  nofile 40000
 <div class="section" id="probe-report-generation-issues">
 <h4>Probe Report Generation Issues</h4>
 <p>You must first check that you sent at least one data sample to your probe, and then that it is included in the result specification.</p>
-<p>If, when the generation takes place, a warning about <tt class="docutils literal">bmargin</tt> is issued, then you must be using a <em>very</em> old version of <tt class="docutils literal">gnuplot</tt> (ex: 4.0).</p>
+<p>If, when the generation takes place, a warning about <tt class="docutils literal">bmargin</tt> is issued, then you must be using a <em>very</em> old version of <tt class="docutils literal">gnuplot</tt> (e.g. 4.0).</p>
 <p>In this case you can either:</p>
 <ul class="simple">
 <li>update your <tt class="docutils literal">gnuplot</tt> version</li>
 <li>in <tt class="docutils literal"><span class="pre">sim-diasca/src/core/src/probe/class_Probe.erl</span></tt>, disable all key options: set the <tt class="docutils literal">key_options</tt> attribute to an empty string</li>
 </ul>
-<p>More generally, if a problems occurs, you should check first that the probe report (ex: <tt class="docutils literal">Test_probe.png</tt>) was indeed generated.</p>
+<p>More generally, if a problems occurs, you should check first that the probe report (e.g. <tt class="docutils literal">Test_probe.png</tt>) was indeed generated.</p>
 <p>If yes, it must be a (minor) problem of the display tool, see the <a href="#id80"><span class="problematic" id="id81">``</span></a>Probe Report Display Issues``_ section.</p>
-<p>If no, actually the PNG could not be generated. The next step is to check in your result directory that the data file (ex: <tt class="docutils literal">Test_probe.dat</tt>) and the command file (ex: <tt class="docutils literal">Test_probe.p</tt>) are correct, i.e. existing, not empty, and not corrupted.</p>
+<p>If no, actually the PNG could not be generated. The next step is to check in your result directory that the data file (e.g. <tt class="docutils literal">Test_probe.dat</tt>) and the command file (e.g. <tt class="docutils literal">Test_probe.p</tt>) are correct, i.e. existing, not empty, and not corrupted.</p>
 <p>If these files seem correct, you can just check that you can generate the lacking PNG by yourself, by issuing on the command line:</p>
 <pre class="literal-block">
 gnuplot Test_probe.dat
@@ -2708,12 +2708,12 @@ of x0.047.
 <p>Each data that is shared according to following conventions:</p>
 <ul class="simple">
 <li>data is defined as key/value pairs, respectively an atom and any Erlang term</li>
-<li>data can be <em>static</em>, i.e. be defined initially and thus be permanently available (ex: through the built-in support for reading from configuration files) and/or be introduced in the course of the simulation, i.e. be <em>dynamic</em></li>
+<li>data can be <em>static</em>, i.e. be defined initially and thus be permanently available (e.g. through the built-in support for reading from configuration files) and/or be introduced in the course of the simulation, i.e. be <em>dynamic</em></li>
 <li>can be modified over time once defined (non-const, to be defined with the <tt class="docutils literal">mutable</tt> qualifier) or not (immutable, to be defined with the <tt class="docutils literal">const</tt> qualifier)</li>
 </ul>
 <p>Note that static/dynamic and mutable/const are orthogonal properties, all combinations of which making sense.</p>
 <p>So, basically, compared to inter-actor messages, the data-exchanger offers an alternate, radically different paradigm to manage data, that can be seen as a DSM (i.e. a <em>Distributed Shared Memory</em>), somewhat a dual approach to the in-tick reordered actor messages. The point is that this service still allows to preserve simulation properties, and that the different trade-offs it offers may, depending on the situation, be more suitable for some needs of information sharings, notably in the <em>one writer/many readers</em> case.</p>
-<p>These services had to be offered with care, as, for the model developer, unwanted side-effects or race conditions should not be made easier to perform, and for sure these sharing services must not become a means of bypassing the simulation mechanisms (ex: if instantaneous reads and writes were allowed, then the induced possible immediate inter-actor communication would break at least reproducibility).</p>
+<p>These services had to be offered with care, as, for the model developer, unwanted side-effects or race conditions should not be made easier to perform, and for sure these sharing services must not become a means of bypassing the simulation mechanisms (e.g. if instantaneous reads and writes were allowed, then the induced possible immediate inter-actor communication would break at least reproducibility).</p>
 <p>Note that the only standard way of exchanging information and synchronising between actors (as opposed to the sharing of information) remains the sending of actor messages.</p>
 </div>
 <div class="section" id="sharing-constant-data">
@@ -2728,7 +2728,7 @@ of x0.047.
 <tr><td class="label"><a class="fn-backref" href="#id89">[33]</a></td><td>And modifying afterwards a (thus mutable) data without specifying a qualifier will make it <tt class="docutils literal">const</tt> then.</td></tr>
 </tbody>
 </table>
-<p>Such configuration files are to be declared in the <tt class="docutils literal">enable_data_exchanger</tt> field of the deployment settings (see the detailed syntax in <tt class="docutils literal">class_DeploymentManager.hrl</tt>). They will be then automatically deployed <a class="footnote-reference" href="#id92" id="id91">[34]</a> and their corresponding data defined. As a convention, their recommended extension is <tt class="docutils literal">.cfg</tt> (ex: <tt class="docutils literal">my_simulation_parameters.cfg</tt>). See the <tt class="docutils literal">valid_example_configuration_file.cfg</tt> and <tt class="docutils literal">invalid_example_configuration_file.cfg</tt> as examples.</p>
+<p>Such configuration files are to be declared in the <tt class="docutils literal">enable_data_exchanger</tt> field of the deployment settings (see the detailed syntax in <tt class="docutils literal">class_DeploymentManager.hrl</tt>). They will be then automatically deployed <a class="footnote-reference" href="#id92" id="id91">[34]</a> and their corresponding data defined. As a convention, their recommended extension is <tt class="docutils literal">.cfg</tt> (e.g. <tt class="docutils literal">my_simulation_parameters.cfg</tt>). See the <tt class="docutils literal">valid_example_configuration_file.cfg</tt> and <tt class="docutils literal">invalid_example_configuration_file.cfg</tt> as examples.</p>
 <table class="docutils footnote" frame="void" id="id92" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -2743,7 +2743,7 @@ of x0.047.
 <div class="section" id="modifying-data">
 <h3>Modifying Data</h3>
 <p>Any already-defined data, whose current qualifier is <tt class="docutils literal">mutable</tt>, can be modified, either initially (in this case the change will be immediate) or in the course of the simulation (in this case the change will occur only starting from the next tick).</p>
-<p>This is done thanks to calls to the <tt class="docutils literal"><span class="pre">modify_data/{3,4,5}</span></tt> helper functions, which on each tick are synchronous operations resulting in the root data exchanger recording all commits that happen during the current tick, and checking them on the fly (ex: no change in <cite>const</cite> data, only up to one commit per data key per tick, etc.). A <tt class="docutils literal">commit</tt> request is implemented as a direct message sending, from an actor to the root data exchanger (thus not going through the data-exchange tree).</p>
+<p>This is done thanks to calls to the <tt class="docutils literal"><span class="pre">modify_data/{3,4,5}</span></tt> helper functions, which on each tick are synchronous operations resulting in the root data exchanger recording all commits that happen during the current tick, and checking them on the fly (e.g. no change in <cite>const</cite> data, only up to one commit per data key per tick, etc.). A <tt class="docutils literal">commit</tt> request is implemented as a direct message sending, from an actor to the root data exchanger (thus not going through the data-exchange tree).</p>
 <p>Once this tick is over, should at least one commit have been requested, the root time manager notifies the root data exchanger that we are in-between two ticks and that it can thus propagate safely its commit(s), down the exchanger hierarchy (tree-based propagation).</p>
 <p>Once done (i.e. fully acknowledged by a reverse, leaves-to-root, traversal), the root exchanger notifies the root time manager that the next scheduled tick can be triggered.</p>
 <p>That way, at the expense of a minimal (and conditional <a class="footnote-reference" href="#id95" id="id93">[35]</a>) inter-tick wall-clock latency <a class="footnote-reference" href="#id96" id="id94">[36]</a>, all subsequent <strong>readings</strong> then done can be performed locally (on an exact local clone of the root exchanger) and instantly (with a zero-tick latency in virtual time): indeed, during a tick, from the point of view of actors, no data can change; their update will happen only in-between ticks, so all reads can be done</p>
@@ -2759,7 +2759,7 @@ of x0.047.
 <tr><td class="label"><a class="fn-backref" href="#id94">[36]</a></td><td>For synchronisation reasons, the commit propagation has to be part of the critical path of the time manager (the period between two ticks during which no parallel operation can occur). As increasing too much that duration would directly impact the simulation overall performances, we did our best to minimise the inter-tick latency induced by the data-exchange service. For example most checkings are not once a write operation is requested, not later once it is to be actually committed.</td></tr>
 </tbody>
 </table>
-<p>Note also that setting a data involves either defining a new key or modifying a value associated to an already-defined key, possibly also updating the qualifier of a key/value pair, provided these operations are licit (ex: a <tt class="docutils literal">mutable</tt> qualifier may be set to <tt class="docutils literal">const</tt>, not the other way round; a data can be defined only once, and modified any number of times once first defined).</p>
+<p>Note also that setting a data involves either defining a new key or modifying a value associated to an already-defined key, possibly also updating the qualifier of a key/value pair, provided these operations are licit (e.g. a <tt class="docutils literal">mutable</tt> qualifier may be set to <tt class="docutils literal">const</tt>, not the other way round; a data can be defined only once, and modified any number of times once first defined).</p>
 <p>More precisely, data <strong>modification</strong>, during the simulation, is to be done from actors, and is either:</p>
 <ul class="simple">
 <li>defining new data, with <tt class="docutils literal"><span class="pre">class_Actor:define_data/{2,3,4}</span></tt></li>
@@ -2767,7 +2767,7 @@ of x0.047.
 </ul>
 <p>The point is that, once the simulation is started:</p>
 <ul class="simple">
-<li>a modification done at tick T will be visible (thanks to read operations) only at the next scheduled tick (ex: T+1)</li>
+<li>a modification done at tick T will be visible (thanks to read operations) only at the next scheduled tick (e.g. T+1)</li>
 <li>a given data (i.e. a value associated to a key), provided it was declared as <tt class="docutils literal">mutable</tt>, can be modified during the simulation up to once per tick, otherwise the data exchanger will detect the mismatch (commit inconsistency, up to one writer per key and per tick) and crash on purpose the simulation with a relevant exception</li>
 </ul>
 <p>So if the data exchanger holds at tick T a <tt class="docutils literal">{my_data,AnyTerm}</tt> mutable entry, and if during this tick an actor commits a <tt class="docutils literal">{my_data,AnotherTerm}</tt> entry, then during T all read requests of <tt class="docutils literal">my_data</tt> will return <tt class="docutils literal">AnyTerm</tt>, and during T+1 they will all return <tt class="docutils literal">AnotherTerm</tt>. If more than one actor attempts to commit at T a change to <tt class="docutils literal">my_data</tt>, then the simulation will fail. Even if they try to commit the exactly the same value.</p>
@@ -2867,7 +2867,7 @@ of x0.047.
 <div class="section" id="id97">
 <h3>Implementation</h3>
 <p>The performance tracker and its integration test are located in <tt class="docutils literal"><span class="pre">sim-diasca/src/core/src/data-management/monitoring/performance</span></tt>.</p>
-<p>The performance tracker is integrated at the Sim-Diasca level (i.e. not only at the WOOPER-level), and relies on various services of the engine (ex: probe, deployment manager, result manager).</p>
+<p>The performance tracker is integrated at the Sim-Diasca level (i.e. not only at the WOOPER-level), and relies on various services of the engine (e.g. probe, deployment manager, result manager).</p>
 <p>The performance tracker is implemented as an optional service, disabled by default (to avoid any unnecessary runtime overhead), which can be enabled on a per-need basis.</p>
 <p>It defines following classical probes:</p>
 <ul class="simple">
@@ -2956,7 +2956,7 @@ of x0.047.
 <li>compute the curve for the moving average (a specific case of convolution), which is a way of obtaining a smoother curve, making its interpretation easier by highlighting trends</li>
 <li>perform a linear interpolation between samples</li>
 <li>perform decimation, to reduce the number of samples</li>
-<li>change scale (ex: switch to logarithmic, reshape to fit into a <tt class="docutils literal"><span class="pre">0..1</span></tt> interval, etc.)</li>
+<li>change scale (e.g. switch to logarithmic, reshape to fit into a <tt class="docutils literal"><span class="pre">0..1</span></tt> interval, etc.)</li>
 </ul>
 <p><span class="raw-html"><center><img src="xkcd-log_scale.png" id="responsive-image-medium"></img></center></span>
 </p>
@@ -2969,7 +2969,7 @@ of x0.047.
 <h3>General Principles</h3>
 <p>Each plugin is able to:</p>
 <ul class="simple">
-<li>specify requests for configuration changes (ex: like the number of sequencers on each computing node)</li>
+<li>specify requests for configuration changes (e.g. like the number of sequencers on each computing node)</li>
 <li>know runtime information, like the list of the computing nodes that have been actually elected by the engine</li>
 <li>be notified of all main events (engine-related or even case-defined) regarding the simulation, which for example allows tools to monitor resources during only some phases of the simulation - typically when models are effectively evaluated (skipping deployment, preparation, initialisation phases, as well as the ones after the simulation)</li>
 </ul>
@@ -4568,7 +4568,7 @@ $ add-header-to-files.sh ../licence-header-erlang.txt MyNewFile.erl
 </pre>
 <p>then running a test as <tt class="docutils literal">make my_test_run $BATCH</tt> will prevent any Sim-Diasca related window to pop up; this is quicker and more convenient when first debugging a new model: we generally have to focus first on runtime errors on the console. Then, only when these first mistakes are corrected, we can take advantage of the simulation traces and other information (with the usual <tt class="docutils literal">make my_test_run</tt>)</p>
 <ul class="simple">
-<li>one may also define in one's shell settings (e.g. <tt class="docutils literal"><span class="pre">~/.bashrc</span></tt>) an alias that points to the current check-out (clone) and branch one's is using: otherwise an absent-minded developer could operate directly in the trunk or in a wrong branch; for example one can use: <tt class="docutils literal">alias <span class="pre">tosim='cd</span> $HOME/A_PATH</tt> (with GIT reusing lastly used branch is less a problem)</li>
+<li>one may also define in one's shell settings (e.g. <tt class="docutils literal"><span class="pre">~/.bashrc</span></tt>) an alias that points to the current check-out (clone) and branch one's is using: otherwise an absent-minded developer could operate directly in the trunk or in a wrong branch; for example one can use: <tt class="docutils literal">alias <span class="pre">tosim='cd</span> $HOME/A_PATH</tt> (with Git reusing lastly used branch is less a problem)</li>
 <li>simulation traces can be inspected without LogMX, see the <a class="reference internal" href="#simulation-traces">Simulation Traces</a> section</li>
 <li>sometimes, in error messages, we can see weird lists like:</li>
 </ul>

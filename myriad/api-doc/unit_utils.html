@@ -34,45 +34,63 @@ canonical form transparently, for automated checking and exact conversion.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-absolute_month">absolute_month()</a></h3>
-<p><tt>absolute_month() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>}</tt></p>
+<p><code>absolute_month() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>}</code></p>
 <p> Absolute months.</p>
 
 <h3 class="typedecl"><a name="type-angle_reference_unit">angle_reference_unit()</a></h3>
-<p><tt>angle_reference_unit() = radians</tt></p>
-
+<p><code>angle_reference_unit() = radians</code></p>
+<p> Our default pivot unit for angles.</p>
 
 <h3 class="typedecl"><a name="type-angle_units">angle_units()</a></h3>
-<p><tt>angle_units() = <a href="#type-angle_reference_unit">angle_reference_unit()</a> | degrees | int_degrees</tt></p>
+<p><code>angle_units() = <a href="#type-angle_reference_unit">angle_reference_unit()</a> | degrees | int_degrees</code></p>
 
 
 <h3 class="typedecl"><a name="type-any_degrees">any_degrees()</a></h3>
-<p><tt>any_degrees() = number()</tt></p>
+<p><code>any_degrees() = number()</code></p>
 <p><p> Angle in degrees.</p>
 
  Expected to be in [0,360[.</p>
 
 <h3 class="typedecl"><a name="type-any_hertz">any_hertz()</a></h3>
-<p><tt>any_hertz() = <a href="#type-hertz">hertz()</a> | <a href="#type-integer_hertz">integer_hertz()</a></tt></p>
+<p><code>any_hertz() = <a href="#type-hertz">hertz()</a> | <a href="#type-integer_hertz">integer_hertz()</a></code></p>
 <p> Frequency in Hz.</p>
 
 <h3 class="typedecl"><a name="type-any_meters">any_meters()</a></h3>
-<p><tt>any_meters() = float()</tt></p>
+<p><code>any_meters() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-any_millimeters">any_millimeters()</a></h3>
-<p><tt>any_millimeters() = <a href="#type-millimeters">millimeters()</a> | <a href="#type-int_millimeters">int_millimeters()</a></tt></p>
+<p><code>any_millimeters() = <a href="#type-millimeters">millimeters()</a> | <a href="#type-int_millimeters">int_millimeters()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_second">any_second()</a></h3>
-<p><tt>any_second() = <a href="#type-second">second()</a> | <a href="#type-float_second">float_second()</a></tt></p>
+<p><code>any_second() = <a href="#type-second">second()</a> | <a href="#type-float_second">float_second()</a></code></p>
 <p> Any type of second (integer or float).</p>
 
 <h3 class="typedecl"><a name="type-any_seconds">any_seconds()</a></h3>
-<p><tt>any_seconds() = <a href="#type-seconds">seconds()</a> | <a href="#type-float_seconds">float_seconds()</a></tt></p>
+<p><code>any_seconds() = <a href="#type-seconds">seconds()</a> | <a href="#type-float_seconds">float_seconds()</a></code></p>
 
+
+<h3 class="typedecl"><a name="type-astronomical_unit">astronomical_unit()</a></h3>
+<p><code>astronomical_unit() = float()</code></p>
+<p><p> An astronomical unit expresses astronomical distances; it corresponds roughly 
+to the distance from Earth to the Sun, and is exactly equal to 149 597 870 700 
+m (approximately 150 million kilometres or 8.3 light-minutes).</p>
+
+ <p>Primarily used to measure distances around stars.</p>
+
+ Also abbreviated as "au".</p>
+
+<h3 class="typedecl"><a name="type-astronomical_units">astronomical_units()</a></h3>
+<p><code>astronomical_units() = <a href="#type-astronomical_unit">astronomical_unit()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-au">au()</a></h3>
+<p><code>au() = <a href="#type-astronomical_unit">astronomical_unit()</a></code></p>
+<p> Abbreviation of astronomical unit.</p>
 
 <h3 class="typedecl"><a name="type-base_unit_symbol">base_unit_symbol()</a></h3>
-<p><tt>base_unit_symbol() = m | g | s | 'A' | 'K' | mol | cd</tt></p>
+<p><code>base_unit_symbol() = m | g | s | 'A' | 'K' | mol | cd</code></p>
 <p><p> The seven SI base units are:</p>
 
  <p>- meter, for length [m]</p>
@@ -90,71 +108,86 @@ here</p>
 
  - candela, for luminous intensity [cd]</p>
 
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-c">c()</a></h3>
+<p><code>c() = float()</code></p>
+<p><p> Light-second per second, that is c, the speed of light (as a unit).</p>
+
+ <p>Is exactly 299 792 458 m/s (i.e. about 300 000 km/s).</p>
+
+ <p>Could be abbreviated as "l" (for "light"), or "ls/s", but of course c is a lot 
+clearer.</p>
+
+ See the physics_utils:c/0 function.</p>
+
 <h3 class="typedecl"><a name="type-canonical_day">canonical_day()</a></h3>
-<p><tt>canonical_day() = 1..31</tt></p>
+<p><code>canonical_day() = 1..31</code></p>
 <p> Day in the month; semantically equivalent to calendar:day().</p>
 
 <h3 class="typedecl"><a name="type-canonical_hour">canonical_hour()</a></h3>
-<p><tt>canonical_hour() = 0..23</tt></p>
+<p><code>canonical_hour() = 0..23</code></p>
 <p> Hour in the day.</p>
 
 <h3 class="typedecl"><a name="type-canonical_microsecond">canonical_microsecond()</a></h3>
-<p><tt>canonical_microsecond() = 0..999999</tt></p>
+<p><code>canonical_microsecond() = 0..999999</code></p>
 <p> Microsecond in the second.</p>
 
 <h3 class="typedecl"><a name="type-canonical_millisecond">canonical_millisecond()</a></h3>
-<p><tt>canonical_millisecond() = 0..999</tt></p>
+<p><code>canonical_millisecond() = 0..999</code></p>
 <p> Millisecond in the second.</p>
 
 <h3 class="typedecl"><a name="type-canonical_minute">canonical_minute()</a></h3>
-<p><tt>canonical_minute() = 0..59</tt></p>
+<p><code>canonical_minute() = 0..59</code></p>
 <p> Minute in the hour.</p>
 
 <h3 class="typedecl"><a name="type-canonical_month">canonical_month()</a></h3>
-<p><tt>canonical_month() = 1..12</tt></p>
+<p><code>canonical_month() = 1..12</code></p>
 <p> Month in the year; semantically equivalent to calendar:month().</p>
 
 <h3 class="typedecl"><a name="type-canonical_second">canonical_second()</a></h3>
-<p><tt>canonical_second() = 0..59</tt></p>
+<p><code>canonical_second() = 0..59</code></p>
 <p> Second in the minute.</p>
 
 <h3 class="typedecl"><a name="type-canonical_unit">canonical_unit()</a></h3>
-<p><tt>canonical_unit() = #canonical_unit{meter = <a href="#type-exponent">exponent()</a>, gram = <a href="#type-exponent">exponent()</a>, second = <a href="#type-exponent">exponent()</a>, ampere = <a href="#type-exponent">exponent()</a>, kelvin = <a href="#type-exponent">exponent()</a>, mole = <a href="#type-exponent">exponent()</a>, candela = <a href="#type-exponent">exponent()</a>, other_units = [{<a href="#type-non_standard_unit_symbol">non_standard_unit_symbol()</a>, <a href="#type-exponent">exponent()</a>}], order = <a href="#type-magnitude_order">magnitude_order()</a>, factor = <a href="#type-multiplying_factor">multiplying_factor()</a>}</tt></p>
+<p><code>canonical_unit() = #canonical_unit{meter = <a href="#type-exponent">exponent()</a>, gram = <a href="#type-exponent">exponent()</a>, second = <a href="#type-exponent">exponent()</a>, ampere = <a href="#type-exponent">exponent()</a>, kelvin = <a href="#type-exponent">exponent()</a>, mole = <a href="#type-exponent">exponent()</a>, candela = <a href="#type-exponent">exponent()</a>, other_units = [{<a href="#type-non_standard_unit_symbol">non_standard_unit_symbol()</a>, <a href="#type-exponent">exponent()</a>}], order = <a href="#type-magnitude_order">magnitude_order()</a>, factor = <a href="#type-multiplying_factor">multiplying_factor()</a>}</code></p>
 <p> Actual internal, canonical form for any unit (relying on the 7 SI base units,
  an order of magnitude and a multiplying factor).</p>
 
 <h3 class="typedecl"><a name="type-celsius">celsius()</a></h3>
-<p><tt>celsius() = float()</tt></p>
+<p><code>celsius() = float()</code></p>
 <p> In degree Celsius (°C).</p>
 
 <h3 class="typedecl"><a name="type-cubic_meters">cubic_meters()</a></h3>
-<p><tt>cubic_meters() = float()</tt></p>
+<p><code>cubic_meters() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-day">day()</a></h3>
-<p><tt>day() = integer()</tt></p>
+<p><code>day() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-day_in_the_year">day_in_the_year()</a></h3>
-<p><tt>day_in_the_year() = 1..366</tt></p>
+<p><code>day_in_the_year() = 1..366</code></p>
 <p> Day in the (possibly leap) year.</p>
 
 <h3 class="typedecl"><a name="type-days">days()</a></h3>
-<p><tt>days() = integer()</tt></p>
+<p><code>days() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-declination">declination()</a></h3>
-<p><tt>declination() = <a href="#type-degrees">degrees()</a></tt></p>
+<p><code>declination() = <a href="#type-degrees">degrees()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-degrees">degrees()</a></h3>
-<p><tt>degrees() = float()</tt></p>
+<p><code>degrees() = float()</code></p>
 <p><p> Angle in degrees.</p>
 
  Preferably to be kept in [0.0,360.0[.</p>
 
 <h3 class="typedecl"><a name="type-derived_unit_symbol">derived_unit_symbol()</a></h3>
-<p><tt>derived_unit_symbol() = 'Hz' | rad | sr | 'N' | 'Pa' | 'J' | 'W' | 'C' | 'V' | 'F' | 'Ohm' | 'S' | 'T' | 'H' | '°C' | lm | lx | 'Bq' | 'Gy' | 'Sv' | kat</tt></p>
+<p><code>derived_unit_symbol() = 'Hz' | rad | sr | 'N' | 'Pa' | 'J' | 'W' | 'C' | 'V' | 'F' | 'Ohm' | 'S' | 'T' | 'H' | '°C' | lm | lx | 'Bq' | 'Gy' | 'Sv' | kat</code></p>
 <p><p> The derived base units currently supported:</p>
 
  <p>- hertz, for frequency [Hz]</p>
@@ -200,81 +233,83 @@ here</p>
  - katal, for catalytic activity [kat]</p>
 
 <h3 class="typedecl"><a name="type-dimensionless">dimensionless()</a></h3>
-<p><tt>dimensionless() = float()</tt></p>
+<p><code>dimensionless() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-energy_reference_unit">energy_reference_unit()</a></h3>
-<p><tt>energy_reference_unit() = joules</tt></p>
-
+<p><code>energy_reference_unit() = joules</code></p>
+<p> Our default pivot unit for energies.</p>
 
 <h3 class="typedecl"><a name="type-energy_units">energy_units()</a></h3>
-<p><tt>energy_units() = <a href="#type-energy_reference_unit">energy_reference_unit()</a></tt></p>
+<p><code>energy_units() = <a href="#type-energy_reference_unit">energy_reference_unit()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-exponent">exponent()</a></h3>
-<p><tt>exponent() = integer()</tt></p>
+<p><code>exponent() = integer()</code></p>
 <p> Exponentiation of a unit (e.g. 2 for square meters, m^2).</p>
 
 <h3 class="typedecl"><a name="type-float_second">float_second()</a></h3>
-<p><tt>float_second() = float()</tt></p>
+<p><code>float_second() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-float_seconds">float_seconds()</a></h3>
-<p><tt>float_seconds() = float()</tt></p>
+<p><code>float_seconds() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-grams">grams()</a></h3>
-<p><tt>grams() = float()</tt></p>
+<p><code>grams() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-hertz">hertz()</a></h3>
-<p><tt>hertz() = float()</tt></p>
+<p><code>hertz() = float()</code></p>
 <p> Frequency in Hz, as a floating-point number.</p>
 
 <h3 class="typedecl"><a name="type-hour">hour()</a></h3>
-<p><tt>hour() = integer()</tt></p>
+<p><code>hour() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-hours">hours()</a></h3>
-<p><tt>hours() = integer()</tt></p>
+<p><code>hours() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-int_degrees">int_degrees()</a></h3>
-<p><tt>int_degrees() = integer()</tt></p>
+<p><code>int_degrees() = integer()</code></p>
 <p><p> Angle in degrees.</p>
 
  Strictly expected to be in [0,360[.</p>
 
 <h3 class="typedecl"><a name="type-int_meters">int_meters()</a></h3>
-<p><tt>int_meters() = float()</tt></p>
+<p><code>int_meters() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-int_millimeters">int_millimeters()</a></h3>
-<p><tt>int_millimeters() = integer()</tt></p>
+<p><code>int_millimeters() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_hertz">integer_hertz()</a></h3>
-<p><tt>integer_hertz() = non_neg_integer()</tt></p>
+<p><code>integer_hertz() = non_neg_integer()</code></p>
 <p> Frequency in Hz, as a (non-negative) integer.</p>
 
 <h3 class="typedecl"><a name="type-joules">joules()</a></h3>
-<p><tt>joules() = float()</tt></p>
+<p><code>joules() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-kilograms">kilograms()</a></h3>
-<p><tt>kilograms() = float()</tt></p>
+<p><code>kilograms() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-kilometers">kilometers()</a></h3>
-<p><tt>kilometers() = float()</tt></p>
+<p><code>kilometers() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-km_per_hour">km_per_hour()</a></h3>
-<p><tt>km_per_hour() = float()</tt></p>
+<p><code>km_per_hour() = float()</code></p>
+<p><p> Abbreviated as "km/h".</p>
 
+ A unit that is 3.6 smaller than "m/s".</p>
 
 <h3 class="typedecl"><a name="type-latitude">latitude()</a></h3>
-<p><tt>latitude() = <a href="#type-degrees">degrees()</a></tt></p>
+<p><code>latitude() = <a href="#type-degrees">degrees()</a></code></p>
 <p><p> A geographic coordinate that specifies the north-south position of a point on 
 the surface of the Earth or another celestial body.</p>
 
@@ -283,30 +318,62 @@ the surface of the Earth or another celestial body.</p>
  with 0° at the Equator.</p>
 
 <h3 class="typedecl"><a name="type-length_reference_unit">length_reference_unit()</a></h3>
-<p><tt>length_reference_unit() = meters</tt></p>
-
+<p><code>length_reference_unit() = meters</code></p>
+<p> Our default pivot unit for lengths.</p>
 
 <h3 class="typedecl"><a name="type-length_units">length_units()</a></h3>
-<p><tt>length_units() = <a href="#type-length_reference_unit">length_reference_unit()</a> | millimeters | int_millimeters</tt></p>
+<p><code>length_units() = <a href="#type-length_reference_unit">length_reference_unit()</a> | millimeters | int_millimeters</code></p>
+
+
+<h3 class="typedecl"><a name="type-light_minute">light_minute()</a></h3>
+<p><code>light_minute() = float()</code></p>
+<p> The distance that light travels in free space in one minute. It is equal to
+ exactly 17987547480 m (hence about 18 million kilometres).</p>
+
+<h3 class="typedecl"><a name="type-light_minutes">light_minutes()</a></h3>
+<p><code>light_minutes() = <a href="#type-light_minute">light_minute()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-light_nanosecond">light_nanosecond()</a></h3>
+<p><code>light_nanosecond() = float()</code></p>
+<p> The distance that light travels in free space in one nanosecond: 299.8 mm,
+ hence about 30 cm or 0.3 m.</p>
+
+<h3 class="typedecl"><a name="type-light_second">light_second()</a></h3>
+<p><code>light_second() = float()</code></p>
+<p> The distance that light travels in free space in one second. It is equal to
+ exactly 299 792 458 m (hence about 300 000 km).</p>
+
+<h3 class="typedecl"><a name="type-light_seconds">light_seconds()</a></h3>
+<p><code>light_seconds() = <a href="#type-light_second">light_second()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-light_year">light_year()</a></h3>
-<p><tt>light_year() = float()</tt></p>
-<p><p> A light-year express astronomical distances, and is equivalent to about 
+<p><code>light_year() = float()</code></p>
+<p><p> A light-year expresses astronomical distances, and is equivalent to about 
 9.46.10^12 km.</p>
+
+ <p>Most often used when expressing distances to stars and other distances on a 
+galactic scale.</p>
 
  Also abbreviated as "ly".</p>
 
+<h3 class="typedecl"><a name="type-light_year_per_second">light_year_per_second()</a></h3>
+<p><code>light_year_per_second() = float()</code></p>
+<p><p> Abbreviated as "ly/s".</p>
+
+ Of no real interest, as would designate speeds larger than c.</p>
+
 <h3 class="typedecl"><a name="type-light_years">light_years()</a></h3>
-<p><tt>light_years() = <a href="#type-light_year">light_year()</a></tt></p>
+<p><code>light_years() = <a href="#type-light_year">light_year()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-litre">litre()</a></h3>
-<p><tt>litre() = float()</tt></p>
+<p><code>litre() = float()</code></p>
 <p> Thus dm^3.</p>
 
 <h3 class="typedecl"><a name="type-longitude">longitude()</a></h3>
-<p><tt>longitude() = <a href="#type-degrees">degrees()</a></tt></p>
+<p><code>longitude() = <a href="#type-degrees">degrees()</a></code></p>
 <p><p> A geographic coordinate that specifies the east-west position of a point on 
 the surface of the Earth, or another celestial body.</p>
 
@@ -314,119 +381,155 @@ the surface of the Earth, or another celestial body.</p>
  an angle that ranges from 0° at the Prime Meridian to +180° eastward and -180°
  westward.</p>
 
+<h3 class="typedecl"><a name="type-ls">ls()</a></h3>
+<p><code>ls() = <a href="#type-light_second">light_second()</a></code></p>
+<p> Abbreviation of light-second.</p>
+
+<h3 class="typedecl"><a name="type-ls_per_second">ls_per_second()</a></h3>
+<p><code>ls_per_second() = <a href="#type-c">c()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ly">ly()</a></h3>
+<p><code>ly() = <a href="#type-light_year">light_year()</a></code></p>
+<p> Abbreviation of light-year.</p>
+
+<h3 class="typedecl"><a name="type-ly_per_second">ly_per_second()</a></h3>
+<p><code>ly_per_second() = <a href="#type-light_year_per_second">light_year_per_second()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-magnitude_order">magnitude_order()</a></h3>
-<p><tt>magnitude_order() = integer()</tt></p>
+<p><code>magnitude_order() = integer()</code></p>
 <p> Order of magnitude (exponent of 10).</p>
 
 <h3 class="typedecl"><a name="type-mass_reference_unit">mass_reference_unit()</a></h3>
-<p><tt>mass_reference_unit() = kilograms</tt></p>
-
+<p><code>mass_reference_unit() = kilograms</code></p>
+<p> Our default pivot unit for masses.</p>
 
 <h3 class="typedecl"><a name="type-mass_units">mass_units()</a></h3>
-<p><tt>mass_units() = <a href="#type-mass_reference_unit">mass_reference_unit()</a> | tons | grams</tt></p>
+<p><code>mass_units() = <a href="#type-mass_reference_unit">mass_reference_unit()</a> | tons | grams</code></p>
 
 
 <h3 class="typedecl"><a name="type-megasecond">megasecond()</a></h3>
-<p><tt>megasecond() = integer()</tt></p>
+<p><code>megasecond() = integer()</code></p>
 <p> 10^6 seconds.</p>
 
 <h3 class="typedecl"><a name="type-megaseconds">megaseconds()</a></h3>
-<p><tt>megaseconds() = integer()</tt></p>
+<p><code>megaseconds() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-meters">meters()</a></h3>
-<p><tt>meters() = float()</tt></p>
+<p><code>meters() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-meters_per_second">meters_per_second()</a></h3>
-<p><tt>meters_per_second() = float()</tt></p>
+<p><code>meters_per_second() = float()</code></p>
+<p><p> Abbreviated as "m/s".</p>
 
+ A unit that is 3.6 larger than "km/h".</p>
 
 <h3 class="typedecl"><a name="type-meters_per_tick">meters_per_tick()</a></h3>
-<p><tt>meters_per_tick() = float()</tt></p>
+<p><code>meters_per_tick() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-metric_prefix">metric_prefix()</a></h3>
-<p><tt>metric_prefix() = yotta | zetta | exa | peta | tera | giga | mega | kilo | hecto | deca | deci | centi | milli | micro | nano | pico | femto | atto | zepto | yocto</tt></p>
+<p><code>metric_prefix() = yotta | zetta | exa | peta | tera | giga | mega | kilo | hecto | deca | deci | centi | milli | micro | nano | pico | femto | atto | zepto | yocto</code></p>
 
 
 <h3 class="typedecl"><a name="type-microsecond">microsecond()</a></h3>
-<p><tt>microsecond() = integer()</tt></p>
+<p><code>microsecond() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-microseconds">microseconds()</a></h3>
-<p><tt>microseconds() = integer()</tt></p>
+<p><code>microseconds() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-millimeters">millimeters()</a></h3>
-<p><tt>millimeters() = float()</tt></p>
+<p><code>millimeters() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-millisecond">millisecond()</a></h3>
-<p><tt>millisecond() = integer()</tt></p>
+<p><code>millisecond() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><tt>milliseconds() = integer()</tt></p>
+<p><code>milliseconds() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-minute">minute()</a></h3>
-<p><tt>minute() = integer()</tt></p>
+<p><code>minute() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-minutes">minutes()</a></h3>
-<p><tt>minutes() = integer()</tt></p>
+<p><code>minutes() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-misc_units">misc_units()</a></h3>
-<p><tt>misc_units() = <a href="#type-dimensionless">dimensionless()</a> | <a href="#type-rpm">rpm()</a></tt></p>
+<p><code>misc_units() = <a href="#type-dimensionless">dimensionless()</a> | <a href="#type-rpm">rpm()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-month">month()</a></h3>
-<p><tt>month() = integer()</tt></p>
+<p><code>month() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-months">months()</a></h3>
-<p><tt>months() = integer()</tt></p>
+<p><code>months() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-mtbf">mtbf()</a></h3>
-<p><tt>mtbf() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></tt></p>
+<p><code>mtbf() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></code></p>
 <p> Mean Time Between (recoverable) Failures.</p>
 
 <h3 class="typedecl"><a name="type-mttf">mttf()</a></h3>
-<p><tt>mttf() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></tt></p>
+<p><code>mttf() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></code></p>
 <p> Mean Time To (unrecoverable) Failure.</p>
 
 <h3 class="typedecl"><a name="type-mttr">mttr()</a></h3>
-<p><tt>mttr() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></tt></p>
+<p><code>mttr() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></code></p>
 <p> Mean Time To Repair.</p>
 
 <h3 class="typedecl"><a name="type-multiplying_factor">multiplying_factor()</a></h3>
-<p><tt>multiplying_factor() = float()</tt></p>
+<p><code>multiplying_factor() = float()</code></p>
 <p> Multiplying factor.</p>
 
 <h3 class="typedecl"><a name="type-non_standard_unit_symbol">non_standard_unit_symbol()</a></h3>
-<p><tt>non_standard_unit_symbol() = atom()</tt></p>
+<p><code>non_standard_unit_symbol() = atom()</code></p>
 <p> For non-SI units that cannot be anticipated (e.g. teqCO2, singaporean dollar
  of 2012, number of people, etc.).</p>
 
 <h3 class="typedecl"><a name="type-numerical_value">numerical_value()</a></h3>
-<p><tt>numerical_value() = float()</tt></p>
+<p><code>numerical_value() = float()</code></p>
 <p> The actual value whose unit may be associated to.</p>
 
+<h3 class="typedecl"><a name="type-parsec">parsec()</a></h3>
+<p><code>parsec() = float()</code></p>
+<p><p> A parsec (symbol: pc) is a larger unit of length, for astronomical objects 
+outside the Solar System, approximately equal to 3.26 light-years or 206,265 
+astronomical units (AU), i.e. 30.9 trillion kilometres.</p>
+
+ <p>Most commonly used in professional astronomy.</p>
+
+ See https://en.wikipedia.org/wiki/Parsec.</p>
+
+<h3 class="typedecl"><a name="type-parsecs">parsecs()</a></h3>
+<p><code>parsecs() = <a href="#type-parsec">parsec()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-pc">pc()</a></h3>
+<p><code>pc() = <a href="#type-parsec">parsec()</a></code></p>
+<p> Abbreviation of parsec.</p>
+
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
-<p><tt>position() = {<a href="#type-latitude">latitude()</a>, <a href="#type-longitude">longitude()</a>}</tt></p>
+<p><code>position() = {<a href="#type-latitude">latitude()</a>, <a href="#type-longitude">longitude()</a>}</code></p>
 <p><p> A position on a round celestial body, typically the Earth.</p>
 
  No altitude/elevation.</p>
 
 <h3 class="typedecl"><a name="type-prefix_symbol">prefix_symbol()</a></h3>
-<p><tt>prefix_symbol() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>prefix_symbol() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Symbol of metric prefix (e.g. "da" for 'deca').</p>
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><tt>radians() = float()</tt></p>
+<p><code>radians() = float()</code></p>
 <p><p> Angle in radians.</p>
 
  <p>2π radians is equal to 360 degrees.</p>
@@ -434,21 +537,21 @@ the surface of the Earth, or another celestial body.</p>
  Preferably to be kept in [0.0,2π[.</p>
 
 <h3 class="typedecl"><a name="type-rpm">rpm()</a></h3>
-<p><tt>rpm() = float()</tt></p>
+<p><code>rpm() = float()</code></p>
 <p> Revolutions per minute (also known as RPM, rev/min, r/min, or with the
  notation min^-1) is a number of turns made per minute; a unit of rotational
  speed or the frequency of rotation around a fixed axis.</p>
 
 <h3 class="typedecl"><a name="type-second">second()</a></h3>
-<p><tt>second() = integer()</tt></p>
+<p><code>second() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-seconds">seconds()</a></h3>
-<p><tt>seconds() = integer()</tt></p>
+<p><code>seconds() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-special_unit_symbol">special_unit_symbol()</a></h3>
-<p><tt>special_unit_symbol() = dimensionless | '$' | euros | unspecified_unit</tt></p>
+<p><code>special_unit_symbol() = dimensionless | '$' | euros | unspecified_unit</code></p>
 <p><p> The special units, designating:</p>
 
  <p>- dimension-less quantities (e.g. a count), [dimensionless] (most probably 
@@ -459,74 +562,74 @@ clearer than m/m)</p>
  - values whose unit has not been specified [unspecified_unit]</p>
 
 <h3 class="typedecl"><a name="type-square_meters">square_meters()</a></h3>
-<p><tt>square_meters() = float()</tt></p>
+<p><code>square_meters() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-square_seconds">square_seconds()</a></h3>
-<p><tt>square_seconds() = float()</tt></p>
+<p><code>square_seconds() = float()</code></p>
 <p> Square seconds (s^2).</p>
 
 <h3 class="typedecl"><a name="type-surface_reference_unit">surface_reference_unit()</a></h3>
-<p><tt>surface_reference_unit() = <a href="#type-square_meters">square_meters()</a></tt></p>
-
+<p><code>surface_reference_unit() = <a href="#type-square_meters">square_meters()</a></code></p>
+<p> Our default pivot unit for areas.</p>
 
 <h3 class="typedecl"><a name="type-surface_units">surface_units()</a></h3>
-<p><tt>surface_units() = <a href="#type-square_meters">square_meters()</a></tt></p>
+<p><code>surface_units() = <a href="#type-square_meters">square_meters()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-time_reference_unit">time_reference_unit()</a></h3>
-<p><tt>time_reference_unit() = seconds</tt></p>
-
+<p><code>time_reference_unit() = seconds</code></p>
+<p> Our default pivot unit for durations.</p>
 
 <h3 class="typedecl"><a name="type-time_units">time_units()</a></h3>
-<p><tt>time_units() = <a href="#type-time_reference_unit">time_reference_unit()</a> | years | days | hours | minutes | milliseconds | microseconds</tt></p>
+<p><code>time_units() = <a href="#type-time_reference_unit">time_reference_unit()</a> | years | days | hours | minutes | milliseconds | microseconds</code></p>
 <p> Months and weeks not specifically useful here.</p>
 
 <h3 class="typedecl"><a name="type-tons">tons()</a></h3>
-<p><tt>tons() = float()</tt></p>
+<p><code>tons() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-unit_bin_string">unit_bin_string()</a></h3>
-<p><tt>unit_bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>unit_bin_string() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> Binary counterpart of a unit string.</p>
 
 <h3 class="typedecl"><a name="type-unit_string">unit_string()</a></h3>
-<p><tt>unit_string() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>unit_string() = <a href="#type-ustring">ustring()</a></code></p>
 <p><p> String containing a unit, in standard form (e.g. "km/h", "mW.m^-3").</p>
 
  Read the 'Management of Units' section of the technical manual of the Myriad
  Layer for more information.</p>
 
 <h3 class="typedecl"><a name="type-unit_symbol">unit_symbol()</a></h3>
-<p><tt>unit_symbol() = <a href="#type-base_unit_symbol">base_unit_symbol()</a> | <a href="#type-derived_unit_symbol">derived_unit_symbol()</a> | <a href="#type-widely_used_unit_symbol">widely_used_unit_symbol()</a> | <a href="#type-special_unit_symbol">special_unit_symbol()</a> | <a href="#type-non_standard_unit_symbol">non_standard_unit_symbol()</a></tt></p>
+<p><code>unit_symbol() = <a href="#type-base_unit_symbol">base_unit_symbol()</a> | <a href="#type-derived_unit_symbol">derived_unit_symbol()</a> | <a href="#type-widely_used_unit_symbol">widely_used_unit_symbol()</a> | <a href="#type-special_unit_symbol">special_unit_symbol()</a> | <a href="#type-non_standard_unit_symbol">non_standard_unit_symbol()</a></code></p>
 <p> All unit symbols (actually not used as such).</p>
 
 <h3 class="typedecl"><a name="type-units">units()</a></h3>
-<p><tt>units() = <a href="#type-time_units">time_units()</a> | <a href="#type-length_units">length_units()</a> | <a href="#type-volume_units">volume_units()</a> | <a href="#type-mass_units">mass_units()</a> | <a href="#type-energy_units">energy_units()</a> | <a href="#type-angle_units">angle_units()</a> | <a href="#type-misc_units">misc_units()</a></tt></p>
+<p><code>units() = <a href="#type-time_units">time_units()</a> | <a href="#type-length_units">length_units()</a> | <a href="#type-volume_units">volume_units()</a> | <a href="#type-mass_units">mass_units()</a> | <a href="#type-energy_units">energy_units()</a> | <a href="#type-angle_units">angle_units()</a> | <a href="#type-misc_units">misc_units()</a></code></p>
 <p> All kinds of units.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-volume_reference_unit">volume_reference_unit()</a></h3>
-<p><tt>volume_reference_unit() = <a href="#type-cubic_meters">cubic_meters()</a></tt></p>
-
+<p><code>volume_reference_unit() = <a href="#type-cubic_meters">cubic_meters()</a></code></p>
+<p> Our default pivot unit for volumes.</p>
 
 <h3 class="typedecl"><a name="type-volume_units">volume_units()</a></h3>
-<p><tt>volume_units() = <a href="#type-volume_reference_unit">volume_reference_unit()</a> | litre</tt></p>
+<p><code>volume_units() = <a href="#type-volume_reference_unit">volume_reference_unit()</a> | litre</code></p>
 
 
 <h3 class="typedecl"><a name="type-week">week()</a></h3>
-<p><tt>week() = integer()</tt></p>
+<p><code>week() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-weeks">weeks()</a></h3>
-<p><tt>weeks() = integer()</tt></p>
+<p><code>weeks() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-widely_used_unit_symbol">widely_used_unit_symbol()</a></h3>
-<p><tt>widely_used_unit_symbol() = min | h | 'L' | t | eV</tt></p>
+<p><code>widely_used_unit_symbol() = min | h | 'L' | t | eV</code></p>
 <p><p> The units widely used in conjunction with SI units:</p>
 
  <p>- minute, for 60-second durations [min]</p>
@@ -540,15 +643,16 @@ clearer than m/m)</p>
  - electronvolt, for 1.602176565(35).10-19 joule energies  [eV]</p>
 
 <h3 class="typedecl"><a name="type-year">year()</a></h3>
-<p><tt>year() = integer()</tt></p>
+<p><code>year() = integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-years">years()</a></h3>
-<p><tt>years() = integer()</tt></p>
+<p><code>years() = integer()</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_units_identical-2">are_units_identical/2</a></td><td>Tells whether the two specified units are strictly the same.</td></tr>
+<tr><td valign="top"><a href="#astronomical_units_to_meters-1">astronomical_units_to_meters/1</a></td><td>Converts the length specified in astronomical units to meters.</td></tr>
 <tr><td valign="top"><a href="#get_factor-1">get_factor/1</a></td><td>Returns the multiplying factor of the specified unit.</td></tr>
 <tr><td valign="top"><a href="#get_order-1">get_order/1</a></td><td>Returns the magnitude order of the specified unit.</td></tr>
 <tr><td valign="top"><a href="#get_order_for_prefix-1">get_order_for_prefix/1</a></td><td>Returns the magnitude order corresponding to the specified symbol 
@@ -561,23 +665,30 @@ order of magnitude.</td></tr>
 humans, typically obtained from time_utils:duration_to_string/1) into an 
 integer number of milliseconds.</td></tr>
 <tr><td valign="top"><a href="#is_canonical_unit-1">is_canonical_unit/1</a></td><td>Tells whether specified term is an actual, canonical unit.</td></tr>
-<tr><td valign="top"><a href="#km_per_hour_to_meters_per_second-1">km_per_hour_to_meters_per_second/1</a></td><td>Converts km/h to m/s.</td></tr>
+<tr><td valign="top"><a href="#km_per_hour_to_meters_per_second-1">km_per_hour_to_meters_per_second/1</a></td><td>Converts the specified speed in km/h to m/s.</td></tr>
+<tr><td valign="top"><a href="#light_seconds_to_meters-1">light_seconds_to_meters/1</a></td><td>Converts the length specified in light-seconds to meters.</td></tr>
+<tr><td valign="top"><a href="#light_years_to_meters-1">light_years_to_meters/1</a></td><td>Converts the length specified in light-years to meters.</td></tr>
 <tr><td valign="top"><a href="#maybe_rpm_to_string-1">maybe_rpm_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
  rotation speed (if any).</td></tr>
 <tr><td valign="top"><a href="#maybe_temperature_to_string-1">maybe_temperature_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
  temperature (if any).</td></tr>
-<tr><td valign="top"><a href="#meters_per_second_to_km_per_hour-1">meters_per_second_to_km_per_hour/1</a></td><td>Converts m/s to km/h.</td></tr>
+<tr><td valign="top"><a href="#meters_per_second_to_km_per_hour-1">meters_per_second_to_km_per_hour/1</a></td><td>Converts the specified speed in m/s to km/h.</td></tr>
+<tr><td valign="top"><a href="#meters_to_light_seconds-1">meters_to_light_seconds/1</a></td><td>Converts the length specified in meters to light-seconds.</td></tr>
+<tr><td valign="top"><a href="#meters_to_light_years-1">meters_to_light_years/1</a></td><td>Converts the length specified in meters to light-years.</td></tr>
 <tr><td valign="top"><a href="#meters_to_string-1">meters_to_string/1</a></td><td>Returns a textual, user-friendly, short (possibly rounded) description of 
-the specified distance.</td></tr>
+the specified, potentially very large, length/distance.</td></tr>
 <tr><td valign="top"><a href="#parse_unit-1">parse_unit/1</a></td><td>Parses the specified string, expected to contain a unit
  (e.g.</td></tr>
 <tr><td valign="top"><a href="#parse_value_with_unit-1">parse_value_with_unit/1</a></td><td>Parses specified string (expected to be a unit_string()) containing a 
 value and its unit (e.g.</td></tr>
+<tr><td valign="top"><a href="#parsecs_to_meters-1">parsecs_to_meters/1</a></td><td>Converts the length specified in parsecs to meters.</td></tr>
 <tr><td valign="top"><a href="#position_to_string-1">position_to_string/1</a></td><td>Returns a textual description of the specified position.</td></tr>
 <tr><td valign="top"><a href="#pure_unit_to_string-1">pure_unit_to_string/1</a></td><td>Returns a textual representation of the raw unit only (factor and order 
 ignored) for the specified canonical unit.</td></tr>
 <tr><td valign="top"><a href="#rpm_to_string-1">rpm_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
  rotation speed.</td></tr>
+<tr><td valign="top"><a href="#speed_to_string-1">speed_to_string/1</a></td><td>Returns a textual, user-friendly, short (possibly rounded) description of 
+the specified (supposedly positive) speed.</td></tr>
 <tr><td valign="top"><a href="#temperature_to_string-1">temperature_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
  temperature.</td></tr>
 <tr><td valign="top"><a href="#unit_to_string-1">unit_to_string/1</a></td><td>Returns a textual representation of the specified canonical unit.</td></tr>
@@ -588,25 +699,31 @@ ignored) for the specified canonical unit.</td></tr>
 
 <h3 class="function"><a name="are_units_identical-2">are_units_identical/2</a></h3>
 <div class="spec">
-<p><tt>are_units_identical(Unit::<a href="#type-canonical_unit">canonical_unit()</a>, SecondUnit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; boolean()</tt><br></p>
+<p><code>are_units_identical(Unit::<a href="#type-canonical_unit">canonical_unit()</a>, SecondUnit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the two specified units are strictly the same.</p>
 
+<h3 class="function"><a name="astronomical_units_to_meters-1">astronomical_units_to_meters/1</a></h3>
+<div class="spec">
+<p><code>astronomical_units_to_meters(Au::<a href="#type-astronomical_units">astronomical_units()</a>) -&gt; <a href="#type-meters">meters()</a></code><br></p>
+<p> </p>
+</div><p>Converts the length specified in astronomical units to meters.</p>
+
 <h3 class="function"><a name="get_factor-1">get_factor/1</a></h3>
 <div class="spec">
-<p><tt>get_factor(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-multiplying_factor">multiplying_factor()</a></tt><br></p>
+<p><code>get_factor(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-multiplying_factor">multiplying_factor()</a></code><br></p>
 <p> </p>
 </div><p>Returns the multiplying factor of the specified unit.</p>
 
 <h3 class="function"><a name="get_order-1">get_order/1</a></h3>
 <div class="spec">
-<p><tt>get_order(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-magnitude_order">magnitude_order()</a></tt><br></p>
+<p><code>get_order(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-magnitude_order">magnitude_order()</a></code><br></p>
 <p> </p>
 </div><p>Returns the magnitude order of the specified unit.</p>
 
 <h3 class="function"><a name="get_order_for_prefix-1">get_order_for_prefix/1</a></h3>
 <div class="spec">
-<p><tt>get_order_for_prefix(PrefixSymbol::<a href="#type-prefix_symbol">prefix_symbol()</a>) -&gt; <a href="#type-magnitude_order">magnitude_order()</a> | unknown_prefix</tt><br></p>
+<p><code>get_order_for_prefix(PrefixSymbol::<a href="#type-prefix_symbol">prefix_symbol()</a>) -&gt; <a href="#type-magnitude_order">magnitude_order()</a> | unknown_prefix</code><br></p>
 <p> </p>
 </div><p><p>Returns the magnitude order corresponding to the specified symbol 
 (string) of metric prefix.</p>
@@ -616,7 +733,7 @@ ignored) for the specified canonical unit.</td></tr>
 
 <h3 class="function"><a name="get_prefix_for_order-1">get_prefix_for_order/1</a></h3>
 <div class="spec">
-<p><tt>get_prefix_for_order(Order::<a href="#type-magnitude_order">magnitude_order()</a>) -&gt; <a href="#type-metric_prefix">metric_prefix()</a></tt><br></p>
+<p><code>get_prefix_for_order(Order::<a href="#type-magnitude_order">magnitude_order()</a>) -&gt; <a href="#type-metric_prefix">metric_prefix()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the metric prefix (if any) corresponding to the specified 
 magnitude order.</p>
@@ -626,7 +743,7 @@ magnitude order.</p>
 
 <h3 class="function"><a name="get_prefix_information-0">get_prefix_information/0</a></h3>
 <div class="spec">
-<p><tt>get_prefix_information() -&gt; [{<a href="#type-metric_prefix">metric_prefix()</a>, <a href="#type-prefix_symbol">prefix_symbol()</a>, <a href="#type-magnitude_order">magnitude_order()</a>}]</tt><br></p>
+<p><code>get_prefix_information() -&gt; [{<a href="#type-metric_prefix">metric_prefix()</a>, <a href="#type-prefix_symbol">prefix_symbol()</a>, <a href="#type-magnitude_order">magnitude_order()</a>}]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of all metric prefixes, together with their symbol and 
 order of magnitude.</p>
@@ -640,7 +757,7 @@ and that this prefix is represented as "k".</p>
 
 <h3 class="function"><a name="human_time_to_milliseconds-5">human_time_to_milliseconds/5</a></h3>
 <div class="spec">
-<p><tt>human_time_to_milliseconds(Day::<a href="#type-days">days()</a>, Hour::<a href="#type-hours">hours()</a>, Minute::<a href="#type-minutes">minutes()</a>, Second::<a href="#type-seconds">seconds()</a>, Millisecond::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></tt><br></p>
+<p><code>human_time_to_milliseconds(Day::<a href="#type-days">days()</a>, Hour::<a href="#type-hours">hours()</a>, Minute::<a href="#type-minutes">minutes()</a>, Second::<a href="#type-seconds">seconds()</a>, Millisecond::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></code><br></p>
 <p> </p>
 </div><p><p>Converts specified duration, expressed in a user-friendly time (for 
 humans, typically obtained from time_utils:duration_to_string/1) into an 
@@ -653,19 +770,31 @@ integer number of milliseconds.</p>
 
 <h3 class="function"><a name="is_canonical_unit-1">is_canonical_unit/1</a></h3>
 <div class="spec">
-<p><tt>is_canonical_unit(Term::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_canonical_unit(Term::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether specified term is an actual, canonical unit.</p>
 
 <h3 class="function"><a name="km_per_hour_to_meters_per_second-1">km_per_hour_to_meters_per_second/1</a></h3>
 <div class="spec">
-<p><tt>km_per_hour_to_meters_per_second(K::<a href="#type-km_per_hour">km_per_hour()</a>) -&gt; <a href="#type-meters_per_second">meters_per_second()</a></tt><br></p>
+<p><code>km_per_hour_to_meters_per_second(K::<a href="#type-km_per_hour">km_per_hour()</a>) -&gt; <a href="#type-meters_per_second">meters_per_second()</a></code><br></p>
 <p> </p>
-</div><p>Converts km/h to m/s.</p>
+</div><p>Converts the specified speed in km/h to m/s.</p>
+
+<h3 class="function"><a name="light_seconds_to_meters-1">light_seconds_to_meters/1</a></h3>
+<div class="spec">
+<p><code>light_seconds_to_meters(Ls::<a href="#type-light_seconds">light_seconds()</a>) -&gt; <a href="#type-meters">meters()</a></code><br></p>
+<p> </p>
+</div><p>Converts the length specified in light-seconds to meters.</p>
+
+<h3 class="function"><a name="light_years_to_meters-1">light_years_to_meters/1</a></h3>
+<div class="spec">
+<p><code>light_years_to_meters(Ly::<a href="#type-light_years">light_years()</a>) -&gt; <a href="#type-meters">meters()</a></code><br></p>
+<p> </p>
+</div><p>Converts the length specified in light-years to meters.</p>
 
 <h3 class="function"><a name="maybe_rpm_to_string-1">maybe_rpm_to_string/1</a></h3>
 <div class="spec">
-<p><tt>maybe_rpm_to_string(Rpm::<a href="#type-rpm">rpm()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>maybe_rpm_to_string(Rpm::<a href="#type-rpm">rpm()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual, possibly rounded, description of the specified
  rotation speed (if any).
@@ -673,7 +802,7 @@ integer number of milliseconds.</p>
 
 <h3 class="function"><a name="maybe_temperature_to_string-1">maybe_temperature_to_string/1</a></h3>
 <div class="spec">
-<p><tt>maybe_temperature_to_string(Temp::<a href="#type-maybe">maybe</a>(<a href="#type-celsius">celsius()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>maybe_temperature_to_string(Temp::<a href="#type-maybe">maybe</a>(<a href="#type-celsius">celsius()</a>)) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual, possibly rounded, description of the specified
  temperature (if any).
@@ -681,23 +810,46 @@ integer number of milliseconds.</p>
 
 <h3 class="function"><a name="meters_per_second_to_km_per_hour-1">meters_per_second_to_km_per_hour/1</a></h3>
 <div class="spec">
-<p><tt>meters_per_second_to_km_per_hour(M::<a href="#type-meters_per_second">meters_per_second()</a>) -&gt; <a href="#type-km_per_hour">km_per_hour()</a></tt><br></p>
+<p><code>meters_per_second_to_km_per_hour(M::<a href="#type-meters_per_second">meters_per_second()</a>) -&gt; <a href="#type-km_per_hour">km_per_hour()</a></code><br></p>
 <p> </p>
-</div><p>Converts m/s to km/h.</p>
+</div><p>Converts the specified speed in m/s to km/h.</p>
+
+<h3 class="function"><a name="meters_to_light_seconds-1">meters_to_light_seconds/1</a></h3>
+<div class="spec">
+<p><code>meters_to_light_seconds(Meters::<a href="#type-meters">meters()</a>) -&gt; <a href="#type-light_seconds">light_seconds()</a></code><br></p>
+<p> </p>
+</div><p>Converts the length specified in meters to light-seconds.</p>
+
+<h3 class="function"><a name="meters_to_light_years-1">meters_to_light_years/1</a></h3>
+<div class="spec">
+<p><code>meters_to_light_years(Meters::<a href="#type-meters">meters()</a>) -&gt; <a href="#type-light_years">light_years()</a></code><br></p>
+<p> </p>
+</div><p>Converts the length specified in meters to light-years.</p>
 
 <h3 class="function"><a name="meters_to_string-1">meters_to_string/1</a></h3>
 <div class="spec">
-<p><tt>meters_to_string(Meters::<a href="#type-meters">meters()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>meters_to_string(Meters::<a href="#type-meters">meters()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual, user-friendly, short (possibly rounded) description of 
-the specified distance.</p>
+the specified, potentially very large, length/distance.</p>
 
- See also: text_utils:distance_to_string/1.
+ <p>Applying these unit rules regarding a given distance, depending on whether it 
+is: 
+- below 1 cm: express it in millimeters 
+- below 1 m: in centimeters 
+- between 1 m and 1 km: in meters 
+- between 1 km and 1 million km: in kilometers 
+- between 1 million km (3.336 ls) and 0.001 ly (31558 ls / 9.46e15 km!): 
+in light-seconds 
+- above 0.001 ly (31558 ls / 9.46e15 km!): in light-years</p>
+
+ See also text_utils:distance_to_string/1 for (usually smaller; typically up to
+ a number of kilometers) distances.
 </p>
 
 <h3 class="function"><a name="parse_unit-1">parse_unit/1</a></h3>
 <div class="spec">
-<p><tt>parse_unit(UnitString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-canonical_unit">canonical_unit()</a></tt><br></p>
+<p><code>parse_unit(UnitString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-canonical_unit">canonical_unit()</a></code><br></p>
 <p> </p>
 </div><p>Parses the specified string, expected to contain a unit
  (e.g. "kW.m/h^2"), and returns a canonical unit.
@@ -705,7 +857,7 @@ the specified distance.</p>
 
 <h3 class="function"><a name="parse_value_with_unit-1">parse_value_with_unit/1</a></h3>
 <div class="spec">
-<p><tt>parse_value_with_unit(InputString::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-numerical_value">numerical_value()</a>, <a href="#type-canonical_unit">canonical_unit()</a>}</tt><br></p>
+<p><code>parse_value_with_unit(InputString::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-numerical_value">numerical_value()</a>, <a href="#type-canonical_unit">canonical_unit()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Parses specified string (expected to be a unit_string()) containing a 
 value and its unit (e.g. "-8.15 kW.m/h^2"), and returns them in a 
@@ -735,15 +887,21 @@ optional minus, e.g. "-8.15")</p>
  allowed).
 </p>
 
+<h3 class="function"><a name="parsecs_to_meters-1">parsecs_to_meters/1</a></h3>
+<div class="spec">
+<p><code>parsecs_to_meters(Pc::<a href="#type-parsecs">parsecs()</a>) -&gt; <a href="#type-meters">meters()</a></code><br></p>
+<p> </p>
+</div><p>Converts the length specified in parsecs to meters.</p>
+
 <h3 class="function"><a name="position_to_string-1">position_to_string/1</a></h3>
 <div class="spec">
-<p><tt>position_to_string(Pos::<a href="#type-position">position()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>position_to_string(Pos::<a href="#type-position">position()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified position.</p>
 
 <h3 class="function"><a name="pure_unit_to_string-1">pure_unit_to_string/1</a></h3>
 <div class="spec">
-<p><tt>pure_unit_to_string(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>pure_unit_to_string(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a textual representation of the raw unit only (factor and order 
 ignored) for the specified canonical unit.</p>
@@ -753,15 +911,28 @@ ignored) for the specified canonical unit.</p>
 
 <h3 class="function"><a name="rpm_to_string-1">rpm_to_string/1</a></h3>
 <div class="spec">
-<p><tt>rpm_to_string(Rpm::<a href="#type-rpm">rpm()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>rpm_to_string(Rpm::<a href="#type-rpm">rpm()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual, possibly rounded, description of the specified
  rotation speed.
 </p>
 
+<h3 class="function"><a name="speed_to_string-1">speed_to_string/1</a></h3>
+<div class="spec">
+<p><code>speed_to_string(Mps::<a href="#type-meters_per_second">meters_per_second()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p> </p>
+</div><p><p>Returns a textual, user-friendly, short (possibly rounded) description of 
+the specified (supposedly positive) speed.</p>
+
+ Rules:
+  - below 1000 km/h: use km/h
+  - above 1000 km/h but below 0.001 c: use m/s
+  - above 0.001 c: use c
+</p>
+
 <h3 class="function"><a name="temperature_to_string-1">temperature_to_string/1</a></h3>
 <div class="spec">
-<p><tt>temperature_to_string(Temp::<a href="#type-celsius">celsius()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>temperature_to_string(Temp::<a href="#type-celsius">celsius()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual, possibly rounded, description of the specified
  temperature.
@@ -769,13 +940,13 @@ ignored) for the specified canonical unit.</p>
 
 <h3 class="function"><a name="unit_to_string-1">unit_to_string/1</a></h3>
 <div class="spec">
-<p><tt>unit_to_string(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>unit_to_string(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified canonical unit.</p>
 
 <h3 class="function"><a name="value_with_unit_to_string-2">value_with_unit_to_string/2</a></h3>
 <div class="spec">
-<p><tt>value_with_unit_to_string(Value::<a href="#type-numerical_value">numerical_value()</a>, Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>value_with_unit_to_string(Value::<a href="#type-numerical_value">numerical_value()</a>, Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of specified unit with a value.</p>
 <hr>

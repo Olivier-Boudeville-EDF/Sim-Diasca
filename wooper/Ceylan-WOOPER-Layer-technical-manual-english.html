@@ -23,15 +23,15 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2023 Olivier Boudeville</td>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2024 Olivier Boudeville</td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body">about (dash) wooper (at) esperide (dot) com</td>
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Sunday, August 17, 2008</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, September 28, 2023</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, February 13, 2024</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.0.23</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.0.28</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -960,8 +960,8 @@ Therefore one could make use of that information, as in:</p>
 <h5>Failsafe Request Calls</h5>
 <p>Whereas some <a class="reference internal" href="#wooper-integrated-calls">WOOPER integrated calls</a> include a time-out, in the general case when a request call is made by a client process, this client will wait <em>indefinitely</em> for the result from the corresponding requested (active) instance.</p>
 <p>It may be desirable instead that this waiting gets interrupted, should a crash of said instance be detected. This can be done by having a <strong>link</strong> between the client process (which may or may not trap EXIT messages) and the requested instance. Such a link can be created at instance creation (e.g. with <tt class="docutils literal">new link</tt>) or later.</p>
-<p>Another, often more appropriate, way for the client to be notified is to <strong>monitor</strong> the requested instance: if this last one crashes while being monitored, the monitoring processes (hence possibly the client process) will receive a <tt class="docutils literal">DOWN</tt> message and possibly generate an exit call. This way a clent will never block waiting for a crashed instance <a class="footnote-reference" href="#id22" id="id21">[10]</a>.</p>
-<p>In the future, the API for <a class="reference internal" href="#wooper-integrated-calls">WOOPER integrated calls</a> may include <tt class="docutils literal"><span class="pre">execute_monitired_request/{2,3,4}</span></tt> functions.</p>
+<p>Another, often more appropriate, way for the client to be notified is to <strong>monitor</strong> the requested instance: if this last one crashes while being monitored, the monitoring processes (hence possibly the client process) will receive a <tt class="docutils literal">DOWN</tt> message and possibly generate an exit call. This way a client will never block waiting for a crashed instance <a class="footnote-reference" href="#id22" id="id21">[10]</a>.</p>
+<p>In the future, the API for <a class="reference internal" href="#wooper-integrated-calls">WOOPER integrated calls</a> may include <tt class="docutils literal"><span class="pre">execute_monitored_request/{2,3,4}</span></tt> functions (see <a class="reference external" href="https://github.com/erlang/otp/blob/dec82158732b72e97d42ae8a8bdf897e8f91bd23/lib/stdlib/src/gen.erl#L248C1-L248C1">gen_server:do_call/4</a> as an inspiration).</p>
 <p>See also our <a class="reference internal" href="#process-monitors">process monitors</a> section, so that a WOOPER instance can monitor processes (possibly other WOOPER - active - instances).</p>
 <table class="docutils footnote" frame="void" id="id22" rules="none">
 <colgroup><col class="label" /><col /></colgroup>

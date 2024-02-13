@@ -24,7 +24,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2008-2023 Olivier Boudeville</p>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2008-2024 Olivier Boudeville</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body"><p class="first">about (dash) myriad (at) esperide (dot) com</p>
@@ -33,10 +33,10 @@
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body"><p class="first">Sunday, August 17, 2008</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Thursday, September 28, 2023</p>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Tuesday, February 13, 2024</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">1.0.32</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">1.0.37</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body"><p class="first">Stable</p>
@@ -155,29 +155,30 @@ The next level of information is either to browse the <a class="reference extern
 <li><a class="reference internal" href="#for-documentation-generation" id="id187">For Documentation Generation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#other-conventions" id="id188">Other Conventions</a></li>
+<li><a class="reference internal" href="#release-conventions" id="id188">Release Conventions</a></li>
+<li><a class="reference internal" href="#other-conventions" id="id189">Other Conventions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#myriad-related-troubleshooting" id="id189"><tt class="docutils literal">Myriad</tt>-related Troubleshooting</a><ul>
-<li><a class="reference internal" href="#header-module-dependencies" id="id190">Header/Module Dependencies</a></li>
-<li><a class="reference internal" href="#third-party-dependencies" id="id191">Third-Party Dependencies</a><ul>
-<li><a class="reference internal" href="#runtime-only-third-party-dependencies" id="id192">Runtime-only Third-Party Dependencies</a></li>
-<li><a class="reference internal" href="#build-time-third-party-dependencies" id="id193">Build-time Third-Party Dependencies</a></li>
-<li><a class="reference internal" href="#myriad-level-third-party-dependencies" id="id194">Myriad-level Third-Party Dependencies</a></li>
+<li><a class="reference internal" href="#myriad-related-troubleshooting" id="id190"><tt class="docutils literal">Myriad</tt>-related Troubleshooting</a><ul>
+<li><a class="reference internal" href="#header-module-dependencies" id="id191">Header/Module Dependencies</a></li>
+<li><a class="reference internal" href="#third-party-dependencies" id="id192">Third-Party Dependencies</a><ul>
+<li><a class="reference internal" href="#runtime-only-third-party-dependencies" id="id193">Runtime-only Third-Party Dependencies</a></li>
+<li><a class="reference internal" href="#build-time-third-party-dependencies" id="id194">Build-time Third-Party Dependencies</a></li>
+<li><a class="reference internal" href="#myriad-level-third-party-dependencies" id="id195">Myriad-level Third-Party Dependencies</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#about-the-table-module" id="id195">About the <tt class="docutils literal">table</tt> module</a></li>
-<li><a class="reference internal" href="#enabling-the-interconnection-of-erlang-nodes" id="id196">Enabling the Interconnection of Erlang nodes</a><ul>
-<li><a class="reference internal" href="#safety-measures" id="id197">Safety Measures</a></li>
-<li><a class="reference internal" href="#testing-troubleshooting" id="id198">Testing &amp; Troubleshooting</a></li>
+<li><a class="reference internal" href="#about-the-table-module" id="id196">About the <tt class="docutils literal">table</tt> module</a></li>
+<li><a class="reference internal" href="#enabling-the-interconnection-of-erlang-nodes" id="id197">Enabling the Interconnection of Erlang nodes</a><ul>
+<li><a class="reference internal" href="#safety-measures" id="id198">Safety Measures</a></li>
+<li><a class="reference internal" href="#testing-troubleshooting" id="id199">Testing &amp; Troubleshooting</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#using-the-erlang-shell-for-debugging" id="id199">Using the Erlang Shell for Debugging</a></li>
+<li><a class="reference internal" href="#using-the-erlang-shell-for-debugging" id="id200">Using the Erlang Shell for Debugging</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#support-for-myriad" id="id200">Support for <tt class="docutils literal">Myriad</tt></a></li>
-<li><a class="reference internal" href="#please-react" id="id201">Please React!</a></li>
-<li><a class="reference internal" href="#contributions-ending-word" id="id202">Contributions &amp; Ending Word</a></li>
+<li><a class="reference internal" href="#support-for-myriad" id="id201">Support for <tt class="docutils literal">Myriad</tt></a></li>
+<li><a class="reference internal" href="#please-react" id="id202">Please React!</a></li>
+<li><a class="reference internal" href="#contributions-ending-word" id="id203">Contributions &amp; Ending Word</a></li>
 </ul>
 </div>
 <p></p>
@@ -2711,8 +2712,27 @@ $ ln -s ../_build/default/bin/erlang_ls
 <p>Refer now to our <a class="reference external" href="http://howtos.esperide.org/DocGeneration.html">dedicated HOW-TO</a>.</p>
 </div>
 </div>
+<div class="section" id="release-conventions">
+<h2><a class="toc-backref" href="#id188">Release Conventions</a></h2>
+<p>These conventions apply to the release of any Myriad-based package, i.e. either Myriad itself or packages depending, directly or not, from it.</p>
+<p>The recommended procedure is (while being at the root of a clone):</p>
+<ol class="arabic simple">
+<li>merge all new developments in the <tt class="docutils literal">master</tt> (or <tt class="docutils literal">main</tt>) branch</li>
+<li>in <tt class="docutils literal">GNUmakevars.inc</tt>:<ul>
+<li>ensure that all debug/check flags (like <tt class="docutils literal">MYRIAD_DEBUG_FLAGS += <span class="pre">-Dmyriad_debug_code_path</span></tt>) are disabled, and that non-release elements (e.g. <tt class="docutils literal">MYRIAD_LCO_OPT</tt>) and optional ones are disabled as well</li>
+<li>bump the version of this local package (e.g. in <tt class="docutils literal">MYRIAD_VERSION</tt>)</li>
+</ul>
+</li>
+<li>for packages having dependencies: upgrade their reference known of rebar3, with <tt class="docutils literal">make <span class="pre">rebar3-upgrade-lock</span></tt></li>
+<li>rebuild and test all from the root: <tt class="docutils literal">make rebuild test</tt>, fix any problem</li>
+<li>optional: perform <a class="reference external" href="#type-checking-myriad">static code checking</a></li>
+<li>if all went well, ensure that all files are committed (e.g. <tt class="docutils literal">ebin/THIS_PACKAGE.app</tt>)</li>
+<li>push them, it will trigger the CI/CD services; ensure everything is correct there as well</li>
+<li>go back to a development branch and merge/rebase the master one there</li>
+</ol>
+</div>
 <div class="section" id="other-conventions">
-<h2><a class="toc-backref" href="#id188">Other Conventions</a></h2>
+<h2><a class="toc-backref" href="#id189">Other Conventions</a></h2>
 <ul class="simple">
 <li>for clarity, we tend to use longer variable names, in CamelCase</li>
 <li>we tend to use mute variables to clarify meanings and intents, as in <tt class="docutils literal"><span class="pre">_Acc=[]</span></tt> (beware, despite being muted, any variable in scope that bears the same name will be matched), <tt class="docutils literal">Acc</tt> designating accumulators</li>
@@ -2723,15 +2743,15 @@ $ ln -s ../_build/default/bin/erlang_ls
 </div>
 </div>
 <div class="section" id="myriad-related-troubleshooting">
-<h1><a class="toc-backref" href="#id189"><tt class="docutils literal">Myriad</tt>-related Troubleshooting</a></h1>
+<h1><a class="toc-backref" href="#id190"><tt class="docutils literal">Myriad</tt>-related Troubleshooting</a></h1>
 <div class="section" id="header-module-dependencies">
-<h2><a class="toc-backref" href="#id190">Header/Module Dependencies</a></h2>
+<h2><a class="toc-backref" href="#id191">Header/Module Dependencies</a></h2>
 <p>Only a very basic dependency between header files (<tt class="docutils literal">*.hrl</tt>) and implementation files (<tt class="docutils literal">*.erl</tt>) is managed.</p>
 <p>As expected, if <tt class="docutils literal">X.hrl</tt> changed, <tt class="docutils literal">X.beam</tt> will be recompiled whether or not <tt class="docutils literal">X.erl</tt> changed. However, any <tt class="docutils literal">Y.erl</tt> that would include <tt class="docutils literal">X.hrl</tt> would not be automatically recompiled.</p>
 <p>Typically, when in doubt after having modified a record in a header file, just run <tt class="docutils literal">make rebuild</tt> from the root of that layer (build is fast anyway, as quite parallel).</p>
 </div>
 <div class="section" id="third-party-dependencies">
-<h2><a class="toc-backref" href="#id191">Third-Party Dependencies</a></h2>
+<h2><a class="toc-backref" href="#id192">Third-Party Dependencies</a></h2>
 <p>Let's suppose we have an application named <tt class="docutils literal">Foo</tt> that relies on Myriad.</p>
 <p><tt class="docutils literal">Foo</tt> may define additional dependencies, which may be:</p>
 <ul class="simple">
@@ -2742,7 +2762,7 @@ $ ln -s ../_build/default/bin/erlang_ls
 <p>The first step to enable such a dependency (e.g. the JSON support) is to set its USE variable to <tt class="docutils literal">true</tt> (e.g. <tt class="docutils literal">USE_JSON = true</tt>), as it is expected to be disabled by default. Depending on the service at hand, a specific backend may have also to be selected (e.g. either <tt class="docutils literal">USE_JSX = true</tt> or <tt class="docutils literal">USE_JIFFY = true</tt> to select a suitable JSON parser).</p>
 <p>Finally, some supports may depend on others (e.g. enabling <tt class="docutils literal">USE_REST</tt> will enable <tt class="docutils literal">USE_JSON</tt> in turn).</p>
 <div class="section" id="runtime-only-third-party-dependencies">
-<h3><a class="toc-backref" href="#id192">Runtime-only Third-Party Dependencies</a></h3>
+<h3><a class="toc-backref" href="#id193">Runtime-only Third-Party Dependencies</a></h3>
 <p>The dependencies discussed here have to be found only when <em>executing</em> one's application; they can be installed:</p>
 <ul class="simple">
 <li>either manually, in which case the location of their <tt class="docutils literal">ebin</tt> directory (typically an absolute path then) shall be specified in the code path (see, in <tt class="docutils literal">GNUmakevars.inc</tt>, the <tt class="docutils literal">JSX_SOFTWARE_BASE</tt> make variable for an example)</li>
@@ -2750,7 +2770,7 @@ $ ln -s ../_build/default/bin/erlang_ls
 </ul>
 </div>
 <div class="section" id="build-time-third-party-dependencies">
-<h3><a class="toc-backref" href="#id193">Build-time Third-Party Dependencies</a></h3>
+<h3><a class="toc-backref" href="#id194">Build-time Third-Party Dependencies</a></h3>
 <p>Myriad does not have such dependencies, but layers above in the software stack (like a layer that would be named <tt class="docutils literal">Foo</tt>) may.</p>
 <p>To have such dependencies (e.g. let's suppose that the <tt class="docutils literal">jsx</tt> JSON parser defined header files that one wants to include) <em>installed</em> as well when building one's project (e.g. <tt class="docutils literal">Foo</tt>), one may rely on rebar, and list them in the project's <tt class="docutils literal">foo/conf/rebar.config.template</tt> file (e.g. <tt class="docutils literal">{deps, [bar, <span class="pre">jsx]}.</span></tt>) from which the actual <tt class="docutils literal">rebar.config</tt> is to be generated (use the <tt class="docutils literal">make <span class="pre">set-rebar-conf</span></tt> target for that).</p>
 <p>The actual compilation will be done by our native build system in all cases, either directly (when running <tt class="docutils literal">make all</tt>) or when using <tt class="docutils literal">rebar compile</tt> (rebar hooks will then ensure that in practice the application is compiled with our native rules anyway). Therefore appropriate make variables (e.g. <tt class="docutils literal">JSX_REBAR_BASE</tt>, in <tt class="docutils literal">myriad/GNUmakevars.inc</tt>) shall be defined so that the corresponding BEAM files installed through rebar can be found in this native context as well (through the <tt class="docutils literal">BEAM_DIRS</tt> make variable).</p>
@@ -2758,12 +2778,12 @@ $ ln -s ../_build/default/bin/erlang_ls
 <table class="docutils footnote" frame="void" id="id114" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id113">[30]</a></td><td>After having edited this file, run <tt class="docutils literal">make <span class="pre">rebar3-create-app-file</span></tt> afterwards in order to have the three other versions of it properly generated (namely <tt class="docutils literal">./_build/lib/foo/ebin/foo.app</tt>, <tt class="docutils literal">ebin/foo.app</tt> and <tt class="docutils literal">src/foo.app.src</tt>).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id113">[30]</a></td><td>After having edited this file, run <tt class="docutils literal">make <span class="pre">create-app-file</span></tt> afterwards in order to have the three other versions of it properly generated (namely <tt class="docutils literal">./_build/lib/foo/ebin/foo.app</tt>, <tt class="docutils literal">ebin/foo.app</tt> and <tt class="docutils literal">src/foo.app.src</tt>).</td></tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="myriad-level-third-party-dependencies">
-<h3><a class="toc-backref" href="#id194">Myriad-level Third-Party Dependencies</a></h3>
+<h3><a class="toc-backref" href="#id195">Myriad-level Third-Party Dependencies</a></h3>
 <p>Myriad as such has no mandatory dependency (except Erlang itself of course), but <em>optional</em> ones may be enabled, for:</p>
 <ul class="simple">
 <li>a basic <a class="reference external" href="https://en.wikipedia.org/wiki/JSON">JSON</a> support (see our <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/data-management/json_utils.erl">json_utils</a> module), thanks to a suitable actual JSON parser, either <a class="reference external" href="https://github.com/talentdeficit/jsx/">jsx</a> or <a class="reference external" href="https://github.com/davisp/jiffy">jiffy</a>; note that the detection and use of these parsers are done transparently at runtime, hence none of them is a declared dependency of Myriad, which will adapt to any choice made by the overall application that includes both Myriad and one of such parsers (provided, as mentioned above, that the proper <tt class="docutils literal">USE_*</tt> make variables are set)</li>
@@ -2784,16 +2804,16 @@ $ rebar3 compile <span class="o">&amp;&amp;</span> rebar3 eunit
 </div>
 </div>
 <div class="section" id="about-the-table-module">
-<h2><a class="toc-backref" href="#id195">About the <tt class="docutils literal">table</tt> module</a></h2>
+<h2><a class="toc-backref" href="#id196">About the <tt class="docutils literal">table</tt> module</a></h2>
 <p>This is a pseudo module, which is not meant to exist as such (no <tt class="docutils literal">table.erl</tt>, no <tt class="docutils literal">table.beam</tt>).</p>
 <p>The <tt class="docutils literal">Myriad</tt> parse transform replaces references to the <tt class="docutils literal">table</tt> module by (generally) references to the <tt class="docutils literal">map_hashtable</tt> module. See <a class="reference internal" href="#table-transformations">table transformations</a> for more information.</p>
 </div>
 <div class="section" id="enabling-the-interconnection-of-erlang-nodes">
-<h2><a class="toc-backref" href="#id196">Enabling the Interconnection of Erlang nodes</a></h2>
+<h2><a class="toc-backref" href="#id197">Enabling the Interconnection of Erlang nodes</a></h2>
 <p>This is not a Myriad gotcha per se, but rather an Erlang one.</p>
 <p>Way too often, for obscure reasons Erlang nodes fail to connect to each other (especially with long names), and little to no information is available to diagnose the issue.</p>
 <div class="section" id="safety-measures">
-<h3><a class="toc-backref" href="#id197">Safety Measures</a></h3>
+<h3><a class="toc-backref" href="#id198">Safety Measures</a></h3>
 <p>In order to maximise the chances that nodes are able to <tt class="docutils literal">net_adm:ping/1</tt> successfully each other:</p>
 <ul class="simple">
 <li>at least for testing, run VMs spawned with preferably the same <strong>version</strong> of Erlang</li>
@@ -2814,7 +2834,7 @@ $ rebar3 compile <span class="o">&amp;&amp;</span> rebar3 eunit
 <p>(setting one's IP shall better be done in one's profile in <tt class="docutils literal">/etc/netctl</tt>, right?)</p>
 </div>
 <div class="section" id="testing-troubleshooting">
-<h3><a class="toc-backref" href="#id198">Testing &amp; Troubleshooting</a></h3>
+<h3><a class="toc-backref" href="#id199">Testing &amp; Troubleshooting</a></h3>
 <p>In order to <strong>quick-check</strong> whether long-name connectivity is available and to rule out the most obvious culprits, open two terminals.</p>
 <p>In the first:</p>
 <pre class="code bash literal-block">
@@ -2853,7 +2873,7 @@ pong
 </div>
 </div>
 <div class="section" id="using-the-erlang-shell-for-debugging">
-<h2><a class="toc-backref" href="#id199">Using the Erlang Shell for Debugging</a></h2>
+<h2><a class="toc-backref" href="#id200">Using the Erlang Shell for Debugging</a></h2>
 <p>It may be convenient to run an Erlang shell in order to investigate and fix issues.</p>
 <p>One may execute <tt class="docutils literal">make shell</tt> to launch a shell that is parameterised so that all modules of all layers (hence having Myriad from Myriad) are in its code path.</p>
 <p>The <a class="reference external" href="https://erlang.org/doc/man/shell.html#shell-commands">built-in shell commands</a> are then very convenient, notably:</p>
@@ -2867,7 +2887,7 @@ pong
 </div>
 </div>
 <div class="section" id="support-for-myriad">
-<span id="support"></span><h1><a class="toc-backref" href="#id200">Support for <tt class="docutils literal">Myriad</tt></a></h1>
+<span id="support"></span><h1><a class="toc-backref" href="#id201">Support for <tt class="docutils literal">Myriad</tt></a></h1>
 <p>So you respected the <a class="reference internal" href="#prerequisites">prerequisites</a> and <a class="reference internal" href="#build">build</a> sections, and something went wrong? Generally we made sure that any detected error is blocking and loudly reported, with as much context as possible.</p>
 <p>The simpler solution is then to <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Myriad/issues">create a relevant issue</a>.</p>
 <p>For all other needs, please drop an email to the address listed on top of document. We do our best to answer on a timely basis.</p>
@@ -2875,11 +2895,11 @@ pong
 <p></p>
 </div>
 <div class="section" id="please-react">
-<h1><a class="toc-backref" href="#id201">Please React!</a></h1>
+<h1><a class="toc-backref" href="#id202">Please React!</a></h1>
 <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, drop us a line! (for that, follow the <a class="reference internal" href="#support">Support</a> guidelines).</p>
 </div>
 <div class="section" id="contributions-ending-word">
-<h1><a class="toc-backref" href="#id202">Contributions &amp; Ending Word</a></h1>
+<h1><a class="toc-backref" href="#id203">Contributions &amp; Ending Word</a></h1>
 <p>Each time that you need a basic service that:</p>
 <ul class="simple">
 <li>seems neither provided by the Erlang <a class="reference external" href="http://erlang.org/doc/man_index.html">built-in modules</a> nor by this <tt class="docutils literal">Myriad</tt> layer</li>

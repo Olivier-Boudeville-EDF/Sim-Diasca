@@ -32,94 +32,94 @@ dedicated OTP release for that.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_application_name">any_application_name()</a></h3>
-<p><tt>any_application_name() = <a href="#type-application_name">application_name()</a> | <a href="#type-string_application_name">string_application_name()</a></tt></p>
+<p><code>any_application_name() = <a href="#type-application_name">application_name()</a> | <a href="#type-string_application_name">string_application_name()</a></code></p>
 <p> Name of an OTP application, as any legit type.</p>
 
 <h3 class="typedecl"><a name="type-app_info">app_info()</a></h3>
-<p><tt>app_info() = #app_info{app_name = <a href="#type-application_name">application_name()</a>, root_dir = <a href="#type-bin_directory_path">bin_directory_path()</a>, ebin_dir = <a href="#type-bin_directory_path">bin_directory_path()</a>, start_mod_args = <a href="#type-maybe">maybe</a>({<a href="#type-module_name">module_name()</a>, <a href="basic_utils.html#type-arguments">basic_utils:arguments()</a>}), spec = <a href="#type-app_spec">app_spec()</a>}</tt></p>
+<p><code>app_info() = #app_info{app_name = <a href="#type-application_name">application_name()</a>, root_dir = <a href="#type-bin_directory_path">bin_directory_path()</a>, ebin_dir = <a href="#type-bin_directory_path">bin_directory_path()</a>, start_mod_args = <a href="#type-maybe">maybe</a>({<a href="#type-module_name">module_name()</a>, <a href="basic_utils.html#type-arguments">basic_utils:arguments()</a>}), spec = <a href="#type-app_spec">app_spec()</a>}</code></p>
 <p> Information regarding a (generally prerequisite, OTP) application.</p>
 
 <h3 class="typedecl"><a name="type-app_spec">app_spec()</a></h3>
-<p><tt>app_spec() = <a href="list_table.html#type-list_table">list_table:list_table()</a></tt></p>
+<p><code>app_spec() = <a href="list_table.html#type-list_table">list_table:list_table()</a></code></p>
 <p> Entries corresponding to the application specifications (see
- <a href="https://erlang.org/doc/man/app.html" target="_top"><tt>https://erlang.org/doc/man/app.html</tt></a>) read from a .app file.</p>
+ <a href="https://erlang.org/doc/man/app.html" target="_top"><code>https://erlang.org/doc/man/app.html</code></a>) read from a .app file.</p>
 
 <h3 class="typedecl"><a name="type-application_name">application_name()</a></h3>
-<p><tt>application_name() = atom()</tt></p>
+<p><code>application_name() = atom()</code></p>
 <p> Name of an OTP application (e.g. 'myriad').</p>
 
 <h3 class="typedecl"><a name="type-application_run_context">application_run_context()</a></h3>
-<p><tt>application_run_context() = as_native | as_otp_release</tt></p>
+<p><code>application_run_context() = as_native | as_otp_release</code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_directory_path">bin_directory_path()</a></h3>
-<p><tt>bin_directory_path() = <a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a></tt></p>
+<p><code>bin_directory_path() = <a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-continue_data">continue_data()</a></h3>
-<p><tt>continue_data() = term()</tt></p>
+<p><code>continue_data() = term()</code></p>
 <p> Data specified to be used in a continue callback.</p>
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-execution_target">execution_target()</a></h3>
-<p><tt>execution_target() = <a href="basic_utils.html#type-execution_target">basic_utils:execution_target()</a></tt></p>
+<p><code>execution_target() = <a href="basic_utils.html#type-execution_target">basic_utils:execution_target()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-handle_return">handle_return()</a></h3>
-<p><tt>handle_return() = {noreply, <a href="#type-otp_state">otp_state()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, <a href="#type-time_out">time_out()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, hibernate} | {noreply, <a href="#type-otp_state">otp_state()</a>, {continue, <a href="#type-continue_data">continue_data()</a>}} | {stop, <a href="#type-termination_reason">termination_reason()</a>, <a href="#type-otp_state">otp_state()</a>}</tt></p>
+<p><code>handle_return() = {noreply, <a href="#type-otp_state">otp_state()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, <a href="#type-time_out">time_out()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, hibernate} | {noreply, <a href="#type-otp_state">otp_state()</a>, {continue, <a href="#type-continue_data">continue_data()</a>}} | {stop, <a href="#type-termination_reason">termination_reason()</a>, <a href="#type-otp_state">otp_state()</a>}</code></p>
 <p> The type corresponding to the values to be returned by
  gen_server:handle_{cast,continue,info}/2.</p>
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-otp_state">otp_state()</a></h3>
-<p><tt>otp_state() = term()</tt></p>
+<p><code>otp_state() = term()</code></p>
 <p> The state of a process implementing an OTP behaviour, typically the gen_server
  one.</p>
 
 <h3 class="typedecl"><a name="type-restart_type">restart_type()</a></h3>
-<p><tt>restart_type() = permanent | transient | temporary</tt></p>
+<p><code>restart_type() = permanent | transient | temporary</code></p>
 
 
 <h3 class="typedecl"><a name="type-string_application_name">string_application_name()</a></h3>
-<p><tt>string_application_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>string_application_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Name of an OTP application as a string (e.g. "myriad").</p>
 
 <h3 class="typedecl"><a name="type-supervisor_pid">supervisor_pid()</a></h3>
-<p><tt>supervisor_pid() = pid()</tt></p>
+<p><code>supervisor_pid() = pid()</code></p>
 <p> The PID of an OTP supervisor.</p>
 
 <h3 class="typedecl"><a name="type-supervisor_restart">supervisor_restart()</a></h3>
-<p><tt>supervisor_restart() = any()</tt></p>
+<p><code>supervisor_restart() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-supervisor_settings">supervisor_settings()</a></h3>
-<p><tt>supervisor_settings() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></tt></p>
+<p><code>supervisor_settings() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></code></p>
 <p> Settings of an OTP supervisor.</p>
 
 <h3 class="typedecl"><a name="type-termination_reason">termination_reason()</a></h3>
-<p><tt>termination_reason() = normal | shutdown | {shutdown, term()} | term()</tt></p>
+<p><code>termination_reason() = normal | shutdown | {shutdown, term()} | term()</code></p>
 <p> Denotes the reason for stopping.</p>
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-worker_pid">worker_pid()</a></h3>
-<p><tt>worker_pid() = pid()</tt></p>
+<p><code>worker_pid() = pid()</code></p>
 <p> The PID of an OTP worker, managed by a supervisor.</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -176,25 +176,25 @@ list of prerequisite applications can be used both for starting and stopping).</
 
 <h3 class="function"><a name="app_info_to_string-1">app_info_to_string/1</a></h3>
 <div class="spec">
-<p><tt>app_info_to_string(App_info::<a href="#type-app_info">app_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>app_info_to_string(App_info::<a href="#type-app_info">app_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of specified application information.</p>
 
 <h3 class="function"><a name="application_run_context_to_string-1">application_run_context_to_string/1</a></h3>
 <div class="spec">
-<p><tt>application_run_context_to_string(AppRunContext::<a href="#type-application_run_context">application_run_context()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>application_run_context_to_string(AppRunContext::<a href="#type-application_run_context">application_run_context()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of specified application run context.</p>
 
 <h3 class="function"><a name="check_application_run_context-1">check_application_run_context/1</a></h3>
 <div class="spec">
-<p><tt>check_application_run_context(AppRunContext::<a href="#type-application_run_context">application_run_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_application_run_context(AppRunContext::<a href="#type-application_run_context">application_run_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks that the specified application run context is legit.</p>
 
 <h3 class="function"><a name="get_application_root-1">get_application_root/1</a></h3>
 <div class="spec">
-<p><tt>get_application_root(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_application_root(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the path to the root of the specified OTP application (i.e. its 
 top directory, a.k.a. its "library directory"), for an application located 
@@ -212,7 +212,7 @@ otp_utils:get_application_root( mnesia ).</p>
 
 <h3 class="function"><a name="get_child_supervisor_settings-1">get_child_supervisor_settings/1</a></h3>
 <div class="spec">
-<p><tt>get_child_supervisor_settings(ParentSupSettings::<a href="#type-supervisor_settings">supervisor_settings()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></tt><br></p>
+<p><code>get_child_supervisor_settings(ParentSupSettings::<a href="#type-supervisor_settings">supervisor_settings()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns supervisor-level settings for a supervisor that would be 
 supervised by a supervisor relying on the specified settings.</p>
@@ -222,7 +222,7 @@ supervised by a supervisor relying on the specified settings.</p>
 
 <h3 class="function"><a name="get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></h3>
 <div class="spec">
-<p><tt>get_maximum_shutdown_duration(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></tt><br></p>
+<p><code>get_maximum_shutdown_duration(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></code><br></p>
 <p> </p>
 </div><p>Returns a default, reasonable shutdown maximum duration to be used by a
  supervisor for its basic OTP workers, depending on the specified execution
@@ -231,7 +231,7 @@ supervised by a supervisor relying on the specified settings.</p>
 
 <h3 class="function"><a name="get_priv_root-1">get_priv_root/1</a></h3>
 <div class="spec">
-<p><tt>get_priv_root(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_priv_root(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the root directory of the application-private tree ('priv'), 
 based on specified module (expected to belong to that application).</p>
@@ -244,7 +244,7 @@ based on specified module (expected to belong to that application).</p>
 
 <h3 class="function"><a name="get_priv_root-2">get_priv_root/2</a></h3>
 <div class="spec">
-<p><tt>get_priv_root(ModuleName::<a href="#type-module_name">module_name()</a>, BeSilent::boolean()) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><code>get_priv_root(ModuleName::<a href="#type-module_name">module_name()</a>, BeSilent::boolean()) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the root directory of the application-private tree ('priv'), 
 based on specified module (expected to belong to that application), being 
@@ -258,7 +258,7 @@ silent (no trace) if requested.</p>
 
 <h3 class="function"><a name="get_restart_setting-1">get_restart_setting/1</a></h3>
 <div class="spec">
-<p><tt>get_restart_setting(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_restart">supervisor_restart()</a></tt><br></p>
+<p><code>get_restart_setting(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_restart">supervisor_restart()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns default, base restart settings depending on the specified 
 execution target.</p>
@@ -271,13 +271,13 @@ execution target.</p>
 
 <h3 class="function"><a name="get_string_application_name-1">get_string_application_name/1</a></h3>
 <div class="spec">
-<p><tt>get_string_application_name(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-string_application_name">string_application_name()</a></tt><br></p>
+<p><code>get_string_application_name(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-string_application_name">string_application_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string version of the specified application name.</p>
 
 <h3 class="function"><a name="get_supervisor_settings-2">get_supervisor_settings/2</a></h3>
 <div class="spec">
-<p><tt>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy">supervisor:strategy()</a>, ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></tt><br></p>
+<p><code>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy">supervisor:strategy()</a>, ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the supervisor-level settings corresponding to the specified 
 restart strategy and execution context.</p>
@@ -287,13 +287,13 @@ by calling a get_execution_target/0 function defined in a key module of that
 layer, based on Myriad's basic_utils.hrl), as otherwise the one that would 
 apply is the one of Myriad - not the one of the calling layer.</p>
 
- See <a href="https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags" target="_top"><tt>https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags</tt></a>
+ See <a href="https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags" target="_top"><code>https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags</code></a>
  for further information.
 </p>
 
 <h3 class="function"><a name="prepare_for_execution-2">prepare_for_execution/2</a></h3>
 <div class="spec">
-<p><tt>prepare_for_execution(AppName::<a href="#type-application_name">application_name()</a> | [<a href="#type-application_name">application_name()</a>], BaseDir::<a href="#type-directory_path">directory_path()</a>) -&gt; [<a href="#type-application_name">application_name()</a>]</tt><br></p>
+<p><code>prepare_for_execution(AppName::<a href="#type-application_name">application_name()</a> | [<a href="#type-application_name">application_name()</a>], BaseDir::<a href="#type-directory_path">directory_path()</a>) -&gt; [<a href="#type-application_name">application_name()</a>]</code><br></p>
 <p> </p>
 </div><p>Prepares the VM environment so that the specified top-level prerequisite
  application(s) to be involved in a non-OTP execution - and also all their own
@@ -304,7 +304,7 @@ apply is the one of Myriad - not the one of the calling layer.</p>
 
 <h3 class="function"><a name="prepare_for_execution-3">prepare_for_execution/3</a></h3>
 <div class="spec">
-<p><tt>prepare_for_execution(AppName::<a href="#type-application_name">application_name()</a> | [<a href="#type-application_name">application_name()</a>], BaseDir::<a href="#type-directory_path">directory_path()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; [<a href="#type-application_name">application_name()</a>]</tt><br></p>
+<p><code>prepare_for_execution(AppName::<a href="#type-application_name">application_name()</a> | [<a href="#type-application_name">application_name()</a>], BaseDir::<a href="#type-directory_path">directory_path()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; [<a href="#type-application_name">application_name()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Prepares the VM environment so that the specified top-level prerequisite 
 application(s) to be involved in a non-OTP execution - and also all their own 
@@ -346,7 +346,7 @@ by itself the right start call.</p>
 
 <h3 class="function"><a name="start_application-1">start_application/1</a></h3>
 <div class="spec">
-<p><tt>start_application(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_application(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the specified OTP application, with the 'temporary' restart type.</p>
 
@@ -356,7 +356,7 @@ by itself the right start call.</p>
 
 <h3 class="function"><a name="start_application-2">start_application/2</a></h3>
 <div class="spec">
-<p><tt>start_application(AppName::<a href="#type-application_name">application_name()</a>, RestartType::<a href="#type-restart_type">restart_type()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_application(AppName::<a href="#type-application_name">application_name()</a>, RestartType::<a href="#type-restart_type">restart_type()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the specified OTP application, with the specified restart type.</p>
 
@@ -366,7 +366,7 @@ by itself the right start call.</p>
 
 <h3 class="function"><a name="start_application-3">start_application/3</a></h3>
 <div class="spec">
-<p><tt>start_application(AppName::<a href="#type-application_name">application_name()</a>, RestartType::<a href="#type-restart_type">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_application(AppName::<a href="#type-application_name">application_name()</a>, RestartType::<a href="#type-restart_type">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the specified OTP application, with the specified restart type, 
 blacklisting specified applications.</p>
@@ -377,7 +377,7 @@ blacklisting specified applications.</p>
 
 <h3 class="function"><a name="start_applications-1">start_applications/1</a></h3>
 <div class="spec">
-<p><tt>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts each of the specified OTP applications (if not started yet), 
 sequentially and in the specified order, all with the 'temporary' restart 
@@ -390,7 +390,7 @@ type.</p>
 
 <h3 class="function"><a name="start_applications-2">start_applications/2</a></h3>
 <div class="spec">
-<p><tt>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts each of the specified OTP applications (if not started yet), 
 sequentially and in the specified order, all with the specified restart type, 
@@ -403,7 +403,7 @@ while not blacklisting any specific application.</p>
 
 <h3 class="function"><a name="start_applications-3">start_applications/3</a></h3>
 <div class="spec">
-<p><tt>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts each of the specified OTP applications (if not started yet, and 
 provided it is not blacklisted), sequentially and in the specified order, all 
@@ -416,7 +416,7 @@ with the specified restart type.</p>
 
 <h3 class="function"><a name="stop_application-1">stop_application/1</a></h3>
 <div class="spec">
-<p><tt>stop_application(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>stop_application(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Stops the specified OTP application.</p>
 
@@ -426,7 +426,7 @@ with the specified restart type.</p>
 
 <h3 class="function"><a name="stop_applications-1">stop_applications/1</a></h3>
 <div class="spec">
-<p><tt>stop_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>stop_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Stops the specified OTP applications, sequentially and in the *reverse* 
 order of the specified one (so that the same list of prerequisite applications 
@@ -438,7 +438,7 @@ can be used both for starting and stopping).</p>
 
 <h3 class="function"><a name="stop_user_applications-1">stop_user_applications/1</a></h3>
 <div class="spec">
-<p><tt>stop_user_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>stop_user_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Stops the specified user (non-VM essential) OTP applications, 
 sequentially and in the *reverse* order of the specified one (so that the same 

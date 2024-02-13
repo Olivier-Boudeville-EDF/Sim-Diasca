@@ -20,202 +20,206 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_host_name">any_host_name()</a></h3>
-<p><tt>any_host_name() = <a href="#type-any_string">any_string()</a></tt></p>
+<p><code>any_host_name() = <a href="#type-any_string">any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-atom_fqdn">atom_fqdn()</a></h3>
-<p><tt>atom_fqdn() = atom()</tt></p>
+<p><code>atom_fqdn() = atom()</code></p>
 
 
 <h3 class="typedecl"><a name="type-atom_host_name">atom_host_name()</a></h3>
-<p><tt>atom_host_name() = atom()</tt></p>
+<p><code>atom_host_name() = atom()</code></p>
 
 
 <h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
-<p><tt>atom_node_name() = node()</tt></p>
+<p><code>atom_node_name() = node()</code></p>
 <p> We tend to favor atom-based node names (usual in Erlang) to string-based ones.</p>
 
 <h3 class="typedecl"><a name="type-bin_domain_name">bin_domain_name()</a></h3>
-<p><tt>bin_domain_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_domain_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_fqdn">bin_fqdn()</a></h3>
-<p><tt>bin_fqdn() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_fqdn() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_host_name">bin_host_name()</a></h3>
-<p><tt>bin_host_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_host_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_node_name">bin_node_name()</a></h3>
-<p><tt>bin_node_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_node_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_subdomain">bin_subdomain()</a></h3>
-<p><tt>bin_subdomain() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_subdomain() = <a href="#type-bin_string">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-check_duration">check_duration()</a></h3>
-<p><tt>check_duration() = non_neg_integer()</tt></p>
+<p><code>check_duration() = non_neg_integer()</code></p>
 
 
 <h3 class="typedecl"><a name="type-check_node_timing">check_node_timing()</a></h3>
-<p><tt>check_node_timing() = <a href="#type-check_duration">check_duration()</a> | immediate | with_waiting</tt></p>
+<p><code>check_node_timing() = <a href="#type-check_duration">check_duration()</a> | immediate | with_waiting</code></p>
 
 
 <h3 class="typedecl"><a name="type-command">command()</a></h3>
-<p><tt>command() = <a href="system_utils.html#type-command">system_utils:command()</a></tt></p>
+<p><code>command() = <a href="system_utils.html#type-command">system_utils:command()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-cookie">cookie()</a></h3>
-<p><tt>cookie() = atom()</tt></p>
+<p><code>cookie() = atom()</code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-domain_name">domain_name()</a></h3>
-<p><tt>domain_name() = nonempty_string()</tt></p>
+<p><code>domain_name() = nonempty_string()</code></p>
 <p> A domain name (e.g. "foo.baz.org").</p>
 
 <h3 class="typedecl"><a name="type-environment">environment()</a></h3>
-<p><tt>environment() = <a href="system_utils.html#type-environment">system_utils:environment()</a></tt></p>
+<p><code>environment() = <a href="system_utils.html#type-environment">system_utils:environment()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ephemeral_port">ephemeral_port()</a></h3>
-<p><tt>ephemeral_port() = <a href="#type-net_port">net_port()</a></tt></p>
+<p><code>ephemeral_port() = <a href="#type-net_port">net_port()</a></code></p>
 <p> The RFC 6056 says that the range for ephemeral ports should be 1024-65535.</p>
 
 <h3 class="typedecl"><a name="type-erlang_naming_type">erlang_naming_type()</a></h3>
-<p><tt>erlang_naming_type() = shortnames | longnames</tt></p>
+<p><code>erlang_naming_type() = shortnames | longnames</code></p>
 <p> No standard definition of NameType found in net_kernel or elsewhere.</p>
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-fqdn">fqdn()</a></h3>
-<p><tt>fqdn() = <a href="#type-atom_fqdn">atom_fqdn()</a> | <a href="#type-string_fqdn">string_fqdn()</a> | <a href="#type-bin_fqdn">bin_fqdn()</a></tt></p>
+<p><code>fqdn() = <a href="#type-atom_fqdn">atom_fqdn()</a> | <a href="#type-string_fqdn">string_fqdn()</a> | <a href="#type-bin_fqdn">bin_fqdn()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-host_identifier">host_identifier()</a></h3>
-<p><tt>host_identifier() = <a href="#type-string_host_name">string_host_name()</a> | <a href="#type-ip_address">ip_address()</a></tt></p>
+<p><code>host_identifier() = <a href="#type-string_host_name">string_host_name()</a> | <a href="#type-ip_address">ip_address()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-host_name">host_name()</a></h3>
-<p><tt>host_name() = <a href="#type-atom_host_name">atom_host_name()</a> | <a href="#type-string_host_name">string_host_name()</a> | <a href="#type-bin_host_name">bin_host_name()</a></tt></p>
+<p><code>host_name() = <a href="#type-atom_host_name">atom_host_name()</a> | <a href="#type-string_host_name">string_host_name()</a> | <a href="#type-bin_host_name">bin_host_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ip_address">ip_address()</a></h3>
-<p><tt>ip_address() = <a href="#type-ip_v4_address">ip_v4_address()</a> | <a href="#type-ip_v6_address">ip_v6_address()</a></tt></p>
+<p><code>ip_address() = <a href="#type-ip_v4_address">ip_v4_address()</a> | <a href="#type-ip_v6_address">ip_v6_address()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ip_v4_address">ip_v4_address()</a></h3>
-<p><tt>ip_v4_address() = {byte(), byte(), byte(), byte()}</tt></p>
+<p><code>ip_v4_address() = {byte(), byte(), byte(), byte()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ip_v6_address">ip_v6_address()</a></h3>
-<p><tt>ip_v6_address() = {byte(), byte(), byte(), byte(), byte(), byte()}</tt></p>
+<p><code>ip_v6_address() = {byte(), byte(), byte(), byte(), byte(), byte()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-listening_socket">listening_socket()</a></h3>
-<p><tt>listening_socket() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/socket.html#type-socket">socket:socket()</a></tt></p>
+<p><code>listening_socket() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/socket.html#type-socket">socket:socket()</a></code></p>
 <p> A (low-level, NIF-based) TCP/IP socket used to listen to incoming connections.</p>
 
 <h3 class="typedecl"><a name="type-lookup_info">lookup_info()</a></h3>
-<p><tt>lookup_info() = {<a href="#type-lookup_tool">lookup_tool()</a>, <a href="file_utils.html#type-executable_path">file_utils:executable_path()</a>}</tt></p>
+<p><code>lookup_info() = {<a href="#type-lookup_tool">lookup_tool()</a>, <a href="file_utils.html#type-executable_path">file_utils:executable_path()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-lookup_outcome">lookup_outcome()</a></h3>
-<p><tt>lookup_outcome() = <a href="#type-string_host_name">string_host_name()</a> | unknown_dns | no_dns_lookup_executable_found</tt></p>
+<p><code>lookup_outcome() = <a href="#type-string_host_name">string_host_name()</a> | unknown_dns | no_dns_lookup_executable_found</code></p>
 
 
 <h3 class="typedecl"><a name="type-lookup_tool">lookup_tool()</a></h3>
-<p><tt>lookup_tool() = dig | drill | host</tt></p>
+<p><code>lookup_tool() = dig | drill | host</code></p>
 
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-net_port">net_port()</a></h3>
-<p><tt>net_port() = non_neg_integer()</tt></p>
+<p><code>net_port() = non_neg_integer()</code></p>
 <p> A port number is a 16-bit unsigned integer, thus ranging from 0 to 65535. For
  TCP, port number 0 is reserved and cannot be used, while for UDP, the source
  port is optional and a value of zero means no port.</p>
 
 <h3 class="typedecl"><a name="type-node_name">node_name()</a></h3>
-<p><tt>node_name() = <a href="#type-atom_node_name">atom_node_name()</a> | <a href="#type-string_node_name">string_node_name()</a> | <a href="#type-bin_node_name">bin_node_name()</a></tt></p>
+<p><code>node_name() = <a href="#type-atom_node_name">atom_node_name()</a> | <a href="#type-string_node_name">string_node_name()</a> | <a href="#type-bin_node_name">bin_node_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-node_naming_mode">node_naming_mode()</a></h3>
-<p><tt>node_naming_mode() = long_name | short_name</tt></p>
+<p><code>node_naming_mode() = long_name | short_name</code></p>
 <p> How Erlang nodes are to be named to locate each other, according to our
  conventions.</p>
 
 <h3 class="typedecl"><a name="type-node_type">node_type()</a></h3>
-<p><tt>node_type() = visible | hidden | all</tt></p>
+<p><code>node_type() = visible | hidden | all</code></p>
 <p> See net_kernel:monitor_nodes/2 for more information.</p>
 
 <h3 class="typedecl"><a name="type-possibly_local_bin_hostname">possibly_local_bin_hostname()</a></h3>
-<p><tt>possibly_local_bin_hostname() = localhost | <a href="#type-bin_host_name">bin_host_name()</a></tt></p>
+<p><code>possibly_local_bin_hostname() = localhost | <a href="#type-bin_host_name">bin_host_name()</a></code></p>
 <p> For situations where the local host shall be discriminated from all others.</p>
 
 <h3 class="typedecl"><a name="type-possibly_local_hostname">possibly_local_hostname()</a></h3>
-<p><tt>possibly_local_hostname() = localhost | <a href="#type-string_host_name">string_host_name()</a></tt></p>
+<p><code>possibly_local_hostname() = localhost | <a href="#type-string_host_name">string_host_name()</a></code></p>
 <p> For situations where the local host shall be discriminated from all others.</p>
 
 <h3 class="typedecl"><a name="type-string_fqdn">string_fqdn()</a></h3>
-<p><tt>string_fqdn() = nonempty_string()</tt></p>
+<p><code>string_fqdn() = nonempty_string()</code></p>
 
 
 <h3 class="typedecl"><a name="type-string_host_name">string_host_name()</a></h3>
-<p><tt>string_host_name() = nonempty_string()</tt></p>
+<p><code>string_host_name() = nonempty_string()</code></p>
 
 
 <h3 class="typedecl"><a name="type-string_node_name">string_node_name()</a></h3>
-<p><tt>string_node_name() = nonempty_string()</tt></p>
+<p><code>string_node_name() = nonempty_string()</code></p>
 
 
 <h3 class="typedecl"><a name="type-subdomain">subdomain()</a></h3>
-<p><tt>subdomain() = nonempty_string()</tt></p>
+<p><code>subdomain() = nonempty_string()</code></p>
 <p> An element of a domain name (e.g. "foo" in "bar.foo.baz.org").</p>
 
 <h3 class="typedecl"><a name="type-tcp_port">tcp_port()</a></h3>
-<p><tt>tcp_port() = <a href="#type-net_port">net_port()</a></tt></p>
+<p><code>tcp_port() = <a href="#type-net_port">net_port()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-tcp_port_range">tcp_port_range()</a></h3>
-<p><tt>tcp_port_range() = {<a href="#type-tcp_port">tcp_port()</a>, <a href="#type-tcp_port">tcp_port()</a>}</tt></p>
+<p><code>tcp_port_range() = {<a href="#type-tcp_port">tcp_port()</a>, <a href="#type-tcp_port">tcp_port()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-tcp_port_restriction">tcp_port_restriction()</a></h3>
-<p><tt>tcp_port_restriction() = no_restriction | <a href="#type-tcp_port_range">tcp_port_range()</a></tt></p>
+<p><code>tcp_port_restriction() = no_restriction | <a href="#type-tcp_port_range">tcp_port_range()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
+<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-udp_port">udp_port()</a></h3>
-<p><tt>udp_port() = <a href="#type-net_port">net_port()</a></tt></p>
+<p><code>udp_port() = <a href="#type-net_port">net_port()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-udp_port_range">udp_port_range()</a></h3>
-<p><tt>udp_port_range() = {<a href="#type-udp_port">udp_port()</a>, <a href="#type-udp_port">udp_port()</a>}</tt></p>
+<p><code>udp_port_range() = {<a href="#type-udp_port">udp_port()</a>, <a href="#type-udp_port">udp_port()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -289,9 +293,13 @@ Erlang node with the specified TCP port restriction, which can be either the
 <tr><td valign="top"><a href="#ipv4_to_string-2">ipv4_to_string/2</a></td><td>Returns a string describing the specified IPv4 address and port.</td></tr>
 <tr><td valign="top"><a href="#ipv6_to_string-1">ipv6_to_string/1</a></td><td>Returns a string describing the specified IPv6 address.</td></tr>
 <tr><td valign="top"><a href="#ipv6_to_string-2">ipv6_to_string/2</a></td><td>Returns a string describing the specified IPv6 address and port.</td></tr>
-<tr><td valign="top"><a href="#is_routable-1">is_routable/1</a></td><td>Tells whether the specified IPv4 address is routable.</td></tr>
-<tr><td valign="top"><a href="#is_service_running_at-1">is_service_running_at/1</a></td><td>Tells whether a service (socket) is running on the local host at
+<tr><td valign="top"><a href="#is_local_service_running_at-1">is_local_service_running_at/1</a></td><td>Tells whether a service (socket) is running on the local host at the
  specified TCP port.</td></tr>
+<tr><td valign="top"><a href="#is_routable-1">is_routable/1</a></td><td>Tells whether the specified IPv4 address is routable.</td></tr>
+<tr><td valign="top"><a href="#is_service_running_at-2">is_service_running_at/2</a></td><td>Tells whether a service (socket) is running on the specified host, at the
+ specified TCP port, using a default time-out.</td></tr>
+<tr><td valign="top"><a href="#is_service_running_at-3">is_service_running_at/3</a></td><td>Tells whether a service (socket) is running on the specified host, at the 
+specified TCP port, based on the specified time-out.</td></tr>
 <tr><td valign="top"><a href="#launch_epmd-0">launch_epmd/0</a></td><td>Launches as a daemon (in the background) an EPMD instance on the Erlang 
 standard port, if needed.</td></tr>
 <tr><td valign="top"><a href="#launch_epmd-1">launch_epmd/1</a></td><td>Launches as a daemon (in the background) an EPMD instance on the 
@@ -349,7 +357,7 @@ full domain if possible, otherwise jsut 'none_found'.</td></tr>
 
 <h3 class="function"><a name="bin_localhost-0">bin_localhost/0</a></h3>
 <div class="spec">
-<p><tt>bin_localhost() -&gt; <a href="#type-bin_host_name">bin_host_name()</a></tt><br></p>
+<p><code>bin_localhost() -&gt; <a href="#type-bin_host_name">bin_host_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an appropriate DNS name for the local host (as a binary string), 
 or throws an exception.</p>
@@ -359,7 +367,7 @@ or throws an exception.</p>
 
 <h3 class="function"><a name="bin_localhost-1">bin_localhost/1</a></h3>
 <div class="spec">
-<p><tt>bin_localhost(Type::fqdn | short) -&gt; <a href="#type-bin_host_name">bin_host_name()</a></tt><br></p>
+<p><code>bin_localhost(Type::fqdn | short) -&gt; <a href="#type-bin_host_name">bin_host_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns an appropriate DNS name (either a FQDN - Fully Qualified Domain
  Name - or a short host name) for the local host (as a binary string), or
@@ -368,7 +376,7 @@ or throws an exception.</p>
 
 <h3 class="function"><a name="check_ephemeral_port-1">check_ephemeral_port/1</a></h3>
 <div class="spec">
-<p><tt>check_ephemeral_port(I::term()) -&gt; <a href="#type-ephemeral_port">ephemeral_port()</a></tt><br></p>
+<p><code>check_ephemeral_port(I::term()) -&gt; <a href="#type-ephemeral_port">ephemeral_port()</a></code><br></p>
 <p> </p>
 </div><p>Checks that the specified port is a valid ephemeral port (typically UDP
  or TCP), and returns it.
@@ -376,7 +384,7 @@ or throws an exception.</p>
 
 <h3 class="function"><a name="check_node_availability-1">check_node_availability/1</a></h3>
 <div class="spec">
-<p><tt>check_node_availability(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>check_node_availability(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Returns immediately whether the specified Erlang node is found available.</p>
 
@@ -385,7 +393,7 @@ or throws an exception.</p>
 
 <h3 class="function"><a name="check_node_availability-2">check_node_availability/2</a></h3>
 <div class="spec">
-<p><tt>check_node_availability(NodeName::<a href="#type-node_name">node_name()</a>, Timing::<a href="#type-check_node_timing">check_node_timing()</a>) -&gt; {boolean(), <a href="#type-check_duration">check_duration()</a>}</tt><br></p>
+<p><code>check_node_availability(NodeName::<a href="#type-node_name">node_name()</a>, Timing::<a href="#type-check_node_timing">check_node_timing()</a>) -&gt; {boolean(), <a href="#type-check_duration">check_duration()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified Erlang node is available: returns 
 {IsAvailable,Duration} where IsAvailable is a boolean and Duration is the 
@@ -415,7 +423,7 @@ should last no less than the specified duration, and not much more</p>
 
 <h3 class="function"><a name="check_port-1">check_port/1</a></h3>
 <div class="spec">
-<p><tt>check_port(I::term()) -&gt; <a href="#type-net_port">net_port()</a></tt><br></p>
+<p><code>check_port(I::term()) -&gt; <a href="#type-net_port">net_port()</a></code><br></p>
 <p> </p>
 </div><p>Checks that the specified port is a valid port (typically UDP or TCP),
  and returns it.
@@ -423,7 +431,7 @@ should last no less than the specified duration, and not much more</p>
 
 <h3 class="function"><a name="enable_distribution_mode-2">enable_distribution_mode/2</a></h3>
 <div class="spec">
-<p><tt>enable_distribution_mode(NodeName::<a href="#type-node_name">node_name()</a>, NamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>enable_distribution_mode(NodeName::<a href="#type-node_name">node_name()</a>, NamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Enables the distribution on the current node, supposedly not already 
 distributed (otherwise the operation will fail).</p>
@@ -454,7 +462,7 @@ and re-running the program does not fail anymore.</p>
 
 <h3 class="function"><a name="enable_preferred_distribution_mode-2">enable_preferred_distribution_mode/2</a></h3>
 <div class="spec">
-<p><tt>enable_preferred_distribution_mode(NodeName::<a href="#type-node_name">node_name()</a>, NamingModes::[<a href="#type-node_naming_mode">node_naming_mode()</a>]) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-node_naming_mode">node_naming_mode()</a>)</tt><br></p>
+<p><code>enable_preferred_distribution_mode(NodeName::<a href="#type-node_name">node_name()</a>, NamingModes::[<a href="#type-node_naming_mode">node_naming_mode()</a>]) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-node_naming_mode">node_naming_mode()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the distribution naming mode that could be enabled (if any) on 
 the current node, based on the mode(s) that were specified in decreasing order 
@@ -468,7 +476,7 @@ operation will fail).</p>
 
 <h3 class="function"><a name="generate_valid_node_name_from-1">generate_valid_node_name_from/1</a></h3>
 <div class="spec">
-<p><tt>generate_valid_node_name_from(Name::iolist()) -&gt; <a href="#type-string_node_name">string_node_name()</a></tt><br></p>
+<p><code>generate_valid_node_name_from(Name::iolist()) -&gt; <a href="#type-string_node_name">string_node_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns a name (as a string) that is a legal name for an Erlang node,
  forged from the specified name.
@@ -476,7 +484,7 @@ operation will fail).</p>
 
 <h3 class="function"><a name="get_all_connected_nodes-0">get_all_connected_nodes/0</a></h3>
 <div class="spec">
-<p><tt>get_all_connected_nodes() -&gt; [<a href="#type-atom_node_name">atom_node_name()</a>]</tt><br></p>
+<p><code>get_all_connected_nodes() -&gt; [<a href="#type-atom_node_name">atom_node_name()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns the list of all connected nodes (each being designated by an
  atom, like 'foo@bar.org'), including the local node.
@@ -484,7 +492,7 @@ operation will fail).</p>
 
 <h3 class="function"><a name="get_basic_node_launching_command-5">get_basic_node_launching_command/5</a></h3>
 <div class="spec">
-<p><tt>get_basic_node_launching_command(NodeName::<a href="#type-node_name">node_name()</a>, NodeNamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>, EpmdSettings::<a href="#type-maybe">maybe</a>(<a href="#type-tcp_port">tcp_port()</a>), TCPSettings::no_restriction | <a href="#type-tcp_port_range">tcp_port_range()</a>, AdditionalOptions::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-command">command()</a>, <a href="#type-environment">environment()</a>}</tt><br></p>
+<p><code>get_basic_node_launching_command(NodeName::<a href="#type-node_name">node_name()</a>, NodeNamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>, EpmdSettings::<a href="#type-maybe">maybe</a>(<a href="#type-tcp_port">tcp_port()</a>), TCPSettings::no_restriction | <a href="#type-tcp_port_range">tcp_port_range()</a>, AdditionalOptions::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-command">command()</a>, <a href="#type-environment">environment()</a>}</code><br></p>
 <p> </p>
 </div><p>Returns a basic command line (as a plain string) and its related
  environment in order to launch an Erlang node (interpreter) with the specified
@@ -493,7 +501,7 @@ operation will fail).</p>
 
 <h3 class="function"><a name="get_complete_node_name-1">get_complete_node_name/1</a></h3>
 <div class="spec">
-<p><tt>get_complete_node_name(NodeName::<a href="#type-string_node_name">string_node_name()</a>) -&gt; <a href="#type-atom_node_name">atom_node_name()</a></tt><br></p>
+<p><code>get_complete_node_name(NodeName::<a href="#type-string_node_name">string_node_name()</a>) -&gt; <a href="#type-atom_node_name">atom_node_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the complete name of the specified node (as a string), which has 
 to be used to target it from another node, with respect to the local hostname 
@@ -507,7 +515,7 @@ and node naming conventions.</p>
 
 <h3 class="function"><a name="get_complete_node_name-3">get_complete_node_name/3</a></h3>
 <div class="spec">
-<p><tt>get_complete_node_name(NodeName::<a href="#type-string_node_name">string_node_name()</a>, Hostname::<a href="#type-string_host_name">string_host_name()</a>, NodeNamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-atom_node_name">atom_node_name()</a></tt><br></p>
+<p><code>get_complete_node_name(NodeName::<a href="#type-string_node_name">string_node_name()</a>, Hostname::<a href="#type-string_host_name">string_host_name()</a>, NodeNamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-atom_node_name">atom_node_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the complete name of the specified node (as a string), which has 
 to be used to target it from another node, with respect to the specified node 
@@ -520,7 +528,7 @@ naming conventions.</p>
 
 <h3 class="function"><a name="get_cookie-0">get_cookie/0</a></h3>
 <div class="spec">
-<p><tt>get_cookie() -&gt; <a href="#type-cookie">cookie()</a> | nocookie</tt><br></p>
+<p><code>get_cookie() -&gt; <a href="#type-cookie">cookie()</a> | nocookie</code><br></p>
 <p> </p>
 </div><p>Returns the Erlang cookie of the current node if that node is alive,
  otherwise the 'nocookie' atom.
@@ -528,7 +536,7 @@ naming conventions.</p>
 
 <h3 class="function"><a name="get_cookie_option-0">get_cookie_option/0</a></h3>
 <div class="spec">
-<p><tt>get_cookie_option() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_cookie_option() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns the command-line option (a plain string) to be used to run a new
  Erlang node with the same cookie as the current node, whether or not it is
@@ -537,7 +545,7 @@ naming conventions.</p>
 
 <h3 class="function"><a name="get_default_epmd_port-0">get_default_epmd_port/0</a></h3>
 <div class="spec">
-<p><tt>get_default_epmd_port() -&gt; <a href="#type-tcp_port">tcp_port()</a></tt><br></p>
+<p><code>get_default_epmd_port() -&gt; <a href="#type-tcp_port">tcp_port()</a></code><br></p>
 <p> </p>
 </div><p>Returns the default Erlang-level EPMD TCP port (not necessarily the one
  being currently used, not necessarily the one in the default Myriad settings
@@ -546,7 +554,7 @@ naming conventions.</p>
 
 <h3 class="function"><a name="get_epmd_environment-1">get_epmd_environment/1</a></h3>
 <div class="spec">
-<p><tt>get_epmd_environment(EpmdPort::<a href="#type-maybe">maybe</a>(<a href="#type-tcp_port">tcp_port()</a>)) -&gt; <a href="#type-environment">environment()</a></tt><br></p>
+<p><code>get_epmd_environment(EpmdPort::<a href="#type-maybe">maybe</a>(<a href="#type-tcp_port">tcp_port()</a>)) -&gt; <a href="#type-environment">environment()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the command-line option (a plain string) to be used to run a new 
 Erlang node with the specified EPMD port specification, which can be either 
@@ -560,7 +568,7 @@ the 'undefined' atom or the TCP port number.</p>
 
 <h3 class="function"><a name="get_hostname-1">get_hostname/1</a></h3>
 <div class="spec">
-<p><tt>get_hostname(AnyHostname::<a href="#type-any_host_name">any_host_name()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></tt><br></p>
+<p><code>get_hostname(AnyHostname::<a href="#type-any_host_name">any_host_name()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns, from the specified arbitrary hostname (either a FQDN or just an 
 hostname), the corresponding actual "atomic" hostname (that is with no domain 
@@ -572,7 +580,7 @@ involved), as a plain string.</p>
 
 <h3 class="function"><a name="get_hostname_from_node_name-1">get_hostname_from_node_name/1</a></h3>
 <div class="spec">
-<p><tt>get_hostname_from_node_name(NodeName::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></tt><br></p>
+<p><code>get_hostname_from_node_name(NodeName::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns the hostname (as a plain string) that corresponds to the
  specified node name (as an atom).
@@ -580,7 +588,7 @@ involved), as a plain string.</p>
 
 <h3 class="function"><a name="get_local_ip_address-0">get_local_ip_address/0</a></h3>
 <div class="spec">
-<p><tt>get_local_ip_address() -&gt; <a href="#type-ip_v4_address">ip_v4_address()</a></tt><br></p>
+<p><code>get_local_ip_address() -&gt; <a href="#type-ip_v4_address">ip_v4_address()</a></code><br></p>
 <p> </p>
 </div><p>Returns the "main" potentially usable non-local network interface on this
  host.
@@ -588,7 +596,7 @@ involved), as a plain string.</p>
 
 <h3 class="function"><a name="get_local_ip_addresses-0">get_local_ip_addresses/0</a></h3>
 <div class="spec">
-<p><tt>get_local_ip_addresses() -&gt; [<a href="#type-ip_v4_address">ip_v4_address()</a>]</tt><br></p>
+<p><code>get_local_ip_addresses() -&gt; [<a href="#type-ip_v4_address">ip_v4_address()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of the potentially usable non-local network interfaces on 
 this host, trying to put in first position the "main" one, if any.</p>
@@ -598,7 +606,7 @@ this host, trying to put in first position the "main" one, if any.</p>
 
 <h3 class="function"><a name="get_naming_compliant_hostname-1">get_naming_compliant_hostname/1</a></h3>
 <div class="spec">
-<p><tt>get_naming_compliant_hostname(NamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></tt><br></p>
+<p><code>get_naming_compliant_hostname(NamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a transformed version (as a string) of the local hostname, so 
 that it is compliant with the specified node naming convention.</p>
@@ -609,7 +617,7 @@ that it is compliant with the specified node naming convention.</p>
 
 <h3 class="function"><a name="get_naming_compliant_hostname-2">get_naming_compliant_hostname/2</a></h3>
 <div class="spec">
-<p><tt>get_naming_compliant_hostname(Hostname::<a href="#type-string_host_name">string_host_name()</a>, NamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></tt><br></p>
+<p><code>get_naming_compliant_hostname(Hostname::<a href="#type-string_host_name">string_host_name()</a>, NamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-string_host_name">string_host_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a transformed version (as a string) of the specified FQDN 
 hostname (itself specified as a string) so that it is compliant with the 
@@ -621,7 +629,7 @@ specified node naming convention.</p>
 
 <h3 class="function"><a name="get_node_name_option-2">get_node_name_option/2</a></h3>
 <div class="spec">
-<p><tt>get_node_name_option(NodeName::<a href="#type-string_node_name">string_node_name()</a>, NodeNamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_node_name_option(NodeName::<a href="#type-string_node_name">string_node_name()</a>, NodeNamingMode::<a href="#type-node_naming_mode">node_naming_mode()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns the command-line option (a plain string) to be used to run a new
  Erlang node with the node name (specified as a string) and node naming mode
@@ -630,7 +638,7 @@ specified node naming convention.</p>
 
 <h3 class="function"><a name="get_node_naming_mode-0">get_node_naming_mode/0</a></h3>
 <div class="spec">
-<p><tt>get_node_naming_mode() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-node_naming_mode">node_naming_mode()</a>)</tt><br></p>
+<p><code>get_node_naming_mode() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-node_naming_mode">node_naming_mode()</a>)</code><br></p>
 <p> </p>
 </div><p>Returns the naming mode of this node, either 'short_name' or 'long_name',
  provided that the current node is a distributed one.
@@ -638,13 +646,13 @@ specified node naming convention.</p>
 
 <h3 class="function"><a name="get_reverse_lookup_info-0">get_reverse_lookup_info/0</a></h3>
 <div class="spec">
-<p><tt>get_reverse_lookup_info() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-lookup_info">lookup_info()</a>)</tt><br></p>
+<p><code>get_reverse_lookup_info() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-lookup_info">lookup_info()</a>)</code><br></p>
 <p> </p>
 </div><p>Returns information to perform a reverse DNS lookup.</p>
 
 <h3 class="function"><a name="get_tcp_port_range_option-1">get_tcp_port_range_option/1</a></h3>
 <div class="spec">
-<p><tt>get_tcp_port_range_option(X1::no_restriction | <a href="#type-tcp_port_range">tcp_port_range()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_tcp_port_range_option(X1::no_restriction | <a href="#type-tcp_port_range">tcp_port_range()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the command-line option (a plain string) to be used to run a new 
 Erlang node with the specified TCP port restriction, which can be either the 
@@ -657,54 +665,75 @@ Erlang node with the specified TCP port restriction, which can be either the
 
 <h3 class="function"><a name="host_to_string-1">host_to_string/1</a></h3>
 <div class="spec">
-<p><tt>host_to_string(IPv4::<a href="#type-host_identifier">host_identifier()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>host_to_string(IPv4::<a href="#type-host_identifier">host_identifier()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing the specified host.</p>
 
 <h3 class="function"><a name="ipv4_to_string-1">ipv4_to_string/1</a></h3>
 <div class="spec">
-<p><tt>ipv4_to_string(X1::<a href="#type-ip_v4_address">ip_v4_address()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>ipv4_to_string(X1::<a href="#type-ip_v4_address">ip_v4_address()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing the specified IPv4 address.</p>
 
 <h3 class="function"><a name="ipv4_to_string-2">ipv4_to_string/2</a></h3>
 <div class="spec">
-<p><tt>ipv4_to_string(X1::<a href="#type-ip_v4_address">ip_v4_address()</a>, Port::<a href="#type-net_port">net_port()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>ipv4_to_string(X1::<a href="#type-ip_v4_address">ip_v4_address()</a>, Port::<a href="#type-net_port">net_port()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing the specified IPv4 address and port.</p>
 
 <h3 class="function"><a name="ipv6_to_string-1">ipv6_to_string/1</a></h3>
 <div class="spec">
-<p><tt>ipv6_to_string(X1::<a href="#type-ip_v6_address">ip_v6_address()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>ipv6_to_string(X1::<a href="#type-ip_v6_address">ip_v6_address()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing the specified IPv6 address.</p>
 
 <h3 class="function"><a name="ipv6_to_string-2">ipv6_to_string/2</a></h3>
 <div class="spec">
-<p><tt>ipv6_to_string(Ipv6::<a href="#type-ip_v6_address">ip_v6_address()</a>, Port::<a href="#type-net_port">net_port()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>ipv6_to_string(Ipv6::<a href="#type-ip_v6_address">ip_v6_address()</a>, Port::<a href="#type-net_port">net_port()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string describing the specified IPv6 address and port.</p>
 
+<h3 class="function"><a name="is_local_service_running_at-1">is_local_service_running_at/1</a></h3>
+<div class="spec">
+<p><code>is_local_service_running_at(TCPPort::<a href="#type-tcp_port">tcp_port()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div><p>Tells whether a service (socket) is running on the local host at the
+ specified TCP port.
+</p>
+
 <h3 class="function"><a name="is_routable-1">is_routable/1</a></h3>
 <div class="spec">
-<p><tt>is_routable(X1::<a href="#type-ip_v4_address">ip_v4_address()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_routable(X1::<a href="#type-ip_v4_address">ip_v4_address()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the specified IPv4 address is routable.</p>
 
  Note: the loopback ({127,0,0,1}, or {0,0,0,0,0,0,0,1}) is deemed routable.
 </p>
 
-<h3 class="function"><a name="is_service_running_at-1">is_service_running_at/1</a></h3>
+<h3 class="function"><a name="is_service_running_at-2">is_service_running_at/2</a></h3>
 <div class="spec">
-<p><tt>is_service_running_at(TCPPort::<a href="#type-tcp_port">tcp_port()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_service_running_at(TargetHostname::<a href="#type-any_host_name">any_host_name()</a>, TCPPort::<a href="#type-tcp_port">tcp_port()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether a service (socket) is running on the local host at
- specified TCP port.
+</div><p>Tells whether a service (socket) is running on the specified host, at the
+ specified TCP port, using a default time-out.
+</p>
+
+<h3 class="function"><a name="is_service_running_at-3">is_service_running_at/3</a></h3>
+<div class="spec">
+<p><code>is_service_running_at(TargetHostname::<a href="#type-any_host_name">any_host_name()</a>, TCPPort::<a href="#type-tcp_port">tcp_port()</a>, Timeout::<a href="#type-time_out">time_out()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div><p><p>Tells whether a service (socket) is running on the specified host, at the 
+specified TCP port, based on the specified time-out.</p>
+
+ Not that null or even very short time-outs (e.g. 1 ms) may trigger
+ econnrefused (and thus report that the service is not running) whereas a
+ suitable service exists. According to our tests, a 10-millisecond timeout
+ seems already reliable.
 </p>
 
 <h3 class="function"><a name="launch_epmd-0">launch_epmd/0</a></h3>
 <div class="spec">
-<p><tt>launch_epmd() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>launch_epmd() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Launches as a daemon (in the background) an EPMD instance on the Erlang 
 standard port, if needed.</p>
@@ -716,7 +745,7 @@ standard port, if needed.</p>
 
 <h3 class="function"><a name="launch_epmd-1">launch_epmd/1</a></h3>
 <div class="spec">
-<p><tt>launch_epmd(Port::<a href="#type-net_port">net_port()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>launch_epmd(Port::<a href="#type-net_port">net_port()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Launches as a daemon (in the background) an EPMD instance on the 
 specified port, if needed.</p>
@@ -731,7 +760,7 @@ other settings); there is up to one EPMD instance per port.</p>
 
 <h3 class="function"><a name="localhost-0">localhost/0</a></h3>
 <div class="spec">
-<p><tt>localhost() -&gt; <a href="#type-string_host_name">string_host_name()</a></tt><br></p>
+<p><code>localhost() -&gt; <a href="#type-string_host_name">string_host_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an appropriate DNS name for the local host (as a plain string), 
 or throws an exception.</p>
@@ -741,7 +770,7 @@ or throws an exception.</p>
 
 <h3 class="function"><a name="localhost-1">localhost/1</a></h3>
 <div class="spec">
-<p><tt>localhost(X1::fqdn | short) -&gt; <a href="#type-string_host_name">string_host_name()</a></tt><br></p>
+<p><code>localhost(X1::fqdn | short) -&gt; <a href="#type-string_host_name">string_host_name()</a></code><br></p>
 <p> </p>
 </div><p>Returns an appropriate DNS name (either a FQDN - Fully Qualified Domain
  Name - or a short host name) for the local host (as a plain string), or throws
@@ -750,7 +779,7 @@ or throws an exception.</p>
 
 <h3 class="function"><a name="localhost_for_node_name-0">localhost_for_node_name/0</a></h3>
 <div class="spec">
-<p><tt>localhost_for_node_name() -&gt; <a href="#type-string_host_name">string_host_name()</a></tt><br></p>
+<p><code>localhost_for_node_name() -&gt; <a href="#type-string_host_name">string_host_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a hostname of the local host that is suitable to be included in a 
 node name (in compliance with the current short/long name setting), assuming 
@@ -762,7 +791,7 @@ the current node is a distributed one.</p>
 
 <h3 class="function"><a name="localnode-0">localnode/0</a></h3>
 <div class="spec">
-<p><tt>localnode() -&gt; <a href="#type-atom_node_name">atom_node_name()</a> | local_node</tt><br></p>
+<p><code>localnode() -&gt; <a href="#type-atom_node_name">atom_node_name()</a> | local_node</code><br></p>
 <p> </p>
 </div><p><p>Returns the name of the local node, as an atom.</p>
 
@@ -772,7 +801,7 @@ the current node is a distributed one.</p>
 
 <h3 class="function"><a name="localnode_as_binary-0">localnode_as_binary/0</a></h3>
 <div class="spec">
-<p><tt>localnode_as_binary() -&gt; <a href="#type-bin_node_name">bin_node_name()</a></tt><br></p>
+<p><code>localnode_as_binary() -&gt; <a href="#type-bin_node_name">bin_node_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the name of the local node, as a binary string.</p>
 
@@ -781,7 +810,7 @@ the current node is a distributed one.</p>
 
 <h3 class="function"><a name="ping-1">ping/1</a></h3>
 <div class="spec">
-<p><tt>ping(Hostname::<a href="#type-any_host_name">any_host_name()</a>) -&gt; boolean()</tt><br></p>
+<p><code>ping(Hostname::<a href="#type-any_host_name">any_host_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Pings the specified hostname, and returns true iff it could be ping'd.</p>
 
@@ -792,7 +821,7 @@ the current node is a distributed one.</p>
 
 <h3 class="function"><a name="receive_file-1">receive_file/1</a></h3>
 <div class="spec">
-<p><tt>receive_file(EmitterPid::pid()) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>receive_file(EmitterPid::pid()) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Receives specified file out of band (through a dedicated TCP socket, not 
 thanks to Erlang messages), the emitter being supposed to use send_file/2.</p>
@@ -805,7 +834,7 @@ be used.</p>
 
 <h3 class="function"><a name="receive_file-2">receive_file/2</a></h3>
 <div class="spec">
-<p><tt>receive_file(EmitterPid::pid(), TargetDir::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>receive_file(EmitterPid::pid(), TargetDir::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Receives specified file out of band (through a dedicated TCP socket, not 
 thanks to Erlang messages) into specified pre-existing directory, the emitter 
@@ -818,7 +847,7 @@ being supposed to use send_file/2.</p>
 
 <h3 class="function"><a name="receive_file-3">receive_file/3</a></h3>
 <div class="spec">
-<p><tt>receive_file(EmitterPid::pid(), TargetDir::<a href="#type-directory_path">directory_path()</a>, TCPPort::<a href="#type-tcp_port">tcp_port()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>receive_file(EmitterPid::pid(), TargetDir::<a href="#type-directory_path">directory_path()</a>, TCPPort::<a href="#type-tcp_port">tcp_port()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Receives specified file out of band (through a dedicated TCP socket, not 
 thanks to Erlang messages) into specified pre-existing directory, the emitter 
@@ -829,7 +858,7 @@ being supposed to use send_file/2.</p>
 
 <h3 class="function"><a name="receive_file-4">receive_file/4</a></h3>
 <div class="spec">
-<p><tt>receive_file(EmitterPid::pid(), TargetDir::<a href="#type-directory_path">directory_path()</a>, MinTCPPort::<a href="#type-tcp_port">tcp_port()</a>, MaxTCPPort::<a href="#type-tcp_port">tcp_port()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p><code>receive_file(EmitterPid::pid(), TargetDir::<a href="#type-directory_path">directory_path()</a>, MinTCPPort::<a href="#type-tcp_port">tcp_port()</a>, MaxTCPPort::<a href="#type-tcp_port">tcp_port()</a>) -&gt; <a href="#type-file_path">file_path()</a></code><br></p>
 <p> </p>
 </div><p><p>Receives specified file out of band (through a dedicated TCP socket - not 
 thanks to Erlang messages) into specified pre-existing directory, the emitter 
@@ -841,7 +870,7 @@ being supposed to use send_file/2.</p>
 
 <h3 class="function"><a name="reverse_lookup-1">reverse_lookup/1</a></h3>
 <div class="spec">
-<p><tt>reverse_lookup(IPAddress::<a href="#type-ip_v4_address">ip_v4_address()</a>) -&gt; <a href="#type-lookup_outcome">lookup_outcome()</a></tt><br></p>
+<p><code>reverse_lookup(IPAddress::<a href="#type-ip_v4_address">ip_v4_address()</a>) -&gt; <a href="#type-lookup_outcome">lookup_outcome()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string telling the DNS name corresponding to the specified IPv4
  address {N1, N2, N3, N4}, or an atom describing why it failed.
@@ -849,7 +878,7 @@ being supposed to use send_file/2.</p>
 
 <h3 class="function"><a name="reverse_lookup-2">reverse_lookup/2</a></h3>
 <div class="spec">
-<p><tt>reverse_lookup(IPAddress::<a href="#type-ip_v4_address">ip_v4_address()</a>, LookupInfo::<a href="#type-lookup_info">lookup_info()</a>) -&gt; <a href="#type-lookup_outcome">lookup_outcome()</a></tt><br></p>
+<p><code>reverse_lookup(IPAddress::<a href="#type-ip_v4_address">ip_v4_address()</a>, LookupInfo::<a href="#type-lookup_info">lookup_info()</a>) -&gt; <a href="#type-lookup_outcome">lookup_outcome()</a></code><br></p>
 <p> </p>
 </div><p>Returns a string telling the DNS name corresponding to the specified IPv4
  address {N1, N2, N3, N4}, or an atom describing why it failed.
@@ -857,7 +886,7 @@ being supposed to use send_file/2.</p>
 
 <h3 class="function"><a name="secure_distribution-1">secure_distribution/1</a></h3>
 <div class="spec">
-<p><tt>secure_distribution(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; <a href="#type-node_naming_mode">node_naming_mode()</a></tt><br></p>
+<p><code>secure_distribution(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; <a href="#type-node_naming_mode">node_naming_mode()</a></code><br></p>
 <p> </p>
 </div><p><p>Tries to enable the distribution on the current node with the specified 
 name, trying first to use long names, otherwise short names, doing its best to 
@@ -873,7 +902,7 @@ distribution of nodes may fail for varied reasons.</p>
 
 <h3 class="function"><a name="send_file-2">send_file/2</a></h3>
 <div class="spec">
-<p><tt>send_file(FilePath::<a href="#type-file_path">file_path()</a>, RecipientPid::pid()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>send_file(FilePath::<a href="#type-file_path">file_path()</a>, RecipientPid::pid()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sends the specified file (most probably over the network) to the 
 specified recipient PID, supposed to have already called one of the 
@@ -885,7 +914,7 @@ receive_file/{1,2,3} functions.</p>
 
 <h3 class="function"><a name="set_cookie-1">set_cookie/1</a></h3>
 <div class="spec">
-<p><tt>set_cookie(Cookie::<a href="#type-cookie">cookie()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_cookie(Cookie::<a href="#type-cookie">cookie()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the Erlang cookie for the current node, as well as for the one of
  all unknown nodes.
@@ -893,13 +922,13 @@ receive_file/{1,2,3} functions.</p>
 
 <h3 class="function"><a name="set_cookie-2">set_cookie/2</a></h3>
 <div class="spec">
-<p><tt>set_cookie(Cookie::<a href="#type-cookie">cookie()</a>, Node::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_cookie(Cookie::<a href="#type-cookie">cookie()</a>, Node::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the Erlang cookie for the specified node.</p>
 
 <h3 class="function"><a name="set_unique_node_name-0">set_unique_node_name/0</a></h3>
 <div class="spec">
-<p><tt>set_unique_node_name() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_unique_node_name() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets the name of the current node, expected to be already a distributed 
 one, to a name expected to be unique.</p>
@@ -915,7 +944,7 @@ one, to a name expected to be unique.</p>
 
 <h3 class="function"><a name="shutdown_node-0">shutdown_node/0</a></h3>
 <div class="spec">
-<p><tt>shutdown_node() -&gt; no_return()</tt><br></p>
+<p><code>shutdown_node() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Shutdowns current node, and never returns (unlike init:stop/0): it is a 
 reliable and synchronous operation.</p>
@@ -925,7 +954,7 @@ reliable and synchronous operation.</p>
 
 <h3 class="function"><a name="shutdown_node-1">shutdown_node/1</a></h3>
 <div class="spec">
-<p><tt>shutdown_node(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>shutdown_node(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Shutdowns specified node (specified as a string or an atom), and returns 
 only when it cannot be ping'ed anymore: it is a reliable and synchronous 
@@ -936,7 +965,7 @@ operation.</p>
 
 <h3 class="function"><a name="split_fqdn-1">split_fqdn/1</a></h3>
 <div class="spec">
-<p><tt>split_fqdn(FQDNStr::<a href="#type-string_fqdn">string_fqdn()</a>) -&gt; none_found | {<a href="#type-host_name">host_name()</a>, <a href="#type-domain_name">domain_name()</a>}</tt><br></p>
+<p><code>split_fqdn(FQDNStr::<a href="#type-string_fqdn">string_fqdn()</a>) -&gt; none_found | {<a href="#type-host_name">host_name()</a>, <a href="#type-domain_name">domain_name()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Returns, from the specified FQDN, the corresponding actual host and its 
 full domain if possible, otherwise jsut 'none_found'.</p>
@@ -947,7 +976,7 @@ full domain if possible, otherwise jsut 'none_found'.</p>
 
 <h3 class="function"><a name="wait_unavailable-3">wait_unavailable/3</a></h3>
 <div class="spec">
-<p><tt>wait_unavailable(NodeName::<a href="#type-atom_node_name">atom_node_name()</a>, AttemptCount::<a href="#type-count">count()</a>, Duration::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>wait_unavailable(NodeName::<a href="#type-atom_node_name">atom_node_name()</a>, AttemptCount::<a href="#type-count">count()</a>, Duration::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Waits until specified node is unavailable, for the specified number of
  attempts between which the specified duration will be waited .

@@ -17,7 +17,7 @@
 <h2><a name="description">Description</a></h2><p>Basic <b>numerical solver based on the classic Runge–Kutta fourth-order
  method</b>, operating on three dimensions.</p>
 
- <p>See <a href="http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods" target="_top"><tt>http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods</tt></a>.</p>
+ <p>See <a href="http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods" target="_top"><code>http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods</code></a>.</p>
 
  <p>We want to evaluate a given function f, whose spec could be: <code>f( time(),
      vector() ) -&gt; vector()</code> that would comply to the following equation:
@@ -32,52 +32,52 @@ determined by the corresponding Butcher tableau.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-f1">f1()</a></h3>
-<p><tt>f1() = fun((<a href="#type-time">time()</a>, <a href="#type-scalar">scalar()</a>) -&gt; <a href="#type-scalar">scalar()</a>)</tt></p>
+<p><code>f1() = fun((<a href="#type-time">time()</a>, <a href="#type-scalar">scalar()</a>) -&gt; <a href="#type-scalar">scalar()</a>)</code></p>
 <p> The function f in the equation that we want to solve numerically, here in a 1D
  space, based on scalars.</p>
 
 <h3 class="typedecl"><a name="type-f2p">f2p()</a></h3>
-<p><tt>f2p() = fun((<a href="#type-time">time()</a>, <a href="#type-point2">point2()</a>) -&gt; <a href="#type-point2">point2()</a>)</tt></p>
+<p><code>f2p() = fun((<a href="#type-time">time()</a>, <a href="#type-point2">point2()</a>) -&gt; <a href="#type-point2">point2()</a>)</code></p>
 <p> The function f in the equation that we want to solve numerically, here in a 2D
  space, based on points.</p>
 
 <h3 class="typedecl"><a name="type-f2v">f2v()</a></h3>
-<p><tt>f2v() = fun((<a href="#type-time">time()</a>, <a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a>)</tt></p>
+<p><code>f2v() = fun((<a href="#type-time">time()</a>, <a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a>)</code></p>
 <p> The function f in the equation that we want to solve numerically, here in a 2D
  space, based on vectors.</p>
 
 <h3 class="typedecl"><a name="type-f3p">f3p()</a></h3>
-<p><tt>f3p() = fun((<a href="#type-time">time()</a>, <a href="#type-point3">point3()</a>) -&gt; <a href="#type-point3">point3()</a>)</tt></p>
+<p><code>f3p() = fun((<a href="#type-time">time()</a>, <a href="#type-point3">point3()</a>) -&gt; <a href="#type-point3">point3()</a>)</code></p>
 <p> The function f in the equation that we want to solve numerically, here in a 3D
  space, based on points.</p>
 
 <h3 class="typedecl"><a name="type-f3v">f3v()</a></h3>
-<p><tt>f3v() = fun((<a href="#type-time">time()</a>, <a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a>)</tt></p>
+<p><code>f3v() = fun((<a href="#type-time">time()</a>, <a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a>)</code></p>
 <p> The function f in the equation that we want to solve numerically, here in a 3D
  space, based on vectors.</p>
 
 <h3 class="typedecl"><a name="type-point2">point2()</a></h3>
-<p><tt>point2() = <a href="point2.html#type-point2">point2:point2()</a></tt></p>
+<p><code>point2() = <a href="point2.html#type-point2">point2:point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
+<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
-<p><tt>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></tt></p>
+<p><code>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-time">time()</a></h3>
-<p><tt>time() = float()</tt></p>
+<p><code>time() = float()</code></p>
 <p> Simulation time.</p>
 
 <h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
-<p><tt>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></tt></p>
+<p><code>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
-<p><tt>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></tt></p>
+<p><code>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -91,7 +91,7 @@ determined by the corresponding Butcher tableau.</p>
 
 <h3 class="function"><a name="compute_next_estimate3p-4">compute_next_estimate3p/4</a></h3>
 <div class="spec">
-<p><tt>compute_next_estimate3p(F::<a href="#type-f3p">f3p()</a>, Point::<a href="#type-point3">point3()</a>, Time::<a href="#type-time">time()</a>, Step::<a href="#type-time">time()</a>) -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p><code>compute_next_estimate3p(F::<a href="#type-f3p">f3p()</a>, Point::<a href="#type-point3">point3()</a>, Time::<a href="#type-time">time()</a>, Step::<a href="#type-time">time()</a>) -&gt; <a href="#type-point3">point3()</a></code><br></p>
 <p> </p>
 </div><p>Computes the next point (yn+1), based on the current one (yn), the
  function (F) and the timestep (h).
@@ -99,7 +99,7 @@ determined by the corresponding Butcher tableau.</p>
 
 <h3 class="function"><a name="compute_next_estimate3v-4">compute_next_estimate3v/4</a></h3>
 <div class="spec">
-<p><tt>compute_next_estimate3v(F::<a href="#type-f3v">f3v()</a>, Vector::<a href="#type-vector3">vector3()</a>, Time::<a href="#type-time">time()</a>, Step::<a href="#type-time">time()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p><code>compute_next_estimate3v(F::<a href="#type-f3v">f3v()</a>, Vector::<a href="#type-vector3">vector3()</a>, Time::<a href="#type-time">time()</a>, Step::<a href="#type-time">time()</a>) -&gt; <a href="#type-vector3">vector3()</a></code><br></p>
 <p> </p>
 </div><p>Computes the next vector (yn+1), based on the current one (yn), the
  function (F) and the timestep (h).

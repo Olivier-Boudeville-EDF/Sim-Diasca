@@ -20,15 +20,15 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-aggregator_pid">aggregator_pid()</a></h3>
-<p><tt>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></tt></p>
+<p><code>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-initialise_supervision">initialise_supervision()</a></h3>
-<p><tt>initialise_supervision() = <a href="class_TraceAggregator.html#type-initialise_supervision">class_TraceAggregator:initialise_supervision()</a></tt></p>
+<p><code>initialise_supervision() = <a href="class_TraceAggregator.html#type-initialise_supervision">class_TraceAggregator:initialise_supervision()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -51,7 +51,7 @@ stopping the trace aggregator and finishing on the shell.</td></tr>
 
 <h3 class="function"><a name="app_immediate_stop-2">app_immediate_stop/2</a></h3>
 <div class="spec">
-<p><tt>app_immediate_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</tt><br></p>
+<p><code>app_immediate_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops specified (Myriad - not specifically related to OTP) application 
 immediately, not waiting for any trace supervisor, stopping the trace 
@@ -62,7 +62,7 @@ aggregator, and finishing on the shell.</p>
 
 <h3 class="function"><a name="app_start-2">app_start/2</a></h3>
 <div class="spec">
-<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p><code>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts the specified application.</p>
 
@@ -73,7 +73,7 @@ later (typically only once the desired filename for the traces file will be
 known for good, i.e. at its first renaming).</p>
 
  <p>Here we disable explicitly the trapping of EXIT signals, as a function run 
-through "erl -eval" (like our apps) or through "erl -run" will be executed in 
+through "erl -eval" or through "erl -run" (like our apps) will be executed in 
 a process that will silently trap EXIT signals, which would mean that the 
 crash of any process created from the app, even thanks to spawn_link, would 
 most probably remain unnoticed (just leading to an EXIT message happily 
@@ -84,7 +84,7 @@ sitting in the mailbox of the app process).</p>
 
 <h3 class="function"><a name="app_start-3">app_start/3</a></h3>
 <div class="spec">
-<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>, DisableExitTrapping::boolean()) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p><code>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>, DisableExitTrapping::boolean()) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts specified (Myriad - not specifically related to OTP) application, 
 deciding whether EXIT messages shall be trapped.</p>
@@ -104,7 +104,7 @@ of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).</p
 
 <h3 class="function"><a name="app_start-4">app_start/4</a></h3>
 <div class="spec">
-<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>, DisableExitTrapping::boolean(), AggRegScope::<a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p><code>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>, DisableExitTrapping::boolean(), AggRegScope::<a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></code><br></p>
 <p> </p>
 </div><p><p>Starts specified (Myriad - not specifically related to OTP) application, 
 deciding whether EXIT messages shall be trapped and the registration scope of 
@@ -123,7 +123,7 @@ known for good, i.e. at its first renaming).</p>
 
 <h3 class="function"><a name="app_stop-3">app_stop/3</a></h3>
 <div class="spec">
-<p><tt>app_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>, WaitForTraceSupervisor::boolean()) -&gt; no_return()</tt><br></p>
+<p><code>app_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>, WaitForTraceSupervisor::boolean()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops the specified (Myriad - not specifically related to OTP) 
 application, waiting for the trace supervisor if requested.</p>
@@ -133,7 +133,7 @@ application, waiting for the trace supervisor if requested.</p>
 
 <h3 class="function"><a name="app_stop_on_shell-2">app_stop_on_shell/2</a></h3>
 <div class="spec">
-<p><tt>app_stop_on_shell(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</tt><br></p>
+<p><code>app_stop_on_shell(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Stops specified (Myriad - not specifically related to OTP) application, 
 stopping the trace aggregator and finishing on the shell.</p>

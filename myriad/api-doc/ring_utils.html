@@ -22,15 +22,15 @@ looping on themselves).</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ring">ring()</a></h3>
-<p><tt>ring(T) = {[T], [T]}</tt></p>
+<p><code>ring(T) = {[T], [T]}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ring">ring()</a></h3>
-<p><tt>ring() = {list(), list()}</tt></p>
+<p><code>ring() = {list(), list()}</code></p>
 <p><p> A ring behaves as an (infinite) list whose next element after its last is its 
 first again.</p>
 
@@ -38,7 +38,7 @@ first again.</p>
  extracted), while the second is a copy of the full reference one.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -56,48 +56,48 @@ and the corresponding updated ring.</td></tr>
 
 <h3 class="function"><a name="from_list-1">from_list/1</a></h3>
 <div class="spec">
-<p><tt>from_list(InputList::list()) -&gt; <a href="#type-ring">ring()</a></tt><br></p>
+<p><code>from_list(InputList::list()) -&gt; <a href="#type-ring">ring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a ring corresponding to the specified list.</p>
 
 <h3 class="function"><a name="get_next-2">get_next/2</a></h3>
 <div class="spec">
-<p><tt>get_next(Count::<a href="#type-count">count()</a>, Ring::<a href="#type-ring">ring()</a>) -&gt; {[term()], <a href="#type-ring">ring()</a>}</tt><br></p>
+<p><code>get_next(Count::<a href="#type-count">count()</a>, Ring::<a href="#type-ring">ring()</a>) -&gt; {[term()], <a href="#type-ring">ring()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of the Count popped elements (in their order in the ring), 
 and the corresponding updated ring.</p>
 
- Ex: for a new ring based on [a, b, c, d], if Count=6 then
+ Example: for a new ring based on [a, b, c, d], if Count=6 then
  [a, b, c, d, a, b] will be returned.
 </p>
 
 <h3 class="function"><a name="get_reference_list-1">get_reference_list/1</a></h3>
 <div class="spec">
-<p><tt>get_reference_list(Ring::<a href="#type-ring">ring()</a>) -&gt; [term()]</tt><br></p>
+<p><code>get_reference_list(Ring::<a href="#type-ring">ring()</a>) -&gt; [term()]</code><br></p>
 <p> </p>
 </div><p>Returns the list from which the ring was created (in its original order).</p>
 
 <h3 class="function"><a name="head-1">head/1</a></h3>
 <div class="spec">
-<p><tt>head(Ring::<a href="#type-ring">ring()</a>) -&gt; {term(), <a href="#type-ring">ring()</a>}</tt><br></p>
+<p><code>head(Ring::<a href="#type-ring">ring()</a>) -&gt; {term(), <a href="#type-ring">ring()</a>}</code><br></p>
 <p> </p>
 </div><p>Pops the head of specified ring: returns {Head,UpdatedRing}.</p>
 
 <h3 class="function"><a name="size-1">size/1</a></h3>
 <div class="spec">
-<p><tt>size(Ring::<a href="#type-ring">ring()</a>) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p><code>size(Ring::<a href="#type-ring">ring()</a>) -&gt; <a href="#type-count">count()</a></code><br></p>
 <p> </p>
 </div><p>Returns the number of elements in the specified ring.</p>
 
 <h3 class="function"><a name="to_list-1">to_list/1</a></h3>
 <div class="spec">
-<p><tt>to_list(Ring::<a href="#type-ring">ring()</a>) -&gt; list()</tt><br></p>
+<p><code>to_list(Ring::<a href="#type-ring">ring()</a>) -&gt; list()</code><br></p>
 <p> </p>
 </div><p>Returns a list corresponding to the current state of specified ring.</p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Ring::<a href="#type-ring">ring()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>to_string(Ring::<a href="#type-ring">ring()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified ring.</p>
 <hr>

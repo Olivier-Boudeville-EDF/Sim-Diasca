@@ -22,20 +22,20 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-actual_command_line_option">actual_command_line_option()</a></h3>
-<p><tt>actual_command_line_option() = atom()</tt></p>
+<p><code>actual_command_line_option() = atom()</code></p>
 <p> The name of a command-line option; e.g. '-color', for an actual option that is
  "--color". For the init standard module, this is named a "flag".</p>
 
 <h3 class="typedecl"><a name="type-actual_value_count">actual_value_count()</a></h3>
-<p><tt>actual_value_count() = <a href="#type-count">count()</a></tt></p>
+<p><code>actual_value_count() = <a href="#type-count">count()</a></code></p>
 <p> Non-null expected (otherwise meaningless).</p>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-argument_table">argument_table()</a></h3>
-<p><tt>argument_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-command_line_option">command_line_option()</a>, [<a href="#type-command_line_values">command_line_values()</a>])</tt></p>
+<p><code>argument_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-command_line_option">command_line_option()</a>, [<a href="#type-command_line_values">command_line_values()</a>])</code></p>
 <p><p> A table storing command-line user (plain, i.e arguments specified after either 
 "--" or, preferably, "-extra") arguments conveniently (a bit like getopt), in 
 a format exactly in the spirit of init:get_arguments/0, allowing to record 
@@ -58,7 +58,7 @@ in such argument tables.</p>
      ?no_option_key -&gt; [ "some_value" ]</p>
 
 <h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
-<p><tt>command_line_argument() = {<a href="#type-command_line_option">command_line_option()</a>, [<a href="#type-command_line_values">command_line_values()</a>]}</tt></p>
+<p><code>command_line_argument() = {<a href="#type-command_line_option">command_line_option()</a>, [<a href="#type-command_line_values">command_line_values()</a>]}</code></p>
 <p><p> The association between a command-line option and the various values 
 associated to its various occurrences, in a (non-unique) argument table.</p>
 
@@ -72,45 +72,45 @@ the corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]}
  matching it with the one of the 'init' module (different keys).</p>
 
 <h3 class="typedecl"><a name="type-command_line_element">command_line_element()</a></h3>
-<p><tt>command_line_element() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>command_line_element() = <a href="#type-ustring">ustring()</a></code></p>
 <p> Any element of a command-line, typically option name or value.</p>
 
 <h3 class="typedecl"><a name="type-command_line_option">command_line_option()</a></h3>
-<p><tt>command_line_option() = <a href="#type-actual_command_line_option">actual_command_line_option()</a> | '(none)'</tt></p>
+<p><code>command_line_option() = <a href="#type-actual_command_line_option">actual_command_line_option()</a> | '(none)'</code></p>
 <p> Note the special value ?no_option_key that is associated to option-less
  arguments.</p>
 
 <h3 class="typedecl"><a name="type-command_line_value">command_line_value()</a></h3>
-<p><tt>command_line_value() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>command_line_value() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 <p> A unitary value specified in link to a command-line option.</p>
 
 <h3 class="typedecl"><a name="type-command_line_values">command_line_values()</a></h3>
-<p><tt>command_line_values() = [<a href="#type-command_line_value">command_line_value()</a>]</tt></p>
+<p><code>command_line_values() = [<a href="#type-command_line_value">command_line_value()</a>]</code></p>
 <p> The command-line values specified after an occurrence of a given option (e.g.
  ["blue", "red"]).</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-option_spec">option_spec()</a></h3>
-<p><tt>option_spec() = {<a href="#type-actual_command_line_option">actual_command_line_option()</a>, <a href="#type-value_spec">value_spec()</a>}</tt></p>
+<p><code>option_spec() = {<a href="#type-actual_command_line_option">actual_command_line_option()</a>, <a href="#type-value_spec">value_spec()</a>}</code></p>
 <p> A specification of how many values are expected after specified option.</p>
 
 <h3 class="typedecl"><a name="type-return_code">return_code()</a></h3>
-<p><tt>return_code() = <a href="system_utils.html#type-return_code">system_utils:return_code()</a></tt></p>
+<p><code>return_code() = <a href="system_utils.html#type-return_code">system_utils:return_code()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-unique_argument_table">unique_argument_table()</a></h3>
-<p><tt>unique_argument_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-command_line_option">command_line_option()</a>, <a href="#type-command_line_values">command_line_values()</a>)</tt></p>
+<p><code>unique_argument_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-command_line_option">command_line_option()</a>, <a href="#type-command_line_values">command_line_values()</a>)</code></p>
 <p><p> A table associating to a given option a (single) list of values (thus not 
 having repeated options).</p>
 
@@ -125,16 +125,16 @@ a corresponding argument table would contain following entries:
  For convenience, "standard" argument tables may be converted into unique ones.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-value_count">value_count()</a></h3>
-<p><tt>value_count() = <a href="#type-actual_value_count">actual_value_count()</a> | any</tt></p>
+<p><code>value_count() = <a href="#type-actual_value_count">actual_value_count()</a> | any</code></p>
 <p> How many values (possibly any number thereof - possibly none) are expected
  after a given command-line option.</p>
 
 <h3 class="typedecl"><a name="type-value_spec">value_spec()</a></h3>
-<p><tt>value_spec() = <a href="#type-value_count">value_count()</a> | {<a href="#type-actual_value_count">actual_value_count()</a>, <a href="#type-value_count">value_count()</a>}</tt></p>
+<p><code>value_spec() = <a href="#type-value_count">value_count()</a> | {<a href="#type-actual_value_count">actual_value_count()</a>, <a href="#type-value_count">value_count()</a>}</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -185,13 +185,13 @@ option).</td></tr>
 
 <h3 class="function"><a name="argument_table_to_string-1">argument_table_to_string/1</a></h3>
 <div class="spec">
-<p><tt>argument_table_to_string(ArgTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>argument_table_to_string(ArgTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified argument table.</p>
 
 <h3 class="function"><a name="error-2">error/2</a></h3>
 <div class="spec">
-<p><tt>error(ErrorCode::<a href="#type-return_code">return_code()</a>, Message::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</tt><br></p>
+<p><code>error(ErrorCode::<a href="#type-return_code">return_code()</a>, Message::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Reports a fatal error, typically in an script/escript context, with the 
 specified error return code (expected to be non-null).</p>
@@ -203,7 +203,7 @@ specified error return code (expected to be non-null).</p>
 
 <h3 class="function"><a name="error_fmt-3">error_fmt/3</a></h3>
 <div class="spec">
-<p><tt>error_fmt(ErrorCode::<a href="#type-return_code">return_code()</a>, Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</tt><br></p>
+<p><code>error_fmt(ErrorCode::<a href="#type-return_code">return_code()</a>, Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p><p>Reports a formatted, fatal error, typically in an script/escript context, 
 with the specified error return code (expected to be non-null).</p>
@@ -215,7 +215,7 @@ with the specified error return code (expected to be non-null).</p>
 
 <h3 class="function"><a name="extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></h3>
 <div class="spec">
-<p><tt>extract_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</tt><br></p>
+<p><code>extract_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Extracts, for specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
@@ -231,7 +231,7 @@ corresponding argument table.</p>
 
 <h3 class="function"><a name="extract_command_arguments_for_option-2">extract_command_arguments_for_option/2</a></h3>
 <div class="spec">
-<p><tt>extract_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>, ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</tt><br></p>
+<p><code>extract_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>, ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Extracts, for the specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
@@ -247,7 +247,7 @@ corresponding argument table.</p>
 
 <h3 class="function"><a name="extract_optionless_command_arguments-0">extract_optionless_command_arguments/0</a></h3>
 <div class="spec">
-<p><tt>extract_optionless_command_arguments() -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</tt><br></p>
+<p><code>extract_optionless_command_arguments() -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Extracts the in-order list of the arguments that were directly (that is 
 not in the context of an option) specified on the command-line for this 
@@ -259,7 +259,7 @@ executable.</p>
 
 <h3 class="function"><a name="extract_optionless_command_arguments-1">extract_optionless_command_arguments/1</a></h3>
 <div class="spec">
-<p><tt>extract_optionless_command_arguments(ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</tt><br></p>
+<p><code>extract_optionless_command_arguments(ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Extracts, for the specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
@@ -275,7 +275,7 @@ corresponding argument table.</p>
 
 <h3 class="function"><a name="generate_argument_table-1">generate_argument_table/1</a></h3>
 <div class="spec">
-<p><tt>generate_argument_table(ArgString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-argument_table">argument_table()</a></tt><br></p>
+<p><code>generate_argument_table(ArgString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a canonical argument table, obtained from the specified single 
 string containing all options, verbatim; e.g. "--color red --set-foo".</p>
@@ -285,7 +285,7 @@ string containing all options, verbatim; e.g. "--color red --set-foo".</p>
 
 <h3 class="function"><a name="get_argument_table-0">get_argument_table/0</a></h3>
 <div class="spec">
-<p><tt>get_argument_table() -&gt; <a href="#type-argument_table">argument_table()</a></tt><br></p>
+<p><code>get_argument_table() -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a canonical argument table, obtained from the user command-line 
 arguments supplied to the interpreter.</p>
@@ -303,7 +303,7 @@ make ui_run CMD_LINE_OPT="-a -extra some_value -b --use-ui-backend text_ui"
 
 <h3 class="function"><a name="get_argument_table_from_strings-1">get_argument_table_from_strings/1</a></h3>
 <div class="spec">
-<p><tt>get_argument_table_from_strings(ArgStrings::[<a href="#type-ustring">ustring()</a>]) -&gt; <a href="#type-argument_table">argument_table()</a></tt><br></p>
+<p><code>get_argument_table_from_strings(ArgStrings::[<a href="#type-ustring">ustring()</a>]) -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the specified command-line arguments (simply transmitted as a 
 list of the corresponding strings) once transformed into our "canonical", more 
@@ -319,7 +319,7 @@ collected as well (refer to the no_option_key define).</p>
 
 <h3 class="function"><a name="get_command_arguments_for_option-1">get_command_arguments_for_option/1</a></h3>
 <div class="spec">
-<p><tt>get_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>])</tt><br></p>
+<p><code>get_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>])</code><br></p>
 <p> </p>
 </div><p><p>Returns, if this option was specified on the command-line, the in-order 
 list of the various (lists of) values (if any; no value at all being specified 
@@ -332,7 +332,7 @@ this option was not specified on the command-line, returns 'undefined'.</p>
 
 <h3 class="function"><a name="get_command_line_arguments-2">get_command_line_arguments/2</a></h3>
 <div class="spec">
-<p><tt>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec">option_spec()</a>]) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></tt><br></p>
+<p><code>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec">option_spec()</a>]) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Generates a table from the arguments that were specified on the 
 command-line for this executable, assigning to each of the specified 
@@ -348,7 +348,7 @@ non-declared option be found, raises an error as well.</p>
 
 <h3 class="function"><a name="get_command_line_arguments-3">get_command_line_arguments/3</a></h3>
 <div class="spec">
-<p><tt>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec">option_spec()</a>], ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></tt><br></p>
+<p><code>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec">option_spec()</a>], ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Reorganizes specified argument table, assigning to each of its 
 command-line options the corresponding number of values.</p>
@@ -363,7 +363,7 @@ found, an error is raised.</p>
 
 <h3 class="function"><a name="get_optionless_command_arguments-0">get_optionless_command_arguments/0</a></h3>
 <div class="spec">
-<p><tt>get_optionless_command_arguments() -&gt; <a href="#type-command_line_values">command_line_values()</a></tt><br></p>
+<p><code>get_optionless_command_arguments() -&gt; <a href="#type-command_line_values">command_line_values()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the in-order list of the arguments that were directly (that is 
 not in the context of an option) specified on the command-line.</p>
@@ -374,7 +374,7 @@ not in the context of an option) specified on the command-line.</p>
 
 <h3 class="function"><a name="protect_from_shell-1">protect_from_shell/1</a></h3>
 <div class="spec">
-<p><tt>protect_from_shell(ArgString::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_string">any_string()</a></tt><br></p>
+<p><code>protect_from_shell(ArgString::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_string">any_string()</a></code><br></p>
 <p> </p>
 </div><p><p>Protects specified argument from shell parsing, typically if specifying a 
 filename including a single quote.</p>
@@ -388,7 +388,7 @@ improperly encoded strings might be tricky).</p>
 
 <h3 class="function"><a name="uniquify_argument_table-1">uniquify_argument_table/1</a></h3>
 <div class="spec">
-<p><tt>uniquify_argument_table(ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></tt><br></p>
+<p><code>uniquify_argument_table(ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></code><br></p>
 <p> </p>
 </div><p><p>Transforms specified argument table (possibly with repeated options) into 
 a unique argument table (thus with just a list of values associated to each 

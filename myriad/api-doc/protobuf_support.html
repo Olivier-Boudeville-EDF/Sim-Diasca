@@ -23,20 +23,20 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-bin_package_name">bin_package_name()</a></h3>
-<p><tt>bin_package_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_package_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p> The name of a Protobuf package, as a binary string, such as the user-defined
  <code>&lt;&lt;"myriad.protobuf.test"&gt;&gt;</code> one.</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = <a href="type_utils.html#type-record">type_utils:record()</a></tt></p>
+<p><code>message() = <a href="type_utils.html#type-record">type_utils:record()</a></code></p>
 <p> A (non-serialised, i.e. as an Erlang term) message instance.</p>
 
 <h3 class="typedecl"><a name="type-message_type">message_type()</a></h3>
-<p><tt>message_type() = atom()</tt></p>
+<p><code>message_type() = atom()</code></p>
 <p><p> The name of a type of Protobuf messages, as defined in a specification file.</p>
 
  <p>For example, if defining a "Person" message type in a "myriad.protobuf.test" 
@@ -46,28 +46,28 @@ to a myriad_protobuf_test_person() type.</p>
  See myriad_example.proto for a test example.</p>
 
 <h3 class="typedecl"><a name="type-package_name">package_name()</a></h3>
-<p><tt>package_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>package_name() = <a href="#type-ustring">ustring()</a></code></p>
 <p> The name of a Protobuf package, as a plain string, such as the user-defined
  "myriad.protobuf.test" one.</p>
 
 <h3 class="typedecl"><a name="type-serialisation">serialisation()</a></h3>
-<p><tt>serialisation() = binary()</tt></p>
+<p><code>serialisation() = binary()</code></p>
 <p> A binary, serialised form, expected to contain Protobuff messages respecting
  our conventions.</p>
 
 <h3 class="typedecl"><a name="type-spec_file_path">spec_file_path()</a></h3>
-<p><tt>spec_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
-<p> A path to a Protobuf specification file respecting our conventions (ex:
+<p><code>spec_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
+<p> A path to a Protobuf specification file respecting our conventions (e.g.
  "/home/joe/foobar.proto").</p>
 
 <h3 class="typedecl"><a name="type-spec_name">spec_name()</a></h3>
-<p><tt>spec_name() = atom()</tt></p>
-<p> The name of a Protobuf specification (ex: foobar), corresponding both to a
- specification file (ex: "foobar.proto") and the corresponding module name
+<p><code>spec_name() = atom()</code></p>
+<p> The name of a Protobuf specification (e.g. foobar), corresponding both to a
+ specification file (e.g. "foobar.proto") and the corresponding module name
  generated from it ('foobar').</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -81,7 +81,7 @@ to a myriad_protobuf_test_person() type.</p>
 
 <h3 class="function"><a name="decode-3">decode/3</a></h3>
 <div class="spec">
-<p><tt>decode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageType::<a href="#type-message_type">message_type()</a>, BinSerialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; <a href="#type-message">message()</a></tt><br></p>
+<p><code>decode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageType::<a href="#type-message_type">message_type()</a>, BinSerialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; <a href="#type-message">message()</a></code><br></p>
 <p> </p>
 </div><p>Decodes specified serialised form into a message of specified type, as
  defined in specified specification.
@@ -89,7 +89,7 @@ to a myriad_protobuf_test_person() type.</p>
 
 <h3 class="function"><a name="encode-2">encode/2</a></h3>
 <div class="spec">
-<p><tt>encode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageTerm::<a href="#type-message">message()</a>) -&gt; <a href="#type-serialisation">serialisation()</a></tt><br></p>
+<p><code>encode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageTerm::<a href="#type-message">message()</a>) -&gt; <a href="#type-serialisation">serialisation()</a></code><br></p>
 <p> </p>
 </div><p>Encodes specified message (record instance) defined in specified
  specification, and returns the corresponding serialised form.

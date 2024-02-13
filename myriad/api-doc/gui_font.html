@@ -17,80 +17,120 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
+
+<h3 class="typedecl"><a name="type-descent">descent()</a></h3>
+<p><code>descent() = <a href="#type-length">length()</a></code></p>
+<p> Length from the baseline of a font to the bottom of the descender.</p>
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+<p><code>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
 
+
+<h3 class="typedecl"><a name="type-external_leading">external_leading()</a></h3>
+<p><code>external_leading() = <a href="#type-length">length()</a></code></p>
+<p> Any extra vertical space added to the font by the font designer (usually is
+ null).</p>
 
 <h3 class="typedecl"><a name="type-font">font()</a></h3>
-<p><b>abstract datatype</b>: <tt>font()</tt></p>
-<p> Designates a font object.</p>
+<p><b>abstract datatype</b>: <code>font()</code></p>
+<p><p> Designates a font object.</p>
+
+ It applies to text rendering, including the ones done from the gui_text
+ module; once created, use gui_widget:set_font/{2,3,4} or
+ gui_render:set_font/{3,4} to make use of it. Do not forget deallocating it
+ with destruct/1.</p>
 
 <h3 class="typedecl"><a name="type-font_data">font_data()</a></h3>
-<p><b>abstract datatype</b>: <tt>font_data()</tt></p>
+<p><b>abstract datatype</b>: <code>font_data()</code></p>
 <p><p> Actual (opaque) data corresponding to a font.</p>
 
  A wx object.</p>
 
 <h3 class="typedecl"><a name="type-font_family">font_family()</a></h3>
-<p><tt>font_family() = default_font_family | decorative | roman | script | swiss | modern | teletype</tt></p>
+<p><code>font_family() = default_font_family | decorative | roman | script | swiss | modern | teletype</code></p>
 <p> A font family.</p>
 
 <h3 class="typedecl"><a name="type-font_option">font_option()</a></h3>
-<p><tt>font_option() = {underline, boolean()} | {face_name, <a href="#type-any_string">any_string()</a>} | {encoding, <a href="#type-text_encoding">text_encoding()</a>}</tt></p>
+<p><code>font_option() = {underline, boolean()} | {face_name, <a href="#type-any_string">any_string()</a>} | {encoding, <a href="#type-text_encoding">text_encoding()</a>}</code></p>
 <p> A font option.</p>
 
 <h3 class="typedecl"><a name="type-font_size">font_size()</a></h3>
-<p><tt>font_size() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
-<p> The dimensions, in pixels, of characters drawn from a font.</p>
+<p><code>font_size() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
+<p><p> The dimensions, in pixels, of characters drawn from a font.</p>
+
+ Note that generally, due to capital letters, descent and other factors,
+ instead of relying on the size of a font, using the actual extent of a target
+ text (see get_precise_text_extent/2) is a lot more relevant.</p>
 
 <h3 class="typedecl"><a name="type-font_style">font_style()</a></h3>
-<p><tt>font_style() = normal | italic | slant</tt></p>
+<p><code>font_style() = normal | italic | slant</code></p>
 <p> A font style.</p>
 
 <h3 class="typedecl"><a name="type-font_weight">font_weight()</a></h3>
-<p><tt>font_weight() = thin | extra_light | light | normal | medium | semi_bold | bold | extra_bold | heavy | extra_heavy</tt></p>
+<p><code>font_weight() = thin | extra_light | light | normal | medium | semi_bold | bold | extra_bold | heavy | extra_heavy</code></p>
 <p> A font weight.</p>
 
+<h3 class="typedecl"><a name="type-height">height()</a></h3>
+<p><code>height() = <a href="gui.html#type-height">gui:height()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-length">length()</a></h3>
+<p><code>length() = <a href="gui.html#type-length">gui:length()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-point_size">point_size()</a></h3>
-<p><tt>point_size() = <a href="gui.html#type-length">gui:length()</a></tt></p>
-<p> A font size, in pixels.</p>
+<p><code>point_size() = <a href="gui.html#type-length">gui:length()</a></code></p>
+<p><p> A font size, in pixels.</p>
+
+ Note that generally, due to capital letters, descent and other factors,
+ instead of relying on the point size of a font, using the actual extent of a
+ target text (see get_precise_text_extent/2) is a lot more relevant.</p>
+
+<h3 class="typedecl"><a name="type-precise_text_extent">precise_text_extent()</a></h3>
+<p><code>precise_text_extent() = {<a href="#type-width">width()</a>, <a href="#type-height">height()</a>, <a href="#type-descent">descent()</a>, <a href="#type-external_leading">external_leading()</a>}</code></p>
+<p><p> A precise text extent.</p>
+
+ Useful for example so that texts are rendered at the same height.</p>
 
 <h3 class="typedecl"><a name="type-text_encoding">text_encoding()</a></h3>
-<p><tt>text_encoding() = <a href="#type-wx_text_encoding">wx_text_encoding()</a></tt></p>
+<p><code>text_encoding() = <a href="#type-wx_text_encoding">wx_text_encoding()</a></code></p>
 <p> Currently the same as wx.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-width">width()</a></h3>
+<p><code>width() = <a href="gui.html#type-width">gui:width()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_enum">wx_enum()</a></h3>
-<p><tt>wx_enum() = <a href="gui_wx_backend.html#type-wx_enum">gui_wx_backend:wx_enum()</a></tt></p>
+<p><code>wx_enum() = <a href="gui_wx_backend.html#type-wx_enum">gui_wx_backend:wx_enum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_font_family">wx_font_family()</a></h3>
-<p><tt>wx_font_family() = <a href="#type-wx_enum">wx_enum()</a></tt></p>
+<p><code>wx_font_family() = <a href="#type-wx_enum">wx_enum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_font_style">wx_font_style()</a></h3>
-<p><tt>wx_font_style() = <a href="#type-wx_enum">wx_enum()</a></tt></p>
+<p><code>wx_font_style() = <a href="#type-wx_enum">wx_enum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_font_weight">wx_font_weight()</a></h3>
-<p><tt>wx_font_weight() = <a href="#type-wx_enum">wx_enum()</a></tt></p>
+<p><code>wx_font_weight() = <a href="#type-wx_enum">wx_enum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_text_encoding">wx_text_encoding()</a></h3>
-<p><tt>wx_text_encoding() = <a href="#type-wx_enum">wx_enum()</a></tt></p>
+<p><code>wx_text_encoding() = <a href="#type-wx_enum">wx_enum()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates a font object from specified requirements, to determine the
- appearance of rendered text.</td></tr>
-<tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a font object from specified requirements, to determine the
- appearance of rendered text.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates a font object from the specified requirements, to determine the
+ appearance of rendered texts from now on.</td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a font object from the specified requirements, to determine the
+ appearance of rendered texts from now on.</td></tr>
 <tr><td valign="top"><a href="#create-3">create/3</a></td><td>Creates a font object from specified requirements, to determine the
  appearance of rendered text.</td></tr>
 <tr><td valign="top"><a href="#create-4">create/4</a></td><td>Creates a font object from specified requirements, to determine the
@@ -98,10 +138,16 @@
 <tr><td valign="top"><a href="#create-5">create/5</a></td><td>Creates a font object from specified requirements, to determine the
  appearance of rendered text.</td></tr>
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified font.</td></tr>
-<tr><td valign="top"><a href="#get_platform_dependent_description-1">get_platform_dependent_description/1</a></td><td>Returns the platform-dependent complete description the specified font.</td></tr>
-<tr><td valign="top"><a href="#get_text_extent-2">get_text_extent/2</a></td><td>Returns the extent used by the rendering of the specified single-line
- text with the specified font.</td></tr>
+<tr><td valign="top"><a href="#get_platform_dependent_description-1">get_platform_dependent_description/1</a></td><td>Returns the platform-dependent complete description of the specified 
+font.</td></tr>
+<tr><td valign="top"><a href="#get_precise_text_extent-2">get_precise_text_extent/2</a></td><td>Returns the precise extent used by the rendering of the specified
+ single-line text with the specified font.</td></tr>
+<tr><td valign="top"><a href="#get_text_extent-2">get_text_extent/2</a></td><td>Returns the extent used by the rendering of the specified single-line 
+text with the specified font.</td></tr>
 <tr><td valign="top"><a href="#get_user_friendly_description-1">get_user_friendly_description/1</a></td><td>Returns a user-friendly description of the specified font.</td></tr>
+<tr><td valign="top"><a href="#list_families-0">list_families/0</a></td><td>Returns a list of the base font families.</td></tr>
+<tr><td valign="top"><a href="#list_styles-0">list_styles/0</a></td><td>Returns a list of the supported font styles.</td></tr>
+<tr><td valign="top"><a href="#list_weights-0">list_weights/0</a></td><td>Returns a list of the supported font weights.</td></tr>
 <tr><td valign="top"><a href="#to_wx_font_family-1">to_wx_font_family/1</a></td><td>Converts the specified font family into a wx one.</td></tr>
 <tr><td valign="top"><a href="#to_wx_font_style-1">to_wx_font_style/1</a></td><td>Converts the specified font style into a wx one.</td></tr>
 <tr><td valign="top"><a href="#to_wx_font_weight-1">to_wx_font_weight/1</a></td><td>Converts the specified font weight into a wx one.</td></tr>
@@ -111,23 +157,23 @@
 
 <h3 class="function"><a name="create-1">create/1</a></h3>
 <div class="spec">
-<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p><code>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>) -&gt; <a href="#type-font">font()</a></code><br></p>
 <p> </p>
-</div><p>Creates a font object from specified requirements, to determine the
- appearance of rendered text.
+</div><p>Creates a font object from the specified requirements, to determine the
+ appearance of rendered texts from now on.
 </p>
 
 <h3 class="function"><a name="create-2">create/2</a></h3>
 <div class="spec">
-<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p><code>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>) -&gt; <a href="#type-font">font()</a></code><br></p>
 <p> </p>
-</div><p>Creates a font object from specified requirements, to determine the
- appearance of rendered text.
+</div><p>Creates a font object from the specified requirements, to determine the
+ appearance of rendered texts from now on.
 </p>
 
 <h3 class="function"><a name="create-3">create/3</a></h3>
 <div class="spec">
-<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p><code>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>) -&gt; <a href="#type-font">font()</a></code><br></p>
 <p> </p>
 </div><p>Creates a font object from specified requirements, to determine the
  appearance of rendered text.
@@ -135,7 +181,7 @@
 
 <h3 class="function"><a name="create-4">create/4</a></h3>
 <div class="spec">
-<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>, FontWeight::<a href="#type-font_weight">font_weight()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p><code>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>, FontWeight::<a href="#type-font_weight">font_weight()</a>) -&gt; <a href="#type-font">font()</a></code><br></p>
 <p> </p>
 </div><p>Creates a font object from specified requirements, to determine the
  appearance of rendered text.
@@ -143,7 +189,7 @@
 
 <h3 class="function"><a name="create-5">create/5</a></h3>
 <div class="spec">
-<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>, FontWeight::<a href="#type-font_weight">font_weight()</a>, FontOpts::[<a href="#type-font_option">font_option()</a>]) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p><code>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>, FontWeight::<a href="#type-font_weight">font_weight()</a>, FontOpts::[<a href="#type-font_option">font_option()</a>]) -&gt; <a href="#type-font">font()</a></code><br></p>
 <p> </p>
 </div><p>Creates a font object from specified requirements, to determine the
  appearance of rendered text.
@@ -151,51 +197,82 @@
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><tt>destruct(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>destruct(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Destructs the specified font.</p>
 
 <h3 class="function"><a name="get_platform_dependent_description-1">get_platform_dependent_description/1</a></h3>
 <div class="spec">
-<p><tt>get_platform_dependent_description(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_platform_dependent_description(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the platform-dependent complete description the specified font.</p>
+</div><p><p>Returns the platform-dependent complete description of the specified 
+font.</p>
 
  For example, "Sans 10".
 </p>
 
+<h3 class="function"><a name="get_precise_text_extent-2">get_precise_text_extent/2</a></h3>
+<div class="spec">
+<p><code>get_precise_text_extent(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-precise_text_extent">precise_text_extent()</a></code><br></p>
+<p> </p>
+</div><p>Returns the precise extent used by the rendering of the specified
+ single-line text with the specified font.
+</p>
+
 <h3 class="function"><a name="get_text_extent-2">get_text_extent/2</a></h3>
 <div class="spec">
-<p><tt>get_text_extent(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p><code>get_text_extent(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
 <p> </p>
-</div><p>Returns the extent used by the rendering of the specified single-line
- text with the specified font.
+</div><p><p>Returns the extent used by the rendering of the specified single-line 
+text with the specified font.</p>
+
+ Note that the returned height may be larger than the actual one of the text,
+ due to the margin taken for letters possibly going though the baseline (like
+ 'g'), the descent.
 </p>
 
 <h3 class="function"><a name="get_user_friendly_description-1">get_user_friendly_description/1</a></h3>
 <div class="spec">
-<p><tt>get_user_friendly_description(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_user_friendly_description(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns a user-friendly description of the specified font.</p>
 
  For example, "Sans 10".
 </p>
 
+<h3 class="function"><a name="list_families-0">list_families/0</a></h3>
+<div class="spec">
+<p><code>list_families() -&gt; [<a href="#type-font_family">font_family()</a>]</code><br></p>
+<p> </p>
+</div><p>Returns a list of the base font families.</p>
+
+<h3 class="function"><a name="list_styles-0">list_styles/0</a></h3>
+<div class="spec">
+<p><code>list_styles() -&gt; [<a href="#type-font_style">font_style()</a>]</code><br></p>
+<p> </p>
+</div><p>Returns a list of the supported font styles.</p>
+
+<h3 class="function"><a name="list_weights-0">list_weights/0</a></h3>
+<div class="spec">
+<p><code>list_weights() -&gt; [<a href="#type-font_weight">font_weight()</a>]</code><br></p>
+<p> </p>
+</div><p>Returns a list of the supported font weights.</p>
+
 <h3 class="function"><a name="to_wx_font_family-1">to_wx_font_family/1</a></h3>
 <div class="spec">
-<p><tt>to_wx_font_family(Other::<a href="#type-font_family">font_family()</a>) -&gt; <a href="#type-wx_font_family">wx_font_family()</a></tt><br></p>
+<p><code>to_wx_font_family(Other::<a href="#type-font_family">font_family()</a>) -&gt; <a href="#type-wx_font_family">wx_font_family()</a></code><br></p>
 <p> </p>
 </div><p>Converts the specified font family into a wx one.</p>
 
 <h3 class="function"><a name="to_wx_font_style-1">to_wx_font_style/1</a></h3>
 <div class="spec">
-<p><tt>to_wx_font_style(Other::<a href="#type-font_style">font_style()</a>) -&gt; <a href="#type-wx_font_style">wx_font_style()</a></tt><br></p>
+<p><code>to_wx_font_style(Other::<a href="#type-font_style">font_style()</a>) -&gt; <a href="#type-wx_font_style">wx_font_style()</a></code><br></p>
 <p> </p>
 </div><p>Converts the specified font style into a wx one.</p>
 
 <h3 class="function"><a name="to_wx_font_weight-1">to_wx_font_weight/1</a></h3>
 <div class="spec">
-<p><tt>to_wx_font_weight(Other::<a href="#type-font_weight">font_weight()</a>) -&gt; <a href="#type-wx_font_weight">wx_font_weight()</a></tt><br></p>
+<p><code>to_wx_font_weight(Other::<a href="#type-font_weight">font_weight()</a>) -&gt; <a href="#type-wx_font_weight">wx_font_weight()</a></code><br></p>
 <p> </p>
 </div><p>Converts the specified font weight into a wx one.</p>
 <hr>

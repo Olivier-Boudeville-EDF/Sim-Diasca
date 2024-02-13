@@ -16,35 +16,35 @@
 <h2><a name="description">Description</a></h2><p>Module in charge of handling <b>patterns defined with an AST</b>.</p>
 
  See the "7.3 Patterns" section of
- <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a> for more information.
+ <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a> for more information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_pattern">ast_pattern()</a></h3>
-<p><tt>ast_pattern() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></tt></p>
+<p><code>ast_pattern() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></code></p>
 <p><p> The description of a pattern in an AST, with in-file location 
 (line/column) information.</p>
 
- <p>Ex: {match,12,X,Y}.</p>
+ <p>For example: {match,12,X,Y}.</p>
 
  <p>Too many patterns to fully specify all (see "7.3 Patterns").</p>
 
  Note: a pattern is different from an expression: even if they share at least
- some types of forms, they are to be interpreted differently (ex: their
+ some types of forms, they are to be interpreted differently (e.g. their
  sub-elements are of the same kind as they are, and at least some rules
  differ).</p>
 
 <h3 class="typedecl"><a name="type-ast_pattern_sequence">ast_pattern_sequence()</a></h3>
-<p><tt>ast_pattern_sequence() = [<a href="#type-ast_pattern">ast_pattern()</a>]</tt></p>
+<p><code>ast_pattern_sequence() = [<a href="#type-ast_pattern">ast_pattern()</a>]</code></p>
 <p><p> The description of a sequence of patterns in an AST, with in-file location 
 information.</p>
 
  <p>A pattern sequence is simply an (ordered) list of patterns.</p>
 
- Ex: [{match,12,X,Y}].</p>
+ For example: [{match,12,X,Y}].</p>
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -58,14 +58,14 @@ transformations.</td></tr>
 
 <h3 class="function"><a name="transform_pattern-2">transform_pattern/2</a></h3>
 <div class="spec">
-<p><tt>transform_pattern(E::<a href="#type-ast_pattern">ast_pattern()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_pattern">ast_pattern()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_pattern(E::<a href="#type-ast_pattern">ast_pattern()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_pattern">ast_pattern()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms specified pattern, operating relevant AST transformations onto
  it (eg call ones).</p>
 
 <h3 class="function"><a name="transform_pattern_sequence-2">transform_pattern_sequence/2</a></h3>
 <div class="spec">
-<p><tt>transform_pattern_sequence(Patterns::<a href="#type-ast_pattern_sequence">ast_pattern_sequence()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_pattern_sequence">ast_pattern_sequence()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_pattern_sequence(Patterns::<a href="#type-ast_pattern_sequence">ast_pattern_sequence()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_pattern_sequence">ast_pattern_sequence()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p><p>Transforms specified pattern sequence, operating relevant AST 
 transformations.</p>

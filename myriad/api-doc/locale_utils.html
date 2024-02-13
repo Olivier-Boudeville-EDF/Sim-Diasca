@@ -11,18 +11,17 @@
 
 <h1>Module locale_utils</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding the support of
- various <b>locales</b> (ex: for the management of per-country bank holidays)
- and related character sets.
+ various <b>locales</b> (e.g.
 
 
 <h2><a name="description">Description</a></h2>Gathering of various convenient facilities regarding the support of
- various <b>locales</b> (ex: for the management of per-country bank holidays)
+ various <b>locales</b> (e.g. for the management of per-country bank holidays)
  and related character sets.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_locale">any_locale()</a></h3>
-<p><tt>any_locale() = <a href="#type-any_string">any_string()</a></tt></p>
+<p><code>any_locale() = <a href="#type-any_string">any_string()</a></code></p>
 <p><p> A locale as a BCP 47 plain string or binary, like "fr-FR" or <code>&lt;&lt;"fr-FR"&gt;&gt;</code>, 
 corresponding to "French (France)" here.</p>
 
@@ -30,11 +29,11 @@ corresponding to "French (France)" here.</p>
  https://en.wikipedia.org/wiki/IETF_language_tag for further details.</p>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_locale">bin_locale()</a></h3>
-<p><tt>bin_locale() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>bin_locale() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p><p> A locale as a BCP 47 binary, like <code>&lt;&lt;"fr-FR"&gt;&gt;</code>, corresponding to "French 
 (France)" here.</p>
 
@@ -42,27 +41,27 @@ corresponding to "French (France)" here.</p>
  https://en.wikipedia.org/wiki/IETF_language_tag for further details.</p>
 
 <h3 class="typedecl"><a name="type-bin_locale_description">bin_locale_description()</a></h3>
-<p><tt>bin_locale_description() = <a href="#type-bin_string">bin_string()</a></tt></p>
-<p> A description of a locale (ex: <code>&lt;&lt;"Afrikaans (South Africa)"&gt;&gt;</code>).</p>
+<p><code>bin_locale_description() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p> A description of a locale (e.g. <code>&lt;&lt;"Afrikaans (South Africa)"&gt;&gt;</code>).</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-country">country()</a></h3>
-<p><tt>country() = france | united_kingdom | atom()</tt></p>
+<p><code>country() = france | united_kingdom | atom()</code></p>
 <p> Type to designate all known countries.</p>
 
 <h3 class="typedecl"><a name="type-locale_charset">locale_charset()</a></h3>
-<p><tt>locale_charset() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>locale_charset() = <a href="#type-ustring">ustring()</a></code></p>
 <p> A locale with a character set, like "fr_FR.UTF-8".</p>
 
 <h3 class="typedecl"><a name="type-locale_description">locale_description()</a></h3>
-<p><tt>locale_description() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> A description of a locale (ex: "Afrikaans (South Africa)").</p>
+<p><code>locale_description() = <a href="#type-ustring">ustring()</a></code></p>
+<p> A description of a locale (e.g. "Afrikaans (South Africa)").</p>
 
 <h3 class="typedecl"><a name="type-string_locale">string_locale()</a></h3>
-<p><tt>string_locale() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><code>string_locale() = <a href="#type-ustring">ustring()</a></code></p>
 <p><p> A locale as a BCP 47 plain string, like "fr-FR", corresponding to "French 
 (France)" here.</p>
 
@@ -70,7 +69,7 @@ corresponding to "French (France)" here.</p>
  https://en.wikipedia.org/wiki/IETF_language_tag for further details.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -81,7 +80,7 @@ corresponding to "French (France)" here.</p>
 
 <h3 class="function"><a name="get_locale_charset-0">get_locale_charset/0</a></h3>
 <div class="spec">
-<p><tt>get_locale_charset() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_locale_charset() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns the current locale with a character set, like "fr_FR.UTF-8".</p>
 <hr>

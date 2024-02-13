@@ -23,38 +23,38 @@ including atomic literals.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_atomic_literal">ast_atomic_literal()</a></h3>
-<p><tt>ast_atomic_literal() = {atom, <a href="#type-file_loc">file_loc()</a>, atom()} | {char, <a href="#type-file_loc">file_loc()</a>, char()} | {float, <a href="#type-file_loc">file_loc()</a>, float()} | {integer, <a href="#type-file_loc">file_loc()</a>, integer()} | {string, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ustring">ustring()</a>}</tt></p>
+<p><code>ast_atomic_literal() = {atom, <a href="#type-file_loc">file_loc()</a>, atom()} | {char, <a href="#type-file_loc">file_loc()</a>, char()} | {float, <a href="#type-file_loc">file_loc()</a>, float()} | {integer, <a href="#type-file_loc">file_loc()</a>, integer()} | {string, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ustring">ustring()</a>}</code></p>
 <p><p> The description of an immediate value (atomic literal) in an AST, with in-file 
 location information (line/column).</p>
 
- Ex: nil, in {nil,{33,2}} for [] at column 2 of line #33.</p>
+ For example: nil, in {nil,{33,2}} for [] at column 2 of line #33.</p>
 
 <h3 class="typedecl"><a name="type-ast_compound_literal">ast_compound_literal()</a></h3>
-<p><tt>ast_compound_literal() = {nil, <a href="#type-file_loc">file_loc()</a>}</tt></p>
+<p><code>ast_compound_literal() = {nil, <a href="#type-file_loc">file_loc()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_element">ast_element()</a></h3>
-<p><tt>ast_element() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></tt></p>
+<p><code>ast_element() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_immediate_value">ast_immediate_value()</a></h3>
-<p><tt>ast_immediate_value() = <a href="#type-ast_atomic_literal">ast_atomic_literal()</a> | <a href="#type-ast_compound_literal">ast_compound_literal()</a></tt></p>
+<p><code>ast_immediate_value() = <a href="#type-ast_atomic_literal">ast_atomic_literal()</a> | <a href="#type-ast_compound_literal">ast_compound_literal()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_ast_immediate_value">maybe_ast_immediate_value()</a></h3>
-<p><tt>maybe_ast_immediate_value() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-ast_immediate_value">ast_immediate_value()</a>)</tt></p>
+<p><code>maybe_ast_immediate_value() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-ast_immediate_value">ast_immediate_value()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -76,47 +76,49 @@ specified location of the current source file.</td></tr>
 
 <h3 class="function"><a name="forge_atom_value-1">forge_atom_value/1</a></h3>
 <div class="spec">
-<p><tt>forge_atom_value(AtomValue::atom()) -&gt; <a href="#type-ast_element">ast_element()</a></tt><br></p>
+<p><code>forge_atom_value(AtomValue::atom()) -&gt; <a href="#type-ast_element">ast_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant value designating specified atom, defined at 
 column 0 of line #0 of the current source file.</p>
 
- Ex: forge_atom_value(basic_utils) returns: {atom,{0,1},basic_utils}.
+ For example: forge_atom_value(basic_utils) returns: {atom,{0,1},basic_utils}.
 </p>
 
 <h3 class="function"><a name="forge_atom_value-2">forge_atom_value/2</a></h3>
 <div class="spec">
-<p><tt>forge_atom_value(AtomValue::atom(), FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_element">ast_element()</a></tt><br></p>
+<p><code>forge_atom_value(AtomValue::atom(), FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_element">ast_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant value designating specified atom, defined at 
 specified location of the current source file.</p>
 
- Ex: forge_atom_value(basic_utils, {4,1}) returns: {atom,{4,1},basic_utils}.
+ For example: forge_atom_value(basic_utils, {4,1}) returns:
+ {atom,{4,1},basic_utils}.
 </p>
 
 <h3 class="function"><a name="forge_boolean_value-1">forge_boolean_value/1</a></h3>
 <div class="spec">
-<p><tt>forge_boolean_value(BooleanValue::boolean()) -&gt; <a href="#type-ast_element">ast_element()</a></tt><br></p>
+<p><code>forge_boolean_value(BooleanValue::boolean()) -&gt; <a href="#type-ast_element">ast_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant value designating specified boolean, defined at 
 column 0 of line #0 of the current source file.</p>
 
- Ex: forge_boolean_value(true) returns: {boolean,{0,1},true}.
+ For example: forge_boolean_value(true) returns: {boolean,{0,1},true}.
 </p>
 
 <h3 class="function"><a name="forge_boolean_value-2">forge_boolean_value/2</a></h3>
 <div class="spec">
-<p><tt>forge_boolean_value(BooleanValue::boolean(), FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_element">ast_element()</a></tt><br></p>
+<p><code>forge_boolean_value(BooleanValue::boolean(), FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_element">ast_element()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns an AST-compliant value designating specified boolean, defined at 
 specified location of the current source file.</p>
 
- Ex: forge_boolean_value(false, {43,1}) returns: {boolean, {43,1}, false}.
+ For example: forge_boolean_value(false, {43,1}) returns: {boolean, {43,1},
+ false}.
 </p>
 
 <h3 class="function"><a name="get_immediate_value-1">get_immediate_value/1</a></h3>
 <div class="spec">
-<p><tt>get_immediate_value(Other) -&gt; any()</tt></p>
+<p><code>get_immediate_value(Other) -&gt; any()</code></p>
 <p> </p>
 </div><p>Returns the actual (immediate) value corresponding to the specified form
  (regardless of its actual type).
@@ -124,7 +126,7 @@ specified location of the current source file.</p>
 
 <h3 class="function"><a name="transform_value-2">transform_value/2</a></h3>
 <div class="spec">
-<p><tt>transform_value(Literal::<a href="#type-ast_atomic_literal">ast_atomic_literal()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_atomic_literal">ast_atomic_literal()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p><code>transform_value(Literal::<a href="#type-ast_atomic_literal">ast_atomic_literal()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_atomic_literal">ast_atomic_literal()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
 <p> </p>
 </div><p>Transforms specified literal value, operating relevant AST
  transformations onto it.

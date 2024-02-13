@@ -21,49 +21,49 @@ through wxWidgets.</p>
 
  <p>See gui.erl for more general rendering topics.</p>
 
- Refer to <a href="https://myriad.esperide.org/#for-3d-applications" target="_top"><tt>https://myriad.esperide.org/#for-3d-applications</tt></a> for further
+ Refer to <a href="https://myriad.esperide.org/#for-3d-applications" target="_top"><code>https://myriad.esperide.org/#for-3d-applications</code></a> for further
  information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-actual_debug_severity">actual_debug_severity()</a></h3>
-<p><tt>actual_debug_severity() = low | medium | high</tt></p>
+<p><code>actual_debug_severity() = low | medium | high</code></p>
 <p> The severity of debug messages to enable or disable.</p>
 
 <h3 class="typedecl"><a name="type-actual_debug_source">actual_debug_source()</a></h3>
-<p><tt>actual_debug_source() = api | window_system | shader_compiler | third_party | application | other</tt></p>
+<p><code>actual_debug_source() = api | window_system | shader_compiler | third_party | application | other</code></p>
 
 
 <h3 class="typedecl"><a name="type-actual_debug_type">actual_debug_type()</a></h3>
-<p><tt>actual_debug_type() = type_error | deprecated_behaviour | undefined_behaviour | portability | performance | marker | push_group | pop_group | other</tt></p>
+<p><code>actual_debug_type() = type_error | deprecated_behaviour | undefined_behaviour | portability | performance | marker | push_group | pop_group | other</code></p>
 
 
 <h3 class="typedecl"><a name="type-any_error">any_error()</a></h3>
-<p><b>abstract datatype</b>: <tt>any_error()</tt></p>
+<p><b>abstract datatype</b>: <code>any_error()</code></p>
 <p> An error code reported by the graphic subsystem, OpenGL or GLU.</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bit_size">bit_size()</a></h3>
-<p><tt>bit_size() = <a href="system_utils.html#type-bit_size">system_utils:bit_size()</a></tt></p>
+<p><code>bit_size() = <a href="system_utils.html#type-bit_size">system_utils:bit_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-buffer">buffer()</a></h3>
-<p><tt>buffer() = <a href="gui.html#type-buffer">gui:buffer()</a></tt></p>
+<p><code>buffer() = <a href="gui.html#type-buffer">gui:buffer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-buffer_access_pattern">buffer_access_pattern()</a></h3>
-<p><tt>buffer_access_pattern() = stream | static | dynamic</tt></p>
+<p><code>buffer_access_pattern() = stream | static | dynamic</code></p>
 
 
 <h3 class="typedecl"><a name="type-buffer_access_usage">buffer_access_usage()</a></h3>
-<p><tt>buffer_access_usage() = draw | read | copy</tt></p>
+<p><code>buffer_access_usage() = draw | read | copy</code></p>
 
 
 <h3 class="typedecl"><a name="type-buffer_usage_hint">buffer_usage_hint()</a></h3>
-<p><tt>buffer_usage_hint() = {<a href="#type-buffer_access_usage">buffer_access_usage()</a>, <a href="#type-buffer_access_pattern">buffer_access_pattern()</a>}</tt></p>
+<p><code>buffer_usage_hint() = {<a href="#type-buffer_access_usage">buffer_access_usage()</a>, <a href="#type-buffer_access_pattern">buffer_access_pattern()</a>}</code></p>
 <p><p> Hint given to the GL implementation regarding how a buffer will be 
 accessed.</p>
 
@@ -71,67 +71,67 @@ accessed.</p>
  that may significantly impact buffer object performance.</p>
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-debug_context_message">debug_context_message()</a></h3>
-<p><tt>debug_context_message() = {<a href="#type-debug_message_id">debug_message_id()</a>, Message::<a href="#type-bin_string">bin_string()</a>, <a href="#type-actual_debug_severity">actual_debug_severity()</a>, <a href="#type-actual_debug_source">actual_debug_source()</a>, <a href="#type-actual_debug_type">actual_debug_type()</a>}</tt></p>
+<p><code>debug_context_message() = {<a href="#type-debug_message_id">debug_message_id()</a>, Message::<a href="#type-bin_string">bin_string()</a>, <a href="#type-actual_debug_severity">actual_debug_severity()</a>, <a href="#type-actual_debug_source">actual_debug_source()</a>, <a href="#type-actual_debug_type">actual_debug_type()</a>}</code></p>
 <p> A message in the debug context, with its metadata.</p>
 
 <h3 class="typedecl"><a name="type-debug_message_id">debug_message_id()</a></h3>
-<p><tt>debug_message_id() = integer()</tt></p>
+<p><code>debug_message_id() = integer()</code></p>
 <p> Any application-level identifier assigned to a debug message.</p>
 
 <h3 class="typedecl"><a name="type-debug_selector">debug_selector()</a></h3>
-<p><tt>debug_selector() = enable | disable</tt></p>
+<p><code>debug_selector() = enable | disable</code></p>
 <p> To filter debug messages.</p>
 
 <h3 class="typedecl"><a name="type-debug_severity">debug_severity()</a></h3>
-<p><tt>debug_severity() = <a href="#type-actual_debug_severity">actual_debug_severity()</a> | all</tt></p>
+<p><code>debug_severity() = <a href="#type-actual_debug_severity">actual_debug_severity()</a> | all</code></p>
 <p> The severity of debug messages to enable or disable.</p>
 
 <h3 class="typedecl"><a name="type-debug_source">debug_source()</a></h3>
-<p><tt>debug_source() = <a href="#type-actual_debug_source">actual_debug_source()</a> | all</tt></p>
+<p><code>debug_source() = <a href="#type-actual_debug_source">actual_debug_source()</a> | all</code></p>
 
 
 <h3 class="typedecl"><a name="type-debug_type">debug_type()</a></h3>
-<p><tt>debug_type() = <a href="#type-actual_debug_type">actual_debug_type()</a> | all</tt></p>
+<p><code>debug_type() = <a href="#type-actual_debug_type">actual_debug_type()</a> | all</code></p>
 
 
 <h3 class="typedecl"><a name="type-device_context_attribute">device_context_attribute()</a></h3>
-<p><tt>device_context_attribute() = rgba | bgra | double_buffer | {min_red_size, <a href="#type-bit_size">bit_size()</a>} | {min_green_size, <a href="#type-bit_size">bit_size()</a>} | {min_blue_size, <a href="#type-bit_size">bit_size()</a>} | {depth_buffer_size, <a href="#type-bit_size">bit_size()</a>} | use_core_profile | debug_context</tt></p>
+<p><code>device_context_attribute() = rgba | bgra | double_buffer | {min_red_size, <a href="#type-bit_size">bit_size()</a>} | {min_green_size, <a href="#type-bit_size">bit_size()</a>} | {min_blue_size, <a href="#type-bit_size">bit_size()</a>} | {depth_buffer_size, <a href="#type-bit_size">bit_size()</a>} | use_core_profile | debug_context</code></p>
 
 
 <h3 class="typedecl"><a name="type-enum">enum()</a></h3>
-<p><tt>enum() = non_neg_integer()</tt></p>
+<p><code>enum() = non_neg_integer()</code></p>
 <p> A value belonging to an OpenGL enumeration.</p>
 
 <h3 class="typedecl"><a name="type-f">f()</a></h3>
-<p><tt>f() = float()</tt></p>
+<p><code>f() = float()</code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
 <p> A floating-point factor, typically in [0.0,1.0].</p>
 
 <h3 class="typedecl"><a name="type-gl_base_type">gl_base_type()</a></h3>
-<p><tt>gl_base_type() = 5120 | 5121 | 5123 | 5122 | 5125 | 5124 | 5126 | 5130</tt></p>
+<p><code>gl_base_type() = 5120 | 5121 | 5123 | 5122 | 5125 | 5124 | 5126 | 5130</code></p>
 <p> The GL base numerical types.</p>
 
 <h3 class="typedecl"><a name="type-gl_boolean">gl_boolean()</a></h3>
-<p><tt>gl_boolean() = 1 | 0</tt></p>
+<p><code>gl_boolean() = 1 | 0</code></p>
 
 
 <h3 class="typedecl"><a name="type-gl_buffer">gl_buffer()</a></h3>
-<p><tt>gl_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
+<p><code>gl_buffer() = <a href="#type-buffer">buffer()</a></code></p>
 <p> Any type of OpenGL buffer.</p>
 
 <h3 class="typedecl"><a name="type-gl_buffer_id">gl_buffer_id()</a></h3>
-<p><tt>gl_buffer_id() = non_neg_integer()</tt></p>
+<p><code>gl_buffer_id() = non_neg_integer()</code></p>
 <p> The identifier of an (OpenGL) buffer, i.e. a "buffer object name".</p>
 
 <h3 class="typedecl"><a name="type-gl_canvas">gl_canvas()</a></h3>
-<p><b>abstract datatype</b>: <tt>gl_canvas()</tt></p>
+<p><b>abstract datatype</b>: <code>gl_canvas()</code></p>
 <p><p> An OpenGL-based, back-buffered canvas (not to be mixed with a basic 
 gui_canvas:canvas/0 one), to which an OpenGL context shall be set in order to 
 execute OpenGL commands.</p>
@@ -139,11 +139,11 @@ execute OpenGL commands.</p>
  Any OpenGL canvas is not resized when its containers are resized.</p>
 
 <h3 class="typedecl"><a name="type-gl_canvas_option">gl_canvas_option()</a></h3>
-<p><tt>gl_canvas_option() = {gl_attributes, [<a href="#type-device_context_attribute">device_context_attribute()</a>]} | <a href="gui_wx_backend.html#type-other_wx_device_context_attribute">gui_wx_backend:other_wx_device_context_attribute()</a></tt></p>
+<p><code>gl_canvas_option() = {gl_attributes, [<a href="#type-device_context_attribute">device_context_attribute()</a>]} | <a href="gui_wx_backend.html#type-other_wx_device_context_attribute">gui_wx_backend:other_wx_device_context_attribute()</a></code></p>
 <p> Options of an OpenGL canvas.</p>
 
 <h3 class="typedecl"><a name="type-gl_context">gl_context()</a></h3>
-<p><b>abstract datatype</b>: <tt>gl_context()</tt></p>
+<p><b>abstract datatype</b>: <code>gl_context()</code></p>
 <p><p> An OpenGL context represents the state of an OpenGL state machine and the 
 connection between OpenGL and the running system.</p>
 
@@ -153,44 +153,44 @@ connection between OpenGL and the running system.</p>
  functions like glViewport().</p>
 
 <h3 class="typedecl"><a name="type-gl_debug_severity">gl_debug_severity()</a></h3>
-<p><tt>gl_debug_severity() = 37192 | 37191 | 37190 | 4352</tt></p>
+<p><code>gl_debug_severity() = 37192 | 37191 | 37190 | 4352</code></p>
 <p> all of them</p>
 
 <h3 class="typedecl"><a name="type-gl_debug_source">gl_debug_source()</a></h3>
-<p><tt>gl_debug_source() = 33350 | 33351 | 33352 | 33353 | 33354 | 33355 | 4352</tt></p>
+<p><code>gl_debug_source() = 33350 | 33351 | 33352 | 33353 | 33354 | 33355 | 4352</code></p>
 <p> all of them</p>
 
 <h3 class="typedecl"><a name="type-gl_debug_type">gl_debug_type()</a></h3>
-<p><tt>gl_debug_type() = 33356 | 33357 | 33358 | 33359 | 33360 | 33384 | 33385 | 33386 | 33361 | 4352</tt></p>
+<p><code>gl_debug_type() = 33356 | 33357 | 33358 | 33359 | 33360 | 33384 | 33385 | 33386 | 33361 | 4352</code></p>
 <p> all of them</p>
 
 <h3 class="typedecl"><a name="type-gl_error">gl_error()</a></h3>
-<p><b>abstract datatype</b>: <tt>gl_error()</tt></p>
+<p><b>abstract datatype</b>: <code>gl_error()</code></p>
 <p> An error code reported by OpenGL.</p>
 
 <h3 class="typedecl"><a name="type-gl_extension">gl_extension()</a></h3>
-<p><tt>gl_extension() = atom()</tt></p>
+<p><code>gl_extension() = atom()</code></p>
 <p><p> Designates an OpenGL extension.</p>
 
  For example: 'GL_ARB_shader_atomic_counters'.</p>
 
 <h3 class="typedecl"><a name="type-gl_matrix2">gl_matrix2()</a></h3>
-<p><tt>gl_matrix2() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p><code>gl_matrix2() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</code></p>
 <p> A 2x2 (float) matrix (hence with 4 elements), according to the conventions of
  the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_matrix3">gl_matrix3()</a></h3>
-<p><tt>gl_matrix3() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p><code>gl_matrix3() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</code></p>
 <p> A 3x3 (float) matrix (hence with 9 elements), according to the conventions of
  the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_matrix4">gl_matrix4()</a></h3>
-<p><tt>gl_matrix4() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p><code>gl_matrix4() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</code></p>
 <p> A 4x4 (float) matrix (hence with 16 elements), according to the conventions of
  the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_profile">gl_profile()</a></h3>
-<p><tt>gl_profile() = core | compatibility</tt></p>
+<p><code>gl_profile() = core | compatibility</code></p>
 <p><p> Deprecated functions are allowed 
 An OpenGL profile, typically as queried from a driver. Profiles are defined 
 relatively to a particular version of OpenGL.</p>
@@ -198,40 +198,40 @@ relatively to a particular version of OpenGL.</p>
  Apparently the 'compatibility' profile is the default one.</p>
 
 <h3 class="typedecl"><a name="type-gl_vector2">gl_vector2()</a></h3>
-<p><tt>gl_vector2() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p><code>gl_vector2() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</code></p>
 <p> A.k.a. point2:point2().
  A 2D (float) vector, according to the conventions of the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_vector3">gl_vector3()</a></h3>
-<p><tt>gl_vector3() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p><code>gl_vector3() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</code></p>
 <p> A.k.a. point3:point3().
  A 3D (float) vector, according to the conventions of the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_vector4">gl_vector4()</a></h3>
-<p><tt>gl_vector4() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p><code>gl_vector4() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</code></p>
 <p> A.k.a. point4:point4().
  A (float) 4D vector, according to the conventions of the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_version">gl_version()</a></h3>
-<p><tt>gl_version() = <a href="basic_utils.html#type-three_digit_version">basic_utils:three_digit_version()</a></tt></p>
+<p><code>gl_version() = <a href="basic_utils.html#type-three_digit_version">basic_utils:three_digit_version()</a></code></p>
 <p> An OpenGL version (major/minor/path), typically as queried from a driver.</p>
 
 <h3 class="typedecl"><a name="type-glu_error">glu_error()</a></h3>
-<p><b>abstract datatype</b>: <tt>glu_error()</tt></p>
+<p><b>abstract datatype</b>: <code>glu_error()</code></p>
 <p> An error code reported by GLU.</p>
 
 <h3 class="typedecl"><a name="type-glu_id">glu_id()</a></h3>
-<p><b>abstract datatype</b>: <tt>glu_id()</tt></p>
+<p><b>abstract datatype</b>: <code>glu_id()</code></p>
 <p> An identifier (actually a pointer) returned by GLU (e.g. when creating a
  quadrics). A null value usually means that there was not enough memory to
  allocate the object.</p>
 
 <h3 class="typedecl"><a name="type-glxinfo_report">glxinfo_report()</a></h3>
-<p><tt>glxinfo_report() = [<a href="#type-ustring">ustring()</a>]</tt></p>
+<p><code>glxinfo_report() = [<a href="#type-ustring">ustring()</a>]</code></p>
 <p> A report issued by the glxinfo executable.</p>
 
 <h3 class="typedecl"><a name="type-info_table_id">info_table_id()</a></h3>
-<p><tt>info_table_id() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/ets.html#type-tid">ets:tid()</a></tt></p>
+<p><code>info_table_id() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/ets.html#type-tid">ets:tid()</a></code></p>
 <p> The identifier of an ETS-based OpenGL information table, registering the
  following static information for an easier/more efficient (frequent) lookup:
   - {gl_version, gl_version()}
@@ -240,7 +240,7 @@ relatively to a particular version of OpenGL.</p>
   each)</p>
 
 <h3 class="typedecl"><a name="type-length_factor">length_factor()</a></h3>
-<p><tt>length_factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+<p><code>length_factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
 <p><p> A floating-point factor, typically in [0.0,1.0], typically to designate 
 widths, heights, etc. when they have been normalised.</p>
 
@@ -251,69 +251,69 @@ its buffer (a power of two).</p>
  This is the coordinate type of UV coordinates.</p>
 
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
-<p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
+<p><code>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix_stack">matrix_stack()</a></h3>
-<p><tt>matrix_stack() = 5888 | 5889 | 5890 | 6144</tt></p>
+<p><code>matrix_stack() = 5888 | 5889 | 5890 | 6144</code></p>
 <p> The various matrix stacks available, a.k.a. the current matrix mode.</p>
 
 <h3 class="typedecl"><a name="type-mesh">mesh()</a></h3>
-<p><tt>mesh() = <a href="mesh.html#type-mesh">mesh:mesh()</a></tt></p>
+<p><code>mesh() = <a href="mesh.html#type-mesh">mesh:mesh()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-platform_identifier">platform_identifier()</a></h3>
-<p><tt>platform_identifier() = {<a href="#type-vendor_name">vendor_name()</a>, <a href="#type-renderer_name">renderer_name()</a>}</tt></p>
+<p><code>platform_identifier() = {<a href="#type-vendor_name">vendor_name()</a>, <a href="#type-renderer_name">renderer_name()</a>}</code></p>
 <p> Uniquely identifies an (OpenGL driver) platform; does not change from release
  to release, and should be used by platform-recognition algorithms.</p>
 
 <h3 class="typedecl"><a name="type-polygon_facing_mode">polygon_facing_mode()</a></h3>
-<p><tt>polygon_facing_mode() = 1028 | 1029 | 1032</tt></p>
+<p><code>polygon_facing_mode() = 1028 | 1029 | 1032</code></p>
 
 
 <h3 class="typedecl"><a name="type-rasterization_mode">rasterization_mode()</a></h3>
-<p><tt>rasterization_mode() = 6912 | 6913 | 6914</tt></p>
+<p><code>rasterization_mode() = 6912 | 6913 | 6914</code></p>
 <p> The default, for both front- and back-facing polygons</p>
 
 <h3 class="typedecl"><a name="type-renderer_name">renderer_name()</a></h3>
-<p><tt>renderer_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>renderer_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p><p> The name of the OpenGL renderer of a driver (typically specific to a 
 particular configuration of a hardware platform).</p>
 
  For example: <code>&lt;&lt;"FOOBAR Frobinator GTX 1060 6GB/PCIe/SSE2"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
-<p><tt>three_digit_version() = <a href="basic_utils.html#type-three_digit_version">basic_utils:three_digit_version()</a></tt></p>
+<p><code>three_digit_version() = <a href="basic_utils.html#type-three_digit_version">basic_utils:three_digit_version()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-two_digit_version">two_digit_version()</a></h3>
-<p><tt>two_digit_version() = <a href="basic_utils.html#type-two_digit_version">basic_utils:two_digit_version()</a></tt></p>
+<p><code>two_digit_version() = <a href="basic_utils.html#type-two_digit_version">basic_utils:two_digit_version()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-two_or_three_digit_version">two_or_three_digit_version()</a></h3>
-<p><tt>two_or_three_digit_version() = <a href="#type-two_digit_version">two_digit_version()</a> | <a href="#type-three_digit_version">three_digit_version()</a></tt></p>
+<p><code>two_or_three_digit_version() = <a href="#type-two_digit_version">two_digit_version()</a> | <a href="#type-three_digit_version">three_digit_version()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vendor">vendor()</a></h3>
-<p><tt>vendor() = nvidia | amd | intel | unknown</tt></p>
+<p><code>vendor() = nvidia | amd | intel | unknown</code></p>
 <p><p> Our identifier for the OpenGL vendor of a driver, that is the company 
 responsible for the corresponding OpenGL implementation.</p>
 
  Useful to trigger vendor-specific fixes.</p>
 
 <h3 class="typedecl"><a name="type-vendor_name">vendor_name()</a></h3>
-<p><tt>vendor_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><code>vendor_name() = <a href="#type-bin_string">bin_string()</a></code></p>
 <p><p> The name of the OpenGL vendor of a driver, that is the company responsible for 
 the corresponding OpenGL implementation.</p>
 
  For example: <code>&lt;&lt;"FOOBAR Corporation"&gt;&gt;</code>.</p>
 
-<h3 class="typedecl"><a name="type-window">window()</a></h3>
-<p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
+<h3 class="typedecl"><a name="type-widget">widget()</a></h3>
+<p><code>widget() = <a href="gui_widget.html#type-widget">gui_widget:widget()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -357,7 +357,7 @@ done, by disabling the specified message source, type and severity.</td></tr>
 <tr><td valign="top"><a href="#enable_all_debug_context_reporting-0">enable_all_debug_context_reporting/0</a></td><td>Enables all reporting regarding the OpenGL debug context.</td></tr>
 <tr><td valign="top"><a href="#enable_debug_context_reporting-3">enable_debug_context_reporting/3</a></td><td>Specifies how the reporting of debug messages in a debug context shall be 
 done, by enabling the specified message source, type and severity.</td></tr>
-<tr><td valign="top"><a href="#enter_2d_mode-1">enter_2d_mode/1</a></td><td>Enters in 2D mode for the specified window (typically an OpenGL canvas): 
+<tr><td valign="top"><a href="#enter_2d_mode-1">enter_2d_mode/1</a></td><td>Enters in 2D mode for the specified widget (typically an OpenGL canvas): 
 applies relevant general state changes, and specific to modelview (which is 
 reset) and to projection (a projection matrix relevant for 2D operations is 
 applied).</td></tr>
@@ -440,25 +440,25 @@ previous OpenGL commands is displayed on this window.</td></tr>
 
 <h3 class="function"><a name="are_extensions_supported-1">are_extensions_supported/1</a></h3>
 <div class="spec">
-<p><tt>are_extensions_supported(Extensions::[<a href="#type-gl_extension">gl_extension()</a>]) -&gt; boolean()</tt><br></p>
+<p><code>are_extensions_supported(Extensions::[<a href="#type-gl_extension">gl_extension()</a>]) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified OpenGL extensions are (all) supported.</p>
 
 <h3 class="function"><a name="are_extensions_supported-2">are_extensions_supported/2</a></h3>
 <div class="spec">
-<p><tt>are_extensions_supported(Exts::[<a href="#type-gl_extension">gl_extension()</a>], Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; boolean()</tt><br></p>
+<p><code>are_extensions_supported(Exts::[<a href="#type-gl_extension">gl_extension()</a>], Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified OpenGL extensions are (all) supported.</p>
 
 <h3 class="function"><a name="boolean_to_gl-1">boolean_to_gl/1</a></h3>
 <div class="spec">
-<p><tt>boolean_to_gl(X1::boolean()) -&gt; <a href="#type-gl_boolean">gl_boolean()</a></tt><br></p>
+<p><code>boolean_to_gl(X1::boolean()) -&gt; <a href="#type-gl_boolean">gl_boolean()</a></code><br></p>
 <p> </p>
 </div><p>Converts a MyriadGUI hint about buffer usage to OpenGL conventions.</p>
 
 <h3 class="function"><a name="buffer_usage_hint_to_gl-1">buffer_usage_hint_to_gl/1</a></h3>
 <div class="spec">
-<p><tt>buffer_usage_hint_to_gl(UsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-enum">enum()</a></tt><br></p>
+<p><code>buffer_usage_hint_to_gl(UsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-enum">enum()</a></code><br></p>
 <p> </p>
 </div><p><p>Converts a MyriadGUI hint about buffer usage to OpenGL conventions.</p>
 
@@ -466,7 +466,7 @@ previous OpenGL commands is displayed on this window.</td></tr>
 
 <h3 class="function"><a name="check_error-0">check_error/0</a></h3>
 <div class="spec">
-<p><tt>check_error() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_error() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Checks whether an OpenGL-related error occurred previously (since last 
 check, otherwise since OpenGL initialisation); if yes, displays information 
@@ -478,7 +478,7 @@ regarding it, and throws an exception.</p>
 
 <h3 class="function"><a name="check_error-1">check_error/1</a></h3>
 <div class="spec">
-<p><tt>check_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Checks whether an OpenGL-related error occurred previously (since last 
 check, otherwise since OpenGL initialisation); if yes, displays information 
@@ -492,31 +492,31 @@ error message in the console.</p>
 
 <h3 class="function"><a name="check_gl_debug_context_error-0">check_gl_debug_context_error/0</a></h3>
 <div class="spec">
-<p><tt>check_gl_debug_context_error() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_gl_debug_context_error() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="check_gl_debug_context_error-1">check_gl_debug_context_error/1</a></h3>
 <div class="spec">
-<p><tt>check_gl_debug_context_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_gl_debug_context_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="check_gl_error-0">check_gl_error/0</a></h3>
 <div class="spec">
-<p><tt>check_gl_error() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_gl_error() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="check_gl_error-1">check_gl_error/1</a></h3>
 <div class="spec">
-<p><tt>check_gl_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_gl_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="check_requirements-1">check_requirements/1</a></h3>
 <div class="spec">
-<p><tt>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks the OpenGL requirements of this program against the local support,
  regarding the minimum OpenGL version; displays an error message and throws an
@@ -525,7 +525,7 @@ error message in the console.</p>
 
 <h3 class="function"><a name="check_requirements-2">check_requirements/2</a></h3>
 <div class="spec">
-<p><tt>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, RequiredProfile::<a href="#type-gl_profile">gl_profile()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, RequiredProfile::<a href="#type-gl_profile">gl_profile()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks the OpenGL requirements of this program against the local support,
  regarding the minimum OpenGL version and the specified profile; displays an
@@ -534,7 +534,7 @@ error message in the console.</p>
 
 <h3 class="function"><a name="check_requirements-3">check_requirements/3</a></h3>
 <div class="spec">
-<p><tt>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, RequiredProfile::<a href="#type-gl_profile">gl_profile()</a>, RequiredExtensions::[<a href="#type-gl_extension">gl_extension()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, RequiredProfile::<a href="#type-gl_profile">gl_profile()</a>, RequiredExtensions::[<a href="#type-gl_extension">gl_extension()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Checks the OpenGL requirements of this program against the local support,
  regarding the minimum OpenGL version, the specified profile and extensions;
@@ -543,7 +543,7 @@ error message in the console.</p>
 
 <h3 class="function"><a name="create_canvas-1">create_canvas/1</a></h3>
 <div class="spec">
-<p><tt>create_canvas(Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
+<p><code>create_canvas(Parent::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates and returns an OpenGL canvas with the specified parent widget and 
 default settings: RGBA and double-buffering.</p>
@@ -554,7 +554,7 @@ default settings: RGBA and double-buffering.</p>
 
 <h3 class="function"><a name="create_canvas-2">create_canvas/2</a></h3>
 <div class="spec">
-<p><tt>create_canvas(Parent::<a href="#type-window">window()</a>, Opts::[<a href="#type-gl_canvas_option">gl_canvas_option()</a>]) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
+<p><code>create_canvas(CanvasOpts::[<a href="#type-gl_canvas_option">gl_canvas_option()</a>], Parent::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></code><br></p>
 <p> </p>
 </div><p><p>Creates and returns an OpenGL canvas with the specified parent widget and 
 options.</p>
@@ -571,7 +571,7 @@ following defaults apply: RGBA and double-buffering.</p>
 
 <h3 class="function"><a name="create_context-1">create_context/1</a></h3>
 <div class="spec">
-<p><tt>create_context(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>) -&gt; <a href="#type-gl_context">gl_context()</a></tt><br></p>
+<p><code>create_context(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>) -&gt; <a href="#type-gl_context">gl_context()</a></code><br></p>
 <p> </p>
 </div><p>Returns the OpenGL context obtained from the specified OpenGL canvas; it
  is created but not bound yet (not set as current, hence not usable yet, no
@@ -580,25 +580,25 @@ following defaults apply: RGBA and double-buffering.</p>
 
 <h3 class="function"><a name="debug_context_message_to_string-1">debug_context_message_to_string/1</a></h3>
 <div class="spec">
-<p><tt>debug_context_message_to_string(X1::<a href="#type-debug_context_message">debug_context_message()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>debug_context_message_to_string(X1::<a href="#type-debug_context_message">debug_context_message()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified debug context message.</p>
 
 <h3 class="function"><a name="debug_context_messages_to_string-1">debug_context_messages_to_string/1</a></h3>
 <div class="spec">
-<p><tt>debug_context_messages_to_string(Msgs::[<a href="#type-debug_context_message">debug_context_message()</a>]) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>debug_context_messages_to_string(Msgs::[<a href="#type-debug_context_message">debug_context_message()</a>]) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified debug context messages.</p>
 
 <h3 class="function"><a name="disable_all_debug_context_reporting-0">disable_all_debug_context_reporting/0</a></h3>
 <div class="spec">
-<p><tt>disable_all_debug_context_reporting() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>disable_all_debug_context_reporting() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Disables all reporting regarding the OpenGL debug context.</p>
 
 <h3 class="function"><a name="disable_debug_context_reporting-3">disable_debug_context_reporting/3</a></h3>
 <div class="spec">
-<p><tt>disable_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>disable_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Specifies how the reporting of debug messages in a debug context shall be 
 done, by disabling the specified message source, type and severity.</p>
@@ -611,13 +611,13 @@ done, by disabling the specified message source, type and severity.</p>
 
 <h3 class="function"><a name="enable_all_debug_context_reporting-0">enable_all_debug_context_reporting/0</a></h3>
 <div class="spec">
-<p><tt>enable_all_debug_context_reporting() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>enable_all_debug_context_reporting() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Enables all reporting regarding the OpenGL debug context.</p>
 
 <h3 class="function"><a name="enable_debug_context_reporting-3">enable_debug_context_reporting/3</a></h3>
 <div class="spec">
-<p><tt>enable_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>enable_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Specifies how the reporting of debug messages in a debug context shall be 
 done, by enabling the specified message source, type and severity.</p>
@@ -630,9 +630,9 @@ done, by enabling the specified message source, type and severity.</p>
 
 <h3 class="function"><a name="enter_2d_mode-1">enter_2d_mode/1</a></h3>
 <div class="spec">
-<p><tt>enter_2d_mode(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>enter_2d_mode(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Enters in 2D mode for the specified window (typically an OpenGL canvas): 
+</div><p><p>Enters in 2D mode for the specified widget (typically an OpenGL canvas): 
 applies relevant general state changes, and specific to modelview (which is 
 reset) and to projection (a projection matrix relevant for 2D operations is 
 applied).</p>
@@ -642,7 +642,7 @@ applied).</p>
 
 <h3 class="function"><a name="generate_support_modules-0">generate_support_modules/0</a></h3>
 <div class="spec">
-<p><tt>generate_support_modules() -&gt; no_return()</tt><br></p>
+<p><code>generate_support_modules() -&gt; no_return()</code><br></p>
 <p> </p>
 </div><p>To be called by the 'gui_opengl_generated.beam' automatic make target in
  order to generate, here, a (single) module to share the MyriadGUI OpenGL
@@ -651,7 +651,7 @@ applied).</p>
 
 <h3 class="function"><a name="get_component_size-1">get_component_size/1</a></h3>
 <div class="spec">
-<p><tt>get_component_size(GLType::<a href="#type-gl_base_type">gl_base_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p><code>get_component_size(GLType::<a href="#type-gl_base_type">gl_base_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
 <p> </p>
 </div><p>Returns the size of a component the specified GL type, once it is
  serialised (typically in a buffer - and regardless of the Erlang datatypes).
@@ -659,7 +659,7 @@ applied).</p>
 
 <h3 class="function"><a name="get_debug_context_messages-0">get_debug_context_messages/0</a></h3>
 <div class="spec">
-<p><tt>get_debug_context_messages() -&gt; [<a href="#type-debug_context_message">debug_context_message()</a>]</tt><br></p>
+<p><code>get_debug_context_messages() -&gt; [<a href="#type-debug_context_message">debug_context_message()</a>]</code><br></p>
 <p> </p>
 </div><p>Fetches and removes from the OpenGL debug context all messages found, of
  any source, type and severity.
@@ -667,7 +667,7 @@ applied).</p>
 
 <h3 class="function"><a name="get_debug_context_messages-3">get_debug_context_messages/3</a></h3>
 <div class="spec">
-<p><tt>get_debug_context_messages(MsgSource::<a href="#type-debug_source">debug_source()</a>, MsgType::<a href="#type-debug_type">debug_type()</a>, MsgSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; [<a href="#type-debug_context_message">debug_context_message()</a>]</tt><br></p>
+<p><code>get_debug_context_messages(MsgSource::<a href="#type-debug_source">debug_source()</a>, MsgType::<a href="#type-debug_type">debug_type()</a>, MsgSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; [<a href="#type-debug_context_message">debug_context_message()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Fetches and removes from the OpenGL debug context all messages found of 
 the specified source, type and severity.</p>
@@ -678,7 +678,7 @@ the specified source, type and severity.</p>
 
 <h3 class="function"><a name="get_default_canvas_attributes-0">get_default_canvas_attributes/0</a></h3>
 <div class="spec">
-<p><tt>get_default_canvas_attributes() -&gt; [<a href="#type-device_context_attribute">device_context_attribute()</a>]</tt><br></p>
+<p><code>get_default_canvas_attributes() -&gt; [<a href="#type-device_context_attribute">device_context_attribute()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of the default attributes for the creation of OpenGL 
 canvases.</p>
@@ -688,7 +688,7 @@ canvases.</p>
 
 <h3 class="function"><a name="get_glxinfo_strings-0">get_glxinfo_strings/0</a></h3>
 <div class="spec">
-<p><tt>get_glxinfo_strings() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-glxinfo_report">glxinfo_report()</a>)</tt><br></p>
+<p><code>get_glxinfo_strings() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-glxinfo_report">glxinfo_report()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the list of strings (if any) returned by glxinfo when requesting 
 basic information.</p>
@@ -699,7 +699,7 @@ basic information.</p>
 
 <h3 class="function"><a name="get_matrix-1">get_matrix/1</a></h3>
 <div class="spec">
-<p><tt>get_matrix(Stack::<a href="#type-matrix_stack">matrix_stack()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p><code>get_matrix(Stack::<a href="#type-matrix_stack">matrix_stack()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
 <p> </p>
 </div><p>Returns the current OpenGL matrix at the top of the specified stack, as a
  matrix4 instance.
@@ -707,7 +707,7 @@ basic information.</p>
 
 <h3 class="function"><a name="get_platform_identifier-0">get_platform_identifier/0</a></h3>
 <div class="spec">
-<p><tt>get_platform_identifier() -&gt; <a href="#type-platform_identifier">platform_identifier()</a></tt><br></p>
+<p><code>get_platform_identifier() -&gt; <a href="#type-platform_identifier">platform_identifier()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the platform driver identifier.</p>
 
@@ -719,7 +719,7 @@ basic information.</p>
 
 <h3 class="function"><a name="get_renderer_name-0">get_renderer_name/0</a></h3>
 <div class="spec">
-<p><tt>get_renderer_name() -&gt; <a href="#type-renderer_name">renderer_name()</a></tt><br></p>
+<p><code>get_renderer_name() -&gt; <a href="#type-renderer_name">renderer_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the name of the OpenGL renderer of the current driver (typically 
 specific to a particular configuration of a hardware platform).</p>
@@ -731,7 +731,7 @@ specific to a particular configuration of a hardware platform).</p>
 
 <h3 class="function"><a name="get_support_description-0">get_support_description/0</a></h3>
 <div class="spec">
-<p><tt>get_support_description() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>get_support_description() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a synthetic string describing the host-local OpenGL support, also
  known as the current GL connection.
@@ -739,7 +739,7 @@ specific to a particular configuration of a hardware platform).</p>
 
 <h3 class="function"><a name="get_supported_extensions-0">get_supported_extensions/0</a></h3>
 <div class="spec">
-<p><tt>get_supported_extensions() -&gt; [<a href="#type-gl_extension">gl_extension()</a>]</tt><br></p>
+<p><code>get_supported_extensions() -&gt; [<a href="#type-gl_extension">gl_extension()</a>]</code><br></p>
 <p> </p>
 </div><p><p>Returns a list of the supported extensions.</p>
 
@@ -750,7 +750,7 @@ specific to a particular configuration of a hardware platform).</p>
 
 <h3 class="function"><a name="get_supported_profile-0">get_supported_profile/0</a></h3>
 <div class="spec">
-<p><tt>get_supported_profile() -&gt; <a href="#type-gl_profile">gl_profile()</a></tt><br></p>
+<p><code>get_supported_profile() -&gt; <a href="#type-gl_profile">gl_profile()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified OpenGL profile is supported.</p>
 
@@ -761,7 +761,7 @@ specific to a particular configuration of a hardware platform).</p>
 
 <h3 class="function"><a name="get_supported_profile-1">get_supported_profile/1</a></h3>
 <div class="spec">
-<p><tt>get_supported_profile(Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; <a href="#type-gl_profile">gl_profile()</a></tt><br></p>
+<p><code>get_supported_profile(Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; <a href="#type-gl_profile">gl_profile()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns whether the specified OpenGL profile is supported.</p>
 
@@ -772,19 +772,19 @@ specific to a particular configuration of a hardware platform).</p>
 
 <h3 class="function"><a name="get_unsupported_extensions-1">get_unsupported_extensions/1</a></h3>
 <div class="spec">
-<p><tt>get_unsupported_extensions(Extensions::[<a href="#type-gl_extension">gl_extension()</a>]) -&gt; [<a href="#type-gl_extension">gl_extension()</a>]</tt><br></p>
+<p><code>get_unsupported_extensions(Extensions::[<a href="#type-gl_extension">gl_extension()</a>]) -&gt; [<a href="#type-gl_extension">gl_extension()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the specified OpenGL extensions that are not supported.</p>
 
 <h3 class="function"><a name="get_unsupported_extensions-2">get_unsupported_extensions/2</a></h3>
 <div class="spec">
-<p><tt>get_unsupported_extensions(Extensions::[<a href="#type-gl_extension">gl_extension()</a>], Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; [<a href="#type-gl_extension">gl_extension()</a>]</tt><br></p>
+<p><code>get_unsupported_extensions(Extensions::[<a href="#type-gl_extension">gl_extension()</a>], Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; [<a href="#type-gl_extension">gl_extension()</a>]</code><br></p>
 <p> </p>
 </div><p>Returns a list of the specified OpenGL extensions that are not supported.</p>
 
 <h3 class="function"><a name="get_vendor-0">get_vendor/0</a></h3>
 <div class="spec">
-<p><tt>get_vendor() -&gt; <a href="#type-vendor">vendor()</a></tt><br></p>
+<p><code>get_vendor() -&gt; <a href="#type-vendor">vendor()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the identifier of the OpenGL vendor of the current driver, that 
 is the company responsible for this OpenGL implementation.</p>
@@ -796,7 +796,7 @@ is the company responsible for this OpenGL implementation.</p>
 
 <h3 class="function"><a name="get_vendor_name-0">get_vendor_name/0</a></h3>
 <div class="spec">
-<p><tt>get_vendor_name() -&gt; <a href="#type-vendor_name">vendor_name()</a></tt><br></p>
+<p><code>get_vendor_name() -&gt; <a href="#type-vendor_name">vendor_name()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the name of the OpenGL vendor of the current driver, that is the 
 company responsible for this OpenGL implementation.</p>
@@ -808,7 +808,7 @@ company responsible for this OpenGL implementation.</p>
 
 <h3 class="function"><a name="get_version-0">get_version/0</a></h3>
 <div class="spec">
-<p><tt>get_version() -&gt; <a href="#type-gl_version">gl_version()</a></tt><br></p>
+<p><code>get_version() -&gt; <a href="#type-gl_version">gl_version()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the major / minor / release version number of the currently used 
 OpenGL implementation.</p>
@@ -823,7 +823,7 @@ convenient).</p>
 
 <h3 class="function"><a name="get_version-1">get_version/1</a></h3>
 <div class="spec">
-<p><tt>get_version(Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; <a href="#type-gl_version">gl_version()</a></tt><br></p>
+<p><code>get_version(Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; <a href="#type-gl_version">gl_version()</a></code><br></p>
 <p> </p>
 </div><p><p>Returns the major / minor / release version number of the currently used 
 OpenGL implementation, based on a cached value in ETS.</p>
@@ -838,7 +838,7 @@ convenient).</p>
 
 <h3 class="function"><a name="get_version_string-0">get_version_string/0</a></h3>
 <div class="spec">
-<p><tt>get_version_string() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>)</tt><br></p>
+<p><code>get_version_string() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>)</code><br></p>
 <p> </p>
 </div><p><p>Returns the full version of the currently used OpenGL implementation, as 
 a string (if any) returned by the driver.</p>
@@ -851,7 +851,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="init_info_table-0">init_info_table/0</a></h3>
 <div class="spec">
-<p><tt>init_info_table() -&gt; <a href="#type-info_table_id">info_table_id()</a></tt><br></p>
+<p><code>init_info_table() -&gt; <a href="#type-info_table_id">info_table_id()</a></code><br></p>
 <p> </p>
 </div><p>Initialises the OpenGL information ETS table storing (caching) related
  static versions, profiles and extensions.
@@ -859,7 +859,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="insert_debug_context_message-5">insert_debug_context_message/5</a></h3>
 <div class="spec">
-<p><tt>insert_debug_context_message(MsgId::<a href="#type-debug_message_id">debug_message_id()</a>, Msg::<a href="#type-ustring">ustring()</a>, MsgSeverity::<a href="#type-actual_debug_severity">actual_debug_severity()</a>, MsgSource::<a href="#type-actual_debug_source">actual_debug_source()</a>, MsgType::<a href="#type-actual_debug_type">actual_debug_type()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>insert_debug_context_message(MsgId::<a href="#type-debug_message_id">debug_message_id()</a>, Msg::<a href="#type-ustring">ustring()</a>, MsgSeverity::<a href="#type-actual_debug_severity">actual_debug_severity()</a>, MsgSource::<a href="#type-actual_debug_source">actual_debug_source()</a>, MsgType::<a href="#type-actual_debug_type">actual_debug_type()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Inserts the specified message in the OpenGL debug context.</p>
 
@@ -869,7 +869,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="interpret_error-1">interpret_error/1</a></h3>
 <div class="spec">
-<p><tt>interpret_error(OtherCode::<a href="#type-any_error">any_error()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><code>interpret_error(OtherCode::<a href="#type-any_error">any_error()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
 <p> </p>
 </div><p>Returns a (textual) diagnosis regarding the specified OpenGL-related
  (including GLU) error.
@@ -877,13 +877,13 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="is_debug_context_enabled-0">is_debug_context_enabled/0</a></h3>
 <div class="spec">
-<p><tt>is_debug_context_enabled() -&gt; boolean()</tt><br></p>
+<p><code>is_debug_context_enabled() -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the OpenGL debug context is enabled on this host.</p>
 
 <h3 class="function"><a name="is_debug_context_supported-0">is_debug_context_supported/0</a></h3>
 <div class="spec">
-<p><tt>is_debug_context_supported() -&gt; boolean()</tt><br></p>
+<p><code>is_debug_context_supported() -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p><p>Tells whether the OpenGL debug context is supported on this host.</p>
 
@@ -892,19 +892,19 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="is_extension_supported-1">is_extension_supported/1</a></h3>
 <div class="spec">
-<p><tt>is_extension_supported(Extension::<a href="#type-gl_extension">gl_extension()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_extension_supported(Extension::<a href="#type-gl_extension">gl_extension()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified OpenGL extension is supported.</p>
 
 <h3 class="function"><a name="is_extension_supported-2">is_extension_supported/2</a></h3>
 <div class="spec">
-<p><tt>is_extension_supported(Extension::<a href="#type-gl_extension">gl_extension()</a>, Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_extension_supported(Extension::<a href="#type-gl_extension">gl_extension()</a>, Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the specified OpenGL extension is supported.</p>
 
 <h3 class="function"><a name="is_hardware_accelerated-0">is_hardware_accelerated/0</a></h3>
 <div class="spec">
-<p><tt>is_hardware_accelerated() -&gt; boolean()</tt><br></p>
+<p><code>is_hardware_accelerated() -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether OpenGL hardware acceleration is available on this host,
  based on the glxinfo executable.
@@ -912,7 +912,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="is_hardware_accelerated-1">is_hardware_accelerated/1</a></h3>
 <div class="spec">
-<p><tt>is_hardware_accelerated(GlxinfoStrs::<a href="#type-glxinfo_report">glxinfo_report()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_hardware_accelerated(GlxinfoStrs::<a href="#type-glxinfo_report">glxinfo_report()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether OpenGL hardware acceleration is available on this host,
  based on the specified glxinfo report.
@@ -920,7 +920,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="is_version_compatible_with-1">is_version_compatible_with/1</a></h3>
 <div class="spec">
-<p><tt>is_version_compatible_with(TargetVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_version_compatible_with(TargetVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the current OpenGL version is compatible with the specified
  one, that is whether the current one matches, or is more recent than, the
@@ -929,7 +929,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="is_version_compatible_with-2">is_version_compatible_with/2</a></h3>
 <div class="spec">
-<p><tt>is_version_compatible_with(TargetThreeDigitVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; boolean()</tt><br></p>
+<p><code>is_version_compatible_with(TargetThreeDigitVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div><p>Tells whether the current OpenGL version is compatible with the specified
  one, that is whether the current one matches, or is more recent than, the
@@ -938,7 +938,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="leave_2d_mode-0">leave_2d_mode/0</a></h3>
 <div class="spec">
-<p><tt>leave_2d_mode() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>leave_2d_mode() -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Leaves the 2D mode, resets the modelview and projection matricesn and the
  GL attributes.
@@ -946,7 +946,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="render_mesh-1">render_mesh/1</a></h3>
 <div class="spec">
-<p><tt>render_mesh(Mesh::<a href="#type-mesh">mesh()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>render_mesh(Mesh::<a href="#type-mesh">mesh()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Renders the specified mesh in a supposedly appropriate OpenGL context.</p>
 
@@ -955,7 +955,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="secure_info_table-0">secure_info_table/0</a></h3>
 <div class="spec">
-<p><tt>secure_info_table() -&gt; <a href="#type-info_table_id">info_table_id()</a></tt><br></p>
+<p><code>secure_info_table() -&gt; <a href="#type-info_table_id">info_table_id()</a></code><br></p>
 <p> </p>
 </div><p>Returns the OpenGL information ETS table, possibly after having created
  it if necessary.
@@ -963,7 +963,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="set_context-2">set_context/2</a></h3>
 <div class="spec">
-<p><tt>set_context(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>, Context::<a href="#type-gl_context">gl_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_context(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>, Context::<a href="#type-gl_context">gl_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Sets the specified (OpenGL) context to the specified (OpenGL) canvas, so
  that it applies to the next operations (OpenGL calls) made on it.
@@ -971,7 +971,7 @@ a string (if any) returned by the driver.</p>
 
 <h3 class="function"><a name="set_context_on_shown-2">set_context_on_shown/2</a></h3>
 <div class="spec">
-<p><tt>set_context_on_shown(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>, Context::<a href="#type-gl_context">gl_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_context_on_shown(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>, Context::<a href="#type-gl_context">gl_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Sets the specified (OpenGL) context to the specified (OpenGL) canvas once 
 its window is shown, so that it applies to the next operations (OpenGL calls) 
@@ -983,7 +983,7 @@ made on it.</p>
 
 <h3 class="function"><a name="set_debug_context_reporting-4">set_debug_context_reporting/4</a></h3>
 <div class="spec">
-<p><tt>set_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>, DebugSelector::<a href="#type-debug_selector">debug_selector()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>, DebugSelector::<a href="#type-debug_selector">debug_selector()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Specifies how the reporting of debug messages shall be done in a debug 
 context, by adding a filter based on the specified message source, type and 
@@ -997,7 +997,7 @@ severity.</p>
 
 <h3 class="function"><a name="set_matrix-1">set_matrix/1</a></h3>
 <div class="spec">
-<p><tt>set_matrix(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_matrix(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Replaces the current OpenGL matrix (top of the currently selected stack,
  see matrix_stack/0) with the specified matrix4 instance.
@@ -1005,13 +1005,13 @@ severity.</p>
 
 <h3 class="function"><a name="set_polygon_raster_mode-2">set_polygon_raster_mode/2</a></h3>
 <div class="spec">
-<p><tt>set_polygon_raster_mode(FacingMode::<a href="#type-polygon_facing_mode">polygon_facing_mode()</a>, RasterMode::<a href="#type-rasterization_mode">rasterization_mode()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>set_polygon_raster_mode(FacingMode::<a href="#type-polygon_facing_mode">polygon_facing_mode()</a>, RasterMode::<a href="#type-rasterization_mode">rasterization_mode()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p>Set the polygon rasterization mode.</p>
 
 <h3 class="function"><a name="swap_buffers-1">swap_buffers/1</a></h3>
 <div class="spec">
-<p><tt>swap_buffers(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><code>swap_buffers(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
 <p> </p>
 </div><p><p>Swaps the double-buffer of the corresponding OpenGL canvas (making the 
 back-buffer the front-buffer and vice versa), so that the output of the 
