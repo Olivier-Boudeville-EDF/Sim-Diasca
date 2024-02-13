@@ -22,7 +22,6 @@ The simulation engine is implemented in the [Erlang](http://erlang.org) programm
 Sim-Diasca has been released since 2010 by EDF R&D under the LGPL licence.
 
 <!--
-
 For more information, please refer to the *Sim-Diasca Technical Manual*.
 
 Until the various elements are available online, please [contact us](https://www.edf.fr/en/the-edf-group/world-s-largest-power-company/activities/research-and-development/scientific-communities/simulation-softwares?logiciel=10832) for an archived copy of the last stable version and its related documentation. -->
