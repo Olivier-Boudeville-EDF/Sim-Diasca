@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,25 +25,27 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, August 24, 2022.
 
-
-% @doc Unit tests for the <b>hashing-related services</b>.
-%
-% See the hash_utils.erl tested module.
-%
 -module(hash_utils_test).
+
+-moduledoc """
+Unit tests for the **hashing-related services**.
+
+See the hash_utils.erl tested module.
+""".
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type hash_algorithm() :: hash_utils:hash_algorithm().
 -type binary_hash() :: hash_utils:binary_hash().
 
 
-% @doc Tests the hashing of files.
+
+-doc "Tests the hashing of files.".
 -spec test_file_hashing( hash_algorithm(), binary(), binary_hash() ) -> void().
 test_file_hashing( HashAlg, ContentToHash, ContentHashBin ) ->
 
@@ -66,7 +68,7 @@ test_file_hashing( HashAlg, ContentToHash, ContentHashBin ) ->
 
 
 
-% @doc Tests the hashing of terms.
+-doc "Tests the hashing of terms.".
 -spec test_term_hashing( hash_algorithm(), binary(), binary_hash() ) -> void().
 test_term_hashing( HashAlg, ContentToHash, ContentHashBin ) ->
 
@@ -110,8 +112,8 @@ run() ->
 		"algorithm '~ts' (~B-bit hashes, i.e. ~B bytes), by hashing the "
 		"following content: '~ts'. The corresponding, expected (hexadecimal) "
 		"hash is then '~ts' (as a binary: ~w).",
-		[ HashAlg, ByteSize * 8, ByteSize, ContentToHash,
-		  ContentHashStr, ContentHashBin ] ),
+		[ HashAlg, ByteSize * 8, ByteSize, ContentToHash, ContentHashStr,
+		  ContentHashBin ] ),
 
 
 	test_file_hashing( HashAlg, ContentToHash, ContentHashBin ),

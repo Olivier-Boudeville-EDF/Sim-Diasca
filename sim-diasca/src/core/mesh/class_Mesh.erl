@@ -1,30 +1,29 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Mesh class, to manage all kinds of <b>graph-based systems</b> (such as
-% networks).
-%
 -module(class_Mesh).
 
+-moduledoc """
+Mesh class, to manage all kinds of **graph-based systems** (such as networks).
+""".
 
 -define( class_description, "Mesh class, to manage all kinds of graph-based "
 		 "systems (such as networks)." ).
@@ -125,66 +124,127 @@
 % We do not use parametric types currently.
 
 
+-doc """
+A node of a mesh, with no specific content.
+
+Acts like a (node) identifier.
+
+Named that way as node() is a built-in type.
+""".
 -type pure_node() :: any().
-% node() is already a standalone type.
 
 
-%-type node_content(X) :: maybe( X ).
+-doc "A content associated to a node.".
+%-type node_content(X) :: option( X ).
 %-type node_content() :: node_content( any() ).
--type node_content() :: maybe( any() ).
+-type node_content() :: option( any() ).
 
 
+-doc "A node with an associated content.".
 %-type node_with_content(X) :: { pure_node(), node_content(X) }.
 -type node_with_content() :: { pure_node(), node_content() }.
 
 
+-doc "Any node, with content or not.".
 %-type any_node(X) :: pure_node() | node_with_content(X).
 %-type any_node() :: any_node( any() ).
 -type any_node() :: pure_node() | node_with_content().
 
 
 
+-doc """
+A link between two nodes of a mesh, with no specific content.
+
+Acts like a (link) identifier.
+""".
 -type pure_link() :: any().
 
-%-type link_content(X) :: maybe( X ).
-%-type link_content() :: link_content( any() ).
--type link_content() :: maybe( any() ).
 
-%-type link_with_content(X) :: {pure_link(),link_content(X)}.
+-doc "A content associated to a link.".
+%-type link_content(X) :: option( X ).
+%-type link_content() :: link_content( any() ).
+-type link_content() :: option( any() ).
+
+
+-doc "A link with an associated content.".
+%-type link_with_content(X) :: {pure_link(), link_content(X)}.
 -type link_with_content() :: { pure_link(), link_content() }.
 
+
+-doc "Any link, with content or not.".
 %-type any_link(X) :: pure_link() | link_with_content(X).
 %-type any_link() :: any_link( any() ).
 -type any_link() :: pure_link() | link_with_content().
 
+
+-doc "Describes the link connectivity between two nodes.".
 -type link_connectivity() :: { pure_node(), pure_node(), link_content() }.
 
 
+-doc "An edge, i.e. the description of the two endpoints of a link.".
 -type edge() :: { pure_node(), pure_node() }.
 
 
 
+-doc "A style of a node.".
 -type node_style() :: 'filled'.
+
+
+-doc "A style of a link.".
 -type link_style() :: 'solid'.
 
 
+-doc "The color of a mesh element.".
 -type elem_color() :: gui_color:color_by_name().
 
 -type node_color() :: elem_color().
 -type link_color() :: elem_color().
 
 
+-doc "A PID of a mesh instance.".
 -type mesh_pid() :: pid().
-% A PID of a mesh instance.
 
 
--export_type([ pure_node/0, node_content/0, node_with_content/0,
-			   pure_link/0, link_content/0, link_with_content/0,
-			   mesh_pid/0 ]).
 
-
+-doc "A PID of a Graphable instance.".
 -type graphable_pid() :: pid().
-% A PID of a Graphable instance.
+
+
+-doc "A labeled directed graph.".
+-type digraph() :: digraph:graph().
+
+
+-doc "An option associated to a link.".
+-type link_option() :: any().
+
+
+% Stored as a digraph label:
+-doc "Information regarding a link.".
+-type link_info() :: { pure_node(), pure_node(), [ link_option() ] }.
+
+
+
+
+-doc """
+See layout commands in [http://graphviz.org/Documentation.php] (default is
+'dot').
+""".
+-type mesh_layout() :: 'dot' | 'neato' | 'twopi' | 'circo' | 'fdp' | 'sfdp'.
+
+
+
+-type mesh_option() :: { 'can_be_cyclic', boolean() }
+					 | { 'layout', mesh_layout() }.
+
+
+
+ -export_type([ pure_node/0, node_content/0, node_with_content/0, any_node/0,
+                pure_link/0, link_content/0, link_with_content/0, any_link/0,
+                link_connectivity/0, edge/0, node_style/0, link_style/0,
+                elem_color/0, node_color/0, link_color/0,
+                mesh_pid/0, graphable_pid/0, digraph/0,
+                link_option/0, link_info/0,
+                mesh_layout/0, mesh_option/0 ]).
 
 
 
@@ -193,7 +253,7 @@
 
 
 % Must be included before class_EngineBaseObject header:
--define( trace_emitter_categorization , "Core.Mesh" ).
+-define( trace_emitter_categorization, "Core.Mesh" ).
 
 
 
@@ -239,47 +299,41 @@
 
 
 
--type mesh_layout() :: 'dot' | 'neato' | 'twopi' | 'circo' | 'fdp' | 'sfdp'.
-% See layout commands in [http://graphviz.org/Documentation.php] (default is
-% 'dot').
-
-
--type mesh_option() :: { 'can_be_cyclic', boolean() }
-					 | { 'layout', mesh_layout() }.
-
--type mesh_options() :: [ mesh_option() ].
-
-
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type pair() :: pair:pair().
+
 -type file_name() :: file_utils:file_name().
+-type digraph_file() :: file_utils:file().
+
 -type directory_path() :: file_utils:directory_path().
 
 
 
-% @doc Constructs a mesh instance.
-%
-% Parameters are:
-%
-% - Name: the name of the mesh
-%
-% - OutputDirectory: the directory path to which rendered views will be stored
-% (the latter directory element in this path will be created if necessary)
-%
-% - MeshOptions:
-%
-%   - a graph layout may be chosen (see mesh_layout())
-%
-%   - a mesh is allowed to be cyclic by default, unless {can_be_cyclic, false}
-%   is specified
-%
-% Note: when a directory is specified to the constructor, it will be created
-% regardless of renderings being requested or not.
-%
+-doc """
+Constructs a mesh instance.
+
+Parameters are:
+
+- Name: the name of the mesh
+
+- OutputDirectory: the directory path to which rendered views will be stored
+(the latter directory element in this path will be created if necessary)
+
+- MeshOptions:
+
+  - a graph layout may be chosen (see mesh_layout())
+
+  - a mesh is allowed to be cyclic by default, unless {can_be_cyclic, false}
+  is specified
+
+Note: when a directory is specified to the constructor, it will be created
+regardless of renderings being requested or not.
+""".
 -spec construct( wooper:state(), ustring() | { ustring(), directory_path() },
-				 mesh_options() ) -> wooper:state().
+				 [ mesh_option() ] ) -> wooper:state().
 construct( State, { Name, OutputDirectory }, MeshOptions ) ->
 
 	% First the direct mother classes, then this class-specific actions:
@@ -315,7 +369,7 @@ construct( State, Name, MeshOptions ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -338,9 +392,10 @@ destruct( State ) ->
 % Section common to nodes and links.
 
 
-% @doc Updates the whole mesh content, that is the content of all nodes and
-% links, by requesting each PID to send its current graph options.
-%
+-doc """
+Updates the whole mesh content, that is the content of all nodes and links, by
+requesting each PID to send its current graph options.
+""".
 -spec update( wooper:state() ) -> oneway_return().
 update( State ) ->
 
@@ -364,13 +419,14 @@ update( State ) ->
 
 
 
-% @doc Blanks specified mesh: resets its content to an empty digraph, and
-% unmarks all nodes and links.
-%
-% Keeps the original digraph options.
-%
-% Note: update_status not changed.
-%
+-doc """
+Blanks the specified mesh: resets its content to an empty digraph, and unmarks
+all nodes and links.
+
+Keeps the original digraph options.
+
+Note: update_status not changed.
+""".
 -spec blank( wooper:state() ) -> oneway_return().
 blank( State ) ->
 
@@ -385,25 +441,27 @@ blank( State ) ->
 
 
 
-% @doc Validates current cached content for nodes and links, so that for example
-% the next topological rendering does not trigger an update for any Graphable
-% element from the mesh.
-%
-% Note: useful for example if the mesh was blanked and recreated from scratch
-% from outside, and then rendered.
-%
+-doc """
+Validates the current cached content for nodes and links, so that for example
+the next topological rendering does not trigger an update for any Graphable
+element from the mesh.
+
+Note: useful for example if the mesh was blanked and recreated from scratch from
+outside, and then rendered.
+""".
 -spec validate( wooper:state() ) -> oneway_return().
 validate( State ) ->
 	wooper:return_state( setAttribute( State, update_status, up_to_date ) ).
 
 
 
-% @doc Invalidates current cached content for nodes and links, so that for
-% example the next topological rendering triggers an update from any Graphable
-% element from the mesh.
-%
-% Note: the connectivity will remain, only the contents are invalidated.
-%
+-doc """
+Invalidates the current cached content for nodes and links, so that for example
+the next topological rendering triggers an update from any Graphable element
+from the mesh.
+
+Note: the connectivity will remain, only the contents are invalidated.
+""".
 -spec invalidate( wooper:state() ) -> oneway_return().
 invalidate( State ) ->
 	wooper:return_state( setAttribute( State, update_status, out_of_sync ) ).
@@ -414,11 +472,12 @@ invalidate( State ) ->
 % Nodes section.
 
 
-% @doc Adds specified node to the mesh, with possibly an associated content.
-%
-% AddedNode can be a simple node N (in this case the associated content will be
-% the 'undefined' atom), or a {N, AssociatedNodeContent} pair.
-%
+-doc """
+Adds the specified node to the mesh, with possibly an associated content.
+
+AddedNode can be a simple node N (in this case the associated content will be
+the 'undefined' atom), or a {N, AssociatedNodeContent} pair.
+""".
 -spec addNode( wooper:state(), any_node() ) -> oneway_return().
 addNode( State, { AddedNode, AssociatedNodeContent } ) ->
 	wooper:return_state( add_node( AddedNode, AssociatedNodeContent, State ) );
@@ -429,18 +488,21 @@ addNode( State, AddedNode ) ->
 
 
 
-% @doc Adds specified node to the mesh, with possibly an associated content.
+-doc """
+Adds the specified node to the mesh, with possibly an associated content.
+""".
 -spec addNode( wooper:state(), pure_node(), node_content() ) -> oneway_return().
 addNode( State, AddedNode, AssociatedNodeContent ) ->
 	wooper:return_state( add_node( AddedNode, AssociatedNodeContent, State ) ).
 
 
 
-% @doc Adds specified list of nodes to the mesh.
-%
-% Each added node can be either a simple node N, or a {N, AssociatedNodeContent}
-% pair.
-%
+-doc """
+Adds the specified list of nodes to the mesh.
+
+Each added node can be either a simple node N, or a {N, AssociatedNodeContent}
+pair.
+""".
 -spec addNodes( wooper:state(), [ any_node() ] ) -> oneway_return().
 addNodes( State, NodeList ) ->
 	wooper:return_state( add_nodes( NodeList, State ) ).
@@ -448,27 +510,28 @@ addNodes( State, NodeList ) ->
 
 
 
-% @doc Returns the content associated to target node, or the atom
-% 'node_not_found'.
-%
+-doc """
+Returns the content associated to the target node, or the atom 'node_not_found'.
+""".
 -spec getContentForNode( wooper:state(), pure_node() ) ->
 								const_request_return( node_content() ).
 getContentForNode( State, Node ) ->
 	wooper:const_return_result(
-	  get_content_for_node( ?getAttr(digraph), Node ) ).
+        get_content_for_node( ?getAttr(digraph), Node ) ).
 
 
 
-% @doc Updates the content associated to target node, by asking directly it for
-% an update.
-%
+-doc """
+Updates the content associated to the target node, by asking directly it for an
+update.
+""".
 -spec updateContentForNode( wooper:state(), pure_node() ) -> oneway_return().
 updateContentForNode( State, Node ) ->
 	wooper:return_state( update_content_for_node( Node, State ) ).
 
 
 
-% @doc Returns a list of all the nodes of this mesh.
+-doc "Returns a list of all the nodes of this mesh.".
 -spec getAllNodes( wooper:state() ) ->
 							const_request_return( [ node_with_content() ] ).
 getAllNodes( State ) ->
@@ -480,17 +543,18 @@ getAllNodes( State ) ->
 % Links section.
 
 
-% @doc Adds an (anonymous, therefore static) directed link between FromNode and
-% ToNode, with no associated content (undefined).
-%
-% Note:
-%
-% - the nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
-% will be returned, if node N does not exist
-%
-% - if the mesh has been declared as acyclic, then {invalid_mesh_link, Path}
-% will be returned if a cycle would be created by this node addition
-%
+-doc """
+Adds an (anonymous, therefore static) directed link between FromNode and ToNode,
+with no associated content (undefined).
+
+Note:
+
+- the nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
+will be returned, if node N does not exist
+
+- if the mesh has been declared as acyclic, then {invalid_mesh_link, Path} will
+be returned if a cycle would be created by this node addition
+""".
 -spec addLink( wooper:state(), pure_node(), pure_node() ) -> oneway_return().
 addLink( State, FromNode, ToNode ) ->
 	AddState = addStaticLink( State, FromNode, ToNode, undefined ),
@@ -498,25 +562,26 @@ addLink( State, FromNode, ToNode ) ->
 
 
 
-% @doc Adds a directed link between FromNode and ToNode, or updates it, with no
-% specific content initially set.
-%
-% If the specified link is a PID, then next time the mesh will be updated, the
-% PID will be expected to correspond to a Graphable instance, whose graph
-% information will be requested and stored in the link content, for later use.
-%
-% Note:
-%
-% - no content will be associated to this link initially
-%
-% - the nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
-% will be returned, if node N does not exist
-%
-% - if the mesh has been declared as acyclic, then {invalid_mesh_link, Path}
-% will be returned if a cycle would be created
-%
+-doc """
+Adds a directed link between FromNode and ToNode, or updates it, with no
+specific content initially set.
+
+If the specified link is a PID, then next time the mesh will be updated, the PID
+will be expected to correspond to a Graphable instance, whose graph information
+will be requested and stored in the link content, for later use.
+
+Note:
+
+- no content will be associated to this link initially
+
+- the nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
+will be returned, if node N does not exist
+
+- if the mesh has been declared as acyclic, then {invalid_mesh_link, Path}
+will be returned if a cycle would be created
+""".
 -spec addLink( wooper:state(), pure_link(), pure_node(), pure_node() ) ->
-					oneway_return().
+                                            oneway_return().
 addLink( State, AddedLink, FromNode, ToNode ) ->
 	AddState = addLink( State, AddedLink, FromNode, ToNode,
 						_Content=undefined ),
@@ -525,20 +590,21 @@ addLink( State, AddedLink, FromNode, ToNode ) ->
 
 
 
-% @doc Adds a directed link between FromNode and ToNode, or updates it, and
-% associates this link to specified content.
-%
-% Note:
-%
-% - if AddedLink is a PID, next time the mesh will be updated, the content of
-% this link will be updated from that PID
-%
-% - the nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
-% will be returned, if node N does not exist
-%
-% - if the mesh is acyclic, then {invalid_mesh_link, Path} will be returned if
-% a cycle would be created
-%
+-doc """
+Adds a directed link between FromNode and ToNode, or updates it, and associates
+this link to specified content.
+
+Note:
+
+- if AddedLink is a PID, next time the mesh will be updated, the content of
+this link will be updated from that PID
+
+- the nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
+will be returned, if node N does not exist
+
+- if the mesh is acyclic, then {invalid_mesh_link, Path} will be returned if
+a cycle would be created
+""".
 -spec addLink( wooper:state(), pure_link(), pure_node(), pure_node(),
 			   link_content() ) -> oneway_return().
 addLink( State, AddedLink, FromNode, ToNode, AssociatedLinkContent ) ->
@@ -547,29 +613,30 @@ addLink( State, AddedLink, FromNode, ToNode, AssociatedLinkContent ) ->
 
 
 
-% @doc Adds a directed static link between FromNode and ToNode, or updates it,
-% and associates AssociatedLinkContent to this link.
-%
-% The link itself is not specifically set, it is static, but content is
-% associated to it nevertheless.
-%
-% If generateTopologicalView is to be used, AssociatedLinkContent is expected to
-% be of the form {Name, OptionList}, or just Name.
-%
-% Note:
-%
-% - content will be associated to this link
-%
-% - both nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
-% will be returned, if node N does not exist
-%
-% - if the mesh has been declared as acyclic, then {invalid_mesh_link, Path}
-% will be returned if a cycle would be created
-%
-% - named 'addStaticLink', as addLink/4 already exists.
-%
-% - is only pseudo-const (digraph modified)
-%
+-doc """
+Adds a directed static link between FromNode and ToNode, or updates it, and
+associates AssociatedLinkContent to this link.
+
+The link itself is not specifically set, it is static, but content is associated
+to it nevertheless.
+
+If generateTopologicalView is to be used, AssociatedLinkContent is expected to
+be of the form {Name, OptionList}, or just Name.
+
+Note:
+
+- content will be associated to this link
+
+- both nodes must exist in the mesh already, otherwise {invalid_mesh_node, N}
+will be returned, if node N does not exist
+
+- if the mesh has been declared as acyclic, then {invalid_mesh_link, Path}
+will be returned if a cycle would be created
+
+- named 'addStaticLink', as addLink/4 already exists.
+
+- is only pseudo-const (digraph modified)
+""".
 -spec addStaticLink( wooper:state(), pure_node(), pure_node(),
 					 link_content() ) -> const_oneway_return().
 addStaticLink( State, FromNode, ToNode, AssociatedLinkContent ) ->
@@ -595,12 +662,12 @@ addStaticLink( State, FromNode, ToNode, AssociatedLinkContent ) ->
 
 
 
-% @doc Returns the content associated to target link, or the 'link_not_found'
-% atom.
-%
-% Note: this is the value cached in the mesh for this link, no update is
-% performed.
-%
+-doc """
+Returns the content associated to the target link, or the 'link_not_found' atom.
+
+Note: this is the value cached in the mesh for this link, no update is
+performed.
+""".
 -spec getContentForLink( wooper:state(), pure_link() ) ->
 			const_request_return( link_content() | 'link_not_found' ).
 getContentForLink( State, Link ) ->
@@ -609,11 +676,12 @@ getContentForLink( State, Link ) ->
 
 
 
-% @doc Updates the content associated to target node, by asking directly it for
-% an update.
-%
-% Expected the specified link to be a Graphable PID.
-%
+-doc """
+Updates the content associated to target node, by asking directly it for an
+update.
+
+Expects the specified link to be a Graphable PID.
+""".
 -spec updateContentForLink( wooper:state(), graphable_pid() ) ->
 									oneway_return().
 updateContentForLink( State, LinkPid ) when is_pid( LinkPid ) ->
@@ -621,18 +689,19 @@ updateContentForLink( State, LinkPid ) when is_pid( LinkPid ) ->
 
 
 
-% @doc Returns a list of all the links of this mesh.
+-doc "Returns a list of all the links of this mesh.".
 -spec getAllLinks( wooper:state() ) -> const_request_return( [ any_link() ] ).
 getAllLinks( State ) ->
 	wooper:const_return_result( digraph:edges( ?getAttr(digraph) ) ).
 
 
 
-% @doc Searches in this mesh for a link from FromNode to ToNode.
-%
-% Returns either the 'no_link_found' atom if no link was found, otherwise
-% {Link, LinkContent}.
-%
+-doc """
+Searches in this mesh for a link from FromNode to ToNode.
+
+Returns either the 'no_link_found' atom if no link was found, otherwise
+{Link, LinkContent}.
+""".
 -spec findLink( wooper:state(), pure_node(), pure_node() ) ->
 				const_request_return( 'no_link_found' | link_with_content() ).
 findLink( State, FromNode, ToNode ) ->
@@ -641,36 +710,39 @@ findLink( State, FromNode, ToNode ) ->
 
 
 
-% @doc Returns the connectivity and state information for specified link:
-% {FromNode, ToNode, LinkContent}.
-%
+-doc """
+Returns the connectivity and state information for the specified link:
+ {FromNode, ToNode, LinkContent}.
+""".
 -spec getLinkInformation( wooper:state(), pure_link() ) ->
-								const_request_return( link_connectivity() ).
+							const_request_return( link_connectivity() ).
 getLinkInformation( State, Link ) ->
 	wooper:const_return_result(
-		get_link_graph_informations( ?getAttr(digraph), Link ) ).
+		get_link_graph_information( ?getAttr(digraph), Link ) ).
 
 
 
-% @doc Tries to find a path between the source node and the target one.
-%
-% Returns either an ordered list of nodes (the path) or false, if no path was
-% found.
-%
+-doc """
+Tries to find a path between the source node and the target one.o
+
+Returns either an ordered list of nodes (the path) or false, if no path was
+found.
+
+""".
 -spec findPath( wooper:state(), pure_node(), pure_node() ) ->
-						const_request_return( [ pure_node() ] | 'false' ).
+                            const_request_return( [ pure_node() ] | 'false' ).
 findPath( State, SourceNode, TargetNode ) ->
 	wooper:const_return_result( digraph:get_path( ?getAttr(digraph),
 												  SourceNode, TargetNode ) ).
 
 
 
-% @doc Tries to find the shortest path between the source node and the target
-% one.
-%
-% Returns either an ordered list of nodes (the path) or false, if no path was
-% found.
-%
+-doc """
+Tries to find the shortest path between the source node and the target one.
+
+Returns either an ordered list of nodes (the path) or false, if no path was
+found.
+""".
 -spec findShortestPath( wooper:state(), pure_node(), pure_node() ) ->
 							const_request_return( [ pure_node() ] | 'false' ).
 findShortestPath( State, SourceNode,TargetNode ) ->
@@ -682,7 +754,7 @@ findShortestPath( State, SourceNode,TargetNode ) ->
 
 
 
-% @doc Returns the list of links corresponding to the specified node path.
+-doc "Returns the list of links corresponding to the specified node path.".
 -spec getLinksInPath( wooper:state(), [ pure_node() ] ) ->
 							const_request_return( [ pure_link() ] ).
 getLinksInPath( State, NodeList ) ->
@@ -690,9 +762,10 @@ getLinksInPath( State, NodeList ) ->
 
 
 
-% @doc Returns the list of all node names corresponding to nodes that can be
-% reached from the specified one.
-%
+-doc """
+Returns a list of all the node names corresponding to nodes that can be reached
+from the specified one.
+""".
 -spec findReachableFrom( wooper:state(), pure_node() ) ->
 								const_request_return( [ pure_node() ] ).
 findReachableFrom( State, NodeName ) ->
@@ -700,10 +773,10 @@ findReachableFrom( State, NodeName ) ->
 		digraph_utils:reachable( [ NodeName ], ?getAttr(digraph) ) ).
 
 
-
-% @doc Eliminates all nodes and links that are not reachable from the specified
-% node.
-%
+-doc """
+Eliminates all nodes and links that are not reachable from the the specified
+node.
+""".
 -spec pruneFrom( wooper:state(), pure_node() ) -> const_oneway_return().
 pruneFrom( State, Node ) ->
 
@@ -724,7 +797,7 @@ pruneFrom( State, Node ) ->
 
 
 
-% @doc Eliminates all nodes and links that cannot reach the specified node.
+-doc "Eliminates all nodes and links that cannot reach the specified node.".
 -spec pruneTo( wooper:state(), pure_node() ) -> const_oneway_return().
 pruneTo( State, Node ) ->
 
@@ -745,49 +818,53 @@ pruneTo( State, Node ) ->
 
 
 
-% @doc Sets the list of marked nodes.
-%
-% These nodes, once the topological view will be generated, will be visually
-% marked.
-%
+-doc """
+Sets the list of marked nodes.
+
+These nodes, once the topological view will be generated, will be visually
+marked.
+""".
 -spec setMarkedNodes( wooper:state(), [ pure_node() ] ) -> oneway_return().
 setMarkedNodes( State, NodeList ) ->
 	wooper:return_state( setAttribute( State, marked_nodes, NodeList ) ).
 
 
 
-% @doc Sets the list of marked links.
-%
-% These links, once the topological view will be generated, will be visually
-% marked.
-%
+-doc """
+Sets the list of marked links.
+
+These links, once the topological view will be generated, will be visually
+marked.
+""".
 -spec setMarkedLinks( wooper:state(), [ pure_link() ] ) -> oneway_return().
 setMarkedLinks( State, LinkList ) ->
 	wooper:return_state( setAttribute( State, marked_links, LinkList ) ).
 
 
 
-% @doc Sets the list of marked links from the specified list of endpoints pairs.
-%
-% These links, once the topological view will be generated, will be visually
-% marked.
-%
+-doc """
+Sets the list of marked links from the specified list of endpoints pairs.
+
+These links, once the topological view will be generated, will be visually
+marked.
+""".
 -spec setMarkedLinksFromEndpoints( wooper:state(), [ edge() ] ) ->
 											oneway_return().
 setMarkedLinksFromEndpoints( State, EndpointList ) ->
 
 	LinkList = determine_links_from_endpoints( EndpointList,
-											   ?getAttr(digraph), [] ),
+											   ?getAttr(digraph), _Acc=[] ),
 
 	wooper:return_state( setAttribute( State, marked_links, LinkList ) ).
 
 
 
-% @doc Adds specified element expressed in raw dot notation to the rendering of
-% this mesh.
-%
-% See also: generate_text_panel/2.
-%
+-doc """
+Adds the specified element, expressed in raw dot notation, to the rendering of
+this mesh.
+
+See also: generate_text_panel/2.
+""".
 -spec addRenderingRawElement( wooper:state(), ustring() ) -> oneway_return().
 addRenderingRawElement( State, RawRenderingElement ) ->
 	wooper:return_state( appendToAttribute( State,
@@ -795,7 +872,7 @@ addRenderingRawElement( State, RawRenderingElement ) ->
 
 
 
-% @doc Sets the settings for node and link rendering.
+-doc "Selects the settings for node and link rendering.".
 -spec setRenderingSettings( wooper:state(),
 		{ { node_style(), node_color() }, { node_style(), node_color() } },
 		{ { link_style(), link_color() }, { link_style(), link_color() } } ) ->
@@ -816,7 +893,7 @@ setRenderingSettings( State,
 
 
 
-% @doc Returns a string describing the state of this mesh.
+-doc "Returns a string describing the state of this mesh.".
 -spec getMeshInformation( wooper:state() ) -> const_request_return( ustring() ).
 getMeshInformation( State ) ->
 
@@ -829,24 +906,25 @@ getMeshInformation( State ) ->
 
 
 
-% @doc Sets the directory in which this mesh will be rendered.
+-doc "Sets the directory in which this mesh will be rendered.".
 -spec setRenderingDirectory( wooper:state(), directory_path() ) ->
 													oneway_return().
 setRenderingDirectory( State, NewOutputDirectory ) ->
 
 	SetState = setAttributes( State, [
-					{ graph_directory, NewOutputDirectory },
-					{ graph_directory_created, false } ] ),
+		{ graph_directory, NewOutputDirectory },
+		{ graph_directory_created, false } ] ),
 
 	wooper:return_state( SetState ).
 
 
 
-% @doc Generates a view of current topology of this mesh.
-%
-% DisplayWanted is a boolean telling whether the generated view will be
-% displayed to the user (if true).
-%
+-doc """
+Generates a view of current topology of this mesh.
+
+DisplayWanted is a boolean telling whether the generated view will be displayed
+to the user (if true).
+""".
 -spec generateTopologicalView( wooper:state(), boolean() ) ->
 				request_return( 'topological_view_generated' ).
 generateTopologicalView( State, DisplayWanted ) ->
@@ -861,34 +939,37 @@ generateTopologicalView( State, DisplayWanted ) ->
 
 
 
-% @doc Generates a view of current topology of this mesh.
-%
-% Parameters are:
-%
-% - DisplayWanted: boolean() telling whether the generated view will be
-% displayed to the user (if true)
-%
-% - FilenameSuffix: a string to add to the base filename (ex: '-0012'), useful
-% to iterate on a set of numbered images (ex: 'xx-1.png', 'xx-2.png', etc.)
-%
+-doc """
+Generates a view of the current topology of this mesh.
+
+Parameters are:
+
+- DisplayWanted: tells whether the generated view will be displayed to the user
+(if true)
+
+- FilenameSuffix: a suffix to add to the base filename (e.g. `"-0012"`); useful
+to be able to iterate afterwards on a set of numbered images (e.g. `xx-1.png`,
+`xx-2.png`, etc.)
+""".
 -spec generateTopologicalView( wooper:state(), boolean(), ustring() ) ->
 					request_return( 'topological_view_generated' ).
 generateTopologicalView( State, DisplayWanted, FilenameSuffix ) ->
 
 	NewState = generate_topological_view( DisplayWanted,
-						?getAttr(graph_filename) ++ FilenameSuffix, State ),
+		?getAttr(graph_filename) ++ FilenameSuffix, State ),
 
 	wooper:return_state_result( NewState, topological_view_generated ).
 
 
 
-% @doc Copies the probe rendering to specified directory and displays it.
-%
-% Useful for example to copy a rendering done in a temporary directory into a
-% result one, and to trigger then its display.
-%
-% A request, for synchronisation purpose.
-%
+-doc """
+Copies the probe rendering to the specified directory, and displays it.
+
+Useful for example to copy a rendering done in a temporary directory into a
+result one, and to trigger then its display.
+
+A request, for synchronisation purpose.
+""".
 -spec displayRenderingIn( wooper:state(), directory_path() ) ->
 								const_request_return( 'rendering_displayed' ).
 displayRenderingIn( State, TargetDirectoryPath ) ->
@@ -913,24 +994,20 @@ displayRenderingIn( State, TargetDirectoryPath ) ->
 % Section for helper functions (not methods).
 
 
-
-% @doc Adds a node in mesh.
-%
-% Returns an updated state.
-%
-add_node( Node, Content, State ) ->
+-doc "Adds the specified node to this mesh.".
+-spec add_node( pure_node(), option( node_content() ), wooper:state() ) ->
+                                            wooper:state().
+add_node( Node, MaybeContent, State ) ->
 
 	% Side-effect:
-	digraph:add_vertex( ?getAttr(digraph), Node, Content ),
+	digraph:add_vertex( ?getAttr(digraph), Node, MaybeContent ),
 
 	setAttribute( State, update_status, out_of_sync ).
 
 
 
-% @doc Adds nodes in mesh.
-%
-% Returns an updated state.
-%
+-doc "Adds the specified nodes to this mesh.".
+-spec add_nodes( [ any_node() ], wooper:state() ) -> wooper:state().
 add_nodes( _NodeList=[], State ) ->
 	State;
 
@@ -942,18 +1019,17 @@ add_nodes(_NodeList= [ Node | T ], State ) ->
 
 
 
-% @doc Adds a link in mesh.
-%
-% Returns an updated state.
-%
-add_link( FromNode, ToNode, Link, Content, State ) ->
+-doc "Adds the specified link to this mesh.".
+-spec add_link( any_node(), any_node(), pure_link(), option( node_content() ),
+                wooper:state() ) -> wooper:state().
+add_link( FromNode, ToNode, Link, MaybeContent, State ) ->
 
 	%trace_utils:debug_fmt( "add_link for ~w from ~w to ~w.",
 	%    [ Link, FromNode, ToNode ] ),
 
 	% Side-effect:
 	case digraph:add_edge( ?getAttr(digraph), Link, FromNode, ToNode,
-						   Content ) of
+						   MaybeContent ) of
 
 		{ error, { bad_edge, Path } } ->
 			throw( { invalid_mesh_link, Path } );
@@ -968,7 +1044,7 @@ add_link( FromNode, ToNode, Link, Content, State ) ->
 
 
 
-% @doc Generates a topological view for this mesh.
+-doc "Generates a topological view of this mesh.".
 -spec generate_topological_view( boolean(), file_name(), wooper:state() ) ->
 													wooper:state().
 generate_topological_view( DisplayWanted, BaseFileName, State ) ->
@@ -999,18 +1075,11 @@ generate_topological_view( DisplayWanted, BaseFileName, State ) ->
 
 				OutputDirectory ->
 
-					case file_utils:is_existing_directory( OutputDirectory ) of
-
-						true ->
-							ok ;
-
-						false ->
-							file_utils:create_directory( OutputDirectory )
-
-					end,
+					file_utils:is_existing_directory( OutputDirectory ) orelse
+						file_utils:create_directory( OutputDirectory ),
 
 					CreatedState = setAttribute( UpdatedState,
-											graph_directory_created, true ),
+                        graph_directory_created, true ),
 
 					FilePath = filename:join( OutputDirectory, BaseFileName ),
 
@@ -1061,26 +1130,20 @@ generate_topological_view( DisplayWanted, BaseFileName, State ) ->
 	executable_utils:generate_png_from_graph_file( PNGFilename,
 												   DigraphFilename, false ),
 
-	case DisplayWanted of
-
-		true ->
-			executable_utils:display_png_file( PNGFilename );
-
-		false ->
-			ok
-
-	end,
+	DisplayWanted andalso executable_utils:display_png_file( PNGFilename ),
 
 	% Removes the intermediate graph file:
 	file_utils:remove_file( DigraphFilename ),
+
 
 	DirState.
 
 
 
-% @doc Writes the graph header for the topology of this mesh in the specified
-% file.
-%
+-doc """
+Writes the graph header for the topology of this mesh in the specified file.
+""".
+-spec write_graph_header( digraph_file(), wooper:state() ) -> void().
 write_graph_header( DigraphFile, State ) ->
 
 	file_utils:write_ustring( DigraphFile,
@@ -1093,16 +1156,17 @@ write_graph_header( DigraphFile, State ) ->
 
 	% size = \"10,10\", fontsize = \"14.0\",
 	file_utils:write_ustring( DigraphFile, "    graph [ label = \"~ts\", "
-			"fontsize = \"20.0\"]~n~n", [ ?getAttr(graph_label) ] ),
+		"fontsize = \"20.0\"]~n~n", [ ?getAttr(graph_label) ] ),
 
 	file_utils:write_ustring( DigraphFile, "    node [ height = 1, width = 1, "
-			"fixedsize = true, fontsize = \"10.0\" ]~n~n", [] ).
+		"fixedsize = true, fontsize = \"10.0\" ]~n~n", [] ).
 
 
 
-% @doc Writes the description of the graph nodes of this mesh in the specified
-% file.
-%
+-doc """
+Writes the description of the graph nodes of this mesh in the specified file.
+""".
+-spec write_graph_nodes( digraph_file(), wooper:state() ) -> void().
 write_graph_nodes( DigraphFile, State ) ->
 
 	file_utils:write_ustring( DigraphFile, "~n/* Node definitions */~n~n", [] ),
@@ -1110,6 +1174,7 @@ write_graph_nodes( DigraphFile, State ) ->
 	Nodes = digraph:vertices( ?getAttr(digraph) ),
 
 	write_graph_nodes( DigraphFile, Nodes, State ).
+
 
 
 % (helper)
@@ -1150,10 +1215,13 @@ write_graph_nodes( DigraphFile, _NodeList=[ Node | T ], State ) ->
 
 
 
-% @doc Formats specified options: [{a,a_value}, {b,b_value}, {c,c_value}] must
-% become: a = "a_value", b = "b_value", c = "c_value".
-%
-format_options( undefined ) ->
+-doc """
+Formats the specified options: `[{a,a_value}, {b,b_value}, {c,c_value}]` must
+become the string whose content is: `a = "a_value", b = "b_value", c =
+"c_value"`.
+""".
+-spec format_options( option( [ pair() ] ) ) -> ustring().
+format_options( _MaybeNodeOptions=undefined ) ->
 	"";
 
 format_options( NodeOptions ) ->
@@ -1167,12 +1235,17 @@ format_options( NodeOptions ) ->
 
 
 
-% @doc Formats specified options: [{a,a_value}, {b,b_value}, {c,c_value}] must
-% become: a = "a_value", b = "b_value", c = "c_value".
-%
-% Same as format_options/1, except that some options are overridden for nodes.
-%
-format_marked_options_for_nodes( undefined, _State ) ->
+-doc """
+Formats the specified options: `[{a,a_value}, {b,b_value}, {c,c_value}]` must
+become the string whose content is: `a = "a_value", b = "b_value", c =
+"c_value"`.
+
+Mostly the same as format_options/1, except that some options are overridden for
+nodes.
+""".
+-spec format_marked_options_for_nodes( option( [ pair() ] ),
+                                       wooper:state() ) -> ustring().
+format_marked_options_for_nodes( _MaybeNodeOptions=undefined, _State ) ->
 	"";
 
 format_marked_options_for_nodes( Options, State ) ->
@@ -1181,6 +1254,7 @@ format_marked_options_for_nodes( Options, State ) ->
 		filter_marked_options_for_nodes( Options, _Acc=[], State ),
 
 	format_options( FilteredOptions ).
+
 
 
 % (helper)
@@ -1202,18 +1276,25 @@ filter_marked_options_for_nodes( _Options=[ Elem | T ], Acc, State ) ->
 
 
 
-% @doc Formats specified options: [{a,a_value}, {b,b_value}, {c,c_value}] must
-% become: a = "a_value", b = "b_value", c = "c_value".
-%
-% Same as format_options/1, except that some options are overridden for links.
-%
-format_marked_options_for_links( undefined, _State ) ->
+
+-doc """
+Formats the specified options: `[{a,a_value}, {b,b_value}, {c,c_value}]` must
+become the string whose content is: `a = "a_value", b = "b_value", c =
+"c_value"`.
+
+Mostly the same as format_options/1, except that some options are overridden for
+links.
+""".
+-spec format_marked_options_for_links( option( [ pair() ] ),
+                                       wooper:state() ) -> ustring().
+format_marked_options_for_links( _MaybeLinkOptions=undefined, _State ) ->
 	"";
 
 format_marked_options_for_links( Options, State ) ->
 	FilteredOptions =
 		filter_marked_options_for_links( Options, _Acc=[], State ),
 	format_options( FilteredOptions ).
+
 
 
 % (helper)
@@ -1235,7 +1316,10 @@ filter_marked_options_for_links( _Options=[ Elem | T ], Acc, State ) ->
 
 
 
-% @doc Writes the description of graph links of this mesh in specified file.
+-doc """
+Writes the description of graph links of this mesh in the specified file.
+""".
+-spec write_graph_links( digraph_file(), wooper:state() ) -> void().
 write_graph_links( DigraphFile, State ) ->
 
 	file_utils:write_ustring( DigraphFile, "~n/* Link definitions */~n~n", [] ),
@@ -1253,7 +1337,7 @@ write_graph_links( DigraphFile, _Links=[], _State ) ->
 write_graph_links( DigraphFile, _Links=[ Link | T ], State ) ->
 
 	{ SourceNode, TargetNode, LinkOptions } =
-		get_link_graph_informations( ?getAttr(digraph), Link ),
+		get_link_graph_information( ?getAttr(digraph), Link ),
 
 	SourceNodeName = class_Graphable:forge_node_name( SourceNode ),
 	TargetNodeName = class_Graphable:forge_node_name( TargetNode ),
@@ -1276,34 +1360,40 @@ write_graph_links( DigraphFile, _Links=[ Link | T ], State ) ->
 
 
 
-% @doc Writes the graph legend of this mesh in specified file.
+-doc "Writes the specified raw elements in the specified file.".
+-spec write_raw_elements( digraph_file(), wooper:state() ) -> void().
 write_raw_elements( DigraphFile, State ) ->
 	[ file_utils:write_ustring( DigraphFile, Elem, [] )
 			|| Elem <- ?getAttr(rendering_raw_elements) ].
 
 
 
-% @doc Writes the graph footer for the topology of this mesh in specified file.
+-doc """
+Writes the graph footer for the topology of this mesh in the specified file.
+""".
+-spec write_graph_footer( digraph_file(), wooper:state() ) -> void().
 write_graph_footer( DigraphFile, _State ) ->
 	file_utils:write_ustring( DigraphFile, "~n}~n", [] ).
 
 
 
-% @doc Returns the graph information associated to specified link, that is
-% {SourceNode, TargetNode, LinkOptions}.
-%
-get_link_graph_informations( Digraph, Link ) ->
+-doc "Returns the graph-level information associated to the specified link.".
+-spec get_link_graph_information( digraph(), pure_link() ) -> link_info().
+get_link_graph_information( Digraph, Link ) ->
 
-	{ Link, SourceNode, TargetNode, LinkOptions } =
+	{ _Link, SourceNode, TargetNode, LinkOptions } =
 		digraph:edge( Digraph, Link ),
 
 	{ SourceNode, TargetNode, LinkOptions }.
 
 
 
-% @doc Returns the digraph link (if any), and its associated content, existing
-% between the specified nodes.
-%
+-doc """
+Returns the digraph link (if any), and its associated content, existing between
+the two specified nodes.
+""".
+-spec find_link_between( pure_node(), pure_node(), digraph() ) ->
+                                link_with_content() | 'no_link_found'.
 find_link_between( SourceNode, TargetNode, Digraph ) ->
 
 	% Get all edges emanating from SourceNode:
@@ -1313,11 +1403,13 @@ find_link_between( SourceNode, TargetNode, Digraph ) ->
 
 
 
-% @doc Returns the first link found among specified links targeting
-% 'TargetNode', or, if none is found, 'no_link_found'.
-%
-% Returns, if found, the digraph link and its associated content.
-%
+-doc """
+Returns the first link, together with its associated content, found among the
+specified links targeting the specified target node, or, if none is found,
+'no_link_found'.
+""".
+-spec find_link_targeting( pure_node(), [ pure_link() ], digraph() ) ->
+                                link_with_content() | 'no_link_found'.
 find_link_targeting( _TargetNode, _Links=[], _Digraph ) ->
 	no_link_found;
 
@@ -1326,7 +1418,7 @@ find_link_targeting( TargetNode, _Links=[ L | T ], Digraph ) ->
 	case digraph:edge( Digraph, L ) of
 
 		{ L, _SourceNode, TargetNode, LinkContent } ->
-			% Found, stop the look-up:
+			% Found, stop the lookup:
 			{ L, LinkContent };
 
 		_ ->
@@ -1336,7 +1428,8 @@ find_link_targeting( TargetNode, _Links=[ L | T ], Digraph ) ->
 
 
 
-% @doc Returns the list of links between the specified nodes.
+-doc "Returns a list of the links between the specified nodes.".
+-spec get_links_from( [ pure_node() ], digraph() ) -> [ pure_link() ].
 get_links_from( NodeList, Digraph ) ->
 	get_links_from( NodeList, Digraph, _Acc=[] ).
 
@@ -1368,12 +1461,14 @@ determine_links_from_endpoints( _EndpointList=[ { Source, Target } | H ],
 
 
 
-% @doc Returns the content associated to the specified node.
+-doc "Returns any content associated to the specified node.".
+-spec get_content_for_node( digraph(), pure_node() ) ->
+                                node_content() | 'node_not_found'.
 get_content_for_node( Digraph, Node ) ->
 
 	case digraph:vertex( Digraph, Node ) of
 
-		{ Node, Content } ->
+		{ _Node, Content } ->
 			Content;
 
 		false ->
@@ -1383,12 +1478,14 @@ get_content_for_node( Digraph, Node ) ->
 
 
 
-% @doc Returns the content associated to the specified link.
+-doc "Returns the content associated to the specified link.".
+-spec get_content_for_link( digraph(), pure_link() ) ->
+                                link_content() | 'link_not_found'.
 get_content_for_link( Digraph, Link ) ->
 
 	 case digraph:edge( Digraph, Link ) of
 
-		{ Link, _SourceNode, _TargetNode, Content } ->
+		{ _Link, _SourceNode, _TargetNode, Content } ->
 			Content;
 
 		false ->
@@ -1398,7 +1495,9 @@ get_content_for_link( Digraph, Link ) ->
 
 
 
-% @doc Returns the content associated to specified node.
+-doc "Returns the content associated to the specified node.".
+-spec update_content_for_node( pure_node(), wooper:state() ) ->
+                                        wooper:state().
 update_content_for_node( Node, State ) ->
 
 	Node ! { getGraphOptions, [], self() },
@@ -1415,7 +1514,9 @@ update_content_for_node( Node, State ) ->
 
 
 
-% @doc Updates the content associated to specified link.
+-doc "Updates the content associated to the specified link.".
+-spec update_content_for_link( pure_link(), wooper:state() ) ->
+                                        wooper:state().
 update_content_for_link( Link, State ) when is_pid( Link ) ->
 
 	Link ! { getGraphOptions, [], self() },
@@ -1439,10 +1540,12 @@ update_content_for_link( _Link, State ) ->
 
 
 
-% @doc Factors parts common to all constructors.
-%
-% (helper)
-%
+-doc """
+Factors parts common to all constructors.
+
+(helper)
+""".
+-spec init_common( [ mesh_option() ], wooper:state() ) -> wooper:state().
 init_common( Options, State ) ->
 
 	Name = ?getAttr(name),
@@ -1505,15 +1608,15 @@ init_common( Options, State ) ->
 
 
 
-% @doc Generates a string, suitable to be used with addRenderingRawElement/2, to
-% represent a text panel whose title and internal content are the specified
-% ones.
-%
-% The content must respect the syntax specified in
-% [http://www.graphviz.org/doc/info/shapes.html#record].
-%
-% See addRenderingRawElement/2.
-%
+-doc """
+Generates a string, suitable to be used with addRenderingRawElement/2, to
+represent a text panel whose title and internal content are the specified ones.
+
+The content must respect the syntax specified in
+[http://www.graphviz.org/doc/info/shapes.html#record].
+
+See addRenderingRawElement/2.
+""".
 -spec generate_text_panel( ustring(), ustring() ) -> ustring().
 generate_text_panel( Title, Content ) ->
 
@@ -1536,9 +1639,10 @@ generate_text_panel( Title, Content ) ->
 
 
 
-% @doc Allows to define whether the topological view should be displayed to the
-% user, after generation.
-%
+-doc """
+Allows defining whether the topological view should be displayed to the user,
+after generation.
+""".
 -spec generate_topological_view_for( pid() ) -> void().
 generate_topological_view_for( MeshPid ) ->
 
@@ -1562,7 +1666,8 @@ generate_topological_view_for( MeshPid ) ->
 	end.
 
 
-% @doc Tells whether a type of layout is known.
+
+-doc "Tells whether a type of layout is known.".
+-spec is_known_layout( mesh_layout() ) -> boolean().
 is_known_layout( Layout ) ->
-	% See mesh_layout():
 	lists:member( Layout, [ dot, neato, twopi, circo, fdp, sfdp ] ).

@@ -1,11 +1,12 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of the Sim-Diasca training material.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-%
+% Creation date: 2008.
+
 -module(class_PinkFlamingo).
 
 
@@ -21,7 +22,7 @@
 -type name() :: ustring().
 
 % Expressed in centimeters:
--type heigth() :: float().
+-type height() :: float().
 
 -type color() :: 'pink' | 'yellow' | 'blue'.
 
@@ -30,17 +31,19 @@
 -type filtering_location() :: 'camargue' | 'chile'.
 
 
-% Shorthands:
+% Type shorthand:
 -type ustring() :: text_utils:ustring().
 
 
-% @doc Constructs a pink flamingo.
-%
-% Note: this is *not* a Sim-Diasca actor.
-%
+
+-doc """
+Constructs a pink flamingo.
+
+Note: this is *not* a Sim-Diasca actor.
+""".
 -spec construct( wooper:state(), name(), height() ) -> wooper:state().
 construct( State, Name, Height ) when is_list( Name )
-		andalso is_float( Height ) ->
+                                    andalso is_float( Height ) ->
 
 	% First the direct mother classes:
 	ViviparousBeingState = class_ViviparousBeing:construct( State ),
@@ -48,12 +51,15 @@ construct( State, Name, Height ) when is_list( Name )
 	% Then the class-specific attributes:
 	setAttributes( ViviparousBeingState, [ { name, Name },
 										   { height, Height },
-										   {feather_color,pink} ] ).
+										   { feather_color, pink } ] ).
 
 
 
-% @doc Requests the flamingo to filter plankton in specified location.
--spec filterPlankton( wooper:state(), filetring_location() ) -> oneway_return().
+-doc """
+Requests the flamingo to filter plankton in the specified location.
+""".
+-spec filterPlankton( wooper:state(), filtering_location() ) ->
+                                            oneway_return().
 filterPlankton( State, camargue ) ->
 
 	NewHeight = ?getAttr(height) + 2.5,
@@ -75,19 +81,21 @@ filterPlankton( State, chile ) ->
 
 
 
-% @doc Returns the feather color of the flamingo.
-%
-% Could be a static method if we knew for sure that all flamingos were pink.
-%
+-doc """
+Returns the feather color of the flamingo.
+
+Could be a static method if we knew for sure that all flamingos were pink.
+""".
 -spec getFeatherColor( wooper:state() ) -> const_request_return( color() ).
 getFeatherColor( State ) ->
 	wooper:const_return( ?getAttr(feather_color) ).
 
 
 
-% @doc Returns the mean children count for that flamingo (actually does not
-% depend on any specific flamingo).
-%
+-doc """
+Returns the mean children count for that flamingo (actually does not depend on
+any specific flamingo).
+""".
 -spec getMeanChildrenCount( wooper:state() ) ->
 								const_request_return( basic_utils:count() ).
 getMeanChildrenCount( State ) ->
@@ -98,9 +106,10 @@ getMeanChildrenCount( State ) ->
 % Static section.
 
 
-% @doc Let's say an average means something here.
+-doc """
+Let's say an average means something here.
 
-% (this is a static method, as it does not depend on a state)
-%
+(this is a static method, as it does not depend on a state)
+""".
 get_mean_children_count() ->
 	wooper:return_static( 1.7 ).

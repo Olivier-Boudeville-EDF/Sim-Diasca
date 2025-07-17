@@ -1,26 +1,27 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Overall unit test of the Sim-Diasca data-logging facilities.
 -module(datalogging_test).
+
+-moduledoc "Overall unit test of the Sim-Diasca **data-logging** facilities.".
 
 
 % Exported for reuse in the result_management test:
@@ -31,13 +32,13 @@
 -include("sim_diasca_for_cases.hrl").
 
 
-% Shorthands:
+% Type shorthand:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Creates a virtual probe directly from the simulation test case as well.
+-doc "Creates a virtual probe directly from the simulation test case as well.".
 -spec manage_facility_probe( ustring() ) -> void().
 manage_facility_probe( ProbeName ) ->
 
@@ -53,7 +54,7 @@ manage_facility_probe( ProbeName ) ->
 			?test_info( "The virtual probe directly created from the test case "
 				"did not match the result specification, thus was not "
 				"created." ),
-			 non_wanted_virtual_probe;
+			non_wanted_virtual_probe;
 
 		% Depending on the result specification, this virtual probe ID may or
 		% may not be #3:
@@ -102,8 +103,8 @@ manage_facility_probe( ProbeName ) ->
 			DataLoggerPid ! { setData, [ MyVirtualProbeID, _Tick5=11,
 										 _Sample6={2,1,4} ] },
 
-			DataLoggerPid ! { setData,[ MyVirtualProbeID, _Tick6=12,
-										_Sample7={1,4,7} ] },
+			DataLoggerPid ! { setData, [ MyVirtualProbeID, _Tick6=12,
+										 _Sample7={1,4,7} ] },
 
 
 			?test_info( "Performing a synchronous setting." ),
@@ -111,14 +112,16 @@ manage_facility_probe( ProbeName ) ->
 			Tick7 = 14,
 
 			DataLoggerPid ! { setDataSynchronous, [ MyVirtualProbeID, Tick7,
-					_Sample8={ undefined, undefined, 8 } ], self() },
+				_Sample8={ undefined, undefined, 8 } ], self() },
+
 			datalogging_set_done = test_receive(),
 
 			?test_info( "Performing a synchronous merge "
 						"(first values remain undefined)." ),
 
 			DataLoggerPid ! { mergeDataSynchronous, [ MyVirtualProbeID, Tick7,
-							_Sample9={ undefined, 3, undefined } ], self() },
+				_Sample9={ undefined, 3, undefined } ], self() },
+
 			datalogging_merge_done = test_receive(),
 
 
@@ -130,12 +133,12 @@ manage_facility_probe( ProbeName ) ->
 			Tick8 = 16,
 
 			class_DataLogger:set_data_synchronous( ProbeTable, Tick8,
-											_Sample10={ -1, 8, undefined } ),
+				_Sample10={ -1, 8, undefined } ),
 
 
 			?test_info( "Performing direct asynchronous sample merging." ),
 			class_DataLogger:merge_data_synchronous( ProbeTable, Tick8,
-								_Sample11={ undefined, undefined, -2 } ),
+				_Sample11={ undefined, undefined, -2 } ),
 
 			?test_info( "Performing direct (conditional) asynchronous "
 						"sample setting." ),
@@ -174,7 +177,7 @@ manage_facility_probe( ProbeName ) ->
 
 
 
-% @doc Generates some data to test the data-logging.
+-doc "Generates some data to test the data-logging.".
 -spec run() -> no_return().
 run() ->
 
@@ -211,7 +214,7 @@ run() ->
 		%
 		%result_specification = [
 		%   { targeted_patterns, [ {"^Curves.*", [rendering_only]} ] },
-		%	{ blacklisted_patterns, ["Curves B" ] } ]
+		%   { blacklisted_patterns, ["Curves B" ] } ]
 
 
 		% Incorrect, rejected specifications:
@@ -219,7 +222,7 @@ run() ->
 		%result_specification=unexpected_option
 		%result_specification=[ { targeted_patterns, unexpected_pattern } ]
 		%result_specification=[ { targeted_patterns, [ ".*" ] },
-		%						unexpected_option ]
+		%                         unexpected_option ]
 
 	},
 
@@ -245,7 +248,7 @@ run() ->
 
 	% Directly created on the user node, as usual:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
@@ -286,13 +289,8 @@ run() ->
 
 	end,
 
-	case IsBatch of
-
-		true ->
-			% Nothing more, in batch mode.
-			ok;
-
-		false ->
+	IsBatch orelse
+		begin
 			% Display more information in interactive mode:
 			mnesia:start(),
 			mnesia:info(),
@@ -308,7 +306,7 @@ run() ->
 				"then the virtual probe tables can be inspected, by "
 				"double-clicking on their name)~n" )
 
-	end,
+		end,
 
 	?test_info( "Browsing the report results, if not in batch mode." ),
 	class_ResultManager:browse_reports(),

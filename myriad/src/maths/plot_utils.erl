@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,36 +25,54 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, October 7, 2023.
 
-
-% @doc Gathering of facilities <b>to plot graphs</b>.
 -module(plot_utils).
+
+-moduledoc """
+Gathering of facilities **to plot graphs**.
+""".
 
 
 % For the plot_settings record:
 -include("plot_utils.hrl").
 
 
+
+-doc """
+The settings governing a given plot.
+
+The underlying conventions are the gnuplot ones.
+""".
 -type plot_settings() :: #plot_settings{}.
-% The settings governing a given plot.
-%
-% The underlying conventions are the gnuplot ones.
 
 
+
+-doc """
+The user-specified plot name, whence for example the corresponding file names
+will be derived.
+""".
 -type user_plot_name() :: any_string().
-% The user-specified plot name, whence for example the corresponding file names
-% will be derived.
 
+
+
+-doc "Internal plot name.".
 -type bin_plot_name() :: bin_string().
-% Internal plot name.
 
 
 
+-doc """
+The path to a file corresponding to a rendering of a plot, as an image.
+
+Typically a PNG or a SVG file.
+""".
 -type user_plot_path() :: any_file_path().
-% The path to a file corresponding to a rendering of a plot, as an image.
-%
-% Typically a PNG or a SVG file.
 
 
+
+-doc """
+Plot style (default being 'linespoints'):
+
+(see <http://gnuplot.info/docs_5.5/Plotting_Styles.html>)
+""".
 -type plot_style() :: 'linespoints' % (default)
 					| 'lines'
 					| 'points'
@@ -63,129 +81,180 @@
 					| 'filledcurves'
 					| 'fillsteps'
 					| atom(). % As many others exist.
-% Plot style (default being 'linespoints'):
-%
-% (see http://gnuplot.info/docs_5.5/Plotting_Styles.html)
 
 
+
+-doc """
+Fill style (default being 'empty'):
+
+(see <http://gnuplot.info/docs_5.5/loc15482.html>)
+""".
 -type fill_style() :: 'empty' % (default)
 					| term(). % to be further specified
-% Fill style (default being 'empty'):
-%
-% (see http://gnuplot.info/docs_5.5/loc15482.html)
 
 
+
+-doc """
+A user-specified string containing key options.
+
+For example "box".
+""".
 -type user_key_options() :: any_string().
-% A user-specified string containing key options.
-%
-% For example "box".
 
 
+
+-doc "The name of a gnuplot command file (see the command_extension define).".
 -type bin_command_file_name() :: bin_file_name().
-% The name of a gnuplot command file (see the command_extension define).
 
+
+
+-doc "A path to a gnuplot command file (see the command_extension define).".
 -type command_file_path() :: file_path().
-% A path to a gnuplot command file (see the command_extension define).
 
+
+
+-doc "A path to a gnuplot command file (see the command_extension define).".
 -type bin_command_file_path() :: bin_file_path().
-% A path to a gnuplot command file (see the command_extension define).
 
 
+
+-doc """
+Extra information about data, used to enrich (as comments) data to be plotted,
+for example to specify origin of data, measurement time, source, author,
+accuracy, version, etc.
+
+Reserved keys:
+
+- first_column_description :: ustring(): to describe the semantics of the plot
+parameter; for example: "First column corresponds to the abscissa, expressed in
+tick offsets."
+
+- plot_point_count :: count(): the number of points to plot
+""".
 -type plot_meta_data() :: list_table( atom(), any_string() ).
-% Extra information about data, used to enrich (as comments) data to be plotted,
-% for example to specify origin of data, measurement time, source, author,
-% accuracy, version, etc.
-%
-% Reserved keys:
-%
-% - first_column_description :: ustring(): to describe the semantics of the plot
-% parameter; for example: "First column corresponds to the abscissa, expressed
-% in tick offsets."
-%
-% - plot_point_count :: count(): the number of points to plot
 
 
+
+-doc "A function to be plotted.".
 -type plot_function() :: float_to_float_fun().
-% A function to be plotted.
 
+
+
+-doc """
+A data to plot, based on an (unordered) list of points to be plotted.
+""".
 -type plot_data() :: [ plot_point() ].
-% A data to plot, based on an (unordered) list of points to be plotted.
 
 
+
+-doc """
+A data point to plot, made of a parameter (like a function one, for example
+time) and the associated sample values to be plotted (like the values of various
+functions for the previous parameter).
+
+May also be designated as a data row.
+
+For example `{"Monday", {1, undefined, 5.1}}`, or `{5.5, "hello"}`.
+""".
 -type plot_point() :: { plot_parameter(), plot_sample() }.
-% A data point to plot, made of a parameter (like a function one, for example
-% time) and the associated sample values to be plotted (like the values of
-% various functions for the previous parameter).
-%
-% May also be designated as a data row.
-%
-% For example {"Monday", {1, undefined, 5.1}}, or {5.5, "hello"}.
 
 
+
+-doc """
+A parameter corresponding to a plot point.
+
+This may be a timestamp.
+
+For example "Monday", or 14557.
+""".
 -type plot_parameter() :: any_string() | number().
-% A parameter corresponding to a plot point.
-%
-% This may be a timestamp.
-%
-% For example "Monday", or 14557.
 
 
+
+-doc "A string corresponding to a plot parameter.".
 -type plot_parameter_bin_string() :: bin_string().
-% A string corresponding to a plot parameter.
 
 
--type plot_sample() :: type_utils:tuploid( maybe( plot_value() ) ).
-% A sample to plot.
-%
-% For example {1, undefined, "red", 5.1}, or "hello".
+
+-doc """
+A sample to plot.
+
+For example `{1, undefined, "red", 5.1}`, or `"hello"`.
+""".
+-type plot_sample() :: type_utils:tuploid( option( plot_value() ) ).
 
 
+
+-doc """
+A value corresponding to a plot point.
+
+For example "active", or 1.12.
+""".
 -type plot_value() :: any_string() | number().
-% A value corresponding to a plot point.
-%
-% For example "active", or 1.12.
 
 
 
+-doc "The name of a data file (see the command_extension define).".
 -type bin_data_file_name() :: bin_file_name().
-% The name of a data file (see the command_extension define).
 
+
+
+-doc "A path to a data file (see the data_extension define).".
 -type data_file_path() :: file_path().
-% A path to a data file (see the data_extension define).
 
+
+
+-doc "A path to a data file (see the data_extension define).".
 -type bin_data_file_path() :: bin_file_path().
-% A path to a data file (see the data_extension define).
 
 
+
+-doc "A data row, typically to be written in a data file.".
 -type row_data_string() :: format_string().
-% A data row, typically to be written in a data file.
 
+
+
+-doc "Describes how a data row is to be formatted.".
 -type row_format_string() :: format_string().
-% Describes how a data row is to be formatted.
 
 
+
+-doc """
+A path to a plot (image) file (see the image_format field in the plot settings).
+""".
 -type bin_plot_path() :: bin_file_path().
-% A path to a plot (image) file (see the image_format field in the plot
-% settings).
 
+
+
+-doc """
+A filename of a plot (image) file (see the image_format field in the plot
+settings).
+""".
 -type bin_plot_filename() :: bin_file_name().
-% A filename of a plot (image) file (see the image_format field in the plot
-% settings).
 
+
+
+-doc "The possible outcomes of an attempt of plot generation.".
 -type plot_generation_outcome() ::
 	{ 'success', bin_plot_path() }
   | { 'warning', bin_plot_path(), warning_message() }
   | { 'error', error_message() }.
-% The possible outcomes of an attempt of plot generation.
 
 
+
+-doc """
+""".
 -type warning_message() :: ustring().
 % Any warning (still a success case, plot was generated) message issued when
 % trying to generate a plot.
 
+
+
+-doc """
+Any error (failure case, no plot was generated) message issued when trying to
+generate a plot.
+""".
 -type error_message() :: ustring().
-% Any error (failure case, no plot was generated) message issued when
-% trying to generate a plot.
 
 
 -export_type([ plot_settings/0,
@@ -195,6 +264,7 @@
 			   bin_command_file_name/0,
 			   command_file_path/0, bin_command_file_path/0,
 
+			   plot_meta_data/0, plot_function/0,
 			   plot_data/0, plot_point/0,
 			   plot_parameter/0, plot_parameter_bin_string/0,
 			   plot_sample/0, plot_value/0,
@@ -210,33 +280,45 @@
 
 
 
+-doc "The name of a user-specified curve.".
 -type declared_curve_name() :: any_string().
-% The name of a user-specified curve.
 
+
+
+-doc """
+Identifiers of pseudo-curves (Ordinate = constant), corresponding respectively
+to the highest ordinate value and lowest one.
+""".
 -type special_curve_id() :: 'abscissa_top' | 'abscissa_bottom'.
-% Identifiers of pseudo-curves (Ordinate = constant), corresponding respectively
-% to the highest ordinate value and lowest one.
 
 
+
+-doc "The identifier of a user-specified extended curve.".
 -type declared_curve_id() :: declared_curve_name() | special_curve_id().
-% The identifier of a user-specified extended curve.
 
 
+
+-doc "The name of a user-specified zone.".
 -type declared_zone_name() :: any_string().
-% The name of a user-specified zone.
 
+
+
+-doc """
+The definition of a user-specified zone, which is the specific area between the
+two specified curves.
+""".
 -type declared_zone() :: { declared_zone_name(),
 		{ declared_curve_id(), declared_curve_id() } }.
-% The definition of a user-specified zone, which is the specific area between
-% the two specified curves.
 
 
+
+-doc "A number of curves.".
 -type curve_count() :: count().
-% A number of curves.
 
 
+
+-doc "A factor by which the default point size is multiplied.".
 -type point_size_factor() :: pos_integer().
-% A factor by which the default point size is multiplied.
 
 
 -export_type([ declared_curve_name/0, special_curve_id/0, declared_curve_id/0,
@@ -245,54 +327,73 @@
 			   point_size_factor/0 ]).
 
 
+
+-doc "Fully defines a label on a plot.".
 -type plot_label() :: #plot_label{}.
-% Fully defines a label on a plot.
 
+
+
+-doc "% Corresponds to the 2D integer coordinates of the label on the plot.".
 -type label_location() :: gui:point().
-% Corresponds to the 2D integer coordinates of the label on the plot.
 
 
+
+-doc """
+Actual text of a label.
+
+Note that texts can be "enhanced" (e.g. `"for some {/:Bold important} text"`),
+and may include newlines (e.g. `"radius\\nat..."`).
+""".
 -type label_text() :: bin_string().
-% Actual text of a label.
-%
-% Note that texts can be "enhanced" (e.g. "for some {/:Bold important} text"),
-% and may include newlines (e.g. "radius\\nat...").
 
 
 
+-doc """
+Color of the text (default: "blue").
+""".
 -type label_color() :: color().
-% Color of the text (default: "blue").
 
 
+
+-doc """
+Describes the justification of the text based on the specified location for the
+label.
+""".
 -type label_justification() :: 'left' | 'center' | 'right'.
-% Describes the justification of the text based on the specified location for
-% the label.
 
 
+
+-doc """
+Describes whether the text of the label should be rendered with an angle, from
+the abscissa axis.
+""".
 -type label_orientation() :: 'upright' | int_degrees().
-% Describes whether the text of the label should be rendered with an angle, from
-% the abscissa axis.
 
 
 
+-doc """
+A user specification of a point to be rendered.
+
+For example `<<"pointtype 1">>`.
+
+If true, a default point style is selected; if false no point will be rendered.
+""".
 -type user_point_style_spec() :: any_string() | boolean().
-% A user specification of a point to be rendered.
-%
-% For example `<<"pointtype 1">>'.
-%
-% If true, a default point style is selected; if false no point will be
-% rendered.
 
 
+
+-doc """
+The internal specification of a point to be rendered.
+
+For example `<<"pointtype 1">>`.
+""".
 -type point_style_spec() :: bin_string().
-% The internal specification of a point to be rendered.
-%
-% For example `<<"pointtype 1">>'.
 
 
+
+-doc "A user specification of a label.".
 -type label_spec() :: { label_text(), label_location() }
 		| { label_text(), label_location(), user_point_style_spec() }.
-% A user specification of a label.
 
 
 -export_type([ plot_label/0,
@@ -303,37 +404,48 @@
 
 
 
+-doc "A version of gnuplot.".
 -type gnuplot_version() :: basic_utils:two_digit_version().
-% A version of gnuplot.
+
 
 
 -export_type([ gnuplot_version/0 ]).
 
 
+-doc "The color of a given curve.".
 -type extra_curve_settings() :: rgb_hexastring().
-% The color of a given curve.
 
+
+
+-doc "The color of a given zone.".
 -type extra_zone_settings() :: rgb_hexastring().
-% The color of a given zone.
 
 
 
+-doc """
+Options related to the plot key.
+
+See <http://gnuplot.info/docs_5.5/loc12343.html>.
+""".
 -type key_options() :: bin_string().
-% Options related to the plot key.
-%
-% See http://gnuplot.info/docs_5.5/loc12343.html.
 
 
+
+-doc "Option applying to label ticks.".
 -type tick_option() :: 'rotate'.
-% Option applying to label ticks.
 
 
+
+-doc """
+Option applying to ticks (e.g. axis, border, start, font, textcolor, etc.) for a
+fine control of the major (labelled) tics on an axis (e.g. see Xtics, in
+<http://www.gnuplot.info/docs_4.2/node295.html>)
+""".
 -type ticks_option() :: bin_string().
-% Option applying to ticks (e.g. axis, border, start, font, textcolor, etc.) for
-% a fine control of the major (labelled) tics on an axis (e.g. see Xtics, in
-% http://www.gnuplot.info/docs_4.2/node295.html)
 
 
+
+-doc "The display time format to use for timestamped axes.".
 -type timestamp_time_format() ::
 
 	% Time then date, on a single line:
@@ -341,7 +453,6 @@
 
 	% Time, newline, date, hence on two lines:
   | 'double_line'.
-% The display time format to use for timestamped axes.
 
 
 -export_type([ extra_curve_settings/0, extra_zone_settings/0,
@@ -349,25 +460,36 @@
 			   timestamp_time_format/0 ]).
 
 
+
+-doc """
+A (complete) elementary (gnuplot) command, that is a self-standing line
+(possibly a comment) of a command file thereof.
+""".
 -type elementary_command() :: ustring().
-% A (complete) elementary (gnuplot) command, that is a self-standing line
-% (possibly a comment) of a command file thereof.
 
 
+
+-doc "An element of a gnuplot command.".
 -type command_element() :: ustring().
-% An element of a gnuplot command.
 
 
+
+-doc """
+String describing a timestamp (typically either a tick or a textual timestamp).
+""".
 -type timestamp_string() :: ustring().
-% String describing a timestamp (typically either a tick or a textual
-% timestamp).
 
 
+
+-doc """
+String describing a timestamp (typically either a tick or a textual timestamp).
+""".
 -type timestamp_bin_string() :: bin_string().
 
 
 -export_type([ elementary_command/0, command_element/0,
 			   timestamp_string/0, timestamp_bin_string/0 ]).
+
 
 
 % Main user API:
@@ -406,58 +528,79 @@
 
 % Section for internal types:
 
+
+-doc "The internal plot name.".
 -type plot_name() :: bin_string().
-% The internal plot name.
 
 
+
+-doc """
+The (internal) path to a file corresponding to a rendering of a plot, as an
+image.
+
+Typically a PNG or a SVG file.
+""".
 -type plot_path() :: bin_file_path().
-% The (internal) path to a file corresponding to a rendering of a plot, as an
-% image.
-%
-% Typically a PNG or a SVG file.
 
 
 
+-doc "The internal name for a curve.".
 -type curve_name() :: bin_string().
-% The internal name for a curve.
 
 
+
+-doc """
+Curves are numbered internally, and correspond to the position of data in
+specified samples.
+""".
 -type curve_index() :: curve_count().
-% Curves are numbered internally, and correspond to the position of data in
-% specified samples.
 
+
+
+-doc "Extended to allow for zone definitions.".
 -type extended_curve_id() :: curve_index() | special_curve_id().
-% Extended to allow for zone definitions.
 
+
+
+-doc "Information specific to the rendering of a curve.".
 -type curve_entry() :: { curve_index(), curve_name(), curve_plot_suffix() }.
-% Information specific to the rendering of a curve.
 
 
+
+-doc """
+Applies notably if using (unquoted) timestamps that account for more than one
+field in data. Prefer relying on quoted timestamps.
+""".
 -type curve_offset() :: count().
-% Applies notably if using (unquoted) timestamps that account for more than one
-% field in data. Prefer relying on quoted timestamps.
 
 
 
+-doc """
+A (binary string) suffix (e.g. `<<"noenhanced with filledcurves">>`, `<<"with
+boxes">>` or `<<"with boxes lt rgb '#f0f0f0'">>`) to be added to the plot
+command of the corresponding curve.
+""".
 -type curve_plot_suffix() :: bin_string().
-% A (binary string) suffix (e.g. `<<"noenhanced with filledcurves">>', `<<"with
-% boxes">>' or `<<"with boxes lt rgb '#f0f0f0'">>') to be added to the plot
-% command of the corresponding curve.
 
 
+
+-doc "Tne name of a zone.".
 -type zone_name() :: bin_string().
-% Tne name of a zone.
 
 
+
+-doc """
+A (binary string) suffix (e.g. `<<"fillcolor red">>`) to be added to the plot
+command of the corresponding zone.
+""".
 -type zone_plot_suffix() :: bin_string().
-% A (binary string) suffix (e.g. `<<"fillcolor red">>') to be added to the plot
-% command of the corresponding zone.
 
 
+
+-doc "Information specific to the rendering of a zone.".
 -type zone_entry() ::
 		{ zone_name(), { extended_curve_id(), extended_curve_id() },
 		  zone_plot_suffix() }.
-% Information specific to the rendering of a zone.
 
 
 % For internal sharing:
@@ -528,7 +671,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -569,24 +712,27 @@
 
 
 
-% @doc Returns the specification of a plot of the specified name.
+-doc "Returns the specification of a plot of the specified name.".
 -spec get_plot_settings( user_plot_name() ) -> plot_settings().
 get_plot_settings( UsrPlotName ) ->
 	#plot_settings{ name=text_utils:ensure_binary( UsrPlotName ) }.
 
 
 
-% @doc Returns reasonable defaults in terms of plot settings, for a single,
-% anonymous curve.
-%
+-doc """
+Returns reasonable defaults in terms of plot settings, for a single, anonymous
+curve.
+""".
 -spec get_default_plot_settings() -> plot_settings().
 get_default_plot_settings() ->
 	get_default_plot_settings( "Myriad plot" ).
 
 
-% @doc Returns reasonable defaults in terms of plot settings, for the specified
-% single curve.
-%
+
+-doc """
+Returns reasonable defaults in terms of plot settings, for the specified single
+curve.
+""".
 -spec get_default_plot_settings( user_plot_name() ) -> plot_settings().
 get_default_plot_settings( PlotName ) ->
 	BasePlotSettings = get_plot_settings( PlotName ),
@@ -594,44 +740,51 @@ get_default_plot_settings( PlotName ) ->
 
 
 
-% @doc Sets the name of the target plot.
+-doc "Sets the name of the target plot.".
 -spec set_plot_name( user_plot_name(), plot_settings() ) -> plot_settings().
 set_plot_name( UsrPlotName, PlotSettings ) ->
 	PlotSettings#plot_settings{ name=text_utils:ensure_binary( UsrPlotName ) }.
 
 
-% @doc Returns the specification of a plot corresponding to the specified one
-% once the specified title (if any) has been set.
-%
--spec set_title( maybe( title() ), plot_settings() ) -> plot_settings().
+
+-doc """
+Returns the specification of a plot corresponding to the specified one once the
+specified title (if any) has been set.
+""".
+-spec set_title( option( title() ), plot_settings() ) -> plot_settings().
 set_title( MaybeTitle, PlotSettings ) ->
 	PlotSettings#plot_settings{
 		title=text_utils:ensure_maybe_binary( MaybeTitle ) }.
 
 
-% @doc Returns the specification of a plot corresponding to the specified one
-% once the specified label (if any) for abscissas has been set.
-%
--spec set_x_label( maybe( label() ), plot_settings() ) -> plot_settings().
+
+-doc """
+Returns the specification of a plot corresponding to the specified one once the
+specified label (if any) for abscissas has been set.
+""".
+-spec set_x_label( option( label() ), plot_settings() ) -> plot_settings().
 set_x_label( MaybeLabel, PlotSettings ) ->
 	PlotSettings#plot_settings{
 		x_label=text_utils:ensure_maybe_binary( MaybeLabel ) }.
 
 
-% @doc Returns the specification of a plot corresponding to the specified one
-% once the specified label (if any) for ordinate has been set.
-%
--spec set_y_label( maybe( label() ), plot_settings() ) -> plot_settings().
+
+-doc """
+Returns the specification of a plot corresponding to the specified one once the
+specified label (if any) for ordinate has been set.
+""".
+-spec set_y_label( option( label() ), plot_settings() ) -> plot_settings().
 set_y_label( MaybeLabel, PlotSettings ) ->
 	PlotSettings#plot_settings{
 		y_label=text_utils:ensure_maybe_binary( MaybeLabel ) }.
 
 
-% @doc Returns the specification of a plot corresponding to the specified one
-% once the specified key options (if any) have been set.
-%
-% Example of
--spec set_key_options( maybe( user_key_options() ), plot_settings() ) ->
+
+-doc """
+Returns the specification of a plot corresponding to the specified one once the
+specified key options (if any) have been set.
+""".
+-spec set_key_options( option( user_key_options() ), plot_settings() ) ->
 											plot_settings().
 set_key_options( MaybeKeyOpts, PlotSettings ) ->
 	PlotSettings#plot_settings{
@@ -639,7 +792,7 @@ set_key_options( MaybeKeyOpts, PlotSettings ) ->
 
 
 
-% @doc Adds a in-plot label, with the specified text at the specified location.
+-doc "Adds a in-plot label, with the specified text at the specified location.".
 -spec add_label( label_text(), label_location(), plot_settings() ) ->
 											plot_settings().
 add_label( Text, Location, PlotSettings=#plot_settings{ labels=Labels } ) ->
@@ -648,9 +801,11 @@ add_label( Text, Location, PlotSettings=#plot_settings{ labels=Labels } ) ->
 	PlotSettings#plot_settings{ labels=[ Label | Labels ] }.
 
 
-% @doc Adds a in-plot label, with the specified text at the specified location,
-% possibly with a point being marked there.
-%
+
+-doc """
+Adds a in-plot label, with the specified text at the specified location,
+possibly with a point being marked there.
+""".
 -spec add_label( label_text(), label_location(), user_point_style_spec(),
 				 plot_settings() ) -> plot_settings().
 
@@ -663,11 +818,12 @@ add_label( Text, Location, UsrPtStyleSpec,
 
 
 
-% @doc Adds a in-plot label, with the specified text at the specified location,
-% possibly with a point being marked there.
-%
-% (most complete label definition)
-%
+-doc """
+Adds a in-plot label, with the specified text at the specified location,
+possibly with a point being marked there.
+
+(most complete label definition)
+""".
 add_label( Text, Location, Color, Justification, Orientation, UsrPtStyleSpec,
 		   PlotSettings=#plot_settings{ labels=Labels } ) ->
 
@@ -695,7 +851,7 @@ from_user_point_style_spec( MarkPointStyle ) ->
 
 
 
-% @doc Adds the specified in-plot labels.
+-doc "Adds the specified in-plot labels.".
 -spec add_labels( [ label_spec() ], plot_settings() ) -> plot_settings().
 add_labels( _LabelSpecs=[], PlotSettings ) ->
 	PlotSettings;
@@ -718,17 +874,18 @@ add_labels( _LabelSpecs=[ { Text, Location, Color, Justification, Orientation,
 
 
 
-% @doc Removes all in-plot labels.
+-doc "Removes all in-plot labels.".
 -spec remove_labels( plot_settings() ) -> plot_settings().
 remove_labels( PlotSettings ) ->
 	PlotSettings#plot_settings{ labels=[] }.
 
 
 
-% @doc Declares the specified curves.
-%
-% Supersedes any previous curve entries.
-%
+-doc """
+Declares the specified curves.
+
+Supersedes any previous curve entries.
+""".
 -spec declare_curves( [ declared_curve_name() ], plot_settings() ) ->
 											plot_settings().
 declare_curves( CurveNames, PlotSettings ) ->
@@ -739,17 +896,19 @@ declare_curves( CurveNames, PlotSettings ) ->
 
 
 
-% @doc Transforms a list of names into a list of {Number, Name, CurvePlotSuffix}
-% curve entries, where Number is the index of the name in the list (starting at
-% 1), Name is a binary name, and CurvePlotSuffix is the curve-specific default
-% plot suffix.
-%
-% Respects the order of specified names.
-%
-% For example `transform_curve_names(["a", "b", "c"])' should result in:
-%  `[{1,<<"a">>,DefaultBinPlotSuffix}, {2,<<"b">>,DefaultBinPlotSuffix},
-%   {3,<<"c">>,DefaultBinPlotSuffix}]'.
-%
+-doc """
+Transforms a list of names into a list of {Number, Name, CurvePlotSuffix} curve
+entries, where Number is the index of the name in the list (starting at 1), Name
+is a binary name, and CurvePlotSuffix is the curve-specific default plot suffix.
+
+Respects the order of specified names.
+
+For example `transform_curve_names(["a", "b", "c"])` should result in:
+```
+[{1,<<"a">>,DefaultBinPlotSuffix}, {2,<<"b">>,DefaultBinPlotSuffix},
+  {3,<<"c">>,DefaultBinPlotSuffix}]
+```
+""".
 -spec transform_curve_names( [ declared_curve_name() ] ) -> [ curve_entry() ].
 transform_curve_names( CurveNames ) ->
 	transform_curve_names( CurveNames, get_default_curve_plot_suffix(), _Acc=[],
@@ -770,10 +929,11 @@ transform_curve_names( _CurveNames=[ CurveName | T ], BinPlotSuffix, Acc,
 
 
 
-% @doc Declares the specified zones.
-%
-% Supersedes any previous zone entries.
-%
+-doc """
+Declares the specified zones.
+
+Supersedes any previous zone entries.
+""".
 -spec declare_zones( [ declared_zone() ], plot_settings() ) -> plot_settings().
 declare_zones( DeclaredZones, PlotSettings=#plot_settings{
 								curve_entries=CurveEntries } ) ->
@@ -783,11 +943,13 @@ declare_zones( DeclaredZones, PlotSettings=#plot_settings{
 	PlotSettings#plot_settings{ zone_entries=ZoneEntries }.
 
 
-% @doc Transforms a list of zone declarations into actual zone entries, while
-% checking them against the curve names.
-%
-% (defined for re-use)
-%
+
+-doc """
+Transforms a list of zone declarations into actual zone entries, while checking
+them against the curve names.
+
+(defined for re-use)
+""".
 -spec transform_declared_zones( [ declared_zone() ], [ curve_entry() ] ) ->
 										[ zone_entry() ].
 transform_declared_zones( DeclaredZones, CurveEntries ) ->
@@ -814,14 +976,14 @@ transform_declared_zones( [ Z={ ZoneName,
 
 	% We want to ensure that:
 	%
-	%  1. at least one actual curve is referenced (not two 'abscissa_*' atoms)
+	% 1. at least one actual curve is referenced (not two 'abscissa_*' atoms)
 	%
-	%  2. if there is one 'abscissa_*' atom, it ends up in first position of the
-	%  returned pair
+	% 2. if there is one 'abscissa_*' atom, it ends up in first position of the
+	% returned pair
 	%
-	%  3. we preserve the input curve order (useful for plot styles requiring a
-	%  single value column, like fillsteps, rather than two, like linecurves:
-	%  they can always select the second curve of the pair):
+	% 3. we preserve the input curve order (useful for plot styles requiring a
+	% single value column, like fillsteps, rather than two, like linecurves:
+	% they can always select the second curve of the pair):
 	%
 	NewBounds = case First of
 
@@ -869,8 +1031,7 @@ transform_declared_zones( [ Other | _T ], _CurveEntries, _Acc ) ->
 
 
 
-
-% @doc Returns an appropriate curve index to define internally a zone.
+-doc "Returns an appropriate curve index to define internally a zone.".
 -spec get_curve_index_for( declared_curve_id(), [ curve_entry() ] ) ->
 									extended_curve_id().
 get_curve_index_for( CurveId='abscissa_top', _CurveEntries ) ->
@@ -895,13 +1056,14 @@ get_curve_index_for( CurveName, CurveEntries ) ->
 
 
 
-% doc Plots the specified samples, based on the specified plot specification,
-% and returns the path to the corresponding generated plot file.
-%
-% Any previous plot file will be overwritten.
-%
-% The plot will not be specifically displayed.
-%
+-doc """
+Plots the specified samples, based on the specified plot specification, and
+returns the path to the corresponding generated plot file.
+
+Any previous plot file will be overwritten.
+
+The plot will not be specifically displayed.
+""".
 -spec plot_samples( plot_data(), plot_settings() ) ->
 											plot_generation_outcome().
 plot_samples( PlotData, PlotSettings ) ->
@@ -909,12 +1071,12 @@ plot_samples( PlotData, PlotSettings ) ->
 
 
 
-% doc Plots the specified samples, based on the specified plot specification,
-% displays it if requested, and returns the path to the corresponding generated
-% plot file.
-%
-% Any previous plot file will be overwritten.
-%
+-doc """
+Plots the specified samples, based on the specified plot specification, displays
+it if requested, and returns the path to the corresponding generated plot file.
+
+Any previous plot file will be overwritten.
+""".
 -spec plot_samples( plot_data(), plot_settings(), boolean() ) ->
 											plot_generation_outcome().
 plot_samples( PlotData, PlotSettings=#plot_settings{
@@ -922,7 +1084,7 @@ plot_samples( PlotData, PlotSettings=#plot_settings{
 		image_format=ImgFormat,
 		plot_directory=MaybePlotDir }, DoDisplay ) ->
 
-	BinPlotDir = basic_utils:set_maybe( MaybePlotDir,
+	BinPlotDir = basic_utils:set_option( MaybePlotDir,
 		file_utils:get_bin_current_directory() ),
 
 	% Same logic as in the command file:
@@ -1057,15 +1219,14 @@ plot_samples( PlotData, PlotSettings=#plot_settings{
 
 
 
+-doc """
+Plots the specified function within the specified bounds, based on the specified
+plot settings (if any, otherwise default ones will be used) and returns the path
+to the corresponding generated plot file.
 
-
-% doc Plots the specified function within the specified bounds, based on the
-% specified plot settings (if any, otherwise default ones will be used) and
-% returns the path to the corresponding generated plot file.
-%
-% Any previous plot file will be overwritten.
-%
--spec plot( plot_function(), bounds(), maybe( plot_settings() ) ) ->
+Any previous plot file will be overwritten.
+""".
+-spec plot( plot_function(), bounds(), option( plot_settings() ) ) ->
 											plot_generation_outcome().
 plot( FunToPlot, Bounds, MaybePlotSettings ) ->
 	plot( FunToPlot, Bounds, MaybePlotSettings, _DoDisplay=false ).
@@ -1078,7 +1239,7 @@ plot( FunToPlot, Bounds, MaybePlotSettings ) ->
 %
 % Any previous plot file will be overwritten.
 %
--spec plot( plot_function(), bounds(), maybe( plot_settings() ),
+-spec plot( plot_function(), bounds(), option( plot_settings() ),
 			boolean() ) -> plot_generation_outcome().
 plot( FunToPlot, Bounds, _MaybePlotSettings=undefined, DoDisplay ) ->
 	plot( FunToPlot, Bounds, get_default_plot_settings(), DoDisplay );
@@ -1096,10 +1257,11 @@ plot( FunToPlot, Bounds, PlotSettings=#plot_settings{
 
 
 
+
 % Section for gnuplot helpers.
 
 
-% @doc Returns the default per-curve plot suffix, as a binary.
+-doc "Returns the default per-curve plot suffix, as a binary.".
 -spec get_default_curve_plot_suffix() -> curve_plot_suffix().
 get_default_curve_plot_suffix() ->
 	% "noenhanced" to avoid that a name like 'foo_bar' gets displayed as foo
@@ -1109,17 +1271,18 @@ get_default_curve_plot_suffix() ->
 
 
 
-% @doc Returns the default per-zone plot suffix, as a binary.
+-doc "Returns the default per-zone plot suffix, as a binary.".
 -spec get_default_zone_plot_suffix() -> curve_plot_suffix().
 get_default_zone_plot_suffix() ->
 	<<"">>.
 
 
 
-% @doc Returns a gnuplot-compatible rotation specification.
-%
-% (helper)
-%
+-doc """
+Returns a gnuplot-compatible rotation specification.
+
+(helper)
+""".
 -spec get_formatted_orientation( label_orientation() ) -> command_element().
 get_formatted_orientation( upright ) ->
 	"norotate";
@@ -1129,7 +1292,7 @@ get_formatted_orientation( Angle ) when is_number( Angle ) ->
 
 
 
-% @doc Returns the gnuplot command appropriate to render all registered labels.
+-doc "Returns the gnuplot command appropriate to render all registered labels.".
 -spec get_label_definitions( [ plot_label() ] ) -> command_element().
 get_label_definitions( Labels ) ->
 	text_utils:join( _Separator="\n",
@@ -1181,19 +1344,19 @@ get_label_definitions( [ #plot_label{ location={ X, Y }, text=BinText,
 
 
 
-% @doc Returns Myriad's gnuplot reference version.
+-doc "Returns Myriad's gnuplot reference version.".
 -spec get_gnuplot_reference_version() -> gnuplot_version().
 get_gnuplot_reference_version() ->
 	?gnuplot_reference_version.
 
 
 
-% @doc Returns some basic rendering options, depending on the current gnuplot
-% version.
-%
-% (helper, for code sharing)
-%
--spec get_basic_options( maybe( gnuplot_version() ) ) ->
+-doc """
+Returns some basic rendering options, depending on the current gnuplot version.
+
+(helper, for code sharing)
+""".
+-spec get_basic_options( option( gnuplot_version() ) ) ->
 			{ bin_string(), bin_string() }.
 get_basic_options( _MaybeGnuplotVersion=undefined ) ->
 
@@ -1240,7 +1403,6 @@ get_basic_options( GnuplotVersion ) ->
 	end.
 
 
-
 % (helper)
 get_basic_options_for_older_gnuplot() ->
 	% As here we only have access to an older, limited gnuplot:
@@ -1248,9 +1410,10 @@ get_basic_options_for_older_gnuplot() ->
 
 
 
-% @doc Returns the settings for fine control of the major (labeled) ticks on the
-% abscissa axis, as read from the specified settings.
-%
+-doc """
+Returns the settings for fine control of the major (labeled) ticks on the
+abscissa axis, as read from the specified settings.
+""".
 -spec get_xticks_option( plot_settings() ) -> command_element().
 get_xticks_option( #plot_settings{ x_ticks=undefined } ) ->
 	"# No x_ticks set.";
@@ -1264,9 +1427,10 @@ get_xticks_option( #plot_settings{ x_ticks=Other } ) ->
 
 
 
-% @doc Returns the settings for fine control of the major (labeled) ticks on the
-% ordinate axis, as read from the specified settings.
-%
+-doc """
+Returns the settings for fine control of the major (labeled) ticks on the
+ordinate axis, as read from the specified settings.
+""".
 -spec get_yticks_option( plot_settings() ) -> command_element().
 get_yticks_option( #plot_settings{ y_ticks=undefined } ) ->
 	"# No y_ticks set.";
@@ -1280,9 +1444,9 @@ get_yticks_option( #plot_settings{ y_ticks=Other } ) ->
 
 
 
-% @doc Returns the abscissa range options, as read from the specified plot
-% settings.
-%
+-doc """
+Returns the abscissa range options, as read from the specified plot settings.
+""".
 -spec get_x_range_option( plot_settings() ) -> command_element().
 get_x_range_option( #plot_settings{ x_range=undefined} ) ->
 	"# No xrange set.";
@@ -1305,9 +1469,9 @@ get_x_range_option( #plot_settings{ x_range={ MinX, MaxX } } )
 
 
 
-% @doc Returns the ordinate range options, as read from the specified plot
-% settings.
-%
+-doc """
+Returns the ordinate range options, as read from the specified plot settings.
+""".
 -spec get_y_range_option( plot_settings() ) -> command_element().
 get_y_range_option( #plot_settings{ y_range=undefined} ) ->
 	"# No yrange set.";
@@ -1330,8 +1494,7 @@ get_y_range_option( #plot_settings{ y_range={ MinY, MaxY } } )
 
 
 
-
-% @doc Returns the plot directory that should be used.
+-doc "Returns the plot directory that should be used.".
 get_plot_directory( #plot_settings{ plot_directory=undefined } ) ->
 	file_utils:get_bin_current_directory();
 
@@ -1342,9 +1505,10 @@ get_plot_directory( #plot_settings{ plot_directory=BinPlotDir } ) ->
 
 
 
-% @doc Returns the option to control the labels of the major ticks on the x
-% axis, as read from the specified settings.
-%
+-doc """
+Returns the option to control the labels of the major ticks on the x axis, as
+read from the specified settings.
+""".
 -spec get_x_ticks_option( plot_settings() ) -> command_element().
 get_x_ticks_option( #plot_settings{ x_ticks=undefined } ) ->
 	"# No label set for the major ticks on the x axis.";
@@ -1354,9 +1518,10 @@ get_x_ticks_option( #plot_settings{ x_ticks=XTicksInfo } ) ->
 
 
 
-% @doc Returns the option to control the labels of the major ticks on the y
-% axis, as read from the specified settings.
-%
+-doc """
+Returns the option to control the labels of the major ticks on the y axis, as
+read from the specified settings.
+""".
 -spec get_y_ticks_option( plot_settings() ) -> command_element().
 get_y_ticks_option( #plot_settings{ x_ticks=undefined } ) ->
 	"# No label set for the major ticks on the y axis.";
@@ -1366,24 +1531,27 @@ get_y_ticks_option( #plot_settings{ x_ticks=YTicksInfo } ) ->
 
 
 
-% @doc Returns the gnuplot command filename corresponding to the specified plot
-% name.
-%
+-doc """
+Returns the gnuplot command filename corresponding to the specified plot name.
+""".
 -spec get_command_filename( plot_name() ) -> bin_file_name().
 get_command_filename( Name ) ->
 	file_utils:convert_to_filename_with_extension( Name, ?command_extension ).
 
 
-% @doc Returns the gnuplot data filename corresponding to the specified plot
-% name.
-%
+
+-doc """
+Returns the gnuplot data filename corresponding to the specified plot name.
+""".
 -spec get_data_filename( plot_name() ) -> bin_file_name().
 get_data_filename( Name ) ->
 	file_utils:convert_to_filename_with_extension( Name, ?data_extension ).
 
 
 
-% @doc Returns the plot (image) filename implied by the specified plot settings.
+-doc """
+Returns the plot (image) filename implied by the specified plot settings.
+""".
 -spec get_plot_filename( plot_settings() ) -> bin_file_name().
 get_plot_filename( #plot_settings{
 		name=BinPlotName,
@@ -1398,12 +1566,13 @@ get_plot_filename( #plot_settings{ plot_filename=PlotBinFilename } ) ->
 
 
 
-% @doc Returns the appropriate settings, depending on whether the abscissa axis
-% gathers timestamps or not.
-%
-% Note: now, thanks to quoting, curve offset is always zero as a timestamp
-% occupies only one column (exactly).
-%
+-doc """
+Returns the appropriate settings, depending on whether the abscissa axis gathers
+timestamps or not.
+
+Note: now, thanks to quoting, curve offset is always zero as a timestamp
+occupies only one column (exactly).
+""".
 -spec get_timestamp_settings( plot_settings(), boolean() ) ->
 									{ command_element(), curve_offset() }.
 get_timestamp_settings( #plot_settings{
@@ -1469,9 +1638,10 @@ get_timestamp_settings( _PlotSettings, _IsTimestamped=false ) ->
 
 
 
-% @doc Returns the appropriate settings, depending on whether the abscissa axis
-% gathers timestamps or not.
-%
+-doc """
+Returns the appropriate settings, depending on whether the abscissa axis gathers
+timestamps or not.
+""".
 -spec get_timestamp_settings( plot_settings() ) ->
 									{ command_element(), curve_offset() }.
 get_timestamp_settings( PlotSettings=#plot_settings{
@@ -1480,11 +1650,12 @@ get_timestamp_settings( PlotSettings=#plot_settings{
 
 
 
-% @doc Returns the gnuplot command appropriate to render that plot.
-%
-% Defines one plot curve per declared curve, with current plot settings, and
-% defines as well any specified zone.
-%
+-doc """
+Returns the gnuplot command appropriate to render that plot.
+
+Defines one plot curve per declared curve, with current plot settings, and
+defines as well any specified zone.
+""".
 -spec get_plot_command( plot_settings(), [ curve_entry() ], curve_offset(),
 			[ zone_entry() ], bin_file_name() ) -> command_element().
 get_plot_command( _Settings, _CurveEntries=[], _CurveOffset, _ZoneEntries=[],
@@ -1529,9 +1700,10 @@ get_plot_command( Settings, CurveEntries, CurveOffset, ZoneEntries,
 
 
 
-% @doc Returns a list of curve entries in which there are no more curves that
-% are used to define a zone among the ones specified.
-%
+-doc """
+Returns a list of curve entries in which there are no more curves that are used
+to define a zone among the ones specified.
+""".
 -spec remove_zone_specific_curves( [ curve_entry() ], [ zone_entry() ] ) ->
 											[ curve_entry() ].
 remove_zone_specific_curves( CurveEntries, ZoneEntries ) ->
@@ -1546,7 +1718,7 @@ remove_zone_specific_curves( CurveEntries, ZoneEntries ) ->
 
 
 
-% @doc Returns the plot commands corresponding to the specified curves.
+-doc "Returns the plot commands corresponding to the specified curves.".
 -spec get_plot_commands_for_curves( [ curve_entry() ], curve_offset(),
 									plot_settings() ) -> [ command_element() ].
 get_plot_commands_for_curves( CurveEntries, CurveOffset, Settings ) ->
@@ -1567,10 +1739,11 @@ get_plot_commands_for_curves( CurveEntries, CurveOffset, Settings ) ->
 
 
 
-% @doc Returns a command element suitable to render the specified curve.
-%
-% (helper)
-%
+-doc """
+Returns a command element suitable to render the specified curve.
+
+(helper)
+""".
 -spec get_curve_command( curve_entry(), curve_offset(), plot_settings() ) ->
 								command_element().
 get_curve_command( { CurveIndex, BinCurveName, BinPlotSuffix }, CurveOffset,
@@ -1584,10 +1757,11 @@ get_curve_command( { CurveIndex, BinCurveName, BinPlotSuffix }, CurveOffset,
 
 
 
-% @doc Returns command elements suitable to render the specified zones.
-%
-% (helper)
-%
+-doc """
+Returns command elements suitable to render the specified zones.
+
+(helper)
+""".
 -spec get_plot_commands_for_zones( [ zone_entry() ], curve_offset(),
 								   plot_settings() ) -> [ command_element() ].
 get_plot_commands_for_zones( ZoneEntries, CurveOffset,
@@ -1619,10 +1793,10 @@ get_plot_commands_for_zones( ZoneEntries, CurveOffset,
 
 
 
-% @doc Returns a command element suitable to render the specified zone.
-%
-% (helper)
-%
+-doc """
+Returns a command element suitable to render the specified zone.
+(helper)
+""".
 -spec get_zone_command( zone_entry(), curve_offset(), plot_settings() ) ->
 								command_element().
 get_zone_command(
@@ -1697,10 +1871,10 @@ get_zone_command(
 
 
 
-
-% @doc Selects all curve indexes that are mentioned in zones (possibly with
-% duplicates).
-%
+-doc """
+Selects all curve indexes that are mentioned in zones (possibly with
+duplicates).
+""".
 select_curves( _ZoneEntries=[], Acc ) ->
 	Acc;
 
@@ -1720,18 +1894,19 @@ select_curves( _ZoneEntries=[ { _ZoneName, { C1, C2 }, _ZPlotSuffix } | T ],
 
 
 
-% @doc Adds back the index in the list of curve names, as read from the list of
-% curve entries, without changing the order of the curve names.
-%
-% Transforms any plain string in a binary one as well.
-%
-% For example `add_plot_index_back(["b", "c", "a"], CurveEntries)' with
-% `CurveEntries=[ {3,<<"a">>}, {2,<<"b">>}, {1,<<"c">>}]' should return:
-% `[{2,<<"b">>}, {1,<<"c">>}, {3,<<"a">>}]', i.e. the items of curve names, in
-% their original order there, with their index added back.
-%
-% (helper function)
-%
+-doc """
+Adds back the index in the list of curve names, as read from the list of curve
+entries, without changing the order of the curve names.
+
+Transforms any plain string in a binary one as well.
+
+For example `add_plot_index_back(["b", "c", "a"], CurveEntries)` with
+`CurveEntries=[ {3,<<"a">>}, {2,<<"b">>}, {1,<<"c">>}]` should return:
+`[{2,<<"b">>}, {1,<<"c">>}, {3,<<"a">>}]`, i.e. the items of curve names, in
+their original order there, with their index added back.
+
+(helper function)
+""".
 -spec add_plot_index_back( [ declared_curve_name() ], [ curve_entry() ] ) ->
 												[ curve_entry() ].
 add_plot_index_back( CurveNames, CurveEntries ) ->
@@ -1762,13 +1937,14 @@ add_plot_index_back( _CurveNames=[ CName | T ], CurveEntries, Acc ) ->
 
 
 
-% @doc Generates unconditionally an appropriate gnuplot command file
-% corresponding to the specified plot settings, and returns its (absolute) path.
-%
-% Returning a filename is more convenient than returning an absolute path, so
-% that interlinked files can be specified as local files and thus directly moved
-% as a whole.
-%
+-doc """
+Generates unconditionally an appropriate gnuplot command file corresponding to
+the specified plot settings, and returns its (absolute) path.
+
+Returning a filename is more convenient than returning an absolute path, so that
+interlinked files can be specified as local files and thus directly moved as a
+whole.
+""".
 -spec generate_command_file( plot_settings() ) -> bin_command_file_name().
 generate_command_file( PlotSettings=#plot_settings{
 		name=BinPlotName,
@@ -1905,6 +2081,7 @@ generate_command_file( PlotSettings=#plot_settings{
 
 
 
+-doc "Returns the title from the specified plot settings.".
 -spec get_title( plot_settings() ) -> title().
 get_title( #plot_settings{ name=BinPlotName,
 						   title=undefined } ) ->
@@ -1914,7 +2091,9 @@ get_title( #plot_settings{ title=BinTitle } ) ->
 	BinTitle.
 
 
--spec get_x_label( maybe( label_text() ) ) -> elementary_command().
+
+-doc "Returns the abscissa label from the specified plot settings.".
+-spec get_x_label( option( label_text() ) ) -> elementary_command().
 get_x_label( _MaybeXLabelBinStr=undefined ) ->
 	"# (no x label)";
 
@@ -1926,7 +2105,9 @@ get_x_label( XLabelBinStr ) ->
 	text_utils:format( "set xlabel \"~ts\\n\"", [ XLabelBinStr ] ).
 
 
--spec get_y_label( maybe( label_text() ) ) -> elementary_command().
+
+-doc "Returns the ordinate label from the specified plot settings.".
+-spec get_y_label( option( label_text() ) ) -> elementary_command().
 get_y_label( _MaybeYLabelBinStr=undefined ) ->
 	"# (no y label)";
 
@@ -1935,6 +2116,7 @@ get_y_label( YLabelBinStr ) ->
 
 
 
+-doc "Returns the terminal information from the specified plot settings.".
 -spec get_terminal_info( image_format(), width(), height() ) ->
 											elementary_command().
 get_terminal_info( ImgFormat, CanvasWidth, CanvasHeight ) ->
@@ -1943,7 +2125,9 @@ get_terminal_info( ImgFormat, CanvasWidth, CanvasHeight ) ->
 					   [ ImgFormat, CanvasWidth, CanvasHeight ] ).
 
 
--spec get_key_options( maybe( key_options() ) ) -> elementary_command().
+
+-doc "Returns the key-related options from the specified plot settings.".
+-spec get_key_options( option( key_options() ) ) -> elementary_command().
 get_key_options( _MaybeKeyOptsBinStr=undefined ) ->
 	"# (no key option)";
 
@@ -1952,6 +2136,7 @@ get_key_options( KeyOptsBinStr ) ->
 
 
 
+-doc "Returns the abscissa tick option from the specified plot settings.".
 get_x_tick( _MaxbeXTickBinStr=undefined ) ->
 	"# (no xtick option)";
 
@@ -1959,6 +2144,8 @@ get_x_tick( XTickBinStr ) ->
 	text_utils:format( "set xtic ~ts", [ XTickBinStr ] ).
 
 
+
+-doc "Returns the ordinate tick option from the specified plot settings.".
 get_y_tick( _MaybeYTickBinStr=undefined ) ->
 	"# (no ytick option)";
 
@@ -1967,6 +2154,7 @@ get_y_tick( YTickBinStr ) ->
 
 
 
+-doc "Returns the abscissa ticks option from the specified plot settings.".
 get_x_ticks( _MaxbeXTicksBinStr=undefined ) ->
 	"# (no xticks option)";
 
@@ -1974,6 +2162,8 @@ get_x_ticks( XTicksBinStr ) ->
 	text_utils:format( "set xtic ~ts", [ XTicksBinStr ] ).
 
 
+
+-doc "Returns the ordinate ticks option from the specified plot settings.".
 get_y_ticks( _MaybeYTicksBinStr=undefined ) ->
 	"# (no yticks option)";
 
@@ -1982,14 +2172,15 @@ get_y_ticks( YTicksBinStr ) ->
 
 
 
-% @doc Generates unconditionally an appropriate data file (typically for
-% gnuplot) corresponding to the specified (non-empty) data and plot settings,
-% and returns its filename.
-%
-% Returning a filename is more convenient than returning an absolute path, so
-% that interlinked files can be specified as local files and thus directly moved
-% as a whole.
-%
+-doc """
+Generates unconditionally an appropriate data file (typically for gnuplot)
+corresponding to the specified (non-empty) data and plot settings, and returns
+its filename.
+
+Returning a filename is more convenient than returning an absolute path, so that
+interlinked files can be specified as local files and thus directly moved as a
+whole.
+""".
 -spec generate_data_file( plot_data(), plot_settings() ) ->
 											bin_data_file_name().
 generate_data_file( _PlotData=[], #plot_settings{ name=BinPlotName } ) ->
@@ -2008,7 +2199,7 @@ generate_data_file( PlotData, PlotSettings=#plot_settings{
 		trace_utils:debug_fmt( "Generating a data file for plot '~ts', whose "
 			"first data point is:~n ~p.", [ BinPlotName, hd( PlotData ) ] ) ),
 
-	DataFilename = basic_utils:set_maybe( MaybePlotBinFilename,
+	DataFilename = basic_utils:set_option( MaybePlotBinFilename,
 										  get_data_filename( BinPlotName ) ),
 
 	BinPlotDir = get_plot_directory( PlotSettings ),
@@ -2017,7 +2208,7 @@ generate_data_file( PlotData, PlotSettings=#plot_settings{
 
 	CurveCount = length( CurveEntries ),
 
-	RowFormatStr = basic_utils:set_maybe( MaybeRowFmtStr,
+	RowFormatStr = basic_utils:set_option( MaybeRowFmtStr,
 		forge_format_string_for( CurveCount ) ),
 
 	FormattedData = format_rows( PlotData, CurveCount, RowFormatStr ),
@@ -2037,9 +2228,9 @@ generate_data_file( PlotData, PlotSettings=#plot_settings{
 
 
 
-% @doc Returns a format string suitable for the writing of the corresponding
-% samples.
-%
+-doc """
+Returns a format string suitable for the writing of the corresponding samples.
+""".
 -spec forge_format_string_for( curve_count() ) -> format_string().
 forge_format_string_for( CurveCount ) ->
 
@@ -2051,7 +2242,7 @@ forge_format_string_for( CurveCount ) ->
 
 
 
-% @doc Formats the specified data rows according to the specified format.
+-doc "Formats the specified data rows according to the specified format.".
 -spec format_rows( plot_data(), curve_count(), row_format_string() ) ->
 											ustring().
 format_rows( PlotData, CurveCount, RowFormatStr ) ->
@@ -2095,10 +2286,11 @@ format_rows( _PlotPoints=[ _DataRow={ PlotParam, PlotSample } | T ], CurveCount,
 
 
 
-% @doc Returns a formatted version of the specified plot sample / data row.
-%
-% Defined also for reuse.
-%
+-doc """
+Returns a formatted version of the specified plot sample / data row.
+
+Defined also for reuse.
+""".
 -spec format_row( ustring(), plot_sample(), curve_count(),
 				  row_format_string() ) -> row_data_string().
 % Real tuploid:
@@ -2144,7 +2336,7 @@ format_row_helper( PlotParamStr, SampleValues, CurveCount, RowFormatStr ) ->
 
 
 
-% @doc Used (only) by third-party modules.
+-doc "Used (only) by third-party modules.".
 -spec write_row( file(), plot_parameter_bin_string(), plot_sample() ) -> void().
 write_row( File, PlotParamBinStr, PlotSample ) when is_tuple( PlotSample ) ->
 	RowFormatStr = forge_format_string_for( size( PlotSample ) ),
@@ -2159,7 +2351,7 @@ write_row( File, PlotParamBinStr, PlotSample ) ->
 
 
 
-% @doc Used for direct data writing.
+-doc "Used for direct data writing.".
 -spec write_row( file(), format_string(), timestamp_bin_string(),
 				 [ term() ] ) -> void().
 write_row( File, RowFormatStr, PlotParamBinStr, PlotTerms ) ->
@@ -2168,8 +2360,7 @@ write_row( File, RowFormatStr, PlotParamBinStr, PlotTerms ) ->
 
 
 
-
-% @doc Writes the plot header in the specified data file.
+-doc "Writes the plot header in the specified data file.".
 -spec write_header( file(), [ curve_entry() ], [ zone_entry() ],
 					bin_plot_name(), plot_settings() ) -> void().
 write_header( File, CurveEntries, ZoneEntries, BinPlotName,

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -39,10 +39,12 @@
 % terminators).
 
 
-% @doc Request returning the classname of the instance.
-%
-% Always accurate, in all constructors, methods and destructors.
-%
+
+-doc """
+Request returning the classname of the instance.
+
+Always accurate, in all constructors, methods and destructors.
+""".
 -spec getClassname( wooper:state() ) ->
 							const_request_return( wooper:classname() ).
 getClassname( State ) ->
@@ -50,10 +52,11 @@ getClassname( State ) ->
 
 
 
-% @doc Request returning the (direct) superclasses of the instance.
-%
-% Always accurate, in all constructors, methods and destructors.
-%
+-doc """
+Request returning the (direct) superclasses of the instance.
+
+Always accurate, in all constructors, methods and destructors.
+""".
 -spec getSuperclasses( wooper:state() ) ->
 							const_request_return( [ wooper:classname() ] ).
 getSuperclasses( State ) ->
@@ -66,12 +69,13 @@ getSuperclasses( State ) ->
 -ifdef(wooper_debug_mode).
 
 
-% @doc Returns a full textual description of this instance, including its state
-% and virtual table.
-%
-% This is a method for debug purpose, only activated if wooper_debug_mode is
-% defined.
-%
+-doc """
+Returns a full textual description of this instance, including its state and
+virtual table.
+
+This is a method for debug purpose, only activated if wooper_debug_mode is
+defined.
+""".
 -spec wooper_get_instance_description( wooper:state() ) ->
 								const_request_return( text_utils:ustring() ).
 wooper_get_instance_description( State ) ->

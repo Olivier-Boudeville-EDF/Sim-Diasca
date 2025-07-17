@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2012.
 
-
-% @doc Class modelling an <b>industrial waste source</b>.
 -module(class_IndustrialWasteSource).
+
+-moduledoc "Class modelling an **industrial waste source**.".
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -72,33 +72,40 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
 
+-type location_generator_pid() ::
+    class_LocationGenerator:location_generator_pid().
+
+-type gis_info() :: class_GIS:gis_info().
 
 
-% @doc Creates an industrial waste source.
-%
-% Construction parameters are:
-%
-% - Location, which is the location of this source
-%
-% - ProductionType is the type of waste produced
-%
-% - ProductionQuantity is the quantity of waste produced by cycle
-%
-% - LocalStorage is the quantity of waste that can be locally stored
-%
-% - ProductionDuration is the duration of a waste production cycle
-%
-% - GISPid is the PID of the GIS
-%
+
+-doc """
+Creates an industrial waste source.
+
+Construction parameters are:
+
+- Location, which is the location of this source
+
+- ProductionType is the type of waste produced
+
+- ProductionQuantity is the quantity of waste produced by cycle
+
+- LocalStorage is the quantity of waste that can be locally stored
+
+- ProductionDuration is the duration of a waste production cycle
+
+- GISPid is the PID of the GIS
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:location(), waste_type(),
 				 unit_utils:tons(), unit_utils:tons(), unit_utils:seconds(),
@@ -171,7 +178,7 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 % Methods section.
 
 
-% @doc First scheduling of an industrial waste source.
+-doc "First scheduling of an industrial waste source.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 												actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -194,7 +201,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this industrial source.
+-doc "The definition of the spontaneous behaviour of this industrial source.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -252,26 +259,26 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Tries to load from this waste source as much as possible of the specified
-% mass compatible with specified waste type into the calling actor, which is
-% expected to be a waste transport, located in this point, looking for
-% additional waste.
-%
-% The answer (the actor message sent back) will be:
-%
-% - either a notifyLoadedWaste to acknowledge once for good the waste
-% transaction
-%
-% - or a notifyNoLoadedWaste to report that no waste loading will occur this
-% time (transaction failed)
-%
+-doc """
+Tries to load from this waste source as much as possible of the specified mass
+compatible with specified waste type into the calling actor, which is expected
+to be a waste transport, located in this point, looking for additional waste.
+
+The answer (the actor message sent back) will be:
+
+- either a `notifyLoadedWaste` to acknowledge once for good the waste
+  transaction
+
+- or a `notifyNoLoadedWaste` to report that no waste loading will occur this
+time (transaction failed)
+""".
 -spec loadWaste( wooper:state(), waste_type(), unit_utils:tons(),
 				 sending_actor_pid() ) -> actor_oneway_return().
 loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 	% First call the parent base implementation:
 	ParentState = executeOnewayAs( State, class_WasteLoadingPoint,
-			loadWaste, [ WasteType, MaxWantedMass, WasteLoaderPid ] ),
+		loadWaste, [ WasteType, MaxWantedMass, WasteLoaderPid ] ),
 
 	% Then update the probe:
 
@@ -286,18 +293,17 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 
 
-% @doc Returns a textual description of this instance.
+-doc "Returns a textual description of this instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
 
 
 
-% @doc Computes the newly produced mass of waste and the duration of the next
-% production iteration.
-%
-% (helper)
-%
+-doc """
+Computes the newly produced mass of waste and the duration of the next
+production iteration.
+""".
 compute_production_parameters( State ) ->
 
 	% We do no want waste to be consumed!
@@ -326,9 +332,10 @@ compute_production_parameters( State ) ->
 
 
 
-% @doc Generates a list of instance definitions for the specified number of
-% industrial waste sources.
-%
+-doc """
+Generates a list of instance definitions for the specified number of industrial
+waste sources.
+""".
 -spec generate_definitions( count(), location_generator_pid(), gis_info() ) ->
 				static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( IndustrialSourceCount, LocationGeneratorPid, GISInfo ) ->
@@ -396,9 +403,9 @@ define_industrial_waste_sources( IndustrialSourceCount, GISInfo, Acc ) ->
 
 
 
-% @doc Adds the location to the wastesource build parameters (a kind of zip
-% operation).
-%
+-doc """
+Adds the location to the wastesource build parameters (a kind of zip operation).
+""".
 merge_parameters( Params, Locations, GISInfo ) ->
 	% In-order is better:
 	lists:reverse( merge_parameters( Params, Locations, _Acc=[], GISInfo ) ).
@@ -412,17 +419,14 @@ merge_parameters( _Params=[ { Name, ProductionType, ProductionQuantity,
 				  _Locations=[ Loc | Tl ], Acc, GISInfo ) ->
 
 	NewIndustrialSourceDef = { class_IndustrialWasteSource, [ Name,
-			{ wgs84_cartesian, Loc }, ProductionType, ProductionQuantity,
-			LocalStorage, ProductionDuration, GISInfo ] },
+		{ wgs84_cartesian, Loc }, ProductionType, ProductionQuantity,
+		LocalStorage, ProductionDuration, GISInfo ] },
 
 	merge_parameters( Tp, Tl, [ NewIndustrialSourceDef | Acc ], GISInfo ).
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

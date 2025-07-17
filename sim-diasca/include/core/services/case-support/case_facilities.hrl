@@ -1,7 +1,7 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
-
+%
 % This library is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License or
 % the GNU General Public License, as they are published by the Free Software
@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % Directly obtained from test_facilities.hrl.

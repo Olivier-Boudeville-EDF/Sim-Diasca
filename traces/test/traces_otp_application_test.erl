@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, August 6, 2019.
 
-
-% @doc Testing of Traces as an <b>OTP active application</b>, directly from
-% within its code base (hence without needing to create a separate, mock-up test
-% OTP release for that).
-%
 -module(traces_otp_application_test).
+
+-moduledoc """
+Testing of Traces as an **OTP active application**, directly from within its
+code base (hence without needing to create a separate, mock-up test OTP release
+for that).
+""".
+
 
 
 % For run/0 export and al:
@@ -41,7 +43,8 @@
 -include("traces.hrl").
 
 
-% @doc Actual test.
+
+-doc "Actual test.".
 test_traces_application( OrderedAppNames ) ->
 
 	test_facilities:display( "Starting the Traces OTP active application." ),
@@ -125,10 +128,11 @@ test_traces_application( OrderedAppNames ) ->
 
 
 
-% Note that the traces.app, wooper.app and myriad.app files will have to be
-% found and used for this test to succeed: Traces, WOOPER and Myriad must be
-% already available as prerequisite, fully-built OTP applications.
-%
+-doc """
+Note that the traces.app, wooper.app and myriad.app files will have to be found
+and used for this test to succeed: Traces, WOOPER and Myriad must be already
+available as prerequisite, fully-built OTP applications.
+""".
 -spec run() -> no_return().
 run() ->
 

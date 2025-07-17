@@ -28,10 +28,10 @@
   {applications, [ kernel,
 				   stdlib
 
-				   % Even if using a JSON parser (see USE_JSON), no strict need
-				   % to declare it here, as it can be discovered and used at
-				   % runtime rather than at compile-time (and thus Myriad
-				   % remains with no dependency):
+				   % Even if using a non-builtin JSON parser (see USE_JSON), no
+				   % strict need to declare it here, as it can be discovered and
+				   % used at runtime rather than at compile-time (and thus
+				   % Myriad remains with no dependency):
 				   %
 				   %,jsx
 				   %,jiffy
@@ -40,7 +40,7 @@
 
   {deps, [
 
-	   % Even if enabling a JSON parser, no need to select a backend
+	   % Even if enabling a non-builtin JSON parser, no need to select a backend
 	   % here (done at runtime; see comment above):
 	   %
 	   %{jsx, "~> 3.0"}
@@ -48,7 +48,7 @@
 
   ]},
 
-  {env,[]},
+  {env, []},
 
   % Flat hierarchy in ebin here:
   {modules, [MODULES_FOR_OTP]},

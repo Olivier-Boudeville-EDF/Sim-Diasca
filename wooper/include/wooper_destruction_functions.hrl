@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -36,13 +36,14 @@
 -ifdef(wooper_debug_mode).
 
 
-% @doc Calls recursively the destructors through the inheritance tree.
-%
-% Each destructor (destruct/1 function) is purely local to the current module.
-%
-% Initial specified state is always valid (comes from the main loop), but states
-% returned by user-defined destructors must be checked in debug mode.
-%
+-doc """
+Calls recursively the destructors through the inheritance tree.
+
+Each destructor (destruct/1 function) is purely local to the current module.
+
+Initial specified state is always valid (comes from the main loop), but states
+returned by user-defined destructors must be checked in debug mode.
+""".
 wooper_destruct( State ) ->
 
 	% If a class-specific destruct/1 is defined, executes it, otherwise does
@@ -59,7 +60,7 @@ wooper_destruct( State ) ->
 	Exports = module_info( exports ),
 
 	%io:format( "**** Deleting ~w (destructor for class ~w/~w).~n",
-	%		   [ self(), ?MODULE, wooper:get_classname( State ) ] ),
+	%           [ self(), ?MODULE, wooper:get_classname( State ) ] ),
 
 	DestructedState = case lists:member( { destruct, 1 }, Exports ) of
 
@@ -81,7 +82,6 @@ wooper_destruct( State ) ->
 					ReturnedState;
 
 				Other ->
-
 					wooper:log_error( "~nWOOPER error for PID ~w of class ~ts: "
 						"user-defined destructor did not return a state, but "
 						"returned '~p' instead.", [ self(), ?MODULE, Other ] ),
@@ -169,10 +169,11 @@ wooper_destruct( State ) ->
 
 
 
-% @doc Triggers a destruction-related error.
-%
-% (helper)
-%
+-doc """
+Triggers a destruction-related error.
+
+(helper)
+""".
 -spec trigger_destruct_error( basic_utils:exception_class(),
 		basic_utils:error_term(), code_utils:stack_trace(), wooper:state() ) ->
 									no_return().
@@ -197,10 +198,11 @@ trigger_destruct_error( Reason, ErrorTerm, StackTrace, State ) ->
 
 
 
-% @doc Calls recursively the destructor of all direct superclasses.
-%
-% (helper)
-%
+-doc """
+Calls recursively the destructor of all direct superclasses.
+
+(helper)
+""".
 -spec chain_parent_destructors( wooper:state() ) -> wooper:state().
 chain_parent_destructors( State ) ->
 
@@ -226,10 +228,8 @@ chain_parent_destructors( State ) ->
 	%
 	lists:foldr(
 		fun( Class, NewState ) ->
-
 				% More efficient than using apply/3:
 				Class:wooper_destruct( NewState )
-
 		end,
 		_InitialAcc=State,
 		_List=Superclasses ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,29 +25,34 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, March 6, 2022.
 
-
-% @doc Testing of the <b>MyriadGUI keyboard support</b>.
-%
-% See the gui_keyboard.erl tested module.
-%
 -module(gui_keyboard_test).
+
+-moduledoc """
+Testing of the **MyriadGUI keyboard support**.
+
+See the gui_keyboard.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
 
 
+-doc """
+Here the main loop just has to remember the frame whose closing is awaited for
+and whether we are checking scan codes.
+""".
 -type my_test_state() :: { gui:frame(), CheckScanCode :: boolean() }.
-% Here the main loop just has to remember the frame whose closing is awaited
-% for and whether we are checking scan codes.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type event_context() :: gui:event_context().
 
 
-% @doc Actual execution of the test.
+
+-doc "Actual execution of the test.".
 -spec run_test_gui() -> void().
 run_test_gui() ->
 
@@ -98,33 +103,34 @@ run_test_gui() ->
 
 
 
-% @doc A very simple main loop, whose actual state is simply the GUI object
-% corresponding to the frame that shall be closed to stop the test.
-%
+-doc """
+A very simple main loop, whose actual state is simply the GUI object
+corresponding to the frame that shall be closed to stop the test.
+""".
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( TestState={ TestFrame, CheckScanCode } ) ->
 
 	receive
 
-		{ onCharEntered, [ _TestFrame, _TestFrameId, Context ] } ->
-			interpret_event_context( Context, CheckScanCode ),
+		{ onCharEntered, [ _TestFrame, _TestFrameId, EventContext ] } ->
+			interpret_event_context( EventContext, CheckScanCode ),
 			test_main_loop( TestState );
 
 
-		{ onKeyPressed, [ _TestFrame, _TestFrameId, Context ] } ->
-			interpret_event_context( Context, CheckScanCode ),
+		{ onKeyPressed, [ _TestFrame, _TestFrameId, EventContext ] } ->
+			interpret_event_context( EventContext, CheckScanCode ),
 			test_main_loop( TestState );
 
 
-		{ onKeyReleased, [ _TestFrame, _TestFrameId, Context ] } ->
-			interpret_event_context( Context, CheckScanCode ),
+		{ onKeyReleased, [ _TestFrame, _TestFrameId, EventContext ] } ->
+			interpret_event_context( EventContext, CheckScanCode ),
 			test_main_loop( TestState );
 
 
-		{ onWindowClosed, [ _TestFrame, _TestFrameId, Context ] } ->
+		{ onWindowClosed, [ _TestFrame, _TestFrameId, EventContext ] } ->
 			trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
 				[ gui:object_to_string( TestFrame ),
-				  gui_event:context_to_string( Context ) ] ),
+				  gui_event:context_to_string( EventContext ) ] ),
 
 			gui_frame:destruct( TestFrame ),
 
@@ -144,13 +150,11 @@ test_main_loop( TestState={ TestFrame, CheckScanCode } ) ->
 
 % (helper)
 -spec interpret_event_context( event_context(), boolean() ) -> void().
-interpret_event_context( Context, _CheckScanCode=true ) ->
+interpret_event_context( EventContext, _CheckScanCode=true ) ->
 
-	WxKeyEvent = gui_keyboard:get_backend_event( Context ),
-
-	MaybeUChar = gui_keyboard:get_maybe_uchar( WxKeyEvent ),
-	Keycode = gui_keyboard:get_keycode( WxKeyEvent ),
-	Scancode = gui_keyboard:get_scancode( WxKeyEvent ),
+	MaybeUChar = gui_keyboard:event_context_to_maybe_uchar( EventContext ),
+	Keycode = gui_keyboard:event_context_to_keycode( EventContext ),
+	Scancode = gui_keyboard:event_context_to_scancode( EventContext ),
 
 	%trace_utils:debug_fmt( "Maybe unicode char=~w, Keycode=~w, Scancode=~w.",
 	%                       [ MaybeUChar, Keycode, Scancode ] ),
@@ -169,14 +173,14 @@ interpret_event_context( Context, _CheckScanCode=true ) ->
 	end;
 
 
-interpret_event_context( Context, _CheckScanCode=false ) ->
-	WxKeyEvent = gui_keyboard:get_backend_event( Context ),
+interpret_event_context( EventContext, _CheckScanCode=false ) ->
+	WxKeyEvent = gui_keyboard:get_backend_event( EventContext ),
 	trace_utils:info_fmt( "Received ~ts.~n",
 						  [ gui_keyboard:key_event_to_string( WxKeyEvent ) ] ).
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

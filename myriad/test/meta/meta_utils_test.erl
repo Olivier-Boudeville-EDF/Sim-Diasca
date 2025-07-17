@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, December 19, 2014.
 
-
-% @doc Unit tests for the <b>meta_utils</b> toolbox.
-%
-% See the meta_utils.erl tested module.
-%
 -module(meta_utils_test).
+
+-moduledoc """
+Unit tests for the **meta_utils** toolbox.
+
+See the meta_utils.erl tested module.
+""".
+
 
 
 % Triggers the call to the specified parse transform:

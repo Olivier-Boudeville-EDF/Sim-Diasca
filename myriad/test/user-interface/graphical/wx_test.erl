@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, August 25, 2023.
 
-
-% @doc A minimalistic test to investigate wx.
 -module(wx_test).
+
+-moduledoc """
+A minimalistic test to investigate wx.
+""".
 
 
 % For run/0 export and al:
@@ -113,7 +115,7 @@ test_window_from_frame() ->
 
 
 
-% @doc Executes the actual test.
+-doc "Executes the actual test.".
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
@@ -134,7 +136,7 @@ run_gui_test() ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

@@ -1,7 +1,6 @@
 MOCK_SIMULATORS_TOP = ..
 
-
-.PHONY: info-plt
+.PHONY: all info-plt
 
 
 MODULES_DIRS = src test doc
@@ -9,6 +8,9 @@ MODULES_DIRS = src test doc
 
 PACKAGE_NAME := soda-test
 PACKAGE_TOP  := $(MOCK_SIMULATORS_TOP)/$(PACKAGE_NAME)
+
+
+all:
 
 
 info-plt:

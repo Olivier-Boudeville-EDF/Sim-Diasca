@@ -1,29 +1,31 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Class in charge of <b>managing semantic information</b>.
 -module(class_SemanticServer).
 
+-moduledoc """
+Class in charge of **managing semantic information**.
+""".
 
-% @doc Class in charge of <b>managing semantic information</b>.
+
 -define( class_description,
 		 "Class in charge of managing semantic information. "
 		 "Generally instantiated as a singleton." ).
@@ -56,38 +58,45 @@
 % mismatches, etc.).
 
 
+-doc "A user-level element of a semantics is a symbol (a plain string).".
 -type user_semantics() :: rdf_utils:string_iri().
-% A user-level element of a semantics is a symbol (a plain string).
 
 
+-doc """
+A user-level vocabulary is a list of semantic elements (plain strings).
+""".
 -type user_vocabulary() :: rdf_utils:user_vocabulary().
-% A user-level vocabulary is a list of semantic elements (plain strings).
 
 
+-doc "An (internal) element of a semantics is a symbol (a binary string).".
 -type semantics() :: rdf_utils:subject().
-% An (internal) element of a semantics is a symbol (a binary string).
 
 
+-doc """
+An (internal) vocabulary is a set of semantic elements (binary strings).
+""".
 -type vocabulary() :: rdf_utils:vocabulary().
-% An (internal) vocabulary is a set of semantic elements (binary strings).
 
-
+-doc "PID of the semantic server.".
 -type semantic_server_pid() :: pid().
-% PID of the semantic server.
+
 
 
 -export_type([ user_semantics/0, user_vocabulary/0, semantics/0, vocabulary/0,
 			   semantic_server_pid/0 ]).
 
 
+-doc "String version of a vocabulary.".
 -type string_vocabulary() :: [ rdf_utils:string_iri() ].
-% String version of a vocabulary.
 
 
+
+-doc """
+Possible outcomes of a semantic validation (possibly involving multiple
+semantics).
+""".
 -type validation_outcome() :: 'semantics_accepted'
-				| { 'semantics_rejected', basic_utils:error_reason() }.
-% Possible outcomes of a semantic validation (possibly involving multiple
-% semantics).
+	| { 'semantics_rejected', basic_utils:error_reason() }.
 
 
 % Helpers:
@@ -116,11 +125,6 @@
 -define( default_min_distance, 1 ).
 
 
-% Shorthands:
-
--type unchecked_data() :: basic_utils:unchecked_data().
--type distance() :: text_utils:distance().
--type ustring() :: text_utils:ustring().
 
 
 % Implementation notes:
@@ -128,18 +132,26 @@
 % Internal IRIs could have been atoms (rather than binary strings).
 
 
+% Type shorthands:
 
-% @doc Constructs a semantic server.
-%
-% MinDistance is the minimum lexicographic distance allowed between two semantic
-% elements (Levenshtein distance).
-%
+-type unchecked_data() :: basic_utils:unchecked_data().
+-type distance() :: text_utils:distance().
+-type ustring() :: text_utils:ustring().
+
+
+
+-doc """
+Constructs a semantic server.
+
+MinDistance is the minimum lexicographic distance allowed between two semantic
+elements (Levenshtein distance).
+""".
 -spec construct( wooper:state(), distance() ) -> wooper:state().
 construct( State, MinDistance ) ->
 
 	% First the direct mother class:
 	TraceState = class_EngineBaseObject:construct( State,
-							?trace_categorize("SemanticServer") ),
+		?trace_categorize("SemanticServer") ),
 
 	naming_utils:register_as( self(), ?semantic_server_name, global_only ),
 
@@ -160,7 +172,7 @@ construct( State, MinDistance ) ->
 
 -ifdef(tracing_activated).
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -182,9 +194,10 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Declares specified vocabulary (expected to be a list of binary strings)
-% to this server.
-%
+-doc """
+Declares the specified vocabulary (expected to be a list of binary strings) to
+this server.
+""".
 -spec declareVocabulary( wooper:state(), unchecked_data() ) -> oneway_return().
 declareVocabulary( State, Vocabulary ) when is_list( Vocabulary ) ->
 
@@ -194,9 +207,10 @@ declareVocabulary( State, Vocabulary ) when is_list( Vocabulary ) ->
 
 
 
-% @doc Declares either a single semantic element (expected to be a binary
-% string) or a list thereof to this server.
-%
+-doc """
+Declares either a single semantic element (expected to be a binary string) or a
+list thereof to this server.
+""".
 -spec declareSemantics( wooper:state(), unchecked_data() ) -> oneway_return().
 % Single element clause:
 declareSemantics( State, SemanticElement ) when is_binary( SemanticElement ) ->
@@ -232,11 +246,12 @@ declareSemantics( State, SemanticElements ) when is_list( SemanticElements ) ->
 
 
 
-% @doc Tells whether specified semantic element (specified as a binary string)
-% or a list thereof, are valid.
-%
-% Note: request, for result and also synchronisation.
-%
+-doc """
+Tells whether specified semantic element (specified as a binary string) or a
+list thereof, are valid.
+
+Note: request, for result and also synchronisation.
+""".
 -spec validateSemantics( wooper:state(), unchecked_data() ) ->
 								request_return( validation_outcome() ).
 validateSemantics( State, SemanticElement ) when is_binary( SemanticElement ) ->
@@ -262,7 +277,9 @@ validateSemantics( State, Invalid ) ->
 
 
 
-% @doc Returns a textual description of the state of this semantic server.
+-doc """
+Returns a textual description of the state of this semantic server.
+""".
 -spec getStatus( wooper:state() ) -> const_request_return( ustring() ).
 getStatus( State ) ->
 	wooper:const_return_result( to_string( State ) ).
@@ -274,7 +291,7 @@ getStatus( State ) ->
 % Static section.
 
 
-% @doc Launches the semantic server, with default settings.
+-doc "Launches the semantic server, with default settings.".
 -spec start() -> static_return( semantic_server_pid() ).
 start() ->
 	SemServerPid = start( ?default_min_distance ),
@@ -282,9 +299,10 @@ start() ->
 
 
 
-% @doc Launches the semantic server, with specified minimum lexicographic
-% distance allowed between two semantic elements (Levenshtein distance).
-%
+-doc """
+Launches the semantic server, with specified minimum lexicographic distance
+allowed between two semantic elements (Levenshtein distance).
+""".
 -spec start( distance() ) -> static_return( semantic_server_pid() ).
 start( MinDistance ) ->
 	SemServerPid = new_link( MinDistance ),
@@ -292,11 +310,11 @@ start( MinDistance ) ->
 
 
 
-% @doc Declares specified user-level vocabulary.
+-doc "Declares specified user-level vocabulary.".
 -spec declare_vocabulary( user_vocabulary(), semantic_server_pid() ) ->
 								static_void_return().
 declare_vocabulary( Vocabulary, SemanticServerPid )
-  when is_list( Vocabulary ) ->
+                                when is_list( Vocabulary ) ->
 
 	% To reduce messaging payload, switching from user_semantics() to
 	% semantics():
@@ -308,12 +326,13 @@ declare_vocabulary( Vocabulary, SemanticServerPid )
 
 
 
-% @doc Tells whether specified semantics are compliant.
-%
-% Currently we consider that this is the case iff the receiver semantics are a
-% subset of the emitter ones (i.e. that all semantics demanded by the receiver
-% can be found among the ones shown by the emitter).
-%
+-doc """
+Tells whether specified semantics are compliant.
+
+Currently we consider that this is the case iff the receiver semantics are a
+subset of the emitter ones (i.e. that all semantics demanded by the receiver can
+be found among the ones shown by the emitter).
+""".
 -spec are_semantics_compliant( semantics(), semantics() ) ->
 										static_return( boolean() ).
 are_semantics_compliant( EmitterSemantics, ReceiverSemantics ) ->
@@ -325,7 +344,7 @@ are_semantics_compliant( EmitterSemantics, ReceiverSemantics ) ->
 
 
 
-% @doc Transforms a user-level vocabulary into one in internal form.
+-doc "Transforms a user-level vocabulary into one in internal form.".
 -spec transform_as_internal( user_vocabulary() ) ->
 									static_return( vocabulary() ).
 transform_as_internal( UserVocabulary ) when is_list( UserVocabulary ) ->
@@ -338,7 +357,7 @@ transform_as_internal( UserVocabulary ) when is_list( UserVocabulary ) ->
 
 
 
-% @doc Stops (asynchronously) the semantic server.
+-doc "Stops (asynchronously) the semantic server.".
 -spec stop() -> static_void_return().
 stop() ->
 	SemServerPid = get_server(),
@@ -348,7 +367,7 @@ stop() ->
 
 
 
-% @doc Stops (asynchronously) the specified semantic server.
+-doc "Stops (asynchronously) the specified semantic server.".
 -spec stop( semantic_server_pid() ) -> static_void_return().
 stop( SemServerPid ) ->
 	SemServerPid ! delete,
@@ -356,7 +375,7 @@ stop( SemServerPid ) ->
 
 
 
-% @doc Returns the PID of the semantic server (if any).
+-doc "Returns the PID of the semantic server (if any).".
 -spec get_server() -> static_return( semantic_server_pid() ).
 get_server() ->
 	Pid = naming_utils:get_registered_pid_for( ?semantic_server_name, global ),
@@ -369,7 +388,7 @@ get_server() ->
 % Helper section.
 
 
-% @doc Declares a list of semantics (that are binary strings).
+-doc "Declares a list of semantics (that are binary strings).".
 -spec declare_semantics( [ semantics() ], wooper:state() ) -> wooper:state().
 declare_semantics( _SemanticElements=[], State ) ->
 	State;
@@ -393,10 +412,11 @@ declare_semantics( _SemanticElements=[ E | _T ], _State ) ->
 
 
 
-% @doc Adds specified semantic element, if accepted.
-%
-% Note: the caller shall ensure that this element is a binary string indeed.
-%
+-doc """
+Adds specified semantic element, if accepted.
+
+Note: the caller shall ensure that this element is a binary string indeed.
+""".
 -spec add_semantic_element( semantics(), wooper:state() ) ->
 									{ validation_outcome(), wooper:state() }.
 add_semantic_element( SemanticElement, State ) ->
@@ -428,8 +448,8 @@ add_semantic_element( SemanticElement, State ) ->
 					%           [ SemanticElement ] ),
 
 					IncState = include_element( SemanticElement,
-						 StringSemanticElement, Vocabulary, StringVocabulary,
-						 State ),
+						StringSemanticElement, Vocabulary, StringVocabulary,
+						State ),
 
 					{ semantics_accepted, IncState };
 
@@ -466,10 +486,11 @@ add_semantic_element( SemanticElement, State ) ->
 
 
 
-% @doc Adds specified semantic elements, if accepted.
-%
-% Returns an accepted outcome iff all elements are valid.
-%
+-doc """
+Adds the specified semantic elements, if accepted.
+
+Returns an accepted outcome iff all elements are valid.
+""".
 -spec add_semantic_elements( [ semantics() ], wooper:state() ) ->
 									{ validation_outcome(), wooper:state() }.
 add_semantic_elements( _Elements=[], State ) ->
@@ -497,11 +518,12 @@ add_semantic_elements( _Elements=[ InvalidElement | _T ], State ) ->
 
 
 
-% @doc Tells whether specified semantics is valid, knowing it is a string here,
-% and that it does not belong to the specified vocabulary.
-%
-% Returns either true or {false, Reason}.
-%
+-doc """
+Tells whether the specified semantics is valid, knowing it is a string here, and
+that it does not belong to the specified vocabulary.
+
+Returns either true or {false, Reason}.
+""".
 -spec is_valid_semantics( ustring(), string_vocabulary(), distance() ) ->
 								'true' | { 'false', term() }.
 is_valid_semantics( SemanticElement, VocabularyStrings, MinDistance ) ->
@@ -539,12 +561,13 @@ include_element( SemanticElement, StringSemanticElement, Vocabulary,
 
 
 
-% @doc Returns the minimal lexicographic distance between the specified semantic
-% element and vocabulary.
-%
-% Returns either 'none' if the vocabulary is empty, or {MinimalDistance,
-% CorrespondingVocabularyElement}.
-%
+-doc """
+Returns the minimal lexicographic distance between the specified semantic
+element and vocabulary.
+
+Returns either 'none' if the vocabulary is empty, or {MinimalDistance,
+CorrespondingVocabularyElement}.
+""".
 -spec get_minimal_distance( rdf_utils:string_iri(), string_vocabulary() ) ->
 									'none' | { distance(), semantics() }.
 get_minimal_distance( SemanticElement, Vocabulary ) ->
@@ -581,7 +604,7 @@ get_minimal_distance( SemanticElement, _Vocabulary=[ E | T ],
 
 
 
-% @doc Returns a textual description of the state of this semantic server.
+-doc "Returns a textual description of the state of this semantic server.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -598,6 +621,6 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Semantic server relying on a minimum Levenshtein "
+	text_utils:format( "semantic server relying on a minimum Levenshtein "
 		"distance of ~B and having ~ts",
 		[ ?getAttr(min_distance), VocString ] ).

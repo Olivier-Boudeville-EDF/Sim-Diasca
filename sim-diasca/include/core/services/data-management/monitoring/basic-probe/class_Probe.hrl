@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -44,10 +44,10 @@
 	register_as_tracked_producer = true :: boolean(),
 
 
-	% Specifies the directory in which the files related to this probe (ex: *.p,
-	% *.data, *.png) should be written.
+	% Specifies the directory in which the files related to this probe
+	% (e.g. *.p, *.data, *.png) should be written.
 	%
-	probe_directory = undefined :: maybe( file_utils:directory_name() ),
+	probe_directory = undefined :: option( file_utils:directory_name() ),
 
 
 	% Allows to disable from the very start, at construction-time, the support

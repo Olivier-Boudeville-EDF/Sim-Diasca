@@ -1,14 +1,14 @@
 #!/bin/sh
 
-# Copyright (C) 2010-2023 Olivier Boudeville
+# Copyright (C) 2010-2025 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 # This file is part of the Ceylan-Myriad library.
 
 
-usage="Usage: $(basename $0) [-h|--help] [--lang LANGUAGE] [SOURCE_DIRECTORY]: evaluates various simple metrics of the code found from any specified root directory, otherwise from the current one.
-Default language is 'Erlang'. Other supported languages are: 'Java'.
+usage="Usage: $(basename $0) [-h|--help] [--lang LANGUAGE] [SOURCE_DIRECTORY]: evaluates various very simple/basic metrics regarding the code found from any specified root directory, otherwise from the current one.
+Default language is 'Erlang'. Other supported languages are: 'Java', 'Python'.
 "
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -38,6 +38,9 @@ case ${lang} in
 	"Java")
 		;;
 
+	"Python")
+		;;
+
 	*)
 		echo "  Error, unsupported language '${lang}'." 1>&2
 		exit 10
@@ -50,7 +53,7 @@ bc="$(which bc 2>/dev/null)"
 
 if [ ! -x "${bc}" ]; then
 
-	echo "  Error, 'bc' command not found. Hint: on Arch Linux, use 'pacman -S bc' as root." 1>&2
+	echo "  Error, 'bc' command not found. Hint: on Arch Linux, install it with 'pacman -S bc' as root." 1>&2
 
 	exit 5
 
@@ -69,7 +72,7 @@ root_dir="$(realpath ${source_dir})"
 
 if [ -z "${root_dir}" ]; then
 
-	echo "  Error, no root directory specified.
+	echo "  Error, no root directory could be set.
 ${usage}" 1>&2
 	exit 10
 
@@ -78,7 +81,7 @@ fi
 
 if [ ! -d "${root_dir}" ]; then
 
-	echo "  Error, specified root directory (${root_dir}) does not exist.
+	echo "  Error, root directory ('${root_dir}') does not exist.
 ${usage}" 1>&2
 	exit 15
 
@@ -87,7 +90,7 @@ fi
 
 if [ -n "$2" ]; then
 
-	echo "  Error, an argument is lacking.
+	echo "  Error, extra argument specified.
 ${usage}" 1>&2
 	exit 20
 
@@ -106,7 +109,7 @@ grep="/bin/grep"
 
 
 # We used to use -L to follow symlinks (not desirable here, not wanting to evade
-# from the target source tree)
+# from the target source tree).
 #
 # Only regular files are selected, as includes in a tree may be symlinked in a
 # top-level 'include' directory, and we do not want them to be counted more than
@@ -121,7 +124,6 @@ fi
 
 
 if [ "${lang}" = "Erlang" ]; then
-
 
 	# Rebar-related extra roots ('./_*', like _build, _checkouts, etc.) are
 	# excluded.
@@ -145,6 +147,7 @@ if [ "${lang}" = "Erlang" ]; then
 
 	fi
 
+
 elif [ "${lang}" = "Java" ]; then
 
 	java_files=$(${find} . \( -type f -o -path './_*' -prune \) -a -name '*.java' -print)
@@ -162,7 +165,27 @@ elif [ "${lang}" = "Java" ]; then
 
 	fi
 
+
+elif [ "${lang}" = "Python" ]; then
+
+	python_files=$(${find} . \( -type f -o -path './_*' -prune \) -a -name '*.py' -print)
+
+	#echo "python_files = ${python_files}"
+
+	python_count="$(echo ${python_files} | ${wc} -w)"
+
+	target_files="${python_files}"
+
+	if [ "${target_files}" = " " ]; then
+
+		echo "  Error, no Python source file found from '${root_dir}'." 1>&2
+		exit 27
+
+	fi
+
+
 fi
+
 
 #echo "target_files = ${target_files}"
 
@@ -175,7 +198,7 @@ for f in ${target_files}; do
 done
 
 
-full_line_count=$(${cat} "${tmp_file}" | wc -l)
+full_line_count=$(${cat} "${tmp_file}" | ${wc} -l)
 
 if [ $full_line_count -eq 0 ]; then
 
@@ -186,8 +209,18 @@ fi
 
 
 empty_line_count=$(${cat} "${tmp_file}" | ${grep} '^$' | ${wc} -l)
-comment_line_count=$(${cat} "${tmp_file}" | ${grep} '^[[:space:]]*%' | ${wc} -l)
 
+# Documentation lines (e.g. '-doc "..."', docstrings, etc.) could be counted as
+# well.
+
+if [ "${lang}" = "Erlang" ]; then
+	comment_line_count=$(${cat} "${tmp_file}" | ${grep} '^[[:space:]]*%' | ${wc} -l)
+elif [ "${lang}" = "Java" ]; then
+	# Multi-line '/* ... */' comments should be taken into account as well:
+	comment_line_count=$(${cat} "${tmp_file}" | ${grep} '^[[:space:]]*//' | ${wc} -l)
+elif [ "${lang}" = "Python" ]; then
+	comment_line_count=$(${cat} "${tmp_file}" | ${grep} '^[[:space:]]*#' | ${wc} -l)
+fi
 
 code_line_count=$(${expr} ${full_line_count} - ${empty_line_count} - ${comment_line_count})
 
@@ -205,18 +238,18 @@ elif [ "${lang}" = "Java" ]; then
 
 	echo "  + ${java_count} source files (*.java)"
 
+elif [ "${lang}" = "Python" ]; then
+
+	echo "  + ${python_count} source files (*.py)"
+
 fi
 
 echo "  + a grand total of ${full_line_count} lines:"
 
 echo "    - ${empty_line_count} of which (${empty_percentage}%) are blank lines"
+echo "    - ${comment_line_count} of which (${comment_percentage}%) are comments"
+echo "    - ${code_line_count} of which (${code_percentage}%) are code"
 
-if [ "${lang}" = "Erlang" ]; then
-
-	echo "    - ${comment_line_count} of which (${comment_percentage}%) are comments"
-	echo "    - ${code_line_count} of which (${code_percentage}%) are code"
-
-fi
 
 if [ -f "${tmp_file}" ]; then
 	/bin/rm -f "${tmp_file}"

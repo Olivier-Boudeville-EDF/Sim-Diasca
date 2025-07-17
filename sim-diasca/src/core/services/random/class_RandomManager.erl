@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -20,9 +20,9 @@
 %          Samuel Thiriot     [samuel (dot) thiriot (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class offering services in terms of <b>random number generation</b>.
 -module(class_RandomManager).
+
+-moduledoc "Class offering services in terms of **random number generation**.".
 
 
 -define( class_description,
@@ -124,7 +124,7 @@
 				   | 'time_based_seed'.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -134,24 +134,25 @@
 
 
 
-% @doc Constructs a random manager.
-%
-% Construction parameters:
-%
-% - SeedInformations allows to choose the random seed to be used, it can be:
-%
-%   - a triplet {A,B,C}, to set explicitly the seed, to be tailored for
-%   reproducibility or for ergodic mode
-%
-%   - default_seed, to use default (fixed) values in the process dictionary
-%
-%   - time_based_seed, as they are based on current time, each run will result
-%   in different random series
-%
-% - IsPrivate tells whether this random manager will be privately held (hence
-% should not be registered in naming service) or if it is a (registered)
-% singleton (can be the atom true of false)
-%
+-doc """
+Constructs a random manager.
+
+Construction parameters:
+
+- SeedInformations allows to choose the random seed to be used, it can be:
+
+  - a triplet {A,B,C}, to set explicitly the seed, to be tailored for
+  reproducibility or for ergodic mode
+
+  - default_seed, to use default (fixed) values in the process dictionary
+
+  - time_based_seed, as they are based on current time, each run will result in
+  different random series
+
+- IsPrivate tells whether this random manager will be privately held (hence
+should not be registered in naming service) or if it is a (registered) singleton
+(can be the atom true of false)
+""".
 -spec construct( wooper:state(), seed_info(), boolean() ) -> wooper:state().
 construct( State, SeedInformations, IsPrivate ) ->
 
@@ -203,7 +204,7 @@ construct( State, SeedInformations, IsPrivate ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -248,30 +249,32 @@ destruct( State ) ->
 % Uniform section.
 
 
-% @doc Returns a boolean random value generated from an uniform distribution.
-%
-% Therefore true and false are equally likely to be returned.
-%
+-doc """
+Returns a boolean random value generated from an uniform distribution.
+
+Therefore true and false are equally likely to be returned.
+""".
 -spec get_boolean() -> static_return( boolean() ).
 get_boolean() ->
 	wooper:return_static( random_utils:get_boolean() ).
 
 
 
-% @doc Returns a randomly-selected element of the specified list.
+-doc "Returns a randomly-selected element of the specified list.".
 -spec one_of( [ any() ] ) -> static_return( any() ).
 one_of( ListOfThings ) ->
 	wooper:return_static( random_utils:one_of( ListOfThings ) ).
 
 
 
-% @doc Returns an integer random value generated from an uniform distribution,
-% in specified range.
-%
-% Given two integers Nmin and Nmax, returns a random integer uniformly
-% distributed between these two bounds (both included), updating the random
-% state in the process dictionary.
-%
+-doc """
+Returns an integer random value generated from an uniform distribution, in
+specified range.
+
+Given two integers Nmin and Nmax, returns a random integer uniformly distributed
+between these two bounds (both included), updating the random state in the
+process dictionary.
+""".
 -spec getUniformValue( wooper:state(), integer(), integer() ) ->
 				const_request_return( { 'uniform_value', integer() } ).
 getUniformValue( State, Nmin, Nmax ) ->
@@ -284,12 +287,12 @@ getUniformValue( State, Nmin, Nmax ) ->
 
 
 
-% @doc Returns an integer random value generated from an uniform distribution.
-%
-% Given an integer N >= 1, returns a random integer uniformly distributed
-% between 1 and N (both included), updating the random state in the process
-% dictionary.
-%
+-doc """
+Returns an integer random value generated from an uniform distribution.
+
+Given an integer N >= 1, returns a random integer uniformly distributed between
+1 and N (both included), updating the random state in the process dictionary.
+""".
 -spec getUniformValue( wooper:state(), pos_integer() ) ->
 				const_request_return( { 'uniform_value', pos_integer() } ).
 getUniformValue( State, N ) ->
@@ -302,36 +305,38 @@ getUniformValue( State, N ) ->
 
 
 
-% @doc Returns an integer random value generated from an uniform distribution.
-%
-% Given an integer N >= 1, returns a random integer uniformly distributed
-% between 1 and N (both included), updating the random state in the process
-% dictionary.
-%
+-doc """
+Returns an integer random value generated from an uniform distribution.
+
+Given an integer N >= 1, returns a random integer uniformly distributed between
+1 and N (both included), updating the random state in the process dictionary.
+""".
 -spec get_uniform_value( pos_integer() ) -> static_return( pos_integer() ).
 get_uniform_value( N ) ->
 	wooper:return_static( random_utils:get_uniform_value( N ) ).
 
 
 
-% @doc Returns an integer random value generated from an uniform distribution,
-% in specified range.
-%
-% Given two integers Nmin and Nmax, returns a random integer uniformly
-% distributed between these two bounds (both included), updating the random
-% state in the process dictionary.
-%
+-doc """
+Returns an integer random value generated from an uniform distribution, in
+specified range.
+
+Given two integers Nmin and Nmax, returns a random integer uniformly distributed
+between these two bounds (both included), updating the random state in the
+process dictionary.
+""".
 -spec get_uniform_value( integer(), integer() ) -> static_return( integer() ).
 get_uniform_value( Nmin, Nmax ) ->
 	wooper:return_static( random_utils:get_uniform_value( Nmin, Nmax ) ).
 
 
 
-% @doc Returns a list of Count integer uniform values in [1, N] (both included).
-%
-% Given an integer N >= 1, returns random integers uniformly distributed between
-% 1 and N, updating the random state in the process dictionary.
-%
+-doc """
+Returns a list of Count integer uniform values in `[1, N]` (both included).
+
+Given an integer N >= 1, returns random integers uniformly distributed between 1
+and N, updating the random state in the process dictionary.
+""".
 -spec get_uniform_values( pos_integer(), count() ) ->
 								static_return( [ pos_integer() ] ).
 get_uniform_values( N, Count ) ->
@@ -339,9 +344,10 @@ get_uniform_values( N, Count ) ->
 
 
 
-% @doc Returns a list of Count integer uniform values in [Nmin,Nmax] (both
-% included), updating the random state in the process dictionary.
-%
+-doc """
+Returns a list of Count integer uniform values in `[Nmin,Nmax]` (both included),
+updating the random state in the process dictionary.
+""".
 -spec get_uniform_values( integer(), integer(), count() ) ->
 								static_return( [ integer() ] ).
 get_uniform_values( Nmin, Nmax, Count ) ->
@@ -350,13 +356,14 @@ get_uniform_values( Nmin, Nmax, Count ) ->
 
 
 
-% @doc Returns a floating-point random value in [0.0;N[ generated from an
-% uniform distribution.
-%
-% Given a number (integer or float) N (positive or not), returns a random
-% floating-point value uniformly distributed between 0.0 (included) and N
-% (excluded), updating the random state in the process dictionary.
-%
+-doc """
+Returns a floating-point random value in [0.0;N[ generated from an uniform
+distribution.
+
+Given a number (integer or float) N (positive or not), returns a random
+floating-point value uniformly distributed between 0.0 (included) and N
+(excluded), updating the random state in the process dictionary.
+""".
 -spec get_uniform_floating_point_value( number() ) -> static_return( float() ).
 get_uniform_floating_point_value( N ) ->
 	V = random_utils:get_uniform_floating_point_value( N ),
@@ -364,14 +371,15 @@ get_uniform_floating_point_value( N ) ->
 
 
 
-% @doc Returns a floating-point random value in [Nmin, Nmax[ generated from an
-% uniform distribution.
-%
-% Given two numbers (integer or float) Nmin and Nmax (each being positive or
-% not), returns a random floating-point value uniformly distributed between Nmin
-% (included) and Nmax (excluded), updating the random state in the process
-% dictionary.
-%
+-doc """
+Returns a floating-point random value in [Nmin, Nmax[ generated from an uniform
+distribution.
+
+Given two numbers (integer or float) Nmin and Nmax (each being positive or not),
+returns a random floating-point value uniformly distributed between Nmin
+(included) and Nmax (excluded), updating the random state in the process
+dictionary.
+""".
 -spec get_uniform_floating_point_value( number(), number() ) ->
 												static_return( float() ).
 get_uniform_floating_point_value( Nmin, Nmax ) ->
@@ -388,11 +396,12 @@ get_uniform_floating_point_value( Nmin, Nmax ) ->
 
 
 
-% @doc Returns an exponential floating-point random value with Lambda being the
-% rate parameter.
-%
-% See the random_utils module for further details.
-%
+-doc """
+Returns an exponential floating-point random value with Lambda being the rate
+parameter.
+
+See the random_utils module for further details.
+""".
 -spec getExponentialValue( wooper:state(), rate() ) ->
 				const_request_return( { 'exponential_value', float() } ).
 getExponentialValue( State, Lambda ) ->
@@ -405,11 +414,12 @@ getExponentialValue( State, Lambda ) ->
 
 
 
-% @doc Returns an exponential random value according to the specified Lambda
-% rate parameter.
-%
-% See the random_utils module for further details.
-%
+-doc """
+Returns an exponential random value according to the specified Lambda rate
+parameter.
+
+See the random_utils module for further details.
+""".
 -spec get_exponential_1p_value( rate() ) -> static_return( float() ).
 get_exponential_1p_value( Lambda ) ->
 	Value = random_utils:get_exponential_1p_value( Lambda ),
@@ -417,11 +427,12 @@ get_exponential_1p_value( Lambda ) ->
 
 
 
-% @doc Returns an exponential (positive) integer random value with Lambda being
-% the rate parameter.
-%
-% See the random_utils module for further details.
-%
+-doc """
+Returns an exponential (positive) integer random value with Lambda being the
+rate parameter.
+
+See the random_utils module for further details.
+""".
 -spec getPositiveIntegerExponentialValue( wooper:state(), rate() ) ->
 	const_request_return(
 		{ 'positive_integer_exponential_1p_value', non_neg_integer() } ).
@@ -437,11 +448,12 @@ getPositiveIntegerExponentialValue( State, Lambda ) ->
 
 
 
-% @doc Returns an exponential (positive) integer random value with Lambda being
-% the rate parameter.
-%
-% See the random_utils module for further details.
-%
+-doc """
+Returns an exponential (positive) integer random value with Lambda being the
+rate parameter.
+
+See the random_utils module for further details.
+""".
 -spec get_positive_integer_exponential_1p_value( rate() ) ->
 									static_return( non_neg_integer() ).
 get_positive_integer_exponential_1p_value( Lambda ) ->
@@ -450,11 +462,12 @@ get_positive_integer_exponential_1p_value( Lambda ) ->
 
 
 
-% @doc Returns a list of Count exponential values according to the specified
-% Lambda rate parameter.
-%
-% See the random_utils module for further details.
-%
+-doc """
+Returns a list of Count exponential values according to the specified Lambda
+rate parameter.
+
+See the random_utils module for further details.
+""".
 -spec get_exponential_1p_values( rate(), count() ) ->
 									static_return( [ float() ] ).
 get_exponential_1p_values( Lambda, Count ) ->
@@ -463,9 +476,10 @@ get_exponential_1p_values( Lambda, Count ) ->
 
 
 
-% @doc Returns a list of Count (positive) integer exponential values according
-% to the specified Lambda rate parameter.
-%
+-doc """
+Returns a list of Count (positive) integer exponential values according to the
+specified Lambda rate parameter.
+""".
 -spec get_positive_integer_exponential_1p_values( rate(), count() ) ->
 									static_return( [ pos_integer() ] ).
 get_positive_integer_exponential_1p_values( Lambda, Count ) ->
@@ -491,13 +505,14 @@ get_positive_integer_exponential_1p_values( Lambda, Count ) ->
 
 
 
-% @doc Returns a random value generated from the normal (Gaussian) distribution
-% with specified settings.
-%
-% Given a mean Mu and a standard deviation Sigma, returns a random
-% floating-point value drawn according to the corresponding Gaussian law,
-% updating the state in the process dictionary.
-%
+-doc """
+Returns a random value generated from the normal (Gaussian) distribution with
+specified settings.
+
+Given a mean Mu and a standard deviation Sigma, returns a random floating-point
+value drawn according to the corresponding Gaussian law, updating the state in
+the process dictionary.
+""".
 -spec getGaussianValue( wooper:state(), mean(), standard_deviation() ) ->
 							const_request_return( { gaussian_value, float() } ).
 getGaussianValue( State, Mu, Sigma ) ->
@@ -510,13 +525,14 @@ getGaussianValue( State, Mu, Sigma ) ->
 
 
 
-% @doc Returns a random value generated from the normal (Gaussian) distribution
-% with specified settings.
-%
-% Given a mean Mu and a standard deviation Sigma, returns a random
-% floating-point value drawn according to the corresponding Gaussian law,
-% updating the state in the process dictionary.
-%
+-doc """
+Returns a random value generated from the normal (Gaussian) distribution with
+specified settings.
+
+Given a mean Mu and a standard deviation Sigma, returns a random floating-point
+value drawn according to the corresponding Gaussian law, updating the state in
+the process dictionary.
+""".
 -spec get_gaussian_value( mean(), standard_deviation() ) ->
 									static_return( float() ).
 get_gaussian_value( Mu, Sigma ) ->
@@ -526,16 +542,18 @@ get_gaussian_value( Mu, Sigma ) ->
 
 
 
-% @doc Returns a positive integer random value generated from the normal
-% (Gaussian) distribution with specified settings.
-%
-% Given a mean Mu and a standard deviation Sigma, returns random integers drawn
-% according the corresponding Gaussian law, updating the state in the process
-% dictionary.
-%
-% The result is a non-negative integer (not a float). Values will be drawn until
-% they are non-negative.
-%
+-doc """
+Returns a positive integer random value generated from the normal (Gaussian)
+distribution with specified settings.
+
+Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+according the corresponding Gaussian law, updating the state in the process
+dictionary.
+
+The result is a non-negative integer (not a float). Values will be drawn until
+they are non-negative.
+
+""".
 -spec getPositiveIntegerGaussianValue( wooper:state(), mean(),
 									   standard_deviation() ) ->
 	const_request_return( { positive_integer_gaussian_value,
@@ -551,16 +569,17 @@ getPositiveIntegerGaussianValue( State, Mu, Sigma ) ->
 
 
 
-% @doc Returns a positive integer random value generated from the normal
-% (Gaussian) distribution with specified settings.
-%
-% Given a mean Mu and a standard deviation Sigma, returns random integers drawn
-% according the corresponding Gaussian law, updating the state in the process
-% dictionary.
-%
-% The result is a non-negative integer (not a float). Values will be drawn until
-% they are non-negative.
-%
+-doc """
+Returns a positive integer random value generated from the normal (Gaussian)
+distribution with specified settings.
+
+Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+according the corresponding Gaussian law, updating the state in the process
+dictionary.
+
+The result is a non-negative integer (not a float). Values will be drawn until
+they are non-negative.
+""".
 -spec get_positive_integer_gaussian_value( mean(), standard_deviation() ) ->
 									static_return( pos_integer() ).
 get_positive_integer_gaussian_value( Mu, Sigma ) ->
@@ -569,12 +588,13 @@ get_positive_integer_gaussian_value( Mu, Sigma ) ->
 
 
 
-% @doc Returns a list of Count Gaussian values.
-%
-% Given a mean Mu and a standard deviation Sigma, returns random floating-point
-% values drawn according the corresponding Gaussian law, updating the state in
-% the process dictionary.
-%
+-doc """
+Returns a list of Count Gaussian values.
+
+Given a mean Mu and a standard deviation Sigma, returns random floating-point
+values drawn according the corresponding Gaussian law, updating the state in the
+process dictionary.
+""".
 -spec get_gaussian_values( mean(), standard_deviation(), count() ) ->
 									static_return( [ float() ] ).
 get_gaussian_values( Mu, Sigma, Count ) ->
@@ -583,12 +603,13 @@ get_gaussian_values( Mu, Sigma, Count ) ->
 
 
 
-% @doc Returns a list of Count positive integer Gaussian values.
-%
-% Given a mean Mu and a standard deviation Sigma, returns random integers drawn
-% according the corresponding Gaussian law, updating the state in the process
-% dictionary.
-%
+-doc """
+Returns a list of Count positive integer Gaussian values.
+
+Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+according the corresponding Gaussian law, updating the state in the process
+dictionary.
+""".
 -spec get_positive_integer_gaussian_values( mean(), standard_deviation(),
 						count() ) -> static_return( [ non_neg_integer() ] ).
 get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
@@ -600,16 +621,17 @@ get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
 
 
 
-% @doc Returns a new seed triplet.
+-doc "Returns a new seed triplet.".
 -spec get_new_seed() -> static_return( random_utils:seed() ).
 get_new_seed() ->
 	wooper:return_static( random_utils:get_random_seed() ).
 
 
 
-% @doc Creates the random manager asynchronously, with default settings (mean of
-% zero, sigma of 1).
-%
+-doc """
+Creates the random manager asynchronously, with default settings (mean of zero,
+sigma of 1).
+""".
 -spec create() -> static_return( manager_pid() ).
 create() ->
 
@@ -620,12 +642,13 @@ create() ->
 
 
 
-% @doc Returns the PID of the current random manager if it exists, otherwise
-% random_manager_not_found.
-%
-% Waits a bit before giving up: useful when client and manager processes may be
-% launched almost simultaneously.
-%
+-doc """
+Returns the PID of the current random manager if it exists, otherwise
+random_manager_not_found.
+
+Waits a bit before giving up: useful when client and manager processes may be
+launched almost simultaneously.
+""".
 -spec getManager() -> static_return( manager_pid() ).
 getManager() ->
 
@@ -637,7 +660,7 @@ getManager() ->
 
 
 
-% @doc Deletes (asynchronously) any global random manager.
+-doc "Deletes (asynchronously) any global random manager.".
 -spec remove() -> static_return( 'ok' | 'random_manager_not_found' ).
 remove() ->
 

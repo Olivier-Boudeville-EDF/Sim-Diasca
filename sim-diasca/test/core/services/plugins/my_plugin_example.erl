@@ -1,28 +1,30 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc This is a typical plugin example, to be re-used as a guide in order to
-% develop actual Sim-Diasca plugins.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
+
 -module(my_plugin_example).
+
+-moduledoc """
+This is a typical plugin example, to be re-used as a guide in order to develop
+actual Sim-Diasca plugins.
+""".
 
 
 -behaviour(sim_diasca_plugin).
@@ -53,11 +55,12 @@
 -include("sim_diasca_plugin.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type plugin_data() :: sim_diasca_plugin:plugin_data().
 -type technical_settings() :: sim_diasca_plugin:technical_settings().
 -type configuration_changes() :: sim_diasca_plugin:configuration_changes().
+
 
 
 % Implementation notes.
@@ -71,15 +74,16 @@
 % Callcack section, as requested by the 'sim_diasca_plugin' behaviour.
 
 
-% @doc Callback triggered as soon as the simulator is started (or almost, as
-% basic services, including the trace one, are already up).
-%
-% This plugin may update these requested configuration changes, which may come
-% from other plugins and may be in turn be changed by others.
-%
-% The on_technical_settings_available/2 callback could allow to check the
-% effectiveness of this request (ex: if plugins requested incompatible changes).
-%
+-doc """
+Callback triggered as soon as the simulator is started (or almost, as basic
+services, including the trace one, are already up).
+
+This plugin may update these requested configuration changes, which may come
+from other plugins and may be in turn be changed by others.
+
+The on_technical_settings_available/2 callback could allow to check the
+effectiveness of this request (e.g. if plugins requested incompatible changes).
+""".
 -spec on_simulator_start( configuration_changes(), plugin_data() ) ->
 							{ configuration_changes(), plugin_data() }.
 on_simulator_start( ConfigurationChanges, _PluginData ) ->
@@ -106,25 +110,24 @@ on_simulator_start( ConfigurationChanges, _PluginData ) ->
 
 
 
-% @doc Callback triggered when the deployment phase starts.
+-doc "Callback triggered when the deployment phase starts.".
 -spec on_deployment_start( plugin_data() ) -> plugin_data().
 on_deployment_start( _PluginData ) ->
-	notify( "deployment started" ),
-	ok.
+	notify( "deployment started" ).
 
 
 
-% @doc Callback triggered when the deployment phase stops.
+-doc "Callback triggered when the deployment phase stops.".
 -spec on_deployment_stop( plugin_data() ) -> plugin_data().
 on_deployment_stop( _PluginData ) ->
-	notify( "deployment stopped" ),
-	ok.
+	notify( "deployment stopped" ).
 
 
 
-% @doc Callback triggered when the simulation technical settings are available,
-% notably once the deployment phase is over.
-%
+-doc """
+Callback triggered when the simulation technical settings are available, notably
+once the deployment phase is over.
+""".
 -spec on_technical_settings_available( technical_settings(), plugin_data() ) ->
 											plugin_data().
 on_technical_settings_available(
@@ -137,125 +140,127 @@ on_technical_settings_available(
 		[ Cookie, length( ComputingNodes ),
 		  text_utils:atoms_to_string( ComputingNodes ) ] ),
 
-	notify( "technical details available: " ++ NodeString ),
-	ok.
+	notify( "technical details available: " ++ NodeString ).
 
 
 
-% @doc Callback triggered when the creation of the initial state of the
-% simulation starts.
-%
+-doc """
+Callback triggered when the creation of the initial state of the simulation
+starts.
+""".
 -spec on_case_initialisation_start( plugin_data() ) -> plugin_data().
 on_case_initialisation_start( _PluginData ) ->
-	notify( "case initialisation started" ),
-	ok.
+	notify( "case initialisation started" ).
 
 
-% @doc Callback triggered when the creation of the initial state of the
-% simulation just finished.
-%
+
+-doc """
+Callback triggered when the creation of the initial state of the simulation just
+finished.
+""".
 -spec on_case_initialisation_stop( plugin_data() ) -> plugin_data().
 on_case_initialisation_stop( _PluginData ) ->
-	notify( "case initialisation stopped" ),
-	ok.
+	notify( "case initialisation stopped" ).
 
 
 
-% @doc Callback triggered when the simulation is just started and must evaluate
-% the first diasca of all initial actors.
-%
+-doc """
+Callback triggered when the simulation is just started and must evaluate the
+first diasca of all initial actors.
+""".
 -spec on_simulation_bootstrap_start( plugin_data() ) -> plugin_data().
 on_simulation_bootstrap_start( _PluginData ) ->
-	notify( "simulation bootstrap started" ),
-	ok.
+	notify( "simulation bootstrap started" ).
 
 
-% @doc Callback triggered when the evaluation of the first diasca of all initial
-% actors is over.
-%
+
+-doc """
+Callback triggered when the evaluation of the first diasca of all initial actors
+is over.
+""".
 -spec on_simulation_bootstrap_stop( plugin_data() ) -> plugin_data().
 on_simulation_bootstrap_stop( _PluginData ) ->
-	notify( "simulation bootstrap stopped" ),
-	ok.
+	notify( "simulation bootstrap stopped" ).
 
 
 
-% @doc Callback triggered when a simulation milestone is met in wallclock time,
-% that is after some elapsed duration.
-%
+-doc """
+Callback triggered when a simulation milestone is met in wallclock time,
+that is after some elapsed duration.
+""".
 -spec on_simulation_wallclock_milestone_met( unit_utils:milliseconds(),
 											 plugin_data() ) -> plugin_data().
 on_simulation_wallclock_milestone_met( CurrentMillisecond, _PluginData ) ->
 	notify_fmt( "simulation wall-clock milestone met, after ~ts; "
 		"current wallclock time is ~ts.",
 		[ time_utils:duration_to_string( CurrentMillisecond ),
-		  time_utils:get_textual_timestamp() ] ),
-	ok.
+		  time_utils:get_textual_timestamp() ] ).
 
 
 
-% @doc Callback triggered when a simulation milestone is met in virtual time,
-% that is when enough ticks have been evaluated.
-%
+-doc """
+Callback triggered when a simulation milestone is met in virtual time, that is
+when enough ticks have been evaluated.
+""".
 -spec on_simulation_tick_milestone_met( class_TimeManager:tick_offset(),
 										plugin_data() ) -> plugin_data().
 on_simulation_tick_milestone_met( TickOffset, _PluginData ) ->
 	notify_fmt( "simulation tick milestone met at tick offset #~B, "
 		"while current wall-clock time is ~ts.",
-		[ TickOffset, time_utils:get_textual_timestamp() ] ),
-	ok.
+		[ TickOffset, time_utils:get_textual_timestamp() ] ).
 
 
 
-% @doc Callback triggered when the simulation is started (first tick, first
-% diasca).
-%
+-doc """
+Callback triggered when the simulation is started (first tick, first diasca).
+""".
 -spec on_simulation_start( plugin_data() ) -> plugin_data().
 on_simulation_start( _PluginData ) ->
-	notify( "simulation started" ),
-	ok.
+	notify( "simulation started" ).
 
 
 
-% @doc Callback triggered when the simulation is stopped (an ending criterion
-% was just met).
-%
+-doc """
+Callback triggered when the simulation is stopped (an ending criterion was just
+met).
+""".
 -spec on_simulation_stop( plugin_data() ) -> plugin_data().
 on_simulation_stop( _PluginData ) ->
-	notify( "simulation stopped" ),
-	ok.
+	notify( "simulation stopped" ).
 
 
 
-% @doc Callback triggered when the results start being gathered, after
-% simulation termination.
-%
+-doc """
+Callback triggered when the results start being gathered, after simulation
+termination.
+""".
 -spec on_result_gathering_start( plugin_data() ) -> plugin_data().
 on_result_gathering_start( _PluginData ) ->
-	notify( "result gathering started" ),
-	ok.
+	notify( "result gathering started" ).
 
 
-% @doc Callback triggered when the results have been gathered.
+
+-doc "Callback triggered when the results have been gathered.".
 -spec on_result_gathering_stop( plugin_data() ) -> plugin_data().
 on_result_gathering_stop( _PluginData ) ->
-	notify( "result gathering stopped" ),
-	ok.
+	notify( "result gathering stopped" ).
 
 
-% @doc Callback triggered when the simulator execution stopped under normal
-% circumstances (that is did not crash).
-%
+
+-doc """
+Callback triggered when the simulator execution stopped under normal
+circumstances (that is did not crash).
+""".
 -spec on_simulator_stop( plugin_data() ) -> plugin_data().
 on_simulator_stop( _PluginData ) ->
-	notify( "simulator stopped" ),
-	ok.
+	notify( "simulator stopped" ).
 
 
 
-% @doc Callback triggered when the simulator execution stopped under normal
-% circumstances (that is did not crash).
-%
+-doc """
+Callback triggered when the simulator execution stopped under normal
+circumstances (that is did not crash).
+""".
 -spec on_case_specific_event( sim_diasca_plugin:case_specific_event(),
 			sim_diasca_plugin:event_data(), plugin_data() ) -> plugin_data().
 on_case_specific_event( _CaseSpecificEvent, _EventData, _PluginData ) ->

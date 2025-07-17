@@ -1,7 +1,7 @@
 CITY_EXAMPLE_TOP = ..
 
-
 .PHONY: all
+
 
 OVERALL_DOCUMENT_SOURCE = City-Example-benchmarking-case.pdf
 

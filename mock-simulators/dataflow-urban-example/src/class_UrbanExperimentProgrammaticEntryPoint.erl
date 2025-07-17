@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example of a programmatic experiment entry point.
 -module(class_UrbanExperimentProgrammaticEntryPoint).
+
+-moduledoc "Example of a **programmatic experiment entry point**.".
 
 
 -define( class_description,
@@ -81,7 +82,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For transport_unit_pid/0 and all:
@@ -89,7 +90,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -97,21 +98,22 @@
 
 
 
-% @doc Constructs the urban-example experiment entry point, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Dataflows is a list of the dataflows that this entry point should drive
-%
-% - ExperimentStepStart is the step at which the experiment shall start
-%
-% - ExperimentStepStop is the step at which the experiment shall stop
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
-% - WorldManagerPid is the PID of the world manager
-%
+-doc """
+Constructs the urban-example experiment entry point, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Dataflows is a list of the dataflows that this entry point should drive
+
+- ExperimentStepStart is the step at which the experiment shall start
+
+- ExperimentStepStop is the step at which the experiment shall stop
+
+- ExperimentManagerPid is the PID of the experiment manager
+
+- WorldManagerPid is the PID of the world manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	[ dataflow_pid() ], step_count(), step_count(),
 	experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
@@ -120,7 +122,7 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 	% First the direct mother class:
 	EntryState = class_ExperimentEntryPoint:construct( State, ActorSettings,
-						Dataflows, ExperimentManagerPid, WorldManagerPid ),
+		Dataflows, ExperimentManagerPid, WorldManagerPid ),
 
 	ProbeName = "Monitoring the setting of input ports over the dataflow, "
 		"thanks to a probe attached to the urban experiment entry point",
@@ -150,9 +152,10 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 
 
-% @doc Registers specified district dataflow objects to this entry point, so
-% that it is able to act upon them (ex: attribute update).
-%
+-doc """
+Registers specified district dataflow objects to this entry point, so that it is
+able to act upon them (e.g. attribute update).
+""".
 -spec registerDistrictObjects( wooper:state(), [ district_pid() ] ) ->
 				request_return( 'district_objects_registered' ).
 registerDistrictObjects( State, Districts ) ->
@@ -165,9 +168,10 @@ registerDistrictObjects( State, Districts ) ->
 
 
 
-% @doc Registers specified household dataflow objects to this entry point, so
-% that it is able to act upon them (ex: attribute update).
-%
+-doc """
+Registers specified household dataflow objects to this entry point, so that it
+is able to act upon them (e.g. attribute update).
+""".
 -spec registerHouseholdObjects( wooper:state(), [ household_pid() ] ) ->
 				request_return( 'household_objects_registered' ).
 registerHouseholdObjects( State, Households ) ->
@@ -184,10 +188,11 @@ registerHouseholdObjects( State, Households ) ->
 % Section for actor oneways.
 
 
-% @doc Starts the evaluation of the urban experiment for the current tick.
-%
-% Typically called by the experiment exit point, for synchronisation reasons.
-%
+-doc """
+Starts the evaluation of the urban experiment for the current tick.
+
+Typically called by the experiment exit point, for synchronisation reasons.
+""".
 -spec startExperimentTick( wooper:state(), sending_actor_pid() ) ->
 								 actor_oneway_return().
 startExperimentTick( State, _SenderActorPid ) ->
@@ -232,11 +237,10 @@ startExperimentTick( State, _SenderActorPid ) ->
 
 
 
-% @doc Creates new (hence dynamic, runtime) units, to demonstrate how structural
-% dataflow changes may be done.
-%
-% (helper)
-%
+-doc """
+Creates new (hence dynamic, runtime) units, to demonstrate how structural
+dataflow changes may be done.
+""".
 -spec update_dataflow_structure( wooper:state(), step_count() ) ->
 						wooper:state().
 update_dataflow_structure( CurrentStep, State ) ->
@@ -264,9 +268,10 @@ update_dataflow_structure( CurrentStep, State ) ->
 
 
 
-% @doc Assigns the input ports of specified transport units to demonstrate unit
-% updates (i.e. state changes of dataflow elements).
-%
+-doc """
+Assigns the input ports of specified transport units to demonstrate unit updates
+(i.e. state changes of dataflow elements).
+""".
 -spec assign_input_ports( [ transport_unit_pid() ], step_count(), step_count(),
 						  wooper:state() ) -> wooper:state().
 assign_input_ports( TransportUnits, CurrentStep, MaxStep, State ) ->
@@ -291,7 +296,7 @@ assign_input_ports( TransportUnits, CurrentStep, MaxStep, State ) ->
 				"demand units (~w) to ~f.", [ EnergyUnits, NewEfficiency ] ),
 
 	{ EnergyState, TransformerEfficiencies } = update_energy_demand_units(
-							EnergyUnits, NewEfficiency, TransportState ),
+		EnergyUnits, NewEfficiency, TransportState ),
 
 	Sample = list_to_tuple( AverageJourney ++ TransformerEfficiencies ),
 
@@ -301,11 +306,10 @@ assign_input_ports( TransportUnits, CurrentStep, MaxStep, State ) ->
 
 
 
-% @doc Triggers the update of specified transport units, prior to evaluating the
-% experiment for the corresponding new step.
-%
-% (helper)
-%
+-doc """
+Triggers the update of specified transport units, prior to evaluating the
+experiment for the corresponding new step.
+""".
 -spec update_transport_units( [ transport_unit_pid() ], average_journey(),
 				wooper:state() ) -> { wooper:state(), [ average_journey() ] }.
 update_transport_units( TransportUnits, BaseAverageJourney, State ) ->
@@ -322,7 +326,6 @@ update_transport_units( TransportUnits, BaseAverageJourney, State ) ->
 	%
 	update_average_journey( TransportUnits,
 		_SpecificDistance=BaseAverageJourney, State, _Acc=[] ).
-
 
 
 
@@ -359,9 +362,10 @@ update_average_journey( _TransportUnits=[ TransportUnitPid | T ],
 
 
 
-% @doc Triggers the update of specified energy demand units, prior to evaluating
-% the experiment for the corresponding new step.
-%
+-doc """
+Triggers the update of specified energy demand units, prior to evaluating the
+experiment for the corresponding new step.
+""".
 -spec update_energy_demand_units( [ energy_unit_pid() ],
 		transformer_efficiency(), wooper:state() ) ->
 						{ wooper:state(), [ transformer_efficiency() ] }.
@@ -400,13 +404,14 @@ update_transformer_efficiency( _EnergyUnits=[ EnergyDemandUnitPid | T ],
 
 
 
-% Section for plain methods (ex: not actor oneways).
+% Section for plain methods (e.g. not actor oneways).
 
 
-% @doc Declares the specified unit managers to this entry point.
-%
-% (request, for synchronicity)
-%
+-doc """
+Declares the specified unit managers to this entry point.
+
+(request, for synchronicity)
+""".
 -spec addUnitManagers( wooper:state(), [ unit_manager_pid() ] ) ->
 			request_return( 'unit_managers_registered' ).
 addUnitManagers( State, UnitManagers ) ->
@@ -421,7 +426,7 @@ addUnitManagers( State, UnitManagers ) ->
 
 
 
-% @doc Sets the transport units known of this entry point.
+-doc "Sets the transport units known of this entry point.".
 -spec setTransportUnits( wooper:state(), [ transport_unit_pid() ] ) ->
 				request_return( 'transport_units_registered' ).
 setTransportUnits( State, TransportUnits ) ->
@@ -434,7 +439,7 @@ setTransportUnits( State, TransportUnits ) ->
 
 
 
-% @doc Sets the energy demand units known of this entry point.
+-doc "Sets the energy demand units known of this entry point.".
 -spec setEnergyDemandUnits( wooper:state(), [ energy_demand_unit_pid() ] ) ->
 				request_return( 'energy_demand_units_registered' ).
 setEnergyDemandUnits( State, EnergyDemandUnits ) ->
@@ -451,10 +456,7 @@ setEnergyDemandUnits( State, EnergyDemandUnits ) ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this entry point.
-%
-% (helper)
-%
+-doc "Returns a textual description of this entry point.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -477,7 +479,7 @@ to_string( State ) ->
 			"not referencing any energy demand unit";
 
 		EnergyDemandUnits ->
-			 text_utils:format( "referencing ~B energy demand units: ~p",
+			text_utils:format( "referencing ~B energy demand units: ~p",
 				[ length( EnergyDemandUnits ), EnergyDemandUnits ] )
 
 	end,

@@ -13,7 +13,7 @@ trace_file="city_benchmarking_loading_test.traces"
 
 count=10
 
-if [ -n "$1" ] ; then
+if [ -n "$1" ]; then
 
    count="1"
 
@@ -29,7 +29,7 @@ $test_script 1
 mv -f $trace_file 1.traces
 
 
-for t in $(seq 2 $count) ; do
+for t in $(seq 2 $count); do
 
 	$test_script $t
 	diff -q log-1.txt log-$t.txt

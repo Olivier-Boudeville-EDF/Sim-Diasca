@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, September 10, 2023.
 
-
-% @doc Gathering of various facilities for <b>frames</b>, which are windows
-% whose size and position can usually be changed by the user.
-%
-% See also the gui_window module.
-%
 -module(gui_frame).
 
+-moduledoc """
+Gathering of various facilities for **frames**, which are windows whose size and
+position can usually be changed by the user.
+
+See also the gui_window module.
+""".
 
 
 % Usage notes:
@@ -51,24 +51,35 @@
 
 
 
+-doc """
+A frame is a window whose size and position can usually be changed by the user.
+
+Note that a frame is a top_level_window(), a window() and an event_handler(),
+and thus can use their methods.
+
+At least on some platforms, while initialising a frame, an older graphical
+content can be seen for a short while, before the first repaint. No amount of
+wxWindow:{clearBackground,refresh,update}/1 or buffer swapping was able to hide
+it.
+""".
 -opaque frame() :: wxFrame:wxFrame().
-% A frame is a window whose size and position can usually be changed by the
-% user.
-%
-% Note that a frame is a top_level_window(), a window() and an event_handler(),
-% and thus can use their methods.
-%
-% At least on some platforms, while initialising a frame, an older graphical
-% content can be seen for a short while, before the first repaint. No amount of
-% wxWindow:{clearBackground,refresh,update}/1 or buffer swapping was able to
-% hide it.
 
 
+
+-doc "A top-level (application-wide) frame.".
 -opaque top_level_frame() :: frame().
-% A top-level (application-wide) frame.
+
 
 
 % 'iconized' not kept (duplicate of 'minimize').
+-doc """
+A style element for frames.
+
+Note that specifying an empty option list does not enable any option; one may
+specify 'default' instead.
+
+See also <http://docs.wxwidgets.org/stable/classwx_frame.html>.
+""".
 -type frame_style() ::
 
 	window_style()
@@ -112,12 +123,6 @@
 
 	% Allows this frame to have its shape changed:
   | 'shaped'.
-% A style element for frames.
-%
-% Note that specifying an empty option list does not enable any option; one may
-% specify 'default' instead.
-%
-% See also [http://docs.wxwidgets.org/stable/classwx_frame.html].
 
 
 -export_type([ frame/0, top_level_frame/0, frame_style/0 ]).
@@ -142,9 +147,9 @@
 -include("gui_internal_defines.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
--type bit_mask() :: basic_utils:bit_mask().
+-type bit_mask() :: type_utils:bit_mask().
 
 -type any_file_path() :: file_utils:any_file_path().
 
@@ -165,13 +170,14 @@
 % Section for all kinds of frames.
 
 
-% @doc Creates a frame, with default title, identifier, parent, position, size
-% and style.
-%
-% Note: this version apparently does not correctly initialise the frame;
-% following error is indeed reported: "wxWidgets Assert failure:
-% ./src/gtk/toplevel.cpp(988): \"m_widget\" in Show() : invalid frame".
-%
+-doc """
+Creates a frame, with default title, identifier, parent, position, size and
+style.
+
+Note: this version apparently does not correctly initialise the frame; following
+error is indeed reported: "wxWidgets Assert failure:
+./src/gtk/toplevel.cpp(988): \"m_widget\" in Show() : invalid frame".
+""".
 -spec create() -> frame().
 create() ->
 	% We could see a case where a call to wxFrame:new/0 issued by an helper
@@ -182,18 +188,21 @@ create() ->
 	wxFrame:new().
 
 
-% @doc Creates a titled frame, with default position, size, style, identifier
-% and parent.
-%
+
+-doc """
+Creates a titled frame, with default position, size, style, identifier and
+parent.
+""".
 -spec create( title() ) -> frame().
 create( Title ) ->
 	wxFrame:new( gui_wx_backend:to_wx_parent( undefined ), ?gui_any_id, Title ).
 
 
 
-% @doc Creates a frame, with the specified title and size, and default
-% identifier and parent.
-%
+-doc """
+Creates a frame, with the specified title and size, and default identifier and
+parent.
+""".
 -spec create( title(), size() ) -> frame().
 create( Title, Size ) ->
 
@@ -206,17 +215,18 @@ create( Title, Size ) ->
 
 
 
-% @doc Creates a frame, with default position, size and styles.
--spec create( title(), id(), maybe( parent() ) ) -> frame().
+-doc "Creates a frame, with default position, size and styles.".
+-spec create( title(), id(), option( parent() ) ) -> frame().
 create( Title, Id, MaybeParent ) ->
 	wxFrame:new( gui_wx_backend:to_wx_parent( MaybeParent ),
 				 gui_id:declare_any_id( Id ), Title ).
 
 
 
-% @doc Creates a frame, with the specified title, position, size and styles, and
-% with a default parent.
-%
+-doc """
+Creates a frame, with the specified title, position, size and styles, and with a
+default parent.
+""".
 -spec create( title(), position(), sizing(), [ frame_style() ] ) -> frame().
 create( Title, Position, Sizing, Styles ) ->
 
@@ -232,11 +242,12 @@ create( Title, Position, Sizing, Styles ) ->
 
 
 
-% @doc Creates a frame, with the specified title, position, size and styles, and
-% with the specified parent.
-%
+-doc """
+Creates a frame, with the specified title, position, size and styles, and with
+the specified parent.
+""".
 -spec create( title(), position(), sizing(), [ frame_style() ], id(),
-			  maybe( parent() ) ) -> frame().
+			  option( parent() ) ) -> frame().
 create( Title, Position, Sizing, Styles, Id, MaybeParent ) ->
 
 	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
@@ -254,38 +265,39 @@ create( Title, Position, Sizing, Styles, Id, MaybeParent ) ->
 
 
 
-% @doc Destructs the specified frame.
+-doc "Destructs the specified frame.".
 -spec destruct( frame() ) -> void().
 destruct( Frame  ) ->
 	wxFrame:destroy( Frame ).
 
 
 
-% @doc Assigns the specified menu bar to the specified frame.
+-doc "Assigns the specified menu bar to the specified frame.".
 -spec set_menu_bar( frame(), menu_bar() ) -> void().
 set_menu_bar( Frame, MenuBar ) ->
 	wxFrame:setMenuBar( Frame, MenuBar ).
 
 
 
-% @doc Shows (renders) the specified frame.
-%
-% Returns whether anything had to be done.
-%
-% This is the place where all widgets resolve their positions, sizes and
-% contents.
-%
+-doc """
+Shows (renders) the specified frame.
+
+Returns whether anything had to be done.
+
+This is the place where all widgets resolve their positions, sizes and contents.
+""".
 -spec show( frame() | [ frame() ] ) -> boolean().
 show( FrameMaybeList ) ->
 	gui_window:show( FrameMaybeList ).
 
 
 
-% @doc Converts the specified MyriadGUI frame style into the appropriate
-% wx-specific bit mask.
-%
-% (helper)
-%
+-doc """
+Converts the specified MyriadGUI frame style into the appropriate wx-specific
+bit mask.
+
+(helper)
+""".
 -spec frame_styles_to_bitmask( [ frame_style() ] ) -> bit_mask().
 frame_styles_to_bitmask( Styles ) when is_list( Styles ) ->
 	% 'bor ?wxWANTS_CHARS' not desirable a priori:
@@ -300,9 +312,9 @@ frame_styles_to_bitmask( Styles ) when is_list( Styles ) ->
 % Top-level frame section.
 
 
-% @doc Creates a top-level frame, with default position, size, style and
-% identifier.
-%
+-doc """
+Creates a top-level frame, with default position, size, style and identifier.
+""".
 -spec create_top_level( title() ) -> top_level_frame().
 create_top_level( Title ) ->
 	Frame = create( Title ),
@@ -311,9 +323,9 @@ create_top_level( Title ) ->
 
 
 
-% @doc Creates a top-level frame, with the specified size, and a default
-% identifier.
-%
+-doc """
+Creates a top-level frame, with the specified size, and a default identifier.
+""".
 -spec create_top_level( title(), size() ) -> top_level_frame().
 create_top_level( Title, Size ) ->
 	Frame = create( Title, Size ),
@@ -322,9 +334,9 @@ create_top_level( Title, Size ) ->
 
 
 
-% @doc Creates a top-level frame, with the specified title, position, size and
-% style.
-%
+-doc """
+Creates a top-level frame, with the specified title, position, size and style.
+""".
 -spec create_top_level( title(), position(), size(), frame_style() ) ->
 												top_level_frame().
 create_top_level( Title, Position, Size, Style ) ->
@@ -334,55 +346,60 @@ create_top_level( Title, Position, Size, Style ) ->
 
 
 
-% @doc Sets the icon of the specified top-level frame.
+-doc "Sets the icon of the specified top-level frame.".
 -spec set_icon( top_level_frame(), any_file_path() ) -> void().
 set_icon( TopLevelFrame, IconPath ) ->
 	gui_window:set_icon( TopLevelFrame, IconPath ).
 
 
 
-% @doc Centers the specified top-level frame on screen.
+-doc "Centers the specified top-level frame on screen.".
 -spec center_on_screen( top_level_frame() ) -> void().
 center_on_screen( TopLevelFrame ) ->
 	gui_window:center_on_screen( TopLevelFrame ).
 
 
-% @doc Centers the specified top-level frame on screen, along the specified
-% orientation(s).
-%
+
+-doc """
+Centers the specified top-level frame on screen, along the specified
+orientation(s).
+""".
 -spec center_on_screen( top_level_frame(), orientation() ) -> void().
 center_on_screen( TopLevelFrame, Orientation ) ->
 	gui_window:center_on_screen( TopLevelFrame, Orientation ).
 
 
 
-% @doc Tells whether the specified top-level frame is maximised.
+-doc "Tells whether the specified top-level frame is maximised.".
 -spec is_maximised( top_level_frame() ) -> boolean().
 is_maximised( TopLevelFrame ) ->
 	gui_window:is_maximised( TopLevelFrame ).
 
 
-% @doc Maximises the specified top-level frame.
+
+-doc "Maximises the specified top-level frame.".
 -spec maximize( top_level_frame() ) -> void().
 maximize( TopLevelFrame ) ->
 	gui_window:maximize( TopLevelFrame ).
 
 
 
-% @doc Returns whether the specified top-level frame is fullscreen.
+-doc "Returns whether the specified top-level frame is fullscreen.".
 -spec is_fullscreen( top_level_frame() ) -> boolean().
 is_fullscreen( TopLvlFrame ) ->
 	wxTopLevelWindow:isFullScreen( TopLvlFrame ).
 
 
-% @doc Shows the specified top-level frame to fullscreen (if true) or restores
-% it to its normal state (if false).
-%
-% Showing a frame full screen also actually shows the frame if it is not already
-% shown. Any menu bar is then hidden.
-%
-% Returns (supposedly) whether the operation succeeded.
-%
+
+-doc """
+Shows the specified top-level frame to fullscreen (if true) or restores it to
+its normal state (if false).
+
+Showing a frame full screen also actually shows the frame if it is not already
+shown. Any menu bar is then hidden.
+
+Returns (supposedly) whether the operation succeeded.
+""".
 -spec set_fullscreen( top_level_frame(), boolean() ) -> void().
 set_fullscreen( TopLvlFrame, ForceFullscreen ) ->
 	wxTopLevelWindow:showFullScreen( TopLvlFrame, ForceFullscreen ).

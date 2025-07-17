@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Class in charge of managing <b>typing information</b>.
 -module(class_TypeServer).
+
+-moduledoc "Class in charge of managing **typing information**.".
 
 -define( class_description,
 		 "Class in charge of managing typing information, notably to establish "
@@ -47,37 +48,37 @@
 % Currently the types are only checked for equality.
 
 
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
-
--type type_name() :: type_utils:type_name().
-
-
+-doc """
+We rely here only on fully-expanded, pure, explicit type definitions.
+""".
 -type type_definition() :: type_utils:explicit_type().
-% We rely here only on fully-expanded, pure, explicit type definitions.
 
 
+-doc "Definition entry for a type.".
 -type type_entry() :: { type_name(), type_definition() }.
 
+
+-doc "Extra type only defined for clarity (lists of them).".
 -type type_entries() :: [ type_entry() ].
 
 
+-doc "PID of the type server.".
 -type type_server_pid() :: pid().
-% PID of the type server.
 
 
+-doc "Inner table, may be reused by the type clients.".
 -type type_table() :: table( type_name(), type_definition() ).
-% Inner table, may be reused by the type clients.
 
 
 -export_type([ type_name/0, type_definition/0, type_entry/0, type_entries/0,
 			   type_server_pid/0, type_table/0 ]).
 
 
+-doc """
+Possible outcomes of a type validation (possibly involving multiple types).
+""".
 -type validation_outcome() :: 'type_accepted'
 							| { 'type_rejected', basic_utils:error_reason() }.
-% Possible outcomes of a type validation (possibly involving multiple types).
 
 
 % Helpers:
@@ -101,13 +102,21 @@
 
 
 
-% @doc Constructs a type server.
+% Type shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type type_name() :: type_utils:type_name().
+
+
+
+-doc "Constructs a type server.".
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
 	% First the direct mother class:
 	TraceState = class_EngineBaseObject:construct( State,
-									?trace_categorize("TypeServer") ),
+		?trace_categorize("TypeServer") ),
 
 	naming_utils:register_as( self(), ?type_server_name, global_only ),
 
@@ -118,7 +127,7 @@ construct( State ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -143,7 +152,7 @@ destruct( State ) ->
 % are requests (that may return errors).
 
 
-% @doc Declares a (possibly new) type to this server.
+-doc "Declares a (possibly new) type to this server.".
 -spec declareType( wooper:state(), type_name(), type_definition() ) ->
 						oneway_return().
 declareType( State, TypeName, TypeDefinition ) ->
@@ -163,8 +172,8 @@ declareType( State, TypeName, TypeDefinition ) ->
 
 
 
-% @doc Declares a set of (possibly new) types to this server.
--spec declareTypes( wooper:state(), [ type_entry()] ) -> oneway_return().
+-doc "Declares a set of (possibly new) types to this server.".
+-spec declareTypes( wooper:state(), [ type_entry() ] ) -> oneway_return().
 declareTypes( State, TypeEntries ) ->
 
 	TypeTable = ?getAttr(type_table),
@@ -182,9 +191,10 @@ declareTypes( State, TypeEntries ) ->
 
 
 
-% @doc Requests this type server to validate specified type entry (the
-% corresponding type may or may not be new).
-%
+-doc """
+Requests this type server to validate specified type entry (the corresponding
+type may or may not be new).
+""".
 -spec validateType( wooper:state(), type_name(), type_definition() ) ->
 		request_return( validation_outcome() ).
 validateType( State, TypeName, TypeDefinition ) ->
@@ -207,9 +217,10 @@ validateType( State, TypeName, TypeDefinition ) ->
 
 
 
-% @doc Requests this type server to validate specified type entries (the
-% corresponding types may or may not be new).
-%
+-doc """
+Requests this type server to validate specified type entries (the corresponding
+types may or may not be new).
+""".
 -spec validateTypes( wooper:state(), [ type_entry() ] ) ->
 		request_return( validation_outcome() ).
 validateTypes( State, TypeEntries ) ->
@@ -231,11 +242,11 @@ validateTypes( State, TypeEntries ) ->
 
 
 
-% @doc Checks and records the specified type.
+-doc "Checks and records the specified type.".
 -spec record_type( type_name(), type_definition(), type_table(),
 				   wooper:state() ) -> fallible( type_table() ).
 record_type( TypeName, TypeDefinition, TypeTable, State )
-  when is_atom( TypeName ) ->
+                                when is_atom( TypeName ) ->
 
 	% Received type definition may or may not be already known, and, if yes, may
 	% or may not correspond to the previous registered one:
@@ -283,7 +294,7 @@ record_type( TypeName, TypeDefinition, _TypeTable, State ) ->
 
 
 
-% @doc Checks and records the specified types.
+-doc "Checks and records the specified types.".
 -spec record_types( [ type_entries() ], type_table(), wooper:state() ) ->
 											fallible( type_table() ).
 record_types( _TypeEntries=[], TypeTable, _State ) ->
@@ -311,7 +322,7 @@ record_types( _TypeEntries=[ InvalidTypeEntry | _T ], _TypeTable, State ) ->
 
 
 
-% @doc Returns the definition of specified type, expected to be already known.
+-doc "Returns the definition of specified type, expected to be already known.".
 -spec getType( wooper:state(), type_name() ) ->
 				const_request_return( type_definition() | 'unknown_type' ).
 getType( State, TypeName ) ->
@@ -330,8 +341,9 @@ getType( State, TypeName ) ->
 
 
 
-% @doc Returns a low-level (broken into elementary constructs), context-free
-% definition of specified type.
+%-doc """
+%Returns a low-level (broken into elementary constructs), context-free
+% definition of the specified type.
 %
 %-spec resolveType( wooper:state(), type_definition() ) ->
 %                               const_request_return( type_definition() ).
@@ -343,7 +355,7 @@ getType( State, TypeName ) ->
 
 
 
-% @doc Checks specified type definition.
+-doc "Checks the specified type definition.".
 -spec check_type( basic_utils:unchecked_data(), wooper:state() ) ->
 						{ validation_outcome(), wooper:state() }.
 check_type( TypeDefinition, _State ) ->
@@ -355,7 +367,7 @@ check_type( TypeDefinition, _State ) ->
 
 
 
-% @doc Returns a textual description of the state of this type server.
+-doc "Returns a textual description of the state of this type server.".
 -spec getStatus( wooper:state() ) -> const_request_return( ustring() ).
 getStatus( State ) ->
 	wooper:const_return_result( to_string( State ) ).
@@ -369,14 +381,14 @@ getStatus( State ) ->
 % Static section.
 
 
-% @doc Launches the type server, with default settings.
+-doc "Launches the type server, with default settings.".
 -spec start() -> static_return( type_server_pid() ).
 start() ->
 	wooper:return_static( new_link() ).
 
 
 
-% @doc Stops the type server.
+-doc "Stops the type server.".
 -spec stop() -> static_void_return().
 stop() ->
 	TypeServerPid = get_server(),
@@ -384,7 +396,7 @@ stop() ->
 	wooper:return_static_void().
 
 
-% @doc Stops specified type server.
+-doc "Stops the specified type server.".
 -spec stop( type_server_pid() ) -> static_void_return().
 stop( TypeServerPid ) ->
 	TypeServerPid ! delete,
@@ -392,7 +404,7 @@ stop( TypeServerPid ) ->
 
 
 
-% @doc Returns the PID of the type server (if any).
+-doc "Returns the PID of the type server (if any).".
 -spec get_server() -> static_return( type_server_pid() ).
 get_server() ->
 	ServerPid =
@@ -402,9 +414,10 @@ get_server() ->
 
 
 
-% @doc Returns the names of the built-in types, that is the names of the types
-% exposed to the user and that cannot be further decomposed.
-%
+-doc """
+Returns the names of the built-in types, that is the names of the types exposed
+to the user and that cannot be further decomposed.
+""".
 -spec get_names_of_builtin_types() -> static_return( [ type_name() ] ).
 get_names_of_builtin_types() ->
 	%TypeNames = type_utils:get_elementary_types().
@@ -414,7 +427,7 @@ get_names_of_builtin_types() ->
 
 
 
-% @doc Resolves the specified type.
+-doc "Resolves the specified type.".
 -spec resolve_type( type_name(), type_table(), type_server_pid() ) ->
 							static_return( type_definition() ).
 resolve_type( _TypeName, _TypeTable, _TypeServerPid ) ->
@@ -426,17 +439,17 @@ resolve_type( _TypeName, _TypeTable, _TypeServerPid ) ->
 % Helper section:
 
 
-% @doc Returns a textual description of the state of this type server.
+-doc "Returns a textual description of the state of this type server.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	TypeString = type_table_to_string( ?getAttr(type_table) ),
 
-	text_utils:format( "Type server with ~ts", [ TypeString ] ).
+	text_utils:format( "type server with ~ts", [ TypeString ] ).
 
 
 
-% @doc Returns a textual description of the specified type table.
+-doc "Returns a textual description of the specified type table.".
 -spec type_table_to_string( type_table() ) -> ustring().
 type_table_to_string( TypeTable ) ->
 

@@ -1,29 +1,31 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Overall unit test of the Sim-Diasca management of initial and final date.
-%
-% The test will start a simulation at a user-specified start and stop date.
-%
 -module(setting_initial_and_final_date_test).
+
+-moduledoc """
+Overall unit test of the Sim-Diasca management of initial and final date.
+
+The test will start a simulation at a user-specified start and stop date.
+""".
 
 
 % For facilities common to all cases:
@@ -31,12 +33,11 @@
 
 
 
-% @doc Runs the local test simulation.
+-doc "Runs the local test simulation.".
 -spec run() -> no_return().
 run() ->
 
 	?case_start,
-
 
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
@@ -51,8 +52,8 @@ run() ->
 	%
 	DeploymentSettings = #deployment_settings{
 
-		computing_hosts =
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" },
+		computing_hosts=
+			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
 
 		perform_initial_node_cleanup=true },
 
@@ -61,13 +62,13 @@ run() ->
 	LoadBalancingSettings = #load_balancing_settings{},
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p.",
+	?test_notice_fmt( "This test will deploy a distributed simulation "
+		"based on computing hosts specified as ~p.",
 		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),

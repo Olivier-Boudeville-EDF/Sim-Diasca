@@ -1,42 +1,47 @@
-% Copyright (C) 2011-2024 EDF R&D
-
+% Copyright (C) 2011-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% This is an <b>example of a curve filter</b>: it simply records the minimum and
-% maximum values reached by that curves, for which tick(s) (i.e. to each
-% extremum is associated the list of the ticks at which it was reached).
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2011.
+
 -module(extrema_curve_filter).
+
+-moduledoc """
+This is an **example of a curve filter**: it simply records the minimum and
+maximum values reached by that curves, for which tick(s) (i.e. to each extremum
+is associated the list of the ticks at which it was reached).
+""".
+
 
 
 -export([ create/2 ]).
 
-% Shorthands:
+
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
-% @doc Creates a filter process.
-%
-% We specify at creation the name of that curve.
-%
+-doc """
+Creates a filter process.
+
+We specify at creation the name of that curve.
+""".
 -spec create( ustring(), [] ) -> 'ok' | { 'onFilterEnded', pid() }.
 create( CurveName, [] ) ->
 

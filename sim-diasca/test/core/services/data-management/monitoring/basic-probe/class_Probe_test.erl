@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 EDF R&D
+% Copyright (C) 2010-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,19 +19,20 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2010.
 
-
-% @doc Unit tests for the <b>Probe class implementation</b>.
-%
-% Note: unlike the probe_rendering_test, this test uses the full simulation
-% framework (e.g. the result manager).
-%
-% See the class_Probe.erl module.
-%
 -module(class_Probe_test).
 
+-moduledoc """
+Unit tests for the **Probe class implementation**.
+
+Note: unlike the probe_rendering_test, this test uses the full simulation
+framework (e.g. the result manager).
+
+See the class_Probe.erl module.
+""".
 
 
-% Exported for reuse (ex: in the result_management test) and separate testing:
+
+% Exported for reuse (e.g. in the result_management test) and separate testing:
 -export([ manage_facility_probe/2, manage_test_probe/1 ]).
 
 
@@ -47,15 +48,19 @@
 -include("class_Probe.hrl").
 
 
-% Shorthands:
+% Type shorthand:
 
 -type ustring() :: text_utils:ustring().
 
+-type probe_pid() :: class_Probe:probe_pid().
+-type probe_ref() :: class_Probe:probe_ref().
 
 
-% @doc Creates a basic facility probe (hence not seen as a result) directly from
-% the simulation test case.
-%
+
+-doc """
+Creates a basic facility probe (hence not seen as a result) directly from the
+simulation test case.
+""".
 -spec manage_facility_probe( ustring(), boolean() ) -> probe_pid().
 manage_facility_probe( ProbeName, UseTickOffsets ) ->
 
@@ -174,9 +179,10 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 
 
 
-% @doc Creates a basic test probe (hence, seen as a result) directly from the
-% simulation test case.
-%
+-doc """
+Creates a basic test probe (hence, seen as a result) directly from the
+simulation test case.
+""".
 -spec manage_test_probe( ustring() ) -> probe_ref().
 manage_test_probe( ProbeName ) ->
 
@@ -264,8 +270,8 @@ manage_test_probe( ProbeName ) ->
 									 _FirstLocation={2,1} ] },
 
 			ProbePid ! { addLabel, [ "This is another label",
-							_SecondLocation={8,5}, _SecondColor="#FF00FF",
-							_Orientation=45, _Position=right ] },
+				_SecondLocation={8,5}, _SecondColor="#FF00FF",
+				_Orientation=45, _Position=right ] },
 
 			ProbePid
 
@@ -281,13 +287,15 @@ manage_test_probe( ProbeName ) ->
 
 
 
-%@doc Runs the tests for all basic probes not created from an actor:
-% - facility probes
-% - test-specific probes (a.k.a. case-specific probes)
-%
+-doc """
+Runs the tests for all basic probes not created from an actor:
+ - facility probes
+ - test-specific probes (a.k.a. case-specific probes)
+""".
 -spec run() -> no_return().
 run() ->
 	run( _UseTickOffsets=true ).
+
 
 
 run( UseTickOffsets ) ->

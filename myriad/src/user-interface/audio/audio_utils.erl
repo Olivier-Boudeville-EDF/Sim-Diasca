@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,73 +25,94 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, November 30, 2021.
 
-
-% @doc This module concentrates <b>audio-related elements</b>.
-%
-% See speech_support.erl for TTS.
-%
 -module(audio_utils).
 
+-moduledoc """
+This module concentrates **audio-related elements**.
+
+See speech_support.erl for TTS.
+""".
 
 
+
+-doc "The sample rate of an audio content (e.g. 16000 Hz).".
 -type sample_rate() :: unit_utils:integer_hertz() .
-% The sample rate of an audio content (e.g. 16000 Hz).
 
 
 % Generally in [8, 16, 24, 48]:
+-doc "A standard sample rate, in kHz (e.g. 24 kHz).".
 -type standard_sampling_rate() :: pos_integer().
-% A standard sample rate, in kHz (e.g. 24 kHz).
 
 
+
+-doc """
+The number and layout of audio channels.
+
+See the 'Standard speaker channels' section of
+<https://en.wikipedia.org/wiki/Surround_sound> for further details.
+""".
 -type channel_layout() :: 'mono' | 'stereo' | '5.1'.
-% The number and layout of audio channels.
-%
-% See the 'Standard speaker channels' section of
-% https://en.wikipedia.org/wiki/Surround_sound for further details.
 
 
+
+-doc """
+The bit rate of an audio content, in kilobits per second (e.g. 192 kbps).
+""".
 -type bit_rate() :: pos_integer().
-% The bit rate of an audio content, in kilobits per second (e.g. 192 kbps).
 
 
+
+-doc """
+The number of bits to which each audio sample is quantized.
+
+For example 8-bit or 16-bit.
+""".
 -type bit_depth() :: pos_integer().
-% The number of bits to which each audio sample is quantized.
-%
-% For example 8-bit or 16-bit.
 
 
+
+-doc "Either a bit depth or a bit rate.".
 -type bit_level() :: { 'bit', bit_depth() } | { 'kbps', bit_rate() }.
-% Either a bit depth or a bit rate.
 
 
 
+-doc """
+Describes how to store metadata and possibly multiple audio streams in a binary
+stream.
+
+See the 'Audio coding formats support' of
+<https://en.wikipedia.org/wiki/Comparison_of_video_container_formats> for
+further details.
+""".
 -type container_format() :: 'raw' | 'ogg' | 'webm' | 'riff'.
-% Describes how to store metadata and possibly multiple audio streams in a
-% binary stream.
-%
-% See the 'Audio coding formats support' of
-% https://en.wikipedia.org/wiki/Comparison_of_video_container_formats for
-% further details.
 
 
+
+-doc """
+A content representation format for storage or transmission of digital audio,
+i.e. how audio content is encoded.
+
+Refer to <https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats> for
+further details.
+""".
 -type audio_format() :: 'raw' | 'pcm' | 'mp3' | 'vorbis' | 'aac' | 'flac'
 					  | 'opus' | 'mulaw' | 'alaw' | 'truesilk'.
-% A content representation format for storage or transmission of digital audio,
-% i.e. how audio content is encoded.
-%
-% Refer to https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats for
-% further details.
 
 
 % For the audio_stream_settings record:
 -include("audio_utils.hrl").
 
+
+-doc "Settings of an audio stream.".
 -type audio_stream_settings() :: #audio_stream_settings{}.
 
 
+
+-doc """
+An implementation in charge of coding/decoding an audio format (e.g. the codecs
+of FFmpeg).
+""".
 -type codec() :: bin_string().
-% An implementation in charge of coding/decoding an audio format (e.g. the
-% codecs of FFmpeg).
 
 
 -export_type([ sample_rate/0, standard_sampling_rate/0,
@@ -105,7 +126,7 @@
 		  audio_stream_settings_to_string/1 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
@@ -114,26 +135,31 @@
 
 
 
-% @doc Performs a playblack of the specified audio file, with specified
-% settings (if any), in a non-blocking (in the background) way.
-%
--spec playback_file( any_file_path(), maybe( audio_stream_settings() ) ) ->
+-doc """
+Performs a playblack of the specified audio file, with specified settings (if
+any), in a non-blocking (in the background) way.
+""".
+-spec playback_file( any_file_path(), option( audio_stream_settings() ) ) ->
 											void().
 playback_file( AudioFilePath, MaybeAudioStreamSettings ) ->
 	playback_file( AudioFilePath, MaybeAudioStreamSettings, _DoBlock=false ).
 
 
-% @doc Performs a playblack of the specified audio file, with specified
-% settings, either in a blocking or in a non-blocking (in the background) way.
-%
--spec playback_file( any_file_path(), maybe( audio_stream_settings() ),
+
+-doc """
+Performs a playblack of the specified audio file, with specified settings,
+either in a blocking or in a non-blocking (in the background) way.
+""".
+-spec playback_file( any_file_path(), option( audio_stream_settings() ),
 					 boolean() ) -> void().
 playback_file( AudioFilePath, _MaybeAudioStreamSettings, DoBlock ) ->
 	executable_utils:playback_audio_file( AudioFilePath, DoBlock ).
 
 
 
-% @doc Returns a textual description of the specified audio stream settings.
+-doc """
+Returns a textual description of the specified audio stream settings.
+""".
 -spec audio_stream_settings_to_string( audio_stream_settings() ) -> ustring().
 audio_stream_settings_to_string( #audio_stream_settings{
 							sampling_rate=SamplingRate,

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, May 12, 2018.
 
-
-
-% Unit tests for the script-related facilities.
-%
-% See the script_utils.erl tested module.
-%
 -module(script_utils_test).
+
+-moduledoc """
+Unit tests for the **script-related** facilities.
+
+See the script_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -54,14 +55,14 @@ run() ->
 	ArgString = "foo -color red white -bar baz -boom -color blue",
 
 	% Emulated as if they were obtained in the context of an escript:
-	CommandLineArgs = text_utils:split( ArgString, _Delimiters=[ $ ] ),
+	CommandLineArgs = text_utils:split( ArgString, _Delimiter=$ ),
 
 	CanonicalArgTables =
-		shell_utils:get_argument_table_from_strings( CommandLineArgs ),
+		cmd_line_utils:get_argument_table_from_strings( CommandLineArgs ),
 
 	test_facilities:display( "Command-line interpretation follows, for "
-							 "command-line arguments '~ts': ~ts",
-		 [ ArgString,
-		   shell_utils:argument_table_to_string( CanonicalArgTables ) ] ),
+		"command-line arguments '~ts': ~ts",
+		[ ArgString,
+		  cmd_line_utils:argument_table_to_string( CanonicalArgTables ) ] ),
 
 	test_facilities:stop().

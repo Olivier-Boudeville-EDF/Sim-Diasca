@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,6 +26,11 @@
 % Creation date: 2018.
 
 
+% As, sometimes, defines in header files make sense:
+-ifndef(myriad_gui_ui_base_hrl_guard).
+-define(myriad_gui_ui_base_hrl_guard,).
+
+
 % The key used by UI modules to store their name in the process dictionary:
 -define( ui_name_key, myriad_ui_name ).
 
@@ -34,3 +39,6 @@
 
 % The type of associated table used for the settings of user interfaces:
 -define( ui_table, list_table ).
+
+
+-endif. % myriad_gui_ui_base_hrl_guard

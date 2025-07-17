@@ -20,6 +20,9 @@
  */
 #version 330 core
 
+// Feature added by MyriadGUI:
+#include "gui_shader.glsl.h"
+
 
 
 /* Input vertex data, different for all executions of this shader;

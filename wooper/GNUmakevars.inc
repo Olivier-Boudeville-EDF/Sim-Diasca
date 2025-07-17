@@ -136,7 +136,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar, hex
 # and the code itself, see wooper_utils:get_wooper_version{_string,}/0):
 #
-WOOPER_VERSION := 2.0.28
+WOOPER_VERSION := 2.0.32
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -193,8 +193,9 @@ WOOPER_REBAR_BUILD_BASE = $(MYRIAD_REBAR_BUILD_DIR)/lib/wooper
 
 
 # When building WOOPER in an OTP context from its usual (Git) root (e.g. with
-# 'make rebar3-application'), the BEAMs of Myriad are to be found in the OTP
-# build tree - rather than in a supposedly fully-built usual root for Myriad:
+# 'make rebar3-application'), the BEAMs of Myriad (the layer just below it) are
+# to be found in the OTP build tree - rather than in a supposedly fully-built
+# usual root for Myriad:
 #
 # (these information are useful only at compilation-time, in order to locate the
 # needed parse transforms and their dependencies; at runtime, the OTP rules
@@ -343,6 +344,8 @@ COMPILER_PARSE_TRANSFORM_FOR_WOOPER_CLASSES_OPT = \
 	'+{parse_transform,wooper_parse_transform}'
 
 
+
+
 # For later reuse in the next layer of the software stack:
 WOOPER_PLT_FILE := $(WOOPER_TOP)/Ceylan-WOOPER.plt
 
@@ -358,9 +361,11 @@ endif
 
 # Documentation section.
 
-
+# No $(LAYER_TOP) in includes, it would be misleading as edoc is run from the
+# clone root, not from doc:
+#
 ifndef EDOC_OPTS
-	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["$(LAYER_TOP)/include", "$(LAYER_TOP)/include/interfaces", "$(MYRIAD_TOP)/.."]}, {overview,"$(LAYER_TOP)/overview.edoc"}]'
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["..", "$(MYRIAD_TOP)/.."]}, {overview,"doc/overview.edoc"}]'
 endif
 
 

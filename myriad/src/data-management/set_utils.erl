@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,31 +25,27 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2016.
 
-
-% @doc Gathering of various facilities about <b>sets</b>.
-%
-% A set is a container that:
-%
-% - does not allow duplicates (adding an element more than once is like adding
-% it only once)
-%
-% - has no intrinsic order (yet can be iterated over)
-%
-% - can efficiently look-up elements, even if containing a large number of them
-%
-% Notes:
-%
-% - we provide here a basic, general-purpose set support, and do not rely on any
-% lighter, alternate level of indirection
-%
-% - if you feel the need for an associative table whose values do no matter,
-% your actual need is a set!
-%
-% See set_utils_test.erl for the corresponding test.
-%
-% See also: list_utils.erl and set_utils_test.erl.
-%
 -module(set_utils).
+
+-moduledoc """
+Gathering of various facilities about **sets**.
+
+A set is a container that:
+- does not allow duplicates (adding an element more than once is like adding it
+only once)
+- has no intrinsic order (yet can be iterated over)
+- can efficiently look-up elements, even if containing a large number of them
+
+Notes:
+- we provide here a basic, general-purpose set support, and do not rely on any
+lighter, alternate level of indirection
+- if you feel the need for an associative table whose values do no matter, your
+actual need is a set!
+
+See set_utils_test.erl for the corresponding test.
+
+See also: list_utils.erl and set_utils_test.erl.
+""".
 
 
 
@@ -75,32 +71,39 @@
 -define( set_impl, gb_sets ).
 
 
-%-type set() :: gb_sets:set().
+
+-doc "An (unordered) set of elements.".
 -type set() :: ?set_impl:set().
 
 
-%-type set( T ) :: gb_sets:set( T ).
+
+-doc "An homogeneous (unordered) set of elements.".
 -type set( T ) :: ?set_impl:set( T ).
-% For homogeneous sets.
 
 
+
+-doc "An element of a set".
 -type element() :: term().
-% Element of a set.
 
 
+
+-doc "Internally, a kind of enumeration (list) of the elements in the set.".
 -type iterator() :: ?set_impl:iter().
-% Internally, a kind of enumeration (list) of the elements in the set.
 
+
+-doc "Allows to progress in the iteration of a set.".
 -type next_iteration() :: { element(), iterator() } | 'none'.
 
 
 -export_type([ set/0, set/1, element/0, iterator/0, next_iteration/0 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
+
 -type ustring() :: text_utils:ustring().
+
 
 
 
@@ -113,17 +116,18 @@
 
 
 
-% @doc Returns a new, empty, set.
+-doc "Returns a new, empty, set.".
 -spec new() -> set().
 new() ->
 	?set_impl:new().
 
 
 
-% @doc Returns a set comprising only the specified element.
-%
-% More elegant than set_utils:add(Foo, set_utils:new()).
-%
+-doc """
+Returns a set comprising only the specified element.
+
+More elegant than set_utils:add(Foo, set_utils:new()).
+""".
 -spec singleton( element() ) -> set().
 singleton( Element ) ->
 	% Not defined for ordsets:
@@ -132,25 +136,26 @@ singleton( Element ) ->
 
 
 
-% @doc Returns a set containing the elements of the specified list (possibly
-% unordered and containing duplicates).
-%
-% See singleton/1 if wanting to create a set with one element.
-%
+-doc """
+Returns a set containing the elements of the specified list (possibly unordered
+and containing duplicates).
+
+See singleton/1 if wanting to create a set with one element.
+""".
 -spec new( [ element() ] ) -> set().
 new( ElementList ) ->
 	?set_impl:from_list( ElementList ).
 
 
 
+-doc """
+Tells whether the two specified sets are equal (meaning that they contain
+exactly the same elements).
 
-% @doc Tells whether the two specified sets are equal (meaning that they contain
-% exactly the same elements).
-%
-% Note: depending on set_impl, this function may or may not be useless, as
-% using the basic '==' term-level operator may be sufficient to compare some
-% types of sets (e.g. ordsets).
-%
+Note: depending on set_impl, this function may or may not be useless, as using
+the basic '==' term-level operator may be sufficient to compare some types of
+sets (e.g. ordsets).
+""".
 -spec are_equal( set(), set() ) -> boolean().
 are_equal( Set1, Set2 ) ->
 	% Shall be correct (albeit expensive) in all cases:
@@ -159,20 +164,21 @@ are_equal( Set1, Set2 ) ->
 
 
 
-% @doc Returns a set formed from the specified one with specified element
-% inserted. If this element is already in the specified set, the returned set is
-% the same.
-%
+-doc """
+Returns a set formed from the specified one with specified element inserted. If
+this element is already in the specified set, the returned set is the same.
+""".
 -spec add( element(), set() ) -> set().
 add( Element, Set ) ->
 	?set_impl:add_element( Element, Set ).
 
 
 
-% @doc Returns a set formed from the specified one with specified element
-% inserted, checking that this element was not already in the original set
-% (otherwise a batmatch exception is thrown).
-%
+-doc """
+Returns a set formed from the specified one with specified element inserted,
+checking that this element was not already in the original set (otherwise a
+batmatch exception is thrown).
+""".
 -spec add_as_new( element(), set() ) -> set().
 add_as_new( Element, Set ) ->
 	case ?set_impl:is_member( Element, Set ) of
@@ -187,9 +193,10 @@ add_as_new( Element, Set ) ->
 
 
 
-% @doc Returns a set made of the specified set to which the elements of the
-% specified plain list have been added.
-%
+-doc """
+Returns a set made of the specified set to which the elements of the specified
+plain list have been added.
+""".
 -spec add_element_list( [ element() ], set() ) -> set().
 %add_element_list( _PlainList=[], Set ) ->
 %  Set;
@@ -203,45 +210,50 @@ add_element_list( Elements, Set ) ->
 
 
 
-% @doc Returns the union of the two specified sets.
+-doc "Returns the union of the two specified sets.".
 -spec union( set(), set() ) -> set().
 union( FirstSet, SecondSet ) ->
 	?set_impl:union( FirstSet, SecondSet ).
 
 
-% @doc Returns the union of the specified sets.
+
+-doc "Returns the union of the specified sets.".
 -spec union( [ set() ] ) -> set().
 union( ListOfSets ) ->
 	?set_impl:union( ListOfSets ).
 
 
 
-% @doc Returns the intersection of the two specified sets.
+-doc "Returns the intersection of the two specified sets.".
 -spec intersection( set(), set() ) -> set().
 intersection( FirstSet, SecondSet ) ->
 	?set_impl:intersection( FirstSet, SecondSet ).
 
 
-% @doc Returns the intersection of the specified sets.
+
+-doc "Returns the intersection of all specified sets.".
 -spec intersection( [ set() ] ) -> set().
 intersection( ListOfSets ) ->
 	?set_impl:intersection( ListOfSets ).
 
 
 
-% @doc Returns the difference between the first specified set and the second,
-% that is the elements of the first set that are not in the second one.
-%
+-doc """
+Returns the difference between the first specified set and the second, that is
+the elements of the first set that are not in the second one.
+""".
 -spec difference( set(), set() ) -> set().
 difference( FirstSet, SecondSet ) ->
 	?set_impl:difference( FirstSet, SecondSet ).
 
 
-% @doc Returns the differences between the first specified set and the second,
-% as a pair, whose first element corresponds to the elements of the first set
-% that are not in the second one, and whose second element corresponds to the
-% elements of the second set that are not in the first one.
-%
+
+-doc """
+Returns the differences between the first specified set and the second, as a
+pair, whose first element corresponds to the elements of the first set that are
+not in the second one, and whose second element corresponds to the elements of
+the second set that are not in the first one.
+""".
 -spec differences( set(), set() ) -> { set(), set() }.
 differences( FirstSet, SecondSet ) ->
 	{ ?set_impl:difference( FirstSet, SecondSet ),
@@ -249,53 +261,57 @@ differences( FirstSet, SecondSet ) ->
 
 
 
-% @doc Returns whether the specified term appears to be a legit set.
+-doc "Returns whether the specified term appears to be a legit set.".
 -spec is_set( term() ) -> boolean().
 is_set( Term ) ->
 	?set_impl:is_set( Term ).
 
 
-% @doc Ensures that the specified term is a set and returns it; throws an
-% exception if not.
-%
+
+-doc """
+Ensures that the specified term is a set and returns it; throws an exception if
+not.
+""".
 -spec check_set( term() ) -> void().
 check_set( Term ) ->
 	is_set( Term ) orelse throw( { not_a_set, Term } ).
 
 
-% @doc Tells whether the first set is a subset of the second, that is if each
-% element of the first is also in the second.
-%
+
+-doc """
+Tells whether the first set is a subset of the second, that is if each element
+of the first is also in the second.
+""".
 -spec is_subset( set(), set() ) -> boolean().
 is_subset( FirstSet, SecondSet ) ->
 	?set_impl:is_subset( FirstSet, SecondSet ).
 
 
 
-% @doc Returns a set created from the specified list of elements.
+-doc "Returns a set created from the specified list of elements.".
 -spec from_list( [ element() ] ) -> set().
 from_list( List ) ->
 	?set_impl:from_list( List ).
 
 
 
-% @doc Returns a list created from the elements of the specified set.
+-doc "Returns a list created from the elements of the specified set.".
 -spec to_list( set() ) -> [ element() ].
 to_list( Set ) ->
 	?set_impl:to_list( Set ).
 
 
 
-% @doc Returns true iff the specified element is an element of the specified
-% set.
-%
+-doc """
+Returns true iff the specified element is an element of the specified set.
+""".
 -spec member( element(), set() ) -> boolean().
 member( Element, Set ) ->
 	?set_impl:is_member( Element, Set ).
 
 
 
-% @doc Returns whether the specified set is empty.
+-doc "Returns whether the specified set is empty.".
 -spec is_empty( set() ) -> boolean().
 is_empty( Set ) ->
 	% Not defined for ordsets:
@@ -304,7 +320,7 @@ is_empty( Set ) ->
 
 
 
-% @doc Returns the number of elements in the specified set.
+-doc "Returns the number of elements in the specified set.".
 -spec size( set() ) -> count().
 size( Set ) ->
 	?set_impl:size( Set ).
@@ -314,12 +330,13 @@ size( Set ) ->
 % Note: iterating could be done with a fold as well (ordsets).
 
 
-% @doc Returns an iterator that can be used for traversing the entries of the
-% specified set.
-%
-% Note: the iterator is *not* the first iterated element of a set: next/1 shall
-% be used even for the very first element.
-%
+-doc """
+Returns an iterator that can be used for traversing the entries of the specified
+set.
+
+Note: the iterator is *not* the first iterated element of a set: next/1 shall be
+used even for the very first element.
+""".
 -spec iterator( set() ) -> iterator().
 iterator( Set ) ->
 	?set_impl:iterator( Set ).
@@ -329,21 +346,23 @@ iterator( Set ) ->
 %-spec iterator_from( element(), set() ) ->
 %iterator_from( Element, Set ) ->
 
-% @doc Returns the next element and iterator, as obtained from the specified
-% iterator.
-%
-% Allows the iterators to be gone through.
-%
+
+-doc """
+Returns the next element and iterator, as obtained from the specified iterator.
+
+Allows the iterators to be gone through.
+""".
 -spec next( iterator() ) -> next_iteration().
 next( Iterator ) ->
 	?set_impl:next( Iterator ).
 
 
 
-% @doc Extracts specified element (if any) from specified set: removes it from
-% the returned set; otherwise (that is: if that element does not exist in the
-% specified set), returns false.
-%
+-doc """
+Extracts specified element (if any) from specified set: removes it from the
+returned set; otherwise (that is: if that element does not exist in the
+specified set), returns false.
+""".
 -spec extract_if_existing( element(), set() ) -> 'false' | set().
 extract_if_existing( Element, Set ) ->
 	?set_impl:is_member( Element, Set ) andalso
@@ -351,24 +370,26 @@ extract_if_existing( Element, Set ) ->
 
 
 
-% @doc Removes the specified element (if any) from the specified set, and
-% returns the resulting set.
-%
-% Note: does not fail if the element was not in the set; use delete_existing/2
-% to ensure that the element was present.
-%
+-doc """
+Removes the specified element (if any) from the specified set, and returns the
+resulting set.
+
+Note: does not fail if the element was not in the set; use delete_existing/2 to
+ensure that the element was present.
+""".
 -spec delete( element(), set() ) -> set().
 delete( Element, Set ) ->
 	?set_impl:del_element( Element, Set ).
 
 
 
-% @doc Ensures that the specified element was indeed in the specified set before
-% removing it, and returning the resulting set.
-%
-% Note: use delete/2 to delete an element without checking whether the element
-% was already present in the set.
-%
+-doc """
+Ensures that the specified element was indeed in the specified set before
+removing it, and returning the resulting set.
+
+Note: use delete/2 to delete an element without checking whether the element was
+already present in the set.
+""".
 -spec delete_existing( element(), set() ) -> set().
 delete_existing( Element, Set ) ->
 
@@ -384,7 +405,8 @@ delete_existing( Element, Set ) ->
 	end.
 
 
-% @doc Returns a textual representation of the specified set.
+
+-doc "Returns a textual representation of the specified set.".
 -spec to_string( set() ) -> ustring().
 to_string( Set ) ->
 

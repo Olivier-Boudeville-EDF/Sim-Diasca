@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 Olivier Boudeville
+% Copyright (C) 2012-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,24 +25,24 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 24, 2012.
 
-
-% @doc Gathering of <b>unit management</b> facilities, to denote quantities
-% first in a simple, ad hoc, limited form, then on a more formal, heavyweight
-% one.
-%
-% All kinds of units are listed here, alongside the reference ones (e.g. the
-% meter is the unit of length in the International System of Units).
-%
-% One objective is to be able to specify, instead of mere values (e.g. "1.14"),
-% values with units (e.g. "1.14 km/h"), and possibly to convert them into a
-% canonical form transparently, for automated checking and exact conversion.
-%
-% See unit_utils_test.erl for the corresponding test.
-%
-% Read the 'Management of Units' section of the technical manual of the Myriad
-% Layer for more information.
-%
 -module(unit_utils).
+
+-moduledoc """
+Gathering of **unit management** facilities, to denote quantities first in a
+simple, ad hoc, limited form, then on a more formal, heavyweight one.
+
+All kinds of units are listed here, alongside the reference ones (e.g. the meter
+is the unit of length in the International System of Units).
+
+One objective is to be able to specify, instead of mere values (e.g. `1.14`),
+values with units (e.g. `1.14 km/h`), and possibly to convert them into a
+canonical form transparently, for automated checking and exact conversion.
+
+See unit_utils_test.erl for the corresponding test.
+
+Read the `Management of Units` section of the technical manual of the Myriad
+Layer for more information.
+""".
 
 
 
@@ -64,65 +64,85 @@
 % Time-related section.
 
 
+-doc "10^6 seconds.".
 -type megasecond()  :: integer().
-% 10^6 seconds.
 
 -type megaseconds() :: integer().
 
 
+
 -type year()  :: integer().
+
 -type years() :: integer().
 
+
 -type month()  :: integer().
+
 -type months() :: integer().
 
+
+-doc "Month in the year; semantically equivalent to `calendar:month()`.".
 -type canonical_month() :: 1..12.
-% Month in the year; semantically equivalent to calendar:month().
 
 
+-doc "Absolute months.".
 -type absolute_month() :: { year(), canonical_month() }.
-% Absolute months.
+
 
 -type weeks() :: integer().
+
 -type week()  :: integer().
 
+
 -type day()  :: integer().
+
 -type days() :: integer().
 
 
+-doc "Day in the month; semantically equivalent to `calendar:day()`.".
 -type canonical_day() :: 1..31.
-% Day in the month; semantically equivalent to calendar:day().
 
+
+-doc "Day in the (possibly leap) year.".
 -type day_in_the_year() :: 1..366.
-% Day in the (possibly leap) year.
 
 
 -type hour()  :: integer().
+
 -type hours() :: integer().
 
+
+-doc "Hour in the day.".
 -type canonical_hour() :: 0..23.
-% Hour in the day.
 
 
 -type minute()  :: integer().
+
 -type minutes() :: integer().
 
+
+-doc "Minute in the hour.".
 -type canonical_minute() :: 0..59.
-% Minute in the hour.
+
+
 
 -type second()  :: integer().
+
 -type seconds() :: integer().
 
 
+-doc "Second in the minute.".
 -type canonical_second() :: 0..59.
-% Second in the minute.
+
+
 
 -type float_second()  :: float().
+
 -type float_seconds() :: float().
 
 
+-doc "Any type of second (integer or float).".
 -type any_second()  :: second()  | float_second().
-% Any type of second (integer or float).
 
 -type any_seconds() :: seconds() | float_seconds().
 
@@ -138,53 +158,63 @@
 -define(seconds_per_year, 31556952 ).
 
 
+-doc "Square seconds (s^2).".
 -type square_seconds() :: float().
-% Square seconds (s^2).
 
 
 -type millisecond()  :: integer().
+
 -type milliseconds() :: integer().
 
+
+-doc "Millisecond in the second.".
 -type canonical_millisecond()  :: 0..999.
-% Millisecond in the second.
+
 
 
 -type microsecond()  :: integer().
+
 -type microseconds() :: integer().
 
+
+-doc "Microsecond in the second.".
 -type canonical_microsecond() :: 0..999999.
-% Microsecond in the second.
 
 
+
+-doc "Mean Time Between (recoverable) Failures.".
 -type mtbf() :: time_utils:dhms_duration().
-% Mean Time Between (recoverable) Failures.
 
+
+-doc "Mean Time To (unrecoverable) Failure.".
 -type mttf() :: time_utils:dhms_duration().
-% Mean Time To (unrecoverable) Failure.
 
+
+-doc "Mean Time To Repair.".
 -type mttr() :: time_utils:dhms_duration().
-% Mean Time To Repair.
 
 
+
+-doc "Frequency in Hz, as a floating-point number.".
 -type hertz() :: float().
-% Frequency in Hz, as a floating-point number.
 
+
+-doc "Frequency in Hz, as a (non-negative) integer.".
 -type integer_hertz() :: non_neg_integer().
-% Frequency in Hz, as a (non-negative) integer.
 
+
+-doc "Frequency in Hz.".
 -type any_hertz() :: hertz() | integer_hertz().
-% Frequency in Hz.
 
 
 
-
+-doc "Our default pivot unit for durations.".
 -type time_reference_unit() :: 'seconds'.
-% Our default pivot unit for durations.
 
 
+-doc "Months and weeks not specifically useful here.".
 -type time_units() :: time_reference_unit() | 'years' | 'days' | 'hours'
 					| 'minutes' | 'milliseconds' | 'microseconds'.
-% Months and weeks not specifically useful here.
 
 
 -export_type([ megasecond/0, megaseconds/0,
@@ -228,17 +258,23 @@
 % remain one of the best choices.
 
 
--type parsec() :: float().
-% A parsec (symbol: pc) is a larger unit of length, for astronomical objects
-% outside the Solar System, approximately equal to 3.26 light-years or 206,265
-% astronomical units (AU), i.e. 30.9 trillion kilometres.
-%
-% Most commonly used in professional astronomy.
-%
-% See https://en.wikipedia.org/wiki/Parsec.
 
+-doc """
+A parsec (symbol: pc) is a larger unit of length, for astronomical objects
+outside the Solar System, approximately equal to 3.26 light-years or 206,265
+astronomical units (AU), i.e. 30.9 trillion kilometres.
+
+Most commonly used in professional astronomy.
+
+See [https://en.wikipedia.org/wiki/Parsec].
+
+""".
+-type parsec() :: float().
+
+
+-doc "Abbreviation of parsec.".
 -type pc() :: parsec().
-% Abbreviation of parsec.
+
 
 -type parsecs() :: parsec().
 
@@ -247,17 +283,21 @@
 
 
 
--type light_year() :: float().
-% A light-year expresses astronomical distances, and is equivalent to about
-% 9.46.10^12 km.
-%
-% Most often used when expressing distances to stars and other distances on a
-% galactic scale.
-%
-% Also abbreviated as "ly".
+-doc """
+A light-year expresses astronomical distances, and is equivalent to about
+`9.46.10^12 km`.
 
+Most often used when expressing distances to stars and other distances on a
+galactic scale.
+
+Also abbreviated as `"ly"`.
+""".
+-type light_year() :: float().
+
+
+-doc "Abbreviation of light-year.".
 -type ly() :: light_year().
-% Abbreviation of light-year.
+
 
 -type light_years() :: light_year().
 
@@ -269,25 +309,32 @@
 
 
 
+-doc """
+The distance that light travels in free space in one minute. It is equal to
+exactly `17987547480 m` (hence about 18 million kilometres).
+""".
 -type light_minute() :: float().
-% The distance that light travels in free space in one minute. It is equal to
-% exactly 17987547480 m (hence about 18 million kilometres).
+
 
 -type light_minutes() :: light_minute().
 
 
 
+-doc """
+The distance that light travels in free space in one second. It is equal to
+exactly `299 792 458 m` (hence about 300 000 km).
+""".
 -type light_second() :: float().
-% The distance that light travels in free space in one second. It is equal to
-% exactly 299 792 458 m (hence about 300 000 km).
 
 
+-doc "Abbreviation of light-second".
 -type ls() :: light_second().
-% Abbreviation of light-second.
+
 
 -type light_seconds() :: light_second().
 
-% Correspond to c; exact number:
+
+% Correspond to `c`; exact number:
 -define(meters_per_light_second, 299792458 ).
 
 
@@ -299,32 +346,42 @@
 
 
 
+-doc """
+The distance that light travels in free space in one nanosecond: `299.8 mm`,
+hence about 30 cm or 0.3 m.
+""".
 -type light_nanosecond() :: float().
-% The distance that light travels in free space in one nanosecond: 299.8 mm,
-% hence about 30 cm or 0.3 m.
 
 
+
+-doc """
+An astronomical unit expresses astronomical distances; it corresponds roughly to
+the distance from Earth to the Sun, and is exactly equal to `149 597 870 700 m`
+(approximately 150 million kilometres or 8.3 light-minutes).
+
+Primarily used to measure distances around stars.
+
+Also abbreviated as `"au"`.
+""".
 -type astronomical_unit() :: float().
-% An astronomical unit expresses astronomical distances; it corresponds roughly
-% to the distance from Earth to the Sun, and is exactly equal to 149 597 870 700
-% m (approximately 150 million kilometres or 8.3 light-minutes).
-%
-% Primarily used to measure distances around stars.
-%
-% Also abbreviated as "au".
 
+
+
+-doc "Abbreviation of astronomical unit.".
 -type au() :: astronomical_unit().
-% Abbreviation of astronomical unit.
+
 
 -type astronomical_units() :: astronomical_unit().
+
 
 % Exact number:
 -define(meters_per_astronomical_unit, 149597870700 ).
 
 
 
+-doc "Our default pivot unit for lengths.".
 -type length_reference_unit() :: 'meters'.
-% Our default pivot unit for lengths.
+
 
 -type length_units() :: length_reference_unit() | 'millimeters'
 					  | 'int_millimeters'.
@@ -348,37 +405,48 @@
 
 % By increasing speed magnitude:
 
+
+-doc """
+Abbreviated as `"m/s"`.
+
+A unit that is 3.6 larger than `"km/h"`.
+""".
 -type meters_per_second() :: float().
-% Abbreviated as "m/s".
-%
-% A unit that is 3.6 larger than "km/h".
 
 
+
+-doc """
+Abbreviated as `"km/h"`.
+
+A unit that is 3.6 smaller than `"m/s"`.
+""".
 -type km_per_hour() :: float().
-% Abbreviated as "km/h".
-%
-% A unit that is 3.6 smaller than "m/s".
 
 
 
+-doc """
+Light-second per second, that is `c`, the speed of light (as a unit).
+
+Is exactly `299 792 458 m/s` (i.e. about 300 000 km/s).
+
+Could be abbreviated as `"l"` (for "light"), or `"ls/s"`, but of course `c` is a
+lot clearer.
+
+See the `physics_utils:c/0` function.
+""".
 -type c() :: float().
-% Light-second per second, that is c, the speed of light (as a unit).
-%
-% Is exactly 299 792 458 m/s (i.e. about 300 000 km/s).
-%
-% Could be abbreviated as "l" (for "light"), or "ls/s", but of course c is a lot
-% clearer.
-%
-% See the physics_utils:c/0 function.
 
 
 -type ls_per_second() :: c().
 
 
+-doc """
+Abbreviated as `"ly/s"`.
+
+Of no real interest, as would designate speeds larger than `c`.
+""".
 -type light_year_per_second() :: float().
-% Abbreviated as "ly/s".
-%
-% Of no real interest, as would designate speeds larger than c.
+
 
 -type ly_per_second() :: light_year_per_second().
 
@@ -394,12 +462,15 @@
 
 % Surface-related section.
 
+
 -type square_meters() :: float().
 
+
+-doc "Our default pivot unit for areas.".
 -type surface_reference_unit() :: square_meters().
-% Our default pivot unit for areas.
 
 -type surface_units() :: square_meters().
+
 
 -export_type([ square_meters/0, surface_reference_unit/0, surface_units/0 ]).
 
@@ -409,11 +480,14 @@
 
 -type cubic_meters() :: float().
 
--type litre() :: float().
-% Thus dm^3.
 
+-doc "Thus dm^3.".
+-type litre() :: float().
+
+
+-doc "Our default pivot unit for volumes.".
 -type volume_reference_unit() :: cubic_meters().
-% Our default pivot unit for volumes.
+
 
 -type volume_units() :: volume_reference_unit() | 'litre'.
 
@@ -425,12 +499,17 @@
 
 % Mass-related section.
 
+
 -type tons() :: float().
+
 -type kilograms() :: float().
+
 -type grams() :: float().
 
+
+-doc "Our default pivot unit for masses.".
 -type mass_reference_unit() :: 'kilograms'.
-% Our default pivot unit for masses.
+
 
 -type mass_units() :: mass_reference_unit() | 'tons' | 'grams'.
 
@@ -442,10 +521,13 @@
 
 % Energy-related section (energy, work, heat).
 
+
 -type joules() :: float().
 
+
+-doc "Our default pivot unit for energies.".
 -type energy_reference_unit() :: 'joules'.
-% Our default pivot unit for energies.
+
 
 -type energy_units() :: energy_reference_unit().
 
@@ -456,8 +538,9 @@
 
 % Temperature units.
 
+
+-doc "In degree Celsius (°C).".
 -type celsius() :: float().
-% In degree Celsius (°C).
 
 
 -export_type([ celsius/0 ]).
@@ -466,34 +549,47 @@
 
 % Angle section.
 
+
+-doc """
+Angle in radians.
+
+2π radians is equal to 360 degrees.
+
+Preferably to be kept in [0.0,2π[.
+""".
 -type radians() :: float().
-% Angle in radians.
-%
-% 2π radians is equal to 360 degrees.
-%
-% Preferably to be kept in [0.0,2π[.
 
 
+-doc """
+Angle in degrees.
+
+Preferably to be kept in [0.0,360.0[.
+""".
 -type degrees() :: float().
-% Angle in degrees.
-%
-% Preferably to be kept in [0.0,360.0[.
 
 
+
+-doc """
+Angle in degrees.
+
+Strictly expected to be in [0,360[.
+""".
 -type int_degrees() :: integer().
-% Angle in degrees.
-%
-% Strictly expected to be in [0,360[.
 
 
+
+-doc """
+Angle in degrees.
+
+Expected to be in [0,360[.
+""".
 -type any_degrees() :: number().
-% Angle in degrees.
-%
-% Expected to be in [0,360[.
 
 
+
+-doc "Our default pivot unit for angles.".
 -type angle_reference_unit() :: 'radians'.
-% Our default pivot unit for angles.
+
 
 -type angle_units() :: angle_reference_unit() | 'degrees' | 'int_degrees'.
 
@@ -503,28 +599,36 @@
 
 
 
+-doc """
+A geographic coordinate that specifies the north-south position of a point on
+the surface of the Earth or another celestial body.
+
+It is an angular measurement, expressed here in degrees: latitude is given as an
+angle that ranges from -90° at the south pole to 90° at the north pole, with 0°
+at the Equator.
+""".
 -type latitude() :: degrees().
-% A geographic coordinate that specifies the north-south position of a point on
-% the surface of the Earth or another celestial body.
-%
-% It is an angular measurement, expressed here in degrees: latitude is given as
-% an angle that ranges from -90° at the south pole to 90° at the north pole,
-% with 0° at the Equator.
 
 
+
+-doc """
+A geographic coordinate that specifies the east-west position of a point on the
+surface of the Earth, or another celestial body.
+
+It is an angular measurement, expressed here in degrees: longitude is given as
+an angle that ranges from 0° at the Prime Meridian to +180° eastward and -180°
+westward.
+""".
 -type longitude() :: degrees().
-% A geographic coordinate that specifies the east-west position of a point on
-% the surface of the Earth, or another celestial body.
-%
-% It is an angular measurement, expressed here in degrees: longitude is given as
-% an angle that ranges from 0° at the Prime Meridian to +180° eastward and -180°
-% westward.
 
 
+
+-doc """
+A position on a round celestial body, typically the Earth.
+
+No altitude/elevation.
+""".
 -type position() :: { latitude(), longitude() }.
-% A position on a round celestial body, typically the Earth.
-%
-% No altitude/elevation.
 
 
 -type declination() :: degrees().
@@ -536,22 +640,27 @@
 
 % Miscellaneous section.
 
+
 -type dimensionless() :: float().
 
+
+-doc """
+Revolutions per minute (also known as RPM, rev/min, r/min, or with the notation
+min^-1) is a number of turns made per minute; a unit of rotational speed or the
+frequency of rotation around a fixed axis.
+""".
 -type rpm() :: float().
-% Revolutions per minute (also known as RPM, rev/min, r/min, or with the
-% notation min^-1) is a number of turns made per minute; a unit of rotational
-% speed or the frequency of rotation around a fixed axis.
 
 -export_type([ dimensionless/0, rpm/0 ]).
+
 
 -type misc_units() :: dimensionless() | rpm().
 
 
 
+-doc "All kinds of units.".
 -type units() :: time_units() | length_units() | volume_units() | mass_units()
 			   | energy_units() | angle_units() | misc_units().
-% All kinds of units.
 
 
 -export_type([ units/0 ]).
@@ -571,6 +680,24 @@
 % possible prefix (e.g. kilo, mega, etc.).
 
 
+-doc """
+The seven SI base units are:
+
+- meter, for length [m]
+
+- kilogram, for mass [kg]; we use gram ([g]) instead, as no prefix is wanted
+here
+
+- second, for time [s]
+
+- ampere, for electric current [A]
+
+- kelvin, for thermodynamic temperature [K]
+
+- mole, for the amount of substance [mol]
+
+- candela, for luminous intensity [cd]
+""".
 -type base_unit_symbol() :: 'm'
 						  | 'g'
 						  | 's'
@@ -578,24 +705,54 @@
 						  | 'K'
 						  | 'mol'
 						  | 'cd'.
-% The seven SI base units are:
-%
-% - meter, for length [m]
-%
-% - kilogram, for mass [kg]; we use gram ([g]) instead, as no prefix is wanted
-% here
-%
-% - second, for time [s]
-%
-% - ampere, for electric current [A]
-%
-% - kelvin, for thermodynamic temperature [K]
-%
-% - mole, for the amount of substance [mol]
-%
-% - candela, for luminous intensity [cd]
 
 
+
+-doc """
+The derived base units currently supported:
+
+- hertz, for frequency [Hz]
+
+- radian, for angle [rad]
+
+- steradian, for solid angle [sr]
+
+- newton, for force, weight [N]
+
+- pascal, forpressure, stress [Pa]
+
+- joule, for energy, work, heat [J]
+
+- watt, for power, radiant flux [W]
+
+- coulomb, for electric charge or quantity of electricity [C]
+
+- volt, for voltage, electrical potential difference, electromotive force [V]
+
+- farad, for electrical capacitance [F]
+
+- ohm, for electrical resistance, impedance, reactance [ohm]
+
+- siemens, for electrical conductance [S]
+
+- tesla, for magnetic field strength, magnetic flux density [T]
+
+- henry, for inductance [H]
+
+- degree Celsius, for temperature relative to 273.15 K [°C]
+
+- lumen, for luminous flux [lm]
+
+- lux, for illuminance [lx]
+
+- becquerel, for radioactive decays per unit time [Bq]
+
+- gray, for absorbed dose of ionizing radiation [Gy]
+
+- sievert, for equivalent dose of ionizing radiation [Sv]
+
+- katal, for catalytic activity [kat]
+""".
 -type derived_unit_symbol() :: 'Hz'
 							 | 'rad'
 							 | 'sr'
@@ -617,101 +774,69 @@
 							 | 'Gy'
 							 | 'Sv'
 							 | 'kat'.
-% The derived base units currently supported:
-%
-% - hertz, for frequency [Hz]
-%
-% - radian, for angle [rad]
-%
-% - steradian, for solid angle [sr]
-%
-% - newton, for force, weight [N]
-%
-% - pascal, forpressure, stress [Pa]
-%
-% - joule, for energy, work, heat [J]
-%
-% - watt, for power, radiant flux [W]
-%
-% - coulomb, for electric charge or quantity of electricity [C]
-%
-% - volt, for voltage, electrical potential difference, electromotive force [V]
-%
-% - farad, for electrical capacitance [F]
-%
-% - ohm, for electrical resistance, impedance, reactance [ohm]
-%
-% - siemens, for electrical conductance [S]
-%
-% - tesla, for magnetic field strength, magnetic flux density [T]
-%
-% - henry, for inductance [H]
-%
-% - degree Celsius, for temperature relative to 273.15 K [°C]
-%
-% - lumen, for luminous flux [lm]
-%
-% - lux, for illuminance [lx]
-%
-% - becquerel, for radioactive decays per unit time [Bq]
-%
-% - gray, for absorbed dose of ionizing radiation [Gy]
-%
-% - sievert, for equivalent dose of ionizing radiation [Sv]
-%
-% - katal, for catalytic activity [kat]
 
 
+
+-doc """
+The units widely used in conjunction with SI units:
+
+- minute, for 60-second durations [min]
+
+- hour, for 60-minute durations [h]
+
+- litre, for 10^-3 m^3 volumes [L]
+
+- tonne, for 1,000 kilogram masses [t]
+
+- electronvolt, for 1.602176565(35).10-19 joule energies  [eV]
+""".
 -type widely_used_unit_symbol() :: 'min'
 								 | 'h'
 								 | 'L'
 								 | 't'
 								 | 'eV'.
-% The units widely used in conjunction with SI units:
-%
-% - minute, for 60-second durations [min]
-%
-% - hour, for 60-minute durations [h]
-%
-% - litre, for 10^-3 m^3 volumes [L]
-%
-% - tonne, for 1,000 kilogram masses [t]
-%
-% - electronvolt, for 1.602176565(35).10-19 joule energies  [eV]
 
 
 
+-doc """
+The special units, designating:
+
+- dimension-less quantities (e.g. a count), [dimensionless] (most probably
+clearer than m/m)
+
+- currencies, either [$] (US Dollar) or [euros] (Euro)
+
+- values whose unit has not been specified [unspecified_unit]
+""".
 -type special_unit_symbol() :: 'dimensionless'
 							 | '$'
 							 | 'euros'
 							 | 'unspecified_unit'.
-% The special units, designating:
-%
-% - dimension-less quantities (e.g. a count), [dimensionless] (most probably
-% clearer than m/m)
-%
-% - currencies, either [$] (US Dollar) or [euros] (Euro)
-%
-% - values whose unit has not been specified [unspecified_unit]
 
 
 
+-doc """
+For non-SI units that cannot be anticipated (e.g. teqCO2, singaporean dollar of
+2012, number of people, etc.).
+""".
 -type non_standard_unit_symbol() :: atom().
-% For non-SI units that cannot be anticipated (e.g. teqCO2, singaporean dollar
-% of 2012, number of people, etc.).
 
 
+
+-doc "All unit symbols (actually not used as such).".
 -type unit_symbol() :: base_unit_symbol()
 					 | derived_unit_symbol()
 					 | widely_used_unit_symbol()
 					 | special_unit_symbol()
 					 | non_standard_unit_symbol().
-% All unit symbols (actually not used as such).
 
 
+
+-doc """
+The string counterparts of unit symbols (e.g. "eV" instead of 'eV'), used for
+parsing.
+""".
 -type unit_string_symbol() :: ustring().
-% The string counterparts of unit symbols (e.g. "eV" instead of 'eV'), used for
-% parsing.
 
 
 -export_type([ base_unit_symbol/0, derived_unit_symbol/0,
@@ -719,6 +844,8 @@
 			   non_standard_unit_symbol/0, unit_symbol/0 ]).
 
 
+
+-doc "Metric prefix (like 'kilo', to specify kilograms from grams).".
 -type metric_prefix() :: 'yotta'
 					   | 'zetta'
 					   | 'exa'
@@ -740,34 +867,44 @@
 					   | 'atto'
 					   | 'zepto'
 					   | 'yocto'.
-% Metric prefix (like 'kilo', to specify kilograms from grams).
 
 
+
+-doc """
+Symbol of metric prefix (e.g. "da" for 'deca').
+""".
 -type prefix_symbol() :: ustring().
-% Symbol of metric prefix (e.g. "da" for 'deca').
 
 
+
+-doc "Order of magnitude (exponent of 10).".
 -type magnitude_order() :: integer().
-% Order of magnitude (exponent of 10).
 
 
+
+-doc "A multiplying factor.".
 -type multiplying_factor() :: float().
-% Multiplying factor.
 
 
+
+-doc "Exponentiation of a unit (e.g. 2 for square meters, m^2).".
 -type exponent() :: integer().
-% Exponentiation of a unit (e.g. 2 for square meters, m^2).
 
 
+
+-doc """
+String containing a unit, in standard form (e.g. "km/h", "mW.m^-3").
+
+Read the 'Management of Units' section of the technical manual of the Myriad
+Layer for more information.
+""".
 -type unit_string() :: ustring().
-% String containing a unit, in standard form (e.g. "km/h", "mW.m^-3").
-%
-% Read the 'Management of Units' section of the technical manual of the Myriad
-% Layer for more information.
 
 
+
+-doc "Binary counterpart of a unit string.".
 -type unit_bin_string() :: bin_string().
-% Binary counterpart of a unit string.
+
 
 
 -record( canonical_unit, {
@@ -793,9 +930,11 @@
 	factor = 1.0 :: multiplying_factor() } ).
 
 
+-doc """
+Actual internal, canonical form for any unit (relying on the 7 SI base units, an
+order of magnitude and a multiplying factor).
+""".
 -type canonical_unit() :: #canonical_unit{}.
-% Actual internal, canonical form for any unit (relying on the 7 SI base units,
-% an order of magnitude and a multiplying factor).
 
 
 -type base_unit_name() :: 'meter' | 'gram' | 'second' | 'ampere' | 'kelvin'
@@ -821,8 +960,9 @@
 				   | widely_used_unit_name() | special_unit_name().
 
 
+
+-doc "The actual value whose unit may be associated to.".
 -type numerical_value() :: float().
-% The actual value whose unit may be associated to.
 
 
 -export_type([ unit_string/0, unit_bin_string/0, canonical_unit/0,
@@ -874,15 +1014,17 @@
 
 
 
+
 % Internal types.
 
 
+-doc "Unit component.".
 -type unit_component() :: ustring().
-% Unit component.
 
 
+-doc "The various supported kinds of component operators.".
 -type operator_kind() :: 'multiply' | 'divide'.
-% The various supported kinds of component operators.
+
 
 
 % Number of digits after the decimal point:
@@ -896,7 +1038,7 @@
 -define( fewer_digits_after_decimal, "1" ).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
@@ -906,38 +1048,42 @@
 % Converting lengths.
 
 
-% @doc Converts the length specified in light-years to meters.
+-doc "Converts the length specified in light-years to meters.".
 -spec light_years_to_meters( light_years() ) -> meters().
 light_years_to_meters( Ly ) ->
 	Ly * ?meters_per_light_year.
 
 
-% @doc Converts the length specified in meters to light-years.
+
+-doc "Converts the length specified in meters to light-years.".
 -spec meters_to_light_years( meters() ) -> light_years().
 meters_to_light_years( Meters ) ->
 	Meters / ?meters_per_light_year.
 
 
 
-% @doc Converts the length specified in light-seconds to meters.
+-doc "Converts the length specified in light-seconds to meters.".
 -spec light_seconds_to_meters( light_seconds() ) -> meters().
 light_seconds_to_meters( Ls ) ->
 	Ls * ?meters_per_light_second.
 
 
-% @doc Converts the length specified in meters to light-seconds.
+
+-doc "Converts the length specified in meters to light-seconds.".
 -spec meters_to_light_seconds( meters() ) -> light_seconds().
 meters_to_light_seconds( Meters ) ->
 	Meters / ?meters_per_light_second.
 
 
-% @doc Converts the length specified in parsecs to meters.
+
+-doc "Converts the length specified in parsecs to meters.".
 -spec parsecs_to_meters( parsecs() ) -> meters().
 parsecs_to_meters( Pc ) ->
 	Pc * ?meters_per_parsec.
 
 
-% @doc Converts the length specified in astronomical units to meters.
+
+-doc "Converts the length specified in astronomical units to meters.".
 -spec astronomical_units_to_meters( astronomical_units() ) -> meters().
 astronomical_units_to_meters( Au ) ->
 	Au * ?meters_per_astronomical_unit.
@@ -947,13 +1093,14 @@ astronomical_units_to_meters( Au ) ->
 % Converting speeds.
 
 
-% @doc Converts the specified speed in km/h to m/s.
+-doc "Converts the specified speed in km/h to m/s.".
 -spec km_per_hour_to_meters_per_second( km_per_hour() ) -> meters_per_second().
 km_per_hour_to_meters_per_second( K ) ->
 	K / 3.6.
 
 
-% @doc Converts the specified speed in m/s to km/h.
+
+-doc "Converts the specified speed in m/s to km/h.".
 -spec meters_per_second_to_km_per_hour( meters_per_second() ) -> km_per_hour().
 meters_per_second_to_km_per_hour( M ) ->
 	M * 3.6.
@@ -963,14 +1110,15 @@ meters_per_second_to_km_per_hour( M ) ->
 % Converting durations.
 
 
-% @doc Converts specified duration, expressed in a user-friendly time (for
-% humans, typically obtained from time_utils:duration_to_string/1) into an
-% integer number of milliseconds.
-%
-% For example "1 day, 12 hours, 31 minutes, 9 seconds and 235 milliseconds"
-% translates to {1, 12, 31, 9, 235} which, applied to this function, returns
-% milliseconds.
-%
+-doc """
+Converts specified duration, expressed in a user-friendly time (for humans,
+typically obtained from time_utils:duration_to_string/1) into an integer number
+of milliseconds.
+
+For example "1 day, 12 hours, 31 minutes, 9 seconds and 235 milliseconds"
+translates to {1, 12, 31, 9, 235} which, applied to this function, returns
+milliseconds.
+""".
 -spec human_time_to_milliseconds( days(), hours(), minutes(), seconds(),
 								  milliseconds() ) -> milliseconds().
 human_time_to_milliseconds( Day, Hour, Minute, Second, Millisecond ) ->
@@ -982,18 +1130,20 @@ human_time_to_milliseconds( Day, Hour, Minute, Second, Millisecond ) ->
 % Stringification section.
 
 
-% @doc Returns a textual, possibly rounded, description of the specified
-% temperature.
-%
+-doc """
+Returns a textual, possibly rounded, description of the specified temperature.
+""".
 -spec temperature_to_string( celsius() ) -> ustring().
 temperature_to_string( Temp ) ->
 	text_utils:float_to_string( Temp, [ { decimals, 1 }, compact ] ) ++ " °C".
 
 
-% @doc Returns a textual, possibly rounded, description of the specified
-% temperature (if any).
-%
--spec maybe_temperature_to_string( maybe( celsius() ) ) -> ustring().
+
+-doc """
+Returns a textual, possibly rounded, description of the specified temperature
+(if any).
+""".
+-spec maybe_temperature_to_string( option( celsius() ) ) -> ustring().
 maybe_temperature_to_string( _Temp=undefined ) ->
 	"undefined";
 
@@ -1002,17 +1152,20 @@ maybe_temperature_to_string( Temp ) ->
 
 
 
-% @doc Returns a textual, possibly rounded, description of the specified
-% rotation speed.
-%
+-doc """
+Returns a textual, possibly rounded, description of the specified rotation
+speed.
+""".
 -spec rpm_to_string( rpm() ) -> ustring().
 rpm_to_string( Rpm ) ->
 	text_utils:float_to_string( Rpm, [ { decimals, 0 }, compact ] ) ++ " rpm".
 
 
-% @doc Returns a textual, possibly rounded, description of the specified
-% rotation speed (if any).
-%
+
+-doc """
+Returns a textual, possibly rounded, description of the specified rotation speed
+(if any).
+""".
 -spec maybe_rpm_to_string( rpm() ) -> ustring().
 maybe_rpm_to_string( _Rpm=undefined ) ->
 	"undefined";
@@ -1022,22 +1175,23 @@ maybe_rpm_to_string( Rpm ) ->
 
 
 
-% @doc Returns a textual, user-friendly, short (possibly rounded) description of
-% the specified, potentially very large, length/distance.
-%
-% Applying these unit rules regarding a given distance, depending on whether it
-% is:
-% - below 1 cm: express it in millimeters
-% - below 1 m: in centimeters
-% - between 1 m and 1 km: in meters
-% - between 1 km and 1 million km: in kilometers
-% - between 1 million km (3.336 ls) and 0.001 ly (31558 ls / 9.46e15 km!):
-% in light-seconds
-% - above 0.001 ly (31558 ls / 9.46e15 km!): in light-years
-%
-% See also text_utils:distance_to_string/1 for (usually smaller; typically up to
-% a number of kilometers) distances.
-%
+-doc """
+Returns a textual, user-friendly, short (possibly rounded) description of the
+specified, potentially very large, length/distance.
+
+Applying these unit rules regarding a given distance, depending on whether it
+is:
+- below 1 cm: express it in millimeters
+- below 1 m: in centimeters
+- between 1 m and 1 km: in meters
+- between 1 km and 1 million km: in kilometers
+- between 1 million km (3.336 ls) and 0.001 ly (31558 ls / 9.46e15 km!):
+in light-seconds
+- above 0.001 ly (31558 ls / 9.46e15 km!): in light-years
+
+See also text_utils:distance_to_string/1 for (usually smaller; typically up to a
+number of kilometers) distances.
+""".
 -spec meters_to_string( meters() ) -> ustring().
 meters_to_string( Meters ) when is_integer( Meters ) ->
 	meters_to_string( float( Meters ) );
@@ -1100,8 +1254,7 @@ meters_to_string( Meters ) ->
 
 
 
-
-% @doc Returns a textual description of the specified position.
+-doc "Returns a textual description of the specified position.".
 -spec position_to_string( position() ) -> ustring().
 position_to_string( _Pos={ Lat, Long } ) ->
 	% Maybe some day returns degrees, minutes, etc.:
@@ -1114,14 +1267,16 @@ position_to_string( _Pos={ Lat, Long } ) ->
 -define( first_speed_threshold, 1000 / 3.6 ).
 
 
-% @doc Returns a textual, user-friendly, short (possibly rounded) description of
-% the specified (supposedly positive) speed.
-%
-% Rules:
-%  - below 1000 km/h: use km/h
-%  - above 1000 km/h but below 0.001 c: use m/s
-%  - above 0.001 c: use c
-%
+
+-doc """
+Returns a textual, user-friendly, short (possibly rounded) description of the
+specified (supposedly positive) speed.
+
+Rules:
+ - below 1000 km/h: use km/h
+ - above 1000 km/h but below 0.001 c: use m/s
+ - above 0.001 c: use c
+""".
 -spec speed_to_string( meters_per_second() ) -> ustring().
 speed_to_string( Mps ) when Mps < ?first_speed_threshold ->
 	text_utils:format( "~." ++ ?digits_after_decimal ++ "f km/h",
@@ -1129,9 +1284,8 @@ speed_to_string( Mps ) when Mps < ?first_speed_threshold ->
 
 % Never happens:
 %speed_to_string( Mps ) when Mps > ?meters_per_milli_light_year ->
-%	text_utils:format( "~." ++ ?digits_after_decimal ++ "f ly/s",
-%					   [ Mps / ?meters_per_light_year ] );
-
+%   text_utils:format( "~." ++ ?digits_after_decimal ++ "f ly/s",
+%                      [ Mps / ?meters_per_light_year ] );
 speed_to_string( Mps ) when Mps > ?meters_per_milli_light_second ->
 	text_utils:format( "~." ++ ?digits_after_decimal ++ "f c",
 					   [ Mps / ?meters_per_light_second ] );
@@ -1141,18 +1295,20 @@ speed_to_string( Mps ) ->
 
 
 
+
 % Implementations for the more elaborate form of units:
 
 
-% @doc Returns a list of all metric prefixes, together with their symbol and
-% order of magnitude.
-%
-% For example: {'kilo', "k", 3} means that there are 10^3 grams in a kilogram,
-% and that this prefix is represented as "k".
-%
-% We can see that a symbol may span over multiple characters (ex : "da") and
-% even use non-ASCII characters (e.g. "µ").
-%
+-doc """
+Returns a list of all metric prefixes, together with their symbol and order of
+magnitude.
+
+For example: `{'kilo', "k", 3}` means that there are `10^3` grams in a kilogram,
+and that this prefix is represented as `"k"`.
+
+We can see that a symbol may span over multiple characters (e.g. `"da""`) and
+even use non-ASCII characters (e.g. `"µ"`).
+""".
 -spec get_prefix_information() ->
 			[ { metric_prefix(), prefix_symbol(), magnitude_order() } ].
 get_prefix_information() ->
@@ -1180,32 +1336,39 @@ get_prefix_information() ->
 
 
 
+-doc """
+Type of measure corresponding to a unit (e.g. `"length"`).
+
+In some cases, multiple measures can apply (e.g. a Coulomb is a measure of
+electric charge or quantity of electricity); we retain here only the most usual
+one.
+""".
 -type unit_measure() :: ustring().
-% Type of measure corresponding to a unit (e.g. "length").
-%
-% In some cases, multiple measures can apply (e.g. a Coulomb is a measure of
-% electric charge or quantity of electricity); we retain here only the most
-% usual one.
 
 
+
+-doc "Information about a unit, i.e. its name, symbol and associated measure.".
 -type unit_information() ::
 		{ unit_name(), unit_string_symbol(), unit_measure() }.
-% Information about a unit, i.e. its name, symbol and associated measure.
 
 
-% @doc Returns information about all units, that is their name, symbol and
-% corresponding measure.
-%
+
+-doc """
+Returns information about all units, that is their name, symbol and
+corresponding measure.
+""".
 -spec get_unit_information() -> [ unit_information() ].
 get_unit_information() ->
 	get_base_unit_information() ++ get_derived_unit_information()
 		++ get_widely_used_unit_information() ++ get_special_unit_information().
 
 
-% @doc Returns information about a base unit.
-%
-% More info: [https://en.wikipedia.org/wiki/SI_base_unit].
-%
+
+-doc """
+Returns information about a base unit.
+
+More info: [https://en.wikipedia.org/wiki/SI_base_unit].
+""".
 -spec get_base_unit_information() -> [ unit_information() ].
 get_base_unit_information() ->
 	[ { 'meter',   "m",   "length"                    },
@@ -1218,10 +1381,11 @@ get_base_unit_information() ->
 
 
 
-% @doc Returns information about a derived unit.
-%
-% More info: [https://en.wikipedia.org/wiki/SI_derived_unit].
-%
+-doc """
+Returns information about a derived unit.
+
+More info: [https://en.wikipedia.org/wiki/SI_derived_unit].
+""".
 -spec get_derived_unit_information() -> [ unit_information() ].
 get_derived_unit_information() ->
 	[
@@ -1259,7 +1423,8 @@ get_derived_unit_information() ->
 
 
 
-% @doc Returns information about a widely used unit.
+
+-doc "Returns information about a widely used unit.".
 -spec get_widely_used_unit_information() -> [ unit_information() ].
 get_widely_used_unit_information() ->
 	[ { 'minute',       "min", "time"   },
@@ -1270,7 +1435,7 @@ get_widely_used_unit_information() ->
 
 
 
-% @doc Returns information about a special unit.
+-doc "Returns information about a special unit.".
 -spec get_special_unit_information() -> [ unit_information() ].
 get_special_unit_information() ->
 	[ { 'dimensionless',    "dimensionless",      "none"     },
@@ -1281,11 +1446,12 @@ get_special_unit_information() ->
 
 
 
-% @doc Returns the metric prefix (if any) corresponding to the specified
-% magnitude order.
-%
-% Note: could be predetermined at build time.
-%
+-doc """
+Returns the metric prefix (if any) corresponding to the specified magnitude
+order.
+
+Note: could be predetermined at build time.
+""".
 -spec get_prefix_for_order( magnitude_order() ) -> metric_prefix().
 get_prefix_for_order( Order ) ->
 
@@ -1303,11 +1469,12 @@ get_prefix_for_order( Order ) ->
 
 
 
-% @doc Returns the magnitude order corresponding to the specified symbol
-% (string) of metric prefix.
-%
-% Note: could be predetermined at build time.
-%
+-doc """
+Returns the magnitude order corresponding to the specified symbol (string) of
+metric prefix.
+
+Note: could be predetermined at build time.
+""".
 -spec get_order_for_prefix( prefix_symbol() ) ->
 								magnitude_order() | 'unknown_prefix'.
 get_order_for_prefix( _PrefixSymbol="" ) ->
@@ -1330,33 +1497,33 @@ get_order_for_prefix( PrefixSymbol ) ->
 
 
 
-% @doc Parses specified string (expected to be a unit_string()) containing a
-% value and its unit (e.g. "-8.15 kW.m/h^2"), and returns them in a
-% program-tractable form, that is a pair made of the value (as a float) and the
-% corresponding unit, in canonical form.
-%
-% The input format is the following (in order):
-%
-% - any leading or trimming whitespace are ignored
-%
-% - a number, either as an integer (e.g. "17") or as a floating point value
-% (e.g.  "17.0" or "2.2017764e+0"), possibly negative (hence starting with an
-% optional minus, e.g. "-8.15")
-%
-% - at least one whitespace
-%
-% - a unit (e.g. "kW.m/h^2")
-%
-% Knowing that:
-% - a built-in unit is a base, derived, widely used, or special unit (e.g. 'W')
-% - a prefixed unit is a built-in unit with a prefix (e.g. 'kW')
-% - a unit component is a prefixed unit with an exponent (e.g. 'km^-2')
-% - a unit operator is either '.' (dot, for multiply) or '/' (slash, for divide)
-%
-% The general format of a unit is then: a series of unit components with one
-% unit operator intercalated between two successive components (no whitespace
-% allowed).
-%
+-doc """
+Parses the specified string (expected to be a unit_string()) containing a value
+and its unit (e.g. `"-8.15 kW.m/h^2"`), and returns them in a program-tractable
+form, that is a pair made of the value (as a float) and the corresponding unit,
+in canonical form.
+
+The input format is the following (in order):
+
+- any leading or trimming whitespace are ignored
+
+- a number, either as an integer (e.g. "17") or as a floating point value (e.g.
+"17.0" or "2.2017764e+0"), possibly negative (hence starting with an optional
+minus, e.g. "-8.15")
+
+- at least one whitespace
+
+- a unit (e.g. "kW.m/h^2")
+
+Knowing that:
+- a built-in unit is a base, derived, widely used, or special unit (e.g. `W`)
+- a prefixed unit is a built-in unit with a prefix (e.g. `kW`)
+- a unit component is a prefixed unit with an exponent (e.g. `km^-2`)
+- a unit operator is either `.` (dot, for multiply) or `/` (slash, for divide)
+
+The general format of a unit is then: a series of unit components with one unit
+operator intercalated between two successive components (no whitespace allowed).
+""".
 -spec parse_value_with_unit( ustring() ) ->
 								{ numerical_value(), canonical_unit() }.
 parse_value_with_unit( InputString ) ->
@@ -1369,7 +1536,7 @@ parse_value_with_unit( InputString ) ->
 
 	% Two strings:
 	{ ValueString, UnitString } = case
-			 text_utils:split_per_element( TrimString, InternalDelimiters ) of
+			text_utils:split_per_element( TrimString, InternalDelimiters ) of
 
 		% A value and a unit:
 		[ V, U ] ->
@@ -1399,9 +1566,10 @@ parse_value_with_unit( InputString ) ->
 
 
 
-% @doc Parses specified string, expected to contain a number (either an integer
-% or a float), as a float, which is returned.
-%
+-doc """
+Parses specified string, expected to contain a number (either an integer or a
+float), as a float, which is returned.
+""".
 -spec parse_as_float( ustring() ) -> float().
 parse_as_float( StringValue ) ->
 
@@ -1428,9 +1596,10 @@ parse_as_float( StringValue ) ->
 
 
 
-% @doc Parses the specified string, expected to contain a unit
-% (e.g. "kW.m/h^2"), and returns a canonical unit.
-%
+-doc """
+Parses the specified string, expected to contain a unit (e.g. `"kW.m/h^2"`), and
+returns a canonical unit.
+""".
 -spec parse_unit( ustring() ) -> canonical_unit().
 parse_unit( UnitString ) ->
 
@@ -1458,10 +1627,11 @@ parse_unit( UnitString ) ->
 
 
 
-% @doc Splits specified string, expected to contain a unit (e.g. "kW.m/h^2"),
-% into a list of strings corresponding to multiplying unit components (e.g.
-% ["kw", "m"]) and dividing ones (e.g. ["h^2"]), and returns both lists.
-%
+-doc """
+Splits specified string, expected to contain a unit (e.g. `"kW.m/h^2"`), into a
+list of strings corresponding to multiplying unit components (e.g.  `["kw",
+"m"]`) and dividing ones (e.g. `["h^2"]`), and returns both lists.
+""".
 -spec split_unit_components( ustring() ) ->
 					{ [ unit_component() ], [ unit_component() ] }.
 split_unit_components( UnitString ) ->
@@ -1473,7 +1643,7 @@ split_unit_components( UnitString ) ->
 % (helper)
 -spec parse_components( ustring(), [ unit_component() ], [ unit_component() ],
 						ustring(), operator_kind() ) ->
-							  { [ unit_component() ], [ unit_component() ] }.
+							{ [ unit_component() ], [ unit_component() ] }.
 parse_components( _UnitString=[], MultList, DivList, AccString, AccKind ) ->
 	% All characters of (last) component parsed:
 	store_component_acc( AccString, AccKind, MultList, DivList );
@@ -1504,10 +1674,11 @@ parse_components( _UnitString=[ H | T ], MultList, DivList,
 
 
 
-% @doc Stores the parsed component into the relevant list.
-%
-% (helper)
-%
+-doc """
+Stores the parsed component into the relevant list.
+
+(helper)
+""".
 -spec store_component_acc( unit_component(), operator_kind(),
 						   [ unit_component() ], [ unit_component() ] ) ->
 								{ [ unit_component() ], [ unit_component() ] }.
@@ -1522,11 +1693,11 @@ store_component_acc( ComponentString, _Kind=divide, MultList, DivList ) ->
 
 
 
-% @doc Updates the specified canonical unit from the list of multiplying
-% components.
-%
-% (fold)
-%
+-doc """
+Updates the specified canonical unit from the list of multiplying components.
+
+(fold)
+""".
 interpret_components( _Components=[], _Kind, CanonicalUnit ) ->
 	CanonicalUnit;
 
@@ -1536,9 +1707,10 @@ interpret_components( _Components=[ C | T ], Kind, CanonicalUnit ) ->
 
 
 
-% @doc Integrates the specified string component into the specified canonical
-% unit, and returns an updated one.
-%
+-doc """
+Integrates the specified string component into the specified canonical unit, and
+returns an updated one.
+""".
 integrate_component( ComponentString, Kind, CanonicalUnit ) ->
 
 	%trace_utils:debug_fmt( "Integrating ~ts component '~ts' in unit '~ts'.",
@@ -1571,7 +1743,7 @@ integrate_component( ComponentString, Kind, CanonicalUnit ) ->
 
 
 
-% @doc Returns {ActualOrder, UnitName, Exponent}:
+-doc "Returns `{ActualOrder, UnitName, Exponent}`.".
 -spec parse_component( ustring() ) ->
 							{ magnitude_order(), unit_name(), exponent() }.
 parse_component( ComponentString ) ->
@@ -1580,7 +1752,7 @@ parse_component( ComponentString ) ->
 	% exponent:
 
 	{ PrefixedUnitString, UnitExponent } = case text_utils:split(
-								ComponentString, _Delimiters=[ $^ ] ) of
+			ComponentString, _Delimiter=$^ ) of
 
 		% Returns for example { "km", -3 }:
 		[ PfxUnit, ExponentString ] ->
@@ -1611,15 +1783,15 @@ parse_component( ComponentString ) ->
 
 
 
+-doc """
+Extracts the prefix and unit from specified exponent-less string (e.g.
+`"decaA"`).
 
-% @doc Extracts the prefix and unit from specified exponent-less string (e.g.
-% "decaA").
-%
-% We have to scan backward, starting from the unit then only its prefix, as some
-% prefix symbols (e.g. "m", for 'milli') are actually prefixes of unit symbols
-% (e.g. "mol"): a forward scan may interpret "m" for 'milli', whereas it was
-% just the beginning of "mol".
-%
+We have to scan backward, starting from the unit then only its prefix, as some
+prefix symbols (e.g. `"m"`, for `milli`) are actually prefixes of unit symbols
+(e.g. `"mol"`): a forward scan may interpret `"m"` for `milli`, whereas it was
+just the beginning of `"mol"`.
+""".
 -spec extract_prefix_and_unit( ustring() ) ->
 									{ magnitude_order(), unit_name() }.
 extract_prefix_and_unit( _PrefixedUnitString="" ) ->
@@ -1660,6 +1832,7 @@ extract_prefix_and_unit( PrefixedUnitString ) ->
 
 
 
+% (helper)
 -spec scan_for_unit_symbol( ustring(), [ ustring() ] ) ->
 								{ ustring(), unit_name() }.
 scan_for_unit_symbol( RevPrefixedUnitString, _RevUnitSymbols=[] ) ->
@@ -1699,9 +1872,10 @@ scan_for_unit_symbol( RevPrefixedUnitString, [ RevUnitSymbol | T ] ) ->
 
 
 
-% @doc Returns a list of all the known units, as reversed strings, from the
-% longest to the shortest.
-%
+-doc """
+Returns a list of all the known units, as reversed strings, from the longest to
+the shortest.
+""".
 get_reversed_ordered_symbols_of_units() ->
 
 	UnsortedList = [ lists:reverse( UnitSymbolString )
@@ -1716,7 +1890,7 @@ get_reversed_ordered_symbols_of_units() ->
 
 
 
-% @doc Updates specified canonical unit with specified information.
+-doc "Updates specified canonical unit with specified information.".
 %
 % To support a new unit, simply add its dedicated clause.
 %
@@ -2058,7 +2232,7 @@ integrate_to_canonical_unit( _UnitName=hour, ActualOrder, NormalisedExponent,
 	% An hour is 3600 s:
 	CanonicalUnit#canonical_unit{ second= SecondExp + NormalisedExponent,
 								  order= Order + ActualOrder
-									  + NormalisedExponent * 3,
+                                            + NormalisedExponent * 3,
 								  factor= Factor *
 										math:pow( 3.6, NormalisedExponent ) };
 
@@ -2069,7 +2243,7 @@ integrate_to_canonical_unit( _UnitName=litre, ActualOrder, NormalisedExponent,
 	% A litre is 10^-3 m^3:
 	CanonicalUnit#canonical_unit{ meter= MeterExp + NormalisedExponent * 3,
 								  order= Order + ActualOrder
-										+ NormalisedExponent * -3 };
+                                            + NormalisedExponent * -3 };
 
 
 integrate_to_canonical_unit( _UnitName=tonne, ActualOrder, NormalisedExponent,
@@ -2078,7 +2252,7 @@ integrate_to_canonical_unit( _UnitName=tonne, ActualOrder, NormalisedExponent,
 	% A tonne is 10^6 g:
 	CanonicalUnit#canonical_unit{ gram= GramExp + NormalisedExponent * 1,
 								  order= Order + ActualOrder
-										+ NormalisedExponent * 6 };
+                                            + NormalisedExponent * 6 };
 
 
 integrate_to_canonical_unit( _UnitName=electronvolt, ActualOrder,
@@ -2093,7 +2267,7 @@ integrate_to_canonical_unit( _UnitName=electronvolt, ActualOrder,
 	integrate_to_canonical_unit( joule, ActualOrder + NormalisedExponent * -19,
 								 NormalisedExponent,
 								 CanonicalUnit#canonical_unit{
-									factor = Factor * 1.602176620898 } );
+									factor=Factor * 1.602176620898 } );
 
 
 integrate_to_canonical_unit( _UnitName=dimensionless, _ActualOrder=0,
@@ -2113,7 +2287,7 @@ integrate_to_canonical_unit( _UnitName=dimensionless, ActualOrder,
 
 integrate_to_canonical_unit( UnitName, _ActualOrder, NormalisedExponent,
 		CanonicalUnit=#canonical_unit{ other_units=Others } )
-			when is_atom( UnitName ) ->
+                                            when is_atom( UnitName ) ->
 
 	%trace_utils:warning_fmt( "Integrating unknown unit '~ts' of order ~p, "
 	%   "normalised exponent ~p to ~ts.",
@@ -2128,7 +2302,7 @@ integrate_to_canonical_unit( UnitName, _ActualOrder, NormalisedExponent,
 
 
 
-% @doc Tells whether specified term is an actual, canonical unit.
+-doc "Tells whether specified term is an actual, canonical unit.".
 -spec is_canonical_unit( canonical_unit() ) -> boolean().
 is_canonical_unit( Term ) when is_record( Term, canonical_unit ) ->
 	true;
@@ -2138,9 +2312,10 @@ is_canonical_unit( _Term ) ->
 
 
 
-% @doc Converts a unit symbol, as a string (e.g. "Cd") into a unit name (e.g.
-% 'candela'):
-%
+-doc """
+Converts a unit symbol, as a string (e.g. `"Cd"`) into a unit name (e.g.
+'candela').
+""".
 -spec unit_symbol_to_name( unit_string_symbol() ) -> unit_name().
 unit_symbol_to_name( UnitSymbol ) ->
 
@@ -2158,11 +2333,12 @@ unit_symbol_to_name( UnitSymbol ) ->
 
 
 
-% @doc Returns a textual representation of the raw unit only (factor and order
-% ignored) for the specified canonical unit.
-%
-% Note: unit_to_string/1 shall be the relevant function for most uses.
-%
+-doc """
+Returns a textual representation of the raw unit only (factor and order ignored)
+for the specified canonical unit.
+
+Note: `unit_to_string/1` shall be the relevant function for most uses.
+""".
 -spec pure_unit_to_string( canonical_unit() ) -> ustring().
 pure_unit_to_string( Unit ) ->
 
@@ -2286,21 +2462,21 @@ pure_unit_to_string( Unit ) ->
 
 
 
-% @doc Returns the magnitude order of the specified unit.
+-doc "Returns the magnitude order of the specified unit.".
 -spec get_order( canonical_unit() ) -> magnitude_order().
 get_order( _Unit=#canonical_unit{ order=Order } ) ->
 	Order.
 
 
 
-% @doc Returns the multiplying factor of the specified unit.
+-doc "Returns the multiplying factor of the specified unit.".
 -spec get_factor( canonical_unit() ) -> multiplying_factor().
 get_factor( _Unit=#canonical_unit{ factor=Factor } ) ->
 	Factor.
 
 
 
-% @doc Tells whether the two specified units are strictly the same.
+-doc "Tells whether the two specified units are strictly the same.".
 -spec are_units_identical( canonical_unit(), canonical_unit() ) -> boolean().
 are_units_identical( Unit, Unit ) ->
 	% Relying on a canonical form simplifies much the comparisons:
@@ -2311,7 +2487,7 @@ are_units_identical( _FirstUnit, _SecondUnit ) ->
 
 
 
-% @doc Returns a textual representation of the specified canonical unit.
+-doc "Returns a textual representation of the specified canonical unit.".
 -spec unit_to_string( canonical_unit() ) -> ustring().
 unit_to_string( Unit ) ->
 
@@ -2352,7 +2528,7 @@ unit_to_string( Unit ) ->
 
 
 
-% @doc Returns a textual description of specified unit with a value.
+-doc "Returns a textual description of specified unit with a value.".
 -spec value_with_unit_to_string( numerical_value(), canonical_unit() ) ->
 										ustring().
 value_with_unit_to_string( Value, Unit ) ->

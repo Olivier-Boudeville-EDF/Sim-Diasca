@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, April 13, 2018.
 
-
-% @doc Gathering of <b>WOOPER-internal</b> helpers.
 -module(wooper_internals).
+
+-moduledoc """
+Gathering of **WOOPER-internal** helpers.
+""".
 
 
 -export([ raise_error/1, raise_error/2,
@@ -40,7 +42,7 @@
 -include_lib("myriad/include/ast_transform.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
@@ -71,39 +73,43 @@
 
 
 
-% @doc Raises a (compile-time, rather ad hoc) technical, internal error when
-% applying this parse transform, to stop the build on failure and report the
-% actual error.
-%
+-doc """
+Raises a (compile-time, rather ad hoc) technical, internal error when applying
+this parse transform, to stop the build on failure and report the actual error.
+""".
 -spec raise_error( term() ) -> no_return().
 raise_error( ErrorTerm ) ->
 	raise_error( ErrorTerm, _Context=undefined ).
 
 
 
-% @doc Raises a (compile-time, rather ad hoc) technical, internal error, with
-% specified source context, when applying this parse transform, to stop the
-% build on failure and report the actual error.
-%
+-doc """
+Raises a (compile-time, rather ad hoc) technical, internal error, with specified
+source context, when applying this parse transform, to stop the build on failure
+and report the actual error.
+""".
 -spec raise_error( term(), ast_base:source_context() ) -> no_return().
 raise_error( ErrorTerm, Context ) ->
 	ast_utils:raise_error( ErrorTerm, Context, ?origin_layer ).
 
 
 
-% @doc Raises a (compile-time, rather ad hoc) user-related error (when no
-% specific source context is available), when applying this parse transform, to
-% stop the build on failure and report adequately the actual error to the user.
-%
+-doc """
+Raises a (compile-time, rather ad hoc) user-related error (when no specific
+source context is available), when applying this parse transform, to stop the
+build on failure and report adequately the actual error to the user.
+""".
 -spec raise_usage_error( ustring() ) -> no_return().
 raise_usage_error( ErrorString ) ->
 	raise_usage_error( ErrorString, _ErrorFormatValues=[] ).
 
 
-% @doc Raises a (compile-time, rather ad hoc) user-related error (when no
-% specific source context is available), when applying this parse transform, to
-% stop the build on failure and report adequately the actual error to the user.
-%
+
+-doc """
+Raises a (compile-time, rather ad hoc) user-related error (when no specific
+source context is available), when applying this parse transform, to stop the
+build on failure and report adequately the actual error to the user.
+""".
 -spec raise_usage_error( format_string(), format_values() ) -> no_return().
 raise_usage_error( ErrorFormatString, ErrorFormatValues ) ->
 
@@ -113,13 +119,15 @@ raise_usage_error( ErrorFormatString, ErrorFormatValues ) ->
 	halt( 6 ).
 
 
-% @doc Raises a (compile-time, rather ad hoc) user-related error, with specified
-% source context, when applying this parse transform, to stop the build on
-% failure and report adequately the actual error to the user.
-%
--spec raise_usage_error( ustring(), ast_transforms(), maybe( file_loc() ) ) ->
+
+-doc """
+Raises a (compile-time, rather ad hoc) user-related error, with specified source
+context, when applying this parse transform, to stop the build on failure and
+report adequately the actual error to the user.
+""".
+-spec raise_usage_error( ustring(), ast_transforms(), option( file_loc() ) ) ->
 								no_return();
-					   ( ustring(), classname(), maybe( file_loc() ) ) ->
+					   ( ustring(), classname(), option( file_loc() ) ) ->
 								no_return();
 					   ( format_string(), format_values(), classname() ) ->
 								no_return().
@@ -170,10 +178,11 @@ raise_usage_error( ErrorFormatString, ErrorFormatValues, Classname ) ->
 
 
 
-% @doc Raises a (compile-time, rather ad hoc) user-related error, with specified
-% source context, when applying this parse transform, to stop the build on
-% failure and report the actual error.
-%
+-doc """
+Raises a (compile-time, rather ad hoc) user-related error, with specified source
+context, when applying this parse transform, to stop the build on failure and
+report the actual error.
+""".
 -spec raise_usage_error( format_string(), format_values(),
 			ast_transforms() | classname(), file_loc() ) -> no_return().
 raise_usage_error( ErrorFormatString, ErrorValues, TransformsOrClass,
@@ -183,21 +192,24 @@ raise_usage_error( ErrorFormatString, ErrorValues, TransformsOrClass,
 
 
 
-% @doc Notifies a (compile-time, rather ad hoc) warning, with no specific
-% context, when applying this parse transform.
-%
-% Does not stop the build.
-%
+-doc """
+Notifies a (compile-time, rather ad hoc) warning, with no specific context, when
+applying this parse transform.
+
+Does not stop the build.
+""".
 -spec notify_warning( [ term() ] ) -> void().
 notify_warning( Elements ) ->
 	notify_warning( Elements, _Context=undefined ).
 
 
-% @doc Notifies a (compile-time, rather ad hoc) warning, with specified context,
-% when applying this parse transform.
-%
-% Does not stop the build.
-%
+
+-doc """
+Notifies a (compile-time, rather ad hoc) warning, with specified context, when
+applying this parse transform.
+
+Does not stop the build.
+""".
 -spec notify_warning( [ term() ], ast_base:form_context() ) -> void().
 notify_warning( Elements, Context ) ->
 	ast_utils:notify_warning( Elements, Context ).

@@ -1,11 +1,11 @@
 #!/bin/sh
 
 
-# Copyright (C) 2008-2022 EDF R&D
+# Copyright (C) 2008-2025 EDF R&D
 #
 # This file is part of Sim-Diasca.
 #
-# Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+# Author: Olivier Boudeville (olivier (dot) boudeville (at) edf (dot) fr)
 
 
 # Sim-Diasca job launcher script for simulations run on clusters.
@@ -64,7 +64,7 @@ set_as_absolute_path()
 	path="$1"
 
 	# A path is absolute iff it starts with "/"
-	if [ -z $(echo "${path}" | sed 's|^/.*||1') ]; then
+	if [ -z "$(echo "${path}" | sed 's|^/.*||1')" ]; then
 
 		# Already absolute:
 		absolute_path="${path}"
@@ -888,7 +888,7 @@ echo "echo \"Shell = \${SHELL}\"" >> "${script_name}"
 
 
 # Here come the "trickiest" part, the generation of the Sim-Diasca "host
-# candidate" configuration file from these information:
+# candidate" configuration file from this information:
 #
 # (note that it is generated in /tmp, which is usually a purely local
 # (non-shared) directory; therefore this file is bound to remain only on the
@@ -899,7 +899,7 @@ if [ "${system_type}" = "pbs" ]; then
 
 	echo "echo \"Node file = \$PBS_NODEFILE\"" >> "${script_name}"
 	echo "node_list=\$\(cat \$PBS_NODEFILE | uniq\)" >> "${script_name}"
-	echo "host_candidate_file=\"/tmp/.sim-diasca-host-candidates-for-\${USER}-\${PBS_JOBID}-\$\$.txt\"" >> "${script_name}"
+	echo "host_candidate_file=\"/tmp/.sim-diasca-host-candidates-for-\${USER}-\${PBS_JOBID}-\$\$.etf\"" >> "${script_name}"
 
 elif [ "${system_type}" = "slurm" ]; then
 
@@ -909,7 +909,7 @@ elif [ "${system_type}" = "slurm" ]; then
 
 	echo "node_list=\"\$(scontrol show hostname \"\${SLURM_JOB_NODELIST}\")\"" >> "${script_name}"
 
-	echo "host_candidate_file=\"/tmp/.sim-diasca-host-candidates-for-\${USER}-\${SLURM_JOB_ID}-\$\$.txt\"" >> "${script_name}"
+	echo "host_candidate_file=\"/tmp/.sim-diasca-host-candidates-for-\${USER}-\${SLURM_JOB_ID}-\$\$.etf\"" >> "${script_name}"
 
 fi
 

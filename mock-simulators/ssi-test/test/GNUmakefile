@@ -1,7 +1,6 @@
 SSI_TEST_TOP = ..
 
-
-.PHONY: all demo demo-batch batch run test-platform-integration
+.PHONY:
 
 
 include $(SSI_TEST_TOP)/GNUmakesettings.inc

@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 EDF R&D
+% Copyright (C) 2018-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,37 +19,65 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2018.
 
-
-% @doc Module centralising most <b>actor-level</b> information, in the context
-% of the Sim-Diasca parse transform.
-%
 -module(actor_info).
+
+-moduledoc """
+Module centralising most **actor-level** information, in the context of the
+Sim-Diasca parse transform.
+""".
+
+
 
 
 % For the actor_class_info record:
 -include("actor_info.hrl").
 
 
+-doc """
+Stores and centralises Sim-Diasca level information gathered about a given
+actor class.
+
+This record is to strictly supersede the WOOPER-level class_info one.
+
+See also: this class_info counterpart WOOPER record, defined in
+wooper_info.hrl.
+""".
 -type actor_class_info() :: #actor_class_info{}.
+
 
 -type actor_oneway_id() :: wooper:oneway_id().
 
 
 
--type actor_oneway_export_table() :: table( ast_info:ast_location(), 
-								{ ast_base:line(), [ actor_oneway_id() ] } ).
-% Table storing the export declarations for actor oneways.
-%
-% Quite similar to wooper_info:oneway_export_table().
+-doc """
+Stores and centralises SimDiasca-level information gathered about a given actor
+oneway.
+""".
+-type actor_oneway_info() :: #actor_oneway_info{}.
 
 
+
+-doc """
+Table storing the export declarations for actor oneways.
+
+Quite similar to wooper_info:oneway_export_table().
+""".
+-type actor_oneway_export_table() ::
+	table( ast_location(), { line(), [ actor_oneway_id() ] } ).
+
+
+
+-doc """
+Table storing reference definitions of actor oneways.
+
+Quite similar to wooper_info:oneway_table().
+""".
 -type actor_oneway_table() :: table( actor_oneway_id(), actor_oneway_info() ).
-% Table storing reference definitions of actor oneways.
-%
-% Quite similar to wooper_info:oneway_table().
 
 
--export_type([ actor_oneway_info/0, actor_class_info/0, actor_oneway_id/0,
+
+-export_type([ actor_class_info/0,
+			   actor_oneway_id/0, actor_oneway_info/0,
 			   actor_oneway_export_table/0, actor_oneway_table/0 ]).
 
 
@@ -61,16 +89,20 @@
 		  actor_oneways_to_string/3, actor_oneway_info_to_string/3 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type indentation_level() :: text_utils:indentation_level().
 
+-type line() :: ast_base:line().
+-type ast_location() :: ast_info:ast_location().
 
 
-% @doc Returns a new, blank instance of the actor_class_info record, typically
-% to be fed with an input AST afterwards.
-%
+
+-doc """
+Returns a new, blank instance of the actor_class_info record, typically to be
+fed with an input AST afterwards.
+""".
 -spec init_actor_class_info() -> actor_class_info().
 init_actor_class_info() ->
 
@@ -79,7 +111,8 @@ init_actor_class_info() ->
 	% All other fields (commented out) expected to have a default value defined,
 	% or being initialised at record construction:
 	%
-	#actor_class_info{ class=undefined,
+	#actor_class_info{
+        class=undefined,
 		superclasses=[],
 		attributes=EmptyTable,
 		inherited_attributes=EmptyTable,
@@ -117,32 +150,37 @@ init_actor_class_info() ->
 
 
 
-% @doc Returns a textual description of specified actor information, not
-% including forms, and based on a default indentation level.
-%
-% Note: here the location information is dropped for all located definitions.
-%
+-doc """
+Returns a textual description of the specified actor information, not including
+forms, and based on a default indentation level.
+
+Note: here the location information is dropped for all located definitions.
+""".
 -spec actor_class_info_to_string( actor_class_info() ) -> ustring().
 actor_class_info_to_string( ActorInfo ) ->
 	actor_class_info_to_string( ActorInfo, _DoIncludeForms=false ).
 
 
-% @doc Returns a textual description of specified actor information, including
-% forms if requested, and with specified indentation level.
-%
-% Note: here the location information is dropped for all located definitions.
-%
+
+-doc """
+Returns a textual description of specified actor information, including forms if
+requested, and with specified indentation level.
+
+Note: here the location information is dropped for all located definitions.
+""".
 -spec actor_class_info_to_string( actor_class_info(), boolean() ) -> ustring().
 actor_class_info_to_string( ActorInfo, DoIncludeForms ) ->
 	actor_class_info_to_string( ActorInfo, DoIncludeForms,
 								_IndentationLevel=0 ).
 
 
-% @doc Returns a textual description of specified actor information, including
-% forms if requested, and with specified indentation level.
-%
-% Note: here the location information is dropped for all located definitions.
-%
+
+-doc """
+Returns a textual description of specified actor information, including forms if
+requested, and with specified indentation level.
+
+Note: here the location information is dropped for all located definitions.
+""".
 -spec actor_class_info_to_string( actor_class_info(), boolean(),
 								  indentation_level() ) -> ustring().
 actor_class_info_to_string( #actor_class_info{
@@ -282,9 +320,10 @@ actor_class_info_to_string( #actor_class_info{
 
 
 
-% @doc Returns a textual representation of the specified information about actor
-% oneways.
-%
+-doc """
+Returns a textual representation of the specified information about actor
+oneways.
+""".
 -spec actor_oneways_to_string( actor_oneway_table(), boolean(),
 							   indentation_level() ) -> ustring().
 actor_oneways_to_string( ActorOnewayTable, DoIncludeForms, IndentationLevel ) ->
@@ -307,9 +346,9 @@ actor_oneways_to_string( ActorOnewayTable, DoIncludeForms, IndentationLevel ) ->
 
 
 
-% @doc Returns a textual representation of the specified actor oneway
-% information.
-%
+-doc """
+Returns a textual representation of the specified actor oneway information.
+""".
 -spec actor_oneway_info_to_string( actor_oneway_info(), boolean(),
 								   indentation_level() ) -> ustring().
 actor_oneway_info_to_string( #actor_oneway_info{ name=Name,

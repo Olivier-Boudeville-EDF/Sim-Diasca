@@ -1,26 +1,27 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling a <b>road</b>.
 -module(class_Road).
+
+-moduledoc "Class modelling a **road**.".
 
 
 -define( class_description,
@@ -32,16 +33,15 @@
 -define( superclasses, [ class_Actor, class_Graphable ] ).
 
 
-
+-doc "Number of vehicle slots that a road can offer.".
 -type capacity() :: basic_utils:count().
-% Number of vehicle slots that a road can offer.
 
 
--export_type([ capacity/0 ]).
+-doc "The PID of a road actor.".
+-type road_pid() :: class_Road:road_pid().
 
 
-% For types:
--include("city_example_types.hrl").
+-export_type([ capacity/0, road_pid/0 ]).
 
 
 % For city_max_relative_error:
@@ -84,7 +84,7 @@
 % Allows to use macros for trace sending (to be included after the WOOPER
 % header):
 %
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
@@ -98,7 +98,7 @@
 %
 % The capacity of a road is established in terms of an integer number of
 % slots. A slot corresponds to a small vehicle (car or motorcycle). Some vehicle
-% (ex: trucks) requires multiple slots.
+% (e.g. trucks) requires multiple slots.
 %
 % A road is not a container as we prefer using a queue rather than a list to
 % store the vehicles.
@@ -110,7 +110,7 @@
 % By default, a road "takes control" of the vehicles it conveys, as it decides
 % whether they can enter and notifies them when they leave (i.e. when they
 % reached its outbound POI) - unless in the meantime they communicate changes
-% (ex: a car may "decide" to break down).
+% (e.g. a car may "decide" to break down).
 %
 % There is a fairness issue: vehicles are expected to exit the road in the order
 % they entered; however, load-based average speeds may not respect that property
@@ -126,29 +126,36 @@
 -define( load_factor, 45 ).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type poi_pid() :: class_PointOfInterest:poi_pid().
+
+-type gis_pid() :: class_GIS:gis_pid().
+-type vehicle_pid() :: class_GIS:vehicle_pid().
 
 
-% @doc Creates a road, which starts empty (with no vehicles).
-%
-% Construction parameters are:
-%
-% - ActorSettings is the AAI assigned by the load-balancer to this actor
-%
-% - Name is the name of this road (as a plain string)
-%
-% - SourcePOI is the PID of the source POI for this road
-%
-% - TargetPOI  is the PID of the target POI for this road
-%
-% - MaxCapacity is the maximum vehicle capacity of this road
-%
-% Note: as direct requests are used in this constructor, roads must be created
-% initially (before the simulation starts).
-%
+
+
+-doc """
+Creates a road, which starts empty (with no vehicles).
+
+Construction parameters are:
+
+- ActorSettings is the AAI assigned by the load-balancer to this actor
+
+- Name is the name of this road (as a plain string)
+
+- SourcePOI is the PID of the source POI for this road
+
+- TargetPOI  is the PID of the target POI for this road
+
+- MaxCapacity is the maximum vehicle capacity of this road
+
+Note: as direct requests are used in this constructor, roads must be created
+initially (before the simulation starts).
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), poi_pid(), poi_pid(), capacity() ) ->
 						wooper:state().
@@ -160,7 +167,7 @@ construct( State, ActorSettings, Name, SourcePOI, TargetPOI, MaxCapacity ) ->
 	Label = Name ++ "\\n" ++ text_utils:pid_to_string( self() ),
 
 	GraphableState = class_Graphable:construct( ActorState,
-									[ { label, Label }, { color, black } ] ),
+		[ { label, Label }, { color, black } ] ),
 
 	% In meters:
 	Length = class_GIS:compute_distance( SourcePOI, TargetPOI ),
@@ -195,7 +202,7 @@ construct( State, ActorSettings, Name, SourcePOI, TargetPOI, MaxCapacity ) ->
 % Methods section.
 
 
-% @doc First scheduling of an industrial waste source.
+-doc "First scheduling of an industrial waste source.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -232,7 +239,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this road.
+-doc "The definition of the spontaneous behaviour of this road.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -275,11 +282,12 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Tells this road that the specified vehicle entered it.
-%
-% Triggers in return a notifyRoadExit call to the vehicle once it reaches the
-% end of that road.
-%
+-doc """
+Tells this road that the specified vehicle entered it.
+
+Triggers in return a notifyRoadExit call to the vehicle once it reaches the end
+of that road.
+""".
 -spec driveIn( wooper:state(), vehicle_pid(), class_Actor:actor_pid() ) ->
 					 actor_oneway_return().
 driveIn( State, VehiclePid, _SendingActorPid ) ->
@@ -357,27 +365,27 @@ driveIn( State, VehiclePid, _SendingActorPid ) ->
 
 	% Might be useful for the vehicle:
 	SentState = class_Actor:send_actor_message( VehiclePid,
-					{ notifyPlannedRoadExit, ChosenDepartureOffset }, State ),
+		{ notifyPlannedRoadExit, ChosenDepartureOffset }, State ),
 
 	PlannedState = class_Actor:add_spontaneous_tick( ChosenDepartureOffset,
-													 SentState ),
+                                                     SentState ),
 
 	FinalState = setAttributes( PlannedState, [
-									{ current_capacity, NewCapacity },
-									{ vehicle_queue, NewQueue } ] ),
+		{ current_capacity, NewCapacity },
+		{ vehicle_queue, NewQueue } ] ),
 
 	actor:return_state( FinalState ).
 
 
 
-% @doc Returns the source POI of this road.
+-doc "Returns the source POI of this road.".
 -spec getSourcePOI( wooper:state() ) -> const_request_return( poi_pid() ).
 getSourcePOI( State ) ->
 	wooper:const_return_result( ?getAttr(source_poi) ).
 
 
 
-% @doc Returns the AAI of this road and its target POI.
+-doc "Returns the AAI of this road and its target POI.".
 -spec getTargetPOI( wooper:state() ) ->
 			const_request_return( { class_Actor:aai(), poi_pid() } ).
 getTargetPOI( State ) ->
@@ -389,7 +397,7 @@ getTargetPOI( State ) ->
 
 
 
-% @doc Registers this road into the specified GIS.
+-doc "Registers this road into the specified GIS.".
 -spec registerInGIS( wooper:state(), gis_pid() ) -> const_oneway_return().
 registerInGIS( State, GISPid ) ->
 
@@ -405,9 +413,10 @@ registerInGIS( State, GISPid ) ->
 % Static method section.
 
 
-% @doc Generates full instance definitions from the specified list of initial
-% base definitions, which are simply {SourcePOI, TargetPOI} pairs of PIDs.
-%
+-doc """
+Generates full instance definitions from the specified list of initial base
+definitions, which are simply {SourcePOI, TargetPOI} pairs of PIDs.
+""".
 -spec generate_definitions( [ { poi_pid(), poi_pid() } ] ) ->
 			static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( BaseDefs ) ->
@@ -435,7 +444,7 @@ generate_definitions( _BaseDefs=[ { SourcePOI, TargetPOI } | T ], Count,
 
 
 	MaxCapacity = 1 + class_RandomManager:get_positive_integer_gaussian_value(
-						_Mean=Length/?vehicle_slot_length, _StdDeviation=2 ),
+		_Mean=Length/?vehicle_slot_length, _StdDeviation=2 ),
 
 	NewDef = { class_Road, [ Name, SourcePOI, TargetPOI, MaxCapacity ] },
 
@@ -443,10 +452,7 @@ generate_definitions( _BaseDefs=[ { SourcePOI, TargetPOI } | T ], Count,
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -476,11 +482,9 @@ to_string( State ) ->
 % Helper section.
 
 
-% @doc Returns the average speed for a vehicle on that road, in meters per
-% second.
-%
-% (helper)
-%
+-doc """
+Returns the average speed for a vehicle on that road, in meters per second.
+""".
 -spec get_average_speed( math_utils:percent(), wooper:state() ) ->
 								unit_utils:meters_per_second().
 get_average_speed( Load, State ) ->

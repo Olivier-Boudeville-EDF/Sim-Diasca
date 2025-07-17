@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 Olivier Boudeville
+% Copyright (C) 2011-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -76,7 +76,6 @@
 % TraceAggregatorPid voluntarily exported from app_start, for app_stop:
 
 -define( app_start,
-
 	% true is for InitTraceSupervisor (not even binding a mute variable for
 	% that); app_stop/2 to be consistent with it.
 	%
@@ -100,7 +99,6 @@
 % However no trace supervisor is needed here.
 %
 -define( app_start,
-
 	% false is for InitTraceSupervisor (not even binding a mute variable for
 	% that); app_stop/2 to be consistent with it.
 	%
@@ -142,33 +140,37 @@
 
 
 
-% @doc Helper function to write receive clauses in applications which cannot
-% interfere with trace supervision, as an application may also receive trace
-% control message the application code should remain unware of.
-%
-% Returns the received value.
-%
-% For example: Pid ! {getBaz, [], self()}, MyBaz = app_receive(), ...
-%
-% to be used instead of:
-%
-% Pid ! {getBaz, [], self()},
-% receive
-%
-%   {wooper_result, V} ->
-%		V
-%
-% end,
-% ...
-%
+-doc """
+Helper function to write receive clauses in applications which cannot interfere
+with trace supervision, as an application may also receive trace control message
+the application code should remain unware of.
+
+Returns the received value.
+
+For example: `Pid ! {getBaz, [], self()}, MyBaz = app_receive(), ...`.
+
+to be used instead of:
+```
+Pid ! {getBaz, [], self()},
+receive
+
+  {wooper_result, V} ->
+	  V
+
+end,
+...
+```
+""".
 -spec app_receive() -> any().
 app_receive() ->
 	traces:receive_applicative_message().
 
 
-% Helper function to write receive clauses for specific messages in applications
-% while not interfering with trace supervision.
-%
+
+-doc """
+Helper function to write receive clauses for specific messages in applications
+while not interfering with trace supervision.
+""".
 -spec app_receive( any() ) -> void().
 app_receive( Message ) ->
 	traces:receive_applicative_message( Message ).
@@ -183,7 +185,9 @@ app_receive( Message ) ->
 
 
 
-% Handles an application failure, using specified string as advertised reason.
+-doc """
+Handles an application failure, using specified string as advertised reason.
+""".
 -spec app_failed( text_utils:ustring() ) -> no_return().
 app_failed( Reason ) ->
 
@@ -204,10 +208,11 @@ app_failed( Reason ) ->
 
 
 
-% Handles an application failure, using specified first string as an advertised
-% reason with format characters (e.g. '~w') and specified list as actual values
-% to be formatted.
-%
+-doc """
+Handles an application failure, using specified first string as an advertised
+reason with format characters (e.g. '~w') and specified list as actual values to
+be formatted.
+""".
 -spec app_failed( text_utils:format_string(), text_utils:format_values() ) ->
 							no_return().
 app_failed( FormatReason, FormatValues ) ->

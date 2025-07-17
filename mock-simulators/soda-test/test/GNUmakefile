@@ -20,7 +20,8 @@ batch: demo-batch
 run: demo
 
 
-# Ex: make soda_stochastic_integration_run CMD_LINE_OPT="--trace-type pdf"
+# For example:
+# make soda_stochastic_integration_run CMD_LINE_OPT="--trace-type pdf"
 
 
 test-deterministic:

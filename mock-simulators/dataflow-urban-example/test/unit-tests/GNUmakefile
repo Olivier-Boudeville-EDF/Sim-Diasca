@@ -1,6 +1,5 @@
 MOCK_SIMULATORS_TOP = ../../..
 
-
 .PHONY: all test
 
 
@@ -19,7 +18,7 @@ all:
 test: test-local
 
 test-local:
-	@for t in $(ALL_TESTS); do $(MAKE) $$t $(RUN_OPT) ; done
+	@for t in $(ALL_TESTS); do $(MAKE) $$t $(RUN_OPT); done
 
 
 doc: doc-local

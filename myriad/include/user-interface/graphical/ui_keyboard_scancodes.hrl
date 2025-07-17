@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -69,8 +69,9 @@
 -ifndef(__MYRIAD_UI_KEYBOARD_SCANCODES_HRL__).
 -define(__MYRIAD_UI_KEYBOARD_SCANCODES_HRL__, 1).
 
-% Definitions of all known scancodes - a.k.a. button locations of a standard
-% (US) keyboard seen as a ~104-button keypad:
+
+% Definitions of all known scancodes - a.k.a. button locations of a standard US
+% keyboard seen as a ~104-button keypad:
 %
 % (the values that are commented-out were the SDL ones; in ours there are
 % probably mistakes, we have no reference keyboard at hand, any checking/update
@@ -80,8 +81,10 @@
 % Structure of a scancode define, using 'MYR_SCANCODE_Q' as an example:
 % - 'MYR' for Myriad, to avoid any define clash with third-party
 % - 'SCANCODE' (as opposed to keycode)
-% - 'q' designating the location of the 'Q' key in a standard keyboard
+% - 'q' designating the location of the 'Q' key in a standard US keyboard
 
+% The gui_keyboard_test.erl module can be run in order to check these defines on
+% a given keyboard.
 
 % Typewriter keys:
 

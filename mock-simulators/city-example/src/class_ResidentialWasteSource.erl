@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2012.
 
-
-% @doc Class modelling a <b>residential waste source</b>.
 -module(class_ResidentialWasteSource).
+
+-moduledoc "Class modelling a **residential waste source**".
 
 
 -define( class_description,
@@ -71,32 +71,38 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type gis_pid() :: class_GIS:gis_pid().
+
+-type location_generator_pid() ::
+    class_LocationGenerator:location_generator_pid().
 
 
-% @doc Creates a residential waste source.
-%
-% Construction parameters are:
-%
-% - Location, which is the location of this source
-%
-% - ProductionType is the type of waste produced
-%
-% - ProductionQuantity is the quantity of waste produced by cycle
-%
-% - LocalStorage is the quantity of waste that can be locally stored
-%
-% - ProductionDuration is the duration of a waste production cycle
-%
-% - GISPid is the PID of the GIS
-%
+
+-doc """
+Creates a residential waste source.
+
+Construction parameters are:
+
+- Location, which is the location of this source
+
+- ProductionType is the type of waste produced
+
+- ProductionQuantity is the quantity of waste produced by cycle
+
+- LocalStorage is the quantity of waste that can be locally stored
+
+- ProductionDuration is the duration of a waste production cycle
+
+- GISPid is the PID of the GIS
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:location(), waste_type(),
 				 unit_utils:tons(), unit_utils:tons(), unit_utils:seconds(),
@@ -109,9 +115,9 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 	% using an Actor state. Hence we declare this law in a second time:
 	%
 	ActorState = class_StochasticActor:construct( State, ActorSettings,
-												  ?trace_categorize(Name),
-	  [ { production_quantity_law,
-			{ gaussian, _Mu=ProductionQuantity, _Sigma=2.0 } } ] ),
+        ?trace_categorize(Name),
+         [ { production_quantity_law,
+             { gaussian, _Mu=ProductionQuantity, _Sigma=2.0 } } ] ),
 
 	ProductionTickDuration = class_Actor:convert_seconds_to_ticks(
 		ProductionDuration, ?city_max_relative_error, ActorState ),
@@ -165,7 +171,7 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 
 
 
-% @doc First scheduling of a residential waste source.
+-doc "First scheduling of a residential waste source.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -188,7 +194,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this residential source.
+-doc "The definition of the spontaneous behaviour of this residential source.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -246,19 +252,18 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Tries to load from this waste source as much as possible of the specified
-% mass compatible with specified waste type into the calling actor, which is
-% expected to be a waste transport, located in this point, looking for
-% additional waste.
-%
-% The answer (the actor message sent back) will be:
-%
-% - either a notifyLoadedWaste to acknowledge once for good the waste
-% transaction
-%
-% - or a notifyNoLoadedWaste to report that no waste loading will occur this
-% time (transaction failed)
-%
+-doc """
+Tries to load from this waste source as much as possible of the specified mass
+compatible with specified waste type into the calling actor, which is expected
+to be a waste transport, located in this point, looking for additional waste.
+
+The answer (the actor message sent back) will be:
+
+- either a notifyLoadedWaste to acknowledge once for good the waste transaction
+
+- or a notifyNoLoadedWaste to report that no waste loading will occur this time
+(transaction failed)
+""".
 -spec loadWaste( wooper:state(), waste_type(), unit_utils:tons(),
 				 sending_actor_pid() ) -> actor_oneway_return().
 loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
@@ -280,16 +285,17 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 
 
-% @doc Returns a textual description of this instance.
+-doc "Returns a textual description of this instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
 
 
 
-% @doc Computes the newly produced mass of waste and the duration of the next
-% production iteration.
-%
+-doc """
+Computes the newly produced mass of waste and the duration of the next
+production iteration.
+""".
 compute_production_parameters( State ) ->
 
 	% We do no want waste to be consumed!
@@ -306,7 +312,7 @@ compute_production_parameters( State ) ->
 
 	% At least one tick away:
 	NextDuration = max( 1, class_StochasticActor:get_random_value_from(
-								production_duration_law, State ) ),
+		production_duration_law, State ) ),
 
 	{ AdditionalMass, NextDuration }.
 
@@ -318,9 +324,10 @@ compute_production_parameters( State ) ->
 
 
 
-% @doc Generates a list of instance definitions for the specified number of
-% residential waste sources.
-%
+-doc """
+Generates a list of instance definitions for the specified number of residential
+waste sources.
+""".
 -spec generate_definitions( basic_utils:count(), location_generator_pid(),
 							pid() | instance_loading:id_ref() ) ->
 					static_return( [ class_Actor:instance_creation_spec() ] ).
@@ -392,9 +399,10 @@ define_residential_waste_sources( ResidentialSourceCount, GISInfo, Acc ) ->
 
 
 
-% @doc Adds the location to the waste source build parameters (a kind of zip
-% operation):
-%
+-doc """
+Adds the location to the waste source build parameters (a kind of zip
+operation).
+""".
 merge_parameters( Params, Locations, GISInfo ) ->
 	% In-order is better:
 	lists:reverse( merge_parameters( Params, Locations, _Acc=[], GISInfo ) ).
@@ -415,10 +423,7 @@ merge_parameters( _Params=[ { Name, ProductionType, ProductionQuantity,
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

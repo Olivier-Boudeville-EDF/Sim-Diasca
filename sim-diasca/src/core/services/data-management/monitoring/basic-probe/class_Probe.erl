@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -20,8 +20,9 @@
 % Creation date: 2008.
 
 
-% @doc Basic <b>probe class</b>, in charge of generating results.
 -module(class_Probe).
+
+-moduledoc "Basic **probe class**, in charge of generating results.".
 
 
 -define( class_description,
@@ -135,21 +136,25 @@
 % it will not contain data, but it will provide at least metadata.
 
 
+-doc "The name of a probe (e.g. to be checked against a result specification).".
 -type probe_name() :: class_ResultProducer:producer_name().
-% The name of a probe (e.g. to be checked against a result specification).
 
+
+-doc "The (binary) name of a probe.".
 -type bin_probe_name() :: class_ResultProducer:bin_producer_name().
-% The (binary) name of a probe.
 
 
+-doc """
+The tick, for a probe, corresponds to an (absolute) tick (not a tick offset).
+
+Note that if no tick duration is specified to a given probe (thus using
+internally ticks rather than higher-level timestamps), then setting a tick
+offset for it (see class_Probe:setTickOffset/2) allows to subtract that offset
+to all recorded ticks, and thus to display tick offsets rather than absolute
+ticks.
+""".
 -type probe_tick() :: class_TimeManager:tick().
-% The tick, for a probe, corresponds to an (absolute) tick (not a tick offset).
-%
-% Note that if no tick duration is specified to a given probe (thus using
-% internally ticks rather than higher-level timestamps), then setting a tick
-% offset for it (see class_Probe:setTickOffset/2) allows to subtract that offset
-% to all recorded ticks, and thus to display tick offsets rather than absolute
-% ticks.
+
 
 
 % For the probe_options record:
@@ -227,7 +232,7 @@
 	  "a common origin (typically the simulation start tick); as the probe "
 	  "cannot guess it, a call to setTickOffset/2 seems necessary" },
 
-	{ maybe_tick_duration, maybe( virtual_seconds() ),
+	{ maybe_tick_duration, option( virtual_seconds() ),
 	  "the actual duration, in floating-point seconds (in virtual time), "
 	  "between two simulation ticks (allows to better label the abscissa "
 	  "axis with actual timestamps rather than mere ticks)" },
@@ -250,13 +255,13 @@
 	  "path of the probe data file; it is a complete path (including the probe "
 	  "directory)" },
 
-	{ data_file, maybe( file() ),
+	{ data_file, option( file() ),
 	  "the file object (if any) in which sample data is written" },
 
-	{ gnuplot_version, maybe( gnuplot_version() ), "version of gnuplot "
+	{ gnuplot_version, option( gnuplot_version() ), "version of gnuplot "
 	  "(if any) that will be used on this computer during this simulation" },
 
-	{ gnuplot_path, maybe( file_utils:executable_path() ),
+	{ gnuplot_path, option( file_utils:executable_path() ),
 	  "the path to the gnuplot executable (if any)" },
 
 	{ meta_data, meta_data(),
@@ -300,9 +305,9 @@
 
 
 
+-doc "Name information about a probe.".
 -type probe_name_init() :: probe_name()
 					   | { probe_name(), traces:emitter_categorization() }.
-% Name information about a probe.
 
 
 
@@ -315,60 +320,69 @@
 -type probe_pid() :: class_ResultProducer:producer_pid().
 
 
+-doc "A probe may not be a wanted result producer.".
 -type probe_ref() :: 'non_wanted_probe' | probe_pid().
-% A probe may not be a wanted result producer.
 
 
+-doc """
+Describes the management (not rendering) options that apply to (basic) probes.
+""".
 -type probe_options() :: #probe_options{}.
-% Describes the management (not rendering) options that apply to (basic) probes.
 
+
+-doc "An identifier of a probe extra setting.".
 -type setting_id() :: 'global_plot_style' | atom().
-% An identifier of a probe extra setting.
 
+
+-doc "A value associated to the identifier of a probe extra setting.".
 -type setting_value() :: plot_style() | term().
-% A value associated to the identifier of a probe extra setting.
 
 
+
+-doc """
+To store any extra probe settings of interest, as plenty of options might be
+relevant for probes.
+
+Possible setting pairs (setting_id() -> setting_value()):
+
+ - global_plot_style -> plot_style(); note that generally each curve specified
+ explicitly its plot style, so defining a global plot style is less useful;
+ nevertheless this global option may allow setting automatically relevant
+ options (see apply_extra_settings/3)
+
+ - canvas_size -> {W :: length(), H :: length()} (e.g. {1600, 1200})
+
+ - curve_colors -> [color()] (e.g. colors like 'red' or "ff0000")
+
+ - zone_colors -> [color()] (e.g. colors like 'red' or "ff0000")
+
+ - tick_options -> {XOpt :: tick_option(), YOpt :: tick_option()}
+ (e.g. {rotate_ccw, undefined})
+
+ - ticks_options -> ticks_option()
+(e.g. "axis in scale default textcolor red")
+
+ - timestamp_time_format -> timestamp_time_format() (e.g. 'double_line')
+
+ - extra_defines ->  [any_string()]
+(e.g. ["set key title \"This is a key title\""])
+
+
+Example:
+
+   ExtraSettingsTable = table:new([
+		{global_plot_style, boxes},
+		{curve_colors, [ _RunColorGreen="00bb00", _FailColor="bb0000",
+						 _DisabledColor="777777"]}]),
+""".
 -type settings_table() :: table( setting_id(), setting_value() ).
-% To store any extra probe settings of interest, as plenty of options might be
-% relevant for probes.
-%
-% Possible setting pairs (setting_id() -> setting_value()):
-%
-%  - global_plot_style -> plot_style(); note that generally each curve specified
-%  explicitly its plot style, so defining a global plot style is less useful;
-%  nevertheless this global option may allow setting automatically relevant
-%  options (see apply_extra_settings/3)
-%
-%  - canvas_size -> {W :: length(), H :: length()} (e.g. {1600, 1200})
-%/
-%  - curve_colors -> [color()] (e.g. colors like 'red' or "ff0000")
-%
-%  - zone_colors -> [color()] (e.g. colors like 'red' or "ff0000")
-%
-%  - tick_options -> {XOpt :: tick_option(), YOpt :: tick_option()}
-%  (e.g. {rotate_ccw, undefined})
-%
-%  - ticks_options -> ticks_option()
-% (e.g. "axis in scale default textcolor red")
-%
-%  - timestamp_time_format -> timestamp_time_format() (e.g. 'double_line')
-%
-%  - extra_defines ->  [any_string()]
-% (e.g. ["set key title \"This is a key title\""])
-%
-%
-% Example:
-%
-%   ExtraSettingsTable = table:new([
-%		{global_plot_style, boxes},
-%		{curve_colors, [ _RunColorGreen="00bb00", _FailColor="bb0000",
-%						 _DisabledColor="777777"]}]),
 
 
+
+-doc """
+A tuple of data (numbers) to be sent as sample to a probe-like result producer.
+""".
 -type sample_data() :: math_utils:sample_data().
-% A tuple of data (numbers) to be sent as sample to a probe-like result
-% producer.
 
 
 % Exported so that for example class_Actor can reference them:
@@ -392,7 +406,8 @@
 -include_lib("traces/include/traces.hrl").
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type user_data() :: basic_utils:user_data().
 
@@ -449,42 +464,43 @@
 
 
 
-% @doc Constructs a basic probe, from following parameters: NameOptions,
-% CurveNames, Title, Zones, MaybeXLabel, YLabel (no metadata, tick duration or
-% extra settings to be specified here).
-%
-% Construction parameters:
-%
-% - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
-% :: probe_name_init() and ProbeOptions :: probe_options(), i.e. is a
-% probe_options record
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve
-% (e.g. "Second curve") already defined in CurveNames, or a special atom
-% designating the plot boundaries, i.e. either 'abscissa_bottom' or
-% 'abscissa_top'. For example {"My Zone", {"First curve",'abscissa_bottom'}}
-% defines a zone named "My Zone" and delimited by the curve named "First curve"
-% and the abscissa axis (note: the order between the two elements defining a
-% zone does not matter; note also that zones do not behave exactly as stacked
-% histograms, but may be used to represent them; refer to the "Regarding zones"
-% section for further information)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
+-doc """
+Constructs a basic probe, from following parameters: NameOptions, CurveNames,
+Title, Zones, MaybeXLabel, YLabel (no metadata, tick duration or extra settings
+to be specified here).
+
+Construction parameters:
+
+- NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit ::
+probe_name_init() and ProbeOptions :: probe_options(), i.e. is a probe_options
+record
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined,
+are specified as a (potentially empty) list of {ZoneName,
+{ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the name
+of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve
+(e.g. "Second curve") already defined in CurveNames, or a special atom
+designating the plot boundaries, i.e. either 'abscissa_bottom' or
+'abscissa_top'. For example {"My Zone", {"First curve",'abscissa_bottom'}}
+defines a zone named "My Zone" and delimited by the curve named "First curve"
+and the abscissa axis (note: the order between the two elements defining a zone
+does not matter; note also that zones do not behave exactly as stacked
+histograms, but may be used to represent them; refer to the "Regarding zones"
+section for further information)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+""".
 -spec construct( wooper:state(),
 		probe_name_init() | { probe_name_init(), probe_options() },
 		[ declared_curve_name() ], [ declared_zone() ], title(),
@@ -496,34 +512,35 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 
 
 
-% @doc Constructs a basic probe, from following parameters: NameOptions,
-% CurveNames, Title, Zones, MaybeXLabel, YLabel (neither tick duration nor extra
-% settings to be specified here).
-%
-% Construction parameters:
-%
-% - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
-% :: probe_name_init() and ProbeOptions :: probe_options(), i.e. is a
-% probe_options record
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined;
-% refer to construct/7 for more information about them
+-doc """
+Constructs a basic probe, from following parameters: NameOptions, CurveNames,
+Title, Zones, MaybeXLabel, YLabel (neither tick duration nor extra settings to
+be specified here).
 
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% - MetaData is an option list that corresponds to extra, contextual information
-% that can be taken into account in the probe-generated data files
-%
+Construction parameters:
+
+- NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit ::
+probe_name_init() and ProbeOptions :: probe_options(), i.e. is a probe_options
+record
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined;
+refer to construct/7 for more information about them
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+- MetaData is an option list that corresponds to extra, contextual information
+that can be taken into account in the probe-generated data files
+""".
 -spec construct( wooper:state(),
 		probe_name_init() | { probe_name_init(), probe_options() },
 		[ declared_curve_name() ], [ declared_zone() ], title(),
@@ -537,44 +554,45 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 
 
 
-% @doc Constructs a basic probe, from following parameters: NameOptions,
-% CurveNames, Title, Zones, MaybeXLabel, YLabel, ExtraSettingsTable, where:
-%
-% - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
-% :: probe_name_init() and ProbeOptions :: probe_options(), i.e. is a
-% probe_options record
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined;
-% refer to construct/7 for more information about them
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% - MetaData is an option list that corresponds to extra, contextual information
-% that can be taken into account in the probe-generated data files
-%
-% - MaybeExtraSettingsTable is, if defined, a table holding extra probe settings
-% of all sorts (allows to parameter one's probe from its creation, rather than
-% sending a series of method calls to do the same once it has already been
-% created)
-%
-% - MaybeTickDuration is, if defined, the actual duration (in simulation time)
-% of a tick, for timestamped axis labels
-%
+-doc """
+Constructs a basic probe, from following parameters: NameOptions, CurveNames,
+Title, Zones, MaybeXLabel, YLabel, ExtraSettingsTable, where:
+
+- NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit ::
+probe_name_init() and ProbeOptions :: probe_options(), i.e. is a probe_options
+record
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined;
+refer to construct/7 for more information about them
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+- MetaData is an option list that corresponds to extra, contextual information
+that can be taken into account in the probe-generated data files
+
+- MaybeExtraSettingsTable is, if defined, a table holding extra probe settings
+of all sorts (allows to parameter one's probe from its creation, rather than
+sending a series of method calls to do the same once it has already been
+created)
+
+- MaybeTickDuration is, if defined, the actual duration (in simulation time) of
+a tick, for timestamped axis labels
+""".
 -spec construct( wooper:state(),
 		probe_name_init() | { probe_name_init(), probe_options() },
 		[ declared_curve_name() ], [ declared_zone() ], title(),
-		label(), label(), meta_data(), maybe( settings_table() ),
-		maybe( virtual_seconds() ) ) -> wooper:state().
+		label(), label(), meta_data(), option( settings_table() ),
+		option( virtual_seconds() ) ) -> wooper:state().
 construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 		   MaybeXLabel, YLabel, MetaData, MaybeExtraSettingsTable,
 		   MaybeTickDuration ) when is_record( ProbeOptions, probe_options ) ->
@@ -666,10 +684,10 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 
 	DeferredState = case DeferredDataWrites of
 
-		 true ->
+		true ->
 			CommandState;
 
-		 false ->
+		false ->
 			check_probe_directory( ProbeDir ),
 
 			file_utils:remove_file_if_existing( DataFilename ),
@@ -720,7 +738,7 @@ construct( State, NameInit, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -780,32 +798,34 @@ destruct( State ) ->
 
 
 
-% @doc Sets the tick offset that will be subtracted from the tick of all samples
-% that will be received next. Then the abscissa axis will at least start with
-% clearer, shorter, more tractable labels.
-%
-% For an example, refer to the soda vending machine test: these machines manage
-% their probe so that it uses an offset to the simulation initial tick.
-%
+-doc """
+Sets the tick offset that will be subtracted from the tick of all samples that
+will be received next. Then the abscissa axis will at least start with clearer,
+shorter, more tractable labels.
+
+For an example, refer to the soda vending machine test: these machines manage
+their probe so that it uses an offset to the simulation initial tick.
+""".
 -spec setTickOffset( wooper:state(), probe_tick() ) -> oneway_return().
 setTickOffset( State, Offset ) ->
 	wooper:return_state( setAttribute( State, tick_offset, Offset ) ).
 
 
 
-% @doc Registers specified samples in the probe.
-%
-% Samples is a tuple that contains the value (either integer or floating-point)
-% corresponding to the specified tick (not tick offset) for each known curve.
-%
-% Should a curve have no relevant sample to be defined, the 'undefined' atom
-% should be specified instead.
-%
-% Note that, by default, the ticks specified to a probe are absolute ones - not
-% tick offsets - as, still by default, a probe is not told about the simulation
-% start tick. So one may either specify (absolute) ticks here, or declare once
-% for all an offset (see the setTickOffset/2 oneway for that).
-%
+-doc """
+Registers the specified samples in the probe.
+
+Samples is a tuple that contains the value (either integer or floating-point)
+corresponding to the specified tick (not tick offset) for each known curve.
+
+Should a curve have no relevant sample to be defined, the 'undefined' atom
+should be specified instead.
+
+Note that, by default, the ticks specified to a probe are absolute ones - not
+tick offsets - as, still by default, a probe is not told about the simulation
+start tick. So one may either specify (absolute) ticks here, or declare once for
+all an offset (see the setTickOffset/2 oneway for that).
+""".
 -spec setData( wooper:state(), probe_tick(), sample_data() ) -> oneway_return().
 setData( State, Tick, Samples ) ->
 
@@ -875,13 +895,14 @@ setData( State, Tick, Samples ) ->
 
 
 
-% @doc Declares an additional curve, whose name is specified.
-%
-% By default it will be rendered after the already declared curves.
-%
-% Note: all samples received afterwards are then expected to take it into
-% account (sending one more value, or the atom 'undefined', for that curve).
-%
+-doc """
+Declares an additional curve, whose name is specified.
+
+By default it will be rendered after the already declared curves.
+
+Note: all samples received afterwards are then expected to take it into account
+(sending one more value, or the atom 'undefined', for that curve).
+""".
 -spec addCurve( wooper:state(), declared_curve_name() ) -> oneway_return().
 addCurve( State, CurveName ) ->
 
@@ -901,15 +922,15 @@ addCurve( State, CurveName ) ->
 
 
 
-% @doc Declares additional curves, whose names are specified.
-%
-% By default they will be rendered in their specified order, after the already
-% declared curves.
-%
-% Note: all samples received afterwards are then expected to take it into
-% account (sending as many additional values, or the atom 'undefined', for these
-% curves).
-%
+-doc """
+Declares additional curves, whose names are specified.
+
+By default they will be rendered in their specified order, after the already
+declared curves.
+
+Note: all samples received afterwards are then expected to take it into account
+(sending as many additional values, or the atom 'undefined', for these curves).
+""".
 -spec addCurves( wooper:state(), [ declared_curve_name() ] ) -> oneway_return().
 addCurves( State, CurveNames ) ->
 
@@ -949,7 +970,7 @@ add_curve( CurveName, CurveCount, CurveEntries ) ->
 
 
 
-% @doc Sets the specified curve to the specified color.
+-doc "Sets the specified curve to the specified color.".
 -spec setCurveColor( wooper:state(), declared_curve_name(),
 					 rgb_hexastring() ) -> oneway_return().
 setCurveColor( State, CurveName, RGBColorSpecStr ) ->
@@ -961,9 +982,10 @@ setCurveColor( State, CurveName, RGBColorSpecStr ) ->
 
 
 
-% @doc Updates the entry of the specified curve with the specified extra
-% settings (currently a RGB color specified as a plain string, like "ffc0cb").
-%
+-doc """
+Updates the entry of the specified curve with the specified extra settings
+(currently a RGB color specified as a plain string, like "ffc0cb").
+""".
 -spec updateCurveEntry( wooper:state(), declared_curve_name(),
 						extra_curve_settings() ) -> oneway_return().
 updateCurveEntry( State, CurveName, ExtraCurveSettings ) ->
@@ -1025,12 +1047,13 @@ update_curve_entry_for( BinCurveName, ExtraCurveSettings,
 
 
 
-% @doc Returns the list of curve names, as plain strings, sorted according to
-% the current rendering order.
-%
-% Useful then to reorder them and then to set them back thanks to
-% setCurveRenderOrder/2.
-%
+-doc """
+Returns the list of curve names, as plain strings, sorted according to the
+current rendering order.
+
+Useful then to reorder them and then to set them back thanks to
+setCurveRenderOrder/2.
+""".
 -spec getCurveRenderOrder( wooper:state() ) ->
 								const_request_return( [ string_curve_name() ] ).
 getCurveRenderOrder( State ) ->
@@ -1047,12 +1070,12 @@ getCurveRenderOrder( State ) ->
 
 
 
-% @doc Sets the list of curve names, sorted according to the desired rendering
-% order.
-%
-% Names is a list of (any kind of) strings that must correspond to a permutation
-% of the list that would be returned by getCurveEntries/1.
-%
+-doc """
+Sets the list of curve names, sorted according to the desired rendering order.
+
+Names is a list of (any kind of) strings that must correspond to a permutation
+of the list that would be returned by getCurveEntries/1.
+""".
 -spec setCurveRenderOrder( wooper:state(), [ declared_curve_name() ] ) ->
 									oneway_return().
 setCurveRenderOrder( State, Names ) ->
@@ -1083,9 +1106,10 @@ setCurveRenderOrder( State, Names ) ->
 
 
 
-% @doc Sets the plot settings to the ones specified as any kind of string
-% (e.g.  "histograms", `<<"linespoints">>'; "lines" is the default).
-%
+-doc """
+Sets the plot settings to the ones specified as any kind of string (e.g.
+`"histograms"`, `<<"linespoints">>`; "lines" is the default).
+""".
 -spec setPlotStyle( wooper:state(), any_string() ) -> oneway_return().
 setPlotStyle( State, NewPlotStyle ) ->
 
@@ -1101,11 +1125,12 @@ setPlotStyle( State, NewPlotStyle ) ->
 
 
 
-% @doc Sets the plot settings to the ones specified as any kind of string (e.g.
-% "histograms", `<<"linespoints">>'; "lines" is the default) and determines
-% whether the command file shall be regenerated in order to take into account
-% the new settings.
-%
+-doc """
+Sets the plot settings to the ones specified as any kind of string (e.g.
+"histograms", `<<"linespoints">>'; "lines" is the default) and determines
+whether the command file shall be regenerated in order to take into account the
+new settings.
+""".
 -spec setPlotStyle( wooper:state(), any_string(), boolean() ) ->
 								oneway_return().
 setPlotStyle( State, NewPlotStyle, GenerateFile ) ->
@@ -1123,9 +1148,10 @@ setPlotStyle( State, NewPlotStyle, GenerateFile ) ->
 
 
 
-% @doc Sets the fill settings, specified as any kind of string (e.g. "solid 1.0
-% border -1").
-%
+-doc """
+Sets the fill settings, specified as any kind of string (e.g. `"solid 1.0 border
+-1"`).
+""".
 -spec setFillStyle( wooper:state(), any_string() ) -> oneway_return().
 setFillStyle( State, NewFillStyle ) ->
 
@@ -1141,10 +1167,11 @@ setFillStyle( State, NewFillStyle ) ->
 
 
 
-% @doc Sets the fill settings, specified as any kind of string (e.g. "solid 1.0
-% border -1") and determines whether the command file shall be regenerated in
-% order to take into account the new settings.
-%
+-doc """
+Sets the fill settings, specified as any kind of string (e.g. `"solid 1.0 border
+-1"`) and determines whether the command file shall be regenerated in order to
+take into account the new settings.
+""".
 -spec setFillStyle( wooper:state(), any_string(), boolean() ) ->
 											oneway_return().
 setFillStyle( State, NewFillStyle, GenerateFile ) ->
@@ -1162,7 +1189,7 @@ setFillStyle( State, NewFillStyle, GenerateFile ) ->
 
 
 
-% @doc Sets the size of the probe reports (canvas), in pixels.
+-doc "Sets the size of the probe reports (canvas), in pixels.".
 -spec setCanvasSize( wooper:state(), length(), length() ) -> oneway_return().
 setCanvasSize( State, NewWidth, NewHeight ) ->
 
@@ -1178,10 +1205,10 @@ setCanvasSize( State, NewWidth, NewHeight ) ->
 
 
 
-% @doc Sets the size of the probe reports (canvas), in pixels and forces to
-% regenerate the command file for taking into account these new settings, if
-% requested.
-%
+-doc """
+Sets the size of the probe reports (canvas), in pixels and forces to regenerate
+the command file for taking into account these new settings, if requested.
+""".
 -spec setCanvasSize( wooper:state(), length(), length(), boolean() ) ->
 							oneway_return().
 setCanvasSize( State, NewWidth, NewHeight, GenerateFile ) ->
@@ -1199,11 +1226,12 @@ setCanvasSize( State, NewWidth, NewHeight, GenerateFile ) ->
 
 
 
-% @doc Sets the size of the plot point.
-%
-% Point size means that the shown points will be of PointSize times the default
-% point size.
-%
+-doc """
+Sets the size of the plot point.
+
+Point size means that the shown points will be of PointSize times the default
+point size.
+""".
 -spec setPointSize( wooper:state(), point_size_factor() ) -> oneway_return().
 setPointSize( State, PointSize ) ->
 
@@ -1218,12 +1246,13 @@ setPointSize( State, PointSize ) ->
 
 
 
-% @doc Sets the size of the plot point and forces to regenerate the command file
-% in order to take into account the new settings.
-%
-% Point size means that the shown points will be of PointSize times the default
-% point size.
-%
+-doc """
+Sets the size of the plot point and forces to regenerate the command file in
+order to take into account the new settings.
+
+Point size means that the shown points will be of PointSize times the default
+point size.
+""".
 -spec setPointSize( wooper:state(), point_size_factor(), boolean() ) ->
 							oneway_return().
 setPointSize( State, PointSize, GenerateFile ) ->
@@ -1240,9 +1269,10 @@ setPointSize( State, PointSize, GenerateFile ) ->
 
 
 
-% @doc Sets the key (legend) settings, specified as any kind of string
-% (e.g. "inside left", "bottom center").
-%
+-doc """
+Sets the key (legend) settings, specified as any kind of string (e.g. `"inside
+left"`, `"bottom center"`).
+""".
 -spec setKeyOptions( wooper:state(), any_string() ) -> oneway_return().
 setKeyOptions( State, NewOptions ) ->
 
@@ -1254,10 +1284,11 @@ setKeyOptions( State, NewOptions ) ->
 
 
 
-% @doc Sets the key (legend) settings, specified as any kind of string
-% (e.g. "inside left", "bottom center") and forces to regenerate the command
-% file for taking into account the new settings, if requested.
-%
+-doc """
+Sets the key (legend) settings, specified as any kind of string (e.g. `"inside
+left"`, `"bottom center"`) and forces to regenerate the command file for taking
+into account the new settings, if requested.
+""".
 -spec setKeyOptions( wooper:state(), any_string(), boolean() ) ->
 											oneway_return().
 setKeyOptions( State, NewOptions, GenerateFile ) ->
@@ -1275,10 +1306,11 @@ setKeyOptions( State, NewOptions, GenerateFile ) ->
 
 
 
-% @doc Sets the abscissa range for the plot.
-%
-% MinX and MaxX are integers.
-%
+-doc """
+Sets the abscissa range for the plot.
+
+MinX and MaxX are integers.
+""".
 -spec setAbscissaRange( wooper:state(), coordinate(), coordinate() ) ->
 								oneway_return().
 setAbscissaRange( State, MinX, MaxX ) ->
@@ -1289,11 +1321,12 @@ setAbscissaRange( State, MinX, MaxX ) ->
 
 
 
-% @doc Sets the abscissa range for the plot and forces to regenerate the command
-% file for taking into account the new settings if requested.
-%
-% MinX and MaxX are integers.
-%
+-doc """
+Sets the abscissa range for the plot and forces to regenerate the command file
+for taking into account the new settings if requested.
+
+MinX and MaxX are integers.
+""".
 -spec setAbscissaRange( wooper:state(), coordinate(), coordinate(),
 						boolean() ) -> oneway_return().
 setAbscissaRange( State, MinX, MaxX, GenerateFile ) ->
@@ -1310,10 +1343,11 @@ setAbscissaRange( State, MinX, MaxX, GenerateFile ) ->
 
 
 
-% @doc Sets the ordinate range for the plot.
-%
-%  MinY and MaxY are integers.
-%
+-doc """
+Sets the ordinate range for the plot.
+
+MinY and MaxY are integers.
+""".
 -spec setOrdinateRange( wooper:state(), coordinate(), coordinate() ) ->
 								oneway_return().
 setOrdinateRange( State, MinY, MaxY ) ->
@@ -1325,11 +1359,12 @@ setOrdinateRange( State, MinY, MaxY ) ->
 
 
 
-% @doc Sets the ordinate range for the plot and forces to regenerate the command
-% file for taking into account the new settings, if requested.
-%
-% MinY and MaxY are integers.
-%
+-doc """
+Sets the ordinate range for the plot and forces to regenerate the command file
+for taking into account the new settings, if requested.
+
+MinY and MaxY are integers.
+""".
 -spec setOrdinateRange( wooper:state(), coordinate(), coordinate(),
 						boolean() ) -> oneway_return().
 setOrdinateRange( State, MinY, MaxY, GenerateFile ) ->
@@ -1346,9 +1381,10 @@ setOrdinateRange( State, MinY, MaxY, GenerateFile ) ->
 
 
 
-% @doc Ensures that the generated reports will rely on rotated tick labels, so
-% that labels will never overlap, however long they are.
-%
+-doc """
+Ensures that the generated reports will rely on rotated tick labels, so that
+labels will never overlap, however long they are.
+""".
 -spec setRotatedTickLabels( wooper:state() ) -> oneway_return().
 setRotatedTickLabels( State ) ->
 
@@ -1368,18 +1404,19 @@ setRotatedTickLabels( State ) ->
 
 
 
-% @doc Ensures that the generated reports will rely on rotated tick labels, so
-% that labels will never overlap, however long they are, and regenerates the
-% command file if requested.
-%
+-doc """
+Ensures that the generated reports will rely on rotated tick labels, so that
+labels will never overlap, however long they are, and regenerates the command
+file if requested.
+""".
 -spec setRotatedTickLabels( wooper:state(), boolean() ) -> oneway_return().
 setRotatedTickLabels( State, GenerateFile ) ->
 
 	Settings = ?getAttr(settings),
 
 	UpdatedState = setAttribute( State, settings, Settings#plot_settings{
-			x_tick=text_utils:string_to_binary(
-				?rotate_cw_tick_label_option ) } ),
+		x_tick=text_utils:string_to_binary(
+			?rotate_cw_tick_label_option ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1388,9 +1425,10 @@ setRotatedTickLabels( State, GenerateFile ) ->
 
 
 
-% @doc Adds a specific text label at the specified location ({X,Y} integer
-% coordinates).
-%
+-doc """
+Adds a specific text label at the specified location ({X,Y} integer
+coordinates).
+""".
 -spec addLabel( wooper:state(), any_label(), point() ) -> oneway_return().
 addLabel( State, AnyLabel, Location ) ->
 
@@ -1410,9 +1448,10 @@ addLabel( State, AnyLabel, Location ) ->
 
 
 
-% @doc Adds a specific text label at the specified location ({X,Y} integer
-% coordinates), with specified color (e.g. 'magenta', or "4B00820").
-%
+-doc """
+Adds a specific text label at the specified location ({X,Y} integer
+coordinates), with specified color (e.g. `'magenta'`, or ``"4B00820"``).
+""".
 -spec addLabel( wooper:state(), any_label(), point(), color() ) ->
 														oneway_return().
 addLabel( State, AnyLabel, Location, Color ) ->
@@ -1433,11 +1472,12 @@ addLabel( State, AnyLabel, Location, Color ) ->
 
 
 
-% @doc Adds a specific text label, at the specified location ({X,Y} integer
-% coordinates), with the specified color (e.g. magenta, or "4B00820") and
-% orientation, either 'upright' (the default), or {rotate, Angle}, Angle being
-% an angle in degrees (as a floating-point value).
-%
+-doc """
+Adds a specific text label, at the specified location ({X,Y} integer
+coordinates), with the specified color (e.g. `magenta`, or `"4B00820"`) and
+orientation, either 'upright' (the default), or {rotate, Angle}, Angle being an
+angle in degrees (as a floating-point value).
+""".
 -spec addLabel( wooper:state(), any_label(), point(), color(),
 				label_orientation() ) -> oneway_return().
 addLabel( State, AnyLabel, Location, Color, Orientation ) ->
@@ -1458,12 +1498,13 @@ addLabel( State, AnyLabel, Location, Color, Orientation ) ->
 
 
 
-% @doc Adds a specific text label at the specified Location ({X,Y} integer
-% coordinates), with the specified color (e.g. magenta), orientation, either
-% 'upright' (the default), or {rotate, Angle}, Angle being an angle in degrees
-% (as a floating-point value) and position (an atom, either left, center or
-% right, the default being center).
-%
+-doc """
+Adds a specific text label at the specified Location ({X,Y} integer
+coordinates), with the specified color (e.g. magenta), orientation, either
+`upright` (the default), or {rotate, Angle}, Angle being an angle in degrees (as
+a floating-point value) and position (an atom, either left, center or right, the
+default being center).
+""".
 -spec addLabel( wooper:state(), any_label(), point(), color(),
 				label_orientation(), label_position() ) -> oneway_return().
 addLabel( State, AnyLabel, Location, Color, Orientation, Position ) ->
@@ -1484,9 +1525,9 @@ addLabel( State, AnyLabel, Location, Color, Orientation, Position ) ->
 
 
 
-% @doc Sets the extra verbatim defines (e.g. ["set xlabel offset character
-% 15"]).
-%
+-doc """
+Sets the extra verbatim defines (e.g. `["set xlabel offset character 15"]`).
+""".
 -spec setExtraDefines( wooper:state(), [ ustring() ] ) -> oneway_return().
 setExtraDefines( State, ExtraDefs ) ->
 
@@ -1500,9 +1541,10 @@ setExtraDefines( State, ExtraDefs ) ->
 
 
 
-% @doc Adds (appends at first position) the specified extra verbatim defines
-% (e.g. ["set xlabel offset character 15"]).
-%
+-doc """
+Adds (appends at first position) the specified extra verbatim defines
+(e.g. `["set xlabel offset character 15"]`).
+""".
 -spec addExtraDefines( wooper:state(), [ ustring() ] ) -> oneway_return().
 addExtraDefines( State, ExtraDefs ) ->
 
@@ -1518,10 +1560,11 @@ addExtraDefines( State, ExtraDefs ) ->
 
 
 
-% @doc Generates the appropriate gnuplot command file.
-%
-% (oneway, so that it can be overridden)
-%
+-doc """
+Generates the appropriate gnuplot command file.
+
+(oneway, so that it can be overridden)
+""".
 -spec generateCommandFile( wooper:state() ) -> oneway_return().
 generateCommandFile( State ) ->
 	NewState = generate_command_file( State ),
@@ -1529,9 +1572,10 @@ generateCommandFile( State ) ->
 
 
 
-% @doc Generates a report corresponding to the current state of this probe, and
-% displays the result (the image) to the user.
-%
+-doc """
+Generates a report corresponding to the current state of this probe, and
+displays the result (the image) to the user.
+""".
 -spec generateReport( wooper:state() ) ->
 							request_return( 'probe_report_generated' ).
 generateReport( State ) ->
@@ -1540,13 +1584,14 @@ generateReport( State ) ->
 
 
 
-% @doc Generates a report corresponding to the current state of this probe.
-%
-% DisplayWanted is a boolean telling whether the generated report will be
-% displayed to the user (if true).
-%
-% Returns the 'probe_report_generated' atom, merely for synchronisation purpose.
-%
+-doc """
+Generates a report corresponding to the current state of this probe.
+
+DisplayWanted is a boolean telling whether the generated report will be
+displayed to the user (if true).
+
+Returns the 'probe_report_generated' atom, merely for synchronisation purpose.
+""".
 -spec generateReport( wooper:state(), boolean() ) ->
 							request_return( 'probe_report_generated' ).
 generateReport( State, DisplayWanted ) ->
@@ -1568,9 +1613,10 @@ generateReport( State, DisplayWanted ) ->
 
 
 
-% @doc Sets the probe directory: all further probe files (command, data, locally
-% generated plots) will be created there.
-%
+-doc """
+Sets the probe directory: all further probe files (command, data, locally
+generated plots) will be created there.
+""".
 -spec setDirectory( wooper:state(), any_directory_path() ) -> oneway_return().
 setDirectory( State, NewProbeDirectory ) ->
 
@@ -1592,11 +1638,12 @@ setDirectory( State, NewProbeDirectory ) ->
 
 
 
-% @doc Sends the specified type of (tracked) results to the caller (generally
-% the result manager).
-%
-% (request, notably for synchronous operations)
-%
+-doc """
+Sends the specified type of (tracked) results to the caller (generally
+the result manager).
+
+(request, notably for synchronous operations)
+""".
 -spec sendResults( wooper:state(), class_ResultProducer:producer_options() ) ->
 					request_return( class_ResultProducer:producer_result() ).
 sendResults( State, [ data_only ] ) ->
@@ -1774,7 +1821,7 @@ sendResults( State, [ data_and_rendering ] ) ->
 
 
 
-% @doc Returns a textual description of this probe instance.
+-doc "Returns a textual description of this probe instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
@@ -1814,53 +1861,53 @@ toString( State ) ->
 % Static methods.
 
 
-% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
-% producer, and be created either from an actor or from a test case.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(); i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of { ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo} } entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve",'abscissa_bottom'} } defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% Returns either the PID of this newly created result probe (if the name of that
-% probe is acknowledged as a wanted result by the result manager), or the
-% 'non_wanted_probe' atom.
-%
+-doc """
+Declares (synchronously) a new (basic) probe, to be seen as a result producer,
+and be created either from an actor or from a test case.
+
+- NameOptions is either:
+
+ - Name :: ustring(); i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of pairs,
+ in:
+
+  - {create_command_file_initially, boolean()}: if true, the gnuplot command
+  file will be written at probe start-up, thus preventing the taking into
+  account of any subsequent change in the rendering parameter (default: false)
+
+  - {deferred_data_writes, boolean()}: if true, received sample data will stored
+  in memory instead of being directly written to disk (default: false, as the
+  memory footprint might become significant) where Bool is true or false
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined,
+are specified as a (potentially empty) list of { ZoneName,
+{ExtendedCurveNameOne,ExtendedCurveNameTwo} } entries, where ZoneName is the
+name of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
+"Second curve") already defined in CurveNames, or a special atom designating the
+plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For example
+{"My Zone", {"First curve",'abscissa_bottom'} } defines a zone named "My Zone"
+and delimited by the curve named "First curve" and the abscissa axis (note: the
+order between the two elements defining a zone does not matter)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+Returns either the PID of this newly created result probe (if the name of that
+probe is acknowledged as a wanted result by the result manager), or the
+'non_wanted_probe' atom.
+""".
 -spec declare_result_probe( name_options(), [ declared_curve_name() ],
 			[ declared_zone() ], title(), label(), label() ) ->
 									static_return( probe_ref() ).
@@ -1875,60 +1922,59 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
-% producer, and be created either from an actor or from a test case.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(); i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne, ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% - MaybeTickDuration is, if defined, the actual duration (in simulation time)
-% of a tick, for timestamped axis labels
-%
-% Returns either the PID of this newly created result probe (if the name of that
-% probe is acknowledged as a wanted result by the result manager), or the
-% 'non_wanted_probe' atom.
-%
+-doc """
+Declares (synchronously) a new (basic) probe, to be seen as a result
+producer, and be created either from an actor or from a test case.
+
+- NameOptions is either:
+
+ - Name :: ustring(); i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of pairs,
+ in:
+
+  - {create_command_file_initially, boolean()}: if true, the gnuplot command
+  file will be written at probe start-up, thus preventing the taking into
+  account of any subsequent change in the rendering parameter (default: false)
+
+  - {deferred_data_writes, boolean()}: if true, received sample data will stored
+  in memory instead of being directly written to disk (default: false, as the
+  memory footprint might become significant) where Bool is true or false
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined,
+are specified as a (potentially empty) list of {ZoneName, {ExtendedCurveNameOne,
+ExtendedCurveNameTwo}} entries, where ZoneName is the name of this zone (as a
+plain string), and ExtendedCurveNameOne and ExtendedCurveNameTwo are each either
+a plain string designating a curve (e.g.  "Second curve") already defined in
+CurveNames, or a special atom designating the plot boundaries, i.e. either
+'abscissa_bottom' or 'abscissa_top'. For example {"My Zone", {"First curve",
+'abscissa_bottom'}} defines a zone named "My Zone" and delimited by the curve
+named "First curve" and the abscissa axis (note: the order between the two
+elements defining a zone does not matter)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+- MaybeTickDuration is, if defined, the actual duration (in simulation time) of
+a tick, for timestamped axis labels
+
+Returns either the PID of this newly created result probe (if the name of that
+probe is acknowledged as a wanted result by the result manager), or the
+'non_wanted_probe' atom.
+""".
 -spec declare_result_probe( name_options(), [ declared_curve_name() ],
 		[ declared_zone() ], title(), label(), label(),
-		maybe( virtual_seconds() ), maybe( settings_table() ) ) ->
-									static_return( probe_ref() ).
+		option( settings_table() ) ) ->	static_return( probe_ref() ).
 declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 					  MaybeXLabel, YLabel, MaybeTickDuration ) ->
 
@@ -1940,62 +1986,62 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
-% producer, and be created either from an actor or from a test case.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(); i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve",'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% - MaybeExtraSettingsTable is, if defined, a table holding extra probe settings
-% of all sorts
-%
-% - MaybeTickDuration is, if defined, the actual duration (in simulation time)
-% of a tick, for timestamped axis labels
-%
-% Returns either the PID of this newly created result probe (if the name of that
-% probe is acknowledged as a wanted result by the result manager), or the
-% 'non_wanted_probe' atom.
-%
+-doc """
+Declares (synchronously) a new (basic) probe, to be seen as a result producer,
+and be created either from an actor or from a test case.
+
+- NameOptions is either:
+
+ - Name :: ustring(); i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of pairs,
+ in:
+
+  - {create_command_file_initially, boolean()}: if true, the gnuplot command
+  file will be written at probe start-up, thus preventing the taking into
+  account of any subsequent change in the rendering parameter (default: false)
+
+  - {deferred_data_writes, boolean()}: if true, received sample data will stored
+  in memory instead of being directly written to disk (default: false, as the
+  memory footprint might become significant) where Bool is true or false
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined,
+are specified as a (potentially empty) list of {ZoneName,
+{ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the name
+of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
+"Second curve") already defined in CurveNames, or a special atom designating the
+plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For example
+{"My Zone", {"First curve",'abscissa_bottom'}} defines a zone named "My Zone"
+and delimited by the curve named "First curve" and the abscissa axis (note: the
+order between the two elements defining a zone does not matter)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+- MaybeExtraSettingsTable is, if defined, a table holding extra probe settings
+of all sorts
+
+- MaybeTickDuration is, if defined, the actual duration (in simulation time) of
+a tick, for timestamped axis labels
+
+Returns either the PID of this newly created result probe (if the name of that
+probe is acknowledged as a wanted result by the result manager), or the
+'non_wanted_probe' atom.
+""".
 -spec declare_result_probe( name_options(), [ declared_curve_name() ],
 		[ declared_zone() ], title(), label(), label(),
-		maybe( settings_table() ), maybe( virtual_seconds() ) ) ->
+		option( settings_table() ), option( virtual_seconds() ) ) ->
 										static_return( probe_ref() ).
 declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 		MaybeXLabel, YLabel, MaybeExtraSettingsTable, MaybeTickDuration ) ->
@@ -2040,53 +2086,53 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
-% producer, and be created directly from a test case.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(), i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of { ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo} } entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% Returns either the PID of this newly created test probe (if the name of that
-% probe is acknowledged as a wanted result by the result manager), or the
-% 'non_wanted_probe' atom.
-%
+-doc """
+Declares (synchronously) a new (basic) probe, to be seen as a result producer,
+and be created directly from a test case.
+
+- NameOptions is either:
+
+ - Name :: ustring(), i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of pairs,
+ in:
+
+  - {create_command_file_initially, boolean()}: if true, the gnuplot command
+  file will be written at probe start-up, thus preventing the taking into
+  account of any subsequent change in the rendering parameter (default: false)
+
+  - {deferred_data_writes, boolean()}: if true, received sample data will stored
+  in memory instead of being directly written to disk (default: false, as the
+  memory footprint might become significant) where Bool is true or false
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined,
+are specified as a (potentially empty) list of { ZoneName,
+{ExtendedCurveNameOne,ExtendedCurveNameTwo} } entries, where ZoneName is the
+name of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
+"Second curve") already defined in CurveNames, or a special atom designating the
+plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For example
+{"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named "My Zone"
+and delimited by the curve named "First curve" and the abscissa axis (note: the
+order between the two elements defining a zone does not matter)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+Returns either the PID of this newly created test probe (if the name of that
+probe is acknowledged as a wanted result by the result manager), or the
+'non_wanted_probe' atom.
+""".
 -spec declare_test_probe( name_options(), [ declared_curve_name() ],
 		[ declared_zone() ], title(), label(), label() ) ->
 								static_return( probe_ref() ).
@@ -2102,11 +2148,12 @@ declare_test_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
-% producer, and be created directly from a simulation case.
-%
-% See declare_test_probe/6 (just above) for more information.
-%
+-doc """
+Declares (synchronously) a new (basic) probe, to be seen as a result producer,
+and be created directly from a simulation case.
+
+See declare_test_probe/6 (just above) for more information.
+""".
 -spec declare_case_probe( name_options(), [ declared_curve_name() ],
 			[ declared_zone() ], title(), label(), label() ) ->
 								static_return( probe_ref() ).
@@ -2121,14 +2168,15 @@ declare_case_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
-% producer, and be created directly from a simulation case.
-%
-% See declare_test_probe/6 (above) for more information.
-%
+-doc """
+Declares (synchronously) a new (basic) probe, to be seen as a result producer,
+and be created directly from a simulation case.
+
+See declare_test_probe/6 (above) for more information.
+""".
 -spec declare_test_probe( name_options(), [ declared_curve_name() ],
 		[ declared_zone() ], title(), label(), label(),
-		maybe( settings_table() ), maybe( virtual_seconds() ) ) ->
+		option( settings_table() ), option( virtual_seconds() ) ) ->
 								static_return( probe_ref() ).
 declare_test_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 		MaybeXLabel, YLabel, MaybeExtraSettingsTable, MaybeTickDuration ) ->
@@ -2141,14 +2189,15 @@ declare_test_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
-% producer, and be created directly from a simulation case.
-%
-% See declare_test_probe/6 (above) for more information.
-%
+-doc """
+Declares (synchronously) a new (basic) probe, to be seen as a result producer,
+and be created directly from a simulation case.
+
+See declare_test_probe/6 (above) for more information.
+""".
 -spec declare_case_probe( name_options(), [ declared_curve_name() ],
 		[ declared_zone() ], title(), label(), label(),
-		maybe( settings_table() ), maybe( virtual_seconds() ) ) ->
+		option( settings_table() ), option( virtual_seconds() ) ) ->
 								static_return( probe_ref() ).
 declare_case_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 		MaybeXLabel, YLabel, MaybeExtraSettingsTable, MaybeTickDuration ) ->
@@ -2196,9 +2245,10 @@ declare_case_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Deletes specified test probe (as returned by declare_test_probe/*,
-% whether actually created or not).
-%
+-doc """
+Deletes the specified test probe (as returned by declare_test_probe/*, whether
+actually created or not).
+""".
 -spec delete_test_probe( probe_ref() ) -> static_void_return().
 delete_test_probe( Any ) ->
 	% Synonyms:
@@ -2207,9 +2257,10 @@ delete_test_probe( Any ) ->
 
 
 
-% @doc Deletes specified case probe (as returned by declare_case_probe/*,
-% whether actually created or not).
-%
+-doc """
+Deletes the specified case probe (as returned by declare_case_probe/*, whether
+actually created or not).
+""".
 -spec delete_case_probe( probe_ref() ) -> static_void_return().
 delete_case_probe( non_wanted_probe ) ->
 	wooper:return_static_void();
@@ -2220,52 +2271,52 @@ delete_case_probe( Pid ) ->
 
 
 
-% @doc Creates in the current directory a facility probe, that is a lingering
-% probe, to be created (unilaterally) from a test case, and that will not be
-% considered as a result.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(), i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
-%
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% Returns the PID of this newly created facility probe.
-%
+-doc """
+Creates in the current directory a facility probe, that is a lingering probe, to
+be created (unilaterally) from a test case, and that will not be considered as a
+result.
+
+- NameOptions is either:
+
+ - Name :: ustring(), i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of pairs,
+ in:
+
+  - {create_command_file_initially, boolean()}: if true, the gnuplot command
+  file will be written at probe start-up, thus preventing the taking into
+  account of any subsequent change in the rendering parameter (default: false)
+
+  - {deferred_data_writes, boolean()}: if true, received sample data will stored
+  in memory instead of being directly written to disk (default: false, as the
+  memory footprint might become significant) where Bool is true or false
+
+- CurveNames :: [ustring()] is an (ordered) list containing the names (as plain
+strings) of each curve to be drawn (hence the probe will expect receiving data
+in the form of {Tick, {V1,V2,..}} afterwards). For example, CurveNames=["First
+curve", "Second curve"] will lead to expect receiving samples like: {MyTick,
+{ValueForFirstCurve, ValueForSecondCurve}}
+
+- Zones, which correspond to specific areas between two curves being defined,
+are specified as a (potentially empty) list of {ZoneName,
+{ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the name
+of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
+"Second curve") already defined in CurveNames, or a special atom designating the
+plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For example
+{"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named "My Zone"
+and delimited by the curve named "First curve" and the abscissa axis (note: the
+order between the two elements defining a zone does not matter)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+Returns the PID of this newly created facility probe.
+""".
 -spec create_facility_probe( name_options(), [ declared_curve_name() ],
 			[ declared_zone() ], title(), label(), label() ) ->
 									static_return( probe_pid() ).
@@ -2281,55 +2332,54 @@ create_facility_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Creates a facility probe in the specified directory, that is a lingering
-% probe, to be created (unilaterally) from a test case, and that will not be
-% considered as a result.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(), i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
-%
-% - CurveEntries :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - ZoneEntries, which correspond to specific areas between two curves being
-% defined, are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% - ProbeDirectory is the directory where the files for that probe will be
-% written
-%
-% Returns the PID of this newly created facility probe.
-%
+-doc """
+Creates a facility probe in the specified directory, that is a lingering probe,
+to be created (unilaterally) from a test case, and that will not be considered
+as a result.
+
+- NameOptions is either:
+
+ - Name :: ustring(), i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of pairs,
+ in:
+
+  - {create_command_file_initially, boolean()}: if true, the gnuplot command
+  file will be written at probe start-up, thus preventing the taking into
+  account of any subsequent change in the rendering parameter (default: false)
+
+  - {deferred_data_writes, boolean()}: if true, received sample data will stored
+  in memory instead of being directly written to disk (default: false, as the
+  memory footprint might become significant) where Bool is true or false
+
+- CurveEntries :: [ustring()] is an (ordered) list containing the names (as
+plain strings) of each curve to be drawn (hence the probe will expect receiving
+data in the form of {Tick, {V1,V2,..}} afterwards). For example,
+CurveNames=["First curve", "Second curve"] will lead to expect receiving samples
+like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
+
+- ZoneEntries, which correspond to specific areas between two curves being
+defined, are specified as a (potentially empty) list of {ZoneName,
+{ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the name
+of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
+"Second curve") already defined in CurveNames, or a special atom designating the
+plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For example
+{"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named "My Zone"
+and delimited by the curve named "First curve" and the abscissa axis (note: the
+order between the two elements defining a zone does not matter)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+- ProbeDirectory is the directory where the files for that probe will be written
+
+Returns the PID of this newly created facility probe.
+""".
 -spec create_facility_probe( name_options(), [ declared_curve_name() ],
 		[ declared_zone() ], title(), label(), label(), directory_path() ) ->
 									static_return( probe_pid() ).
@@ -2359,64 +2409,63 @@ create_facility_probe( Name, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Creates a facility probe in the specified directory, that is a lingering
-% probe, to be created (unilaterally) from a test case, and that will not be
-% considered as a result.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(), i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
-%
-% - CurveEntries :: [ustring()] is an (ordered) list containing the names (as
-% plain strings) of each curve to be drawn (hence the probe will expect
-% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
-% CurveNames=["First curve", "Second curve"] will lead to expect receiving
-% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
-%
-% - ZoneEntries, which correspond to specific areas between two curves being
-% defined, are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
-% - Title will be the graph (plot) title
-%
-% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% - ProbeDirectory is the directory where the files for that probe will be
-% written
-%
-% - MetaData is an option list that corresponds to extra, contextual information
-% that can be taken into account in the probe-generated data files
-%
-% - MaybeExtraSettingsTable is, if defined, a table holding extra probe settings
-% of all sorts (allows to parameter one's probe from its creation, rather than
-% sending a series of method calls to do the same once it has already been
-% created)
-%
+-doc """
+Creates a facility probe in the specified directory, that is a lingering probe,
+to be created (unilaterally) from a test case, and that will not be considered
+as a result.
+
+- NameOptions is either:
+
+ - Name :: ustring(), i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of pairs,
+ in:
+
+  - {create_command_file_initially, boolean()}: if true, the gnuplot command
+  file will be written at probe start-up, thus preventing the taking into
+  account of any subsequent change in the rendering parameter (default: false)
+
+  - {deferred_data_writes, boolean()}: if true, received sample data will stored
+  in memory instead of being directly written to disk (default: false, as the
+  memory footprint might become significant) where Bool is true or false
+
+- CurveEntries :: [ustring()] is an (ordered) list containing the names (as
+plain strings) of each curve to be drawn (hence the probe will expect receiving
+data in the form of {Tick, {V1,V2,..}} afterwards). For example,
+CurveNames=["First curve", "Second curve"] will lead to expect receiving samples
+like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
+
+- ZoneEntries, which correspond to specific areas between two curves being
+defined, are specified as a (potentially empty) list of {ZoneName,
+{ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the name
+of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
+"Second curve") already defined in CurveNames, or a special atom designating the
+plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For example
+{"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named "My Zone"
+and delimited by the curve named "First curve" and the abscissa axis (note: the
+order between the two elements defining a zone does not matter)
+
+- Title will be the graph (plot) title
+
+- MaybeXLabel (if any) will be the non-default label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+- ProbeDirectory is the directory where the files for that probe will be written
+
+- MetaData is an option list that corresponds to extra, contextual information
+that can be taken into account in the probe-generated data files
+
+- MaybeExtraSettingsTable is, if defined, a table holding extra probe settings
+of all sorts (allows to parameter one's probe from its creation, rather than
+sending a series of method calls to do the same once it has already been
+created)
+""".
 -spec create_facility_probe( name_options(), [ declared_curve_name() ],
 		[ declared_zone() ], title(), label(), label(), directory_path(),
-		meta_data(), maybe( settings_table() ) ) ->
+		meta_data(), option( settings_table() ) ) ->
 									static_return( probe_pid() ).
 create_facility_probe( { Name, Options }, CurveEntries, ZoneEntries, Title,
 		MaybeXLabel, YLabel, ProbeDirectory, MetaData,
@@ -2448,9 +2497,10 @@ create_facility_probe( Name, CurveEntries, ZoneEntries, Title,
 
 
 
-% @doc Deletes specified facility probe (knowing that the other kinds of probes
-% are results, and thus their life cycles are managed by the result manager).
-%
+-doc """
+Deletes the specified facility probe (knowing that the other kinds of probes are
+results, and thus their life cycles are managed by the result manager).
+""".
 -spec delete_facility_probe( probe_pid() ) -> static_void_return().
 delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
 
@@ -2468,17 +2518,18 @@ delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
 
 
 
-% @doc Sends the specified sample data for the specified tick (not tick offset)
-% to the targeted probe, based on the specified probe reference (first
-% parameter), which is the value returned by the result manager in answer to the
-% initial creation request for that probe.
-%
-% This parameter is either an actual PID (then data will be sent by this method)
-% or the 'non_wanted_probe' atom (as potentially sent back by the result
-% manager), in which case nothing will be done.
-%
-% Note: this static method is to be used for basic probes, not virtual ones.
-%
+-doc """
+Sends the specified sample data for the specified tick (not tick offset) to the
+targeted probe, based on the specified probe reference (first parameter), which
+is the value returned by the result manager in answer to the initial creation
+request for that probe.
+
+This parameter is either an actual PID (then data will be sent by this method)
+or the 'non_wanted_probe' atom (as potentially sent back by the result manager),
+in which case nothing will be done.
+
+Note: this static method is to be used for basic probes, not virtual ones.
+""".
 -spec send_data( probe_ref(), probe_tick(), sample_data() ) ->
 												static_void_return().
 send_data( _ProbeRef=non_wanted_probe, _Tick, _Samples )  ->
@@ -2491,19 +2542,20 @@ send_data( ProbePid, Tick, Samples ) when is_pid( ProbePid ) ->
 
 
 
-% @doc Sends the specified sample data once preprocessed to be stacked - that
-% is: additively compounded - typically to render stacked histograms (refer to
-% the "Regarding zones" section for further information) for the specified tick
-% (not tick offset) to the targeted probe, based on the specified probe
-% reference (first parameter), which is the value returned by the result manager
-% in answer to the initial creation request for that probe.
-%
-% This parameter is either an actual PID (then data will be sent by this method)
-% or the 'non_wanted_probe' atom (as potentially sent back by the result
-% manager), in which case nothing will be done.
-%
-% Note: this static method is to be used for basic probes, not virtual ones.
-%
+-doc """
+Sends the specified sample data once preprocessed to be stacked - that is:
+additively compounded - typically to render stacked histograms (refer to the
+"Regarding zones" section for further information) for the specified tick (not
+tick offset) to the targeted probe, based on the specified probe reference
+(first parameter), which is the value returned by the result manager in answer
+to the initial creation request for that probe.
+
+This parameter is either an actual PID (then data will be sent by this method)
+or the 'non_wanted_probe' atom (as potentially sent back by the result manager),
+in which case nothing will be done.
+
+Note: this static method is to be used for basic probes, not virtual ones.
+""".
 -spec send_data_to_accumulate( probe_ref(), probe_tick(), sample_data() ) ->
 												static_void_return().
 % Not reusing directly send_data/3 to avoid unnecessary accumulations:
@@ -2538,11 +2590,12 @@ accumulate( _Samples=[ S | T ], Sum, Acc ) ->
 
 
 
-% @doc Allows to define whether the probe report should be displayed to the
-% user, after generation.
-%
-% Now superseded by the use of the result manager.
-%
+-doc """
+Allows to define whether the probe report should be displayed to the user, after
+generation.
+
+Now superseded by the use of the result manager.
+""".
 -spec generate_report_for( probe_pid() ) -> static_void_return().
 generate_report_for( ProbePid ) ->
 
@@ -2566,7 +2619,7 @@ generate_report_for( ProbePid ) ->
 
 
 
-% @doc Returns an actual, suitable probe name deriving from the specified one.
+-doc "Returns an actual, suitable probe name deriving from the specified one.".
 -spec get_actual_probe_name( probe_name_init() ) ->
 											static_return( probe_name() ).
 get_actual_probe_name( { EmitterName, _EmitterCategorization } ) ->
@@ -2594,9 +2647,10 @@ get_actual_probe_name( EmitterName ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Waits for the feedback of the result manager, after this probe declared
-% itself to it (after a call to its declareProbe/4 request).
-%
+-doc """
+Waits for the feedback of the result manager, after this probe declared itself
+to it (after a call to its `declareProbe/4` request).
+""".
 -spec wait_result_declaration_outcome( probe_name(), wooper:state() ) ->
 												wooper:state().
 wait_result_declaration_outcome( ProbeName, State ) ->
@@ -2632,14 +2686,15 @@ wait_result_declaration_outcome( ProbeName, State ) ->
 
 
 
-% @doc Returns a plot_settings record with specified information (expressed as
-% plain strings) and default values for the other fields, in the context of a
-% probe (e.g. with simulation information).
-%
-% Therefore better here than in plot_utils.
-%
+-doc """
+Returns a plot_settings record with specified information (expressed as plain
+strings) and default values for the other fields, in the context of a probe
+(e.g. with simulation information).
+
+Therefore better here than in plot_utils.
+""".
 -spec get_plot_settings( any_title(), any_label(), any_label(),
-						 maybe( gnuplot_version() ) ) -> plot_settings().
+						 option( gnuplot_version() ) ) -> plot_settings().
 get_plot_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
 
 	{ Xtick, KeyOption } = plot_utils:get_basic_options( MaybeGnuplotVersion ),
@@ -2669,10 +2724,10 @@ get_plot_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
 
 
 
-% @doc Interprets the creation-time probe options:
+-doc "Interprets the creation-time probe options.".
 -spec interpret_options( probe_options() ) ->
-			{ boolean(), boolean(), boolean(), maybe( directory_path() ),
-			  maybe( executable_path() ), maybe( probe_options() ) }.
+			{ boolean(), boolean(), boolean(), option( directory_path() ),
+			  option( executable_path() ), option( probe_options() ) }.
 interpret_options( _ProbeOptions=#probe_options{
 			create_command_file_initially=CreateCommandFileInitially,
 			deferred_data_writes=DeferredDataWrites,
@@ -2723,9 +2778,10 @@ interpret_options( _ProbeOptions=#probe_options{
 
 
 
-% @doc Switches the current plot style of this probe to "boxes", with relevant
-% other settings.
-%
+-doc """
+Switches the current plot style of this probe to `"boxes"`, with relevant other
+settings.
+""".
 -spec switchToBoxes( wooper:state() ) -> oneway_return().
 switchToBoxes( State ) ->
 
@@ -2744,11 +2800,11 @@ switchToBoxes( State ) ->
 
 
 
-% @doc Updates the specified probe settings with any extra settings specified.
--spec apply_extra_settings( maybe( settings_table() ), plot_settings(),
+-doc "Updates the specified probe settings with any extra settings specified.".
+-spec apply_extra_settings( option( settings_table() ), plot_settings(),
 							wooper:state() ) ->
-			{ plot_settings(), maybe( [ extra_curve_settings() ] ),
-			  maybe( [ extra_zone_settings() ] ) }.
+			{ plot_settings(), option( [ extra_curve_settings() ] ),
+			  option( [ extra_zone_settings() ] ) }.
 apply_extra_settings( _MaybeExtraSettingsTable=undefined, ProbeSettings,
 					  _State ) ->
 	% Not even defaults are set:
@@ -2812,7 +2868,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 		{ CWidth, CHeight } when is_integer( CWidth )
 								 andalso is_integer( CHeight ) ->
 			StyleProbeSettings#plot_settings{ canvas_width=CWidth,
-											   canvas_height=CHeight };
+                                              canvas_height=CHeight };
 
 		OtherCSize ->
 			throw( { invalid_canvas_size, OtherCSize } )
@@ -2912,7 +2968,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 
 
-% @doc Updates the probe settings based on specified tick options.
+-doc "Updates the probe settings based on the specified tick options.".
 -spec update_tick_options( { tick_option(), tick_option() },
 						   plot_settings() ) -> plot_settings().
 update_tick_options( _TickOptions={ XtickOpt, YtickOpt },
@@ -2931,8 +2987,8 @@ update_tick_options( TickOptions, _ProbeSettings ) ->
 
 
 
-% @doc Returns the string setting corresponding to specified tick option.
--spec get_tick_option( maybe( tick_option() ) ) -> ustring().
+-doc "Returns the string setting corresponding to any specified tick option.".
+-spec get_tick_option( option( tick_option() ) ) -> ustring().
 get_tick_option( _MaybeTickOption=undefined ) ->
 	"";
 
@@ -2947,7 +3003,7 @@ get_tick_option( OtherTickOption ) ->
 
 
 
-% @doc Updates the probe settings based on specified ticks options.
+-doc "Updates the probe settings based on the specified ticks options.".
 -spec update_ticks_options( { ticks_option(), ticks_option() },
 							plot_settings() ) -> plot_settings().
 update_ticks_options( _TicksOptions={ MaybeXticksOpt, MaybeYticksOpt },
@@ -2977,11 +3033,12 @@ update_ticks_options( _TicksOptions={ MaybeXticksOpt, MaybeYticksOpt },
 
 
 
-% @doc Updates the curve entries with any specified extra settings, to be
-% specified according to the current order of curves.
-%
+-doc """
+Updates the curve entries with any extra settings, to be specified according to
+the current order of curves.
+""".
 -spec update_curve_entries( [ curve_entry() ],
-			maybe( [ extra_curve_settings() ] ) ) -> [ curve_entry() ].
+			option( [ extra_curve_settings() ] ) ) -> [ curve_entry() ].
 update_curve_entries( CurveEntries, _MaybeExtraCurveSettings=undefined ) ->
 	CurveEntries;
 
@@ -3026,11 +3083,12 @@ update_curve_entry( _CurveE, ExtraSet ) ->
 
 
 
-% @doc Updates the zone entries with any specified extra settings, to be
-% specified according to the current order of zones.
-%
+-doc """
+Updates the zone entries with any extra settings, to be specified according to
+the current order of zones.
+""".
 -spec update_zone_entries( [ zone_entry() ],
-			maybe( [ extra_zone_settings() ] ) ) -> [ zone_entry() ].
+			option( [ extra_zone_settings() ] ) ) -> [ zone_entry() ].
 update_zone_entries( ZoneEntries, _MaybeExtraZoneSettings=undefined ) ->
 	ZoneEntries;
 
@@ -3084,7 +3142,7 @@ update_zone_entry( _ZoneE, ExtraSet ) ->
 
 
 
-% @doc Checks that the specified variable is a boolean.
+-doc "Checks that the specified variable is a boolean.".
 check_is_boolean( Var, _VarName ) when is_boolean( Var ) ->
 	ok;
 
@@ -3093,12 +3151,13 @@ check_is_boolean( Var, VarName ) ->
 
 
 
-% @doc Generates the appropriate gnuplot command file.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Generates the appropriate gnuplot command file.
+
+Returns an updated state.
+
+(helper)
+""".
 -spec generate_command_file( wooper:state() ) -> wooper:state().
 generate_command_file( State ) ->
 
@@ -3137,12 +3196,13 @@ generate_command_file( State ) ->
 
 
 
-% @doc Generates unconditionally the appropriate gnuplot command file.
-%
-% Returns the name, as a plain string, of the command file.
-%
-% Helper function defined to be shared with the data-logger.
-%
+-doc """
+Generates unconditionally the appropriate gnuplot command file.
+
+Returns the name, as a plain string, of the command file.
+
+Helper function defined to be shared with the data-logger.
+""".
 -spec generate_command_file( ustring(), plot_settings(), [ curve_entry() ],
 		[ zone_entry() ], boolean(), directory_path() ) -> file_name().
 generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
@@ -3258,17 +3318,18 @@ generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
 
 
 
-% @doc Returns the full path to the command file corresponding to specified
-% settings.
-%
-% (helper)
-%
+-doc """
+Returns the full path to the command file corresponding to the specified
+settings.
+
+(helper)
+""".
 get_command_filename( Name, ProbeDir ) ->
 	file_utils:join( ProbeDir, get_command_filename( Name ) ).
 
 
 
-% @doc Generates the appropriate file containing probe data.
+-doc "Generates the appropriate file containing probe data.".
 generate_data_file( State ) ->
 
 	%trace_utils:debug_fmt( "Generating data file '~ts'.",
@@ -3317,7 +3378,7 @@ generate_data_file( State ) ->
 
 
 
-% @doc Writes the probe header to the data file.
+-doc "Writes the probe header to the data file.".
 -spec write_header( file(), [ curve_entry() ], [ zone_entry() ],
 					plot_settings(), probe_name(), meta_data() ) -> void().
 write_header( File, CurveEntries, ZoneEntries, Settings, Name, Metadata ) ->
@@ -3400,11 +3461,12 @@ format_zone_info(
 
 
 
-% @doc Triggers unconditionally an update of the command file, if requested, and
-% returns an updated state.
-%
-% (helper)
-%
+-doc """
+Triggers unconditionally an update of the command file, if requested, and
+returns an updated state.
+
+(helper)
+""".
 trigger_command_file_update( _UpdateRequested=false, State ) ->
 	State;
 
@@ -3415,21 +3477,21 @@ trigger_command_file_update( _UpdateRequested=true, State ) ->
 
 
 
-% @doc Returns the gnuplot command filename.
+-doc "Returns the gnuplot command filename.".
 -spec get_command_filename( probe_name() ) -> file_name().
 get_command_filename( Name ) ->
 	file_utils:convert_to_filename( Name ++ ".p" ).
 
 
 
-% @doc Returns the gnuplot data filename.
+-doc "Returns the gnuplot data filename.".
 -spec get_data_filename( probe_name() ) -> file_name().
 get_data_filename( Name ) ->
 	file_utils:convert_to_filename( Name ++ ".dat" ).
 
 
 
-% @doc Returns the report filename.
+-doc "Returns the report filename.".
 -spec get_report_filename( probe_name() ) -> file_name().
 get_report_filename( Name ) ->
 	file_utils:convert_to_filename( Name ++ ".png" ).
@@ -3437,9 +3499,9 @@ get_report_filename( Name ) ->
 
 
 
-% @doc Returns a format string suitable for the writing of corresponding
-% samples.
-%
+-doc """
+Returns a format string suitable for the writing of the corresponding samples.
+""".
 -spec forge_format_string_for( curve_count() ) -> format_string().
 forge_format_string_for( CurveCount ) ->
 
@@ -3447,11 +3509,11 @@ forge_format_string_for( CurveCount ) ->
 	% timestamp, if available), then as many values as needed (some of which
 	% being possibly 'undefined', hence '~p'):
 	%
-	"~ts " ++ lists:flatten( lists:duplicate( CurveCount, "~w " ) )	++ " ~n".
+	"~ts " ++ lists:flatten( lists:duplicate( CurveCount, "~w " ) ) ++ " ~n".
 
 
 
-% @doc Formats specified rows according to specified format.
+-doc "Formats the specified rows according to the specified format.".
 format_rows( DataTable, CurveCount, RowFormatString ) ->
 
 	%trace_utils:debug_fmt(
@@ -3477,10 +3539,11 @@ format_rows( _DataTable=[ { TimestampBinStr, Sample } | T ], CurveCount,
 
 
 
-% @doc Returns a formatted version of specified sample row.
-%
-% Defined also for reuse (e.g. by the datalogger).
-%
+-doc """
+Returns a formatted version of the specified sample row.
+
+Defined also for reuse (e.g. by the datalogger).
+""".
 -spec format_row( ustring(), sample_data(), curve_count(), format_string() ) ->
 			ustring().
 format_row( TimestampString, Sample, CurveCount, RowFormatString ) ->
@@ -3504,21 +3567,21 @@ format_row( TimestampString, Sample, CurveCount, RowFormatString ) ->
 
 		LargerCount ->
 			throw( { too_many_sample_values, {got,LargerCount},
-						{expected,CurveCount}, {sample,Sample},
-						{timestamp,TimestampString} } )
+					{expected,CurveCount}, {sample,Sample},
+					{timestamp,TimestampString} } )
 
 	end.
 
 
 
-% @doc Used by third-party modules.
+-doc "Used by third-party modules.".
 -spec write_row( file(), timestamp_bin_string(), sample_data() ) ->	void().
 write_row( File, TimestampBinString, DataTuple ) ->
 	RowFormatString = forge_format_string_for( size( DataTuple ) ),
 	write_row( File, RowFormatString, TimestampBinString, DataTuple ).
 
 
-% @doc Used for direct data writing.
+-doc "Used for direct data writing.".
 -spec write_row( file(), format_string(), timestamp_bin_string(),
 				 sample_data() ) -> void().
 write_row( File, RowFormatString, TimestampBinString, DataTuple ) ->
@@ -3527,7 +3590,7 @@ write_row( File, RowFormatString, TimestampBinString, DataTuple ) ->
 
 
 
-% @doc Creates or updates an entry for the specified curve.
+-doc "Creates or updates an entry for the specified curve.".
 -spec setFilledCurvesOptions( wooper:state(), declared_curve_name(),
 							  curve_index() ) -> oneway_return().
 setFilledCurvesOptions( State, CurveName, ColumnSpecifier ) ->
@@ -3537,7 +3600,7 @@ setFilledCurvesOptions( State, CurveName, ColumnSpecifier ) ->
 
 
 
-% @doc Creates or updates an entry for the specified curve.
+-doc "Creates or updates an entry for the specified curve.".
 -spec setFilledCurvesOptions( wooper:state(), declared_curve_name(),
 							  curve_index(), boolean() ) -> oneway_return().
 setFilledCurvesOptions( State, CurveName, ColumnSpecifier, GenerateFile ) ->
@@ -3577,12 +3640,13 @@ setFilledCurvesOptions( State, CurveName, ColumnSpecifier, GenerateFile ) ->
 
 
 
-% @doc Actual (synchronous) generation of the probe report.
-%
-% Returns an updated state.
-%
-% (helper function)
-%
+-doc """
+Actual (synchronous) generation of the probe report.
+
+Returns an updated state.
+
+(helper function)
+""".
 generate_report( Name, State ) ->
 
 	false = ?getAttr(result_collected),
@@ -3645,14 +3709,13 @@ generate_report( Name, State ) ->
 	Command = GnuplotPath ++ " '" ++ CommandFilename ++ "'",
 
 	OutputMessage = case system_utils:run_command( Command,
-								_Environment=[], _WorkingDir=ProbeDir ) of
+			_Environment=[], _WorkingDir=ProbeDir ) of
 
 		{ _ReturnCode=0, _CmdOutput=[] } ->
 			[];
 
 
 		{ _ReturnCode=0, CmdOutput } ->
-
 			?warning_fmt( "Report generation succeeded for '~ts', but "
 				"it output following information: ~ts", [ Name, CmdOutput ] ),
 
@@ -3660,7 +3723,6 @@ generate_report( Name, State ) ->
 
 
 		{ ReturnCode, CmdOutput } ->
-
 			?error_fmt( "Report generation failed for '~ts' (code: ~B); "
 				"following information reported: ~ts",
 				[ Name, ReturnCode, CmdOutput ] ),
@@ -3673,39 +3735,38 @@ generate_report( Name, State ) ->
 	ResultPath = file_utils:join( ProbeDir, TargetFilename ),
 
 	file_utils:is_existing_file( ResultPath ) orelse
-		begin
-			case OutputMessage of
+		case OutputMessage of
 
-				[] ->
+			[] ->
 
-					?error_fmt( "Report generation failed for '~ts' "
-						"(result file '~ts' not available, no "
-						"message output)", [ Name, ResultPath ] ),
+				?error_fmt( "Report generation failed for '~ts' "
+					"(result file '~ts' not available, no "
+					"message output)", [ Name, ResultPath ] ),
 
-					throw( { report_generation_failed_for, Name } );
+				throw( { report_generation_failed_for, Name } );
 
-				_ ->
-					?error_fmt( "Report generation failed for '~ts' "
-						"(result file '~ts' not available, message "
-						"output: '~ts')",
-						[ Name, ResultPath, OutputMessage ] ),
+			_ ->
+				?error_fmt( "Report generation failed for '~ts' "
+					"(result file '~ts' not available, message "
+					"output: '~ts')",
+					[ Name, ResultPath, OutputMessage ] ),
 
-					throw( { report_generation_failed_for, Name,
-							 OutputMessage } )
-			end
-
+				throw( { report_generation_failed_for, Name,
+						 OutputMessage } )
 		end,
+
 
 	CommandState.
 
 
 
-% @doc Ensures that the command file for this probe is available.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Ensures that the command file for this probe is available.
+
+Returns an updated state.
+
+(helper)
+""".
 ensure_command_file_available( State ) ->
 
 	Name = text_utils:binary_to_string( ?getAttr(name) ),
@@ -3727,10 +3788,11 @@ ensure_command_file_available( State ) ->
 
 
 
-% @doc Ensures that the data file for this probe is available.
-%
-% (const helper function, not returning anything useful)
-%
+-doc """
+Ensures that the data file for this probe is available.
+
+(const helper function, not returning anything useful)
+""".
 ensure_data_file_available( State ) ->
 
 	case ?getAttr(deferred_data_writes) of
@@ -3756,15 +3818,16 @@ ensure_data_file_available( State ) ->
 
 
 
-% @doc Triggered just before serialisation.
-%
-% The state explicitly returned here is dedicated to serialisation (generally
-% the actual instance state is not impacted by serialisation and thus this
-% request is often const).
-%
-% We are to fix file handles here. The PIDs (none is internal to a probe) will
-% be converted later by the entry transformer.
-%
+-doc """
+Triggered just before serialisation.
+
+The state explicitly returned here is dedicated to serialisation (generally the
+actual instance state is not impacted by serialisation and thus this request is
+often const).
+
+We are to fix file handles here. The PIDs (none is internal to a probe) will be
+converted later by the entry transformer.
+""".
 -spec onPreSerialisation( wooper:state(), user_data() ) ->
 		const_request_return( { wooper:state(), user_data(), extra_data() } ).
 onPreSerialisation( State, UserData ) ->
@@ -3826,12 +3889,13 @@ onPreSerialisation( State, UserData ) ->
 
 
 
-% @doc Triggered at the end of the deserialisation step.
-%
-% Here we mostly perform the reverse operations done in post_serialise_hook/3.
-%
+-doc """
+Triggered at the end of the deserialisation step.
+
+Here we mostly perform the reverse operations done in post_serialise_hook/3.
+""".
 -spec onPostDeserialisation( wooper:state(), user_data() ) ->
-			request_return( user_data() ).
+                                            request_return( user_data() ).
 onPostDeserialisation( _State, _UserData ) ->
 	% Reuse extra_data to restore probe files.
 	throw( fixme_not_implemented_yet ).
@@ -3841,7 +3905,7 @@ onPostDeserialisation( _State, _UserData ) ->
 % Helper section.
 
 
-% @doc Checks that the (specified) probe directory is indeed existing.
+-doc "Checks that the (specified) probe directory is indeed existing.".
 check_probe_directory( ProbeDir ) ->
 
 	% No orelse, otherwise confuses our parse transform:

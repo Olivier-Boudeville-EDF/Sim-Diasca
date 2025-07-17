@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc Unit tests for the code utils toolbox.
-%
-% See the code_utils.erl tested module.
-%
 -module(code_utils_test).
+
+-moduledoc """
+Unit tests for the **code utils** toolbox.
+
+See the code_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:

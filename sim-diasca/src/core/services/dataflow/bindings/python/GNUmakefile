@@ -59,6 +59,7 @@ SRC_ARCHIVE_EXCLUDED := *env* *__pycache__*
 DOC_ARCHIVE_CONTENTS := $(ARCHIVE_BASENAME)
 
 
+all:
 
 # Generates the archive of the sources of the (internal, not standalone)
 # dataflow API:
@@ -110,7 +111,7 @@ clean-doc: clean-doc-local
 clean-doc-local:
 	@echo "   Cleaning the generated API documentation"
 	-@/bin/rm -f $(INTERNAL_SRC_ARCHIVE_NAME) $(STANDALONE_SRC_ARCHIVE_NAME) \
-				  $(DOC_ARCHIVE_NAME) $(DOC_PDF_NAME) doxygen_sqlite3.db
+				 $(DOC_ARCHIVE_NAME) $(DOC_PDF_NAME) doxygen_sqlite3.db
 	-@/bin/rm -rf latex html
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,15 +19,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Unit tests for the <b>rendering of (basic, generic) probes</b>.
-%
-% This is not an integration test like class_Probe_test, we just focus on the
-% probe own behaviour, mostly in terms of rendering.
-%
-% See the class_Probe.erl module.
-%
 -module(probe_rendering_test).
+
+-moduledoc """
+Unit tests for the **rendering of (basic, generic) probes**.
+
+This is not an integration test like class_Probe_test, we just focus on the
+probe own behaviour, mostly in terms of rendering.
+
+See the class_Probe.erl module.
+""".
+
 
 
 % To avoid that Dialyzer resolves UseTickOffsets statically:
@@ -47,7 +49,7 @@
 
 
 
-% @doc Runs the tests.
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 	run( _UseTickOffsets=true ).
@@ -228,10 +230,11 @@ test_zone_rendering( UseTickOffsets ) ->
 
 
 
-% @doc UseTickOffsets tells whether we should display full ticks or tick offsets
-% (note: their origin can be freely defined, there are not necessarily
-% simulation tick offsets):
-%
+-doc """
+UseTickOffsets tells whether we should display full ticks or tick offsets (note:
+their origin can be freely defined, there are not necessarily simulation tick
+offsets).
+""".
 run( UseTickOffsets ) ->
 
 	?test_start,

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,29 +25,29 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, December 27, 2021.
 
-
-% @doc Testing of the <b>OpenGL support in a MVC setting</b>, evaluated
-% concurrently at fixed, independent frequencies; in practice displays a
-% textured rotating square.
-%
-% It is therefore a non-interactive, active test (the square is scheduled, so
-% that it spontaneously rotates) whose main interest is to show a simple yet
-% generic, appropriate structure in order to properly initialise the GUI and
-% OpenGL, handle rendering, resizing and closing, and integrate a MVC-style
-% (Model-View-Controller) parallel logic, with the model scheduling mostly
-% uncoupled from the one of the rendering, i.e. a Model running in a different
-% process from the View and from the test itself. This test being
-% non-interactive, only a very basic controller exists, notably to listen to
-% window-related events.
-%
-% This test relies on the OpenGL 1.x compatibility mode, as opposed to more
-% modern versions of OpenGL (e.g. 3.1) that rely on shaders and GLSL.
-%
-% See the gui_opengl.erl tested module and
-% https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller for the
-% MVC pattern.
-%
 -module(gui_opengl_mvc_test).
+
+-moduledoc """
+Testing of the **OpenGL support in a MVC setting**, evaluated concurrently at
+fixed, independent frequencies; in practice displays a textured rotating square.
+
+It is therefore a non-interactive, active test (the square is scheduled, so that
+it spontaneously rotates) whose main interest is to show a simple yet generic,
+appropriate structure in order to properly initialise the GUI and OpenGL, handle
+rendering, resizing and closing, and integrate a MVC-style
+(Model-View-Controller) parallel logic, with the model scheduling mostly
+uncoupled from the one of the rendering, i.e. a Model running in a different
+process from the View and from the test itself. This test being non-interactive,
+only a very basic controller exists, notably to listen to window-related events.
+
+This test relies on the OpenGL 1.x compatibility mode, as opposed to more modern
+versions of OpenGL (e.g. 3.1) that rely on shaders and GLSL.
+
+See the gui_opengl.erl tested module and
+<https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller> for the
+MVC pattern.
+""".
+
 
 
 % Implementation notes:
@@ -74,11 +74,15 @@
 	%
 	scheduling_period :: milliseconds() } ).
 
+
+-doc """
+Stores the current state of the Model, that is its logic, which here mostly
+manages the current rotating angle of the square.
+
+The model does not know any controller or view, nor the test itself.
+""".
 -type model_state() :: #model_state{}.
-% Stores the current state of the Model, that is its logic, which here mostly
-% manages the current rotating angle of the square.
-%
-% The model does not know any controller or view, nor the test itself.
+
 
 
 -record( view_state, {
@@ -97,7 +101,7 @@
 	% (keeping around this texture is not necessary; a mere atom could have
 	% sufficed)
 	%
-	opengl_state :: maybe( texture() ),
+	opengl_state :: option( texture() ),
 
 	% The model must be known, in order to fetch relevant information from it.
 	model_pid :: model_pid(),
@@ -113,11 +117,15 @@
 	%
 	scheduling_period :: milliseconds() } ).
 
+
+
+-doc """
+Stores the current state of the View, that is all relevant rendering
+information.
+
+The view mostly knowns the model.
+""".
 -type view_state() :: #view_state{}.
-% Stores the current state of the View, that is all relevant rendering
-% information.
-%
-% The view mostly knowns the model.
 
 
 
@@ -134,21 +142,27 @@
 	%
 	test_pid :: test_pid() } ).
 
+
+
+-doc """
+Stores the current state of the Controller, that is its inputs.
+
+The controller knows the view and the test, so that it can drive the termination
+and notify them of it.
+
+It also knows the model, even if it is not necessary for this test (as no user
+input is to impact the model).
+""".
 -type controller_state() :: #controller_state{}.
-% Stores the current state of the Controller, that is its inputs.
-%
-% The controller knows the view and the test, so that it can drive the
-% termination and notify them of it.
-%
-% It also knows the model, even if it is not necessary for this test (as no user
-% input is to impact the model).
 
 
+
+-doc "PID of the main test process.".
 -type test_pid() :: pid().
-% PID of the main test process.
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
 
@@ -159,36 +173,13 @@
 -type view_pid() :: gui:view_pid().
 -type controller_pid() :: gui:controller_pid().
 
-
 -type gl_canvas() :: gui_opengl:gl_canvas().
 -type gl_context() :: gui_opengl:gl_context().
 -type texture() :: gui_opengl:texture().
 
 
 
-% @doc Runs the OpenGL MVC test if possible.
--spec run_opengl_mvc_test() -> void().
-run_opengl_mvc_test() ->
-
-	test_facilities:display( "~nStarting the OpenGL MVC test." ),
-
-	case gui_opengl:get_glxinfo_strings() of
-
-		undefined ->
-			test_facilities:display( "No proper OpenGL support detected on host"
-				" (no GLX visual reported), thus no test performed." );
-
-		GlxInfoStr ->
-			test_facilities:display( "Checking whether OpenGL hardware "
-				"acceleration is available: ~ts",
-				[ gui_opengl:is_hardware_accelerated( GlxInfoStr ) ] ),
-			run_actual_test()
-
-	end.
-
-
-
-% @doc Runs the actual test.
+-doc "Runs the actual test.".
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
@@ -253,7 +244,7 @@ run_actual_test() ->
 % Model section.
 
 
-% @doc Runs the model; initialises it and runs its main loop.
+-doc "Runs the model; initialises it and runs its main loop.".
 -spec run_model( any_hertz() ) -> no_return().
 run_model( EvalFrequency ) ->
 
@@ -272,7 +263,7 @@ run_model( EvalFrequency ) ->
 
 
 
-% @doc Main loop of the model logic.
+-doc "Main loop of the model logic.".
 -spec model_main_loop( model_state() ) -> no_return().
 model_main_loop( ModelState=#model_state{ spin_angle=Angle,
 										  scheduling_period=MsPeriod } ) ->
@@ -316,7 +307,7 @@ model_main_loop( ModelState=#model_state{ spin_angle=Angle,
 
 
 
-% @doc Handles any model-level pending requests.
+-doc "Handles any model-level pending requests.".
 -spec handle_pending_model_requests( model_state() ) ->
 				model_state() | 'model_terminated'.
 handle_pending_model_requests( ModelState ) ->
@@ -358,10 +349,12 @@ handle_pending_model_requests( ModelState ) ->
 
 % View section.
 
-% @doc Runs the view; initialises it and runs its main loop.
-%
-% No OpenGL outside of the view!
-%
+
+-doc """
+Runs the view; initialises it and runs its main loop.
+
+No OpenGL outside of the view!
+""".
 -spec run_view( any_hertz(), model_pid(), controller_pid() ) -> no_return().
 run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 
@@ -394,16 +387,17 @@ run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 
 
 
-% @doc Main loop of the view logic.
+
+% Main loop of the view logic.
 
 
+-doc """
+Creates the initial test GUI: a main frame containing an OpenGL canvas is
+associated, in which an OpenGL context is created.
 
-% @doc Creates the initial test GUI: a main frame containing an OpenGL canvas is
-% associated, in which an OpenGL context is created.
-%
-% Once the rendering is done, the buffers are swapped and the current one is
-% displayed.
-%
+Once the rendering is done, the buffers are swapped and the current one is
+displayed.
+""".
 -spec init_test_gui() -> view_state().
 init_test_gui() ->
 
@@ -433,9 +427,10 @@ init_test_gui() ->
 
 
 
-% @doc The main loop of the test view, driven by the receiving of MyriadGUI
-% rendering-related messages.
-%
+-doc """
+The main loop of the test view, driven by the receiving of MyriadGUI
+rendering-related messages.
+""".
 -spec view_main_loop( view_state() ) -> void().
 view_main_loop( ViewState=#view_state{ scheduling_period=MsPeriod } ) ->
 
@@ -462,7 +457,7 @@ view_main_loop( ViewState=#view_state{ scheduling_period=MsPeriod } ) ->
 
 
 
-% @doc Handles any view-level pending events.
+-doc "Handles any view-level pending events.".
 -spec handle_pending_view_events( view_state() ) ->
 									view_state() | 'view_terminated'.
 %handle_pending_view_events( ViewState=#view_state{ main_frame=MainFrame } ) ->
@@ -570,7 +565,9 @@ handle_pending_view_events( ViewState ) ->
 
 
 
-% @doc Sets up OpenGL, once for all, once a proper OpenGL context is available.
+-doc """
+Sets up OpenGL, once for all, once a proper OpenGL context is available.
+""".
 -spec initialise_opengl( view_state() ) -> view_state().
 initialise_opengl( ViewState=#view_state{ canvas=GLCanvas,
 										  context=GLContext,
@@ -616,8 +613,8 @@ initialise_opengl( ViewState=#view_state{ canvas=GLCanvas,
 	gl:enable( ?GL_TEXTURE_2D ),
 
 	ImagePath = file_utils:join(
-		gui_opengl_direct_integration_test:get_test_image_directory(),
-		"myriad-space-time-referential.png" ),
+		gui_opengl_for_testing:get_test_image_directory(),
+		"myriad-space-time-coordinate-system.png" ),
 
 	% Not directly 'Texture = gui_texture:load_from_file(ImgPath)' as we want to
 	% flip the image:
@@ -636,10 +633,11 @@ initialise_opengl( ViewState=#view_state{ canvas=GLCanvas,
 
 
 
-% @doc Managing a resizing of the main frame.
-%
-% OpenGL context expected here to have already been set.
-%
+-doc """
+Managing a resizing of the main frame.
+
+OpenGL context expected here to have already been set.
+""".
 -spec on_main_frame_resized( view_state() ) -> view_state().
 on_main_frame_resized( ViewState=#view_state{ canvas=GLCanvas } ) ->
 
@@ -681,7 +679,9 @@ on_main_frame_resized( ViewState=#view_state{ canvas=GLCanvas } ) ->
 
 
 
-% @doc Performs a ("pure OpenGL") rendering of the view.
+-doc """
+Performs a ("pure OpenGL") rendering of the view.
+""".
 -spec render_view( view_state() ) -> void().
 render_view( #view_state{ opengl_state=undefined } ) ->
 	% Not ready yet, no GL context available before the main frame is shown:
@@ -766,13 +766,14 @@ render_view( #view_state{ canvas=GLCanvas,
 % Controller section.
 
 
-% @doc Runs the controller; initialises it and runs its main loop.
-%
-% No specific polling frequency applies.
-%
-% A more complex controller would manage user entries (mouse, keyboard,
-% joystick, etc.).
-%
+-doc """
+Runs the controller; initialises it and runs its main loop.
+
+No specific polling frequency applies.
+
+A more complex controller would manage user entries (mouse, keyboard, joystick,
+etc.).
+""".
 -spec run_controller( model_pid(), test_pid() ) -> no_return().
 run_controller( ModelPid, TestPid ) ->
 
@@ -810,9 +811,10 @@ run_controller( ModelPid, TestPid ) ->
 
 
 
-% @doc The main loop of the controller process, driven by the receiving of
-% MyriadGUI messages relating to user inputs.
-%
+-doc """
+The main loop of the controller process, driven by the receiving of MyriadGUI
+messages relating to user inputs.
+""".
 -spec controller_main_loop( controller_state() ) -> void().
 controller_main_loop( ControllerState ) ->
 
@@ -866,21 +868,13 @@ controller_main_loop( ControllerState ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
 	test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
-
-		true ->
-			test_facilities:display(
-				"(not running the OpenGL MVC test, being in batch mode)" );
-
-		false ->
-			run_opengl_mvc_test()
-
-	end,
+	gui_opengl_for_testing:can_be_run( "the OpenGL MVC test" ) =:= yes
+		andalso run_actual_test(),
 
 	test_facilities:stop().

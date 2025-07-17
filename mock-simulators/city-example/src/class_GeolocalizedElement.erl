@@ -1,28 +1,30 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Class modelling any model element that can be <b>geolocalized in the
-% simulation world</b>.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
+
 -module(class_GeolocalizedElement).
+
+-moduledoc """
+Class modelling any model element that can be **geolocalized in the simulation
+world**.
+""".
 
 
 -define( class_description,
@@ -44,12 +46,20 @@
 -define( trace_emitter_categorization, "City-example.GeolocalizedElement" ).
 
 
+-doc "PID of a Geolocalized instance.".
+-type geolocalized_pid() :: pid().
+
+-export_type([ geolocalized_pid/0 ]).
+
+
 % Allows to define WOOPER base variables and methods for that class:
 -include_lib("wooper/include/wooper.hrl").
 
 
 
-% Shorthands:
+
+
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -68,17 +78,18 @@
 
 
 
-% @doc Creates a geolocalized element.
-%
-% The only parameter is the starting location, which is either:
-%
-%  - GeoContainerPid :: class_GeoContainer:container_pid() the PÏD of a
-%  geo-container instance in which this element will be located initially
-%
-%  - {CoordinateType, Location}
-%
-%  - Location, where Location is implicitly a WGS84 polar coordinate
-%
+-doc """
+Creates a geolocalized element.
+
+The only parameter is the starting location, which is either:
+
+ - GeoContainerPid :: class_GeoContainer:container_pid() the PÏD of a
+ geo-container instance in which this element will be located initially
+
+ - {CoordinateType, Location}
+
+ - Location, where Location is implicitly a WGS84 polar coordinate
+""".
 -spec construct( wooper:state(), class_GIS:location() ) -> wooper:state().
 construct( State, GeoContainerPid ) when is_pid( GeoContainerPid ) ->
 	enter_in( GeoContainerPid, State );
@@ -106,9 +117,9 @@ construct( State, ImplicitlyWGS84PolarCoord ) ->
 % Methods section.
 
 
-% @doc Returns the current location of this element (possibly the PID of a
-% container).
-%
+-doc """
+Returns the current location of this element (possibly the PID of a container).
+""".
 -spec getLocation( wooper:state() ) ->
 							const_request_return( class_GIS:geo_coordinate() ).
 getLocation( State ) ->
@@ -116,7 +127,7 @@ getLocation( State ) ->
 
 
 
-% @doc Returns the current actual (raw) location of this element.
+-doc "Returns the current actual (raw) location of this element.".
 -spec getActualLocation( wooper:state() ) ->
 						 const_request_return( class_GIS:raw_location() ).
 getActualLocation( State ) ->
@@ -143,7 +154,7 @@ getActualLocation( State ) ->
 
 
 
-% @doc Sets the current location of this element.
+-doc "Sets the current location of this element.".
 -spec setLocation( wooper:state(), class_GIS:geo_coordinate() ) ->
 						 oneway_return().
 setLocation( State, NewLocation ) ->
@@ -157,14 +168,13 @@ setLocation( State, NewLocation ) ->
 % Helper functions.
 
 
-% @doc Enters in specified geo-container, expecting this operation to succeed.
-%
-% Returns an updated state.
-%
-% Note: not synchronised in simulation (internal use only).
-%
-% (helper)
-%
+-doc """
+Enters in the specified geo-container, expecting this operation to succeed.
+
+Returns an updated state.
+
+Note: not synchronised to simulation (internal use only).
+""".
 enter_in( GeoContainerPid, State ) ->
 
 	GeoContainerPid ! { requestEntry, [], self() },
@@ -184,17 +194,14 @@ enter_in( GeoContainerPid, State ) ->
 
 
 
-% @doc Returns a textual description of the location of this element.
-%
-% (helper)
-%
+-doc "Returns a textual description of the location of this element.".
 -spec interpret_location( wooper:state() ) -> ustring().
 interpret_location( State ) ->
 
 	case ?getAttr(location) of
 
 		Pid when is_pid( Pid ) ->
-			text_utils:format( "inside geocontained ~w", [ Pid ] );
+			text_utils:format( "inside geocontainer ~w", [ Pid ] );
 
 		Loc ->
 			class_GIS:wgs84_cartesian_to_string( Loc )

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: July 1, 2012.
 
+-module(traces_for_cases).
+
+-moduledoc """
+This module gathers all code that allows to lighten the **trace macros** for
+simulation cases.
+""".
+
 
 % Directly obtained from traces_for_tests.erl.
 
-
-% @doc This module gathers all code that allows to lighten the <b>trace macros
-% for cases</b>.
-%
--module(traces_for_cases).
 
 
 -export([ case_start/2, case_start/3,
@@ -61,25 +63,28 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type module_name() :: basic_utils:module_name().
+
+-type trace_aggregator_pid() :: class_TraceAggregator:trace_aggregator_pid().
 
 -type initialise_supervision() ::
 	class_TraceAggregator:initialise_supervision().
 
 
+-doc """
+To be called from the counterpart macro.
 
-% @doc To be called from the counterpart macro.
-%
-% Here we disable explicitly the trapping of EXIT events, as a function run
-% through "erl -eval" (like our cases) or through "erl -run" will be executed in
-% a process which will silently trap EXIT events, which would mean that the
-% crash of any process created from the case, even thanks to spawn_link, would
-% most probably remain unnoticed (just leading to an EXIT message happily
-% sitting in the mailbox of the case process).
-%
--spec case_start( module_name(), initialise_supervision() ) -> aggregator_pid().
+Here we disable explicitly the trapping of EXIT events, as a function run
+through `erl -eval` (like our cases) or through `erl -run` will be executed in a
+process which will silently trap EXIT events, which would mean that the crash of
+any process created from the case, even thanks to spawn_link, would most
+probably remain unnoticed (just leading to an EXIT message happily sitting in
+the mailbox of the case process).
+""".
+-spec case_start( module_name(), initialise_supervision() ) ->
+                                        trace_aggregator_pid().
 case_start( ModuleName, InitTraceSupervisor ) ->
 
 	% Allows to support both OTP conventions and ad hoc, automatic ones:
@@ -89,8 +94,8 @@ case_start( ModuleName, InitTraceSupervisor ) ->
 	% on the command-line:
 
 	% The actual option is: "--trace-type XXX":
-	TraceType = case shell_utils:get_command_arguments_for_option(
-						'-trace-type' ) of
+	TraceType = case cmd_line_utils:get_command_arguments_for_option(
+			'-trace-type' ) of
 
 		undefined ->
 			trace_utils:info( "No trace type specified, defaulting "
@@ -128,19 +133,18 @@ case_start( ModuleName, InitTraceSupervisor ) ->
 
 
 
-% @doc To be called from the counterpart macro.
-%
-% Here we disable explicitly the trapping of EXIT events, as a function run
-% through "erl -eval" (like our cases) or through "erl -run" will be executed in
-% a process that will silently trap EXIT events, which would mean that the crash
-% of any process created from the case, even thanks to spawn_link, would most
-% probably remain unnoticed (just leading to an EXIT message happily sitting in
-% the mailbox of the case process).
-%
-% Returns TraceAggregatorPid.
-%
+-doc """
+To be called from the counterpart macro.
+
+Here we disable explicitly the trapping of EXIT events, as a function run
+through `erl -eval` (like our cases) or through `erl -run` will be executed in a
+process that will silently trap EXIT events, which would mean that the crash of
+any process created from the case, even thanks to spawn_link, would most
+probably remain unnoticed (just leading to an EXIT message happily sitting in
+the mailbox of the case process).
+""".
 -spec case_start( module_name(), initialise_supervision(),
-				  traces:trace_supervision_type() ) -> aggregator_pid().
+				  traces:trace_supervision_type() ) -> trace_aggregator_pid().
 % Clause generally not used by simulation cases:
 case_start( ModuleName, _InitTraceSupervisor=true, TraceType ) ->
 
@@ -209,7 +213,8 @@ case_start( ModuleName, _InitTraceSupervisor=false, TraceType ) ->
 		_MaybeRegistrationScope=global_only, CaseIsBatch,
 		_AggInitTraceSupervisor=false ),
 
-	?case_notice_fmt( "Starting case ~ts.", [ ModuleName ] ),
+	?case_notice_fmt( "Starting case ~ts (batch mode: ~ts).0", 
+                      [ ModuleName, CaseIsBatch ] ),
 
 	TraceAggregatorPid.
 
@@ -220,7 +225,7 @@ case_start( ModuleName, _InitTraceSupervisor=false, TraceType ) ->
 % Stopping of cases.
 
 
-% @doc To be called from the counterpart macro.
+-doc "To be called from the counterpart macro.".
 -spec case_stop( module_name(), trace_aggregator_pid(), boolean() ) ->
 													no_return().
 case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
@@ -237,7 +242,7 @@ case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 
 
-% @doc To be called from the counterpart macro.
+-doc "To be called from the counterpart macro.".
 -spec case_immediate_stop( module_name(), trace_aggregator_pid() ) ->
 													no_return().
 case_immediate_stop( ModuleName, TraceAggregatorPid ) ->
@@ -248,7 +253,7 @@ case_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 
 
-% @doc To be called from the counterpart macro.
+-doc "To be called from the counterpart macro.".
 -spec case_stop_on_shell( module_name(), trace_aggregator_pid() ) ->
 													no_return().
 case_stop_on_shell( ModuleName, TraceAggregatorPid ) ->

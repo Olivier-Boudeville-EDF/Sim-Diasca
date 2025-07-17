@@ -1,17 +1,18 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of the Sim-Diasca training material.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
+% Creation date: 2008.
 
 -module(class_FaultyDeterministicThirstyCustomer).
 
+-moduledoc "Class modeling a faulty deterministic thirsty customer.".
 
 -define( class_description,
-		 "Class modeling a deterministic thirsty customer." ).
+		 "Class modeling a faulty deterministic thirsty customer." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -27,7 +28,7 @@
 
 
 
-% @doc Constructs a faulty deterministic thirsty customer.
+-doc "Constructs a faulty deterministic thirsty customer.".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_SodaVendingMachine:machine_pid(),
 				 duration(), amount() ) -> wooper:state().
@@ -53,7 +54,7 @@ construct( State, ActorSettings, CustomerName, KnownMachine,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec delete( wooper:state() ) -> wooper:state().
 delete( State ) ->
 
@@ -75,7 +76,7 @@ delete( State ) ->
 % Management section of the actor.
 
 
-% @doc The core of the customer behaviour.
+-doc "The core of the customer behaviour.".
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
@@ -132,7 +133,7 @@ getCan( State, _MachinePid ) ->
 
 % Called by the machine in return to a orderSoda call, when no can is available.
 -spec onNoCanAvailable( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                                                actor_oneway_return().
 onNoCanAvailable( State, _MachinePid ) ->
 
 	?notice( "Could not have soda, the machine had no can left." ),
@@ -145,7 +146,7 @@ onNoCanAvailable( State, _MachinePid ) ->
 % inserted for a can.
 %
 -spec onNotEnoughMoney( wooper:state(), sending_actor_pid() ) ->
-							  actor_oneway_return().
+                                                actor_oneway_return().
 onNotEnoughMoney( State, MachinePid ) ->
 
 	?error_fmt( "Still having ~B euros but unable to buy a can from ~w "
@@ -177,10 +178,7 @@ request_cost( State ) ->
 
 
 
-% Returns an updated state.
-%
 % (helper)
-%
 -spec request_cost( wooper:state() ) -> wooper:state().
 manage_thirst( State ) ->
 
@@ -204,8 +202,8 @@ manage_thirst( State ) ->
 					case CanCost of
 
 						Cost when Cost > Budget ->
-							?notice_fmt( "Thirsty, but not having enough money: "
-								"a can costs ~B euros, "
+							?notice_fmt( "Thirsty, but not having enough "
+								"money: a can costs ~B euros, "
 								"whereas having only ~B euro(s).",
 								[ CanCost, Budget ] ),
 							State;
@@ -214,7 +212,8 @@ manage_thirst( State ) ->
 
 							% We should be able to afford the can:
 							?notice_fmt( "Thirsty and having enough money "
-								"(~B euros), trying to buy a can.", [ Budget ] ),
+								"(~B euros), trying to buy a can.",
+                                [ Budget ] ),
 
 							class_Actor:send_actor_message(
 								?getAttr(known_machine),
@@ -234,10 +233,7 @@ manage_thirst( State ) ->
 
 
 
-% Returns whether this customer is thirsty.
-%
-% (helper)
-%
+-doc "Tells whether this customer is thirsty.".
 -spec is_thirsty( wooper:state() ) -> wooper:state().
 is_thirsty( State ) ->
 
@@ -255,12 +251,7 @@ is_thirsty( State ) ->
 
 
 
-% Computes the next thirsty tick and records it.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Computes the next thirsty tick and records it.".
 -spec set_next_thirsty_tick( wooper:state() ) -> wooper:state().
 set_next_thirsty_tick( State ) ->
 

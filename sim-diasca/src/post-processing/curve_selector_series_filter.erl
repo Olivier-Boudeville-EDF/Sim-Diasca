@@ -1,29 +1,31 @@
-% Copyright (C) 2011-2024 EDF R&D
-
+% Copyright (C) 2011-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc This series filter allows to select which curves are to be kept among the
-% ones defined in a time series, and to reorder them (that is to write them in
-% the order specified in the corresponding data file).
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2011.
+
 -module(curve_selector_series_filter).
+
+-moduledoc """
+This series filter allows to select which curves are to be kept among the ones
+defined in a time series, and to reorder them (that is to write them in the
+order specified in the corresponding data file).
+""".
 
 
 -export([ create/3 ]).
@@ -39,15 +41,16 @@
 
 
 
-% @doc Creates a corresponding file, for whic are specified at creation:
-%
-% - the name of the data file to produce
-%
-% - an ordered list of curve indexes, which tells which curves are to be kept,
-% and in which order; for example if CurveNames = ["Foo", "Bar", "Baz",
-% "Other"], then to generate a time series containing only ["Baz", "Bar"] (in
-% that order) following indexes list should be specified: [3, 2]
-%
+-doc """
+Creates a corresponding file, for which are specified at creation:
+
+- the name of the data file to produce
+
+- an ordered list of curve indexes, which tells which curves are to be kept, and
+in which order; for example if `CurveNames = ["Foo", "Bar", "Baz", "Other"]`,
+then to generate a time series containing only `["Baz", "Bar"]` (in that order)
+following indexes list should be specified: `[3, 2]`
+""".
 -spec create( ustring(), [ ustring() ], [ curve_index() ] ) ->
 					'ok' | { 'onFilterEnded', pid() }.
 create( SeriesName, CurveNames, CurveIndexList ) ->
@@ -94,8 +97,8 @@ check_curve_indexes( [], _CurveCount ) ->
 	ok;
 
 check_curve_indexes( [ CurveIndex | T ], CurveCount )
-  when is_integer( CurveIndex ) andalso CurveIndex > 0
-	   andalso CurveIndex =< CurveCount ->
+            when is_integer( CurveIndex ) andalso CurveIndex > 0
+                andalso CurveIndex =< CurveCount ->
 	check_curve_indexes( T, CurveCount );
 
 check_curve_indexes( [ CurveIndex | _T ], CurveCount ) ->
@@ -107,9 +110,10 @@ check_curve_indexes( [ CurveIndex | _T ], CurveCount ) ->
 
 
 
-% @doc Returns a list of booleans telling, for each position k, whether curve k
-% is selected.
-%
+-doc """
+Returns a list of booleans telling, for each position k, whether curve k is
+selected.
+""".
 build_selection( CurveIndexList, CurveCount ) ->
 	build_selection( CurveIndexList, _CurrentIndex=1, _MaxIndex=CurveCount+1,
 					 _Acc=[] ).
@@ -250,10 +254,11 @@ sort_selected_curves( [ CurveName | Tc ], [ false | Ts ],
 
 
 
-% @doc Lists all curves in turn and specifies whether it was selected.
-%
-% (not currently used anymore)
-%
+-doc """
+Lists all curves in turn and specifies for each whether it was selected.
+
+(not currently used anymore)
+""".
 -spec selection_to_string_as_list( [ ustring() ], [ boolean() ],
 								   [ ustring() ] ) -> ustring().
 selection_to_string_as_list( _CurveNames=[], _SelectionList=[], Acc ) ->

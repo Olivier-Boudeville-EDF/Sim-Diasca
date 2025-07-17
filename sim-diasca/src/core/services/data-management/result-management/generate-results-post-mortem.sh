@@ -1,13 +1,12 @@
 #!/bin/sh
 
-result_dir=`pwd`
+result_dir="$(pwd)"
 
 plot_extension="png"
 
-gnuplot=`which gnuplot`
+gnuplot="$(which gnuplot 2>/dev/null)"
 
-USAGE="
-Usage: "`basename $0`" [--result-dir RESULT-DIR]
+usage="Usage: $(basename $0) [--result-dir RESULT-DIR]
 
    --result-dir: allows to specify a base Sim-Diasca result directory (as an absolute path), in which the 'simulation-results' and 'performance-monitoring' directories are located
 
@@ -23,7 +22,7 @@ generate_plot_for()
 
 	#echo "$command_filename"
 
-	image_filename=`echo $command_filename|sed "s|\.p$|.$plot_extension|1"`
+	image_filename="$(echo $command_filename | sed "s|\.p$|.$plot_extension|1")"
 
 	if [ -f "$image_filename" ]; then
 
@@ -32,10 +31,9 @@ generate_plot_for()
 	else
 
 		echo "   + generating $image_filename"
-		$gnuplot $command_filename
 
-		if [ ! $? -eq 0 ] ; then
-					# Non-blocking failure:
+		if ! $gnuplot $command_filename; then
+			# Non-blocking failure:
 			echo "Warning: generation of '$image_filename' from '$command_filename' failed." 1>&2
 		fi
 
@@ -46,11 +44,11 @@ generate_plot_for()
 
 
 
-while [ -n "$*" ] ; do
+while [ -n "$*" ]; do
 
 	token_eaten=1
 
-	if [ "$1" = "-h" ] || [ "$1" = "--help" ] ; then
+	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 
 		echo "$USAGE"
 		exit
@@ -58,7 +56,7 @@ while [ -n "$*" ] ; do
 	fi
 
 
-	if [ "$1" = "--result-dir" ] ; then
+	if [ "$1" = "--result-dir" ]; then
 
 		shift
 		result_dir=$1
@@ -69,7 +67,7 @@ while [ -n "$*" ] ; do
 	fi
 
 
-	if [ $token_eaten -eq 1 ] ; then
+	if [ $token_eaten -eq 1 ]; then
 
 		echo "  Error, unexpected parameters ($*). $USAGE" 1>&2
 		exit 4
@@ -89,7 +87,7 @@ if [ ! -d "$result_dir" ]; then
 fi
 
 
-if [ ! -x "$gnuplot" ] ; then
+if [ ! -x "$gnuplot" ]; then
 
 		echo "  Error, no gnuplot executable found. $USAGE" 1>&2
 		exit 7
@@ -108,7 +106,7 @@ echo "
 
 #echo "performance monitoring directory: $performance_track_dir "
 
-if [ -d "$performance_track_dir" ] ; then
+if [ -d "$performance_track_dir" ]; then
 
 	echo "  - taking care of performance monitoring results... "
 
@@ -137,9 +135,9 @@ if [ -d "$simulation_result_dir" ]; then
 	echo "  - taking care of simulation results... "
 
 	# Not the same as '*.p', if no .p file exists:
-	target_files=`ls *p 2>/dev/null`
+	target_files="$(/bin/ls *p 2>/dev/null)"
 
-	if [ -n "$target_files" ] ; then
+	if [ -n "$target_files" ]; then
 
 		for command_filename in $target_files; do
 

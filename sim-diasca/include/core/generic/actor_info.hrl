@@ -1,26 +1,26 @@
-% Copyright (C) 2018-2024 EDF R&D
-
+% Copyright (C) 2018-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2018.
 
 
-
-% Stores and centralises SimDiasca-level information gathered about a given
+% Stores and centralises Sim-Diasca level information gathered about a given
 % actor oneway.
 %
 % This record is to strictly supersede the WOOPER-level oneway_info one.
@@ -46,7 +46,7 @@
 	% for the definition (first clause) of this actor oneway (not of its spec,
 	% which has its specific field below):
 	%
-	ast_location = undefined :: maybe( ast_info:ast_location() ),
+	ast_location = undefined :: option( ast_info:ast_location() ),
 
 
 	% Corresponds to the in-file location of the first defined clause (in its
@@ -57,7 +57,7 @@
 	% one in the first clause, yet present in the forms, thus kept here; note
 	% that the linter will not accept an 'undefined' value)
 	%
-	file_location = undefined :: maybe( ast_base:file_loc() ),
+	file_location = undefined :: option( ast_base:file_loc() ),
 
 
 	% Actor oneway actual definition, a (non-located) list of the abstract forms
@@ -67,12 +67,8 @@
 
 
 	% The type specification (if any) of that actor oneway, as an abstract form:
-	spec = undefined :: maybe( wooper_info:located_method_spec() ) } ).
+	spec = undefined :: option( wooper_info:located_method_spec() ) } ).
 
-
--type actor_oneway_info() :: #actor_oneway_info{}.
-% Stores and centralises SimDiasca-level information gathered about a given
-% actor oneway.
 
 
 
@@ -105,9 +101,9 @@
 	inherited_attributes :: wooper_info:attribute_table(),
 
 
-	% A table, whose keys are compilation options (ex: no_auto_import, inline,
+	% A table, whose keys are compilation options (e.g. no_auto_import, inline,
 	% etc.) and whose values are aggregated lists of their associated values
-	% (ex: [{size,1}] and [{get_bucket_index,2}, {f/1}]).
+	% (e.g. [{size,1}] and [{get_bucket_index,2}, {f/1}]).
 	%
 	% Note: for the 'inline' key, if full inlining is enabled (
 	% '-compile(inline).'), then its associated key is not a list of function
@@ -116,14 +112,14 @@
 	compilation_options :: ast_info:compile_option_table(),
 
 
-	% We merely touch compilation options (ex: '{compile, {inline, [{
+	% We merely touch compilation options (e.g. '{compile, {inline, [{
 	% FunName, Arity}]}}').
 	%
 	compilation_option_defs = [] :: [ ast_info:located_form() ],
 
 
 	% Other (unrecognised, not corresponding to other fields of interest)
-	% parse-level attributes (ex: '-my_attribute(my_value).'), as a table
+	% parse-level attributes (e.g. '-my_attribute(my_value).'), as a table
 	% associating, to an attribute name (an atom key), a list of pairs
 	% comprising each a value and an AST form.
 	%
@@ -152,7 +148,7 @@
 	include_defs = [] :: [ ast_info:located_form() ],
 
 
-	% Whether a type (possibly any kind of it; ex: opaque or not) is
+	% Whether a type (possibly any kind of it; e.g. opaque or not) is
 	% exported is recorded primarily in its own type_info record through a
 	% list of locations, while the information sufficient to reconstruct the
 	% actual forms for the exports of all types are recorded here.
@@ -212,14 +208,14 @@
 	constructors :: wooper_info:constructor_table(),
 
 
-	% All information about the new operators (ex: remote_new_link/N) of that
+	% All information about the new operators (e.g. remote_new_link/N) of that
 	% class.
 	%
 	new_operators :: ast_info:function_table(),
 
 
 	% All information about the destructor (if any) of that class.
-	destructor = undefined :: maybe( ast_info:function_info() ),
+	destructor = undefined :: option( ast_info:function_info() ),
 
 
 	% Whether a request is exported is recorded primarily in its own

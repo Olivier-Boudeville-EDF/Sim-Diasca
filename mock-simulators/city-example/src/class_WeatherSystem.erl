@@ -1,26 +1,27 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
-
-% @doc Class modelling a <b>weather system</b> over the city.
 -module(class_WeatherSystem).
+
+-moduledoc "Class modelling a **weather system** over the city.".
 
 
 -define( class_description,
@@ -53,8 +54,10 @@
 -type cell_pid() :: actor_pid().
 
 
+-doc """
+In each direction, a cell may be adjacent to either another cell or a border.
+""".
 -type cell_neighbour() :: cell_pid() | 'border'.
-% In each direction, a cell may be adjacent to either another cell or a border.
 
 
 % We could have used a simple [cell_pid()] as well:
@@ -81,12 +84,9 @@
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization, "City-example.Weather.System" ).
 
-% For gis_pid(), location_generator_pid():
--include("city_example_types.hrl").
-
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % User identifier of this overall system:
@@ -115,7 +115,7 @@
 %
 % Each cell simulates the weather over the ground below it. Its state is
 % determined by a 3D vector, that we can imagine holding weather-related
-% information (ex: hydrometry, pressure, temperature, wind, etc.).
+% information (e.g. hydrometry, pressure, temperature, wind, etc.).
 %
 % This state vector is governed by the Lorenz equations, parametrised so that
 % each cell is running its own strange attractor.
@@ -129,24 +129,30 @@
 % adversely the traffic on them.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type location_generator_pid() ::
+    class_LocationGenerator:location_generator_pid().
+
+-type gis_pid() :: class_GIS:gis_pid().
 
 
-% @doc Creates a weather system.
-%
-% Construction parameters are:
-%
-% - ActorSettings is the AAI assigned by the load-balancer to this actor
-%
-% - Name is the name of this weather system (as a plain string)
-%
-% - LocationGeneratorPid is the PID of the location generator
-%
-% - GISPid is the PID of the GIS
-%
+
+-doc """
+Creates a weather system.
+
+Construction parameters are:
+
+- ActorSettings is the AAI assigned by the load-balancer to this actor
+
+- Name is the name of this weather system (as a plain string)
+
+- LocationGeneratorPid is the PID of the location generator
+
+- GISPid is the PID of the GIS
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	class_Actor:name(), location_generator_pid(), gis_pid() ) -> wooper:state().
 construct( State, ActorSettings, Name, LocationGeneratorPid, GISPid ) ->
@@ -166,7 +172,7 @@ construct( State, ActorSettings, Name, LocationGeneratorPid, GISPid ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -191,7 +197,7 @@ destruct( State ) ->
 
 
 
-% @doc First scheduling of the system.
+-doc "First scheduling of the system.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -200,10 +206,11 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Registers the calling cell, so that this system supervises it.
-%
-% This system takes ownership of it.
-%
+-doc """
+Registers the calling cell, so that this system supervises it.
+
+This system takes ownership of it.
+""".
 -spec register( wooper:state(), cell_pid() ) -> actor_oneway_return().
 register( State, CellPid ) ->
 
@@ -213,7 +220,7 @@ register( State, CellPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this system.
+-doc "The definition of the spontaneous behaviour of this system.".
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 	% Purely passive.
@@ -221,10 +228,7 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Weather system made of ~B cells",
@@ -235,9 +239,10 @@ to_string( State ) ->
 % Static section.
 
 
-% @doc Generates a list of instance definitions for the full weather system,
-% cells included.
-%
+-doc """
+Generates a list of instance definitions for the full weather system, cells
+included.
+""".
 -spec generate_definitions( basic_utils:count() ) ->
 					static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( CellsPerEdge ) ->
@@ -265,10 +270,7 @@ generate_definitions( CellsPerEdge ) ->
 
 
 
-% @doc Returns a creation definition for the cell located at (X,Y).
-%
-% (helper)
-
+-doc "Returns a creation definition for the cell located at (X,Y).".
 create_cell( X, Y, CellsPerEdge, _BaseInitialConditions={ Xc, Yc, Zc } ) ->
 
 	Name = get_name_for( X, Y, CellsPerEdge ),
@@ -291,21 +293,17 @@ create_cell( X, Y, CellsPerEdge, _BaseInitialConditions={ Xc, Yc, Zc } ) ->
 
 
 
-% @doc Returns the appropriate name for the cells at ( X, Y ) (supposedly within
-% the system, not out of bounds)
-%
-% (helper)
-%
+-doc """
+Returns the appropriate name for the cells at (X,Y) (supposedly within the
+system, not out of bounds).
+""".
 get_name_for( X, Y, CellsPerEdge ) when X > 0
 			andalso X =< CellsPerEdge andalso Y > 0 andalso Y =< CellsPerEdge ->
 	text_utils:format( "Weather-Cell-~B-~B", [ X, Y ] ).
 
 
 
-% @doc Returns the name of the left neighbour, or 'border':
-%
-% (helper)
-%
+-doc "Returns the name of the left neighbour, or `border`.".
 get_left_neighbour( _X=1, _Y, _CellsPerEdge ) ->
 	border;
 
@@ -314,10 +312,7 @@ get_left_neighbour( X, Y, CellsPerEdge ) ->
 
 
 
-% @doc Returns the name of the right neighbour, or 'border':
-%
-% (helper)
-%
+-doc "Returns the name of the right neighbour, or `border`.".
 get_right_neighbour( _X=CellsPerEdge, _Y, CellsPerEdge ) ->
 	border;
 
@@ -326,10 +321,7 @@ get_right_neighbour( X, Y, CellsPerEdge ) ->
 
 
 
-% @doc Returns the name of the top neighbour, or 'border':
-%
-% (helper)
-%
+-doc "Returns the name of the top neighbour, or `border`.".
 get_top_neighbour( _X, _Y=1, _CellsPerEdge ) ->
 	border;
 
@@ -338,10 +330,7 @@ get_top_neighbour( X, Y, CellsPerEdge ) ->
 
 
 
-% @doc Returns the name of the bottom neighbour, or 'border':
-%
-% (helper)
-%
+-doc "Returns the name of the bottom neighbour, or `border`.".
 get_bottom_neighbour( _X, _Y=CellsPerEdge, CellsPerEdge ) ->
 	border;
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc Unit tests for the basic utils toolbox.
-%
-% See the basic_utils.erl tested module.
-%
 -module(basic_utils_test).
+
+-moduledoc """
+Unit tests for the **basic utils** toolbox.
+
+See the `basic_utils` tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -74,6 +76,10 @@ run() ->
 
 	test_facilities:display( "Testing the display of a ~ts test message.",
 							 [ dynamic ] ),
+
+    % To check that a ill-formatted message is caught at compilation time:
+	%test_facilities:display( "I am a faulty message: ~B and ~B.",
+    %                         [ _SingleValue=1 ] ),
 
 	basic_utils:checkpoint( 1 ),
 
@@ -191,10 +197,8 @@ run() ->
 							 [ ?myriad_spawn_info ] ),
 
 	?myriad_spawn_link( fun() ->
-
-						% Closure:
-						Self ! myriad_spawned_linked
-
+							% Closure:
+							Self ! myriad_spawned_linked
 						end ),
 
 	receive

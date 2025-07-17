@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, December 5, 2021.
 
-
-% @doc Gathering of management facilities for <b>XML</b> processing.
-%
-% See xml_utils_test.erl for the corresponding test.
-%
-% Mostly a wrapper around the standard, always available xmerl modules.
-%
 -module(xml_utils).
+
+-moduledoc """
+Gathering of management facilities for **XML** processing.
+
+See xml_utils_test.erl for the corresponding test.
+
+Mostly a wrapper around the standard, always available xmerl modules.
+""".
+
 
 
 % Implementation notes:
@@ -41,7 +43,8 @@
 %
 % A good way of understanding xmerl is to read lib/xmerl/include/xmerl.hrl.
 %
-% See also its User's Guide: https://www.erlang.org/doc/apps/xmerl/xmerl_ug.html
+% See also its User's Guide:
+% <https://www.erlang.org/doc/apps/xmerl/xmerl_ug.html>.
 %
 % One may refer to src/scripts/show-xml-file.escript in order to pretty-print
 % XML.
@@ -78,144 +81,194 @@
 -include_lib("xml_utils.hrl").
 
 
+-doc """
+A raw string containing XML (including markup), typically at least an extract of
+an XML document.
+
+For example `<birds> <bird species="crow">Arthur</bird> </birds>`.
+""".
 -type xml_text() :: ustring().
-% A raw string containing XML (including markup), typically at least an extract
-% of an XML document.
-%
-% For example "<birds> <bird species="crow">Arthur</bird> </birds>".
 
 
+
+-doc "A full, standalone definition of a XML document".
 -type xml_document() :: xml_content().
-% A full, standalone definition of a XML document.
 
 
+
+-doc """
+An XML tag; we recommend to use Upper CamelCase (PascalCase) for their name.
+
+For example `AccountLog` in: `<AccountLog level="red">Hello</AccountLog>`.
+""".
 -type xml_tag() :: atom().
-% An XML tag; we recommend to use Upper CamelCase (PascalCase) for their name.
-%
-% For example 'AccountLog' in: <AccountLog level="red">Hello</AccountLog>.
 
 
+
+-doc """
+The name of an attribute of a XML tag; we recommend to use (lower) camelCase for
+them.
+
+For example `refCount` in: `<Account refCount="4"> ...</Account>`.
+""".
 -type xml_attribute_name() :: atom().
-% The name of an attribute of a XML tag; we recommend to use (lower) camelCase
-% for them.
-%
-% For example 'refCount' in: <Account refCount="4"> ...</Account>
 
 
+
+-doc """
+The value of an attribute of a XML tag.
+
+For example `4` in: `<Account refCount="4"> ...</Account>`.
+""".
 -type xml_attribute_value() :: io_list() | atom() | integer().
-% The value of an attribute of a XML tag.
-%
-% For example "4" in: <Account refCount="4"> ...</Account>
 
 
+
+-doc " Stores all information regarding an attribute in an XML tag.".
 -type attribute_record() :: #xmlAttribute{}.
-% Stores all information regarding an attribute in an XML tag.
 
 
+
+-doc """
+The description of an attribute of a XML tag.
+
+For example `{refCount,"4"}` in: `<Account refCount="4"> ...</Account>`.
+""".
 -type xml_attribute() :: { xml_attribute_name(), xml_attribute_value() }
 						 | attribute_record().
-% The description of an attribute of a XML tag.
-%
-% For example {refCount,"4"} in: <Account refCount="4"> ...</Account>
 
 
 
+-doc "An XML tag, expressed in xmerl's simple form.".
 -type xml_simple_tag() :: xml_tag()
 					  | { xml_tag(), xml_content() }
 					  | { xml_tag(), [ xml_attribute() ], xml_content() }.
-% An XML tag, expressed in xmerl's simple form.
 
 
+
+-doc "An XML element defined by an iolist.".
 -type xml_iolist() :: io_list().
-% An XML element defined by an iolist.
+
 
 
 % xmerl records (refer to lib/xmerl/include/xmerl.hrl):
 
+-doc "Stores all information regarding a direct text in an XML document.".
 -type text_record() :: #xmlText{}.
-% Stores all information regarding a direct text in an XML document.
 
 
+
+-doc """
+Stores all information regarding an element (notably having a content) in an XML
+document.
+""".
 -type element_record() :: #xmlElement{}.
-% Stores all information regarding an element (notably having a content) in an
-% XML document.
 
 
+
+-doc """
+Stores all information regarding a processing instruction in an XML document.
+""".
 -type instruction_record() :: #xmlPI{}.
-% Stores all information regarding a processing instruction in an XML document.
 
 
+
+-doc "Stores all information regarding a comment in an XML document.".
 -type comment_record() :: #xmlComment{}.
-% Stores all information regarding a comment in an XML document.
 
 
+
+-doc """
+Stores all information regarding an XML declaration (XML version, encoding,
+etc.).
+""".
 -type declaration_record() ::#xmlDecl{}.
-% Stores all information regarding an XML declaration (XML version, encoding,
-% etc.).
 
 
+
+-doc """
+The internal records introduced by xmerl in order to denote XML elements.
+""".
 -type xml_record() :: text_record()
 					| element_record()
 					| instruction_record()
 					| comment_record()
 					| declaration_record().
-% The internal records introduced by xmerl in order to denote XML elements.
 
 
+
+-doc """
+An element of an XML document (top-level or nested).
+
+It can be expressed in simple form (one of the three options based on a
+xml_tag()), as an iolist, or based on one of the five xmerl's records.
+""".
 -type xml_element() :: xml_simple_tag() | xml_iolist() | xml_record().
-% An element of an XML document (top-level or nested).
-%
-% It can be expressed in simple form (one of the three options based on a
-% xml_tag()), as an iolist, or based on one of the five xmerl's records.
 
 
 
+-doc """
+An in-memory representation of an XML content, mostly as a tree of markup
+elements; note that this is always a flat list.
+
+See our 'Usage of xmerl' section for more details and examples.
+""".
 -type xml_content() :: [ xml_element() ].
-% An in-memory representation of an XML content, mostly as a tree of markup
-% elements; note that this is always a flat list.
-%
-% See our 'Usage of xmerl' section for more details and examples.
 
 
+
+-doc """
+An in-memory representation of an XML content, only based on simple tags (hence
+a special case of xml_content/0).
+""".
 -type xml_simple_content() :: [ xml_simple_tag() ].
-% An in-memory representation of an XML content, only based on simple tags
-% (hence a special case of xml_content/0).
 
 
+
+-doc """
+The XML attributes for the root element of an XML document, the implicit parent
+of the user-specified content.
+
+May notably include a XML prolog attribute.
+""".
 -type xml_root_attributes() :: [ xml_attribute() ].
-% The XML attributes for the root element of an XML document, the implicit
-% parent of the user-specified content.
-%
-% May notably include a XML prolog attribute.
 
 
 
+-doc """
+The value associated to the 'prolog' attribute within root attributes, typically
+an (XML-escaped string).
+
+Allows to define the header of the XML document, so that we becomes for example:
+`<?xml version="1.0" encoding="utf-8" ?>`
+
+or:
+
+```
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE birds SYSTEM "bird.dtd">
+```
+
+or:
+
+```
+<?xml version="1.0"?>
+<birds xmlns="http://foo.org/species" xmlns:c="http://bar.net/colors">
+```
+
+Another option to set the prolog is to alter the root XML element with
+attributes like: `[{xmlns, SpeciesStr}, {'xmlns:c', ColorStr}]`.
+
+If the root element is an xmlElement record, then a (single) namespace may be
+specified thanks to its 'namespace' field:
+```
+RootElem = #xmlElement{name=birds,
+					   namespace=#xmlNamespace{default=SpeciesStr}, ...
+```
+""".
 -type xml_prolog_value() :: xml_attribute_value().
-% The value associated to the 'prolog' attribute within root attributes,
-% typically an (XML-escaped string).
-%
-% Allows to define the header of the XML document, so that we becomes for
-% example:
-%
-% `<?xml version="1.0" encoding="utf-8" ?>'
-%
-% or:
-%
-% `<?xml version="1.0" encoding="utf-8" ?>
-% <!DOCTYPE birds SYSTEM "bird.dtd">'
-%
-% or:
-%
-% `<?xml version="1.0"?>
-% <birds xmlns="http://foo.org/species" xmlns:c="http://bar.net/colors">'
-%
-% Another option to set the prolog is to alter the root XML element with
-% attributes like: `[{xmlns, SpeciesStr}, {'xmlns:c', ColorStr}]'
-%
-% If the root element is an xmlElement record, then a (single) namespace may be
-% specified thanks to its 'namespace' field:
-% RootElem = #xmlElement{name=birds,
-%                        namespace=#xmlNamespace{default=SpeciesStr}, ...
+
+
 
 % Usage of xmerl
 
@@ -273,9 +326,11 @@
 -type any_file_path() :: file_utils:any_file_path().
 
 
-% @doc Escapes specified text (not expected to contain markup), so that it can
-% be included safely within an XML content.
-%
+
+-doc """
+Escapes the specified text (not expected to contain markup), so that it can be
+included safely within an XML content.
+""".
 -spec to_xml_text( any_string() ) -> ustring().
 to_xml_text( Text ) ->
 	% As our HTML escaping goes a little beyond the strictly necessary and
@@ -285,33 +340,37 @@ to_xml_text( Text ) ->
 
 
 
-% @doc Returns the default prolog value, corresponding to:
-% `<?xml version="1.0" encoding="utf-8" ?>.'
-%
+-doc """
+Returns the default prolog value, corresponding to: `<?xml version="1.0"
+encoding="utf-8" ?>.`.
+""".
 -spec get_default_prolog() -> xml_prolog_value().
 get_default_prolog() ->
 	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>".
 
 
 
-% @doc Returns a string corresponding to the specified XML content structure,
-% using the default XML prolog, corresponding to:
-% `<?xml version="1.0" encoding="utf-8" ?>.'
-%
-% The returned XML serialised form is ready to be written on a file, sent over
-% the network, etc.
-%
+-doc """
+Returns a string corresponding to the specified XML content structure, using the
+default XML prolog, corresponding to: `<?xml version="1.0" encoding="utf-8"
+?>.`.
+
+The returned XML serialised form is ready to be written on a file, sent over the
+network, etc.
+""".
 -spec xml_to_string( xml_content() ) -> io_list().
 xml_to_string( XMLContent ) ->
 	xml_to_string( XMLContent, get_default_prolog() ).
 
 
-% @doc Returns a string corresponding to the specified XML content structure,
-% using the specified prolog.
-%
-% The returned XML serialised form is ready to be written on a file, sent over
-% the network, etc.
-%
+
+-doc """
+Returns a string corresponding to the specified XML content structure, using the
+specified prolog.
+
+The returned XML serialised form is ready to be written on a file, sent over the
+network, etc.
+""".
 -spec xml_to_string( xml_content(), xml_prolog_value() ) -> ustring().
 xml_to_string( XMLContent, PrologValue ) ->
 
@@ -327,12 +386,13 @@ xml_to_string( XMLContent, PrologValue ) ->
 
 
 
-% @doc Returns an XML content structure resulting from the scan of the specified
-% string expected to contain an XML document.
-%
-% The returned XML content is a simple one, i.e. it is exclusively made of
-% simple tags (no XML records).
-%
+-doc """
+Returns an XML content structure resulting from the scan of the specified string
+expected to contain an XML document.
+
+The returned XML content is a simple one, i.e. it is exclusively made of simple
+tags (no XML records).
+""".
 -spec string_to_xml( ustring() ) -> xml_content().
 string_to_xml( XMLStr ) ->
 
@@ -347,12 +407,13 @@ string_to_xml( XMLStr ) ->
 
 
 
-% @doc Returns an XML content structure resulting from the scan of the specified
-% file expected to contain an XML document.
-%
-% The returned XML content is a simple one, i.e. it is exclusively made of
-% simple tags (no XML records).
-%
+-doc """
+Returns an XML content structure resulting from the scan of the specified file
+expected to contain an XML document.
+
+The returned XML content is a simple one, i.e. it is exclusively made of simple
+tags (no XML records).
+""".
 -spec parse_xml_file( any_file_path() ) -> xml_content().
 parse_xml_file( FilePath ) ->
 
@@ -368,11 +429,12 @@ parse_xml_file( FilePath ) ->
 
 
 
-% @doc Pretty-prints the specified XML string (that is a string containing an
-% XML document): returns a user-friendly string corresponding to the specified
-% one, once its XML content has been tidied and clarified for display/human
-% consumption.
-%
+-doc """
+Pretty-prints the specified XML string (that is a string containing an XML
+document): returns a user-friendly string corresponding to the specified one,
+once its XML content has been tidied and clarified for display/human
+consumption.
+""".
 -spec pretty_print_from_string( xml_text() ) -> xml_text().
 pretty_print_from_string( XMLText ) ->
 	TmpFilePath = file_utils:write_whole_in_non_clashing( XMLText ),
@@ -382,10 +444,11 @@ pretty_print_from_string( XMLText ) ->
 
 
 
-% @doc Pretty-prints the specified XML file: returns a user-friendly string
-% corresponding to its content, once its XML has been tidied and clarified for
-% display/human consumption.
-%
+-doc """
+Pretty-prints the specified XML file: returns a user-friendly string
+corresponding to its content, once its XML has been tidied and clarified for
+display/human consumption.
+""".
 -spec pretty_print_from_file( any_file_path() ) -> xml_text().
 pretty_print_from_file( XMLFilePath ) ->
 

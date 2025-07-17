@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various <b>three dimensional "linear"</b> facilities.
-%
-% See `linear_3D_test.erl' for the corresponding test.
-%
 -module(linear_3D).
+
+-moduledoc """
+Gathering of various **three dimensional "linear"** facilities.
+
+See `linear_3D_test.erl` for the corresponding test.
+""".
+
 
 
 
@@ -49,7 +51,7 @@
 % shall be known of members of the Y-UP club as being at P2={A,C,-B}.
 %
 % Said otherwise, P2 = Pmg.P1 where the Pmg is the transition matrix from a
-% MyriadGUI referential to a glTF one, with:
+% MyriadGUI coordinate system to a glTF one, with:
 %
 % Pmg = [ 1   0  0 ]
 %       [ 0   0  1 ]
@@ -74,6 +76,59 @@
 -compile( { inline_size, ?inline_size } ).
 
 
+
+% Section about lines and planes.
+
+
+-doc """
+A 3D line, whose equation A.x + B.y + C.z + D = 0, can be defined by its four
+factors {A,B,C,D}.
+""".
+-type line3() :: { A :: factor(), B :: factor(), C :: factor(), D :: factor() }.
+
+
+
+-doc """
+A plane, whose general equation is: A.x + B.y + C.z + D = 0, where:
+- P={x,y,z} is a point belonging to this plane
+- N=[A,B,C] is a (non-necessarily unit) normal vector to this plane
+- D= -A.x0 - B.y0 - C.z0
+
+See <http://mathworld.wolfram.com/Plane.html>.
+
+So a plane may be described as (N,D).
+""".
+-type plane3() :: { normal3(), factor() }.
+
+
+
+-doc """
+A plane in Hessian normal form.
+
+See <http://mathworld.wolfram.com/HessianNormalForm.html>.
+""".
+-type hessian_plane3() :: { unit_normal3(), factor() }.
+
+
+-export_type([ line3/0, plane3/0, hessian_plane3/0 ]).
+
+
+
+
+% Section about shapes.
+
+
+-doc "Various types of known 3D shapes (basic geometries).".
+-type shape() :: 'sphere' | 'right_cuboid'.
+
+
+-export_type([ shape/0 ]).
+
+
+-export([ get_origin/0, compute_smallest_enclosing_cuboid/1 ]).
+
+
+
 % Shorthands:
 
 -type factor() :: math_utils:factor().
@@ -86,50 +141,7 @@
 
 
 
-% Section about lines and planes.
-
-
--type line3() :: { A :: factor(), B :: factor(), C :: factor(), D :: factor() }.
-% A 3D line, whose equation A.x + B.y + C.z + D = 0, can be defined by its four
-% factors {A,B,C,D}.
-
-
--type plane3() :: { normal3(), factor() }.
-% A plane, whose general equation is: A.x + B.y + C.z + D = 0, where:
-%
-% - P={x,y,z} is a point belonging to this plane
-% - N=[A,B,C] is a (non-necessarily unit) normal vector to this plane
-% - D= -A.x0 - B.y0 - C.z0
-%
-% See [http://mathworld.wolfram.com/Plane.html].
-%
-% So a plane may be described as (N,D).
-
-
--type hessian_plane3() :: { unit_normal3(), factor() }.
-% A plane in Hessian normal form.
-%
-% See [http://mathworld.wolfram.com/HessianNormalForm.html].
-
-
--export_type([ line3/0, plane3/0, hessian_plane3/0 ]).
-
-
-
-% Section about shapes.
-
-
--type shape() :: 'sphere' | 'right_cuboid'.
-% Various types of known 3D shapes (basic geometries).
-
-
--export_type([ shape/0 ]).
-
-
--export([ get_origin/0, compute_smallest_enclosing_cuboid/1 ]).
-
-
-% @doc Returns the origin of this referential.
+-doc "Returns the origin of this coordinate system.".
 -spec get_origin() -> point3().
 get_origin() ->
 	Zero = 0.0,
@@ -137,10 +149,11 @@ get_origin() ->
 
 
 
-% @doc Computes the smallest cuboid that encloses the specified list of points.
-%
-% Returns {TopLeft, BottomRight}.
-%
+-doc """
+Computes the smallest cuboid that encloses the specified list of points.
+
+Returns {TopLeft, BottomRight}.
+""".
 -spec compute_smallest_enclosing_cuboid( [ any_point3() ] ) ->
 					{ any_point3(), any_point3(), any_point3() }.
 compute_smallest_enclosing_cuboid( _Points ) ->

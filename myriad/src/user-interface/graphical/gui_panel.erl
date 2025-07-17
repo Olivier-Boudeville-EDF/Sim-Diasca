@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,30 +25,44 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Thursday, August 31, 2023.
 
-
-% @doc Gathering of various facilities for <b>panels</b>.
 -module(gui_panel).
 
+-moduledoc """
+Gathering of various facilities for **panels**.
 
+Often a panel is registered to a sizer, to determine its size adequately.
+
+Panels are good placeholders, when creating a GUI.
+""".
+
+
+-doc """
+A panel, able to host child widgets and to catch events such as key presses
+(unlike windows/frames).
+
+Note though that, as soon as a widget declares that its parent is a panel
+(e.g. if a button is declared in a panel, or if a sizer including a box
+designates the panel as its parent), this panel will not receive anymore key
+events (even if the focus is set to the panel), presumably to support
+accelerator keys.
+
+Refer to "Panel issues" in gui_event for further information.
+""".
 -opaque panel() :: wxPanel:wxPanel().
-% A panel, able to host child widgets and to catch events such as key presses
-% (unlike windows/frames).
-%
-% Note though that, as soon as a widget declares that its parent is a panel
-% (e.g. if a button is declared in a panel, or if a sizer including a box
-% designates the panel as its parent), this panel will not receive anymore key
-% events (even if the focus is set to the panel), presumably to support
-% accelerator keys.
-%
-% Refer to "Panel issues" in gui_event for further information.
 
 
+
+-doc """
+Options for panels.
+
+See <http://docs.wxwidgets.org/stable/classwx_panel.html>.
+""".
 -type panel_option() :: window_option().
-% Options for panels.
-%
-% See [http://docs.wxwidgets.org/stable/classwx_panel.html].
 
 
+-doc """
+Options to create a panel.
+""".
 -type panel_options() :: maybe_list( panel_option() ).
 
 
@@ -60,21 +74,18 @@
 		  get_size/1 ]).
 
 
+
+-doc """
+Backend-level options to create a panel.
+""".
 -type wx_panel_option() :: gui_window:wx_window_option()
 						 | gui_wx_backend:wx_event_handler_option().
 
 
-% Implementation notes:
-%
-% The parent of a panel can be widgets like windows, including splitter windows
-% that may have to be special-cased.
 
 
-% At least for the splitter record:
--include("gui_base.hrl").
 
-
-% Shorthands:
+% Type shorthands:
 
 -type maybe_list( T ) :: list_utils:maybe_list( T ).
 
@@ -89,40 +100,37 @@
 -type window_option() :: gui_window:window_option().
 
 
-% @doc Creates a panel.
+
+-doc "Creates a panel.".
 -spec create() -> panel().
 create() ->
 	wxPanel:new().
 
 
 
-% @doc Creates a panel, associated to the specified parent.
+-doc "Creates a panel, associated to the specified parent.".
 -spec create( parent() ) -> panel().
-create( _Parent=#splitter{ splitter_window=Win } ) ->
-	%trace_utils:debug_fmt( "Creating panel from splitter window ~w.",
-	%                       [ Win ] ),
-	wxPanel:new( Win );
-
 create( Parent ) ->
 	wxPanel:new( Parent ).
 
 
 
-% @doc Creates a panel, associated to the specified parent and with the
-% specified options.
-%
--spec create( panel_options(), parent() ) -> panel().
-create( Options, _Parent=#splitter{ splitter_window=Win } ) ->
-	create( Options, Win );
+-doc """
+Creates a panel, associated to the specified parent and with the specified
+options.
 
+This is the most flexible way of creating a panel.
+""".
+-spec create( maybe_list( panel_options() ), parent() ) -> panel().
 create( Options, Parent ) ->
 	wxPanel:new( Parent, to_wx_panel_options( Options ) ).
 
 
 
-% @doc Creates a panel, associated to the specified parent and with the
-% specified position and dimensions.
-%
+-doc """
+Creates a panel, associated to the specified parent and with the specified
+position and dimensions.
+""".
 -spec create( coordinate(), coordinate(), width(), height(), parent() ) ->
 											panel().
 create( X, Y, Width, Height, Parent ) ->
@@ -130,9 +138,10 @@ create( X, Y, Width, Height, Parent ) ->
 
 
 
-% @doc Creates a panel, associated to the specified parent and with the
-% specified position and dimensions.
-%
+-doc """
+Creates a panel, associated to the specified parent and with the specified
+position and dimensions.
+""".
 -spec create( position(), size(), parent() ) -> panel().
 create( Position, Size, Parent ) ->
 
@@ -142,9 +151,11 @@ create( Position, Size, Parent ) ->
 	wxPanel:new( Parent, WxOpts ).
 
 
-% @doc Creates a panel, associated to the specified parent and with the
-% specified position and dimensions.
-%
+
+-doc """
+Creates a panel, associated to the specified parent and with the specified
+position and dimensions.
+""".
 -spec create( position(), size(), panel_options(), parent() ) -> panel().
 create( Position, Size, Options, Parent ) ->
 
@@ -160,9 +171,10 @@ create( Position, Size, Options, Parent ) ->
 
 
 
-% @doc Creates a panel, associated to the specified parent, with the specified
-% position, dimensions and options.
-%
+-doc """
+Creates a panel, associated to the specified parent, with the specified
+position, dimensions and options.
+""".
 -spec create( coordinate(), coordinate(), width(), height(), panel_options(),
 			  parent() ) -> panel().
 create( X, Y, Width, Height, Options, Parent ) ->
@@ -174,26 +186,31 @@ create( X, Y, Width, Height, Options, Parent ) ->
 
 
 
-% @doc Destructs the specified panel.
+
+-doc "Destructs the specified panel.".
 -spec destruct( panel() ) -> void().
 destruct( Panel ) ->
 	wxPanel:destroy( Panel ).
 
 
-% @doc Returns the size of the specified panel.
-%
-% Defined here only for convenience (as gui_widget provides it).
-%
+
+-doc """
+Returns the size of the specified panel.
+
+Defined here only for convenience (as gui_widget provides it).
+""".
 -spec get_size( panel() ) -> dimensions().
 get_size( Panel ) ->
 	wxWindow:getSize( Panel ).
 
 
-% @doc Converts the specified MyriadGUI panel option(s) into the appropriate
-% wx-specific options.
-%
-% (exported helper)
-%
+
+-doc """
+Converts the specified MyriadGUI panel option(s) into the appropriate
+wx-specific options.
+
+(exported helper)
+""".
 -spec to_wx_panel_options( maybe_list( panel_option() ) ) ->
 											[ wx_panel_option() ].
 to_wx_panel_options( Options ) ->

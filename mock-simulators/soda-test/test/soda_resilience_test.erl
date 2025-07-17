@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,14 +19,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Test case for <b>resilience</b> obtained from the soda benchmarking case.
-%
-% See also:
-% - class_SodaVendingMachine.erl
-% - class_DeterministicThirstyCustomer.erl
-%
 -module(soda_resilience_test).
+
+-moduledoc """
+Test case for **resilience** obtained from the soda benchmarking case.
+
+See also:
+- class_SodaVendingMachine.erl
+- class_DeterministicThirstyCustomer.erl
+""".
 
 
 % To silence a Dialyzer never-match warning:
@@ -47,7 +48,7 @@
 % benchmarking purposes.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -65,7 +66,7 @@
 		deterministic_customer_pid() | stochastic_customer_pid().
 
 
-% @doc Returns the main settings to choose the size of this test.
+-doc "Returns the main settings to select the size of this test.".
 get_benchmark_settings( Scale ) ->
 
 	% Sets these parameters according to how numerous and powerful your
@@ -96,9 +97,10 @@ get_benchmark_settings( Scale ) ->
 
 
 
-% @doc Creates the specified number of soda vending machines, and returns a list
-% of their PID.
-%
+-doc """
+Creates the specified number of soda vending machines, and returns a list of
+their PID.
+""".
 -spec create_vending_machines( count() ) -> [ machine_pid() ].
 create_vending_machines( Count ) ->
 	create_vending_machines( Count, _Acc=[] ).
@@ -128,10 +130,11 @@ create_vending_machines( Count, Acc ) ->
 
 
 
-% @doc Creates the specified number of thirsty customers, knowing each one soda
-% vending machine among the specified ones, and returns a list of the PID of
-% these customers.
-%
+-doc """
+Creates the specified number of thirsty customers, knowing each one soda vending
+machine among the specified ones, and returns a list of the PID of these
+customers.
+""".
 -spec create_thirsty_customers( count(), [ machine_pid() ] ) ->
 									[ customer_pid() ].
 create_thirsty_customers( CustomerCount, VendingMachines ) ->
@@ -159,9 +162,10 @@ create_thirsty_customers( CustomerCount, VendingMachines, Acc ) ->
 
 
 
-% @doc Creates a deterministic thirsty customer, knowing one of the specified
-% vending machines.
-%
+-doc """
+Creates a deterministic thirsty customer, knowing one of the specified vending
+machines.
+""".
 create_deterministic_customer( VendingMachines, CustomerCount ) ->
 
 	CustomerName = text_utils:format( "Customer #~B - deterministic",
@@ -184,16 +188,17 @@ create_deterministic_customer( VendingMachines, CustomerCount ) ->
 
 
 
-% @doc Creates a stochastic thirsty customer, knowing one of the specified
-% vending machines.
-%
+-doc """
+Creates a stochastic thirsty customer, knowing one of the specified vending
+machines.
+""".
 create_stochastic_customer( VendingMachines, CustomerCount ) ->
 
 	CustomerName = text_utils:format( "Customer #~B - stochastic",
 									  [ CustomerCount ] ),
 
 	ElectedMachineIndex = class_RandomManager:get_uniform_value(
-							length( VendingMachines ) ),
+		length( VendingMachines ) ),
 
 	ElectedMachine = list_utils:get_element_at( VendingMachines,
 												ElectedMachineIndex ),
@@ -211,7 +216,7 @@ create_stochastic_customer( VendingMachines, CustomerCount ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 	run( minimal ).
@@ -232,6 +237,7 @@ run( Scale ) ->
 
 	file_utils:is_existing_file( HostCandidatesFile ) orelse
 		begin
+
 			?notify_warning( "No host specification file found, "
 				"hence this resilience test would not be "
 				"able to run, stopping it." ),
@@ -246,8 +252,7 @@ run( Scale ) ->
 
 	DeploymentSettings = #deployment_settings{
 
-		computing_hosts={ use_host_file_otherwise_local,
-						  HostCandidatesFile },
+		computing_hosts={ use_host_file_otherwise_local, HostCandidatesFile },
 
 		%node_availability_tolerance = fail_on_unavailable_node,
 

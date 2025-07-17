@@ -1,22 +1,23 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
 
 % This header file is a variation of the class_TraceEmitter.hrl header of the
@@ -893,7 +894,7 @@
 -ifdef(tracing_activated).
 
 
-% The type of trace output (ex: LogMX, PDF, etc.) is defined in the traces.hrl
+% The type of trace output (e.g. LogMX, PDF, etc.) is defined in the traces.hrl
 % file.
 
 
@@ -949,7 +950,7 @@
 
 
 % Some delay are added when error traces are sent, so that they can be stored
-% before the virtual machine is stopped, should it happen (ex: if an exception
+% before the virtual machine is stopped, should it happen (e.g. if an exception
 % is thrown).
 %
 % Delays should better be replaced by synchronous operations.
@@ -1831,8 +1832,8 @@
 -define( report_full_fmt( State, Message, FormatValues, MessageCategorization,
 						  SimulationTimestamp ),
 		 class_TraceEmitter:send_safe( info, State, text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-					MessageCategorization, SimulationTimestamp ) ).
+			get_spatial_message( Message, State ), FormatValues ),
+			MessageCategorization, SimulationTimestamp ) ).
 
 
 

@@ -1,31 +1,33 @@
-% Copyright (C) 2018-2024 EDF R&D
-
+% Copyright (C) 2018-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2018.
 
-
-% @doc Test regarding the reemission of past values sent by an output port
-% whenever it gets connected again.
-%
-% See also its descrition in the 'Unit Tests Overview'
-% (cf. unit-tests-overview.rst).
-%
 -module(reemission_on_connection_test).
+
+-moduledoc """
+Test regarding the reemission of past values sent by an output port whenever it
+gets connected again.
+
+See also its descrition in the 'Unit Tests Overview'
+(cf. `unit-tests-overview.rst`).
+""".
 
 
 % For facilities common to all cases:
@@ -36,7 +38,7 @@
 -include("dataflow_unit_test_defines.hrl").
 
 
-% @doc Runs the case.
+-doc "Runs the case.".
 -spec run() -> no_return().
 run() ->
 
@@ -76,7 +78,7 @@ run() ->
 
 	% Creating first the (here, single, overall) dataflow of interest:
 	DataflowPid = class_Actor:create_initial_actor( class_Dataflow,
-			[ "Unit test Dataflow", ExperimentManagerPid ], LoadBalancerPid ),
+		[ "Unit test Dataflow", ExperimentManagerPid ], LoadBalancerPid ),
 
 	% A single dataflow here:
 	Dataflows = [ DataflowPid ],
@@ -111,7 +113,7 @@ run() ->
 		"dataflow objects: ~p.", [ DefaultObjectManagerDefs ] ),
 
 	DefaultObjectManagers = class_DataflowObjectManager:create_default_managers(
-		  DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid ),
+		DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid ),
 
 	% For load-balancing purposes, multiple default object managers may be
 	% created, we just select one of them here:

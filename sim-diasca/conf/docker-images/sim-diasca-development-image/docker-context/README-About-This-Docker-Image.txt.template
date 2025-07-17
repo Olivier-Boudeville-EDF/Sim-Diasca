@@ -1,10 +1,9 @@
-
 Welcome to this Sim-Diasca IMAGE_DESCRIPTION_TAG Docker image!
 
 Here are the main information about it:
  - this image can be referenced as 'FULL_IMAGE_NAME_TAG'
  - it derives from the 'PARENT_IMAGE_TAG' one
- - user-oriented graphical packages are installed (ex: Gnuplot, Emacs)
+ - user-oriented graphical packages are installed (i.e. Gnuplot, Emacs)
  - it includes a full Erlang environment, in version ERLANG_VERSION_TAG, located in /opt/Software/Erlang/Erlang-Erlang-current-install/
  - it provides Sim-Diasca sources and prebuilt runtime, in version SIM_DIASCA_VERSION_TAG, located in /opt/Software/Sim-Diasca/
  - it provides a suitable LogMX, in /opt/Software/LogMX/LogMX-current-install
@@ -19,9 +18,10 @@ accommodate graphical tools such as editors. So the hosting system should
 preferably offer X support.
 
 On Windows, 'Xming', available at http://xming.sf.net, can probably be used,
-then with the unsecureXming.xlaunch file.
+then with the unsecureXming.xlaunch file (included in this image). Alternatively
+'MobaXterm', available at https://mobaxterm.mobatek.net/, might be used.
 
-If not done automatically (ex: thanks to the -X/-Y SSH option), the DISPLAY
+If not done automatically (e.g. thanks to the -X/-Y SSH option), the DISPLAY
 environment variable shall be properly set:
 	export DISPLAY=<IP_OF_YOUR_COMPUTER>:0.0
 

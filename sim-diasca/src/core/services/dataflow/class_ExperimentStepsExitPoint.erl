@@ -1,28 +1,29 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Class in charge, as a dataflow exit point, to <b>manage simulation
-% steps</b>.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(class_ExperimentStepsExitPoint).
+
+-moduledoc """
+Class in charge, as a dataflow exit point, to **manage simulation steps**.
+""".
 
 -define( class_description,
 		 "The experiment exit point is a singleton instance in charge of being "
@@ -84,33 +85,34 @@
 % positional parameter other criteria may be added in the future.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs such experiment exit point.
-%
-% Parameters are:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Dataflows is a list of the dataflows that this exit point should drive
-%
-% - ExperimentStepStart is the number of steps the overall experiment shall
-% start from (ex: first year)
-%
-% - ExperimentStepStop is the number of steps the overall experiment shall stop
-% at (ex: last year)
-%
-% - ExperimentEntryPointPid is the PID of the entry point of the experiment
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
-% - WorldManagerPid is the PID of the world manager
-%
+-doc """
+Constructs such experiment exit point.
+
+Parameters are:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Dataflows is a list of the dataflows that this exit point should drive
+
+- ExperimentStepStart is the number of steps the overall experiment shall start
+from (e.g. first year)
+
+- ExperimentStepStop is the number of steps the overall experiment shall stop
+at (e.g. last year)
+
+- ExperimentEntryPointPid is the PID of the entry point of the experiment
+
+- ExperimentManagerPid is the PID of the experiment manager
+
+- WorldManagerPid is the PID of the world manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		[ dataflow_pid() ], class_ExperimentManager:step_count(),
 		class_ExperimentManager:step_count(),
@@ -134,7 +136,9 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 % Methods section.
 
 
-% @doc Callback executed on the first diasca of existence of this exit point.
+-doc """
+Callback executed on the first diasca of existence of this exit point.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -148,7 +152,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The core of the behaviour of this exit point.
+-doc "The core of the behaviour of this exit point.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -186,10 +190,11 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Declares the termination of the experiment.
+%-doc """
+%Declares the termination of the experiment.
 %
-% Note: usually this is determined internally.
-%
+%Note: usually this is determined internally.
+%""".
 % -spec declareExperimentTermination( wooper:state() ) -> oneway_return().
 % declareExperimentTermination( State ) ->
 
@@ -213,7 +218,7 @@ actSpontaneous( State ) ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this exit point.
+-doc "Returns a textual description of this exit point.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -232,7 +237,7 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Experiment exit point in ~ts phase (in step ~B/~B), "
+	text_utils:format( "experiment exit point in ~ts phase (in step ~B/~B), "
 		"referencing its entry point counterpart ~p, associated to the "
 		"experiment manager ~w, to the world manager ~w and ~ts",
 		[ ?getAttr(phase), ?getAttr(current_step),

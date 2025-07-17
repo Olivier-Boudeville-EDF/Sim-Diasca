@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2024-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,38 +23,31 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Monday, March 13, 2023.
+% Creation date: Wednesday, October 9, 2024.
 
 
-% For the base alpha coordinates (clearer; OpenGL conventions):
-
--define( alpha_fully_opaque,      1.0 ).
--define( alpha_fully_transparent, 0.0 ).
-
-
-% Corresponds to an OpenGL texture.
--record( texture, {
-
-	% The identifier (OpenGL "name") of that texture.
-	id :: gui_texture:texture_id(),
+% Possibly useful:
+-ifndef(myriad_maths_includes_hrl_guard).
+-define(myriad_maths_includes_hrl_guard,).
 
 
-	% The pixel width of this texture:
-	width :: gui:length(),
+% In alphabetical order:
 
-	% The pixel height of this texture:
-	height :: gui:length(),
+-include("bounding_surface.hrl").
+-include("bounding_volume.hrl").
+-include("camera.hrl").
+-include("linear.hrl").
+-include("math_utils.hrl").
+-include("matrix2.hrl").
+-include("matrix3.hrl").
+-include("matrix4.hrl").
+-include("mesh.hrl").
+-include("plot_utils.hrl").
+-include("polygon.hrl").
+-include("projection.hrl").
+-include("reference_frame3.hrl").
+-include("reference_tree.hrl").
+-include("transform4.hrl").
 
 
-	% The minimum abscissa of this texture relatively to its color buffer.
-	min_x :: gui_opengl:length_factor(),
-
-	% The minimum ordinate of this texture relatively to its color buffer.
-	min_y :: gui_opengl:length_factor(),
-
-
-	% The maximum abscissa of this texture relatively to its color buffer.
-	max_x :: gui_opengl:length_factor(),
-
-	% The maximum ordinate of this texture relatively to its color buffer.
-	max_y :: gui_opengl:length_factor() } ).
+-endif. % myriad_maths_includes_hrl_guard

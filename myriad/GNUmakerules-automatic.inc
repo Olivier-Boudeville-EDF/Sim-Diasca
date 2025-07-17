@@ -1,6 +1,5 @@
 # Here are gathered automatic (generic, pattern-based) rules for Myriad.
 
-
 # From the point of view of the make tool, they come first, yet the rules that
 # are actually selected are the ones with the longer name match, so any explicit
 # rule will override them.
@@ -26,7 +25,7 @@
 
 # Note: long lines in rules should not be word-wrapped (with \), as their
 # displaying on the console would print such characters, leading to poorly dense
-# outputs, that are not pleasing to the eye.
+# outputs that are not pleasing to the eye.
 
 
 
@@ -127,7 +126,6 @@ ifeq ($(USE_PROTOBUF),true)
 	@echo "		Generating $@ from Protobuf spec $<"
 	@"$(PB_COMPILER)" $(PB_OPT) $< $(GPB_SUFFIX_OPT)
 
-
 endif
 
 
@@ -203,12 +201,12 @@ endif
 
 # To run an application as a service.
 #
-# Exactly like when running as %_exec_background, except services are shared
-# hence their node name must no depend on any user name; they are directly named
-# as their core target (e.g. 'make X_exec_service' results in a node named
-# 'X@LOCALHOSTNAME').
+# Exactly like when running as %_exec_background, except that services are to be
+# transverse/shared, hence their node name must no depend on any user name; they
+# are directly named as their core target (e.g. 'make X_exec_service' results in
+# a node named 'X@LOCALHOSTNAME').
 #
-# (these rules uses run_erl, that runs in the background)
+# (these rules use run_erl, that runs in the background)
 
 
 %_exec_service: %_app.beam %.beam

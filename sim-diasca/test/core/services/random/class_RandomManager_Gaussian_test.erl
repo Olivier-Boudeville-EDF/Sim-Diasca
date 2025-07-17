@@ -1,31 +1,33 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Unit test for the RandomManager class implementation, regarding the
-% <b>Gaussian distribution</b>.
-%
-% See the class_RandomManager.erl module.
-%
 -module(class_RandomManager_Gaussian_test).
+
+-moduledoc """
+Unit test for the RandomManager class implementation, regarding the
+**Gaussian distribution**.
+
+See the class_RandomManager.erl module.
+""".
+
 
 
 % For facilities common to all tests (this is not a simulation case):
@@ -101,7 +103,7 @@ draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid ) ->
 
 
 
-% At index V there is the number of times V has been drawn.
+-doc "At index V there is the number of times V has been drawn.".
 make_table( Size ) ->
 	erlang:make_tuple( Size, 0 ).
 
@@ -137,7 +139,7 @@ compute_mean( Table ) ->
 	compute_mean( List, 1, 0 ) / compute_sum( List, 0 ).
 
 
-% Counts the number of draws.
+-doc "Counts the sum of draws.".
 compute_sum( [], Count ) ->
 	Count;
 
@@ -145,7 +147,7 @@ compute_sum( [ H | T ], Count ) ->
 	compute_sum( T, Count + H ).
 
 
-% Counts the sum of draws.
+% Counts the mean of draws.
 compute_mean( [], _Index, Acc ) ->
 	Acc;
 
@@ -229,7 +231,7 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 
 
 
-% @doc Runs the tests, no prior RandomManager expected to be alive.
+-doc "Runs the tests, no prior RandomManager expected to be alive.".
 -spec run() -> no_return().
 run() ->
 
@@ -242,7 +244,6 @@ run() ->
 
 	RandomManagerPid =
 		naming_utils:wait_for_global_registration_of( ?random_manager_name ),
-
 	Mu = 20,
 	Sigma = 10,
 	test_gaussian_random( RandomManagerPid, Mu, Sigma ),

@@ -1,31 +1,33 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
-
-% @doc Integration test for the spatial support.
-%
-% See also:
-% - class_TwoDimensionalEnvironment.erl
-% - class_SpatialisedActor.erl
-%
 -module(environment_spatialised_actor_test).
+
+-moduledoc """
+Integration test for the **spatial support**.
+
+ See also:
+ - class_TwoDimensionalEnvironment.erl
+ - class_SpatialisedActor.erl
+""".
 
 
 % For facilities common to all cases:
@@ -33,7 +35,7 @@
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
@@ -48,7 +50,7 @@ run() ->
 		tick_duration=0.01
 
 		% We leave it to the default specification (all_outputs):
-		% result_specification =
+		% result_specification=
 		%  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
 		%    { blacklisted_patterns, ["^Second" ] } ]
 
@@ -60,7 +62,7 @@ run() ->
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts={ use_host_file_otherwise_local,
-						  "sim-diasca-host-candidates.txt" } },
+						  "sim-diasca-host-candidates.etf" } },
 
 
 	% Default load balancing settings (round-robin placement heuristic):
@@ -68,12 +70,12 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 
 	% Let's create first a proper environment:
 	EnvPid = class_Actor:create_initial_actor( class_TwoDimensionalEnvironment,
-			[ _Width=400, _Height=300, _BorderSettings=torus ] ),
+		[ _Width=400, _Height=300, _BorderSettings=torus ] ),
 
 	% This one will go from left to right:
 	%

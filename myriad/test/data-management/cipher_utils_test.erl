@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,13 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2014.
 
-
-% Unit tests for the cipher_utils toolbox.
-%
-% See the cipher_utils.erl tested module.
-%
 -module(cipher_utils_test).
+
+-moduledoc """
+Unit tests for the `cipher_utils` toolbox.
+
+See the cipher_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -50,7 +53,7 @@ run() ->
 	%TransformList = [ { compress, xz } ],
 
 	%TransformList = [ { insert_random, _Seed={ 4, 48, 25 },
-	%				  _Range=10 } ],
+	%                  _Range=10 } ],
 
 	%TransformList = [ delta_combine ],
 
@@ -83,18 +86,13 @@ run() ->
 	test_facilities:display( "Generating a key from specified transform list, "
 							 "to be stored in file '~ts'.", [ KeyFilename ] ),
 
-	case file_utils:is_existing_file( KeyFilename ) of
-
-		true ->
+	file_utils:is_existing_file( KeyFilename ) andalso
+		begin
 			% Otherwise generation will halt on error:
 			test_facilities:display( "(removing previously existing "
 									 "key file '~ts')~n", [ KeyFilename ] ),
-			file_utils:remove_file( KeyFilename );
-
-		false ->
-			ok
-
-	end,
+			file_utils:remove_file( KeyFilename )
+		end,
 
 	cipher_utils:generate_key( KeyFilename, TransformList ),
 
@@ -111,18 +109,13 @@ run() ->
 		"using key file '~ts'.",
 		[ SourceFilename, EncryptedFilename, KeyFilename ] ),
 
-	case file_utils:is_existing_file( EncryptedFilename ) of
-
-		true ->
+	file_utils:is_existing_file( EncryptedFilename ) andalso
+		begin
 			% Otherwise generation will halt on error:
 			test_facilities:display( "(removing previously existing target "
 				"encrypted file '~ts')~n", [ EncryptedFilename ] ),
-			file_utils:remove_file( EncryptedFilename );
-
-		false ->
-			ok
-
-	end,
+			file_utils:remove_file( EncryptedFilename )
+		end,
 
 	cipher_utils:encrypt( SourceFilename, EncryptedFilename, KeyFilename ),
 
@@ -132,18 +125,13 @@ run() ->
 	test_facilities:display( "Decrypting '~ts' into '~ts', using the same key.",
 							 [ EncryptedFilename, DecryptedFilename ] ),
 
-	case file_utils:is_existing_file( DecryptedFilename ) of
-
-		true ->
+	file_utils:is_existing_file( DecryptedFilename ) andalso
+		begin
 			% Otherwise generation will halt on error:
 			test_facilities:display( "(removing previously existing target "
 				"decrypted file '~ts')~n", [ DecryptedFilename ] ),
-			file_utils:remove_file( DecryptedFilename );
-
-		false ->
-			ok
-
-	end,
+			file_utils:remove_file( DecryptedFilename )
+		end,
 
 	cipher_utils:decrypt( EncryptedFilename, DecryptedFilename, KeyFilename ),
 

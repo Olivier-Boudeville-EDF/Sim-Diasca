@@ -1,28 +1,30 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Class defining the overall, unique <b>manager of all Java Virtual
-% Machines</b> spawned by the engine.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(class_JavaBindingManager).
+
+-moduledoc """
+Class defining the overall, unique **manager of all Java Virtual Machines**
+spawned by the engine.
+""".
 
 
 -define( class_description,
@@ -73,13 +75,6 @@
 -export([ to_string/1 ]).
 
 
-
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
-
-
-
 % Allows to define WOOPER base variables and methods for that class:
 -include_lib("wooper/include/wooper.hrl").
 
@@ -95,20 +90,6 @@
 
 % Allows to use macros for trace sending:
 -include_lib("traces/include/traces.hrl").
-
-
-% Shorthands:
-
--type controller_mbox_pid() :: class_JavaBindingAgent:controller_mbox_pid().
--type worker_mbox_pid() :: class_JavaBindingAgent:worker_mbox_pid().
--type agent_pid() :: class_JavaBindingAgent:agent_pid().
-
--type directory_path() :: file_utils:directory_path().
-
--type atom_node_name() :: net_utils:atom_node_name().
--type tcp_port() :: net_utils:tcp_port().
-
--type code_path() :: code_utils:code_path().
 
 
 
@@ -127,39 +108,56 @@
 % nodes (direct pipe-like communication), unlike standard (Erlang) nodes
 %
 % For Java, the runtime containers stored in the node table are the
-% JavaBindingAgent instances (ex: not the controller mailboxes, which are kept
+% JavaBindingAgent instances (e.g. not the controller mailboxes, which are kept
 % in the controller_table)
 
 
 
+% Type shorthands:
 
-% @doc Constructs a manager of Java resources (resource manager).
-%
-% Parameters:
-%
-% - ComputingNodes, a list of the computing nodes on each of which a JVM is to
-% be created
-%
-% - EngineRootDir, the root directory in which the engine is located, on the
-% user node
-%
-% - EpmdPort, the TCP port of the EPMD daemon to rely on (if any)
-%
-% - ClassPath, the (Java) classpath specified to each launched JVM in order to
-% locate user-specific class files
-%
-% - DeploymentManagerPid, the PID of the deployment manager
-%
+-type ustring() :: text_utils:ustring().
+
+-type controller_mbox_pid() :: class_JavaBindingAgent:controller_mbox_pid().
+-type worker_mbox_pid() :: class_JavaBindingAgent:worker_mbox_pid().
+-type agent_pid() :: class_JavaBindingAgent:agent_pid().
+
+-type directory_path() :: file_utils:directory_path().
+
+-type atom_node_name() :: net_utils:atom_node_name().
+-type tcp_port() :: net_utils:tcp_port().
+
+-type code_path() :: code_utils:code_path().
+
+
+
+-doc """
+Constructs a manager of Java resources (resource manager).
+
+Parameters:
+
+- ComputingNodes, a list of the computing nodes on each of which a JVM is to
+be created
+
+- EngineRootDir, the root directory in which the engine is located, on the
+user node
+
+- EpmdPort, the TCP port of the EPMD daemon to rely on (if any)
+
+- ClassPath, the (Java) classpath specified to each launched JVM in order to
+locate user-specific class files
+
+- DeploymentManagerPid, the PID of the deployment manager
+""".
 -spec construct( wooper:state(), [ atom_node_name() ], directory_path(),
-				 maybe( tcp_port() ), code_path(),
+				 option( tcp_port() ), code_path(),
 				 class_DeploymentManager:manager_pid() ) -> wooper:state().
 construct( State, ComputingNodes, EngineRootDir, EpmdPort, ClassPath,
 		   DeploymentManagerPid ) ->
 
 	% First the direct mother class:
 	LangState = class_LanguageBindingManager:construct( State,
-			?trace_categorize("JavaBindingManager"), EngineRootDir, EpmdPort,
-			ClassPath, DeploymentManagerPid ),
+		?trace_categorize("JavaBindingManager"), EngineRootDir, EpmdPort,
+		ClassPath, DeploymentManagerPid ),
 
 	% Any language-specific binding manager might be registered that way:
 	% (enforces uniqueness, and provides global access)
@@ -178,7 +176,7 @@ construct( State, ComputingNodes, EngineRootDir, EpmdPort, ClassPath,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -187,8 +185,8 @@ destruct( State ) ->
 	% The Java binding agents associated to the computing nodes:
 	BindingAgents = table:values( NodeTable ),
 
-	% Asynchronous deletions, not done by the mother class; wipes as well the
-	% controller mailboxes:
+	% Asynchronous deletions, not done by the mother class; wipes out as well
+	% the controller mailboxes:
 	%
 	[ AgentPid ! delete || AgentPid <- BindingAgents ],
 
@@ -196,19 +194,21 @@ destruct( State ) ->
 
 
 
+
 % Methods section.
 
 
-% @doc Notifies this manager of the PID of the controller mailbox for the
-% specified computing node.
-%
+-doc """
+Notifies this manager of the PID of the controller mailbox for the specified
+computing node.
+""".
 -spec notifyNodeMailboxes( wooper:state(), controller_mbox_pid(),
 			[ worker_mbox_pid() ], agent_pid() ) -> oneway_return().
 notifyNodeMailboxes( State, ControllerMailboxPid, WorkerMailboxPids,
 					 BindingAgentPid ) ->
 
 	NewControlTable = table:add_new_entry( BindingAgentPid,
-						ControllerMailboxPid, ?getAttr(controller_table) ),
+		ControllerMailboxPid, ?getAttr(controller_table) ),
 
 	NewWorkerTable = table:add_new_entry( BindingAgentPid, WorkerMailboxPids,
 										  ?getAttr(worker_table) ),
@@ -228,23 +228,24 @@ notifyNodeMailboxes( State, ControllerMailboxPid, WorkerMailboxPids,
 	end,
 
 	NotifiedState = setAttributes( State, [
-						{ controller_table, NewControlTable },
-						{ worker_table, NewWorkerTable },
-						{ waited_agents, NewWaited } ] ),
+		{ controller_table, NewControlTable },
+		{ worker_table, NewWorkerTable },
+		{ waited_agents, NewWaited } ] ),
 
 	wooper:return_state( NotifiedState ).
 
 
 
-% @doc Returns the PID of the controller mailbox running on the Java Virtual
-% Machine associated to the specified sender of this request.
-%
-% In practice this controller mailbox is the one existing in the Java VM running
-% on the same node as the request sender (not specifying any particular thread
-% thereof), to lighten the load induced by their exchanges.
-%
+-doc """
+Returns the PID of the controller mailbox running on the Java Virtual Machine
+associated to the specified sender of this request.
+
+In practice this controller mailbox is the one existing in the Java VM running
+on the same node as the request sender (not specifying any particular thread
+thereof), to lighten the load induced by their exchanges.
+""".
 -spec getAssociatedControllerMailbox( wooper:state() ) ->
-			const_request_return( controller_mbox_pid() ).
+                                const_request_return( controller_mbox_pid() ).
 getAssociatedControllerMailbox( State ) ->
 
 	SenderPid = ?getSender(),
@@ -263,15 +264,16 @@ getAssociatedControllerMailbox( State ) ->
 
 
 
-% @doc Returns the PID corresponding to the mailbox of a worker (anyone of them)
-% running on the (local) JVM, based on the specified Java binding manager.
-%
-% In practice this worker mailbox is one existing in the Java VM running on the
-% same node as the sender (not specifying any particular thread thereof), to
-% lighten the load induced by their exchanges.
-%
+-doc """
+Returns the PID corresponding to the mailbox of a worker (anyone of them)
+running on the (local) JVM, based on the specified Java binding manager.
+
+In practice this worker mailbox is one existing in the Java VM running on the
+same node as the sender (not specifying any particular thread thereof), to
+lighten the load induced by their exchanges.
+""".
 -spec getAnyAssociatedWorkerMailbox( wooper:state() ) ->
-			const_request_return( worker_mbox_pid() ).
+                                const_request_return( worker_mbox_pid() ).
 getAnyAssociatedWorkerMailbox( State ) ->
 
 	SenderPid = ?getSender(),
@@ -280,7 +282,7 @@ getAnyAssociatedWorkerMailbox( State ) ->
 	% agent:
 	%
 	JavaAgentPid = executeConstRequest( State,
-							getAssociatedRuntimeContainer, [ SenderPid ] ),
+		getAssociatedRuntimeContainer, [ SenderPid ] ),
 
 	% Then obtaining from it the PID of all worker mailboxes of that node:
 	AllWorkerMboxPids = table:get_value( JavaAgentPid,
@@ -299,23 +301,25 @@ getAnyAssociatedWorkerMailbox( State ) ->
 % Static section.
 
 
-% @doc Returns the atom corresponding to the name the Java binding manager
-% should be registered as.
-%
-% Note: executed on the caller node.
-%
+-doc """
+Returns the atom corresponding to the name the Java binding manager should be
+registered as.
+
+Note: executed on the caller node.
+""".
 -spec get_registration_name() ->
 							static_return( naming_utils:registration_name() ).
 get_registration_name() ->
-	% Ex: 'sim_diasca_java_binding_manager':
+	% For example 'sim_diasca_java_binding_manager':
 	wooper:return_static( ?java_binding_manager_name ).
 
 
 
-% @doc Returns the PID of the (unique) Java binding manager.
-%
-% To be used by clients of the Java binding manager.
-%
+-doc """
+Returns the PID of the (unique) Java binding manager.
+
+To be used by clients of the Java binding manager.
+""".
 -spec get_registered_manager() -> static_return( 'none' | manager_pid() ).
 get_registered_manager() ->
 
@@ -331,13 +335,14 @@ get_registered_manager() ->
 
 
 
-% @doc Returns the PID corresponding to the controller mailbox of the (local)
-% JVM, based on the specified Java binding manager.
-%
-% To be used by clients of this Java binding manager.
-%
+-doc """
+Returns the PID corresponding to the controller mailbox of the (local) JVM,
+based on the specified Java binding manager.
+
+To be used by clients of this Java binding manager.
+""".
 -spec get_controller_mbox( manager_pid() ) ->
-				static_return( controller_mbox_pid() ).
+                            static_return( controller_mbox_pid() ).
 get_controller_mbox( JavaBindingManagerPid ) ->
 
 	JavaBindingManagerPid ! { getAssociatedControllerMailbox, [], self() },
@@ -351,13 +356,14 @@ get_controller_mbox( JavaBindingManagerPid ) ->
 
 
 
-% @doc Returns the PID corresponding to the mailbox of a worker (anyone of them)
-% running on the (local) JVM, based on the specified Java binding manager.
-%
-% To be used by clients of this Java binding manager.
-%
+-doc """
+Returns the PID corresponding to the mailbox of a worker (anyone of them)
+running on the (local) JVM, based on the specified Java binding manager.
+
+To be used by clients of this Java binding manager.
+""".
 -spec get_any_worker_mailbox( manager_pid() ) ->
-					static_return( worker_mbox_pid() ).
+                            static_return( worker_mbox_pid() ).
 get_any_worker_mailbox( JavaBindingManagerPid ) ->
 
 	JavaBindingManagerPid ! { getAnyAssociatedWorkerMailbox, [], self() },
@@ -375,16 +381,17 @@ get_any_worker_mailbox( JavaBindingManagerPid ) ->
 % Helpers section.
 
 
-% @doc Initialises the per-computing node Java runtime containers, that is JVMs
-% (also known as OtpNodes).
-%
+-doc """
+Initialises the per-computing node Java runtime containers, that is JVMs (also
+known as OtpNodes).
+""".
 -spec initialise_java_nodes( [ atom_node_name() ], tcp_port(), code_path(),
 							 wooper:state() ) -> wooper:state().
 initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 
 	?debug_fmt( "Creating a Java binding agent on each of the ~B "
 		"computing nodes: ~ts", [ length( ComputingNodes ),
-					text_utils:atoms_to_string( ComputingNodes ) ] ),
+			text_utils:atoms_to_string( ComputingNodes ) ] ),
 
 	% Preliminary test that the Java launcher is available, to avoid a later
 	% possible error:
@@ -396,12 +403,8 @@ initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 
 	BindingAbsFilename = file_utils:join( BindingPath, BindingClassFilename ),
 
-	case file_utils:is_existing_file( BindingAbsFilename ) of
-
-		true ->
-			ok;
-
-		false ->
+	file_utils:is_existing_file( BindingAbsFilename ) orelse
+        begin
 			?error_fmt( "The implementation of the Java binding class '~ts' "
 				"is not found, whereas it was expected to be available "
 				"from '~ts'. Has the USE_JAVA_BINDING make variable been set "
@@ -410,13 +413,12 @@ initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 				  BindingPath ] ),
 
 			throw( { no_java_binding_class_found, BindingAbsFilename } )
-
-	end,
+        end,
 
 	NodePidPairs = [ { Node,
 					   class_JavaBindingAgent:remote_synchronous_timed_new_link(
 							Node, EpmdPort, ClassPath, self() ) }
-						|| Node <- ComputingNodes ],
+                                        || Node <- ComputingNodes ],
 
 	% Storing, for each computing node, the PID of its Java binding agent,
 	% knowing that controller mailboxes will be notified later, once their
@@ -438,7 +440,7 @@ initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 
 
 
-% @doc Returns a textual description of this manager.
+-doc "Returns a textual description of this manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -454,8 +456,8 @@ to_string( State ) ->
 	WorkerPairs = table:enumerate( ?getAttr(worker_table) ),
 
 	WorkerStrings = [ text_utils:format(
-					   "for agent ~w, worker mailboxes are ~w",
-					   [ AgentPid, WorkerMboxPids ] )
+                        "for agent ~w, worker mailboxes are ~w",
+                        [ AgentPid, WorkerMboxPids ] )
 							|| { AgentPid, WorkerMboxPids } <- WorkerPairs ],
 
 	text_utils:format( "Java ~ts~nFollowing controller mailboxes are "

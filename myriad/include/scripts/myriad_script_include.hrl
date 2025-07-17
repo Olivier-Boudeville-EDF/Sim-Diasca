@@ -1,10 +1,11 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % Include file meant to simplify the writing of Myriad-using escripts.
 %
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%
 % Released as LGPL software.
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2016.
 
 
 
@@ -26,9 +27,11 @@
 % Functions are declared private as they are included within each escript.
 
 
-% @doc Tells whether the currently running Erlang code is executed as an escript
-% or as a regular Erlang program.
-%
+
+-doc """
+Tells whether the currently running Erlang code is executed as an escript or as
+a regular Erlang program.
+""".
 -spec is_running_as_escript() -> boolean().
 is_running_as_escript() ->
 
@@ -64,15 +67,13 @@ is_running_as_escript() ->
 
 
 
-% @doc Returns the base directory of that script, that is where it is stored
-% (regardless of the possibly relative path whence it was launched).
-%
-% Note: useful to locate resources (e.g. other modules) defined in link to that
-% script and needed by it.
-%
-% @private
-% @hidden
-%
+-doc """
+Returns the base directory of that script, that is where it is stored
+(regardless of the possibly relative path whence it was launched).
+
+Note: useful to locate resources (e.g. other modules) defined in link to that
+script and needed by it.
+""".
 -spec get_script_base_directory() -> file_utils:directory_path().
 get_script_base_directory() ->
 
@@ -154,7 +155,6 @@ get_myriad_path_from( CodePath ) ->
 	end.
 
 
-
 % (sub-helper)
 get_myriad_path_from( _Paths=[], _BaseDirName ) ->
 	undefined;
@@ -174,36 +174,34 @@ get_myriad_path_from( [ Path | T ], BaseDirName ) ->
 
 
 
-% @doc Updates the VM code path so that all modules of the 'Myriad' layer can be
-% readily used from an escript.
-%
-% Returns as well the Myriad base directory, for any further use
-% (e.g. determining other sibling base directories).
-%
-% Note: this function and its helpers might be copied verbatim to the target
-% escript so that it can really be used from anywhere (not only from the
-% directory in which it is stored).
-%
-% (original version located in script_utils.erl, copied verbatim here)
-%
-% @private
-%
+-doc """
+Updates the VM code path so that all modules of the 'Myriad' layer can be
+readily used from an escript.
+
+Returns as well the Myriad base directory, for any further use (e.g. determining
+other sibling base directories).
+
+Note: this function and its helpers might be copied verbatim to the target
+escript so that it can really be used from anywhere (not only from the directory
+in which it is stored).
+
+(original version located in script_utils.erl, copied verbatim here)
+""".
 -spec update_code_path_for_myriad() -> file_utils:directory_path().
 update_code_path_for_myriad() ->
 	update_code_path_for_myriad( get_myriad_base_directory() ).
 
 
 
-% @doc Updates the VM code path so that all modules of the 'Myriad' layer can be
-% readily used from a module run as an escript.
-%
-% Returns as well the Myriad base directory, for any further use
-% (e.g. determining other sibling base directories).
-%
-% @private
-%
-% (original version located in script_utils.erl, copied verbatim here)
-%
+-doc """
+Updates the VM code path so that all modules of the 'Myriad' layer can be
+readily used from a module run as an escript.
+
+Returns as well the Myriad base directory, for any further use (e.g. determining
+other sibling base directories).
+
+(original version located in script_utils.erl, copied verbatim here)
+""".
 -spec update_code_path_for_myriad_from_module() -> file_utils:directory_path().
 update_code_path_for_myriad_from_module() ->
 	{ ok, CurrentDir } = file:get_cwd(),
@@ -212,20 +210,19 @@ update_code_path_for_myriad_from_module() ->
 
 
 
-% @doc Updates the VM code path so that all modules of the 'Myriad' layer can be
-% readily used from an escript.
-%
-% The specified root directory is supposed correct (no further checking made).
-%
-% Returns as well the Myriad base directory, for any further use
-% (e.g. determining other sibling base directories).
-%
-% Note: this function and its helpers might be copied verbatim to the target
-% escript so that it can really be used from anywhere (not only from the
-% directory it is stored).
-%
-% @private
+-doc """
+Updates the VM code path so that all modules of the 'Myriad' layer can be
+readily used from an escript.
 
+The specified root directory is supposed correct (no further checking made).
+
+Returns as well the Myriad base directory, for any further use (e.g. determining
+other sibling base directories).
+
+Note: this function and its helpers might be copied verbatim to the target
+escript so that it can really be used from anywhere (not only from the directory
+it is stored).
+""".
 % (original version located in script_utils.erl, copied verbatim here)
 %
 -spec update_code_path_for_myriad( file_utils:directory_path() ) ->
@@ -240,9 +237,11 @@ update_code_path_for_myriad( MyriadRootDir ) ->
 	% An up-to-date version can be obtained thanks to the
 	% 'list-beam-relative-paths' make target:
 	%
-	MyriadBeamSubDirs = [ "data-management", "maths", "meta", "scripts",
-		"user-interface/graphical", "user-interface/textual",
-		"user-interface/audio", "user-interface", "utils" ],
+	MyriadBeamSubDirs = [ "apps/generate-password", "apps/merge-tool",
+		"data-management", "maths", "meta", "scripts",
+		"user-interface", "user-interface/audio", "user-interface/textual",
+		"user-interface/graphical", "user-interface/graphical/opengl",
+		"utils" ],
 
 
 	MyriadBeamDirs =
@@ -271,15 +270,14 @@ update_code_path_for_myriad( MyriadRootDir ) ->
 
 
 
-% @doc Returns the root directory of the Myriad layer.
-%
-% (note that a double path conversion between root and script directories can
-% hardly be avoided)
-%
-% @private
-%
-% (original version located in script_utils.erl, copied verbatim here)
-%
+-doc """
+Returns the root directory of the Myriad layer.
+
+(note that a double path conversion between root and script directories can
+hardly be avoided)
+
+(original version located in script_utils.erl, copied verbatim here)
+""".
 -spec get_myriad_base_directory() -> file_utils:directory_path().
 get_myriad_base_directory() ->
 

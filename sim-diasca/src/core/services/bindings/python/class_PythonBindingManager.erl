@@ -1,28 +1,30 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
-
-
-% @doc Class in charge of managing a set of <b>Python interpreters, to be used
-% as binding containers</b>.
 %
+% Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(class_PythonBindingManager).
+
+-moduledoc """
+Class in charge of managing a set of **Python interpreters, to be used as
+binding containers**.
+""".
 
 
 -define( class_description,
@@ -77,15 +79,6 @@
 
 
 
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
--type code_path() :: code_utils:code_path().
--type atom_node_name() :: net_utils:atom_node_name().
--type interpreter_pid() :: python_utils:interpreter_pid().
-
-
-
 % Implementation notes:
 %
 % For the communication between Erlang and Python, ErlPort (http://erlport.org/;
@@ -94,22 +87,22 @@
 % instances corresponding to actors.
 %
 % Even if this Python binding relies on a specific Erlang node to be created
-% (ex: like for C or for Java), it does not specifically need to know the port
+% (e.g. like for C or for Java), it does not specifically need to know the port
 % of the EPMD daemon (direct pipe-like communication).
 
 
 % Often, on a given host (typically a computing one), multiple generations of
-% Python coexist (Python 2 or 3), as well as multiple versions thereof (ex:
+% Python coexist (Python 2 or 3), as well as multiple versions thereof (e.g.
 % 3.5.2, 3.6.3, etc.).
 %
 % We leave the choice of the actual Python version to be used up to the
 % developer, who can select it by creating a symbolic link named
 % 'python-for-sim-diasca' that should point to the Python version of interest
-% and be found from the default user PATH (ex: one may create such a symbolic
+% and be found from the default user PATH (e.g. one may create such a symbolic
 % link in a ~/Software/bin that would be declared in the PATH environment
 % variable.
 %
-% Ex:
+% For example:
 % $ mkdir -p ~/Software/bin
 % $ cd ~/Software/bin
 %
@@ -127,26 +120,36 @@
 
 
 
-% @doc Constructs a manager of a set of Python interpreters.
-%
-% Parameters:
-%
-% - ComputingNodes, a list of the computing nodes on each of which a Python
-% interpreter is to be created
-%
-% - EngineRootDir, the root directory in which the engine is located, on the
-% user node
-%
-% - EpmdPort, the TCP port of the EPMD daemon to rely on (not used by this
-% binding)
-%
-% - CodePath, the Python code path specified to each launched Python interpreter
-% in order to locate user-specific modules
-%
-% - DeploymentManagerPid, the PID of the deployment manager
-%
+% Type shorthands:
+
+-type ustring() :: text_utils:ustring().
+-type code_path() :: code_utils:code_path().
+-type atom_node_name() :: net_utils:atom_node_name().
+-type interpreter_pid() :: python_utils:interpreter_pid().
+
+
+
+-doc """
+Constructs a manager of a set of Python interpreters.
+
+Parameters:
+
+- ComputingNodes, a list of the computing nodes on each of which a Python
+interpreter is to be created
+
+- EngineRootDir, the root directory in which the engine is located, on the user
+node
+
+- EpmdPort, the TCP port of the EPMD daemon to rely on (not used by this
+binding)
+
+- CodePath, the Python code path specified to each launched Python interpreter
+in order to locate user-specific modules
+
+- DeploymentManagerPid, the PID of the deployment manager
+""".
 -spec construct( wooper:state(), [ atom_node_name() ],
-		file_utils:directory_name(), maybe( net_utils:tcp_port() ),
+		file_utils:directory_name(), option( net_utils:tcp_port() ),
 		code_path(), class_DeploymentManager:manager_pid() ) -> wooper:state().
 construct( State, ComputingNodes, EngineRootDir, EpmdPort, CodePath,
 		   DeploymentManagerPid ) ->
@@ -174,9 +177,9 @@ construct( State, ComputingNodes, EngineRootDir, EpmdPort, CodePath,
 
 
 
-% @doc Launches and initializes a Python interpreter on each of the specified
-% nodes.
-%
+-doc """
+Launches and initializes a Python interpreter on each of the specified nodes.
+""".
 -spec initialise_interpreters( [ atom_node_name() ], code_path(),
 			wooper:state() ) -> class_LanguageBindingManager:node_table().
 initialise_interpreters( TargetNodes, CodePath, State ) ->
@@ -190,9 +193,9 @@ initialise_interpreters( TargetNodes, CodePath, State ) ->
 
 	RootDir = class_DeploymentManager:determine_root_directory(),
 
-	% Internal engine needs:
+	% Internal engine needs; certainly fragile:
 	PythonAPIPath = file_utils:join( [ RootDir, "sim-diasca", "src", "core",
-					"services", "dataflow", "bindings", "python", "api" ] ),
+		"services", "dataflow", "bindings", "python", "api" ] ),
 
 	% Useful to find modules and packages from the case directory:
 	WorkingDir = file_utils:get_current_directory(),
@@ -211,7 +214,6 @@ initialise_interpreters( TargetNodes, CodePath, State ) ->
 		"~nFull options retained:~n~p",
 		[ NodeCount, code_utils:code_path_to_string( PythonSpecifiedCodePath ),
 		  ErlportStartOptions ] ),
-
 
 	% Starts one interpreter per specified node, and populates the inherited
 	% node table with them; launching an interpreter is long, it is thus done in
@@ -246,23 +248,22 @@ initialise_interpreters( TargetNodes, CodePath, State ) ->
 	% (as start_link could not be used above):
 	%
 	InterpreterPids = case lists:foldl(
-						fun
+            fun
 
-						  ( { ok, IntPid }, _Acc={ AccPid, AccError } ) ->
-							  % As early as possible, but later than hoped:
-							  erlang:link( IntPid ),
-							  { [ IntPid | AccPid ], AccError };
+				( { ok, IntPid }, _Acc={ AccPid, AccError } ) ->
+                    % As early as possible, but later than hoped:
+                    erlang:link( IntPid ),
+                    { [ IntPid | AccPid ], AccError };
 
-						  ( { error, Error }, _Acc={ AccPid, AccError } ) ->
-								{ AccPid, [ Error | AccError ] };
+				( { error, Error }, _Acc={ AccPid, AccError } ) ->
+                    { AccPid, [ Error | AccError ] };
 
-						  ( Unexpected, _Acc ) ->
-								throw( { unexpected_launch_outcome,
-										 Unexpected } )
+				( Unexpected, _Acc ) ->
+					throw( { unexpected_launch_outcome, Unexpected } )
 
-						end,
-						_Acc0={ [], [] },
-						_List=Res ) of
+            end,
+            _Acc0={ [], [] },
+            _List=Res ) of
 
 		{ PidList, _Errors=[] } ->
 			PidList;
@@ -329,14 +330,14 @@ initialise_interpreters( TargetNodes, CodePath, State ) ->
 	%
 	PythonVersionCodePaths = [ python:call( Pid, 'common.erlang_binding_entry',
 											init_binding, [ self() ] )
-								|| Pid <- InterpreterPids ],
+                                    || Pid <- InterpreterPids ],
 
 	NodeAndVersionPathPairs = lists:zip( TargetNodes, PythonVersionCodePaths ),
 
-	InterpreterStrings = [
-	  interpret_python_settings( Node, Version, CurrentDir, ActualLocalPath )
-								|| { Node,
-		{ Version, CurrentDir, ActualLocalPath } } <- NodeAndVersionPathPairs ],
+	InterpreterStrings = [ interpret_python_settings( Node, Version,
+                                CurrentDir, ActualLocalPath )
+			|| { Node, { Version, CurrentDir, ActualLocalPath } }
+                    <- NodeAndVersionPathPairs ],
 
 	% Check:
 	InterpreterCount = length( InterpreterStrings ),
@@ -373,11 +374,11 @@ interpret_python_settings( Node, Version, CurrentDir, CodePath ) ->
 	text_utils:format( "for computing node '~ts', using Python version ~ts, "
 		"from current directory '~ts', with following code path: ~ts",
 		[ Node, Version, CurrentDir, text_utils:strings_to_enumerated_string(
-									DescribedPath, _IndentationLevel=1 ) ] ).
+			DescribedPath, _IndentationLevel=1 ) ] ).
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -388,7 +389,6 @@ destruct( State ) ->
 			State;
 
 		NodeTable ->
-
 			case table:values( NodeTable ) of
 
 				[] ->
@@ -419,12 +419,13 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Returns the Python interpreter associated to the sender of this request.
-%
-% In practice the returned binding container is the Python interpreter running
-% on the same (computing) host as the request sender, to lighten the load
-% induced by their exchanges.
-%
+-doc """
+Returns the Python interpreter associated to the sender of this request.
+
+In practice the returned binding container is the Python interpreter running on
+the same (computing) host as the request sender, to lighten the load induced by
+their exchanges.
+""".
 -spec getAssociatedPythonInterpreter( wooper:state() ) ->
 	const_request_return( language_utils:python_interpreter_container_pid() ).
 getAssociatedPythonInterpreter( State ) ->
@@ -444,12 +445,12 @@ getAssociatedPythonInterpreter( State ) ->
 % Static section.
 
 
+-doc """
+Returns the atom corresponding to the name the Python binding manager should be
+registered as.
 
-% @doc Returns the atom corresponding to the name the Python binding manager
-% should be registered as.
-%
-% Note: executed on the caller node.
-%
+Note: executed on the caller node.
+""".
 -spec get_registration_name() ->
 							static_return( naming_utils:registration_name() ).
 get_registration_name() ->
@@ -457,10 +458,11 @@ get_registration_name() ->
 
 
 
-% @doc Returns the PID of the (unique) Python binding manager.
-%
-% To be used by clients of the Python binding manager.
-%
+-doc """
+Returns the PID of the (unique) Python binding manager.
+
+To be used by clients of the Python binding manager.
+""".
 -spec get_registered_manager() -> static_return( manager_pid() ).
 get_registered_manager() ->
 
@@ -486,11 +488,11 @@ get_registered_manager() ->
 
 
 
+-doc """
+Returns the PID corresponding to the (local) Python interpreter.
 
-% @doc Returns the PID corresponding to the (local) Python interpreter.
-%
-% To be used by clients of the Python binding manager.
-%
+To be used by clients of the Python binding manager.
+""".
 -spec get_interpreter() -> static_return( interpreter_pid() ).
 get_interpreter() ->
 	InterpreterPid = get_interpreter( get_registered_manager() ),
@@ -498,11 +500,12 @@ get_interpreter() ->
 
 
 
-% @doc Returns the PID corresponding to the (local) Python interpreter, based on
-% the specified Python binding manager.
-%
-% To be used by clients of the Python binding manager.
-%
+-doc """
+Returns the PID corresponding to the (local) Python interpreter, based on the
+specified Python binding manager.
+
+To be used by clients of the Python binding manager.
+""".
 -spec get_interpreter( manager_pid() ) -> static_return( interpreter_pid() ).
 get_interpreter( PythonBindingManagerPid ) ->
 
@@ -521,14 +524,15 @@ get_interpreter( PythonBindingManagerPid ) ->
 % Helpers section.
 
 
-% @doc Returns a textual description of this manager.
+-doc "Returns a textual description of this manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	NodePairs = table:enumerate( ?getAttr(node_table) ),
 
 	NodeStrings = [ text_utils:format( "interpreter ~w running on node '~ts'",
-			[ ContainerPid, Node ] ) || { Node, ContainerPid } <- NodePairs ],
+		[ ContainerPid, Node ] ) || { Node, ContainerPid } <- NodePairs ],
 
 	text_utils:format( "Python binding manager federating ~B interpreters: ~ts",
-	   [ length( NodeStrings ), text_utils:strings_to_string( NodeStrings ) ] ).
+        [ length( NodeStrings ),
+          text_utils:strings_to_string( NodeStrings ) ] ).

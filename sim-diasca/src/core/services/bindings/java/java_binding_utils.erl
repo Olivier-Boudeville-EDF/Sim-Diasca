@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 EDF R&D
+% Copyright (C) 2016-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -18,12 +18,14 @@
 %
 % Authors: Robin Huart        [robin (dot) huart (at) edf (dot) fr]
 %          Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Module storing all the helper functions facilitating the support of the
-% <b>Java binding API</b>, relying on JInterface.
-%
 -module(java_binding_utils).
+
+-moduledoc """
+Module storing all the helper functions facilitating the support of the
+**Java binding API**, relying on JInterface.
+""".
 
 
 % Exports of helpers:
@@ -45,7 +47,7 @@
 % Based on java_utils.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type request_name() :: java_utils:request_name().
 -type request_result() :: java_utils:request_result().
@@ -57,12 +59,13 @@
 
 
 
-% @doc Sends a request to the specified Java OtpMailbox (that is typically a
-% worker mailbox, otherwise the controller one).
-%
-% Note: trace messages received while this request is being processed are
-% managed on the fly (directly, i.e. their processing is not postponed).
-%
+-doc """
+Sends a request to the specified Java OtpMailbox (that is typically a worker
+mailbox, otherwise the controller one).
+
+Note: trace messages received while this request is being processed are managed
+on the fly (directly, i.e. their processing is not postponed).
+""".
 -spec execute_request( java_mbox_pid(), request_name(), request_result(),
 		emitter_categorization() | wooper:state() ) -> result().
 % Here we have just a trace categorization:
@@ -90,13 +93,14 @@ execute_request( MailboxPid, RequestName, RequestParams, State ) ->
 
 
 
-% @doc Executes the same kind of request as above, but in any locally-available
-% Java worker mailbox.
-%
-% Hence this function is only relevant for "stateless" requests, i.e. requests
-% that do not rely on the state of a particular Jinterface mailbox (ex: static
-% methods only).
-%
+-doc """
+Executes the same kind of request as above, but in any locally-available Java
+worker mailbox.
+
+Hence this function is only relevant for "stateless" requests, i.e. requests
+that do not rely on the state of a particular Jinterface mailbox (e.g. static
+methods only).
+""".
 -spec execute_request_locally( request_name(), request_result(),
 			emitter_categorization() | wooper:state() ) ->
 									{ result(), java_mbox_pid() }.
@@ -110,12 +114,13 @@ execute_request_locally( RequestName, RequestParams, TraceCatOrState ) ->
 
 
 
-% @doc Executes the same kind of request as above, but in any locally-available
-% Java worker mailbox.
-%
-% Hence this function is only relevant for requests that do not rely on the
-% state of a particular Jinterface mailbox (ex: static methods only).
-%
+-doc """
+Executes the same kind of request as above, but in any locally-available
+Java worker mailbox.
+
+Hence this function is only relevant for requests that do not rely on the state
+of a particular Jinterface mailbox (e.g. static methods only).
+""".
 -spec execute_request_locally( request_name(), request_result(),
 			class_JavaBindingManager:manager_pid(),
 			emitter_categorization() | wooper:state() ) ->
@@ -141,17 +146,18 @@ execute_request_locally( RequestName, RequestParams, JavaBindingManagerPid,
 
 
 
-% @doc Recursive listener transmitting trace messages sent from Java, to be used
-% while performing a request to a Java mailbox in order to wait for its
-% corresponding answer.
-%
-% Stops as soon as the request is successfully completed, or an error message is
-% received, or an exception has been raised by the process hosting the mailbox.
-%
+-doc """
+Recursive listener transmitting trace messages sent from Java, to be used while
+performing a request to a Java mailbox in order to wait for its corresponding
+answer.
+
+Stops as soon as the request is successfully completed, or an error message is
+received, or an exception has been raised by the process hosting the mailbox.
+""".
 -spec handle_request_results( java_mbox_pid(), request_name(),
 				emitter_categorization() | wooper:state() ) -> result().
 handle_request_results( MailboxPid, RequestName, TraceEmitterCategorization )
-			when is_list( TraceEmitterCategorization ) ->
+                                when is_list( TraceEmitterCategorization ) ->
 
 	%trace_utils:debug_fmt( "Waiting for the result of request '~ts', from ~w.",
 	%                       [ RequestName, MailboxPid ] ),

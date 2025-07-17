@@ -1,31 +1,32 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
-
-
-% @doc Module storing all the helper functions defined to facilitate the
-% <b>definition and use of the binding APIs</b>, for all the supported
-% implementation languages (nothing is expected to be language-specific in this
-% module, in the sense that if a language is involved somewhere, others should
-% also be, aside).
 %
+% Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(dataflow_binding_utils).
+
+-moduledoc """
+Gathering of all the helper functions introduced in order to facilitate the
+**definition and use of the binding APIs**, for all the supported implementation
+languages (nothing is expected to be language-specific in this module, in the
+sense that if a language is involved somewhere, others should also be, aside).
+""".
 
 
 % For agent_pid() in next include:
@@ -49,9 +50,10 @@
 
 
 
-% @doc Returns the default unit types (classes) that are the Erlang-based
-% counterparts to all units implemented in a foreign programming language.
-%
+-doc """
+Returns the default unit types (classes) that are the Erlang-based counterparts
+to all units implemented in a foreign programming language.
+""".
 -spec get_all_erlang_unit_types() -> [ dataflow_unit_type() ].
 get_all_erlang_unit_types() ->
 	[ dataflow_python_binding_utils:get_erlang_unit_type(),
@@ -59,9 +61,10 @@ get_all_erlang_unit_types() ->
 
 
 
-% @doc Returns the default Erlang unit type associated to specified programming
-% language.
-%
+-doc """
+Returns the default Erlang unit type associated to specified programming
+language.
+""".
 -spec get_erlang_unit_type( language_utils:language() ) -> dataflow_unit_type().
 get_erlang_unit_type( python ) ->
 	dataflow_python_binding_utils:get_erlang_unit_type();
@@ -74,12 +77,13 @@ get_erlang_unit_type( Other ) ->
 
 
 
-% @doc Returns the types (Erlang classnames) of units listed in the specified
-% unit specifications.
-%
-% Note: checks also that their declared implementation language (if any is
-% specified) is supported.
-%
+-doc """
+Returns the types (Erlang classnames) of units listed in the specified unit
+specifications.
+
+Note: checks also that their declared implementation language (if any is
+specified) is supported.
+""".
 -spec get_unit_types( [ class_DataflowUnitManager:managed_unit_spec() ] ) ->
 							[ dataflow_unit_type() ].
 get_unit_types( UnitSpecs ) ->

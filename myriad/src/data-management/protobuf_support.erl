@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,54 +25,76 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, November 5, 2021.
 
-
-% @doc Support for the <b>Protocol Buffer</b> facilities, a.k.a. Protobuf.
-%
-% We generally prefer using the proto3 version (rather than the proto2 one).
-%
-% See protobuf_support_test.erl for the corresponding test, and
-% http://myriad.esperide.org/#about-protobuf for further information.
-%
 -module(protobuf_support).
 
+-moduledoc """
+Support for the **Protocol Buffer** facilities, a.k.a. Protobuf.
 
+We generally prefer using the proto3 version (rather than the proto2 one).
+
+See protobuf_support_test.erl for the corresponding test, and
+<http://myriad.esperide.org/#about-protobuf> for further information.
+""".
+
+
+
+-doc """
+The name of a Protobuf specification (e.g. foobar), corresponding both to a
+specification file (e.g. "foobar.proto") and the corresponding module name
+generated from it ('foobar').
+""".
 -type spec_name() :: atom().
-% The name of a Protobuf specification (e.g. foobar), corresponding both to a
-% specification file (e.g. "foobar.proto") and the corresponding module name
-% generated from it ('foobar').
 
 
+
+-doc """
+A path to a Protobuf specification file respecting our conventions (e.g.
+"/home/joe/foobar.proto").
+""".
 -type spec_file_path() :: file_utils:any_file_path().
-% A path to a Protobuf specification file respecting our conventions (e.g.
-% "/home/joe/foobar.proto").
 
 
+
+-doc """
+The name of a Protobuf package, as a plain string, such as the user-defined
+"myriad.protobuf.test" one.
+""".
 -type package_name() :: ustring().
-% The name of a Protobuf package, as a plain string, such as the user-defined
-% "myriad.protobuf.test" one.
 
+
+
+-doc """
+The name of a Protobuf package, as a binary string, such as the user-defined
+`<<"myriad.protobuf.test">>` one.
+""".
 -type bin_package_name() :: bin_string().
-% The name of a Protobuf package, as a binary string, such as the user-defined
-% `<<"myriad.protobuf.test">>' one.
 
 
+
+-doc """
+The name of a type of Protobuf messages, as defined in a specification file.
+
+For example, if defining a "Person" message type in a "myriad.protobuf.test"
+package, the resulting record is #myriad_protobuf_test_person{}, corresponding
+to a myriad_protobuf_test_person() type.
+
+See myriad_example.proto for a test example.
+""".
 -type message_type() :: atom().
-% The name of a type of Protobuf messages, as defined in a specification file.
-%
-% For example, if defining a "Person" message type in a "myriad.protobuf.test"
-% package, the resulting record is #myriad_protobuf_test_person{}, corresponding
-% to a myriad_protobuf_test_person() type.
-%
-% See myriad_example.proto for a test example.
 
 
+
+-doc "A (non-serialised, i.e. as an Erlang term) message instance.".
 -type message() :: type_utils:record().
-% A (non-serialised, i.e. as an Erlang term) message instance.
+ 
 
 
+-doc """
+A binary, serialised form, expected to contain Protobuff messages respecting our
+conventions.
+""".
 -type serialisation() :: binary().
-% A binary, serialised form, expected to contain Protobuff messages respecting
-% our conventions.
+
 
 
 -export_type([ spec_name/0, spec_file_path/0,
@@ -80,6 +102,7 @@
 			   message_type/0, message/0, serialisation/0 ]).
 
 -export([ encode/2, decode/3 ]).
+
 
 
 % Implementation notes:
@@ -98,9 +121,10 @@
 
 
 
-% @doc Encodes specified message (record instance) defined in specified
-% specification, and returns the corresponding serialised form.
-%
+-doc """
+Encodes specified message (record instance) defined in specified specification,
+and returns the corresponding serialised form.
+""".
 -spec encode( spec_name(), message() ) -> serialisation().
 encode( SpecName, MessageTerm ) ->
 
@@ -111,9 +135,10 @@ encode( SpecName, MessageTerm ) ->
 
 
 
-% @doc Decodes specified serialised form into a message of specified type, as
-% defined in specified specification.
-%
+-doc """
+Decodes specified serialised form into a message of specified type, as defined
+in specified specification.
+""".
 -spec decode( spec_name(), message_type(), serialisation() ) -> message().
 decode( SpecName, MessageType, BinSerialisation ) ->
 

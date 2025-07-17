@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, October 8, 2021.
 
-
-% @doc Module implementing the support for <b>2x2 matrices</b>.
-%
-% See also:
-% - the corresponding (2D) vectors, in vector2.erl
-% - the (unspecialised) matrices of arbitrary dimensions, in matrix.erl
-%
 -module(matrix2).
+
+-moduledoc """
+Module implementing the support for **2x2 matrices**.
+
+See also:
+ - the corresponding (2D) vectors, in `vector2.erl`
+ - the (unspecialised) matrices of arbitrary dimensions, in `matrix.erl`
+""".
+
 
 
 
@@ -54,21 +56,29 @@
 -include("matrix2.hrl").
 
 
+
+-doc """
+A matrix2 can be specified as a list of same-size rows (akin to a user arbitrary
+matrix) containing any kind of numerical coordinates.
+""".
 -type user_matrix2() :: user_matrix().
-% A matrix2 can be specified as a list of same-size rows (akin to a user
-% arbitrary matrix) containing any kind of numerical coordinates.
+
 
 
 % Possibly to be added: {'rotation_2', radians()}.
+-doc "Any 2x2 matrix.".
 -type matrix2() :: 'identity_2' | canonical_matrix2().
 
 
+
 % Alias for 2x2 canonical matrices:
+-doc "A 2x2 canonical matrix.".
 -type canonical_matrix2() :: #matrix2{}.
 
 
+
+-doc "A matrix describing a 2D rotation.".
 -type rot_matrix2() :: canonical_matrix2().
-% A matrix describing a 2D rotation.
 
 
 -export_type([ user_matrix2/0, matrix2/0, canonical_matrix2/0, rot_matrix2/0 ]).
@@ -121,9 +131,10 @@
 
 
 
-% @doc Returns a 2D (canonical) matrix corresponding to the user-specified
-% matrix.
-%
+
+-doc """
+Returns a 2D (canonical) matrix corresponding to the user-specified matrix.
+""".
 -spec new( user_matrix2() ) -> canonical_matrix2().
 new( UserMatrix ) ->
 
@@ -135,7 +146,7 @@ new( UserMatrix ) ->
 
 
 
-% @doc Returns the null (2x2) matrix.
+-doc "Returns the null (2x2) matrix.".
 -spec null() -> canonical_matrix2().
 null() ->
 	Zero = 0.0,
@@ -144,22 +155,23 @@ null() ->
 
 
 
-% @doc Returns the identity (2x2) matrix.
+-doc "Returns the identity (2x2) matrix.".
 -spec identity() -> matrix2().
 identity() ->
 	identity_2.
 
 
 
-% @doc Returns the (2x2) matrix corresponding to a counterclockwise rotation
-% about the origin of the specified angle with respect to the abscissa (X) axis.
-%
-% A rotation matrix is orthogonal, its inverse is its transpose, and its
-% determinant is 1.0.
-%
-% These 2D rotation matrices form a group known as the special orthogonal group
-% SO(2).
-%
+-doc """
+Returns the (2x2) matrix corresponding to a counterclockwise rotation about the
+origin of the specified angle with respect to the abscissa (X) axis.
+
+A rotation matrix is orthogonal, its inverse is its transpose, and its
+determinant is 1.0.
+
+These 2D rotation matrices form a group known as the special orthogonal group
+SO(2).
+""".
 -spec rotation( radians() ) -> rot_matrix2().
 rotation( RadAngle ) ->
 	Cos = math:cos( RadAngle ),
@@ -169,15 +181,15 @@ rotation( RadAngle ) ->
 
 
 
-% @doc Returns the 2x2 matrix whose columns correspond to the specified 2 2D
-% vectors.
-%
-% Returns thus:
-%  ```
-%  [ Va Vb ]
-%  [ |  |  ]
-%  '''
-%
+-doc """
+Returns the 2x2 matrix whose columns correspond to the two specified 2D vectors.
+
+Returns thus:
+```
+ [ Va Vb ]
+ [ |  |  ]
+```
+""".
 -spec from_columns( vector2(), vector2() ) -> canonical_matrix2().
 from_columns( _Va=[Xa,Ya], _Vb=[Xb,Yb] ) ->
 	#matrix2{ m11=Xa, m12=Xb,
@@ -185,15 +197,15 @@ from_columns( _Va=[Xa,Ya], _Vb=[Xb,Yb] ) ->
 
 
 
-% @doc Returns the 2x2 matrix whose rows correspond to the specified 2 2D
-% vectors.
-%
-% Returns thus:
-%  ```
-% [ Va - - - ]
-% [ Vb - - - ]
-%  '''
-%
+-doc """
+Returns the 2x2 matrix whose rows correspond to the two specified 2D vectors.
+
+Returns thus:
+```
+[ Va - - - ]
+[ Vb - - - ]
+```
+""".
 -spec from_rows( vector2(), vector2() ) -> canonical_matrix2().
 from_rows( _Va=[Xa,Ya], _Vb=[Xb,Yb] ) ->
 	#matrix2{ m11=Xa, m12=Ya,
@@ -201,9 +213,10 @@ from_rows( _Va=[Xa,Ya], _Vb=[Xb,Yb] ) ->
 
 
 
-% @doc Returns the (2x2, canonical) matrix whose (4) coordinates are the
-% specified ones, as listed row after row.
-%
+-doc """
+Returns the (2x2, canonical) matrix whose (4) coordinates are the specified
+ones, as listed row after row.
+""".
 -spec from_coordinates( coordinate(), coordinate(),
 						coordinate(), coordinate() ) -> canonical_matrix2().
 from_coordinates( M11, M12,
@@ -213,17 +226,20 @@ from_coordinates( M11, M12,
 
 
 
-% @doc Returns the 2x2 matrix corresponding to the specified
-% arbitrary-dimensioned matrix.
-%
+-doc """
+Returns the 2x2 matrix corresponding to the specified arbitrary-dimensioned
+matrix.
+""".
 -spec from_arbitrary( matrix() ) -> matrix2().
 from_arbitrary( Matrix ) ->
 	erlang:apply( fun from_rows/?dim, Matrix ).
 
 
-% @doc Returns the arbitrary-dimensioned matrix corresponding to the specified
-% 2x2 matrix.
-%
+
+-doc """
+Returns the arbitrary-dimensioned matrix corresponding to the specified 2x2
+matrix.
+""".
 -spec to_arbitrary( matrix2() ) -> matrix().
 to_arbitrary( Matrix2 ) ->
 	M = to_canonical( Matrix2 ),
@@ -232,27 +248,29 @@ to_arbitrary( Matrix2 ) ->
 
 
 
-% @doc Returns the dimension of these matrices.
-%
-% Not useless, when using polymorphism based on module name.
-%
+-doc """
+Returns the dimension of these matrices.
+
+Not useless, when using polymorphism based on module name.
+""".
 -spec dimension() -> dimension().
 dimension() ->
 	?dim.
 
 
 
-% @doc Returns the dimensions of these matrices.
-%
-% Not useless, when using polymorphism based on module name.
-%
+-doc """
+Returns the dimensions of these matrices.
+
+Not useless, when using polymorphism based on module name.
+""".
 -spec dimensions() -> dimensions().
 dimensions() ->
 	{ ?dim, ?dim }.
 
 
 
-% @doc Returns the specified row of the specified matrix.
+-doc "Returns the specified row of the specified matrix.".
 -spec row( dimension(), matrix2() ) -> vector2().
 row( _RowCount=1, #matrix2{ m11=M11, m12=M12 } ) ->
 	[ M11, M12 ];
@@ -265,7 +283,7 @@ row( RowCount, OtherMatrix ) ->
 
 
 
-% @doc Returns the specified column of the specified matrix.
+-doc "Returns the specified column of the specified matrix.".
 -spec column( dimension(), matrix2() ) -> vector2().
 column( _ColumnCount=1, #matrix2{ m11=M11, m21=M21 } ) ->
 	[ M11, M21 ];
@@ -278,7 +296,9 @@ column( ColCount, OtherMatrix ) ->
 
 
 
-% @doc Returns the element at specified row and column of the specified matrix.
+-doc """
+Returns the element at the specified row and column of the specified matrix.
+""".
 -spec get_element( dimension(), dimension(), matrix2() ) -> coordinate().
 get_element( _R=1, _C=1, #matrix2{ m11=M11 } ) ->
 	M11;
@@ -297,9 +317,11 @@ get_element( R, C, OtherMatrix ) ->
 	get_element( R, C, to_canonical( OtherMatrix ) ).
 
 
-% @doc Returns a matrix identical to the specified one except that its specified
-% element at specified location has been set to the specified value.
-%
+
+-doc """
+Returns a matrix identical to the specified one except that its specified
+element at the specified location has been set to the specified value.
+""".
 -spec set_element( dimension(), dimension(), coordinate(), matrix2() ) ->
 									matrix2().
 set_element( _R=1, _C=1, Value, Matrix=#matrix2{} ) ->
@@ -320,7 +342,7 @@ set_element( R, C, Value, OtherMatrix ) ->
 
 
 
-% @doc Returns the transpose of the specified matrix.
+-doc "Returns the transpose of the specified matrix.".
 -spec transpose( matrix2() ) -> matrix2().
 % Diagonal untouched:
 transpose( M=#matrix2{ m12=M12, m21=M21 } ) ->
@@ -331,7 +353,7 @@ transpose( M=identity_2 ) ->
 
 
 
-% @doc Scales specified (2D) matrix of the specified factor.
+-doc "Scales specified (2D) matrix of the specified factor.".
 -spec scale( matrix2(), factor() ) -> matrix2().
 scale( #matrix2{ m11=M11, m12=M12,
 				 m21=M21, m22=M22 }, Factor ) ->
@@ -343,7 +365,7 @@ scale( M=identity_2, Factor ) ->
 
 
 
-% @doc Returns the sum of the two specified matrices: M = Ma + Mb.
+-doc "Returns the sum of the two specified matrices: `M = Ma + Mb`.".
 -spec add( matrix2(), matrix2() ) -> matrix2().
 add( _Ma=#matrix2{ m11=A11, m12=A12,
 				   m21=A21, m22=A22 },
@@ -358,7 +380,7 @@ add( Ma, Mb ) ->
 
 
 
-% @doc Returns the subtraction of the two specified matrices: M = Ma - Mb.
+-doc "Returns the subtraction of the two specified matrices: `M = Ma - Mb`".
 -spec sub( matrix2(), matrix2() ) -> matrix2().
 sub( _Ma=#matrix2{ m11=A11, m12=A12,
 				   m21=A21, m22=A22 },
@@ -375,7 +397,7 @@ sub( Ma, Mb ) ->
 
 
 
-% @doc Multiplies the first matrix by the second one: returns Mc = Ma.Mb.
+-doc "Multiplies the first matrix by the second one: returns `M = Ma.Mb`.".
 -spec mult( Ma:: matrix2(), Mb :: matrix2() ) -> matrix2().
 mult( _Ma=identity_2, Mb ) ->
 	Mb;
@@ -399,10 +421,11 @@ mult( _Ma=#matrix2{ m11=A11, m12=A12,
 
 
 
-% @doc Multiplies (in-order) the specified matrices.
-%
-% For example mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
-%
+-doc """
+Multiplies (in-order) all specified matrices.
+
+For example `mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc`.
+""".
 -spec mult( [ matrix2() ] ) -> matrix2().
 mult( [ Ma, Mb | T ] ) ->
 	mult( [ mult( Ma, Mb ) | T ] );
@@ -412,11 +435,12 @@ mult( [ M ] ) ->
 
 
 
-% @doc Applies (on the right) the specified vector V to the specified matrix M:
-% returns M.V.
-%
-% Not a clause of mult/2 for an increased clarity.
-%
+-doc """
+Applies (on the right) the specified vector V to the specified matrix M: returns
+M.V.
+
+Not a clause of mult/2 for an increased clarity.
+""".
 -spec apply( matrix2(), vector2() ) -> vector2().
 apply( _M=identity_2, V ) ->
 	V;
@@ -429,7 +453,7 @@ apply( _M=#matrix2{ m11=M11, m12=M12,
 
 
 
-% @doc Tells whether the two specified (2x2) matrices are equal.
+-doc "Tells whether the two specified (2x2) matrices are equal.".
 -spec are_equal( matrix2(), matrix2() ) -> boolean().
 are_equal( _Ma=#matrix2{ m11=A11, m12=A12,
 						 m21=A21, m22=A22 },
@@ -449,7 +473,7 @@ are_equal( Ma=identity_2, Mb ) ->
 
 
 
-% @doc Returns the determinant of the specified matrix.
+-doc "Returns the determinant of the specified matrix.".
 -spec determinant( matrix2() ) -> scalar().
 determinant( _M=#matrix2{ m11=M11, m12=M12,
 						  m21=M21, m22=M22 } ) ->
@@ -460,9 +484,10 @@ determinant( _M=identity_2 ) ->
 
 
 
-% @doc Returns the comatrix of the specified matrix (that is the matrix of its
-% cofactors).
-%
+-doc """
+Returns the comatrix of the specified matrix (that is the matrix of its
+cofactors).
+""".
 -spec comatrix( matrix2() ) -> matrix2().
 comatrix( identity_2 ) ->
 	identity_2;
@@ -474,14 +499,15 @@ comatrix( _M=#matrix2{ m11=M11, m12=M12,
 
 
 
-% @doc Returns the inverse of the specified matrix, if it is invertible (that is
-% iff its determinant is non-null), otherwise returns undefined.
-%
-% Note: often the inverse can be obtained differently (e.g. by applying reverse
-% operations starting from identity) or computed differently (e.g. by Gaussian
-% elimination), or can be replaced by a mere lower–upper (LU) decomposition.
-%
--spec inverse( matrix2() ) -> maybe( matrix2() ).
+-doc """
+Returns the inverse of the specified matrix, if it is invertible (that is iff
+its determinant is non-null), otherwise returns undefined.
+
+Note: often the inverse can be obtained differently (e.g. by applying reverse
+operations starting from identity) or computed differently (e.g. by Gaussian
+elimination), or can be replaced by a mere lower–upper (LU) decomposition.
+""".
+-spec inverse( matrix2() ) -> option( matrix2() ).
 inverse( identity_2 ) ->
 	identity_2;
 
@@ -501,7 +527,7 @@ inverse( M=#matrix2{ m11=M11, m12=M12,
 
 
 
-% @doc Returns the canonical form of the specified 2x2 matrix.
+-doc "Returns the canonical form of the specified 2x2 matrix.".
 -spec to_canonical( matrix2() ) -> canonical_matrix2().
 to_canonical( identity_2 ) ->
 	Zero = 0.0,
@@ -514,7 +540,7 @@ to_canonical( M ) when is_record( M, matrix2 ) ->
 
 
 
-% @doc Checks that the specified matrix is legit, and returns it.
+-doc "Checks that the specified matrix is legit, and returns it.".
 -spec check( matrix2() ) -> matrix2().
 check( M=identity_2 ) ->
 	M;
@@ -528,7 +554,7 @@ check( M ) ->
 
 
 
-% @doc Returns a textual representation of the specified (2x2) matrix.
+-doc "Returns a textual representation of the specified (2x2) matrix.".
 -spec to_string( matrix2() ) -> ustring().
 to_string( _Matrix=identity_2 ) ->
 	"2x2 identity";

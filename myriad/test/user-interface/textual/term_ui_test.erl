@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,13 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2018.
 
-
-% Unit tests for the term_ui toolbox.
-%
-% See the term_ui.erl tested module.
-%
 -module(term_ui_test).
+
+-moduledoc """
+Unit tests for the `term_ui` toolbox.
+
+See the term_ui.erl tested module.
+""".
+
 
 
 % For run/0 export and al:

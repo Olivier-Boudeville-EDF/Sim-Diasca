@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -29,7 +29,7 @@
 % The name under which the trace aggregator process is to be registered:
 % (use ?trace_aggregator_name to have it)
 %
--define(trace_aggregator_name,ceylan_trace_aggregator).
+-define( trace_aggregator_name, ceylan_trace_aggregator ).
 
 
 % The default registration scope (must correspond to default_trace):
@@ -38,16 +38,17 @@
 % The default look-up scope (must correspond to
 % default_trace_aggregator_registration_scope):
 %
--define( default_trace_aggregator_look_up_scope, global_otherwise_local ).
+-define( default_trace_aggregator_lookup_scope, global_otherwise_local ).
 
 
 % For TraceExtension:
 % Should be already done: -include("traces.hrl").
 
 
-% The name of the file to which the aggregator will write the traces it
+% The name of the file to which the aggregator will write the traces that it
 % receives:
--define(trace_aggregator_filename,"Ceylan-traces" ++ ?TraceExtension ).
+%
+-define( trace_aggregator_filename, "Ceylan-traces" ++ ?TraceExtension ).
 
 
 % The name of the (pseudo) module to rely on for the naming of the trace file

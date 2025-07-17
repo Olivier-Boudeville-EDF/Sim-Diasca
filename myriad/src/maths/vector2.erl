@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, October 9, 2021.
 
-
-% @doc Module implementing the support for <b>2D vectors</b>.
-%
-% See also:
-% - the corresponding points (in point2.erl) and matrices (in matrix2.erl)
-% - the (unspecialised) vectors of arbitrary dimensions, in vector.erl
-% - the various 2D extra services in linear_2D.erl
-%
 -module(vector2).
+
+-moduledoc """
+Module implementing the support for **2D vectors**.
+
+See also:
+- the corresponding points (in `point2.erl`) and matrices (in `matrix2.erl`)
+- the (unspecialised) vectors of arbitrary dimensions, in `vector.erl`
+- the various 2D extra services in `linear_2D.erl`
+""".
 
 
 % For printout_*, inline_size, etc.:
@@ -47,46 +48,71 @@
 -include("math_utils.hrl").
 
 
+-doc """
+A user-specified 2D vector, as a list (hence not a tuple) with 2 integer or
+floating-point coordinates.
+""".
 -type user_vector2() :: [ any_coordinate() ].
-% A user-specified 2D vector, as a list (hence not a tuple) with 2 integer or
-% floating-point coordinates.
 
 
+
+-doc """
+An (internal) 2D vector, with (exactly) 2 floating-point coordinates.
+
+They are typically referenced as [X, Y, Z].
+""".
 -type vector2() :: [ coordinate() ].
-% An (internal) 2D vector, with (exactly) 2 floating-point coordinates.
-% They are typically referenced as [X, Y, Z].
 
 
+
+-doc """
+A 2D vector, with (exactly) 2 integer coordinates.
+
+They are typically referenced as [X, Y, Z].
+""".
 -type integer_vector2() :: [ integer_coordinate() ].
-% A 2D vector, with (exactly) 2 integer coordinates.
-% They are typically referenced as [X, Y, Z].
 
 
+
+-doc """
+A 2D vector, with any (homogeneous) type of numerical coordinates (hence a
+special case of user_vector2/0).
+
+They are typically referenced as [X, Y, Z].
+""".
 -type any_vector2() :: vector2() | integer_vector2().
-% A 2D vector, with any types of numerical coordinates.
-% They are typically referenced as [X, Y, Z].
 
 
+
+-doc """
+A unit 2D vector, that is a vector of magnitude 1.0.
+
+Defined for documentation purpose.
+""".
 -type unit_vector2() :: vector2().
-% A unit 2D vector, that is a vector of magnitude 1.0.
-%
-% Defined for documentation purpose.
 
 
+
+-doc """
+A 2D vector orthogonal to a plane.
+
+Defined for documentation purpose.
+""".
 -type normal2() :: vector2().
-% A 2D vector orthogonal to a plane.
-%
-% Defined for documentation purpose.
 
 
+
+-doc """
+A unit 2D vector orthogonal to a plane.
+
+Defined for documentation purpose.
+""".
 -type unit_normal2() :: unit_vector2().
-% A unit 2D vector orthogonal to a plane.
-%
-% Defined for documentation purpose.
 
 
+
+-doc "A 2D vector containing texture coordinates.".
 -type texture_vector2() :: vector2().
-% A 2D vector containing texture coordinates.
 
 
 -export_type([ user_vector2/0, vector2/0, integer_vector2/0, any_vector2/0,
@@ -126,7 +152,7 @@
 
 
 
-% @doc Returns a 2D vector corresponding to the user-specified one.
+-doc "Returns a 2D vector corresponding to the user-specified one.".
 -spec new( user_vector2() ) -> vector2().
 %new( UserVector ) when is_tuple( UserVector ) ->
 %   new( tuple_to_list( UserVector ) );
@@ -136,14 +162,14 @@ new( _UserVector=[ X, Y ] ) ->
 
 
 
-% @doc Returns a 2D vector corresponding to the user-specified one.
+-doc "Returns a 2D vector corresponding to the user-specified one.".
 -spec new( user_coordinate(), user_coordinate() ) -> vector2().
 new( X, Y ) ->
 	[ type_utils:ensure_float( X ), type_utils:ensure_float( Y ) ].
 
 
 
-% @doc Returns an integer 2D vector corresponding to the user-specified one.
+-doc "Returns an integer 2D vector corresponding to the user-specified one.".
 -spec new_integer( integer_coordinate(), integer_coordinate() ) ->
 							integer_vector2().
 new_integer( X, Y ) when is_integer( X ) andalso is_integer( Y ) ->
@@ -151,9 +177,10 @@ new_integer( X, Y ) when is_integer( X ) andalso is_integer( Y ) ->
 
 
 
-% @doc Returns the null (2D) vector, that is a 2D vector whose coordinates are
-% all null.
-%
+-doc """
+Returns the null (2D) vector, that is a 2D vector whose coordinates are all
+null.
+""".
 -spec null() -> vector2().
 null() ->
 	Zero = 0.0,
@@ -161,46 +188,50 @@ null() ->
 
 
 
-
-% @doc Returns a 2D vector corresponding to the X axis of the current
-% referential.
-%
+-doc """
+Returns a 2D vector corresponding to the X axis of the current coordinate
+system.
+""".
 -spec x_axis() -> vector2().
 x_axis() ->
 	[ 1.0, 0.0 ].
 
 
-% @doc Returns a 2D vector corresponding to the Y axis of the current
-% referential.
-%
+
+-doc """
+Returns a 2D vector corresponding to the Y axis of the current coordinate
+system.
+""".
 -spec y_axis() -> vector2().
 y_axis() ->
 	[  0.0, 1.0 ].
 
 
 
-% @doc Returns a 2D vector corresponding to the specified 2D point.
+-doc "Returns a 2D vector corresponding to the specified 2D point.".
 -spec from_point( any_point2() ) -> vector2().
 from_point( _P={ X, Y } ) ->
 	[ type_utils:ensure_float( X ), type_utils:ensure_float( Y ) ].
 
 
-% @doc Returns a 2D point corresponding to the specified 2D vector.
+
+-doc "Returns a 2D point corresponding to the specified 2D vector.".
 -spec to_point( any_vector2() ) -> any_point2().
 to_point( V2 ) ->
 	point2:from_vector( V2 ).
 
 
 
-% @doc Returns the sum of the two specified 2D vectors: V = V1 + V2.
+-doc "Returns the sum of the two specified 2D vectors: `V = V1 + V2`.".
 -spec add( vector2(), vector2() ) -> vector2().
 add( _V1=[ X1, Y1 ], _V2=[ X2, Y2 ] ) ->
 	[ X1+X2, Y1+Y2 ].
 
 
-% @doc Returns the sum of all 2D vectors in the specified (supposedly non-empty)
-% list.
-%
+
+-doc """
+Returns the sum of all 2D vectors in the specified (supposedly non-empty) list.
+""".
 -spec add( [ vector2() ] ) -> vector2().
 add( _Vectors=[ VFirst | VOthers ]  ) ->
 	lists:foldl( fun( [ X, Y ], _AccVec=[ Xa, Ya ] ) ->
@@ -211,67 +242,71 @@ add( _Vectors=[ VFirst | VOthers ]  ) ->
 
 
 
-% @doc Returns the cross-product of the two specified 2D points, that is the
-% square magnitude of the vector that would result from a regular 3D cross
-% product of the input vectors, taking their Z values implicitly as 0.
-%
+-doc """
+Returns the cross-product of the two specified 2D points, that is the square
+magnitude of the vector that would result from a regular 3D cross product of the
+input vectors, taking their Z values implicitly as 0.
+""".
 -spec cross_product( vector2(), vector2() ) -> any_square_distance().
 cross_product( [X1,Y1], [X2,Y2] ) ->
 	abs( X1*Y2 - Y1*X2 ).
 
 
 
-% @doc Returns whether the two specified 2D vectors are close, that is if they
-% could be considered as representing the same vector (equality operator on
-% vectors).
-%
+-doc """
+Returns whether the two specified 2D vectors are close, that is if they could be
+considered as representing the same vector (equality operator on vectors).
+""".
 -spec are_close( vector2(), vector2() ) -> boolean().
 are_close( V1, V2 ) ->
 	are_equal( V1, V2 ).
 
 
-% @doc Returns whether the two specified 2D vectors are equal, that is if they
-% could be considered as representing the same vector (equality operator on
-% vectors).
-%
+
+-doc """
+Returns whether the two specified 2D vectors are equal, that is if they could be
+considered as representing the same vector (equality operator on vectors).
+""".
 -spec are_equal( vector2(), vector2() ) -> boolean().
 are_equal( _V1=[X1,Y1], _V2=[X2,Y2] ) ->
 	math_utils:are_close( X1, X2 ) andalso math_utils:are_close( Y1, Y2 ).
 
 
 
-% @doc Returns the square of the magnitude of the 2D specified vector.
+-doc "Returns the square of the magnitude of the 2D specified vector.".
 -spec square_magnitude( any_vector2() ) -> any_square_distance().
 square_magnitude( _V=[X,Y] ) ->
 	X*X + Y*Y.
 
 
-% @doc Returns the magnitude of the specified 2D vector.
+
+-doc "Returns the magnitude of the specified 2D vector.".
 -spec magnitude( any_vector2() ) -> distance().
 magnitude( V ) ->
 	math:sqrt( square_magnitude( V ) ).
 
 
 
-% @doc Negates the specified vector: returns the opposite one (of the same
-% magnitude).
-%
+-doc """
+Negates the specified vector: returns the opposite one (of the same magnitude).
+""".
 -spec negate( vector2() ) -> vector2().
 negate( _V=[X,Y] ) ->
 	[ -X, -Y ].
 
 
 
-% @doc Scales the specified 2D vector of the specified scalar factor.
+-doc "Scales the specified 2D vector of the specified scalar factor.".
 -spec scale( any_vector2(), factor() ) -> vector2().
 scale( _V=[X,Y], Factor ) ->
 	[ Factor*X, Factor*Y ].
 
 
 
-% @doc Normalises the specified non-null 2D vector, that is returns it once
-% scaled to an unit length (whose magnitude is thus 1.0).
-%
+-doc """
+Normalises the specified non-null 2D vector, that is returns it once scaled to
+an unit length (whose magnitude is thus 1.0).
+""".
 -spec normalise( vector2() ) -> unit_vector2().
 normalise( V ) ->
 	case magnitude( V ) of
@@ -286,18 +321,21 @@ normalise( V ) ->
 
 
 
-% @doc Returns a (non-unit) vector that is normal to the specified vector V, and
-% is on the left of V in the standard basis.
-%
+-doc """
+Returns a (non-unit) vector that is normal to the specified vector V, and is on
+the left of V in the standard basis.
+""".
 -spec normal_left( vector2() ) -> vector2();
 				 ( integer_vector2() ) -> integer_vector2().
 normal_left( _V=[X,Y] ) ->
 	[ -Y, X ].
 
 
-% @doc Returns a (non-unit) vector that is normal to the specified vector V, and
-% is on the right of V in the standard basis.
-%
+
+-doc """
+Returns a (non-unit) vector that is normal to the specified vector V, and is on
+the right of V in the standard basis.
+""".
 -spec normal_right( vector2() ) -> vector2();
 				  ( integer_vector2() ) -> integer_vector2().
 normal_right( _V=[X,Y] ) ->
@@ -305,7 +343,7 @@ normal_right( _V=[X,Y] ) ->
 
 
 
-% @doc Returns the dot-product of the two specified 2D vectors: D = V1.V2.
+-doc "Returns the dot-product of the two specified 2D vectors: `D = V1.V2`.".
 -spec dot_product( vector2(), vector2() ) -> float();
 				 ( integer_vector2(), integer_vector2() ) -> integer().
  dot_product( _V1=[ X1, Y1 ], _V2=[ X2, Y2 ] ) ->
@@ -313,9 +351,10 @@ normal_right( _V=[X,Y] ) ->
 
 
 
-% @doc Returns whether the specified vector is unitary, that is whether it is of
-% magnitude 1.0.
-%
+-doc """
+Returns whether the specified vector is unitary, that is whether it is of
+magnitude 1.0.
+""".
 -spec is_unitary( vector2() ) -> boolean().
 is_unitary( V ) ->
 	% No specific need of computing the square root thereof:
@@ -323,27 +362,29 @@ is_unitary( V ) ->
 
 
 
-% @doc Checks that the specified 2D vector is legit, and returns it.
+-doc "Checks that the specified 2D vector is legit, and returns it.".
 -spec check( vector2() ) -> vector2().
 check( V=[_X,_Y] ) ->
 	type_utils:check_floats( V ).
 
 
-% @doc Checks that the specified 2D integer vector is legit, and returns it.
+
+-doc "Checks that the specified 2D integer vector is legit, and returns it.".
 -spec check_integer( integer_vector2() ) -> integer_vector2().
 check_integer( V=[_X,_Y] ) ->
 	type_utils:check_integers( V ).
 
 
 
-% @doc Checks that the specified 2D vector is normalised, and returns it.
+-doc "Checks that the specified 2D vector is normalised, and returns it.".
 -spec check_unit_vector( vector2() ) -> unit_vector2().
 check_unit_vector( V ) ->
 	true = is_unitary( V ),
 	V.
 
 
-% @doc Checks that the specified 2D vectors are normalised, and returns them.
+
+-doc "Checks that the specified 2D vectors are normalised, and returns them.".
 -spec check_unit_vectors( [ vector2() ] ) -> [ unit_vector2() ].
 check_unit_vectors( Vs ) ->
 	[ true = is_unitary( V ) || V <- Vs ],
@@ -351,19 +392,20 @@ check_unit_vectors( Vs ) ->
 
 
 
-% @doc Returns a textual representation of the specified 2D vector; full float
-% precision is shown.
-%
--spec to_string( vector2() ) -> ustring().
+-doc """
+Returns a textual representation of the specified 2D vector; full float
+precision is shown.
+""".
+-spec to_string( user_vector2() ) -> ustring().
 to_string( Vector ) ->
 	to_user_string( Vector ).
 
 
 
-% @doc Returns a compact, textual, informal representation of the specified 2D
-% vector.
-%
--spec to_compact_string( vector2() ) -> ustring().
+-doc """
+Returns a compact, textual, informal representation of the specified 2D vector.
+""".
+-spec to_compact_string( user_vector2() ) -> ustring().
 to_compact_string( Vector ) ->
 
 	%Ws = [ "~w" || _ <- Vector ],
@@ -374,11 +416,11 @@ to_compact_string( Vector ) ->
 
 
 
-% @doc Returns a basic, not even fixed-width for floating-vector coordinates
-% (see linear.hrl for width and precision) representation of the specified 2D
-% vector.
-%
--spec to_basic_string( vector2() ) -> ustring().
+-doc """
+Returns a basic, not even fixed-width for floating-vector coordinates (see
+linear.hrl for width and precision) representation of the specified 2D vector.
+""".
+-spec to_basic_string( user_vector2() ) -> ustring().
 to_basic_string( Vector ) ->
 
 	% Vectors supposed to be lists of floats:
@@ -393,12 +435,13 @@ to_basic_string( Vector ) ->
 
 
 
-% @doc Returns a textual, more user-friendly representation of the specified 2D
-% vector; full float precision is shown.
-%
-% This is the recommended representation.
-%
--spec to_user_string( vector2() ) -> ustring().
+-doc """
+Returns a textual, more user-friendly representation of the specified 2D vector;
+full float precision is shown.
+
+This is the recommended representation.
+""".
+-spec to_user_string( user_vector2() ) -> ustring().
 to_user_string( Vector ) ->
 
 	Strs = linear:coords_to_best_width_strings( Vector ),

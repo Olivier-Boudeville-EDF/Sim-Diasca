@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2024 Olivier Boudeville
+% Copyright (C) 2017-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,7 +26,7 @@
 % Creation date: Saturday, September 16, 2017.
 
 
-% @doc <b>MyriadGUI-Internal defines</b>, hence to be included solely by the gui
+% **MyriadGUI-Internal defines**, hence to be included solely by the gui
 % subsystem, not by user code (as depends on wx).
 
 

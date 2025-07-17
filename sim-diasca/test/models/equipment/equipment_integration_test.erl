@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,15 +19,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Integration tests for the interaction between <b>an equipment and failure
-% and repair models</b>.
-%
-% See class_TimeManager.erl, class_Equipment.erl, class_FailureModel.erl,
-% class_RepairModel.erl, class_ExponentialFailureModel.erl,
-% class_GaussianRepairModel.erl, class_ReliabilityProbe.erl, etc.
-%
 -module(equipment_integration_test).
+
+-moduledoc """
+Integration tests for the interaction between **an equipment and failure and
+repair models**.
+
+See class_TimeManager.erl, class_Equipment.erl, class_FailureModel.erl,
+class_RepairModel.erl, class_ExponentialFailureModel.erl,
+class_GaussianRepairModel.erl, class_ReliabilityProbe.erl, etc.
+""".
+
 
 
 % For facilities common to all cases:
@@ -35,11 +37,12 @@
 
 
 
-% @doc Creates a series of Count equipments, named accordingly, stopping at tick
-% offsets starting from 100.
-%
-% Returns a list of the corresponding PIDs.
-%
+-doc """
+Creates a series of Count equipments, named accordingly, stopping at tick
+offsets starting from 100.
+
+Returns a list of the corresponding PIDs.
+""".
 create_equipments( _Count=0, _FailureModelPid, _RepairModelPid ) ->
 	[];
 
@@ -55,11 +58,12 @@ create_equipments( Count, FailureModelPid, RepairModelPid ) ->
 
 
 
-% @doc Runs the test.
-%
-% Note: some probes are created specifically from this test, because we do not
-% want all (potentially numerous) equipments to carry each a probe.
-%
+-doc """
+Runs the test.
+
+Note: some probes are created specifically from this test, because we do not
+want all (potentially numerous) equipments to carry each a probe.
+""".
 -spec run() -> no_return().
 run() ->
 
@@ -71,7 +75,7 @@ run() ->
 		simulation_name="Sim-Diasca Equipment Integration Test"
 
 		% We leave it to the default specification (all_outputs):
-		% result_specification =
+		% result_specification=
 		%   [ { targeted_patterns, [ {".*", [data_and_rendering]} ] },
 		%     { blacklisted_patterns, [ "^Second" ] } ]
 
@@ -79,7 +83,7 @@ run() ->
 
 	% Specifies the list of computing hosts that can be used:
 	%
-	% (see the sim-diasca-host-candidates-sample.txt example in the
+	% (see the sim-diasca-host-candidates-sample.etf example in the
 	% sim-diasca/conf directory)
 	%
 	DeploymentSettings = #deployment_settings{},

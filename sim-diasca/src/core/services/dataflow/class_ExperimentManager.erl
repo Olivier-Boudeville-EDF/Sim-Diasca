@@ -1,28 +1,30 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Class in charge of <b>driving the computations</b> that shall be operated
-% on the simulated world, in a dataflow context.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(class_ExperimentManager).
+
+-moduledoc """
+Class in charge of **driving the computations** that shall be operated on the
+simulated world, in a dataflow context.
+""".
 
 
 -define( class_description,
@@ -58,12 +60,12 @@
 -export([ to_string/1 ]).
 
 
+-doc "Count of experiment steps.".
 -type step_count() :: basic_utils:count().
-% Count of experiment steps.
 
 
+-doc "The various phases at which an experiment can be.".
 -type phase() :: 'initialisation' | 'simulation' | 'termination'.
-% The various phases at which an experiment can be.
 
 
 -export_type([ step_count/0, phase/0 ]).
@@ -74,74 +76,92 @@
 % very generic matches may happen to be used more than once.
 
 
+-doc """
+To determine which unit manager(s) shall be triggered whenever any kind of
+synchronization event occurs.
+""".
 -type any_match_table() :: [ unit_manager_pid() ].
-% To determine which unit manager(s) shall be triggered whenever any kind of
-% synchronization event occurs.
 
 
+-doc """
+To determine, for a given creation event match, which unit manager(s) shall be
+triggered.
+""".
 -type creation_match_table() ::
-		table( creation_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given creation event match, which unit manager(s) shall be
-% triggered.
+	table( creation_event_match(), [ unit_manager_pid() ] ).
 
 
+-doc """
+To determine, for a given destruction event match, which unit manager(s) shall
+be triggered.
+""".
 -type destruction_match_table() ::
-		table( destruction_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given destruction event match, which unit manager(s) shall
-% be triggered.
+	table( destruction_event_match(), [ unit_manager_pid() ] ).
 
 
+-doc """
+To determine, for a given (non-binary) association event match, which unit
+manager(s) shall be triggered.
+""".
 -type association_match_table() ::
-		table( association_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given (non-binary) association event match, which unit
-% manager(s) shall be triggered.
+	table( association_event_match(), [ unit_manager_pid() ] ).
 
 
+-doc """
+To determine, for a given binary association event match, which unit manager(s)
+shall be triggered.
+""".
 -type binary_association_match_table() ::
-		table( binary_association_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given binary association event match, which unit
-% manager(s) shall be triggered.
+	table( binary_association_event_match(), [ unit_manager_pid() ] ).
 
 
+-doc """
+To determine, for a given disassociation event match, which unit manager(s)
+shall be triggered.
+""".
 -type disassociation_match_table() ::
-		table( disassociation_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given disassociation event match, which unit manager(s)
-% shall be triggered.
+	table( disassociation_event_match(), [ unit_manager_pid() ] ).
 
 
+-doc """
+To determine, for a given connection event match, which unit manager(s) shall be
+triggered.
+""".
 -type connection_match_table() ::
-		table( connection_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given connection event match, which unit manager(s) shall
-% be triggered.
+	table( connection_event_match(), [ unit_manager_pid() ] ).
 
 
+-doc """
+To determine, for a given disconnection event match, which unit manager(s) shall
+be triggered.
+""".
 -type disconnection_match_table() ::
-		table( disconnection_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given disconnection event match, which unit manager(s)
-% shall be triggered.
+	table( disconnection_event_match(), [ unit_manager_pid() ] ).
 
 
+-doc """
+To determine, for a given update event match, which unit manager(s) shall be
+triggered.
+""".
 -type update_match_table() ::
-		table( update_event_match(), [ unit_manager_pid() ] ).
-% To determine, for a given update event match, which unit manager(s) shall be
-% triggered.
+	table( update_event_match(), [ unit_manager_pid() ] ).
 
 
 
 -record( match_tables, {
-			any_match_table                :: any_match_table(),
-			creation_match_table           :: creation_match_table(),
-			destruction_match_table        :: destruction_match_table(),
-			association_match_table        :: association_match_table(),
-			binary_association_match_table :: binary_association_match_table(),
-			disassociation_match_table     :: disassociation_match_table(),
-			connection_match_table         :: connection_match_table(),
-			disconnection_match_table      :: disconnection_match_table(),
-			update_match_table             :: update_match_table() } ).
+	any_match_table                :: any_match_table(),
+	creation_match_table           :: creation_match_table(),
+	destruction_match_table        :: destruction_match_table(),
+	association_match_table        :: association_match_table(),
+	binary_association_match_table :: binary_association_match_table(),
+	disassociation_match_table     :: disassociation_match_table(),
+	connection_match_table         :: connection_match_table(),
+	disconnection_match_table      :: disconnection_match_table(),
+	update_match_table             :: update_match_table() } ).
 
 
+-doc "To hold and update all match tables at once (defined for convenience).".
 -type match_tables() :: #match_tables{}.
-% To hold and update all match tables at once (defined for convenience).
 
 
 
@@ -154,8 +174,8 @@
 			   update_match_table/0 ]).
 
 
+-doc "Table of waited acknowledgements.".
 -type ack_table() :: table( unit_manager_pid(), [ event_id() ] ).
-% Table of waited acknowledgements.
 
 
 % The attributes that are specific to an experiment manager are:
@@ -171,11 +191,11 @@
 	{ dataflows, [ dataflow_pid() ], "a list of the dataflow instances known "
 	  "of this experiment manager" },
 
-	{ entry_point_pid, maybe( dataflow_entry_point_pid() ),
+	{ entry_point_pid, option( dataflow_entry_point_pid() ),
 	  "the PID of the entry point (if any) for all dataflows managed by this "
 	  "experiment manager" },
 
-	{ exit_point_pid, maybe( dataflow_exit_point_pid() ),
+	{ exit_point_pid, option( dataflow_exit_point_pid() ),
 	  "the PID of the exit point (if any) for all dataflows managed by this "
 	  "experiment manager" },
 
@@ -273,22 +293,23 @@
 % only once.
 
 
-% Shorthand:
+% Type shorthand:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs the experiment manager.
-%
-% Parameters are:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - WorldManagerPid is the PID of the world manager that may interact with this
-% experiment manager
-%
+-doc """
+Constructs the experiment manager.
+
+Parameters are:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- WorldManagerPid is the PID of the world manager that may interact with this
+experiment manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, WorldManagerPid ) ->
@@ -298,7 +319,7 @@ construct( State, ActorSettings, WorldManagerPid ) ->
 
 	% First the direct mother class:
 	ActorState = class_Actor:construct( State, ActorSettings,
-								?trace_categorize("ExperimentManager") ),
+		?trace_categorize("ExperimentManager") ),
 
 	naming_utils:register_as( ?experiment_manager_name, global_only ),
 
@@ -322,7 +343,9 @@ construct( State, ActorSettings, WorldManagerPid ) ->
 
 
 
-% @doc Initializes the match tables, stored in a single record for convenience.
+-doc """
+Initialises the match tables, stored in a single record for convenience.
+""".
 -spec init_match_tables() -> match_tables().
 init_match_tables() ->
 
@@ -340,7 +363,7 @@ init_match_tables() ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -363,7 +386,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Registers (synchronously) specified dataflow.
+-doc "Registers (synchronously) specified dataflow.".
 -spec registerDataflow( wooper:state() ) ->
 			request_return( 'dataflow_registered' ).
 registerDataflow( State ) ->
@@ -389,13 +412,14 @@ registerDataflow( State ) ->
 
 
 
-% @doc Registers specified unit manager, in charge of specified types of units,
-% and relying on the specified event match clauses.
-%
-% (synchronous request, to run prior to simulation start)
-%
+-doc """
+Registers specified unit manager, in charge of specified types of units, and
+relying on the specified event match clauses.
+
+(synchronous request, to run prior to simulation start)
+""".
 -spec registerUnitManager( wooper:state(), [ dataflow_unit_type() ],
-			event_matches() ) -> request_return( 'unit_manager_registered' ).
+			[ event_match() ] ) -> request_return( 'unit_manager_registered' ).
 registerUnitManager( State, ManagedUnitTypes, EventMatches ) ->
 
 	% Federating all unit managers, storing all relevant information:
@@ -427,18 +451,19 @@ registerUnitManager( State, ManagedUnitTypes, EventMatches ) ->
 	EventState = register_event_matches( EventMatches, UnitManagerPid, State ),
 
 	NewState = setAttributes( EventState, [
-						{ unit_managers, NewUnitManagers },
-						{ waited_event_acks, NewAckTable } ] ),
+		{ unit_managers, NewUnitManagers },
+		{ waited_event_acks, NewAckTable } ] ),
 
 	wooper:return_state_result( NewState, unit_manager_registered ).
 
 
 
-% @doc Registers the unit manager associations regarding specified unit types.
-%
-% Note that if 'any_event_type' is listed among the match clauses, it will not
-% prevent this unit manager to be also triggered for any other listed clause.
-%
+-doc """
+Registers the unit manager associations regarding the specified unit types.
+
+Note that if `any_event_type` is listed among the match clauses, it will not
+prevent this unit manager to be also triggered for any other listed clause.
+""".
 -spec register_event_matches( [ event_match() ], unit_manager_pid(),
 							  wooper:state() ) -> wooper:state().
 register_event_matches( _EventMatches=[], _UnitManagerPid, State ) ->
@@ -453,126 +478,130 @@ register_event_matches( _EventMatches=[ any_event_type | T ], UnitManagerPid,
 	NewAnyTable = [ UnitManagerPid | MatchTables#match_tables.any_match_table ],
 
 	NewState = setAttribute( State, match_tables,
-					 MatchTables#match_tables{ any_match_table=NewAnyTable } ),
+		MatchTables#match_tables{ any_match_table=NewAnyTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, creation_event_match ) ->
+                            when is_record( Clause, creation_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewCreationTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-							MatchTables#match_tables.creation_match_table ),
+		MatchTables#match_tables.creation_match_table ),
 
 	NewState = setAttribute( State, match_tables,
-		 MatchTables#match_tables{ creation_match_table=NewCreationTable } ),
+		MatchTables#match_tables{ creation_match_table=NewCreationTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, destruction_event_match ) ->
+                            when is_record( Clause, destruction_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewDestructionTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-				MatchTables#match_tables.destruction_match_table ),
+		MatchTables#match_tables.destruction_match_table ),
 
 	NewState = setAttribute( State, match_tables,
-	  MatchTables#match_tables{ destruction_match_table=NewDestructionTable } ),
+        MatchTables#match_tables{
+            destruction_match_table=NewDestructionTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, association_event_match ) ->
+                            when is_record( Clause, association_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewAssocTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-						MatchTables#match_tables.association_match_table ),
+		MatchTables#match_tables.association_match_table ),
 
 	NewState = setAttribute( State, match_tables,
-	  MatchTables#match_tables{ association_match_table=NewAssocTable } ),
+        MatchTables#match_tables{ association_match_table=NewAssocTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, binary_association_event_match ) ->
+                    when is_record( Clause, binary_association_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewBinAssocTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-				MatchTables#match_tables.binary_association_match_table ),
+		MatchTables#match_tables.binary_association_match_table ),
 
 	NewState = setAttribute( State, match_tables, MatchTables#match_tables{
-						binary_association_match_table=NewBinAssocTable } ),
+		binary_association_match_table=NewBinAssocTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, disassociation_event_match ) ->
+                    when is_record( Clause, disassociation_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewDisassocTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-						MatchTables#match_tables.disassociation_match_table ),
+		MatchTables#match_tables.disassociation_match_table ),
 
 	NewState = setAttribute( State, match_tables,
-	  MatchTables#match_tables{ disassociation_match_table=NewDisassocTable } ),
+        MatchTables#match_tables{
+            disassociation_match_table=NewDisassocTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, connection_event_match ) ->
+                    when is_record( Clause, connection_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewConnTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-						MatchTables#match_tables.connection_match_table ),
+		MatchTables#match_tables.connection_match_table ),
 
 	NewState = setAttribute( State, match_tables,
-	  MatchTables#match_tables{ connection_match_table=NewConnTable } ),
+        MatchTables#match_tables{ connection_match_table=NewConnTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, disconnection_event_match ) ->
+                    when is_record( Clause, disconnection_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewDisconnTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-						MatchTables#match_tables.disconnection_match_table ),
+		MatchTables#match_tables.disconnection_match_table ),
 
 	NewState = setAttribute( State, match_tables,
-	  MatchTables#match_tables{ disconnection_match_table=NewDisconnTable } ),
+        MatchTables#match_tables{ disconnection_match_table=NewDisconnTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState );
 
 
 register_event_matches( _EventMatches=[ Clause | T ], UnitManagerPid, State )
-  when is_record( Clause, update_event_match ) ->
+                    when is_record( Clause, update_event_match ) ->
 
 	MatchTables = ?getAttr(match_tables),
 
 	NewUpdateTable = table:append_to_entry( _K=Clause, UnitManagerPid,
-						MatchTables#match_tables.update_match_table ),
+		MatchTables#match_tables.update_match_table ),
 
 	NewState = setAttribute( State, match_tables,
-				MatchTables#match_tables{ update_match_table=NewUpdateTable } ),
+		MatchTables#match_tables{ update_match_table=NewUpdateTable } ),
 
 	register_event_matches( T, UnitManagerPid, NewState ).
 
 
 
 
-% @doc Registers (synchronously) specified (optional) experiment entry point.
+-doc """
+Registers (synchronously) the specified (optional) experiment entry point.
+""".
 -spec registerExperimentEntryPoint( wooper:state() ) ->
 						request_return( 'experiment_entry_point_registered' ).
 registerExperimentEntryPoint( State ) ->
@@ -588,7 +617,9 @@ registerExperimentEntryPoint( State ) ->
 
 
 
-% @doc Registers (synchronously) specified (optional) experiment exit point.
+-doc """
+Registers (synchronously) the specified (optional) experiment exit point.
+""".
 -spec registerExperimentExitPoint( wooper:state() ) ->
 						request_return( 'experiment_exit_point_registered' ).
 registerExperimentExitPoint( State ) ->
@@ -604,7 +635,9 @@ registerExperimentExitPoint( State ) ->
 
 
 
-% @doc Callback executed on the first diasca of existence of this manager.
+-doc """
+Callback executed on the first diasca of existence of this manager.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -615,12 +648,13 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Notifies (most probably sent by the world manager) this experiment
-% manager that a fully completed changeset has been applied on the
-% state-of-the-world side, and thus is ready to be taken into account by unit
-% managers, on the computation side - once the corresponding events will be
-% dispatched adequately, by this actor oneway.
-%
+-doc """
+Notifies (oneway most probably triggered by the world manager) this experiment
+manager that a fully completed changeset has been applied on the
+state-of-the-world side, and thus is ready to be taken into account by unit
+managers, on the computation side - once the corresponding events will be
+dispatched adequately, by this actor oneway.
+""".
 -spec notifyFullyCompletedChangeset( wooper:state(), changeset(),
 							sending_actor_pid() ) -> actor_oneway_return().
 notifyFullyCompletedChangeset( State, Changeset, _SendingActorPid ) ->
@@ -672,7 +706,9 @@ notifyFullyCompletedChangeset( State, Changeset, _SendingActorPid ) ->
 
 
 
-% @doc Checks that no past change event is still recorded as being waited for.
+-doc """
+Checks that no past change event is still recorded as being waited for.
+""".
 -spec check_no_past_event_waited( wooper:state()  ) -> void().
 check_no_past_event_waited( State ) ->
 
@@ -690,7 +726,7 @@ check_no_past_event_waited( State ) ->
 					text_utils:strings_to_string( EventPairs ) ] ),
 
 			WaitedEvents = lists:flatten( [ Events
-							|| { _UnitManagerPid, Events } <- AckPairs ] ),
+				|| { _UnitManagerPid, Events } <- AckPairs ] ),
 
 			throw( { unacknowledged_change_events, WaitedEvents } )
 
@@ -698,9 +734,10 @@ check_no_past_event_waited( State ) ->
 
 
 
-% @doc Returns a list of strings describing the waited events stored in the
-% specified {WaitingUnitManager, WaitedEventIdList} pairs.
-%
+-doc """
+Returns a list of strings describing the waited events stored in the specified
+{WaitingUnitManager, WaitedEventIdList} pairs.
+""".
 -spec get_waited_events( [ { unit_manager_pid(), [ event_id() ] } ],
 						 [ ustring() ] ) -> [ ustring() ].
 get_waited_events( _AckPairs=[], Acc ) ->
@@ -719,9 +756,10 @@ get_waited_events( _AckPairs=[ { UnitManagerPid, WaitedEventIds } | T ],
 
 
 
-% @doc Callback triggered by a unit manager to notify the experiment manager
-% that it processed specified event.
-%
+-doc """
+Callback triggered by a unit manager to notify the experiment manager that it
+processed specified event.
+""".
 -spec onEventProcessed( wooper:state(), event_id(), unit_manager_pid() ) ->
 								actor_oneway_return().
 onEventProcessed( State, EventId, UnitManagerPid ) ->
@@ -793,9 +831,10 @@ onEventProcessed( State, EventId, UnitManagerPid ) ->
 % Helper section.
 
 
-% @doc Resumes known dataflows, once the experiment manager did its job, that is
-% when the calculation side of the dataflow is updated and stable as well.
-%
+-doc """
+Resumes known dataflows, once the experiment manager did its job, that is when
+the calculation side of the dataflow is updated and stable as well.
+""".
 -spec resume_dataflows( wooper:state() ) -> wooper:state().
 resume_dataflows( State ) ->
 
@@ -808,9 +847,10 @@ resume_dataflows( State ) ->
 
 
 
-% @doc Tells whether all pending events have been processed by their respective
-% unit managers.
-%
+-doc """
+Tells whether all pending events have been processed by their respective unit
+managers.
+""".
 -spec all_current_events_processed( ack_table() ) -> boolean().
 all_current_events_processed( AckTable ) ->
 
@@ -833,12 +873,13 @@ check_events_processed( _EventLists ) ->
 
 
 
-% @doc Dispatches next matching event (if any) from the specified changeset to
-% the relevant unit managers, based on the match clause that they declared.
-%
-% Returns an updated state, and tells whether at least one event has been sent
-% to a unit manager (and thus is waited).
-%
+-doc """
+Dispatches next matching event (if any) from the specified changeset to the
+relevant unit managers, based on the match clause that they declared.
+
+Returns an updated state, and tells whether at least one event has been sent to
+a unit manager (and thus is waited).
+""".
 -spec dispatch_next_event( changeset(), wooper:state() ) ->
 								{ wooper:state(), boolean() }.
 dispatch_next_event( Changeset, State ) ->
@@ -847,9 +888,10 @@ dispatch_next_event( Changeset, State ) ->
 
 
 
-% @doc Drops all unmatching events, triggers the first matching one (if any),
-% stores the remaining ones.
-%
+-doc """
+Drops all unmatching events, triggers the first matching one (if any), stores
+the remaining ones.
+""".
 -spec dispatch_next_event( changeset(), match_tables(), wooper:state() ) ->
 									{ wooper:state(), boolean() }.
 dispatch_next_event( _Changeset=[], _MatchTables, State ) ->
@@ -862,10 +904,10 @@ dispatch_next_event( _Changeset=[ CreationEvent=#creation_event{} | T ],
 					 MatchTables, State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( CreationEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ CreationState, CreationWaiting } = dispatch_creation_event( CreationEvent,
-			 MatchTables#match_tables.creation_match_table, AnyEventState ),
+		 MatchTables#match_tables.creation_match_table, AnyEventState ),
 
 	case AnyWaiting or CreationWaiting of
 
@@ -896,7 +938,7 @@ dispatch_next_event( _Changeset=[ DestructionEvent=#destruction_event{} | T ],
 					 MatchTables, State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( DestructionEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ DestructionState, DestructionWaiting } = dispatch_destruction_event(
 		DestructionEvent, MatchTables#match_tables.destruction_match_table,
@@ -927,11 +969,11 @@ dispatch_next_event( _Changeset=[ AssociationEvent=#association_event{} | T ],
 					 MatchTables, State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( AssociationEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ AssociationState, AssocWaiting } = dispatch_association_event(
-			AssociationEvent,
-			MatchTables#match_tables.association_match_table, AnyEventState ),
+		AssociationEvent,
+		MatchTables#match_tables.association_match_table, AnyEventState ),
 
 	case AnyWaiting or AssocWaiting of
 
@@ -952,17 +994,17 @@ dispatch_next_event( _Changeset=[ AssociationEvent=#association_event{} | T ],
 	end;
 
 
-dispatch_next_event(
-  _Changeset=[ BinAssociationEvent=#binary_association_event{} | T ],
-  MatchTables, State ) ->
+dispatch_next_event( _Changeset=[
+                        BinAssociationEvent=#binary_association_event{} | T ],
+                     MatchTables, State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( BinAssociationEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ BinAssocState, AssocWaiting } = dispatch_binary_association_event(
-			BinAssociationEvent,
-			MatchTables#match_tables.binary_association_match_table,
-			AnyEventState ),
+		BinAssociationEvent,
+		MatchTables#match_tables.binary_association_match_table,
+        AnyEventState ),
 
 	case AnyWaiting or AssocWaiting of
 
@@ -983,16 +1025,16 @@ dispatch_next_event(
 	end;
 
 
-dispatch_next_event(
-  _Changeset=[ DisassociationEvent=#disassociation_event{} | T ], MatchTables,
-  State ) ->
+dispatch_next_event( _Changeset=[
+        DisassociationEvent=#disassociation_event{} | T ], MatchTables,
+                     State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( DisassociationEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ DisassociationState, DisassocWaiting } = dispatch_disassociation_event(
-		  DisassociationEvent,
-		  MatchTables#match_tables.disassociation_match_table, AnyEventState ),
+		DisassociationEvent,
+		MatchTables#match_tables.disassociation_match_table, AnyEventState ),
 
 	case AnyWaiting or DisassocWaiting of
 
@@ -1017,11 +1059,11 @@ dispatch_next_event( _Changeset=[ ConnectionEvent=#connection_event{} | T ],
 					 MatchTables, State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( ConnectionEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ ConnectionState, ConnWaiting } = dispatch_connection_event(
-			ConnectionEvent,
-			MatchTables#match_tables.connection_match_table, AnyEventState ),
+		ConnectionEvent,
+		MatchTables#match_tables.connection_match_table, AnyEventState ),
 
 	case AnyWaiting or ConnWaiting of
 
@@ -1040,16 +1082,16 @@ dispatch_next_event( _Changeset=[ ConnectionEvent=#connection_event{} | T ],
 	end;
 
 
-dispatch_next_event(
-  _Changeset=[ DisconnectionEvent=#disconnection_event{} | T ], MatchTables,
-  State ) ->
+dispatch_next_event( _Changeset=[
+        DisconnectionEvent=#disconnection_event{} | T ], MatchTables,
+                     State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( DisconnectionEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ DisconnectionState, DisconnWaiting } = dispatch_disconnection_event(
-		 DisconnectionEvent,
-		 MatchTables#match_tables.disconnection_match_table, AnyEventState ),
+		DisconnectionEvent,
+		MatchTables#match_tables.disconnection_match_table, AnyEventState ),
 
 	case AnyWaiting or DisconnWaiting of
 
@@ -1073,10 +1115,10 @@ dispatch_next_event( _Changeset=[ UpdateEvent=#update_event{} | T ],
 					 MatchTables, State ) ->
 
 	{ AnyEventState, AnyWaiting } = dispatch_any_event( UpdateEvent,
-							MatchTables#match_tables.any_match_table, State ),
+		MatchTables#match_tables.any_match_table, State ),
 
 	{ UpdateState, UpWaiting } = dispatch_update_event( UpdateEvent,
-			MatchTables#match_tables.update_match_table, AnyEventState ),
+		MatchTables#match_tables.update_match_table, AnyEventState ),
 
 	case AnyWaiting or UpWaiting of
 
@@ -1095,9 +1137,10 @@ dispatch_next_event( _Changeset=[ UpdateEvent=#update_event{} | T ],
 
 
 
-% @doc Dispatches specified event to the unit managers that declared an interest
-% for all (any) events.
-%
+-doc """
+Dispatches specified event to the unit managers that declared an interest for
+all (any) events.
+""".
 -spec dispatch_any_event( world_event(), any_match_table(), wooper:state() ) ->
 								{ wooper:state(), boolean() }.
 dispatch_any_event( Event, UnitManagers, State ) ->
@@ -1110,7 +1153,7 @@ dispatch_any_event( _Event, _UnitManagers=[], State, IsWaiting ) ->
 dispatch_any_event( Event, [ UnitManagerPid | T ], State, _IsWaiting ) ->
 
 	SentState = class_Actor:send_actor_message( UnitManagerPid,
-					{ processAnyEventMatched, [ Event ] }, State ),
+		{ processAnyEventMatched, [ Event ] }, State ),
 
 	AckState = register_waited_ack( dataflow_support:get_event_id( Event ),
 									UnitManagerPid, SentState ),
@@ -1119,9 +1162,10 @@ dispatch_any_event( Event, [ UnitManagerPid | T ], State, _IsWaiting ) ->
 
 
 
-% @doc Dispatches specified creation event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the creation events.
-%
+-doc """
+Dispatches specified creation event to the unit managers (if any) that declared
+an interest for (at least a subset) of the creation events.
+""".
 -spec dispatch_creation_event( creation_event(), creation_match_table(),
 						wooper:state() ) -> { wooper:state(), boolean() }.
 dispatch_creation_event( CreationEvent, CreationTable, State ) ->
@@ -1140,9 +1184,10 @@ dispatch_creation_event( CreationEvent, CreationTable, State ) ->
 
 
 
-% @doc Dispatches specified creation event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the creation events.
-%
+-doc """
+Dispatches specified creation event to the unit managers (if any) that declared
+an interest for (at least a subset) of the creation events.
+""".
 -spec dispatch_creation_event( creation_event(), creation_event_match(),
 				[ unit_manager_pid() ], { wooper:state(), boolean() } ) ->
 									{ wooper:state(), boolean() }.
@@ -1165,10 +1210,10 @@ dispatch_creation_event( CreationEvent=#creation_event{
 			   [ CreationEvent, Match ] ),
 
 	case object_type_match( ObjectType, ObjectTypeMatch )
-		   andalso external_id_match( ExternalId, ExternalIdMatch )
-		   andalso construction_parameters_match( ConstructParams,
-												  ConstructParamsMatch )
-		   andalso dataflow_pid_match( DataflowPid, DataflowPidMatch ) of
+            andalso external_id_match( ExternalId, ExternalIdMatch )
+            andalso construction_parameters_match( ConstructParams,
+                                                   ConstructParamsMatch )
+            andalso dataflow_pid_match( DataflowPid, DataflowPidMatch ) of
 
 		true ->
 			{ lists:foldl( fun( UnitManagerPid, AccState ) ->
@@ -1193,9 +1238,10 @@ dispatch_creation_event( CreationEvent=#creation_event{
 
 
 
-% @doc Dispatches specified destruction event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the destruction events.
-%
+-doc """
+Dispatches specified destruction event to the unit managers (if any) that
+declared an interest for (at least a subset) of the destruction events.
+""".
 -spec dispatch_destruction_event( destruction_event(),
 		destruction_match_table(), wooper:state() ) ->
 										{ wooper:state(), boolean() }.
@@ -1212,9 +1258,10 @@ dispatch_destruction_event( DestructionEvent, DestructionTable, State ) ->
 
 
 
-% @doc Dispatches specified destruction event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the destruction events.
-%
+-doc """
+Dispatches specified destruction event to the unit managers (if any) that
+declared an interest for (at least a subset) of the destruction events.
+""".
 -spec dispatch_destruction_event( destruction_event(),
 		destruction_event_match(), [ unit_manager_pid() ],
 		{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
@@ -1259,10 +1306,11 @@ dispatch_destruction_event( DestructionEvent=#destruction_event{
 
 
 
-% @doc Dispatches specified (non-binary) association event to the unit managers
-% (if any) that declared an interest for (at least a subset) of the association
-% events.
-%
+-doc """
+Dispatches specified (non-binary) association event to the unit managers (if
+any) that declared an interest for (at least a subset) of the association
+events.
+""".
 -spec dispatch_association_event( association_event(),
 			association_match_table(), wooper:state() ) ->
 										{ wooper:state(), boolean() }.
@@ -1279,9 +1327,10 @@ dispatch_association_event( AssociationEvent, AssociationTable, State ) ->
 
 
 
-% @doc Dispatches specified association event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the association events.
-%
+-doc """
+Dispatches specified association event to the unit managers (if any) that
+declared an interest for (at least a subset) of the association events.
+""".
 -spec dispatch_association_event( association_event(),
 		association_event_match(), [ unit_manager_pid() ],
 			{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
@@ -1326,10 +1375,10 @@ dispatch_association_event( AssociationEvent=#association_event{
 
 
 
-% @doc Dispatches specified binary association event to the unit managers (if
-% any) that declared an interest for (at least a subset) of the association
-% events.
-%
+-doc """
+Dispatches specified binary association event to the unit managers (if any) that
+declared an interest for (at least a subset) of the association events.
+""".
 -spec dispatch_binary_association_event( binary_association_event(),
 		binary_association_match_table(), wooper:state() ) ->
 											{ wooper:state(), boolean() }.
@@ -1346,37 +1395,36 @@ dispatch_binary_association_event( BinAssocEvent, BinAssocTable, State ) ->
 
 
 
-% @doc Dispatches specified association event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the association events.
-%
-% (helper)
-%
+-doc """
+Dispatches specified association event to the unit managers (if any) that
+declared an interest for (at least a subset) of the association events.
+""".
 -spec dispatch_binary_association_event( binary_association_event(),
 		binary_association_event_match(), [ unit_manager_pid() ],
 			{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
 dispatch_binary_association_event( BinAssocEvent=#binary_association_event{
-							id=Id,
-							association_type=AssocType,
-							source_object_type=SourceObjectType,
-							target_object_type=TargetObjectType,
-							source_external_id=SourceExternalId,
-							target_external_id=TargetExternalId,
-							% Non-matched:
-							% source_object_pid=SourceObjectPid,
-							% target_object_pid=TargetObjectPid,
-							association_information=AssocInfos,
-							dataflow_pid=DataflowPid },
-								   #binary_association_event_match{
-							association_type_match=AssocTypeMatch,
-							source_object_type_match=SourceObjectTypeMatch,
-							target_object_type_match=TargetObjectTypeMatch,
-							source_external_id_match=SourceExternalIdMatch,
-							target_external_id_match=TargetExternalIdMatch,
-							% Non-matched:
-							% source_object_pid_match=SourceObjectPidMatch,
-							% target_object_pid_match=TargetObjectPidMatch,
-							association_info_match=AssocInfosMatch,
-							dataflow_pid_match=DataflowPidMatch },
+		id=Id,
+		association_type=AssocType,
+		source_object_type=SourceObjectType,
+		target_object_type=TargetObjectType,
+		source_external_id=SourceExternalId,
+		target_external_id=TargetExternalId,
+		% Non-matched:
+		% source_object_pid=SourceObjectPid,
+		% target_object_pid=TargetObjectPid,
+		association_information=AssocInfos,
+		dataflow_pid=DataflowPid },
+			#binary_association_event_match{
+		association_type_match=AssocTypeMatch,
+		source_object_type_match=SourceObjectTypeMatch,
+		target_object_type_match=TargetObjectTypeMatch,
+		source_external_id_match=SourceExternalIdMatch,
+		target_external_id_match=TargetExternalIdMatch,
+		% Non-matched:
+		% source_object_pid_match=SourceObjectPidMatch,
+		% target_object_pid_match=TargetObjectPidMatch,
+		association_info_match=AssocInfosMatch,
+		dataflow_pid_match=DataflowPidMatch },
 								   UnitManagers, Param={ State, IsWaiting } ) ->
 	case association_type_match( AssocType, AssocTypeMatch )
 			andalso object_type_match( SourceObjectType, SourceObjectTypeMatch )
@@ -1409,10 +1457,10 @@ dispatch_binary_association_event( BinAssocEvent=#binary_association_event{
 
 
 
-% @doc Dispatches specified disassociation event to the unit managers (if any)
-% that declared an interest for (at least a subset) of the disassociation
-% events.
-%
+-doc """
+Dispatches specified disassociation event to the unit managers (if any) that
+declared an interest for (at least a subset) of the disassociation events.
+""".
 -spec dispatch_disassociation_event( disassociation_event(),
 			disassociation_match_table(), wooper:state() ) ->
 										{ wooper:state(), boolean() }.
@@ -1430,29 +1478,27 @@ dispatch_disassociation_event( DisassociationEvent, DisassociationTable,
 
 
 
-% @doc Dispatches specified disassociation event to the unit managers (if any)
-% that declared an interest for (at least a subset) of the disassociation
-% events.
-%
-% (helper)
-%
+-doc """
+Dispatches specified disassociation event to the unit managers (if any) that
+declared an interest for (at least a subset) of the disassociation events.
+""".
 -spec dispatch_disassociation_event( disassociation_event(),
 	disassociation_event_match(), [ unit_manager_pid() ],
 		{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
 dispatch_disassociation_event( DisassociationEvent=#disassociation_event{
-							id=Id,
-							object_type=ObjectType,
-							external_id=ExternalId,
-							% Non-matched: object_pid=ObjectPid,
-							disassociation_information=DisassociationInfo,
-							dataflow_pid=DataflowPid },
-							   #disassociation_event_match{
-							object_type_match=ObjectTypeMatch,
-							external_id_match=ExternalIdMatch,
-							% Non-matched: object_pid_match=ObjectPidMatch,
-							disassociation_info_match=DisassociationInfoMatch,
-							dataflow_pid_match=DataflowPidMatch },
-							   UnitManagers, Param={ State, IsWaiting } ) ->
+		id=Id,
+		object_type=ObjectType,
+		external_id=ExternalId,
+		% Non-matched: object_pid=ObjectPid,
+		disassociation_information=DisassociationInfo,
+		dataflow_pid=DataflowPid },
+            #disassociation_event_match{
+		object_type_match=ObjectTypeMatch,
+		external_id_match=ExternalIdMatch,
+		% Non-matched: object_pid_match=ObjectPidMatch,
+		disassociation_info_match=DisassociationInfoMatch,
+		dataflow_pid_match=DataflowPidMatch },
+            UnitManagers, Param={ State, IsWaiting } ) ->
 	case object_type_match( ObjectType, ObjectTypeMatch )
 			andalso external_id_match( ExternalId, ExternalIdMatch )
 			andalso disassociation_info_match( DisassociationInfo,
@@ -1482,9 +1528,10 @@ dispatch_disassociation_event( DisassociationEvent=#disassociation_event{
 
 
 
-% @doc Dispatches specified connection event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the connection events.
-%
+-doc """
+Dispatches specified connection event to the unit managers (if any) that
+declared an interest for (at least a subset) of the connection events.
+""".
 -spec dispatch_connection_event( connection_event(), connection_match_table(),
 				wooper:state() ) -> { wooper:state(), boolean() }.
 dispatch_connection_event( ConnectionEvent, ConnectionTable, State ) ->
@@ -1502,31 +1549,32 @@ dispatch_connection_event( ConnectionEvent, ConnectionTable, State ) ->
 
 
 
-% @doc Dispatches specified connection event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the connection events.
-%
+-doc """
+Dispatches specified connection event to the unit managers (if any) that
+declared an interest for (at least a subset) of the connection events.
+""".
 -spec dispatch_connection_event( connection_event(), connection_event_match(),
 				[ unit_manager_pid() ], { wooper:state(), boolean() } ) ->
 									{ wooper:state(), boolean() }.
 dispatch_connection_event( ConnectionEvent=#connection_event{
-							id=Id,
-							source_block_type=SourceBlockType,
-							target_block_type=TargetBlockType,
-							source_external_id=SourceExternalId,
-							target_external_id=TargetExternalId,
-							% Non-matched: source_block_pid=BlockPid,
-							% Non-matched: target_block_pid=BlockPid,
-							output_port_name=SourceAttrName,
-							input_port_name=TargetAttrName,
-							dataflow_pid=DataflowPid },
-						   _Match=#connection_event_match{
-							source_block_type_match=SourceBlockTypeMatch,
-							target_block_type_match=TargetBlockTypeMatch,
-							source_external_id_match=SourceExternalIdMatch,
-							target_external_id_match=TargetExternalIdMatch,
-							output_port_name_match=OutputPortNameMatch,
-							input_port_name_match=InputPortNameMatch,
-							dataflow_pid_match=DataflowPidMatch },
+		id=Id,
+		source_block_type=SourceBlockType,
+		target_block_type=TargetBlockType,
+		source_external_id=SourceExternalId,
+		target_external_id=TargetExternalId,
+		% Non-matched: source_block_pid=BlockPid,
+		% Non-matched: target_block_pid=BlockPid,
+		output_port_name=SourceAttrName,
+		input_port_name=TargetAttrName,
+		dataflow_pid=DataflowPid },
+		_Match=#connection_event_match{
+            source_block_type_match=SourceBlockTypeMatch,
+            target_block_type_match=TargetBlockTypeMatch,
+            source_external_id_match=SourceExternalIdMatch,
+            target_external_id_match=TargetExternalIdMatch,
+            output_port_name_match=OutputPortNameMatch,
+            input_port_name_match=InputPortNameMatch,
+            dataflow_pid_match=DataflowPidMatch },
 						   UnitManagers, Param={ State, IsWaiting } ) ->
 
 	%?debug_fmt( "Confronting connection event ~p to match ~p.",
@@ -1566,9 +1614,10 @@ dispatch_connection_event( ConnectionEvent=#connection_event{
 
 
 
-% @doc Dispatches specified disconnection event to the unit managers (if any)
-% that declared an interest for (at least a subset) of the disconnection events.
-%
+-doc """
+Dispatches specified disconnection event to the unit managers (if any) that
+declared an interest for (at least a subset) of the disconnection events.
+""".
 -spec dispatch_disconnection_event( disconnection_event(),
 		disconnection_match_table(), wooper:state() ) ->
 										{ wooper:state(), boolean() }.
@@ -1585,31 +1634,32 @@ dispatch_disconnection_event( DisconnectionEvent, DisconnectionTable, State ) ->
 
 
 
-% @doc Dispatches specified disconnection event to the unit managers (if any)
-% that declared an interest for (at least a subset) of the disconnection events.
-%
+-doc """
+Dispatches specified disconnection event to the unit managers (if any) that
+declared an interest for (at least a subset) of the disconnection events.
+""".
 -spec dispatch_disconnection_event( disconnection_event(),
 		disconnection_event_match(), [ unit_manager_pid() ],
 		{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
 dispatch_disconnection_event( DisconnectionEvent=#disconnection_event{
-						id=Id,
-						source_block_type=SourceBlockType,
-						target_block_type=TargetBlockType,
-						source_external_id=SourceExternalId,
-						target_external_id=TargetExternalId,
-						% Non-matched: source_block_pid=BlockPid,
-						% Non-matched: target_block_pid=BlockPid,
-						output_port_name=OutputPortName,
-						input_port_name=InputPortName,
-						dataflow_pid=DataflowPid },
-							  #disconnection_event_match{
-						source_block_type_match=SourceBlockTypeMatch,
-						target_block_type_match=TargetBlockTypeMatch,
-						source_external_id_match=SourceExternalIdMatch,
-						target_external_id_match=TargetExternalIdMatch,
-						output_port_name_match=OutputPortNameMatch,
-						input_port_name_match=InputPortNameMatch,
-						dataflow_pid_match=DataflowPidMatch },
+		id=Id,
+		source_block_type=SourceBlockType,
+		target_block_type=TargetBlockType,
+		source_external_id=SourceExternalId,
+		target_external_id=TargetExternalId,
+		% Non-matched: source_block_pid=BlockPid,
+		% Non-matched: target_block_pid=BlockPid,
+		output_port_name=OutputPortName,
+		input_port_name=InputPortName,
+		dataflow_pid=DataflowPid },
+                              #disconnection_event_match{
+		source_block_type_match=SourceBlockTypeMatch,
+		target_block_type_match=TargetBlockTypeMatch,
+		source_external_id_match=SourceExternalIdMatch,
+		target_external_id_match=TargetExternalIdMatch,
+		output_port_name_match=OutputPortNameMatch,
+		input_port_name_match=InputPortNameMatch,
+		dataflow_pid_match=DataflowPidMatch },
 							  UnitManagers, Param={ State, IsWaiting } ) ->
 	case        block_type_match( SourceBlockType, SourceBlockTypeMatch )
 		andalso block_type_match( TargetBlockType, TargetBlockTypeMatch )
@@ -1642,9 +1692,10 @@ dispatch_disconnection_event( DisconnectionEvent=#disconnection_event{
 
 
 
-% @doc Dispatches specified update event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the update events.
-%
+-doc """
+Dispatches specified update event to the unit managers (if any) that declared an
+interest for (at least a subset) of the update events.
+""".
 -spec dispatch_update_event( update_event(), update_match_table(),
 							 wooper:state() ) -> { wooper:state(), boolean() }.
 dispatch_update_event( UpdateEvent, UpdateTable, State ) ->
@@ -1660,9 +1711,10 @@ dispatch_update_event( UpdateEvent, UpdateTable, State ) ->
 
 
 
-% @doc Dispatches specified update event to the unit managers (if any) that
-% declared an interest for (at least a subset) of the update events.
-%
+-doc """
+Dispatches specified update event to the unit managers (if any) that declared an
+interest for (at least a subset) of the update events.
+""".
 -spec dispatch_update_event( update_event(), update_event_match(),
 	[ unit_manager_pid() ], { wooper:state(), boolean() } ) -> wooper:state().
 dispatch_update_event( UpdateEvent=#update_event{
@@ -1672,13 +1724,13 @@ dispatch_update_event( UpdateEvent=#update_event{
 							% Non-matched: object_pid=ObjectPid,
 							updates=AttrUpdates,
 							dataflow_pid=DataflowPid },
-						 #update_event_match{
+                       #update_event_match{
 							object_type_match=ObjectTypeMatch,
 							external_id_match=ExternalIdMatch,
 							% Non-matched: object_pid_match=ObjectPidMatch,
 							attribute_update_match=AttrUpdateMatch,
 							dataflow_pid_match=DataflowPidMatch },
-						 UnitManagers, Param={ State, IsWaiting } ) ->
+                       UnitManagers, Param={ State, IsWaiting } ) ->
 	case            object_type_match( ObjectType, ObjectTypeMatch )
 			andalso external_id_match( ExternalId, ExternalIdMatch )
 			andalso update_event_match( AttrUpdates, AttrUpdateMatch )
@@ -1706,9 +1758,10 @@ dispatch_update_event( UpdateEvent=#update_event{
 
 
 
-% @doc Registers specified event (through its identifier) among the ones whose
-% processing acknowledgment is waited for (from specified unit manager).
-%
+-doc """
+Registers specified event (through its identifier) among the ones whose
+processing acknowledgment is waited for (from specified unit manager).
+""".
 -spec register_waited_ack( event_id(), unit_manager_pid(), wooper:state() ) ->
 								wooper:state().
 register_waited_ack( EventId, UnitManagerPid, State ) ->
@@ -1722,10 +1775,11 @@ register_waited_ack( EventId, UnitManagerPid, State ) ->
 % Match helpers.
 
 
-% @doc Tells whether specified block type matches the specified clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified block type matches the specified clause.
+
+(match helper)
+""".
 -spec block_type_match( block_type(), block_type_match() ) -> boolean().
 block_type_match( _BlockType, _BlockTypeMatch=any_block_type ) ->
 	true;
@@ -1738,10 +1792,11 @@ block_type_match( _BlockType, _BlockTypeMatch ) ->
 
 
 
-% @doc Tells whether specified object type matches the specified clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified object type matches the specified clause.
+
+(match helper)
+""".
 -spec object_type_match( dataflow_object_type(), object_type_match() ) ->
 								boolean().
 object_type_match( _ObjectType, _ObjectTypeMatch=any_object_type ) ->
@@ -1755,10 +1810,11 @@ object_type_match( _ObjectType, _ObjectTypeMatch ) ->
 
 
 
-% @doc Tells whether specified external identifier matches the specified clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified external identifier matches the specified clause.
+
+(match helper)
+""".
 -spec external_id_match( external_id(), external_id_match() ) -> boolean().
 external_id_match( _ExternalId, _ExternalIdMatch=any_external_id ) ->
 	true;
@@ -1771,15 +1827,15 @@ external_id_match( _ExternalId, _ExternalIdMatch ) ->
 
 
 
-% @doc Tells whether specified construction parameters match the specified
-% clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified construction parameters match the specified clause.
+
+(match helper)
+""".
 -spec construction_parameters_match( wooper:construction_parameters(),
 				 construction_parameters_match() ) -> boolean().
 construction_parameters_match( _ConstructParams,
-						_ConstructParamsMatch=any_construction_parameters ) ->
+		_ConstructParamsMatch=any_construction_parameters ) ->
 	true;
 
 construction_parameters_match( ConstructParams,
@@ -1791,10 +1847,11 @@ construction_parameters_match( _ConstructParams, _ConstructParamsMatch ) ->
 
 
 
-% @doc Tells whether specified association type matches the specified clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified association type matches the specified clause.
+
+(match helper)
+""".
 -spec association_type_match( association_type(), association_type_match() ) ->
 									boolean().
 association_type_match( _AssociationType,
@@ -1810,11 +1867,11 @@ association_type_match( _AssociationType, _AssociationTypeMatch ) ->
 
 
 
-% @doc Tells whether specified association information matches the specified
-% clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified association information matches the specified clause.
+
+(match helper)
+""".
 -spec association_information_match( association_info(),
 									 association_info_match() ) -> boolean().
 association_information_match( _AssociationInfo,
@@ -1830,11 +1887,11 @@ association_information_match( _AssociationInfo, _AssociationInfoMatch ) ->
 
 
 
-% @doc Tells whether specified disassociation information matches the specified
-% clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified disassociation information matches the specified clause.
+
+(match helper)
+""".
 -spec disassociation_info_match( disassociation_info(),
 								 disassociation_info_match() ) -> boolean().
 disassociation_info_match( _DisassociationInfo,
@@ -1850,10 +1907,11 @@ disassociation_info_match( _DisassociationInfo, _DisassociationInfoMatch ) ->
 
 
 
-% @doc Tells whether specified attribute update matches the specified clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified attribute update matches the specified clause.
+
+(match helper)
+""".
 -spec update_event_match( [ class_DataflowObject:attribute_update() ],
 						  attribute_update_match() ) -> boolean().
 update_event_match( _AttrUpdates, _AttrUpdateMatch=any_attribute_update ) ->
@@ -1868,10 +1926,11 @@ update_event_match( _AttrUpdates, _AttrUpdateMatch ) ->
 
 
 
-% @doc Tells whether specified port information matches the specified clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified port information matches the specified clause.
+
+(match helper)
+""".
 -spec port_name_match( port_string_name(), port_name_match() ) -> boolean().
 port_name_match( _PortName, _PortNameMatch=any_port_name ) ->
 	true;
@@ -1884,10 +1943,11 @@ port_name_match( _PortName, _PortNameMatch ) ->
 
 
 
-% @doc Tells whether specified dataflow PID matches with the specified clause.
-%
-% (match helper)
-%
+-doc """
+Tells whether specified dataflow PID matches with the specified clause.
+
+(match helper)
+""".
 -spec dataflow_pid_match( dataflow_pid(), dataflow_pid_match() ) -> boolean().
 dataflow_pid_match( _DataflowPid, _DataflowPidMatch=any_dataflow_pid ) ->
 	true;
@@ -1905,7 +1965,7 @@ dataflow_pid_match( _DataflowPid, _DataflowPidMatch ) ->
 
 
 
-% @doc Returns a textual description of this experiment manager.
+-doc "Returns a textual description of this experiment manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -1994,7 +2054,7 @@ to_string( State ) ->
 
 
 
-% @doc Returns a textual description of the acknowledgement waited table.
+-doc "Returns a textual description of the acknowledgement waited table.".
 -spec ack_table_to_string( ack_table() ) -> ustring().
 ack_table_to_string( AckTable ) ->
 
@@ -2025,7 +2085,7 @@ ack_table_to_string( AckTable ) ->
 
 
 
-% @doc Returns a textual description of the event match tables.
+-doc "Returns a textual description of the event match tables.".
 -spec match_tables_to_string( wooper:state() ) -> ustring().
 match_tables_to_string( State ) ->
 
@@ -2046,7 +2106,7 @@ match_tables_to_string( State ) ->
 
 
 	CreationList = table:enumerate(
-					MatchTables#match_tables.creation_match_table ),
+		MatchTables#match_tables.creation_match_table ),
 
 	CreationString = case length( CreationList ) of
 
@@ -2056,7 +2116,7 @@ match_tables_to_string( State ) ->
 		CreationLen ->
 
 			CreationStrings = [ event_clause_to_string( CM, Managers )
-								|| { CM, Managers } <- CreationList ],
+                                    || { CM, Managers } <- CreationList ],
 
 			CreationBulletString = text_utils:strings_to_string(
 				CreationStrings, text_utils:get_bullet_for_level( 1 ) ),
@@ -2068,7 +2128,7 @@ match_tables_to_string( State ) ->
 
 
 	DestructionList = table:enumerate(
-						MatchTables#match_tables.destruction_match_table ),
+		MatchTables#match_tables.destruction_match_table ),
 
 	DestructionString = case length( DestructionList ) of
 
@@ -2084,14 +2144,14 @@ match_tables_to_string( State ) ->
 				DestructionStrings, text_utils:get_bullet_for_level( 1 ) ),
 
 			text_utils:format(
-			  "following ~B destruction clauses registered: ~ts",
-			  [ DestructionLen, DestructionBulletString ] )
+                "following ~B destruction clauses registered: ~ts",
+                [ DestructionLen, DestructionBulletString ] )
 
 	end,
 
 
 	AssociationList = table:enumerate(
-						MatchTables#match_tables.association_match_table ),
+		MatchTables#match_tables.association_match_table ),
 
 	AssociationString = case length( AssociationList ) of
 
@@ -2113,7 +2173,7 @@ match_tables_to_string( State ) ->
 
 
 	BinAssocList = table:enumerate(
-					MatchTables#match_tables.binary_association_match_table ),
+		MatchTables#match_tables.binary_association_match_table ),
 
 	BinAssocString = case length( BinAssocList ) of
 
@@ -2123,20 +2183,20 @@ match_tables_to_string( State ) ->
 		BinAssocLen ->
 
 			BinAssocStrings = [ event_clause_to_string( CM, Managers )
-								|| { CM, Managers } <- BinAssocList ],
+                                    || { CM, Managers } <- BinAssocList ],
 
 			BinAssocBulletString = text_utils:strings_to_string(
 				BinAssocStrings, text_utils:get_bullet_for_level( 1 ) ),
 
 			text_utils:format(
-			  "following ~B binary association clauses registered: ~ts",
-			  [ BinAssocLen, BinAssocBulletString ] )
+                "following ~B binary association clauses registered: ~ts",
+                 [ BinAssocLen, BinAssocBulletString ] )
 
 	end,
 
 
 	DisassociationList = table:enumerate(
-					MatchTables#match_tables.disassociation_match_table ),
+		MatchTables#match_tables.disassociation_match_table ),
 
 	DisassociationString = case length( DisassociationList ) of
 
@@ -2159,7 +2219,7 @@ match_tables_to_string( State ) ->
 
 
 	ConnectionList = table:enumerate(
-						MatchTables#match_tables.connection_match_table ),
+		MatchTables#match_tables.connection_match_table ),
 
 	ConnectionString = case length( ConnectionList ) of
 
@@ -2180,7 +2240,7 @@ match_tables_to_string( State ) ->
 	end,
 
 	DisconnectionList = table:enumerate(
-						MatchTables#match_tables.disconnection_match_table ),
+		MatchTables#match_tables.disconnection_match_table ),
 
 	DisconnectionString = case length( DisconnectionList ) of
 
@@ -2190,7 +2250,7 @@ match_tables_to_string( State ) ->
 		DisconnectionLen ->
 
 			DisconnectionStrings = [ event_clause_to_string( CM, Managers )
-								|| { CM, Managers } <- DisconnectionList ],
+				|| { CM, Managers } <- DisconnectionList ],
 
 			DisconnectionBulletString = text_utils:strings_to_string(
 				DisconnectionStrings, text_utils:get_bullet_for_level( 1 ) ),
@@ -2203,7 +2263,7 @@ match_tables_to_string( State ) ->
 
 
 	UpdateList = table:enumerate(
-					MatchTables#match_tables.update_match_table ),
+		MatchTables#match_tables.update_match_table ),
 
 	UpdateString = case length( UpdateList ) of
 
@@ -2231,7 +2291,7 @@ match_tables_to_string( State ) ->
 
 
 
-% @doc Returns a textual description of the specified event clause.
+-doc "Returns a textual description of the specified event clause.".
 -spec event_clause_to_string( event_match(), [ unit_manager_pid() ] ) ->
 			ustring().
 % At least one unit manager expected to be listed:

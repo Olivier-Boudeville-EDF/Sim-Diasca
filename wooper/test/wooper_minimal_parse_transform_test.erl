@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 31, 2014.
 
-
-% @doc This module allows to test with as few dependencies as possible the
-% 'wooper_parse_transform' parse transform as a standalone unit, hence with
-% proper error and warning messages.
-%
-% See the wooper_parse_transform.erl tested module.
-%
 -module(wooper_minimal_parse_transform_test).
+
+-moduledoc """
+This module allows to test with as few dependencies as possible the
+`wooper_parse_transform` **parse transform** as a standalone unit, hence with
+proper error and warning messages.
+
+See the wooper_parse_transform.erl tested module.
+""".
+
 
 
 -export([ run/0, perform_direct_ast_operations/1 ]).

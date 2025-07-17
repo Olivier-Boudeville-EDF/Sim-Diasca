@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2024 Olivier Boudeville
+% Copyright (C) 2015-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, May 12, 2015.
 
-
-% @doc Unit tests for the const-table facilities, which are read-only
-% associative tables whose key/value pairs can be read from any number
-% (potentially extremely large) of readers very efficiently.
-%
-% See the const_table.erl tested module.
-%
 -module(const_table_test).
+
+-moduledoc """
+Unit tests for the **const-table** facilities, which are read-only associative
+tables whose key/value pairs can be read from any number (potentially extremely
+large) of readers very efficiently.
+
+See the const_table.erl tested module.
+""".
+
 
 
 % For run/0 export and al:

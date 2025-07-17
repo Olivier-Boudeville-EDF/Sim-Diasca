@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,12 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, July 19, 2019.
 
-
-% Testing of WOOPER as an OTP active application, directly from within its code
-% base (hence without needing to create a separate, mock-up test OTP release for
-% that).
-%
 -module(wooper_otp_application_test).
+
+-moduledoc """
+Testing of WOOPER as an **OTP active application**, directly from within its
+code base (hence without needing to create a separate, mock-up test OTP release
+for that).
+""".
 
 
 % For run/0 export and al:
@@ -78,7 +79,7 @@ test_wooper_application( OrderedAppNames ) ->
 	TestClassname = 'class_Tiger',
 
 	test_facilities:display( "Class filename corresponding to '~ts': '~ts'.",
-			[ TestClassname, wooper:get_class_filename( TestClassname ) ] ),
+		[ TestClassname, wooper:get_class_filename( TestClassname ) ] ),
 
 
 	% Including WOOPER:

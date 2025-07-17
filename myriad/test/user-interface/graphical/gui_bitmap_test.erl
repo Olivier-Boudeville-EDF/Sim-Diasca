@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,11 +25,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, August 19, 2023.
 
-
-% @doc Testing the <b>support for the management of (mostly built-in)
-% bitmaps</b>.
-%
 -module(gui_bitmap_test).
+
+-moduledoc """
+Testing the **support for the management of (mostly built-in) bitmaps**.
+""".
+
 
 
 % Implementation notes:
@@ -45,14 +46,13 @@
 
 
 
-
-% Shorthands:
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
 
 
 
-% @doc Runs the actual test.
+-doc "Runs the actual test.".
 -spec run_bitmap_test() -> void().
 run_bitmap_test() ->
 
@@ -76,8 +76,8 @@ run_bitmap_test() ->
 	GridSizer = gui_sizer:create_grid( _RowCount=0, ColumnCount,
 									   _HorizGap=3, _VertGap=3 ),
 
-	{ bitmap_id, BitmapEntries, _ElemLookup } =
-		gui_constants:get_bitmap_id_topic_spec(),
+	{ standard_bitmap_name_id, BitmapEntries, _ElemLookup } =
+		gui_constants:get_standard_bitmap_name_id_topic_spec(),
 
 	AllBitmapIds = pair:firsts( BitmapEntries ),
 
@@ -96,9 +96,9 @@ run_bitmap_test() ->
 	Dims = { 32, 32 },
 
 	AllBitmaps = [ gui_bitmap:get_standard( BId, Dims )
-					|| BId <- AllBitmapIds ],
+								|| BId <- AllBitmapIds ],
 
-	AllBitmapDisplays = [ gui_bitmap:create_static_display( B, BitmapParent )
+	AllBitmapDisplays = [ gui_bitmap:create_display( B, BitmapParent )
 								|| B <- AllBitmaps ],
 
 	gui_sizer:add_elements( GridSizer, AllBitmapDisplays, _BitmapFlags=[] ),
@@ -106,7 +106,7 @@ run_bitmap_test() ->
 	gui_widget:set_sizer( Panel, GridSizer ),
 
 	% No need to subscribe to 'onRepaintNeeded' for the panel:
-	gui:subscribe_to_events( [ { onWindowClosed, MainFrame } ] ),
+	gui:subscribe_to_events( { onWindowClosed, MainFrame } ),
 
 	% Renders the GUI:
 	gui_frame:show( MainFrame ),
@@ -117,20 +117,20 @@ run_bitmap_test() ->
 
 
 
-% The main loop of this test.
+-doc "The main loop of this test.".
 -spec test_main_loop( frame() ) -> void().
 test_main_loop( MainFrame ) ->
 
 	receive
 
-		{ onWindowClosed, [ MainFrame, _MainFrameId, Context ] } ->
+		{ onWindowClosed, [ MainFrame, _MainFrameId, EventContext ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt( "Test main frame ~ts has been closed "
 					"(~ts), test success.",
 					[ gui:object_to_string( MainFrame ),
-					  gui_event:context_to_string( Context ) ] ),
-				basic_utils:ignore_unused( Context ) ),
+					  gui_event:context_to_string( EventContext ) ] ),
+				basic_utils:ignore_unused( EventContext ) ),
 
 			gui_frame:destruct( MainFrame );
 
@@ -145,7 +145,7 @@ test_main_loop( MainFrame ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

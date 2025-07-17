@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, December 18, 2023.
 
-
-% @doc Unit tests for the management of <b>texts and fonts</b>.
 -module(gui_text_test).
+
+-moduledoc """
+Unit tests for the management of **texts and fonts**.
+""".
 
 
 % For run/0 export and al:
@@ -37,14 +39,18 @@
 -define( test_font_size, 14 ).
 
 
-% Shorthands:
+
+-doc """
+Here the main loop just has to remember the frame whose closing is awaited for.
+""".
+-type my_test_state() :: frame().
+
+
+
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
 
-
--type my_test_state() :: frame().
-% Here the main loop just has to remember the frame whose closing is awaited
-% for.
 
 
 register_display( Text, Family, Style, Weight, Sizer, Panel ) ->
@@ -55,7 +61,7 @@ register_display( Text, Family, Style, Weight, Sizer, Panel ) ->
 		gui_font:get_platform_dependent_description( Font ),
 		gui_font:get_user_friendly_description( Font ) ] ),
 
-	Display = gui_text:create_static_display( FullText, _Parent=Panel ),
+	Display = gui_text_display:create( FullText, _Parent=Panel ),
 
 	gui_widget:set_font( Display, Font ),
 
@@ -68,7 +74,7 @@ register_display( Text, Family, Style, Weight, Sizer, Panel ) ->
 
 
 
-% @doc Executes the actual test.
+-doc "Executes the actual test.".
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
@@ -104,7 +110,7 @@ run_gui_test() ->
 		[ length( Families ), Families, length( Styles ), Styles,
 		  length( Weights ), Weights ] ),
 
-	IntroDisplay = gui_text:create_static_display(
+	IntroDisplay = gui_text_display:create(
 		_Text="Note that this content is scrollable horizontally "
 			  "and vertically.", _P=ScrollablePanel ),
 
@@ -114,7 +120,7 @@ run_gui_test() ->
 
 	gui_widget:set_sizer( ScrollablePanel, VertSizer ),
 
-	gui:subscribe_to_events( [ { onWindowClosed, Frame } ] ),
+	gui:subscribe_to_events( { onWindowClosed, Frame } ),
 
 	gui_frame:show( Frame ),
 
@@ -137,8 +143,8 @@ render_fonts( Text, _Families=[ F | T ], Styles, Weights, Sizer,
 		"~n  I am a rendering example of font '~ts'.",
 		[ gui_font:get_platform_dependent_description( Font ) ] ),
 
-	FirstDisplay = gui_text:create_static_display( FirstText,
-												   _Parent=ScrollablePanel ),
+	FirstDisplay = gui_text_display:create( FirstText,
+											_Parent=ScrollablePanel ),
 
 	gui_widget:set_font( FirstDisplay, Font ),
 
@@ -151,10 +157,11 @@ render_fonts( Text, _Families=[ F | T ], Styles, Weights, Sizer,
 
 
 
-% @doc A very simple main loop, whose actual state is simply the GUI object
-% corresponding to the frame that shall be closed to stop the test
-% (i.e. CloseFrame).
-%
+-doc """
+A very simple main loop, whose actual state is simply the GUI object
+corresponding to the frame that shall be closed to stop the test
+(i.e. CloseFrame).
+""".
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( State=Frame ) ->
 
@@ -181,7 +188,7 @@ stop( Frame ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Agent in charge of managing all <b>creation requests</b> of simulation
-% actors, so that notably they can be instantiated evenly onto computing nodes.
-%
 -module(class_LoadBalancer).
+
+-moduledoc """
+Agent in charge of managing all **creation requests** of simulation actors, so
+that notably they can be instantiated evenly onto computing nodes.
+""".
 
 
 -define( class_description,
@@ -94,7 +95,7 @@
 	  "can be returned to the initiator, as by design it contains the right "
 	  "PIDs in the right order" },
 
-	{ base_actor_identifier, maybe( aai() ),
+	{ base_actor_identifier, option( aai() ),
 	  "is always set to 'undefined' unless initialisation files are read, in "
 	  "which case it is set to the then current next_actor_identifier minus 1; "
 	  "then created instances will have for AAI the addition of this base AAI "
@@ -130,7 +131,7 @@
 	  "time) to initialisation files, from which initial instances will be "
 	  "created" },
 
-	{ deployment_manager_pid, maybe( deployment_manager_pid() ),
+	{ deployment_manager_pid, option( deployment_manager_pid() ),
 	  "allows telling the deployment manager that the initialisation data for "
 	  "instances has been processed" },
 
@@ -155,23 +156,35 @@
 	  "tells whether the troubleshooting mode is enabled" } ] ).
 
 
+-type load_balancer_pid() :: sim_diasca:agent_pid().
 
+% For load_balancer_name, and record:
+-include("class_LoadBalancer.hrl").
+
+-doc "Describes how the load balancing of actors should be performed.".
+-type load_balancing_settings() :: #load_balancing_settings{}.
+
+
+
+-doc """
+Hint for actor placement (co-allocation).
+
+Used based on its hash value.
+""".
 -type placement_hint() :: any().
-% Hint for actor placement (co-allocation).
-%
-% Used based on its hash value.
 
 
+-doc "The policies for actor placement.".
 -type placement_policy() :: 'round_robin' | 'select_least_loaded_first'.
-% The policies for actor placement.
 
 
+-doc "Tells how non-responding, unavailable computing nodes shall be managed.".
 -type node_availability_tolerance() :: 'fail_on_unavailable_node'
 									 | 'allow_unavailable_nodes'.
-% Tells how non-responding, unavailable computing nodes shall be managed.
 
 
--export_type([ placement_hint/0, placement_policy/0,
+-export_type([ load_balancer_pid/0, load_balancing_settings/0,
+               placement_hint/0, placement_policy/0,
 			   node_availability_tolerance/0 ]).
 
 
@@ -195,9 +208,6 @@
 
 % For process_restoration_marker:
 -include("wooper/include/class_Serialisable.hrl").
-
-% For load_balancer_name:
--include("class_LoadBalancer.hrl").
 
 
 % For evaluation_mode(), evaluation_requested_properties():
@@ -421,19 +431,22 @@
 	name :: net_utils:atom_host_name() } ).
 
 
+-doc """
+Describes a computing node, in terms of load-balancing (which may need to
+maintain a state).
+""".
 -type compute_node() :: #compute_node{}.
-% Describes a computing node, in terms of load-balancing (which may need to
-% maintain a state).
 
 
-
+-doc """
+The PID of a process requesting an actor creation (e.g. the simulation case, a
+scenario, another initial actor).
+""".
 -type initiator_pid() :: pid().
-% The PID of a process requesting an actor creation (e.g. the simulation case, a
-% scenario, another initial actor).
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type user_data() :: basic_utils:user_data().
 
@@ -445,9 +458,11 @@
 -type directory_path() :: file_utils:directory_path().
 
 
+-type deployment_manager_pid() ::
+    class_DeploymentManager:deployment_manager_pid().
+
 -type aai() :: class_Actor:aai().
 -type tag() :: class_Actor:tag().
--type actor_pid() :: class_Actor:actor_pid().
 -type actor_settings() :: class_Actor:actor_settings().
 -type instance_creation_spec() :: class_Actor:instance_creation_spec().
 
@@ -457,54 +472,55 @@
 
 
 
-% @doc Constructs a load balancer, from following parameters:
-%
-% - PlacementPolicy describes which heuristic should be used in order to
-% dispatch created actors onto computing nodes; following placement policies are
-% specified (only the first one is implemented):
-%
-%  - round_robin: one of the simplest scheduling algorithms, which assigns
-%  actors to computing nodes in equal portions and in order, handling all
-%  creation requests without enforcing a specific priority; round-robin
-%  scheduling is both simple and easy to implement, and starvation-free; it
-%  relies on the statistical hypothesis that all actors consume on average a
-%  similar amount of resource and that all computing nodes provide on average a
-%  similar amount of resource as well; see also:
-%  http://en.wikipedia.org/wiki/Round-robin_scheduling
-%
-%  - select_least_loaded_first: the load balancer will evaluate the current load
-%  of the computing nodes, and then will choose to create any new actor on the
-%  least loaded node (not implemented yet; timing effects and load variations
-%  might make it tricky or even instable)
-%
-% - Nodes :: [atom_node_name()] is a list of Erlang nodes (as atoms) that are to
-% take part to the simulation, i.e. that are eligible as running environments
-% for actors
-%
-% - NodeAvailabilityTolerance can be:
-%
-%  - fail_on_unavailable_node: the construction of the load balancer will fail
-%  if at least one of the specified nodes is not available
-%
-%  - allow_unavailable_nodes: all nodes found not available will be rejected,
-%  and the simulation will rely only on the remaining ones
-%
-% - EvaluationMode :: evaluation_requested_properties() provides the load
-% balancer with all information to properly seed each actor
-%
-% - TroubleshootingMode :: boolean() tells whether the troubleshooting mode is
-% activated
-%
-% - InitialisationFiles :: [file_path()] is a list of initialisation files, from
-% which initial instances will be created
-%
-% A node might be unavailable because its host is unavailable, or because the
-% node cannot be run on its available host.
-%
-% A load balancer is also an actor (to create reproducibly other actors), and
-% thus is linked to a time manager. As the load balancer is by default created
-% on the same node as the root time manager, its time manager is the root one.
-%
+-doc """
+Constructs a load balancer, from following parameters:
+
+- PlacementPolicy describes which heuristic should be used in order to dispatch
+created actors onto computing nodes; following placement policies are specified
+(only the first one is implemented):
+
+ - round_robin: one of the simplest scheduling algorithms, which assigns actors
+ to computing nodes in equal portions and in order, handling all creation
+ requests without enforcing a specific priority; round-robin scheduling is both
+ simple and easy to implement, and starvation-free; it relies on the statistical
+ hypothesis that all actors consume on average a similar amount of resource and
+ that all computing nodes provide on average a similar amount of resource as
+ well; see also: http://en.wikipedia.org/wiki/Round-robin_scheduling
+
+ - select_least_loaded_first: the load balancer will evaluate the current load
+ of the computing nodes, and then will choose to create any new actor on the
+ least loaded node (not implemented yet; timing effects and load variations
+ might make it tricky or even instable)
+
+- Nodes :: [atom_node_name()] is a list of Erlang nodes (as atoms) that are to
+take part to the simulation, i.e. that are eligible as running environments for
+actors
+
+- NodeAvailabilityTolerance can be:
+
+ - fail_on_unavailable_node: the construction of the load balancer will fail if
+ at least one of the specified nodes is not available
+
+ - allow_unavailable_nodes: all nodes found not available will be rejected, and
+ the simulation will rely only on the remaining ones
+
+- EvaluationMode :: evaluation_requested_properties() provides the load balancer
+with all information to properly seed each actor
+
+- TroubleshootingMode :: boolean() tells whether the troubleshooting mode is
+activated
+
+- InitialisationFiles :: [file_path()] is a list of initialisation files, from
+which initial instances will be created
+
+A node might be unavailable because its host is unavailable, or because the node
+cannot be run on its available host.
+
+A load balancer is also an actor (to create reproducibly other actors), and thus
+is linked to a time manager. As the load balancer is by default created on the
+same node as the root time manager, its time manager is the root one.
+
+""".
 -spec construct( wooper:state(), placement_policy(), [ atom_node_name() ],
 	node_availability_tolerance(), evaluation_mode(), boolean(),
 	[ file_path() ] ) -> wooper:state().
@@ -592,20 +608,20 @@ construct( State, PlacementPolicy, Nodes, NodeAvailabilityTolerance,
 	% Commented out, as this information is already given by the deployment
 	% manager:
 	%
-	%	case length( SelectedComputingNodeRecords ) of
+	%   case length( SelectedComputingNodeRecords ) of
 	%
-	%		1 ->
-	%			trace_utils:info_fmt(
+	%       1 ->
+	%           trace_utils:info_fmt(
 	%                   "The single validated computing node is ~ts.",
-	%		 [ compute_node_to_string( hd( SelectedComputingNodeRecords ) ) ] );
+	%      [ compute_node_to_string( hd( SelectedComputingNodeRecords ) ) ] );
 	%
-	%		_More ->
-	%			trace_utils:info_fmt(
+	%       _More ->
+	%           trace_utils:info_fmt(
 	%             "The ~B validated computing nodes are:~n~ts~n",
-	%			  [ SelectedCount,
+	%             [ SelectedCount,
 	%               compute_nodes_to_string( SelectedComputingNodeRecords ) ] )
 	%
-	%	end,
+	%   end,
 
 	StartingState = setAttributes( TraceState, [
 		{ compute_nodes, SelectedComputingNodeRecords },
@@ -620,7 +636,7 @@ construct( State, PlacementPolicy, Nodes, NodeAvailabilityTolerance,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -648,11 +664,12 @@ destruct( State ) ->
 
 
 
-% @doc Notifies this load balancer that the simulation ended.
-%
-% For the vast majority of actors (but not the load balancer), this means
-% deletion (overridden for the load balancer, which has a different life cycle).
-%
+-doc """
+Notifies this load balancer that the simulation ended.
+
+For the vast majority of actors (but not the load balancer), this means deletion
+(overridden for the load balancer, which has a different life cycle).
+""".
 -spec simulationEnded( wooper:state() ) -> const_oneway_return().
 simulationEnded( State ) ->
 	% Do not trigger a deletion here.
@@ -660,11 +677,12 @@ simulationEnded( State ) ->
 
 
 
-% @doc Reacts to a notification of time manager shutdown.
-%
-% Overridden from class_Actor, not wanting for this very particular actor to be
-% deleted then (deletion to be managed by the deployment manager).
-%
+-doc """
+Reacts to a notification of time manager shutdown.
+
+Overridden from class_Actor, not wanting for this very particular actor to be
+deleted then (deletion to be managed by the deployment manager).
+""".
 -spec timeManagerShutdown( wooper:state() ) -> const_oneway_return().
 timeManagerShutdown( State ) ->
 	% Do not trigger a deletion here.
@@ -672,9 +690,10 @@ timeManagerShutdown( State ) ->
 
 
 
-% @doc Returns the list of the records corresponding to the actual selected
-% computing nodes.
-%
+-doc """
+Returns the list of the records corresponding to the actual selected computing
+nodes.
+""".
 -spec getComputingNodes( wooper:state() ) ->
 							const_request_return( [ compute_node() ] ).
 getComputingNodes( State ) ->
@@ -687,15 +706,15 @@ getComputingNodes( State ) ->
 % Section about actor creations, initial or not.
 
 
-% @doc Requests this load balancer to trigger the actual creation of the initial
-% instances that were specified in the file(s) listed in the simulation
-% settings.
-%
-% In all cases, the caller expects a 'instances_created_from_files' message to
-% be ultimately returned.
-%
-% (oneway, to remain responsive to placement requests)
-%
+-doc """
+Requests this load balancer to trigger the actual creation of the initial
+instances that were specified in the file(s) listed in the simulation settings.
+
+In all cases, the caller expects a `instances_created_from_files` message to be
+ultimately returned.
+
+(oneway, to remain responsive to placement requests)
+""".
 -spec createInitialInstancesFromFiles( wooper:state(), deployment_manager_pid(),
 									   directory_path() ) -> oneway_return().
 createInitialInstancesFromFiles( State, DeploymentManagerPid, EngineRootDir ) ->
@@ -734,7 +753,7 @@ createInitialInstancesFromFiles( State, DeploymentManagerPid, EngineRootDir ) ->
 			RootDir = EngineRootDir,
 
 			ActualInitPaths = [ file_utils:join( RootDir, F )
-								|| F <- InitialisationFiles ],
+                                    || F <- InitialisationFiles ],
 
 			%trace_utils:debug_fmt( "Creating initial instances from files: "
 			%  "~ts", [ text_utils:strings_to_string( ActualInitPaths ) ] ),
@@ -762,12 +781,13 @@ createInitialInstancesFromFiles( State, DeploymentManagerPid, EngineRootDir ) ->
 
 
 
-% @doc Called (either by itself or by the spawned instance loader) whenever all
-% instances have been loaded from files (if any).
-%
-% (oneway, allowing the load balancer not to be blocked in
-% createInitialInstancesFromFiles/2)
-%
+-doc """
+Called (either by itself or by the spawned instance loader) whenever all
+instances have been loaded from files (if any).
+
+(oneway, allowing the load balancer not to be blocked in
+createInitialInstancesFromFiles/2)
+""".
 -spec onInstancesLoaded( wooper:state() ) -> oneway_return().
 onInstancesLoaded( State ) ->
 
@@ -792,29 +812,30 @@ onInstancesLoaded( State ) ->
 
 
 
-% @doc Creates specified actor on an automatically selected computing node,
-% while the simulation is not running (i.e. not to be called by actors wanting
-% to create other actors while the simulation is running, see
-% createRuntimeActor/{4,5} instead).
-%
-% Mostly meant to be called directly from simulation scenarios, test cases,
-% simulation cases, etc. to create the initial situation before the simulation
-% is started; needed for simulation bootstrap.
-%
-% Oneway parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% The actor will be created with following parameters: first its target node,
-% then its AAI, then all the parameters in ActorConstructionParameters.
-%
-% Will trigger back a onInitialActorCreated/2 oneway message so that the caller
-% is notified both of the successful creation and of its corresponding PID.
-%
+-doc """
+Creates the specified actor on an automatically selected computing node, while
+the simulation is not running (i.e. not to be called by actors wanting to create
+other actors while the simulation is running, see createRuntimeActor/{4,5}
+instead).
+
+Mostly meant to be called directly from simulation scenarios, test cases,
+simulation cases, etc. to create the initial situation before the simulation is
+started; needed for simulation bootstrap.
+
+Oneway parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+'class_TestActor')
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. ["MyActorName", 50])
+
+The actor will be created with following parameters: first its target node, then
+its AAI, then all the parameters in ActorConstructionParameters.
+
+Will trigger back a onInitialActorCreated/2 oneway message so that the caller is
+notified both of the successful creation and of its corresponding PID.
+""".
 -spec createInitialActor( wooper:state(), classname(), [ method_argument() ],
 						  initiator_pid() ) -> oneway_return().
 createInitialActor( State, ActorClassname, ActorConstructionParameters,
@@ -846,34 +867,35 @@ createInitialActor( State, ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates specified actor on a computing node that is entirely determined
-% by the specified placement hint, while the simulation is not running yet
-% (i.e. not to be called by actors wanting to create other actors while the
-% simulation is running - see createPlacedOtherActor/4 instead).
-%
-% Mostly meant to be called directly from simulation scenarios, test cases,
-% simulation cases, etc. to create the initial situation before the simulation
-% is started; needed for simulation bootstrap.
-%
-% Oneway parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
-% actors (both initial or simulation-time ones) for which the same placement
-% hint was specified on the same computing node, for best performances when they
-% are to be tightly coupled
-%
-% The actor will be created with following parameters: first its target node,
-% then its AAI, then all the parameters in ActorConstructionParameters.
-%
-% Will trigger back a onInitialActorCreated/2 oneway message so that the caller
-% is notified both of the successful creation and of its corresponding PID.
-%
+-doc """
+Creates specified actor on a computing node that is entirely determined by the
+specified placement hint, while the simulation is not running yet (i.e. not to
+be called by actors wanting to create other actors while the simulation is
+running - see createPlacedOtherActor/4 instead).
+
+Mostly meant to be called directly from simulation scenarios, test cases,
+simulation cases, etc. to create the initial situation before the simulation is
+started; needed for simulation bootstrap.
+
+Oneway parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+'class_TestActor')
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. ["MyActorName", 50])
+
+- PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
+actors (both initial or simulation-time ones) for which the same placement hint
+was specified on the same computing node, for best performances when they are to
+be tightly coupled
+
+The actor will be created with following parameters: first its target node, then
+its AAI, then all the parameters in ActorConstructionParameters.
+
+Will trigger back a onInitialActorCreated/2 oneway message so that the caller is
+notified both of the successful creation and of its corresponding PID.
+""".
 -spec createInitialPlacedActor( wooper:state(), classname(),
 		[ method_argument() ], placement_hint(), initiator_pid() ) ->
 									oneway_return().
@@ -907,26 +929,26 @@ createInitialPlacedActor( State, ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates the specified list of (initial) actors, each on an automatically
-% selected computing node, while the simulation is not running yet (i.e. not to
-% be called by actors wanting to create other actors while the simulation is
-% running - see createRuntimeActor/4 instead).
-%
-% Mostly meant to be called directly from simulation scenarios, test cases,
-% simulation cases, etc. to create the initial situation before the simulation
-% is started; needed for simulation bootstrap.
-%
-% The ActorConstructionList parameter is a list of specifications for actor
-% creation (each made of a tuple containing an actor class name, a list of
-% construction parameters and, possibly, a placement hint).
-%
-% Actor creations will be done as much as possible in parallel, over the
-% available computing nodes: this request is to be used for bulk actor
-% creations.
-%
-% Will trigger back a onInitialActorsCreated/2 oneway message so that the caller
-% is notified both of the successful creations and of its corresponding PIDs.
-%
+-doc """
+Creates the specified list of (initial) actors, each on an automatically
+selected computing node, while the simulation is not running yet (i.e. not to be
+called by actors wanting to create other actors while the simulation is running
+- see createRuntimeActor/4 instead).
+
+Mostly meant to be called directly from simulation scenarios, test cases,
+simulation cases, etc. to create the initial situation before the simulation is
+started; needed for simulation bootstrap.
+
+The ActorConstructionList parameter is a list of specifications for actor
+creation (each made of a tuple containing an actor class name, a list of
+construction parameters and, possibly, a placement hint).
+
+Actor creations will be done as much as possible in parallel, over the available
+computing nodes: this request is to be used for bulk actor creations.
+
+Will trigger back a onInitialActorsCreated/2 oneway message so that the caller
+is notified both of the successful creations and of its corresponding PIDs.
+""".
 -spec createInitialActors( wooper:state(), [ instance_creation_spec() ],
 						   initiator_pid() ) -> oneway_return().
 createInitialActors( State, InstanceCreationSpecs, InitiatorPid ) ->
@@ -1021,9 +1043,10 @@ createInitialActors( State, InstanceCreationSpecs, InitiatorPid ) ->
 
 
 
-% @doc Checks whether an attempt of nested initial creation is done, and whether
-% it is legit.
-%
+-doc """
+Checks whether an attempt of nested initial creation is done, and whether it is
+legit.
+""".
 -spec check_nested_initial_creations( [ instance_creation_spec() ],
 									  wooper:state() ) -> void().
 check_nested_initial_creations( InstCreationSpecs, State ) ->
@@ -1057,12 +1080,11 @@ check_nested_initial_creations( InstCreationSpecs, State ) ->
 
 
 
-% @doc Places the instances as specified by the creation specs, and returns all
-% information needed to create them immediately, with an updated state that
-% considers that these creations are done.
-%
-% (helper)
-%
+-doc """
+Places the instances as specified by the creation specs, and returns all
+information needed to create them immediately, with an updated state that
+considers that these creations are done.
+""".
 -spec place_and_prepare_creations( [ instance_creation_spec() ],
 								   wooper:state() ) ->
 			{ [ { classname(), [ method_argument() ] } ], wooper:state() }.
@@ -1124,10 +1146,10 @@ place_and_prepare_creations( _InstanceCreationSpecs=[
 
 
 
-% @doc Registers creation, and recurses.
+
+% Registers creation, and recurses.
 %
 % (helper, gathering creations that are placed or not)
-%
 prepare_creations( Classname, ConstructionParameters, SelectedNode,
 				   InstanceCreationSpecs, AAI, InstancesPerClass,
 				   InstancesPerNode, CreationInfos, State ) ->
@@ -1152,36 +1174,38 @@ prepare_creations( Classname, ConstructionParameters, SelectedNode,
 
 
 
-% @doc Creates specified actor on an automatically selected computing node, at
-% runtime, i.e. while the simulation is running (to be called by actors wanting
-% to create other actors in the course of their behaviour).
-%
-% Primarily meant to be called transparently from an actor making use of the
-% class_Actor:create_actor/3 helper function.
-%
-% Method parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - SendingActorPid is the PID of the sender
-%
-% The actor will be created with following parameters: first its target node,
-% then its AAI, then all the parameters in ActorConstructionParameters.
-%
-% Triggers back on the caller (generally the actor at the origin of the creation
-% request) the onActorCreated/4 actor oneway (with a tag determined by default),
-% to notify the creating actor that the requested actor was created.
-%
-% The tag allows the caller to discriminate among multiple pending creation
-% requests.
-%
-% No user tag is specified here, thus the calling actor will receive back the
-% default tag, i.e. a {ActorClassname, ActorConstructionParameters} pair.
-%
+-doc """
+Creates the specified actor on an automatically selected computing node, at
+runtime, i.e. while the simulation is running (to be called by actors wanting to
+create other actors in the course of their behaviour).
+
+Primarily meant to be called transparently from an actor making use of the
+class_Actor:create_actor/3 helper function.
+
+Method parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+'class_TestActor')
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. ["MyActorName", 50])
+
+- SendingActorPid is the PID of the sender
+
+The actor will be created with following parameters: first its target node, then
+its AAI, then all the parameters in ActorConstructionParameters.
+
+Triggers back on the caller (generally the actor at the origin of the creation
+request) the onActorCreated/4 actor oneway (with a tag determined by default),
+to notify the creating actor that the requested actor was created.
+
+The tag allows the caller to discriminate among multiple pending creation
+requests.
+
+No user tag is specified here, thus the calling actor will receive back the
+default tag, i.e. a {ActorClassname, ActorConstructionParameters} pair.
+
+""".
 -spec createRuntimeActor( wooper:state(), classname(), [ method_argument() ],
 						  sending_actor_pid() ) -> actor_oneway_return().
 createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
@@ -1197,35 +1221,36 @@ createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates specified actor on an automatically selected computing node, with
-% a user-specified tag, while the simulation is running (i.e. to be called by
-% actors wanting to create other actors in the course of their behaviour).
-%
-% Primarily meant to be called transparently from an actor making use of the
-% class_Actor:create_actor/4 helper function.
-%
-% Method parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - ActorTag is the user-defined tag to discriminate between its actor creations
-%
-% - SendingActorPid is the PID of the sender
-%
-% The actor will be created with following parameters: first its target node,
-% then its AAI, then all the parameters in ActorConstructionParameters.
-%
-% Triggers back on the caller (generally the actor at the origin of the creation
-% request) the onActorCreated/4 actor oneway (with the specified tag), to notify
-% the creating actor that the requested actor was created.
-%
-% The tag allows the caller to discriminate among multiple pending creation
-% requests.
-%
+-doc """
+Creates the specified actor on an automatically selected computing node, with a
+user-specified tag, while the simulation is running (i.e. to be called by actors
+wanting to create other actors in the course of their behaviour).
+
+Primarily meant to be called transparently from an actor making use of the
+class_Actor:create_actor/4 helper function.
+
+Method parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+'class_TestActor')
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. ["MyActorName", 50])
+
+- ActorTag is the user-defined tag to discriminate between its actor creations
+
+- SendingActorPid is the PID of the sender
+
+The actor will be created with following parameters: first its target node, then
+its AAI, then all the parameters in ActorConstructionParameters.
+
+Triggers back on the caller (generally the actor at the origin of the creation
+request) the onActorCreated/4 actor oneway (with the specified tag), to notify
+the creating actor that the requested actor was created.
+
+The tag allows the caller to discriminate among multiple pending creation
+requests.
+""".
 -spec createRuntimeActor( wooper:state(), classname(), [ method_argument() ],
 						  tag(), sending_actor_pid() ) -> actor_oneway_return().
 createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
@@ -1261,40 +1286,41 @@ createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates specified actor on a computing node that is entirely determined
-% by the specified placement hint, while the simulation is already running
-% (i.e. to be called by actors wanting to create other actors in the course of
-% their behaviour).
-%
-% Primarily meant to be called transparently from an actor making use of the
-% class_Actor:create_placed_actor/{4,5} helper functions.
-%
-% Method parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
-% actors (both initial or simulation-time ones) for which the same placement
-% hint was specified on the same computing node, for best performances when they
-% are to be tightly coupled
-%
-% The actor will be created with following parameters: first its target node,
-% then its AAI, then all the parameters in ActorConstructionParameters.
-%
-% Triggers back on the caller (generally the actor at the origin of the creation
-% request) the onActorCreated/4 actor oneway (with a tag determined by default),
-% to notify the creating actor that the requested actor was created.
-%
-% The tag allows the caller to discriminate among multiple pending creation
-% requests.
-%
-% No user tag is specified here, thus the calling actor will receive back the
-% default tag, i.e. a {ActorClassname, ActorConstructionParameters} pair.
-%
+-doc """
+Creates the specified actor on a computing node that is entirely determined by
+the specified placement hint, while the simulation is already running (i.e. to
+be called by actors wanting to create other actors in the course of their
+behaviour).
+
+Primarily meant to be called transparently from an actor making use of the
+class_Actor:create_placed_actor/{4,5} helper functions.
+
+Method parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+'class_TestActor')
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. ["MyActorName", 50])
+
+- PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
+actors (both initial or simulation-time ones) for which the same placement hint
+was specified on the same computing node, for best performances when they are to
+be tightly coupled
+
+The actor will be created with following parameters: first its target node, then
+its AAI, then all the parameters in ActorConstructionParameters.
+
+Triggers back on the caller (generally the actor at the origin of the creation
+request) the onActorCreated/4 actor oneway (with a tag determined by default),
+to notify the creating actor that the requested actor was created.
+
+The tag allows the caller to discriminate among multiple pending creation
+requests.
+
+No user tag is specified here, thus the calling actor will receive back the
+default tag, i.e. a {ActorClassname, ActorConstructionParameters} pair.
+""".
 -spec createRuntimePlacedActor( wooper:state(), classname(),
 			[ method_argument() ], placement_hint(), sending_actor_pid() ) ->
 									actor_oneway_return().
@@ -1311,39 +1337,40 @@ createRuntimePlacedActor( State, ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates specified actor, with a user-specified tag, on a computing node
-% which is entirely determined by the specified placement hint, while the
-% simulation is running yet (i.e. to be called by actors wanting to create other
-% actors in the course of their behaviour).
-%
-% Primarily meant to be called transparently from an actor making use of the
-% class_Actor:create_placed_actor/{4,5} helper functions.
-%
-% Method parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - ActorTag is the user-defined tag to discriminate between its actor creations
-%
-% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
-% actors (both initial or simulation-time ones) for which the same placement
-% hint was specified on the same computing node, for best performances when they
-% are to be tightly coupled
-%
-% The actor will be created with following parameters: first its target node,
-% then its AAI, then all the parameters in ActorConstructionParameters.
-%
-% Triggers back on the caller (generally the actor at the origin of the creation
-% request) the onActorCreated/4 actor oneway (with the specified tag), to notify
-% the creating actor that the requested actor was created.
-%
-% The tag allows the caller to discriminate among multiple pending creation
-% requests.
-%
+-doc """
+Creates the specified actor, with a user-specified tag, on a computing node
+which is entirely determined by the specified placement hint, while the
+simulation is running yet (i.e. to be called by actors wanting to create other
+actors in the course of their behaviour).
+
+Primarily meant to be called transparently from an actor making use of the
+class_Actor:create_placed_actor/{4,5} helper functions.
+
+Method parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+'class_TestActor')
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. ["MyActorName", 50])
+
+- ActorTag is the user-defined tag to discriminate between its actor creations
+
+- PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
+actors (both initial or simulation-time ones) for which the same placement hint
+was specified on the same computing node, for best performances when they are to
+be tightly coupled
+
+The actor will be created with following parameters: first its target node, then
+its AAI, then all the parameters in ActorConstructionParameters.
+
+Triggers back on the caller (generally the actor at the origin of the creation
+request) the onActorCreated/4 actor oneway (with the specified tag), to notify
+the creating actor that the requested actor was created.
+
+The tag allows the caller to discriminate among multiple pending creation
+requests.
+""".
 -spec createRuntimePlacedActor( wooper:state(), tag(), classname(),
 		[ method_argument() ], placement_hint(), sending_actor_pid() ) ->
 									actor_oneway_return().
@@ -1374,11 +1401,12 @@ createRuntimePlacedActor( State, ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Notification sent by a created actor that its spawn is successful.
-%
-% (standard WOOPER message sent after a '*synchronisable_new' call, interpreted
-% here as a oneway)
-%
+-doc """
+Notification sent by a created actor that its spawn is successful.
+
+(standard WOOPER message sent after a '*synchronisable_new' call, interpreted
+here as a oneway)
+""".
 -spec spawn_successful( wooper:state(), actor_pid() ) -> oneway_return().
 spawn_successful( State, CreatedActorPid ) ->
 
@@ -1508,13 +1536,14 @@ spawn_successful_helper( CreatedActorPid, State ) ->
 
 
 
-% @doc Searches for the PID of the created actor, removes it, and returns an
-% updated spawn request.
-%
-% (we used to play initially with the size of tuples returned and the type of
-% some of their elements to discriminate the outputs of this helper, yet it was
-% too error-prone, so tagged tuples were finally preferred)
-%
+-doc """
+Searches for the PID of the created actor, removes it, and returns an updated
+spawn request.
+
+(we used to play initially with the size of tuples returned and the type of some
+of their elements to discriminate the outputs of this helper, yet it was too
+error-prone, so tagged tuples were finally preferred)
+""".
 search_for_spawn( CreatedActorPid, _ReqList=[], _Acc ) ->
 	% This spawned actor should have been registered:
 	throw( { inconsistent_initiator_table, CreatedActorPid } );
@@ -1559,17 +1588,19 @@ search_for_spawn( CreatedActorPid,
 
 
 
-% @doc Returns, based on specified identifier-related information, the node on
-% which the corresponding instance must be created, and which actor settings
-% should be used for that.
-%
-% The specified identifier information may or may not be an actual identifier
-% and, if yes, it may or may not be the identifier of this particular instance;
-% a specified identifier is meant to be a mere placement guideline.
-%
-% Note: the load balancer does not create the corresponding instance, but
-% considers that is will be created afterwards.
-%
+-doc """
+Returns, based on the specified identifier-related information, the node on
+which the corresponding instance must be created, and which actor settings
+should be used for that.
+
+The specified identifier information may or may not be an actual identifier and,
+if yes, it may or may not be the identifier of this particular instance; a
+specified identifier is meant to be a mere placement guideline.
+
+Note: the load balancer does not create the corresponding instance, but
+considers that is will be created afterwards.
+
+""".
 -spec getActorCreationInformation( wooper:state(), identifier_info(),
 								   line_number(), classname() ) ->
 				request_return( { atom_node_name(), actor_settings() } ).
@@ -1603,13 +1634,14 @@ getActorCreationInformation( State, _IdentifierInfo=UserIdentifier, LineNumber,
 
 
 
-% @doc Returns, based on specified placement hint, the node on which the
-% corresponding instance must be created, and which actor settings should be
-% used for that.
-%
-% Note: the load balancer does not create the corresponding instance, but
-% considers that is will be created afterwards.
-%
+-doc """
+Returns, based on the specified placement hint, the node on which the
+corresponding instance must be created, and which actor settings should be used
+for that.
+
+Note: the load balancer does not create the corresponding instance, but
+considers that is will be created afterwards.
+""".
 -spec getActorCreationInformationFromHint( wooper:state(), placement_hint(),
 										   line_number(), classname() ) ->
 				request_return( { atom_node_name(), actor_settings() } ).
@@ -1628,9 +1660,10 @@ getActorCreationInformationFromHint( State, PlacementHint, LineNumber,
 
 
 
-% @doc Returns the computing node on which the instance corresponding to the
-% specified user identifier shall be created.
-%
+-doc """
+Returns the computing node on which the instance corresponding to the specified
+user identifier shall be created.
+""".
 -spec getNodeForUserIdentifier( wooper:state(), user_identifier() ) ->
 									const_request_return( atom_node_name() ).
 getNodeForUserIdentifier( State, UserIdentifier ) ->
@@ -1642,7 +1675,7 @@ getNodeForUserIdentifier( State, UserIdentifier ) ->
 
 
 
-% @doc Registers specified already created initial actors, from their PID.
+-doc "Registers specified already created initial actors, from their PID.".
 -spec registerInitialActors( wooper:state(), [ actor_pid() ] ) ->
 								request_return( 'initial_actors_registered' ).
 registerInitialActors( State, AdditionalInitialActors ) ->
@@ -1660,13 +1693,14 @@ registerInitialActors( State, AdditionalInitialActors ) ->
 
 
 
-% @doc Registers a (probably initial) instance created externally (typically
-% while loading them from file).
-%
-% Returns an updated state and the actor's creation settings.
-%
-% (helper)
-%
+-doc """
+Registers a (probably initial) instance created externally (typically while
+loading them from file).
+
+Returns an updated state and the actor's creation settings.
+
+(helper)
+""".
 register_created_instance( TargetNode, LineNumber, Classname, State ) ->
 
 	% Check would have no effect: undefined =/= ?getAttr(base_actor_identifier),
@@ -1711,12 +1745,13 @@ register_created_instance( TargetNode, LineNumber, Classname, State ) ->
 
 
 
-% @doc Overridden so that initial actors can be triggered for their first
-% diasca, with their onFirstDiasca/2 actor oneway.
-%
-% This method is itself called because the load balancer is always scheduled for
-% a (single) spontaneous behaviour, at tick offset 0 (diasca 0).
-%
+-doc """
+Overridden so that initial actors can be triggered for their first diasca, with
+their onFirstDiasca/2 actor oneway.
+
+This method is itself called because the load balancer is always scheduled for a
+(single) spontaneous behaviour, at tick offset 0 (diasca 0).
+""".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -1761,9 +1796,10 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Allows to keep track of actor deletion as well, in this single,
-% centralised place.
-%
+-doc """
+Allows keeping track of actor deletion as well, in this single, centralised
+place.
+""".
 -spec notifyDeletion( wooper:state(), actor_pid(), classname(),
 					  atom_node_name() ) -> oneway_return().
 notifyDeletion( State, _ActorPid, ActorClassname, Node ) ->
@@ -1786,13 +1822,14 @@ notifyDeletion( State, _ActorPid, ActorClassname, Node ) ->
 
 
 
-% @doc Returns the instance counts, per class and per node.
-%
-% Note: this involves operations that may be a bit expensive (enumeration and
-% sending of the result), but this request is called only when the performance
-% tracking is activated; moreover the load balancer and the performance tracker
-% might be, if needed, created on the same node.
-%
+-doc """
+Returns the instance counts, per class and per node.
+
+Note: this involves operations that may be a bit expensive (enumeration and
+sending of the result), but this request is called only when the performance
+tracking is activated; moreover the load balancer and the performance tracker
+might be, if needed, created on the same node.
+""".
 -spec getInstanceCounts( wooper:state() ) -> const_request_return(
 		{ 'instance_counts', table:entries(), table:entries() } ).
 getInstanceCounts( State ) ->
@@ -1811,11 +1848,12 @@ getInstanceCounts( State ) ->
 
 
 
-% @doc Returns (asynchronously) the overall number of model instances.
-%
-% Used notably by the root time manager so that the console tracker can display
-% actor counts.
-%
+-doc """
+Returns (asynchronously) the overall number of model instances.
+
+Used notably by the root time manager so that the console tracker can display
+actor counts.
+""".
 -spec getOverallInstanceCount( wooper:state(), wooper:caller_pid() ) ->
 									const_oneway_return().
 getOverallInstanceCount( State, CallerPid ) ->
@@ -1826,9 +1864,10 @@ getOverallInstanceCount( State, CallerPid ) ->
 
 
 
-% @doc Requests this load-balancer to trace its state, using specified label for
-% that.
-%
+-doc """
+Requests this load-balancer to trace its state, using the specified label for
+that.
+""".
 -spec traceState( wooper:state(), ustring() ) -> const_oneway_return().
 traceState( State, Label ) ->
 	trace_state( Label, State ),
@@ -1840,9 +1879,9 @@ traceState( State, Label ) ->
 % Static methods section.
 
 
-% @doc Returns a textual description of specified load balancing settings
-% record.
-%
+-doc """
+Returns a textual description of specified load balancing settings record.
+""".
 -spec settings_to_string( #load_balancing_settings{} ) ->
 								static_return( ustring() ).
 settings_to_string( #load_balancing_settings{ placement_policy=Placement } ) ->
@@ -1863,11 +1902,12 @@ settings_to_string( #load_balancing_settings{ placement_policy=Placement } ) ->
 
 
 
-% @doc Returns the atom corresponding to the name the load balancer should be
-% registered as.
-%
-% Note: executed on the caller node.
-%
+-doc """
+Returns the atom corresponding to the name the load balancer should be
+registered as.
+
+Note: executed on the caller node.
+""".
 -spec get_registration_name() ->
 				static_return( naming_utils:registration_name() ).
 get_registration_name() ->
@@ -1876,10 +1916,11 @@ get_registration_name() ->
 
 
 
-% @doc Returns the PID of the (unique) load balancer.
-%
-% (static method, to be used by clients of the load balancer)
-%
+-doc """
+Returns the PID of the (unique) load balancer.
+
+(static method, to be used by clients of the load balancer)
+""".
 -spec get_balancer() -> static_return( load_balancer_pid() ).
 get_balancer() ->
 
@@ -1894,9 +1935,9 @@ get_balancer() ->
 % Section for helper functions (not methods).
 
 
-% @doc Interprets the specified seeding and reordering information, for
-% initialisation.
-%
+-doc """
+Interprets the specified seeding and reordering information, for initialisation.
+""".
 -spec manage_seeding( evaluation_requested_properties() ) ->
 		{ random_utils:seed(), ustring(), class_Actor:message_ordering_mode() }.
 manage_seeding( fastest ) ->
@@ -1976,11 +2017,12 @@ manage_seeding( ergodic ) ->
 
 
 
-% @doc Returns the actor settings corresponding to the next actor to be created,
-% in the context of a direct, programmatic creation.
-%
-% (helper)
-%
+-doc """
+Returns the actor settings corresponding to the next actor to be created, in the
+context of a direct, programmatic creation.
+
+(helper)
+""".
 -spec get_actor_settings( aai(), wooper:state() ) -> actor_settings().
 get_actor_settings( AAI, State ) ->
 
@@ -1993,11 +2035,10 @@ get_actor_settings( AAI, State ) ->
 
 
 
-% @doc Returns the actor settings corresponding to the specified actor to be
-% created, in the context of a loading-based creation, and an updated state.
-%
-% (helper)
-%
+-doc """
+Returns the actor settings corresponding to the specified actor to be created,
+in the context of a loading-based creation, and an updated state.
+""".
 -spec get_loaded_actor_settings( aai(), wooper:state() ) ->
 							{ actor_settings(), wooper:state() }.
 get_loaded_actor_settings( AAI, State ) ->
@@ -2043,14 +2084,15 @@ get_loaded_actor_settings( AAI, State ) ->
 
 
 
-% @doc Returns {NewSeedTable, ActorSeed}, where:
-%
-% - NewSeedTable is an expanded seed table, recording for all AAIs in [FromAAI,
-% ToAAI] their seed (we include ToAAI, as later we will probably have to expand
-% again that table)
-%
-% - ActorSeed is the seed of actor whose AAI is ToAAI
-%
+-doc """
+Returns `{NewSeedTable, ActorSeed}`, where:
+
+ - NewSeedTable is an expanded seed table, recording for all AAIs in [FromAAI,
+ ToAAI] their seed (we include ToAAI, as later we will probably have to expand
+ again that table)
+
+ - ActorSeed is the seed of actor whose AAI is ToAAI
+""".
 expand_seed_table( _From=AAI, _To=AAI, SeedTable ) ->
 	add_seed_for( AAI, SeedTable );
 
@@ -2060,7 +2102,9 @@ expand_seed_table( FromAAI, ToAAI, SeedTable ) ->
 
 
 
-% @doc Adds a seed for specified AAI, and returns {NewSeedTable, ActorSeed}.
+-doc """
+Adds a seed for the specified AAI, and returns `{NewSeedTable, ActorSeed}`.
+""".
 add_seed_for( AAI, SeedTable ) ->
 
 	Key = AAI,
@@ -2077,17 +2121,16 @@ add_seed_for( AAI, SeedTable ) ->
 
 
 
-% @doc Inspects the already launched nodes that can be used for the simulation.
-%
-% Nodes are specified by their names (strings).
-%
-% Returns a list of compute_node records, corresponding to available and running
-% named Erlang nodes.
-%
-% The State variable is only needed to be able to send traces.
-%
-% (helper)
-%
+-doc """
+Inspects the already launched nodes that can be used for the simulation.
+
+Nodes are specified by their names (strings).
+
+Returns a list of compute_node records, corresponding to available and running
+named Erlang nodes.
+
+The State variable is only needed to be able to send traces.
+""".
 -spec inspect_computing_nodes( [ net_utils:string_node_name() ],
 		node_availability_tolerance(), wooper:state() ) -> [ compute_node() ].
 inspect_computing_nodes( NodeNames, NodeAvailabilityTolerance, State ) ->
@@ -2152,11 +2195,12 @@ compute_node_to_string( #compute_node{ name=Name } ) ->
 
 
 
-% @doc Determines on which node the next actor should be created, according to
-% the current placement policy.
-%
-% Returns an updated state and the determined node.
-%
+-doc """
+Determines on which node the next actor should be created, according to the
+current placement policy.
+
+Returns an updated state and the determined node.
+""".
 select_node_by_heuristic( State ) ->
 
 	case ?getAttr(placement_policy) of
@@ -2168,11 +2212,12 @@ select_node_by_heuristic( State ) ->
 
 
 
-% @doc Determines on which node the next actor should be created, according to
-% the round-robin placement policy.
-%
-% Returns an updated state and the determined node.
-%
+-doc """
+Determines on which node the next actor should be created, according to the
+round-robin placement policy.
+
+Returns an updated state and the determined node.
+""".
 select_node_with_round_robin( State ) ->
 
 	NodeRing = ?getAttr(placement_policy_data),
@@ -2185,10 +2230,11 @@ select_node_with_round_robin( State ) ->
 
 
 
-% @doc Returns the node that corresponds to the specified placement hint.
-%
-% (const state, hence not returned)
-%
+-doc """
+Returns the node that corresponds to the specified placement hint.
+
+(const state, hence not returned)
+""".
 select_node_based_on_hint( PlacementHint, State ) ->
 
 	NodeRing = ?getAttr(placement_policy_data),
@@ -2205,9 +2251,10 @@ select_node_based_on_hint( PlacementHint, State ) ->
 
 
 
-% @doc Returns the list of node names (as atoms) extracted from the list of
-% computing node records.
-%
+-doc """
+Returns the list of node names (as atoms) extracted from the specified list of
+computing node records.
+""".
 get_node_list_from( ComputingNodeRecords ) ->
 	get_node_list_from( ComputingNodeRecords, [] ).
 
@@ -2221,20 +2268,20 @@ get_node_list_from(
 
 
 
-% @doc To be called when needing to create an initial actor, on specified node.
-%
-% Returns a pair made of an updated state and of the PID of the newly created
-% actor, throws an exception on failure.
-%
-% To allow for nested creations, the creation is now asynchronous: this call
-% will return while the spawned actor is possibly still being constructed; its
-% PID is already known, yet, a synchronisable creation being used, this load
-% balancer will wait until having received its spawn_successful message to deem
-% it constructed and possibly to notify the requester of the corresponding
-% creation.
-%
-% (internal helper function)
-%
+-doc """
+To be called when needing to create an initial actor, on the specified node.
+
+Returns a pair made of an updated state and of the PID of the newly created
+actor, throws an exception on failure.
+
+To allow for nested creations, the creation is now asynchronous: this call will
+return while the spawned actor is possibly still being constructed; its PID is
+already known, yet, a synchronisable creation being used, this load balancer
+will wait until having received its spawn_successful message to deem it
+constructed and possibly to notify the requester of the corresponding creation.
+
+(internal helper function)
+""".
 -spec create_initial_actor( classname(), [ method_argument() ],
 		atom_node_name(), initiator_pid(), wooper:state() ) ->
 								{ wooper:state(), actor_pid() }.
@@ -2300,7 +2347,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters, Node,
 	InitiatorTable = ?getAttr(initiator_requests),
 
 	NewInitiatorTable =
-		case table:lookup_entry( InitiatorPid,InitiatorTable ) of
+            case table:lookup_entry( InitiatorPid,InitiatorTable ) of
 
 		key_not_found ->
 			table:add_entry( InitiatorPid, [ ActorPid ], InitiatorTable );
@@ -2323,21 +2370,21 @@ create_initial_actor( ActorClassname, ActorConstructionParameters, Node,
 
 
 
-% @doc To be called when needing to create a runtime actor, on specified node.
-%
-% Returns an updated state, throws an exception on failure.
-%
-% To allow for nested creations, the creation is now asynchronous: this call
-% will return while the spawned actor is possibly still being constructed; its
-% PID is already known, yet, a synchronisable creation being used, this load
-% balancer will wait until having received its spawn_successful message to deem
-% it constructed and possibly to notify the requester of the corresponding
-% creation.
-%
-% Note: a mere variation of create_initial_actor/5.
-%
-% (internal helper function)
-%
+-doc """
+To be called when needing to create a runtime actor, on the specified node.
+
+Returns an updated state, throws an exception on failure.
+
+To allow for nested creations, the creation is now asynchronous: this call will
+return while the spawned actor is possibly still being constructed; its PID is
+already known, yet, a synchronisable creation being used, this load balancer
+will wait until having received its spawn_successful message to deem it
+constructed and possibly to notify the requester of the corresponding creation.
+
+Note: a mere variation of create_initial_actor/5.
+
+(internal helper function)
+""".
 -spec create_runtime_actor( classname(), [ method_argument() ], tag(),
 		atom_node_name(), initiator_pid(), wooper:state() ) -> wooper:state().
 create_runtime_actor( ActorClassname, ActorConstructionParameters, ActorTag,
@@ -2569,7 +2616,7 @@ handle_undef_creation( ActorClassname, Node, ActorSettings,
 
 
 
-% @doc Waits until the spawn of specified actor is acknowledged.
+-doc "Waits until the spawn of the specified actor is acknowledged.".
 wait_for_spawn_ack_from( ActorPid, State ) ->
 
 	%trace_utils:debug_fmt(
@@ -2635,11 +2682,12 @@ wait_for_spawn_ack_from( ActorPid, State ) ->
 
 
 
-% @doc Records the creation of an instance of specified class, in specified
-% class table.
-%
-% Returns an updated table.
-%
+-doc """
+Records the creation of an instance of the specified class, in the specified
+class table.
+
+Returns an updated table.
+""".
 record_creation_in_class_table( ActorClassname, ClassTable ) ->
 
 	case table:lookup_entry( ActorClassname, ClassTable ) of
@@ -2659,13 +2707,12 @@ record_creation_in_class_table( ActorClassname, ClassTable ) ->
 
 
 
-% @doc Records the deletion of an instance of specified class, in specified
-% class table.
-%
-% Returns an updated table.
-%
-% (helper)
-%
+-doc """
+Records the deletion of an instance of the specified class, in the specified
+class table.
+
+Returns an updated table.
+""".
 record_deletion_in_class_table( ActorClassname, ClassTable ) ->
 
 	%trace_utils:debug_fmt( "ActorClassname = ~ts, ClassTable =~n~ts",
@@ -2682,26 +2729,24 @@ record_deletion_in_class_table( ActorClassname, ClassTable ) ->
 
 
 
-% @doc Records the creation of an instance on specified node, in specified node
-% table.
-%
-% Returns an updated table.
-%
-% (helper)
-%
+-doc """
+Records the creation of an instance on the specified node, in the specified node
+table.
+
+Returns an updated table.
+""".
 record_creation_in_node_table( ActorNode, NodeTable ) ->
 	% No node expected to be discovered at runtime:
 	table:add_to_entry( ActorNode, _Increment=1, NodeTable ).
 
 
 
-% @doc Records the deletion of an instance on specified node, in specified node
-% table.
-%
-% Returns an updated table.
-%
-% (helper)
-%
+-doc """
+Records the deletion of an instance on the specified node, in the specified node
+table.
+
+Returns an updated table.
+""".
 record_deletion_in_node_table( ActorNode, NodeTable ) ->
 	table:add_to_entry( ActorNode, _Increment=-1, NodeTable ).
 
@@ -2715,12 +2760,13 @@ record_deletion_in_node_table( ActorNode, NodeTable ) ->
 
 
 
-% @doc Triggered just before serialisation.
-%
-% The state explicitly returned here is dedicated to serialisation (generally
-% the actual instance state is not impacted by serialisation and thus this
-% request is often const).
-%
+-doc """
+Triggered just before serialisation.
+
+The state explicitly returned here is dedicated to serialisation (generally the
+actual instance state is not impacted by serialisation and thus this request is
+often const).
+""".
 -spec onPreSerialisation( wooper:state(), user_data() ) ->
 				const_request_return( { wooper:state(), user_data() } ).
 onPreSerialisation( State, UserData ) ->
@@ -2733,7 +2779,7 @@ onPreSerialisation( State, UserData ) ->
 
 
 
-% @doc Triggered just after deserialisation.
+-doc "Triggered just after deserialisation.".
 -spec onPostDeserialisation( wooper:state(), user_data() ) ->
 										request_return( user_data() ).
 onPostDeserialisation( State, UserData ) ->
@@ -2753,13 +2799,13 @@ onPostDeserialisation( State, UserData ) ->
 
 
 
-% @doc Returns a computing node record corresponding to specified node.
+-doc "Returns a computing node record corresponding to the specified node.".
 create_compute_node_record_for( NodeName ) ->
 	#compute_node{ name=NodeName }.
 
 
 
-% @doc Traces the state of this load-balancer (for debugging purposes).
+-doc "Traces the state of this load-balancer (for debugging purposes).".
 -spec trace_state( ustring(), wooper:state() ) -> void().
 trace_state( Label, State ) ->
 
@@ -2827,24 +2873,23 @@ trace_state( Label, State ) ->
 
 
 
-% @doc Displays a trace to allow for the monitoring of the creation of larger
-% actor populations.
-%
+-doc """
+Displays a trace to allow for the monitoring of the creation of larger actor
+populations.
+""".
 -spec display_synthetic_reporting( aai(), classname(), atom_node_name() ) ->
 										void().
 
 
 
 
-% @doc Displays, in production mode, a notification once 500 actors have been
-% created. Useful for large-scale runs.
 
 -ifdef(exec_target_is_production).
 
 
-% In (safer, with real-life simulation sizes) production mode here:
-
-
+% In (safer, with real-life simulation sizes) production mode here, so notifies
+% every 500 created actors. Useful for large-scale runs.
+%
 display_synthetic_reporting( ActorAai, ActorClassname, Node ) ->
 
 	ActorAai rem 500 =:= 0 andalso

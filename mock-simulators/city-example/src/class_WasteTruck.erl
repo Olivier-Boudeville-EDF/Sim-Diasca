@@ -1,26 +1,27 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling a <b>waste (garbage) truck</b>.
 -module(class_WasteTruck).
+
+-moduledoc "Class modelling a **waste (garbage) truck**.".
 
 
 -define( class_description, "Class modelling a waste (garbage) truck." ).
@@ -113,17 +114,19 @@
 % Type section.
 
 
+-doc "Intent of a waste truck.".
 -type intent() :: 'attempt_loading'
 				| 'attempt_unloading'
 				| { 'drive', path() }
 				| 'be_opportunistic'
 				| 'idle'.
-% Intent of a waste truck.
 
 
--type container_type() :: maybe( poi_type() ).
-% Type of the container a waste truck is in, to help determining what it is to
-% do (ex: load more, unload, etc.).
+-doc """
+Type of the container a waste truck is in, to help determining what it is to do
+(e.g. load more, unload, etc.).
+""".
+-type container_type() :: option( poi_type() ).
 
 
 -export_type([ intent/0, container_type/0 ]).
@@ -134,7 +137,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
@@ -142,12 +145,12 @@
 %
 % For breadth-first pathfinding, we could have used digraph:get_short_path/3,
 % except that we never rely on an explicit graph, and need to have more code
-% flexibility (ex: to pass opaque user-defined data to the predicate and
+% flexibility (e.g. to pass opaque user-defined data to the predicate and
 % feeder).
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -157,25 +160,35 @@
 
 -type tick_offset() :: class_TimeManager:tick_offset().
 
+-type poi_pid() :: class_PointOfInterest:poi_pid().
+
 -type supported_waste_state() :: class_WasteTransport:supported_waste_state().
 
 
+-type loading_point_pid() :: class_WasteLoadingPoint:loading_point_pid().
 
-% @doc Constructs a waste truck, from following parameters:
-%
-% - Location :: class_GIS:location() is the (initial) location of this waste
-% truck, expected here to be a point of interest
-%
-% - MaxTransportedMass :: tons() is the maximum transported mass
-%
-% - MaxTransportedVolume :: unit_utils:cubic_meters() is the maximum
-% transported volume
-%
-% - SupportedWasteStates :: [ supported_waste_state() ] is the list of the waste
-% states this truck can support
-%
-% A waste truck is created empty.
-%
+-type road_pid() :: class_Road:road_pid().
+
+-type path() :: class_PointOfInterest:path().
+
+
+
+-doc """
+Constructs a waste truck, from following parameters:
+
+ - Location :: class_GIS:location() is the (initial) location of this waste
+ truck, expected here to be a point of interest
+
+ - MaxTransportedMass :: tons() is the maximum transported mass
+
+ - MaxTransportedVolume :: unit_utils:cubic_meters() is the maximum transported
+ volume
+
+ - SupportedWasteStates :: [ supported_waste_state() ] is the list of the waste
+ states this truck can support
+
+A waste truck is created empty.
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		class_Actor:name(), class_GIS:location(), tons(),
 		unit_utils:cubic_meters(), [ supported_waste_state() ] ) ->
@@ -188,7 +201,7 @@ construct( State, ActorSettings, TruckName, InitialLocation,
 		?trace_categorize(TruckName), InitialLocation, MaxTransportedVolume,
 		MaxTransportedMass, SupportedWasteStates ),
 
-	% As a container (ex: a landfill) cannot change of type, we can use a mere
+	% As a container (e.g. a landfill) cannot change of type, we can use a mere
 	% request here:
 	%
 	InitialLocation ! { getClassname, [], self() },
@@ -206,7 +219,7 @@ construct( State, ActorSettings, TruckName, InitialLocation,
 
 
 
-% @doc Displays the current state of the tank.
+-doc "Displays the current state of the tank.".
 display( Prefix, State ) ->
 
 	Tank = ?getAttr(tank),
@@ -222,7 +235,7 @@ display( Prefix, State ) ->
 
 
 
-% @doc Displays the current timestamped state of the tank.
+-doc "Displays the current timestamped state of the tank.".
 monitor( State ) ->
 	display( text_utils:format( "at #~B",
 				[ class_Actor:get_current_tick_offset( State ) ] ),
@@ -234,9 +247,9 @@ monitor( State ) ->
 % Section for member methods.
 
 
-% @doc First scheduling on a waste truck.
+-doc "First scheduling on a waste truck.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-			actor_oneway_return().
+                                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	% A cheap way of checking that the simulation is started in a reproducible
@@ -259,7 +272,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this truck.
+-doc "The definition of the spontaneous behaviour of this truck.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -276,9 +289,10 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Notification sent back by the waste loading point this truck sent a
-% loadWaste actor message to.
-%
+-doc """
+Notification sent back by the waste loading point this truck sent a loadWaste
+actor message to.
+""".
 -spec notifyNoLoadedWaste( wooper:state(), sending_actor_pid() ) ->
 											actor_oneway_return().
 notifyNoLoadedWaste( State, WasteLoadingPointPid ) ->
@@ -326,9 +340,10 @@ notifyNoLoadedWaste( State, WasteLoadingPointPid ) ->
 
 
 
-% @doc Notification sent back by the waste loading point to which this truck
-% sent a loadWaste actor message.
-%
+-doc """
+Notification sent back by the waste loading point to which this truck sent a
+loadWaste actor message.
+""".
 -spec notifyLoadedWaste( wooper:state(), tons(), waste_type(), tick_offset(),
 						 loading_point_pid() ) -> actor_oneway_return().
 notifyLoadedWaste( State, TakenMass, LoadedWasteType, LoadingTickCount,
@@ -434,9 +449,10 @@ notifyLoadedWaste( State, TakenMass, LoadedWasteType, LoadingTickCount,
 
 
 
-% @doc Notification sent back by the waste unloading point this truck sent a
-% unloadWaste actor message to: no waste could be unloaded.
-%
+-doc """
+Notification sent back by the waste unloading point this truck sent a
+unloadWaste actor message to: no waste could be unloaded.
+""".
 -spec notifyNoUnloadedWaste( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 notifyNoUnloadedWaste( State, WasteUnloadingPointPid ) ->
@@ -450,15 +466,7 @@ notifyNoUnloadedWaste( State, WasteUnloadingPointPid ) ->
 	% Normally, having tried to unload and failed implies that the truck is
 	% still not empty:
 	%
-	case is_empty( State ) of
-
-		true ->
-			throw( should_not_be_empty );
-
-		_ ->
-			ok
-
-	end,
+	is_empty( State ) =:= true andalso throw( should_not_be_empty ),
 
 	IntentState = case queue:is_empty( ?getAttr(intents) ) of
 
@@ -493,12 +501,12 @@ notifyNoUnloadedWaste( State, WasteUnloadingPointPid ) ->
 
 
 
-% @doc Notification sent back by the waste unloading point to which this truck
-% sent a unloadWaste actor message: at least part of the waste could be
-% unloaded.
-%
-% Note: the waste type is specified only for checking purposes.
-%
+-doc """
+Notification sent back by the waste unloading point to which this truck sent a
+unloadWaste actor message: at least part of the waste could be unloaded.
+
+Note: the waste type is specified only for checking purposes.
+""".
 -spec notifyUnloadedWaste( wooper:state(), tons(), waste_type(),
 			tick_offset(), loading_point_pid() ) -> actor_oneway_return().
 notifyUnloadedWaste( State, GivenMass, UnloadedWasteType, UnloadingTickCount,
@@ -523,7 +531,7 @@ notifyUnloadedWaste( State, GivenMass, UnloadedWasteType, UnloadingTickCount,
 
 	% And apply by anticipation its consequences:
 	UpdatedTank = waste_utils:remove_waste_from_tank( ?getAttr(tank),
-							GivenMass, UnloadedWasteType ),
+		GivenMass, UnloadedWasteType ),
 
 	TankState = setAttribute( PlannedState, tank, UpdatedTank ),
 
@@ -576,7 +584,7 @@ notifyUnloadedWaste( State, GivenMass, UnloadedWasteType, UnloadingTickCount,
 
 
 
-% @doc Notification sent back by the POI this truck sent a requestEntry to.
+-doc "Notification sent back by the POI this truck sent a requestEntry to.".
 -spec notifyEntryOutcome( wooper:state(), entry_outcome(), poi_type(),
 						  poi_pid() ) -> actor_oneway_return().
 notifyEntryOutcome( State, _OutCome=entered, PoiType, PoiPid ) ->
@@ -602,8 +610,8 @@ notifyEntryOutcome( State, _OutCome=entered, PoiType, PoiPid ) ->
 		{ { value, { drive, NextPath=[ NextPOI | _OtherPOIs ] } },
 		  PoppedQueue } ->
 
-			% We might take advantage of this intermediate POI (ex: loading more
-			% while on an unloading path), then progress on the path:
+			% We might take advantage of this intermediate POI (e.g. loading
+			% more while on an unloading path), then progress on the path:
 			%
 			UpdatedIntents = [ be_opportunistic, { drive, NextPath } ],
 
@@ -626,10 +634,11 @@ notifyEntryOutcome( State, _OutCome=entered, PoiType, PoiPid ) ->
 
 
 
-% @doc Notification sent by a road to this truck once its origin POI (the one to
-% which the truck sent a takeRoadTo actor oneway) sent to the road a driveIn
-% call, in order to forecast the time at which it is to leave that road.
-%
+-doc """
+Notification sent by a road to this truck once its origin POI (the one to which
+the truck sent a `takeRoadTo` actor oneway) sent to the road a `driveIn` call,
+in order to forecast the time at which it is to leave that road.
+""".
 -spec notifyPlannedRoadExit( wooper:state(), tick_offset(), road_pid() ) ->
 										const_actor_oneway_return().
 notifyPlannedRoadExit( State, PlannedDepartureOffset, RoadPid ) ->
@@ -643,12 +652,12 @@ notifyPlannedRoadExit( State, PlannedDepartureOffset, RoadPid ) ->
 
 
 
-% @doc Notification sent by a road to this truck once its origin POI (the one to
-% which the truck sent a takeRoadTo actor oneway) sent to the road a driveIn
-% call.
-%
+-doc """
+Notification sent by a road to this truck once its origin POI (the one to which
+the truck sent a takeRoadTo actor oneway) sent to the road a driveIn call.
+""".
 -spec notifyRoadExit( wooper:state(), poi_pid(), road_pid() ) ->
-							actor_oneway_return().
+                                        actor_oneway_return().
 notifyRoadExit( State, ReachedPOI, RoadPid ) ->
 
 	%monitor( State ),
@@ -663,7 +672,7 @@ notifyRoadExit( State, ReachedPOI, RoadPid ) ->
 
 
 
-% @doc Returns a string describing the state of this instance.
+-doc "Returns a string describing the state of this instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
@@ -676,9 +685,10 @@ toString( State ) ->
 
 
 
-% @doc Generates a list of instance definitions for the specified number of
-% initial waste trucks.
-%
+-doc """
+Generates a list of instance definitions for the specified number of initial
+waste trucks.
+""".
 -spec generate_definitions( count(),
 							[ poi_pid() ] | [ instance_loading:id_ref() ] ) ->
 					static_return( [ class_Actor:instance_creation_spec() ] ).
@@ -728,15 +738,12 @@ generate_definitions( WasteTruckCount, AllPOIS, POICount, Acc ) ->
 
 
 
-% @doc Records (not apply) specified additional intent(s), which will the next
-% one(s) to be executed (hence: not the last ones), in their specified order.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Records (not apply) specified additional intent(s), which will the next one(s)
+to be executed (hence: not the last ones), in their specified order.
+""".
 -spec record_intents( intent() | [ intent() ], wooper:state() ) ->
-							wooper:state().
+                                            wooper:state().
 record_intents( NextIntents, State ) when is_list( NextIntents ) ->
 
 	% Probably clearer than using from_list and join:
@@ -751,12 +758,7 @@ record_intents( NextIntent, State ) ->
 
 
 
-% @doc Records and applies specified intent.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Records and applies specified intent.".
 -spec apply_intents( intent() | [ intent() ], wooper:state() ) ->
 													wooper:state().
 apply_intents( NextIntents, State ) ->
@@ -767,12 +769,7 @@ apply_intents( NextIntents, State ) ->
 
 
 
-% @doc The place where the truck acts for good.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "The function in which the truck acts for good.".
 -spec apply_behaviour( wooper:state() ) -> wooper:state().
 apply_behaviour( State ) ->
 
@@ -820,25 +817,16 @@ apply_behaviour( State ) ->
 
 
 
-% @doc Requests this truck to start towards the next loading point.
-%
-% Returns the corresponding next intent.
-%
-% (helper)
-%
+-doc """
+Requests this truck to start towards the next loading point.
+
+Returns the corresponding next intent.
+""".
 -spec plan_next_loading( wooper:state() ) -> intent().
 plan_next_loading( State ) ->
 
 	% Checking that cannot be already full:
-	case is_full( State ) of
-
-		true ->
-			throw( full_truck_cannot_be_loaded );
-
-		_NotFull ->
-			ok
-
-	end,
+	is_full( State ) =:= true andalso throw( full_truck_cannot_be_loaded ),
 
 	% Thinking to adding new compatible waste:
 	case find_path_to_loading_point( State ) of
@@ -869,7 +857,6 @@ plan_next_loading( State ) ->
 							?notice_fmt( "Truck ~ts, not able to load, "
 								"not empty yet unable to unload, is to remain "
 								"idle from now on.", [ to_string( State ) ] ),
-
 							idle;
 
 						_UnLoadPath=[ _CurrentPOI | NextPOIs ] ->
@@ -894,25 +881,16 @@ plan_next_loading( State ) ->
 
 
 
-% @doc Requests this truck to start towards the next unloading point.
-%
-% Returns the corresponding next intent.
-%
-% (helper)
-%
+-doc """
+Requests this truck to start towards the next unloading point.
+
+Returns the corresponding next intent.
+""".
 -spec plan_next_unloading( wooper:state() ) -> intent().
 plan_next_unloading( State ) ->
 
 	% Checking that cannot be empty:
-	case is_empty( State ) of
-
-		true ->
-			throw( empty_truck_cannot_be_unloaded );
-
-		_NotEmpty ->
-			ok
-
-	end,
+	is_empty( State ) =:= true andalso throw( empty_truck_cannot_be_unloaded ),
 
 	% Thinking to finding a suitable unloading place:
 	case find_path_to_unloading_point( State ) of
@@ -970,10 +948,7 @@ plan_next_unloading( State ) ->
 
 
 
-% @doc Performs an attempt of local waste loading.
-%
-% (helper)
-%
+-doc "Performs an attempt of local waste loading.".
 -spec attempt_loading( wooper:state() ) -> wooper:state().
 attempt_loading( State ) ->
 
@@ -1026,10 +1001,7 @@ attempt_loading( State ) ->
 
 
 
-% @doc Performs an attempt of local waste unloading.
-%
-% (helper)
-%
+-doc "Performs an attempt of local waste unloading.".
 -spec attempt_unloading( wooper:state() ) -> wooper:state().
 attempt_unloading( State ) ->
 
@@ -1071,17 +1043,14 @@ attempt_unloading( State ) ->
 
 
 
-% @doc Drives the truck through specified path.
-%
-% (helper)
-%
+-doc "Drives the truck through the specified path.".
 -spec drive( path(), wooper:state() ) -> wooper:state().
 drive( _Path=[ NextPOI | RestOfPath ], State ) ->
 
 	?debug_fmt( "Taking road to the next POI ~p in path.", [ NextPOI ] ),
 
 	SentState = class_Actor:send_actor_message( ?getAttr(location),
-											{ takeRoadTo, NextPOI }, State ),
+		{ takeRoadTo, NextPOI }, State ),
 
 	% We just record (not apply), as the road will notify "proactively" this
 	% truck when it will reach its endpoint:
@@ -1090,12 +1059,7 @@ drive( _Path=[ NextPOI | RestOfPath ], State ) ->
 
 
 
-% @doc Applies the defaut behaviour for this truck, regardless of any intent.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Applies the defaut behaviour for this truck, regardless of any intent.".
 -spec apply_default_behaviour( wooper:state() ) -> wooper:state().
 apply_default_behaviour( State ) ->
 
@@ -1181,13 +1145,10 @@ apply_default_behaviour( State ) ->
 
 
 
-% @doc Applies the opportunistic behaviour for this truck, regardless of any
-% intent.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Applies the opportunistic behaviour for this truck, regardless of any
+intent.
+""".
 -spec apply_opportunistic_behaviour( wooper:state() ) -> wooper:state().
 apply_opportunistic_behaviour( State ) ->
 
@@ -1218,7 +1179,7 @@ apply_opportunistic_behaviour( State ) ->
 						State );
 
 				false ->
-					% This is a normal case (ex: if being opportunistic in
+					% This is a normal case (e.g. if being opportunistic in
 					% transit).
 					%
 					?debug_fmt( "Truck empty yet stopped at a POI (~w) that "
@@ -1260,7 +1221,7 @@ apply_opportunistic_behaviour( State ) ->
 								State );
 
 						false ->
-							% This is a normal case (ex: if being opportunistic
+							% This is a normal case (e.g. if being opportunistic
 							% in transit).
 							%
 							?debug_fmt( "Truck not empty and stopped at "
@@ -1280,12 +1241,11 @@ apply_opportunistic_behaviour( State ) ->
 % Pathfinding section.
 
 
-% @doc Returns the outbound POIs of the specified one.
-%
-% To be used as an higher-order feeder.
-%
-% (helper)
-%
+-doc """
+Returns the outbound POIs of the specified one.
+
+To be used as an higher-order feeder.
+""".
 poi_feeder( POI, _UserData ) ->
 
 	% Direct message licit, as graph is static:
@@ -1299,11 +1259,12 @@ poi_feeder( POI, _UserData ) ->
 
 
 
-% @doc Returns a path leading to a proper POI where this truck may load its
-% current content, or 'no_path_found'.
-%
-% Note: the truck must currently already be in a POI.
-%
+-doc """
+Returns a path leading to a proper POI where this truck may load its current
+content, or `no_path_found`.
+
+Note: the truck must currently already be in a POI.
+""".
 find_path_to_loading_point( State ) ->
 
 	% The goal is to find a loading point compatible with current waste stored
@@ -1346,9 +1307,10 @@ find_path_to_loading_point( State ) ->
 
 
 
-% @doc Returns whether the specified POI is compatible, in terms of loading,
-% with the specified waste type.
-%
+-doc """
+Returns whether the specified POI is compatible, in terms of loading, with the
+specified waste type.
+""".
 is_poi_loading_compatible( POIPid, WasteType ) ->
 
 	% Another static information that can be readily accessed:
@@ -1362,11 +1324,12 @@ is_poi_loading_compatible( POIPid, WasteType ) ->
 
 
 
-% @doc Returns a path leading to a proper POI where this truck may unload its
-% current content, or 'no_path_found'.
-%
-% Note: the truck must currently already be in a POI.
-%
+-doc """
+Returns a path leading to a proper POI where this truck may unload its current
+content, or `no_path_found`.
+
+Note: the truck must currently already be in a POI.
+""".
 find_path_to_unloading_point( State ) ->
 
 	% The goal is to find an unloading point compatible with current waste
@@ -1402,9 +1365,10 @@ find_path_to_unloading_point( State ) ->
 
 
 
-% @doc Returns whether the specified POI is compatible, in terms of unloading,
-% with the specified waste type.
-%
+-doc """
+Returns whether the specified POI is compatible, in terms of unloading, with the
+specified waste type.
+""".
 is_poi_unloading_compatible( POIPid, WasteType ) ->
 
 	% Another static information that can be readily accessed:
@@ -1419,14 +1383,13 @@ is_poi_unloading_compatible( POIPid, WasteType ) ->
 
 
 
-% @doc Tells whether this truck is currently full, thinking to possibly loading
-% it more: returns either true (if full), or a {TypeOfCurrentWaste,
-% FreeWasteMass} pair where TypeOfCurrentWaste is the type of the current waste
-% in truck (if any), and FreeWasteMass is the margin in terms of mass until this
-% truck will be full.
-%
-% (const helper)
-%
+-doc """
+Tells whether this truck is currently full, thinking to possibly loading it
+more: returns either `true` (if full), or a `{TypeOfCurrentWaste,
+FreeWasteMass}` pair where `TypeOfCurrentWaste` is the type of the current waste
+in truck (if any), and `FreeWasteMass` is the margin in terms of mass until this
+truck will be full.
+""".
 -spec is_full( wooper:state() ) -> 'true' | { waste_type(), tons() }.
 is_full( State ) ->
 
@@ -1449,14 +1412,13 @@ is_full( State ) ->
 
 
 
-% @doc Tells whether this truck is currently empty, thinking to possibly
-% unloading it as much as possible: returns either true (if empty), or a
-% {TypeOfCurrentWaste, CurrentWasteMass} pair where TypeOfCurrentWaste is the
-% type of the current waste in truck (if any), and CurrentWasteMass is the mass
-% of waste that is this truck.
-%
-% (const helper)
-%
+-doc """
+Tells whether this truck is currently empty, thinking to possibly unloading it
+as much as possible: returns either `true` (if empty), or a
+`{TypeOfCurrentWaste, CurrentWasteMass}` pair where `TypeOfCurrentWaste` is the
+type of the current waste already in truck (if any), and `CurrentWasteMass` is
+the mass of waste that is in this truck.
+""".
 -spec is_empty( wooper:state() ) -> 'true' | { waste_type(), tons() }.
 is_empty( State ) ->
 
@@ -1474,10 +1436,7 @@ is_empty( State ) ->
 
 
 
-% @doc Returns the current waste type (possibly 'none').
-%
-% (helper)
-%
+-doc "Returns the current waste type (possibly `none`).".
 -spec get_waste_type( wooper:state() ) -> 'none' | waste_type().
 get_waste_type( State ) ->
 
@@ -1487,10 +1446,7 @@ get_waste_type( State ) ->
 
 
 
-% @doc Returns the current margin in terms of stored mass.
-%
-% (helper)
-%
+-doc "Returns the current margin in terms of stored mass.".
 -spec get_remaining_free_mass( wooper:state() ) -> tons().
 get_remaining_free_mass( State ) ->
 
@@ -1500,13 +1456,9 @@ get_remaining_free_mass( State ) ->
 
 
 
-% @doc Returns a string describing the state of this instance.
-%
-% (helper)
-%
+-doc "Returns a string describing the state of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-
 	text_utils:format( "Waste truck '~ts' (AAI: ~B) in location ~w, "
 		"storing ~ts; current intents: ~p, having ~p for random state",
 		[ ?getAttr(name), class_Actor:get_abstract_identifier( State ),

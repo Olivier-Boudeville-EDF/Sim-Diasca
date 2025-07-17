@@ -1,31 +1,32 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Unit tests for the RandomManager class implementation, regarding the
-% <b>uniform distribution</b>.
-%
-% See the class_RandomManager.erl module.
-%
 -module(class_RandomManager_Uniform_test).
+
+-moduledoc """
+Unit tests for the RandomManager class implementation, regarding the **uniform
+distribution**.
+
+See the `class_RandomManager` module.
+""".
 
 
 % For facilities common to all tests (this is not a simulation case):
@@ -76,7 +77,7 @@ draw_uniform_values( Count, Table, MaxValue, RandomManagerPid ) ->
 
 
 
-% At index V there is the number of times V has been drawn.
+-doc "At index V there is the number of times V has been drawn.".
 make_table( Size ) ->
 	erlang:make_tuple( Size, 0 ).
 
@@ -112,7 +113,8 @@ compute_mean( Table ) ->
 	compute_mean( List, 1, 0 ) / compute_sum( List, 0 ).
 
 
-% Counts the number of draws.
+
+-doc "Counts the number of draws.".
 compute_sum( [], Count ) ->
 	Count;
 
@@ -120,7 +122,8 @@ compute_sum( [ H | T ], Count ) ->
 	compute_sum( T, Count + H ).
 
 
-% Counts the sum of draws.
+
+-doc "Computes the mean of draws.".
 compute_mean( [], _Index, Acc ) ->
 	Acc;
 
@@ -196,7 +199,7 @@ test_uniform_random( RandomManagerPid, MaxValue ) ->
 
 
 
-% @doc Runs the tests, no prior RandomManager expected to be alive.
+-doc "Runs the tests, no prior RandomManager expected to be alive.".
 -spec run() -> no_return().
 run() ->
 

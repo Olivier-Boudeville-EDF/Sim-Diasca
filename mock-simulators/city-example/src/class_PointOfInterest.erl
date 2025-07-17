@@ -1,26 +1,27 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling a <b>point of interest</b>.
 -module(class_PointOfInterest).
+
+-moduledoc "Class modelling a **point of interest**.".
 
 
 -define( class_description,
@@ -50,8 +51,19 @@
 
 
 
-% For type definitions:
--include("city_example_types.hrl").
+-doc "The PID of a POI (*Point Of Interest*).".
+-type poi_pid() :: pid().
+
+
+%-doc """
+%An (ordered) path (with no intermediate roads) intended to be followed by a
+%vehicle on a road network: a sequence of POI to go through.
+%""".
+-type path() :: [ poi_pid() ].
+
+
+-export_type([ poi_pid/0, path/0 ]).
+
 
 
 % Must be included before class_TraceEmitter header:
@@ -59,27 +71,34 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type road_pid() :: class_Road:road_pid().
+
+-type gis_pid() :: class_GIS:gis_pid().
+-type poi_pid() :: class_GIS:poi_pid().
+-type vehicle_pid() :: class_GIS:vehicle_pid().
 
 
-% @doc Creates a point of interest (POI), which is supposed located in a fixed,
-% static position.
-%
-% The construction parameters are the name of this POI and its location, which
-% is either:
-%
-% - { CoordinateType :: class_GIS:geolocation_flavour(), Location::
-% class_GIS:geolocation_coordinate() }
-%
-% - Location :: the corresponding (static) location
-%
+
+-doc """
+Creates a point of interest (POI), which is supposed located in a fixed, static
+position.
+
+The construction parameters are the name of this POI and its location, which is
+either:
+
+- { CoordinateType :: class_GIS:geolocation_flavour(), Location::
+class_GIS:geolocation_coordinate() }
+
+- Location :: the corresponding (static) location
+""".
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init(),
 				 class_GIS:static_location(), gis_pid() ) -> wooper:state().
 construct( State, Name, Location, GISPid ) ->
@@ -94,7 +113,7 @@ construct( State, Name, Location, GISPid ) ->
 	Label = Name ++ "\\n" ++ text_utils:pid_to_string( self() ),
 
 	GraphableState = class_Graphable:construct( GeoState,
-								[ { label, Label }, { color, black } ] ),
+		[ { label, Label }, { color, black } ] ),
 
 	setAttributes( GraphableState, [ { inbound_roads, [] },
 									 { outbound_roads, [] } ] ).
@@ -106,11 +125,12 @@ construct( State, Name, Location, GISPid ) ->
 
 
 
-% @doc Requests whether this POI can accept the specified vehicle and, if yes,
-% accept it.
-%
-% Note: not to be mixed up with the class_GeoContainer:requestEntry/1 request.
-%
+-doc """
+Requests whether this POI can accept the specified vehicle and, if yes, accept
+it.
+
+Note: not to be mixed up with the `class_GeoContainer:requestEntry/1` request.
+""".
 -spec requestEntry( wooper:state(), vehicle_pid() ) -> actor_oneway_return().
 requestEntry( State, VehiclePid ) ->
 
@@ -134,11 +154,12 @@ requestEntry( State, VehiclePid ) ->
 
 
 
-% @doc Requests this POI to find for the specified vehicle a road going to
-% specified POI, and requests that road to accept it.
-%
+-doc """
+Requests this POI to find for the specified vehicle a road going to specified
+POI, and requests that road to accept it.
+""".
 -spec takeRoadTo( wooper:state(), poi_pid(), vehicle_pid() ) ->
-						actor_oneway_return().
+                                            actor_oneway_return().
 takeRoadTo( State, TargetPOI, VehiclePid ) ->
 
 	RoadPid = find_road_to( TargetPOI, State ),
@@ -151,7 +172,7 @@ takeRoadTo( State, TargetPOI, VehiclePid ) ->
 	% directly by the road thanks to a notifyRoadEntry call:
 	%
 	SentState = class_Actor:send_actor_message( RoadPid,
-					{ driveIn, VehiclePid }, State ),
+		{ driveIn, VehiclePid }, State ),
 
 	actor:return_state( SentState ).
 
@@ -161,14 +182,14 @@ takeRoadTo( State, TargetPOI, VehiclePid ) ->
 % Methods section.
 
 
-% @doc Declares an additional inbound road.
+-doc "Declares an additional inbound road.".
 -spec declareInboundRoad( wooper:state(), road_pid() ) -> actor_oneway_return().
 declareInboundRoad( State, RoadPid ) ->
 	actor:return_state( appendToAttribute( State, inbound_roads, RoadPid ) ).
 
 
 
-% @doc Declares an additional outbound road.
+-doc "Declares an additional outbound road.".
 -spec declareOutboundRoad( wooper:state(), road_pid() ) ->
 								actor_oneway_return().
 declareOutboundRoad( State, RoadPid ) ->
@@ -176,7 +197,7 @@ declareOutboundRoad( State, RoadPid ) ->
 
 
 
-% @doc Returns the road connectivity of this point of interest.
+-doc "Returns the road connectivity of this point of interest.".
 -spec getConnectivity( wooper:state() ) ->
 					const_request_return( { [ road_pid() ], [ road_pid() ] } ).
 getConnectivity( State ) ->
@@ -185,16 +206,17 @@ getConnectivity( State ) ->
 
 
 
-% @doc Returns a list of the outbound POIs, i.e. the POIs that can be reached
-% with a road starting from this POI.
-%
+-doc """
+Returns a list of the outbound POIs, i.e. the POIs that can be reached with a
+road starting from this POI.
+""".
 -spec getOutboundPOIs( wooper:state() ) ->
 						const_request_return( [ poi_pid() ] ).
 getOutboundPOIs( State ) ->
 
 	% We must rely on the AAIs in order to return a reproducible PID list:
 	%
-	% (we receive an unordered list of { RoadAAI, POIPID } pairs)
+	% (we receive an unordered list of {RoadAAI, POIPID} pairs)
 	%
 	ReceivedPOIPairs = wooper:obtain_results_for_requests(
 		_RequestName=getTargetPOI, _RequestArgs=[],
@@ -213,10 +235,11 @@ getOutboundPOIs( State ) ->
 
 
 
-% @doc Registers this point of interest into the specified GIS.
-%
-% Note: not blocking, beware to synchronicity!
-%
+-doc """
+Registers this point of interest into the specified GIS.
+
+Note: not blocking, beware to synchronicity!
+""".
 -spec registerInGIS( wooper:state(), gis_pid() ) -> const_oneway_return().
 registerInGIS( State, GISPid ) ->
 
@@ -226,10 +249,7 @@ registerInGIS( State, GISPid ) ->
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -256,7 +276,7 @@ to_string( State ) ->
 
 	OutString = text_utils:join( ", ", lists:reverse( OutStrings ) ),
 
-	text_utils:format( "Point of interest '~ts' located at ~ts, "
+	text_utils:format( "point of interest '~ts' located at ~ts, "
 		"having ~B inbound road(s) (i.e. ~ts) and "
 		"~B outbound road(s) (i.e. ~ts)",
 		[ ?getAttr(name),
@@ -268,11 +288,10 @@ to_string( State ) ->
 % Helper functions.
 
 
-% @doc Returns one of the roads that lead directly to specified POI, chosen at
-% random.
-%
-% (helper)
-%
+-doc """
+Returns one of the roads that lead directly to the specified POI, chosen at
+random.
+""".
 find_road_to( TargetPOI, State ) ->
 
 	OutboundRoads = ?getAttr(outbound_roads),
@@ -294,15 +313,8 @@ find_road_to( TargetPOI, State ) ->
 		_Acc0=[],
 		_List=OutboundRoads ),
 
-	case CandidateRoads of
-
-		[] ->
+	CandidateRoads =:= [] andalso
 			throw( { cannot_reach, { from, self() }, { to, TargetPOI },
-						{ using_roads, OutboundRoads } } );
-
-		_ ->
-			ok
-
-	end,
+						{ using_roads, OutboundRoads } } ),
 
 	list_utils:draw_element( CandidateRoads ).

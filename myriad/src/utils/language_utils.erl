@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2024 Olivier Boudeville
+% Copyright (C) 2017-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,37 +25,46 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, July 12, 2017.
 
-
-% @doc Gathering of various convenient facilities regarding the <b>support of
-% various programming or communication languages</b>.
-%
-% See language_utils_test.erl for the corresponding test.
-%
 -module(language_utils).
 
+-moduledoc """
+Gathering of various convenient facilities regarding the **support of various
+programming or communication languages**.
 
--type language() :: 'erlang' | 'python' | 'java'.
-% Type to designate all known programming languages.
+See language_utils_test.erl for the corresponding test.
+""".
 
 
+-doc "Type to designate all programming languages of interest.".
+-type language() :: 'erlang' | 'python' | 'c' | 'c++' | 'java' | 'rust'.
+
+
+
+-doc "Type to designate some human languages of interest.".
 -type human_language() :: 'english' | 'french' | 'spanish' | 'german'
 						| 'italian' | 'russian' | 'chinese' | 'japanese'.
-% Type to designate all supported human languages.
 
 
+
+-doc """
+Type to designate an (Erlang) process driving a runtime container (e.g. a Python
+interpreter or a Java virtual machine) of a given language runtime (typically on
+a given node).
+""".
 -type runtime_container_pid() :: pid().
-% Type to designate an (Erlang) process driving a runtime container (e.g. a
-% Python interpreter or a Java virtual machine) of a given language runtime
-% (typically on a given node).
 
 
+
+-doc "The PID of a Python interpreter runtime container.".
 -type python_interpreter_container_pid() :: python_utils:interpreter_pid().
-% The PID of a Python interpreter runtime container.
 
 
+
+-doc """
+The PID of a Java virtual machine runtime container (e.g. it can be a binding
+agent, otherwise directly a controller mbox).
+""".
 -type java_vm_container_pid() :: runtime_container_pid().
-% The PID of a Java virtual machine runtime container (e.g. it can be a binding
-% agent, otherwise directly a controller mbox).
 
 
 -export_type([ language/0, human_language/0,
@@ -70,7 +79,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -78,29 +87,35 @@
 
 
 
-% @doc Returns a list of the supported foreign (non-native, meaning non-Erlang)
-% programming languages.
-%
+-doc """
+Returns a list of the supported foreign (non-native, meaning non-Erlang)
+programming languages.
+""".
 -spec get_supported_foreign_languages() -> [ language() ].
 get_supported_foreign_languages() ->
 	[ python, java ].
 
 
 
-% @doc Returns a list of all supported programming languages (including Erlang).
+-doc """
+Returns a list of all supported programming languages (including Erlang).
+""".
 -spec get_supported_languages() -> [ language() ].
 get_supported_languages() ->
 	[ erlang | get_supported_foreign_languages() ].
 
 
 
-% @doc Returns a textual description of the specified language.
+-doc "Returns a textual description of the specified language.".
 -spec language_to_string( language() ) -> ustring().
 language_to_string( Language ) ->
 	language_to_string( Language, _IndentationLevel=0 ).
 
 
-% @doc Returns an indented textual description of the specified language.
+
+-doc """
+Returns an indented textual description of the specified language.
+""".
 -spec language_to_string( language(), text_utils:indentation_level() ) ->
 											ustring().
 language_to_string( erlang, _IndentationLevel ) ->
@@ -126,9 +141,10 @@ language_to_string( LanguageInvalidArg, _IndentationLevel ) ->
 
 
 
-% @doc Returns the BEAM locations of all the dependencies related to the
-% specified language bindings.
-%
+-doc """
+Returns the BEAM locations of all the dependencies related to the specified
+language bindings.
+""".
 -spec get_additional_beam_directories_for( [ language() ] ) ->
 												[ possibly_resolvable_path() ].
 get_additional_beam_directories_for( Languages ) ->

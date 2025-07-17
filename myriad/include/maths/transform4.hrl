@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,15 +23,31 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2022.
 
 
-% A 4x4 transformation, storing both its corresponding 4x4 matrix and its
-% inverse.
+% A 4x4 transformation, storing both its corresponding homogeneous 4x4 reference
+% matrix and its inverse.
+%
+% Typically designated as T12, the transformation between a frame of reference
+% R1 to another R2 one, storing both its corresponding reference 4x4 matrix
+% (P1->2, transition from R1 to R2) and its inverse (P2->1, transition from R2
+% to R1).
+%
+% We tend to prefer (by convention) "upward" transformations in a reference
+% tree, i.e the transformations from child to parent (rather than the opposite -
+% although one can be easily deduced from the other), as then it is directly the
+% reference matrix of T12 (RefM) that can be used to convert a vector expressed
+% in the child (R1) into its representation in the parent (R2), as V2 = RefM.V1.
 %
 -record( transform4, {
 
-	% The reference matrix of that transformation:
-	matrix = 'identity_4' :: matrix4:matrix4(),
+	% The reference homogeneous, 4x4 matrix of that transformation:
+	% (corresponds to P1->2 in our conventions)
+	%
+	reference = 'identity_4' :: matrix4:homogeneous_matrix4(),
 
-	% The inverse of the reference matrix of that transformation:
-	inverse = 'identity_4' :: matrix4:matrix4() } ).
+	% The inverse of the reference matrix for that transformation:
+	% (corresponds to P2->1 in our conventions)
+	%
+	inverse = 'identity_4' :: matrix4:homogeneous_matrix4() } ).

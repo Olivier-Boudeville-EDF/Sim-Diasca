@@ -1,12 +1,13 @@
 SIM_DIASCA_TOP = ../../..
 
-.PHONY: clean clean-local
+.PHONY: all clean clean-local
 
-
-include $(SIM_DIASCA_TOP)/GNUmakesettings.inc
-
+all:
 
 clean: clean-local
 
 clean-local:
 	-@/bin/rm -f My_test_graphable_mesh.*
+
+
+include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

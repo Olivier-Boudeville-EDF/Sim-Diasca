@@ -1,41 +1,41 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
-
-% @doc The purpose of this module is to load and start a simulation <b>from the
-% full description of the initial state of a city</b>, as stored in file by the
-% counterpart generation module.
-%
-% See the city_benchmarking_generation_test.erl to generate such a
-% initialisation file.
-%
-% This is useful for larger cases like this one, as the procedural generation
-% might be very long: better generate the initial state once for all, and re-use
-% it at will in various simulation instances.
-%
-% Example of intended use:
-%
-% make city_benchmarking_loading_run CMD_LINE_OPT="--batch --duration long
-% --scale huge"
-%
 -module(city_benchmarking_loading_test).
+
+-moduledoc """
+The purpose of this module is to load and start a simulation **from the full
+description of the initial state of a city**, as stored in file by the
+counterpart generation module.
+
+See the `city_benchmarking_generation_test.erl` to generate such a
+initialisation file.
+
+This is useful for larger cases like this one, as the procedural generation
+might be very long: better generate the initial state once for all, and re-use
+it at will in various simulation instances.
+
+Example of intended use: `make city_benchmarking_loading_run
+CMD_LINE_OPT="--batch --duration long --scale huge"`.
+""".
 
 
 % Launchers specific to this case, for a run made from the shell:
@@ -77,7 +77,7 @@
 % huge" EXECUTION_TARGET=production';
 
 
-% Shorthands:
+% Type shorthands:
 
 -type benchmarking_scale() :: city_benchmarking:benchmarking_scale().
 
@@ -85,9 +85,10 @@
 
 
 
-% @doc Runs the test, determining the settings from the command-line, otherwise
-% using defaults.
-%
+-doc """
+Runs the test, determining the settings from the command-line, otherwise using
+defaults.
+""".
 -spec run() -> no_return().
 run() ->
 
@@ -97,7 +98,7 @@ run() ->
 
 
 
-% @doc Runs the test with specified settings.
+-doc "Runs the test with the specified settings.".
 -spec run( benchmarking_scale(), benchmarking_duration() ) -> no_return().
 run( ScaleSetting, DurationSetting ) ->
 
@@ -126,13 +127,8 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 		"duration.~n",
 		[ VersionString, ScaleSetting, Filename, DurationSetting ] ),
 
-
-	case file_utils:is_existing_file_or_link( Filename ) of
-
-		true ->
-			ok;
-
-		false ->
+	file_utils:is_existing_file_or_link( Filename ) orelse
+        begin
 
 			?notify_error_fmt( "Initialisation file '~ts' not found, "
 				"one may run: 'make city_benchmarking_loading_run "
@@ -142,8 +138,7 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 			throw( { initialisation_file_not_found, Filename } )
 
-	end,
-
+        end,
 
 	{ _CityDescription, EndTimestamp={ EndDate, EndTime }, TimestepDuration } =
 		city_benchmarking:get_benchmark_settings( ScaleSetting,
@@ -191,15 +186,10 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 	GISPid = naming_utils:get_registered_pid_for( ?gis_name, _Scope=global ),
 
-	case executable_utils:is_batch() of
+    OutputDir = file_utils:get_current_directory(),
 
-		true ->
-			ok;
-
-		false ->
-			GISPid ! { render, [], self() }
-
-	end,
+	executable_utils:is_batch()
+        orelse (GISPid ! { render, [ OutputDir ], self() }),
 
 	DeploymentManagerPid ! { getRootTimeManager, [], self() },
 	RootTimeManagerPid = test_receive(),
@@ -213,20 +203,13 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	GISPid ! traceContent,
 
 	% Wait for render completion, otherwise instances might be already removed:
-	case executable_utils:is_batch() of
+	executable_utils:is_batch() orelse
+		receive
 
-		true ->
-			ok;
+			{ wooper_result, gis_rendering_done } ->
+				ok
 
-		false ->
-			receive
-
-				{ wooper_result, gis_rendering_done } ->
-					ok
-
-			end
-
-	end,
+		end,
 
 	RootTimeManagerPid ! { start, self() },
 

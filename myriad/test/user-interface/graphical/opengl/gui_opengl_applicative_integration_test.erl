@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,21 +25,23 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, August 15, 2023.
 
-
-% @doc Testing the <b>OpenGL support</b>, as an integration test, designated as
-% "applicative" since using application events and higher-level applicative GUI
-% states (as opposed to direct event messages, like
-% gui_opengl_direct_integration_test.erl does).
-%
-% This test relies on the old OpenGL (the one obtained with the "compatibility"
-% profile), as opposed to more modern versions of OpenGL (e.g. 3.1) that rely on
-% shaders and GLSL.
-%
-% See the gui_opengl and gui_texture tested modules.
-%
-% See also gui_opengl_mvc_test.erl for a cleaner decoupling of concerns.
-%
 -module(gui_opengl_applicative_integration_test).
+
+-moduledoc """
+Testing the **OpenGL support**, as an integration test, designated as
+"applicative" since using application events and higher-level applicative GUI
+states (as opposed to direct event messages, like
+gui_opengl_direct_integration_test.erl does).
+
+This test relies on the old OpenGL (the one obtained with the "compatibility"
+profile), as opposed to more modern versions of OpenGL (e.g. 3.1) that rely on
+shaders and GLSL.
+
+See the gui_opengl and gui_texture tested modules.
+
+See also gui_opengl_mvc_test.erl for a cleaner decoupling of concerns.
+""".
+
 
 
 % Implementation notes:
@@ -60,30 +62,8 @@
 -include("test_facilities.hrl").
 
 
-% For re-use in other tests:
--export([ get_test_tetra_info/0, get_test_tetra_mesh/0,
-
-		  get_test_tetra_vertices/0, get_test_tetra_faces/0,
-		  get_test_tetra_normals/0, get_test_tetra_colors/0,
-
-
-		  get_test_colored_cube_info/0, get_test_colored_cube_mesh/0,
-
-		  get_test_colored_cube_vertices/0, get_test_colored_cube_faces/0,
-		  get_test_colored_cube_normals/0, get_test_colored_cube_colors/0,
-
-
-		  get_test_textured_cube_info/0, get_test_textured_cube_mesh/0,
-
-		  get_test_textured_cube_vertices/0, get_test_textured_cube_faces/0,
-		  get_test_textured_cube_normals/0, get_test_textured_cube_tex_coords/0,
-
-		  get_test_image_path/0 ]).
-
-
 % For other tests or for silencing:
--export([ get_test_image_directory/0, get_logo_image_path/0,
-		  update_clock_texture/2, render/1 ]).
+-export([ update_clock_texture/2, render/1 ]).
 
 
 % The duration, in milliseconds, between two updates of the OpenGL rendering:
@@ -108,7 +88,7 @@
 	image :: image(),
 
 	% Records the current time to update the clock texture when relevant:
-	time :: maybe( time() ),
+	time :: option( time() ),
 
 
 	% Subsection for OpenGL-related GUI test information:
@@ -138,25 +118,19 @@
 
 	sphere :: glu_id() } ).
 
+
+-doc "This is the test-specific overall GUI information.".
 -type my_test_gui_info() :: #my_test_gui_info{}.
-% This is the test-specific overall GUI information.
 
 
 
 
-% Shorthands:
-
--type file_path() :: file_utils:file_path().
--type directory_path() :: file_utils:directory_path().
+% Type shorthands:
 
 -type time() :: time_utils:time().
 
 -type degrees() :: unit_utils:degrees().
 
--type vertex3() :: point3:vertex3().
--type unit_normal3() :: vector3:unit_normal3().
-
--type render_rgb_color() :: gui_color:render_rgb_color().
 
 -type frame() :: gui_frame:frame().
 -type widget() :: gui_widget:widget().
@@ -172,350 +146,13 @@
 
 -type glu_id() :: gui_opengl:glu_id().
 
--type uv_point() :: gui_texture:uv_point().
 -type texture() :: gui_texture:texture().
 
 -type mesh() :: mesh:mesh().
--type indexed_face() :: mesh:indexed_face().
--type indexed_triangle() :: mesh:indexed_triangle().
 
 
 
-% Test tetrahedron.
-
-
-% @doc Returns the information needed in order to define a simple test
-% tetrahedron.
-%
--spec get_test_tetra_info() -> { [ vertex3() ], [ indexed_triangle() ],
-								 [ unit_normal3() ], [ render_rgb_color() ] }.
-get_test_tetra_info() ->
-	% No texture coordinates used:
-	{ get_test_tetra_vertices(), get_test_tetra_triangles(),
-	  get_test_tetra_normals(), get_test_tetra_colors() }.
-
-
-
-% @doc Returns a mesh corresponding to the test tetrahedron.
--spec get_test_tetra_mesh() -> mesh().
-get_test_tetra_mesh() ->
-
-	RenderingInfo = { color, per_vertex, get_test_tetra_colors() },
-
-	mesh:create_mesh( get_test_tetra_vertices(), _FaceType=triangle,
-		get_test_tetra_faces(), _NormalType=per_face, get_test_tetra_normals(),
-		RenderingInfo ).
-
-
-
-% @doc Returns the (4) vertices of the test tetrahedron.
--spec get_test_tetra_vertices() -> [ vertex3() ].
-get_test_tetra_vertices() ->
-	[ _V1={ 0.0,  0.0,  0.0 }, % A
-	  _V2={ 5.0,  0.0,  0.0 }, % B
-	  _V3={ 0.0, 10.0,  0.0 }, % C
-	  _V4={ 0.0,  0.0, 15.0 }  % D
-	].
-
-
-
-% @doc Returns the (4; as triangles) indexed faces of the test tetrahedron.
-%
-% Vertex order matters (CCW order when seen from outside)
-%
--spec get_test_tetra_faces() -> [ indexed_face() ].
-get_test_tetra_faces() ->
-	[ _F1=[ 1, 3, 2 ], % ACB
-	  _F2=[ 1, 2, 4 ], % ABD
-	  _F3=[ 1, 4, 3 ], % ADC
-	  _F4=[ 2, 3, 4 ]  % BCD
-	].
-
-
-% @doc Returns the (4) indexed triangles of the test tetrahedron.
-%
-% Vertex order matters (CCW order when seen from outside)
-%
--spec get_test_tetra_triangles() -> [ indexed_triangle() ].
-get_test_tetra_triangles() ->
-	% Vertex lists to triplets:
-	mesh:indexed_faces_to_triangles( get_test_tetra_faces() ).
-
-
-
-% @doc Returns the (4) per-face unit normals of the test tetrahedron.
--spec get_test_tetra_normals() -> [ unit_normal3() ].
-get_test_tetra_normals() ->
-	[ _NF1=[  0.0,  0.0, -1.0 ], % normal of ACB
-	  _NF2=[  0.0, -1.0,  0.0 ], % normal of ABD
-	  _NF3=[ -1.0,  0.0,  0.0 ], % normal of ADC
-
-	  % NF4, the normal of face BCD, can be obtained with:
-	  %  BC = point3:vectorize(B, C).
-	  %  BD = point3:vectorize(B, D).
-	  %  V = vector3:cross_product(BC, BD).
-	  %  NF4 = vector3:normalise(V).
-	  %
-	  _NF4=[ 0.8571428571428571,0.42857142857142855,0.2857142857142857 ] ].
-
-
-
-% @doc Returns the (4) per-face colors of the test tetrahedron.
--spec get_test_tetra_colors( ) -> [ render_rgb_color() ].
-get_test_tetra_colors() ->
-	[ _CF1={ 1.0, 1.0, 1.0 },   % white
-	  _CF2={ 1.0, 0.0, 0.0 },   % red
-	  _CF3={ 1.0, 1.0, 0.0 },   % yellow
-	  _CF4={ 0.0, 0.0, 1.0 } ]. % blue
-
-
-
-
-% Test colored cube (regular hexaedron, i.e. cube).
-
-% @doc Returns the information needed in order to define a simple test colored
-% cube.
-%
--spec get_test_colored_cube_info() ->
-	{ [ vertex3() ], [ indexed_face() ], [ unit_normal3() ],
-	  [ render_rgb_color() ] }.
-get_test_colored_cube_info() ->
-	{ get_test_colored_cube_vertices(), get_test_colored_cube_faces(),
-	  get_test_colored_cube_normals(), get_test_colored_cube_colors() }.
-
-
-
-% @doc Returns a mesh corresponding to the test colored cube.
--spec get_test_colored_cube_mesh() -> mesh().
-get_test_colored_cube_mesh() ->
-	{ Vertices, Faces, Normals, Colors } = get_test_colored_cube_info(),
-	% per_vertex for gradients:
-	%RenderingInfo = { color, per_face, Colors },
-	RenderingInfo = { color, per_vertex, Colors },
-	mesh:create_mesh( Vertices, _FaceType=quad, Faces,
-					  _NormalType=per_face, Normals, RenderingInfo ).
-
-
-
-% @doc Returns the (8) vertices of the test colored cube.
-%
-% See also gui_opengl_cube_referential_test:get_cube_vertices_as_triangles/0.
-%
--spec get_test_colored_cube_vertices() -> [ vertex3() ].
-get_test_colored_cube_vertices() ->
-	[ _V1={ -0.5, -0.5, -0.5 },
-	  _V2={  0.5, -0.5, -0.5 },
-	  _V3={  0.5,  0.5, -0.5 },
-	  _V4={ -0.5,  0.5, -0.5 },
-	  _V5={ -0.5,  0.5,  0.5 },
-	  _V6={  0.5,  0.5,  0.5 },
-	  _V7={  0.5, -0.5,  0.5 },
-	  _V8={ -0.5, -0.5,  0.5 } ].
-
-
-
-% @doc Returns the (6; as quads) faces of the test colored cube (vertex order
-% matters).
-%
--spec get_test_colored_cube_faces() -> [ indexed_face() ].
-get_test_colored_cube_faces() ->
-	% Our indices start at 1:
-	[ _F1=[ 1, 2, 3, 4 ],
-	  _F2=[ 8, 1, 4, 5 ],
-	  _F3=[ 2, 7, 6, 3 ],
-	  _F4=[ 7, 8, 5, 6 ],
-	  _F5=[ 4, 3, 6, 5 ],
-	  _F6=[ 1, 2, 7, 8 ] ].
-
-
-
-% @doc Returns the (6) per-face unit normals of the test colored cube.
--spec get_test_colored_cube_normals() -> [ unit_normal3() ].
-get_test_colored_cube_normals() ->
-	[ _NF1=[ 0.0, 0.0,-1.0 ],
-	  _NF2=[-1.0, 0.0, 0.0 ],
-	  _NF3=[ 1.0, 0.0, 0.0 ],
-	  _NF4=[ 0.0, 0.0, 1.0 ],
-	  _NF5=[ 0.0, 1.0, 0.0 ],
-	  _NF6=[ 0.0,-1.0, 0.0 ] ].
-
-
-
-% @doc Returns the (8) per-vertex (not face) colors of the test colored cube.
--spec get_test_colored_cube_colors( ) -> [ render_rgb_color() ].
-get_test_colored_cube_colors() ->
-	[ _CF1={ 0.0, 0.0, 0.0 }, % black
-	  _CF2={ 1.0, 0.0, 0.0 }, % red
-	  _CF3={ 1.0, 1.0, 0.0 }, % yellow
-	  _CF4={ 0.0, 1.0, 0.0 }, % green
-	  _CF5={ 0.0, 1.0, 1.0 }, % cyan
-	  _CF6={ 1.0, 1.0, 1.0 }, % white
-	  _CF7={ 1.0, 0.0, 1.0 }, % magenta
-	  _CF8={ 0.0, 0.0, 1.0 }  % blue
-	].
-
-
-
-
-
-% Test textured cube.
-%
-% In theory 8 vertices, 6 faces, each face split into 2 triangles, hence 12
-% triangles.
-%
-% The following content data has been decoded in our higher-level form from the
-% Blender default scene.
-
-
-% @doc Returns the information needed in order to define a simple test textured
-% cube.
-%
--spec get_test_textured_cube_info() ->
-	{ [ vertex3() ], [ indexed_face() ], [ unit_normal3() ], [ uv_point() ] }.
-get_test_textured_cube_info() ->
-	% Texture coordinates used:
-	{ get_test_textured_cube_vertices(), get_test_textured_cube_faces(),
-	  get_test_textured_cube_normals(), get_test_textured_cube_tex_coords() }.
-
-
-
-% @doc Returns a mesh corresponding to the test textured cube.
--spec get_test_textured_cube_mesh() -> mesh().
-get_test_textured_cube_mesh() ->
-	{ Vertices, Faces, Normals, Colors } = get_test_textured_cube_info(),
-	RenderingInfo = { color, per_vertex, Colors },
-	mesh:create_mesh( Vertices, Faces, _NormalType=per_face, Normals,
-					  RenderingInfo ).
-
-
-
-% @doc Returns the (8 in theory, 24 in practice - each vertex belonging to
-% multiple faces/triangles) vertices of the test textured cube.
-%
--spec get_test_textured_cube_vertices() -> [ vertex3() ].
-get_test_textured_cube_vertices() ->
-	% Stangely enough, in this cube each of the 8 (3D) vertices is listed thrice
-	% in a row, so 24 of them are specified (probably as the same indices are to
-	% be used also for normals and texture coordinates, which have per-vertex
-	% differences):
-	%
-	[ {  1.0,  1.0, -1.0 }, {  1.0,  1.0, -1.0 }, {  1.0,  1.0, -1.0 },
-	  {  1.0, -1.0, -1.0 }, {  1.0, -1.0, -1.0 }, {  1.0, -1.0, -1.0 },
-	  {  1.0,  1.0,  1.0 }, {  1.0,  1.0,  1.0 }, {  1.0,  1.0,  1.0 },
-	  {  1.0, -1.0,  1.0 }, {  1.0, -1.0,  1.0 }, {  1.0, -1.0,  1.0 },
-	  { -1.0,  1.0, -1.0 }, { -1.0,  1.0, -1.0 }, { -1.0,  1.0, -1.0 },
-	  { -1.0, -1.0, -1.0 }, { -1.0, -1.0, -1.0 }, { -1.0, -1.0, -1.0 },
-	  { -1.0,  1.0,  1.0 }, { -1.0,  1.0,  1.0 }, { -1.0,  1.0,  1.0 },
-	  { -1.0, -1.0,  1.0 }, { -1.0, -1.0,  1.0 }, { -1.0, -1.0,  1.0 } ].
-
-
-
-% @doc Returns the (2*6=12) face triangles of the test textured cube.
--spec get_test_textured_cube_faces() -> [ indexed_triangle() ].
-get_test_textured_cube_faces() ->
-
-	% 36 indices (each in [0..23] - glTF indices start at zero, listed once or
-	% twice):
-	%
-	Indices = [ 1, 14, 20, 1, 20, 7, 10, 6, 19, 10, 19, 23,
-				21, 18, 12, 21, 12, 15, 16, 3, 9, 16, 9, 22,
-				5, 2, 8, 5, 8, 11, 17, 13, 0, 17, 0, 4 ],
-
-	% Hence 36/3=12 triangles, 2 on each of the 6 faces:
-	gltf_support:indexes_to_triangles( Indices ).
-
-
-
-% @doc Returns the 24 (3D, unitary) unit normals of the test textured cube.
-%
-% Possibly 24=3*8 corresponds to 3 normals per vertex of the cube (a given
-% vertex taking part to 3 faces / 6 triangles).
-%
--spec get_test_textured_cube_normals() -> [ unit_normal3() ].
-get_test_textured_cube_normals() ->
-	[ [  0.0,  0.0, -1.0 ], [ 0.0,  1.0, -0.0 ], [ 1.0, 0.0, -0.0 ],
-	  [  0.0, -1.0, -0.0 ], [ 0.0,  0.0, -1.0 ], [ 1.0, 0.0, -0.0 ],
-	  [  0.0,  0.0,  1.0 ], [ 0.0,  1.0, -0.0 ], [ 1.0, 0.0, -0.0 ],
-	  [  0.0, -1.0, -0.0 ], [ 0.0,  0.0,  1.0 ], [ 1.0, 0.0, -0.0 ],
-	  [ -1.0,  0.0, -0.0 ], [ 0.0,  0.0, -1.0 ], [ 0.0, 1.0, -0.0 ],
-	  [ -1.0,  0.0, -0.0 ], [ 0.0, -1.0, -0.0 ], [ 0.0, 0.0, -1.0 ],
-	  [ -1.0,  0.0, -0.0 ], [ 0.0,  0.0,  1.0 ], [ 0.0, 1.0, -0.0 ],
-	  [ -1.0,  0.0, -0.0 ], [ 0.0, -1.0, -0.0 ], [ 0.0, 0.0,  1.0 ] ].
-
-
-
-% @doc Returns the 24 texture (2D) coordinates (each repeated thrice) of the
-% test textured cube.
-%
--spec get_test_textured_cube_tex_coords( ) -> [ uv_point() ].
-get_test_textured_cube_tex_coords() ->
-	[ { 0.625,0.5  }, { 0.625,0.5  }, { 0.625,0.5  },
-	  { 0.375,0.5  }, { 0.375,0.5  }, { 0.375,0.5  },
-	  { 0.625,0.25 }, { 0.625,0.25 }, { 0.625,0.25 },
-	  { 0.375,0.25 }, { 0.375,0.25 }, { 0.375,0.25 },
-	  { 0.625,0.75 }, { 0.625,0.75 }, { 0.875,0.5  },
-	  { 0.375,0.75 }, { 0.125,0.5  }, { 0.375,0.75 },
-	  { 0.625,1.0  }, { 0.625,0.0  }, { 0.875,0.25 },
-	  { 0.375,1.0  }, { 0.125,0.25 }, { 0.375,0.0  } ].
-
-
-
-% @doc Returns the path to a test image directory.
--spec get_test_image_directory() -> directory_path().
-get_test_image_directory() ->
-	% Points to myriad/doc; relative to this test directory:
-	file_utils:join( [ "..", "..", "..", "..", "doc" ] ).
-
-
-
-% @doc Returns the path to a basic "material" test image, to be mapped on the
-% rotating cube.
-%
--spec get_test_image_path() -> file_path().
-get_test_image_path() ->
-	file_utils:join( get_test_image_directory(),
-					 %"myriad-space-time-referential.png" ).
-					 "myriad-minimal-enclosing-circle-test.png" ).
-
-
-% @doc Returns the path to a logo test image. It will endlessly go up and down
-% on the screen.
-%
--spec get_logo_image_path() -> file_path().
-get_logo_image_path() ->
-	file_utils:join( get_test_image_directory(),
-		% "myriad-title.png" ).
-		% "myriad-minimal-enclosing-circle-test.png" ).
-		"myriad-space-time-referential.png" ).
-
-
-
-% @doc Runs the OpenGL test if possible.
--spec run_opengl_integration_test() -> void().
-run_opengl_integration_test() ->
-
-	test_facilities:display(
-		"~nStarting the integration test of OpenGL support." ),
-
-	case gui_opengl:get_glxinfo_strings() of
-
-		undefined ->
-			test_facilities:display( "No proper OpenGL support detected on host"
-				" (no GLX visual reported), thus no test performed." );
-
-		GlxInfoStr ->
-			test_facilities:display( "Checking whether OpenGL hardware "
-				"acceleration is available: ~ts; glxinfo report is: ~ts",
-				[ gui_opengl:is_hardware_accelerated( GlxInfoStr ),
-				  text_utils:strings_to_string( GlxInfoStr ) ] ),
-
-			run_actual_test()
-
-	end.
-
-
-
-% @doc Runs the actual test.
+-doc "Runs the actual test.".
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
@@ -552,10 +189,10 @@ run_actual_test() ->
 
 
 
-
-% @doc Creates the initial test GUI: a main frame containing a panel to which an
-% OpenGL canvas is associated, in which an OpenGL context is created.
-%
+-doc """
+Creates the initial test GUI: a main frame containing a panel to which an OpenGL
+canvas is associated, in which an OpenGL context is created.
+""".
 -spec init_test_gui() -> app_gui_state().
 init_test_gui() ->
 
@@ -576,8 +213,8 @@ init_test_gui() ->
 
 	GLBaseInfo = { GLCanvas, GLContext },
 
-	gui:subscribe_to_events( { [ onShown, onResized, onWindowClosed ],
-							   MainFrame } ),
+	gui:subscribe_to_events(
+		{ [ onShown, onResized, onWindowClosed ], MainFrame } ),
 
 	% (on Apple's Cocoa, subscribing to onRepaintNeeded might be required)
 	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
@@ -586,11 +223,15 @@ init_test_gui() ->
 
 	gui_statusbar:push_text( StatusBar, "Testing OpenGL now." ),
 
-	InvImage = gui_image:load_from_file( get_test_image_path() ),
+	Image = gui_image:load_from_file(
+		gui_opengl_for_testing:get_test_image_path() ),
 
-	Image = gui_image:mirror( InvImage, _Orientation=horizontal ),
+	% No need to mirror images for textures anymore, as already done by
+	% gui_image:load_from_file/1:
+	%
+	%InvImage = gui_image:mirror( Image, _Orientation=horizontal ),
 
-	gui_image:destruct( InvImage ),
+	%gui_image:destruct( InvImage ),
 
 	% It is not necessary to scale to dimensions that are powers of two;
 	% moreover even downscaling results in an image quite far from the original:
@@ -622,10 +263,9 @@ init_test_gui() ->
 
 
 
-
-% @doc The main loop of this test, driven by the receiving of MyriadGUI
-% messages.
-%
+-doc """
+The main loop of this test, driven by the receiving of MyriadGUI messages.
+""".
 -spec gui_main_loop( app_gui_state() ) -> void().
 gui_main_loop( AppGUIState ) ->
 
@@ -684,13 +324,13 @@ gui_main_loop( AppGUIState ) ->
 
 
 
+-doc """
+The test-specific event driver for the onShown (user) event type, overriding
+default_onShown_driver/2: sets up OpenGL, once for all, now that a proper OpenGL
+context is available.
 
-% @doc The test-specific event driver for the onShown (user) event type,
-% overriding default_onShown_driver/2: sets up OpenGL, once for all, now that a
-% proper OpenGL context is available.
-%
-% Its type is event_driver().
-%
+Its type is event_driver().
+""".
 -spec test_onShown_driver( event_elements(), app_gui_state() ) ->
 								app_event_return().
 % Here OpenGL is to be used, but is not initialised yet.
@@ -751,7 +391,8 @@ test_onShown_driver( _Elements=[ Frame, FrameId, EventContext ],
 	MatTexture = gui_texture:create_from_image(
 		TestSpecificInfo#my_test_gui_info.image ),
 
-	AlphaTexture = gui_texture:load_from_file( get_logo_image_path() ),
+	AlphaTexture = gui_texture:load_from_file(
+		gui_opengl_for_testing:get_logo_image_path() ),
 
 	Font = gui_font:create( _PointSize=32, _Family=default_font_family,
 							_Style=normal, _Weight=bold ),
@@ -768,8 +409,13 @@ test_onShown_driver( _Elements=[ Frame, FrameId, EventContext ],
 		get_clock_texture( time_utils:get_local_time(), Font, Brush ),
 
 
-	TestMesh = get_test_colored_cube_mesh(),
-	%TestMesh = get_test_tetra_mesh(),
+	TestMesh = gui_opengl_for_testing:get_test_colored_cube_mesh(
+		_EdgeLength=1.0, _FaceGranularity=per_vertex ),
+
+	%TestMesh = gui_opengl_for_testing:get_test_tetra_mesh(),
+
+	% We cannot call here mesh_render:initialise_for_opengl/2, as it is
+	% shader-based.
 
 	SphereId = glu:newQuadric(),
 
@@ -841,10 +487,11 @@ test_onRepaintNeeded_driver( _Elements=[ GLCanvas, _GLCanvasId, _EventContext ],
 
 
 
-% @doc The test-specific event driver for the onResized (user) event type.
-%
-% Its type is event_driver().
-%
+-doc """
+The test-specific event driver for the onResized (user) event type.
+
+Its type is event_driver().
+""".
 -spec test_onResized_driver( event_elements(), app_gui_state() ) ->
 											app_event_return().
 test_onResized_driver( _Elements=[ _ParentWindow, _ParentWindowId,
@@ -872,9 +519,9 @@ test_onResized_driver( _Elements=[ _ParentWindow, _ParentWindowId,
 
 
 % Is actually a frame:
-test_onWindowClosed( Elements=[ ParentWindow, _ParentWindowId,
-								_EventContext ],
-					 AppGUIState ) ->
+test_onWindowClosed(
+		Elements=[ ParentWindow, _ParentWindowId, _EventContext ],
+		AppGUIState ) ->
 
 	trace_utils:info_fmt( "Main frame ~w closed, test success.",
 						  [ ParentWindow ] ),
@@ -893,17 +540,19 @@ test_onWindowClosed( Elements=[ ParentWindow, _ParentWindowId,
 
 
 
-% @doc Managing a resizing of the main frame.
-%
-% Defined as a separate function, as to be called from two contexts: when the
-% main frame is shown and when a resizing is needed.
-%
-% OpenGL context expected here to have already been set.
-%
+-doc """
+Managing a resizing of the main frame.
+
+Defined as a separate function, as to be called from two contexts: when the main
+frame is shown and when a resizing is needed.
+
+OpenGL context expected here to have already been set.
+""".
 -spec on_main_frame_resized( app_gui_state() ) -> app_gui_state().
 on_main_frame_resized( GUIState=#app_gui_state{
 		opengl_base_state={ initialised, GLCanvas, _GLContext },
 		app_specific_info=#my_test_gui_info{ panel=Panel } } ) ->
+
 	% Maximises widgets in their respective area:
 
 	% First, panel in main frame:
@@ -951,10 +600,11 @@ on_main_frame_resized( GUIState=#app_gui_state{
 
 
 
-% @doc Updates the rendering.
-%
-% Expected to be called periodically.
-%
+-doc """
+Updates the rendering.
+
+Expected to be called periodically.
+""".
 -spec update_rendering( app_gui_state() ) -> app_gui_state().
 update_rendering( GUIState=#app_gui_state{
 		app_specific_info=AppSpecificInfo=#my_test_gui_info{
@@ -991,7 +641,7 @@ update_rendering( GUIState=#app_gui_state{
 
 
 
-% @doc Updates the texture of the clock according to the specified time.
+-doc "Updates the texture of the clock according to the specified time.".
 -spec update_clock_texture( time(), my_test_gui_info() ) -> my_test_gui_info().
 update_clock_texture( Time, TestGUIInfo=#my_test_gui_info{
 		clock_texture=ClockTexture,
@@ -1004,7 +654,7 @@ update_clock_texture( Time, TestGUIInfo=#my_test_gui_info{
 
 
 
-% @doc Returns a texture corresponding to the specified clock time.
+-doc "Returns a texture corresponding to the specified clock time.".
 -spec get_clock_texture( time(), font(), brush() ) -> texture().
 get_clock_texture( Time, Font, Brush ) ->
 
@@ -1015,9 +665,10 @@ get_clock_texture( Time, Font, Brush ) ->
 
 
 
-% @doc Performs a ("pure OpenGL") rendering, based on the specified (const)
-% OpenGL-based GUI information.
-%
+-doc """
+Performs a ("pure OpenGL") rendering, based on the specified (const)
+OpenGL-based GUI information.
+""".
 -spec render( my_test_gui_info() ) -> void().
 render( #my_test_gui_info{ client_widget=GLCanvas,
 						   mesh=CubeMesh,
@@ -1106,21 +757,14 @@ render( #my_test_gui_info{ client_widget=GLCanvas,
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
 	test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
-
-		true ->
-			test_facilities:display(
-				"(not running the OpenGL test, being in batch mode)" );
-
-		false ->
-			run_opengl_integration_test()
-
-	end,
+	gui_opengl_for_testing:can_be_run(
+			"the applicative integration test of OpenGL support" ) =:= yes
+		andalso run_actual_test(),
 
 	test_facilities:stop().

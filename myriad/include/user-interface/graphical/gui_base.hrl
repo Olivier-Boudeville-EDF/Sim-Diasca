@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2024 Olivier Boudeville
+% Copyright (C) 2013-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,11 +26,15 @@
 % Creation date: Tuesday, January 29, 2013.
 
 
-% Header to export <b>MyriadGUI-related base defines and records</b>, both for
-% user code and for internal one.
+% Header to export **MyriadGUI-related base defines and records**, both for user
+% code and for internal one.
 %
 % See gui.hrl for the overall, single user-facing MyriadGUI include.
 
+
+% As, sometimes, defines in header files make sense:
+-ifndef(myriad_gui_base_hrl_guard).
+-define(myriad_gui_base_hrl_guard,).
 
 
 % Registration name of the MyriadGUI environment process:
@@ -69,23 +73,7 @@
 	% (useful for example when deciding to propagate it upward in the widget
 	% hierarchy)
 	%
-	backend_event = undefined :: maybe( gui:backend_event() ) } ).
+	backend_event = undefined :: option( gui:backend_event() ) } ).
 
 
-
-% Information regarding the splitting of a window into (up to) two panes,
-% horizontally or vertically.
-%
--record( splitter, {
-
-	% The overall splitter window (child of the split overall one):
-	splitter_window :: gui_window:splitter_window(),
-
-	% Tells whether this is an horizontal or a vertical splitter:
-	orientation :: gui:orientation(),
-
-	% The top or left pane (if any):
-	first_pane :: maybe( gui_window:window() ),
-
-	% The bottom or right pane (if any):
-	second_pane :: maybe( gui_window:window() ) } ).
+-endif. % myriad_gui_base_hrl_guard

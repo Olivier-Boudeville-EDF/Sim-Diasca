@@ -1,10 +1,8 @@
 SIM_DIASCA_TOP = ../../../..
 
+
 .PHONY: all deployment_reloading_saved_package_run test notify-error run-tests \
-		run-test-forever run-tests-forever clean-local info-tests
-
-
-all:
+		clean-local info-tests
 
 
 # From the simplest to the most demanding, to help the troubleshooting:
@@ -15,6 +13,10 @@ all:
 ORDERED_TESTS = \
 	deployment_saving_package_test.erl                            \
 	deployment_reloading_saved_package_test.erl                   \
+
+
+
+all:
 
 
 # The package file must be available if testing its (re)loading:

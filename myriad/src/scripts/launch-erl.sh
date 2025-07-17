@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2008-2023 Olivier Boudeville
+# Copyright (C) 2008-2025 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 #
@@ -58,34 +58,33 @@ asynch_thread_count=128
 
 
 usage="
-Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--config cfg_filename] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression|--run a_module_name a_function_name a_single_argument] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [--log-dir a_path] [--display-command] [--investigate-crashes] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
+Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--config cfg_filename] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression|--run a_module_name a_function_name a_single_argument] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [--log-dir a_path] [--display-command] [--investigate-crashes] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
 
 Detailed options:
 	-v: be verbose
-	-c a_cookie: specify a cookie, otherwise no cookie will be specifically set
-	--sn a_short_node_name: distributed node using specified short name (e.g. 'my_short_name')
-	--ln a_long_node_name: distributed node using specified long name (e.g. 'my_long_name')
+	-c a_cookie: specify a cookie; otherwise no cookie will be specifically set
+	--sn a_short_node_name: distributed node using the specified short name (e.g. 'my_short_name')
+	--ln a_long_node_name: distributed node using the specified long name (e.g. 'my_long_name')
 	--nn an_ignored_node_name: non-distributed node; the specified name is ignored (useful to just switch the node naming options at runtime)
-	--hostname a_hostname: specify the hostname to be used (typically a FQDN for long node names, and a short hostname for short node names)
-	--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
-	--epmd-port new_port: specify a specific EPMD port (default: 4369); only relevant if the VM is to be distributed (using short or long names), initially or at runtime
-	--config cfg_filename: adds specified filename to the list of configuration ones (can be used multiple times)
+	--hostname a_hostname: specify the hostname to be used (typically a FQDN for long node names, and a short hostname for short node names); otherwise it will be determined by the VM
+	--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful to comply with some firewall restrictions)
+	--epmd-port new_port: specify a specific EPMD port (instead of the default, 4369); only relevant if the VM is to be distributed (using short or long names) - initially or at runtime
+	--config cfg_filename: adds the specified filename to the list of configuration ones (can be used multiple times)
 	--max-process-count max_count: specify the maximum number of processes per VM (default: ${max_process_count})
-	--busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
+	--busy-limit kb_size: specify the distribution buffer busy limit, in kB (default: 1024)
 	--async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: ${asynch_thread_count})
-	--background: run the launched interpreter in the background (ideal to run as a daemon, e.g. on a server)
+	--background: run the launched node in the background (e.g. to run as a server)
 	--daemon: run the node as a daemon (relies on run_erl and implies --background)
 	--non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, e.g. on a cluster)
 	--eval 'an Erlang expression': start by evaluating this expression
 	--run a_module_name a_function_name a_single_argument: start by running the specified 1-arity function exported by the specified module, with the (single) specified argment
-
-	--no-auto-start: disable the automatic execution at VM start-up
+	--no-auto-start: disable the automatic execution at VM start-up of the specified eval/run command
 	-h or --help: display this help
-	--beam-dir a_path: adds specified directory to the path searched for beam files (multiple --beam-dir options can be specified)
-	--beam-paths first_path second_path ...: adds specified directories to the path searched for beam files (multiple paths can be specified; must be the last option)
+	--beam-dir a_path: add the specified directory to the path searched for BEAM files (multiple --beam-dir options can be specified)
+	--beam-paths first_path second_path ...: add the specified directories to the path searched for beam files (multiple paths can be specified; must be the last option)
 	--log-dir: specify the directory in which the VM logs (if using run_erl) shall be written
-	--display-command: displays on the console the actual, final command that is executed by this script (the corresponding printout starts then with 'Launcher executing')
-	--investigate-crashes: performs post-mortem investigations regarding any (OS-level) crash (typically core dump) of the Erlang VM process
+	--display-command: display on the console the actual, final command that is executed by this script (the corresponding printout starts then with 'Launcher executing')
+	--investigate-crashes: perform post-mortem investigations regarding any (OS-level) crash (typically core dump) of the Erlang VM process
 
 Other options will be passed 'as are' to the interpreter with a warning, except if they are listed after a '-start-verbatim-options' option, in which case they will passed with no warning.
 
@@ -105,7 +104,7 @@ Example: $(basename $0) -v --ln ceylan --eval 'class_TimeManager_test:run()'
 
 
 # Should the Erlang VM crash, the terminal (console) may not recover well (e.g.
-# no more echoing of the typed characters)
+# no more echoing of the typed characters).
 #
 # (obtained thanks to a diff of 'stty --all' before and after the issue)
 #
@@ -114,6 +113,9 @@ Example: $(basename $0) -v --ln ceylan --eval 'class_TimeManager_test:run()'
 reset_keyboard()
 {
 
+	# May result, in some cases, on: "/bin/stty: 'standard input': Inappropriate
+	# ioctl for device":
+	#
 	/bin/stty -brkint -ignpar icrnl -imaxbel opost icanon echo
 	echo
 
@@ -405,7 +407,8 @@ while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 			exit 12
 		fi
 
-		# Yes, these two versions (to_execute/to_execute_run_erl) *are* needed:
+		# Yes, these two versions (to_execute/to_execute_run_erl) *are* needed
+		# with -eval:
 
 		# Not relevant for example for the automatic make rules regarding tests
 		# nor if the module name contained a dash (prefer acting upon the
@@ -434,6 +437,7 @@ while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 		single_arg="$1"
 
 		to_execute="-run ${module} ${function} ${single_arg}"
+		to_execute_run_erl="${to_execute}"
 
 		token_eaten=0
 	fi
@@ -496,6 +500,13 @@ it 'as is' to command-line." 1>&2
 	fi
 
 done
+
+
+if [ -z "${to_execute}" ]; then
+
+	echo "Warning: no command to execute specified (neither with --eval nor with --run): the launched node will then start fully passive (then possibly for an interactive shell)." 1>&2
+
+fi
 
 
 #echo "Unfiltered verbatim_opt = '${verbatim_opt}'"
@@ -857,7 +868,7 @@ if [ $use_run_erl -eq 0 ]; then
 	# http://www.erlang.org/doc/man/run_erl.html):
 
 	# We could not include to_execute here (i.e. no 'exec ${erl}
-	# ${to_execute}...')  and write it in the pipe afterwards:
+	# ${to_execute}...') and write it in the pipe afterwards:
 	#
 	final_command="${run_erl} -daemon ${run_pipe} ${log_dir} \"exec ${erl} ${to_execute_run_erl} ${command}\""
 
@@ -880,15 +891,13 @@ fi
 
 if [ $use_run_erl -eq 0 ]; then
 
-	#echo "run_erl command: ${final_command}"
-
 	# Uncomment to see the actual runtime settings:
 
 	# Log to text file:
-	#echo "$0 running final command with run_erl: ${final_command}, with use_run_erl = ${use_run_erl}" > launch-erl-command.txt
+	#echo "$0 running final command with run_erl: ${final_command}" > launch-erl-command.txt
 
 	# Log to console:
-	#echo; echo "##### $0 running final command with run_erl: '${final_command}', with use_run_erl = ${use_run_erl}"
+	#echo; echo "##### $0 running final command with run_erl: '${final_command}'"
 
 	if [ ${be_verbose} -eq 0 ] || [ ${display_command} -eq 0 ]; then
 
@@ -1040,23 +1049,27 @@ else
 
 	fi
 
+	if [ ! ${res} -eq 0 ]; then
+
+		# Dispensable:
+		#echo "(launch command success reported)"
+		:
+
+		reset_keyboard
+		echo "(launch command failed, with error result ${res})" 1>&2
+		exit ${res}
+
+	else
+
+		# Dispensable:
+		#echo "(launch command success reported)"
+		:
+
+	fi
+
 fi
 
 
-# However run_erl may return 0 despite errors:
-if [ ! ${res} -eq 0 ]; then
-
-	reset_keyboard
-	echo "(launch command failed, with error result ${res})" 1>&2
-	exit ${res}
-
-elif [ ${use_run_erl} -eq 1 ]; then
-
-	# Dispensable:
-	#echo "(launch command success reported)"
-	:
-
-fi
 
 #pid=$!
 
@@ -1073,8 +1086,11 @@ if [ ${use_run_erl} -eq 0 ] && [ ${autostart} -eq 0 ]; then
 	# Wait for creation:
 
 	# Number of seconds before time-out:
-	wait_max=60
+	#wait_max=60
 	#wait_max=8
+
+	# Sufficient:
+	wait_max=16
 
 	wait_count=0
 
@@ -1097,10 +1113,10 @@ if [ ${use_run_erl} -eq 0 ] && [ ${autostart} -eq 0 ]; then
 
 		fi
 
-		# Do not start displaying the count-down before 5 seconds, then only
-		# every 5 seconds:
+		# Do not start displaying the count-down before 4 seconds, then only
+		# every 4 seconds:
 		#
-		if [ ${wait_count} -gt 4 ] && [ $(expr ${wait_count} % 5) -eq 0 ]; then
+		if [ ${wait_count} -gt 3 ] && [ $(expr ${wait_count} % 4) -eq 0 ]; then
 			echo " (launch time-out in ${wait_remain} seconds)"
 		fi
 

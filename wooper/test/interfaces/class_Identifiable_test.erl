@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,18 +25,20 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, July 24, 2022.
 
-
-% @doc Unit tests for the <b>Identifiable</b> class implementation.
-%
-% See the class_Identifiable module.
-%
 -module(class_Identifiable_test).
+
+-moduledoc """
+Unit tests for the **Identifiable** class implementation.
+
+See the class_Identifiable module.
+""".
 
 
 -export([ run/0 ]).
 
 
-% @doc Runs the tests.
+
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2024 Olivier Boudeville
+% Copyright (C) 2015-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,14 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Monday, May 25, 2015
+% Creation date: Monday, May 25, 2015.
 
-
-% Test of the tree implementation.
-%
-% See the tree.erl tested module.
-%
 -module(tree_test).
+
+-moduledoc """
+Test of the **tree** implementation.
+
+See the tree.erl tested module.
+""".
+
 
 
 % For run/0 export and al:

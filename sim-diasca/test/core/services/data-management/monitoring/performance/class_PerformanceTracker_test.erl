@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -15,15 +15,18 @@
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
+%
 % Authors: Jingxuan Ma        [jingxuan (dot) ma (at) edf (dot) fr]
 %          Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Unit tests for the PerformanceTracker class implementation.
-%
-% See the class_PerformanceTracker.erl module.
-%
 -module(class_PerformanceTracker_test).
+
+-moduledoc """
+Unit tests for the **PerformanceTracker** class implementation.
+
+See the class_PerformanceTracker.erl module.
+""".
 
 
 
@@ -32,7 +35,7 @@
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
@@ -46,7 +49,7 @@ run() ->
 	% Default deployment setting
 
 	DeploymentSettings=#deployment_settings{
-							enable_performance_tracker=true },
+		enable_performance_tracker=true },
 
 	?test_notice_fmt( "This test will deploy a distributed simulation "
 		"based on computing hosts specified as ~p.",
@@ -58,7 +61,7 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
 	DeploymentManagerPid ! { getLoadBalancer, [], self() },

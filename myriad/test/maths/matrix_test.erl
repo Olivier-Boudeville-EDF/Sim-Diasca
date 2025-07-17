@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,13 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2021.
 
-
-% @doc Unit tests for the <b>arbitrary matrix</b> facilities.
-%
-% See the matrix tested module.
-%
 -module(matrix_test).
+
+-moduledoc """
+Unit tests for the **arbitrary matrix** facilities.
+
+See the matrix tested module.
+""".
+
 
 
 % For run/0 export and al:

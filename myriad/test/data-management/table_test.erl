@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,16 +23,19 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2014.
 
-
-% Test for the 'table' pseudo-module.
-%
-% The 'Myriad' parse transform is expected to replace at compilation time calls
-% to this table by calls to the current reference implementation.
-%
-% See the myriad_parse_transform.erl module.
-%
 -module(table_test).
+
+-moduledoc """
+Test for the **table** pseudo-module.
+
+The 'Myriad' parse transform is expected to replace at compilation time calls
+to this table by calls to the current reference implementation.
+
+See the myriad_parse_transform.erl module.
+""".
+
 
 
 % Directly depends on the hashtable module.

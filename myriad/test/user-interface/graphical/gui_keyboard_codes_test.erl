@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, July 9, 2023.
 
-
-% @doc Testing of the <b>MyriadGUI keyboard scancodes and keycodes</b>.
-%
-% See the gui_keyboard.erl tested module.
-%
 -module(gui_keyboard_codes_test).
+
+-moduledoc """
+Testing of the **MyriadGUI keyboard scancodes and keycodes**.
+
+See the gui_keyboard.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -40,7 +42,7 @@
 -include_lib("myriad/include/myriad_ui.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -49,7 +51,9 @@
 
 
 
-% @doc Lists all known scancodes: name of their define, then (decimal) value.
+-doc """
+Lists all known scancodes: name of their define, then (decimal) value.
+""".
 -spec list_scancode_pairs() -> { ustring(), scancode() }.
 list_scancode_pairs() ->
 	[	{ "MYR_SCANCODE_A", ?MYR_SCANCODE_A },
@@ -319,7 +323,9 @@ list_scancode_pairs() ->
 
 
 
-% @doc Lists all known keycodes: name of their define, then (decimal) value.
+-doc """
+Lists all known keycodes: name of their define, then (decimal) value.
+""".
 -spec list_keycode_pairs() -> { ustring(), keycode() }.
 list_keycode_pairs() ->
 	[
@@ -583,7 +589,8 @@ list_keycode_pairs() ->
 ].
 
 
-% @doc Runs the test.
+
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

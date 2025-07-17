@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2012.
 
-
-% @doc Class modelling a <b>waste loading point</b>.
 -module(class_WasteLoadingPoint).
+
+-moduledoc "Class modelling a **waste loading point**.".
+
+
 
 
 -define( class_description,
@@ -39,6 +41,12 @@
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_GeoContainer ] ).
+
+-type loading_point_pid() :: class_Actor:actor_pid().
+-type unloading_point_pid() :: class_Actor:actor_pid().
+
+-export_type([ loading_point_pid/0, unloading_point_pid/0 ]).
+
 
 
 % The class-specific attributes of an instance of loading point are:
@@ -61,21 +69,22 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
 
-% @doc Creates a waste loading point.
-%
-% Construction parameters are:
-%
-% - Location: the location of this loading point
-%
-% - CapacityInformation describes the waste storage capacity of this point
-%
+-doc """
+Creates a waste loading point.
+
+Construction parameters are:
+
+- Location: the location of this loading point
+
+- CapacityInformation describes the waste storage capacity of this point
+""".
 -spec construct( wooper:state(), class_GIS:location(), waste_capacity() ) ->
-						wooper:state().
+                                                wooper:state().
 construct( State, Location, CapacityInformation ) ->
 
 	ContainerState = class_GeoContainer:construct( State, Location ),
@@ -91,19 +100,18 @@ construct( State, Location, CapacityInformation ) ->
 
 
 
-% @doc Tries to load from this loading point as much as possible of the
-% specified mass compatible with specified waste type into the calling actor,
-% which is expected to be a waste transport, located at this point and looking
-% for additional waste.
-%
-% The answer (the actor message sent back) will be:
-%
-% - either a notifyLoadedWaste to acknowledge once for good the waste
-% transaction
-%
-% - or a notifyNoLoadedWaste to report that no waste loading will occur this
-% time (transaction failed)
-%
+-doc """
+Tries to load from this loading point as much as possible of the specified mass
+compatible with specified waste type into the calling actor, which is expected
+to be a waste transport, located at this point and looking for additional waste.
+
+The answer (the actor message sent back) will be:
+
+- either a notifyLoadedWaste to acknowledge once for good the waste transaction
+
+- or a notifyNoLoadedWaste to report that no waste loading will occur this time
+(transaction failed)
+""".
 -spec loadWaste( wooper:state(), waste_type(), unit_utils:tons(),
 				 sending_actor_pid() ) -> actor_oneway_return().
 loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
@@ -162,16 +170,15 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 
 
-% @doc Does its best to retrieve the specified quantity of waste (compatible
-% with the specified type) from the specified waste tanks.
-%
-% Returns either 'false' if no waste at all was taken from tanks, otherwise
-% returns a triplet made of updated waste tanks, the remaining requested mass
-% that could not be transferred (if any) and the overall type of the waste that
-% has been loaded.
-%
-% (helper)
-%
+-doc """
+Does its best to retrieve the specified quantity of waste (compatible with the
+specified type) from the specified waste tanks.
+
+Returns either `false` if no waste at all was taken from tanks, otherwise
+returns a triplet made of updated waste tanks, the remaining requested mass that
+could not be transferred (if any) and the overall type of the waste that has
+been loaded.
+""".
 get_waste_from_tanks( WasteType, MaxWantedMass, WasteTanks ) ->
 	get_waste_from_tanks( WasteType, MaxWantedMass, WasteTanks, _AccTanks=[],
 						  _LoadedWasteType=undefined ).
@@ -254,21 +261,17 @@ get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
 % Helper functions.
 
 
-% @doc Checkings.
-%
-% (helper)
-%
+-doc "Checkings.".
 manage_capacity_information( CapacityInformation ) ->
 	[ waste_utils:check_waste_tank( Tank ) || Tank <- CapacityInformation ],
 	CapacityInformation.
 
 
 
-% @doc Returns the duration needed, in ticks, for the loading of specified mass
-% of specified waste type in a waste transport.
-%
-% (helper)
-%
+-doc """
+Returns the duration needed, in ticks, for the loading of specified mass of
+specified waste type in a waste transport.
+""".
 get_loading_duration( _WasteType, LoadedMass, State ) ->
 
 	% A base of 3 minutes, plus 2 minutes per ton (the waste type does not

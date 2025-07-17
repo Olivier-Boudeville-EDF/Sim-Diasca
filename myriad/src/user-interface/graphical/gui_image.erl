@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,19 +25,20 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Sunday, November 14, 2021.
 
-
-% @doc Gathers all elements relative to the management of <b>images</b>
-% (including icons, etc.), for loading, modifying, saving, scaling,
-% resizing, clipping, etc., in link to MyriadGUI, and in a platform-independent
-% way.
-%
-% Images shall be considered as just a generic, platform-independent buffer of
-% RGB bytes with an optional buffer for the alpha bytes, whereas bitmaps are
-% platform-specific, readily-usable graphical content.
-%
-% May be useful also for textures.
-%
 -module(gui_image).
+
+-moduledoc """
+Gathers all elements relative to the management of **images** (including icons,
+etc.), for loading, modifying, saving, scaling, resizing, clipping, etc., in
+link to MyriadGUI, and in a platform-independent way.
+
+Images shall be considered as just a generic, platform-independent buffer of RGB
+bytes with an optional buffer for the alpha bytes, whereas bitmaps are
+platform-specific, readily-usable graphical content.
+
+May be useful also for textures.
+""".
+
 
 
 % For the raw_bitmap record:
@@ -47,15 +48,19 @@
 -include("gui_internal_defines.hrl").
 
 
+
+-doc """
+An image is a bitmap buffer of RGB bytes with an optional buffer for the alpha
+bytes.
+
+It is thus generic, independent from platforms and image file formats (as
+opposed to bitmaps).
+""".
 -opaque image() :: wxImage:wxImage().
-% An image is a bitmap buffer of RGB bytes with an optional buffer for the alpha
-% bytes.
-%
-% It is thus generic, independent from platforms and image file formats (as
-% opposed to bitmaps).
 
 
 
+-doc "Designates a supported file format able to store bitmap images.".
 -type image_bitmap_format() :: 'png'
 							 | 'jpeg'
 							 | 'bmp'
@@ -69,45 +74,58 @@
 							 | 'ico'
 							 | 'cur'
 							 | 'ani'.
-% Designates a supported file format able to store bitmap images.
 
 
+
+-doc """
+Designates a supported file format able to store vector-based images.
+""".
+% Apparently not yet supported by the current wxWidgets backend:
 -type image_vector_format() :: 'svg'.
-% Designates a supported file format able to store vector-based images.
 
 
+
+-doc """
+Designates a supported file format able to store (bitmap or vector) images.
+
+We prefer telling explicitly the type rather than trying to guess it from the
+extension of a filename, as it is clearer and more reliable.
+
+Refer to
+<https://docs.wxwidgets.org/stable/gdicmn_8h.html#a90a1eb6d85b5044a99b706fd979f27f5>
+for more image formats and to
+https://docs.wxwidgets.org/stable/classwx_image.html for the available image
+handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).
+
+We recommend PNG for bitmap-like images (as lossless), JPEG for snapshot-like
+images (as is lossy but compact) and SVG for vector-based images.
+""".
 -type image_format() :: image_bitmap_format() | image_vector_format().
-% Designates a supported file format able to store (bitmap or vector) images.
-%
-% We prefer telling explicitly the type rather than trying to guess it from the
-% extension of a filename, as it is clearer and more reliable.
-%
-% Refer to
-% https://docs.wxwidgets.org/stable/gdicmn_8h.html#a90a1eb6d85b5044a99b706fd979f27f5
-% for more image formats and to
-% https://docs.wxwidgets.org/stable/classwx_image.html for the available image
-% handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).
-%
-% We recommend PNG for bitmap-like images (as lossless), JPEG for snapshot-like
-% images (as is lossy but compact) and SVG for vector-based images.
 
 
+
+-doc "The requested quality for an image operation (e.g. for a scaling).".
 -type image_quality() :: 'normal' | 'high'.
- % The requested quality for an image operation (e.g. for a scaling).
 
 
+-doc "A path to an image, as a plain string.".
 -type image_path() :: file_path().
-% A path to an image, as a plain string.
 
+
+-doc "A path to an image, as a binary string.".
 -type bin_image_path() :: bin_file_path().
-% A path to an image, as a binary string.
 
+
+-doc "Any kind of path to an image.".
 -type any_image_path() :: any_file_path().
-% Any kind of path to an image.
 
 
+
+-doc """
+A small rectangular bitmap usually used for denoting a minimised application.
+""".
 -opaque icon() :: wxIcon:wxIcon().
-% A small rectangular bitmap usually used for denoting a minimised application.
+
 
 
 -export_type([ image/0,
@@ -154,7 +172,8 @@
 % IMG_PATH}').
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type maybe_list( T ) :: list_utils:maybe_list( T ).
 
@@ -171,7 +190,7 @@
 -type height() :: gui:height().
 -type orientation() :: gui:orientation().
 -type dimensions() :: gui:dimensions().
--type standard_icon_name_id() :: gui:standard_icon_name_id().
+-type standard_icon_name_id() :: gui_window:standard_icon_name_id().
 
 -type color_by_decimal() :: gui_color:color_by_decimal().
 -type rgba_color_buffer() :: gui_color:rgba_color_buffer().
@@ -183,9 +202,10 @@
 
 
 
-% @doc Creates an image instance whose content is read from the specified file,
-% trying to auto-detect the image format of that file.
-%
+-doc """
+Creates an image instance whose content is read from the specified file, trying
+to auto-detect the image format of that file.
+""".
 -spec load_from_file( any_image_path() ) -> image().
 load_from_file( AnyImagePath ) ->
 
@@ -210,9 +230,10 @@ load_from_file( AnyImagePath ) ->
 
 
 
-% @doc Creates an image instance whose content is read from the specified file,
-% expecting the image format of the file to be specified one.
-%
+-doc """
+Creates an image instance whose content is read from the specified file,
+expecting the image format of the file to be specified one.
+""".
 -spec load_from_file( image_format(), any_image_path() ) -> image().
 % Currently format is ignored (unclear how to use format, perhaps to be
 % translated as a Mimetype):
@@ -235,63 +256,73 @@ load_from_file( ImageFormat, AnyImagePath ) ->
 	end.
 
 
-% @doc Declares that the specified image can be destructed.
-%
-% As it can be reference-counted, this may or may not result in an actual
-% deallocation.
-%
+
+-doc """
+Declares that the specified image can be destructed.
+
+As it can be reference-counted, this may or may not result in an actual
+deallocation.
+""".
 -spec destruct( maybe_list( image() ) ) -> void().
 destruct( Image ) ->
 	wxImage:destroy( Image ).
 
 
-% @doc Declares that the specified images can be destructed.
-%
-% As it can be reference-counted, this may or may not result in actual
-% deallocations.
-%
+
+-doc """
+Declares that the specified images can be destructed.
+
+As it can be reference-counted, this may or may not result in actual
+deallocations.
+""".
 -spec destruct_multiple( [ image() ] ) -> void().
 destruct_multiple( Images ) ->
 	[ wxImage:destroy( Img ) || Img <- Images ].
 
 
-% @doc Returns the width of the specified image.
+
+-doc "Returns the width of the specified image.".
 -spec get_width( image() ) -> width().
 get_width( Image ) ->
 	wxImage:getWidth( Image ).
 
 
-% @doc Returns the height of the specified image.
+
+-doc "Returns the height of the specified image.".
 -spec get_height( image() ) -> height().
 get_height( Image ) ->
 	wxImage:getHeight( Image ).
 
 
 
-% @doc Returns the size of the specified image.
+-doc "Returns the size of the specified image.".
 -spec get_size( image() ) -> dimensions().
 get_size( Image ) ->
 	{ wxImage:getWidth( Image ), wxImage:getHeight( Image ) }.
 
 
-% @doc Tells whether the specified image has an alpha channel.
+
+-doc "Tells whether the specified image has an alpha channel.".
 -spec has_alpha( image() ) -> boolean().
 has_alpha( Image ) ->
 	wxImage:hasAlpha( Image ).
 
 
-% @doc Scales the specified image to the specified dimensions, with a default
-% quality.
-%
+
+-doc """
+Scales the specified image to the specified dimensions, with a default quality.
+""".
 -spec scale( image(), width(), height() ) -> void().
 scale( Image, Width, Height ) ->
 	% In-place; default, unknown quality:
 	wxImage:rescale( Image, Width, Height ).
 
 
-% @doc Scales the specified image to the specified dimensions, with the
-% specified quality.
-%
+
+-doc """
+Scales the specified image to the specified dimensions, with the specified
+quality.
+""".
 -spec scale( image(), width(), height(), image_quality() ) -> void().
 scale( Image, Width, Height, Quality ) ->
 	WxQuality = to_wx_image_quality( Quality ),
@@ -299,9 +330,10 @@ scale( Image, Width, Height, Quality ) ->
 
 
 
-% @doc Flips the specified image: returns a new image, corresponding to the
-% specified one once mirrored as requested.
-%
+-doc """
+Flips the specified image: returns a new image, corresponding to the specified
+one once mirrored as requested.
+""".
 -spec mirror( image(), orientation() ) -> image().
 mirror( Image, _Orientation=horizontal ) ->
 	wxImage:mirror( Image, [ { horizontally, true } ] );
@@ -311,9 +343,10 @@ mirror( Image, _Orientation=vertical ) ->
 
 
 
-% @doc Loads the image stored in the specified file in the specified image
-% instance, trying to auto-detect the image format of that file.
-%
+-doc """
+Loads the image stored in the specified file in the specified image instance,
+trying to auto-detect the image format of that file.
+""".
 -spec load( image(), any_image_path() ) -> void().
 load( Image, ImagePath ) ->
 
@@ -324,9 +357,10 @@ load( Image, ImagePath ) ->
 
 
 
-% @doc Loads the image stored in the specified file into the specified image
-% instance, expecting the image format of the file to be the specified one.
-%
+-doc """
+Loads the image stored in the specified file into the specified image instance,
+expecting the image format of the file to be the specified one.
+""".
 -spec load( image(), image_format(), any_image_path() ) -> void().
 load( Image, ImageFormat, ImagePath ) ->
 
@@ -340,10 +374,10 @@ load( Image, ImageFormat, ImagePath ) ->
 
 
 
-% @doc Saves the image stored in the specified image instance in the specified
-% file, trying to auto-detect the image format for that file, based on its
-% extension.
-%
+-doc """
+Saves the image stored in the specified image instance in the specified file,
+trying to auto-detect the image format for that file, based on its extension.
+""".
 -spec save( image(), any_image_path() ) -> void().
 save( Image, ImagePath ) ->
 
@@ -353,9 +387,11 @@ save( Image, ImagePath ) ->
 	% Could be added: check_image_path( ImagePath ).
 
 
-% @doc Saves the image stored in the specified image instance in the specified
-% file, according to the specified image format.
-%
+
+-doc """
+Saves the image stored in the specified image instance in the specified file,
+according to the specified image format.
+""".
 -spec save( image(), image_format(), any_image_path() ) -> void().
 save( Image, ImageFormat, ImagePath ) ->
 
@@ -368,9 +404,10 @@ save( Image, ImageFormat, ImagePath ) ->
 
 
 
-% @doc Returns a colorized image, that is an image of the specified color,
-% modulated by the alpha coordinates found in the specified RGBA buffer.
-%
+-doc """
+Returns a colorized image, that is an image of the specified color, modulated by
+the alpha coordinates found in the specified RGBA buffer.
+""".
 -spec colorize( rgba_color_buffer(), color_by_decimal() ) ->
 										rgba_color_buffer().
 colorize( SrcBuffer, _Color={ R, G, B } ) ->
@@ -381,10 +418,11 @@ colorize( SrcBuffer, _Color={ R, G, B } ) ->
 
 
 
-% @doc Returns a bitmap corresponding to the specified image.
-%
-% Does not alter that image.
-%
+-doc """
+Returns a bitmap corresponding to the specified image.
+
+Does not alter that image.
+""".
 -spec to_bitmap( image() ) -> bitmap().
 to_bitmap( Image ) ->
 	ImgBitmap = wxBitmap:new( Image ),
@@ -394,7 +432,7 @@ to_bitmap( Image ) ->
 
 
 
-% @doc Returns a textual representation of the specified image.
+-doc "Returns a textual representation of the specified image.".
 -spec to_string( image() ) -> ustring().
 to_string( Image ) ->
 
@@ -413,7 +451,7 @@ to_string( Image ) ->
 
 
 
-% @doc Returns the standard icon corresponding to the specified identifier.
+-doc "Returns the standard icon corresponding to the specified identifier.".
 -spec get_standard_icon( standard_icon_name_id() ) -> icon().
 get_standard_icon( StdIconId ) ->
 
@@ -434,7 +472,7 @@ get_standard_icon( StdIconId ) ->
 
 
 
-% @doc Returns a bitmap created from the specified image path.
+-doc "Returns a bitmap created from the specified image path.".
 -spec create_bitmap( any_image_path() ) -> bitmap().
 create_bitmap( ImagePath ) ->
 
@@ -451,17 +489,20 @@ create_bitmap( ImagePath ) ->
 			ImgBitmap;
 
 		false ->
+			% No more information found:
 			throw( { bitmap_creation_failed,
 					 text_utils:ensure_string( ImagePath ) } )
 
 	end.
 
 
-% @doc Returns the file extension corresponding to the specified image format.
-%
-% Note though that often the specified atom may be used directly, instead of the
-% corresponding plain string.
-%
+
+-doc """
+Returns the file extension corresponding to the specified image format.
+
+Note though that often the specified atom may be used directly, instead of the
+corresponding plain string.
+""".
 -spec image_format_to_extension( image_format() ) -> extension().
 image_format_to_extension( ImgFormat ) ->
 	% Currently sufficient:
@@ -469,7 +510,7 @@ image_format_to_extension( ImgFormat ) ->
 
 
 
-% @doc Converts the specified MyriadGUI image format into a wx one.
+-doc "Converts the specified MyriadGUI image format into a wx one.".
 -spec to_wx_image_format( image_format() ) -> media_type().
 to_wx_image_format( png ) ->
 	?wxBITMAP_TYPE_PNG;
@@ -515,7 +556,7 @@ to_wx_image_format( Other ) ->
 
 
 
-% @doc Converts the specified MyriadGUI image format into a wx one.
+-doc "Converts the specified MyriadGUI image format into a wx one.".
 -spec to_wx_image_quality( image_quality() ) -> wx_enum().
 to_wx_image_quality( normal ) ->
 	?wxIMAGE_QUALITY_NORMAL;

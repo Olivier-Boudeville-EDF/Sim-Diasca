@@ -1,9 +1,9 @@
 #!/bin/sh
 
 
-USAGE="
+# Note: mostly obsolete, we use our own internal scripts instead.
 
- Usage: "$(basename $0)" [SIM_DIASCA_ROOT] THIRD_PARTY_REPOSITORY_TREE
+usage="Usage: "$(basename $0)" [SIM_DIASCA_ROOT] THIRD_PARTY_REPOSITORY_TREE
 
  Updates, from specified (presumably one of our developing branches) or implied (deduced from the path of this script) Sim-Diasca root, an external, third-party tree (typically a checkout'd GIT branch of a remote repository).
 
@@ -39,7 +39,7 @@ elif [ $# -eq 2 ] ; then
 
 else
 
-	echo " Error, one or two parameters are needed.$USAGE" 1>&2
+	echo " Error, one or two parameters are needed.$usage" 1>&2
 	exit 20
 
 fi

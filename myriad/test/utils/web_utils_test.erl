@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, June 25, 2019.
 
-
-% Unit tests for the services related to <b>web content</b>.
-%
-% See the web_utils.erl tested module.
-%
 -module(web_utils_test).
+
+-moduledoc """
+Unit tests for the services related to **web content**.
+
+See the web_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -41,9 +43,10 @@
 -compile( { nowarn_unused_function, [ test_local/0, test_online/0 ] } ).
 
 
-% @doc Just an example. A webserver is expected to run at the specified location
-% (see US-Web from an example thereof).
-%
+-doc """
+Just an example. A webserver is expected to run at the specified location (see
+US-Web from an example thereof).
+""".
 test_local() ->
 
 	TargetPort = 8080,

@@ -9,6 +9,7 @@ spare_graph_short_opt="-sg"
 spare_graph_long_opt="--spare-graph-streaming-tool"
 
 usage="Usage: $(basename $0) [${help_short_opt}|${help_long_opt}] [${spare_graph_short_opt}|${spare_graph_long_opt}]: kills any interactive tool that was launched by any prior simulation.
+
 Options:
   ${spare_graph_short_opt} or ${spare_graph_long_opt}: do not kill the tool for graph streaming
 "
@@ -31,7 +32,7 @@ if [ "$1" = "${spare_graph_short_opt}" ] || [ "$1" = "${spare_graph_long_opt}" ]
 	echo "(any graph stream tool will be kept)"
 	spare_graph=0
 	shift
-	
+
 fi
 
 
@@ -47,7 +48,12 @@ fi
 
 kill_trace_tool_name="kill-trace-supervision-tool.sh"
 
-kill_trace_tool="$(which ${kill_trace_tool_name} 2>/dev/null)"
+current_dir="$(dirname $0)"
+
+# Best candidate:
+traces_dir="$(dirname $0)/../../../traces/priv/bin"
+
+kill_trace_tool="$(PATH=${traces_dir}:${PATH} which ${kill_trace_tool_name} 2>/dev/null)"
 
 if [ ! -x "${kill_trace_tool}" ]; then
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, December 19, 2014.
 
-
-% @doc Unit tests for the <b>AST generation services</b>.
-%
-% See the ast_generation.erl tested module.
-%
 -module(ast_generation_test).
+
+-moduledoc """
+Unit tests for the **AST generation services**.
+
+See the ast_generation.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -53,7 +55,8 @@ run() ->
 
 		{cons, FileGenLoc, {atom,FileGenLoc,a},
 		 {cons, FileGenLoc, {atom,FileGenLoc,b},
-		  {cons, FileGenLoc, {atom,FileGenLoc,c}, { nil,FileGenLoc } } } } ->
+		  {cons, FileGenLoc, {atom,FileGenLoc,c},
+		   { nil,FileGenLoc } } } } ->
 			ok;
 
 		AtomUnexpectedForm ->

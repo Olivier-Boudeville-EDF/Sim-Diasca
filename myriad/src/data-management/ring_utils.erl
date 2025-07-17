@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,25 +25,31 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc Gathering of various facilities about <b>rings</b> (infinite lists,
-% looping on themselves).
-%
-% See ring_utils_test.erl for the corresponding test.
-%
 -module(ring_utils).
 
+-moduledoc """
+Gathering of various facilities about **rings** (infinite lists, looping on
+themselves).
+
+See `ring_utils_test.erl` for the corresponding test.
+""".
+
+
 
 % Opaqueness difficult to preserve:
+-doc """
+A ring behaves as an (infinite) list whose next element after its last is its
+first again, as if it was wrapping.
+
+Internally, the first list is the working one (from which elements may be
+extracted), while the second is a copy of the full reference one.
+""".
 -type ring() :: { list(), list() }.
-% A ring behaves as an (infinite) list whose next element after its last is its
-% first again.
-%
-% Internally, the first list is the working one (from which elements may be
-% extracted), while the second is a copy of the full reference one.
+
 
 
 % Opaqueness difficult to preserve:
+-doc "See ring/0.".
 -type ring( T ) :: { [ T ], [ T ] }.
 
 
@@ -59,6 +65,7 @@
 % Shorthands:
 
 -type count() :: basic_utils:count().
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -68,21 +75,22 @@
 
 
 
-% @doc Returns a ring corresponding to the specified list.
+-doc "Returns a ring corresponding to the specified list.".
 -spec from_list( list() ) -> ring().
 from_list( InputList ) ->
 	{ InputList, InputList }.
 
 
 
-% @doc Returns a list corresponding to the current state of specified ring.
+-doc "Returns a list corresponding to the current state of the specified ring.".
 -spec to_list( ring() ) -> list().
 to_list( Ring={ _WorkingList, ReferenceList } ) ->
 	{ List, _NewRing } = get_next( _Count=length( ReferenceList ), Ring ),
 	List.
 
 
-% @doc Pops the head of specified ring: returns {Head,UpdatedRing}.
+
+-doc "Pops the head of the specified ring: returns {Head,UpdatedRing}.".
 -spec head( ring() ) -> { term(), ring() }.
 head( _Ring={ _WorkingList=[], ReferenceList } ) ->
 	% Replenish:
@@ -96,12 +104,13 @@ head( _Ring={ _WorkingList=[ H | T ], ReferenceList } ) ->
 
 
 
-% @doc Returns a list of the Count popped elements (in their order in the ring),
-% and the corresponding updated ring.
-%
-% Example: for a new ring based on [a, b, c, d], if Count=6 then
-% [a, b, c, d, a, b] will be returned.
-%
+-doc """
+Returns a list of the Count popped elements (in their order in the ring), and
+the corresponding updated ring.
+
+Example: for a new ring based on [a, b, c, d], if Count=6 then [a, b, c, d, a,
+b] will be returned.
+""".
 -spec get_next( count(), ring() ) -> { [ term() ], ring() }.
 get_next( Count, Ring ) ->
 	% Quite similar to a map:foldl/3:
@@ -117,20 +126,23 @@ get_next_helper( Count, Ring, Acc ) ->
 
 
 
-% @doc Returns the list from which the ring was created (in its original order).
+-doc """
+Returns the list from which the ring was created (in its original order).
+""".
 -spec get_reference_list( ring() ) -> [ term() ].
 get_reference_list( _Ring={ _WorkingList, ReferenceList } ) ->
 	ReferenceList.
 
 
-% @doc Returns the number of elements in the specified ring.
+
+-doc "Returns the number of elements in the specified ring.".
 -spec size( ring() ) -> count().
 size( _Ring={ _WorkingList, ReferenceList } ) ->
 	length( ReferenceList ).
 
 
 
-% @doc Returns a textual representation of the specified ring.
+-doc "Returns a textual representation of the specified ring.".
 -spec to_string( ring() ) -> ustring().
 to_string( Ring ) ->
 

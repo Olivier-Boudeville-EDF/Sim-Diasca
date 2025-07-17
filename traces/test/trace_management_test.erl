@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,19 +25,20 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc Unit tests for the implementation of <b>trace management</b>.
-%
-% See the following modules:
-% - class_TraceAggregator
-% - class_TraceSupervisor
-%
-% Note: trace services are among the most generic services offered, they are
-% used in the vast majority of tests but this one, as the purpose of this test
-% is actually to test traces by themselves (we cannot use the trace system to
-% test the trace system!).
-%
 -module(trace_management_test).
+
+-moduledoc """
+Unit tests for the implementation of **trace management**.
+
+See the following modules:
+- class_TraceAggregator
+- class_TraceSupervisor
+
+Note: trace services are among the most generic services offered, they are
+used in the vast majority of tests but this one, as the purpose of this test
+is actually to test traces by themselves (we cannot use the trace system to
+test the trace system!).
+""".
 
 
 

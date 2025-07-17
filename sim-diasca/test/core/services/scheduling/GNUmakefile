@@ -5,9 +5,6 @@ SIM_DIASCA_TOP = ../../../..
 		run-test-forever run-tests-forever clean-local info-tests
 
 
-all:
-
-
 # From the simplest to the most demanding, to help the troubleshooting:
 #
 # (moreover there are a few dependencies between tests, for example the one
@@ -32,6 +29,9 @@ ORDERED_TESTS = \
 	scheduling_scalability_test.erl
 
 
+all:
+
+
 # The package file must be available if testing its (re)loading:
 deployment_reloading_saved_package_run: deployment_saving_package_run
 
@@ -46,7 +46,7 @@ deployment_reloading_saved_package_run: deployment_saving_package_run
 test: #run-tests #notify-error
 
 notify-error:
-	@echo "Warning: the generic 'test' target should not be executed here, as it implies a run order basing on filenames, whereas we specified the reloading test to be executed after *the* saving one. Execute 'make run-tests' instead."
+	@echo "Warning: the generic 'test' target should not be executed here, as it implies a run order basing on filenames, whereas we specified the reloading test to be executed after *the* saving one. Execute 'make run-tests' instead." 1>&2
 	@exit 1
 
 
@@ -55,26 +55,26 @@ notify-error:
 run-tests:
 	@echo "  Running all tests now in batch mode:"
 	@for t in $(ORDERED_TESTS); do \
-	target=`echo $$t|sed 's|\_test.erl$$|_run|1'` ; \
-	echo " ---- Running $$target ----" ; \
-	if ! $(MAKE) $$target CMD_LINE_OPT="--batch" ; then \
-	echo "######## Test $$target failed! ########" 1>&2 ; exit 120 ; \
-	else sleep 1 ; echo ; fi ; done
+	target=`echo $$t|sed 's|\_test.erl$$|_run|1'`; \
+	echo " ---- Running $$target ----"; \
+	if ! $(MAKE) -s $$target CMD_LINE_OPT="--batch"; then \
+	echo "######## Test $$target failed! ########" 1>&2; exit 120; \
+	else sleep 1; echo; fi; done
 	-@/bin/rm -f DeploymentSavingTest.sdar
 
 
 run-test-forever:
-	@while [ 1 ] ; do if ! $(MAKE) \
+	@while true; do if ! $(MAKE) -s \
 	scheduling_multiple_coupled_erratic_actors_run CMD_LINE_OPT="--batch"; \
-	then echo "######## Test failed ########" 1>&2 ; exit 120 ; else \
-	sleep 1 ; echo ; fi ; done
+	then echo "######## Test failed ########" 1>&2; exit 120; else \
+	sleep 1; echo; fi; done
 
 
 run-tests-forever:
 	@echo "  Running all tests now in batch mode, \
 	forever (unless an error occurs):"
-	@while [ 1 ] ; do if ! $(MAKE) run-tests ; then \
-	echo "Stopped due to failed test." 1>&2 ; exit 115 ; fi ; done
+	@while true; do if ! $(MAKE) -s run-tests; then \
+	echo "Stopped due to failed test." 1>&2; exit 115; fi; done
 
 
 clean: clean-local

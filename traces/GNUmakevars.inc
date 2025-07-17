@@ -55,9 +55,9 @@ endif
 # By default, they are enabled.
 #
 ifeq ($(ENABLE_TRACES),true)
-	ENABLE_TRACE_OPT := -Dtracing_activated
+	ENABLE_TRACES_OPT := -Dtracing_activated
 else
-	ENABLE_TRACE_OPT :=
+	ENABLE_TRACES_OPT :=
 endif
 
 
@@ -131,14 +131,14 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar, hex
 # and the code itself, see traces_utils:get_traces_version{_string,}/0):
 #
-TRACES_VERSION := 1.0.21
+TRACES_VERSION := 1.0.26
+
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
 ifndef PROJECT_VERSION
 	PROJECT_VERSION := $(TRACES_VERSION)
 endif
-
 
 
 ifndef PACKAGE_TOP
@@ -186,8 +186,49 @@ WOOPER_UNELLIPSED_TRACES_OPT= -Dwooper_unellipsed_traces
 TRACES_BEAM_DIRS := $(TRACES_BEAM_DIR) $(TRACES_TOP)/..
 
 
+# No need for any INC += -I$(TRACES_SRC)/xxx
+
+
+# For OTP releases and all:
+
+TRACES_REBAR_BUILD_BASE = $(WOOPER_REBAR_BUILD_DIR)/lib/traces
+
+
+# When building Traces in an OTP context from its usual (Git) root (e.g. with
+# 'make rebar3-application'), the BEAMs of WOOPER (the layer just below it;
+# taking care itself of Myriad) are to be found in the OTP build tree - rather
+# than in their supposedly fully-built usual roots:
+#
+# (these information are useful only at compilation-time, in order to locate the
+# needed parse transforms and their dependencies; at runtime, the OTP rules
+# ensure that the relevant ebin directories are in the code path)
+#
+# Note that this implies that the BEAM files in all ebin directories should be
+# up to date with the ones in the build trees, otherwise hard-to-debug
+# discrepancies may happen (these OTP/rebar-related directories act as default
+# catch-alls, should no prior directory correspond in the BEAM paths).
+#
+WOOPER_OTP_BEAM_DIR_FROM_USUAL = $(LAYER_TOP)/$(WOOPER_REBAR_BUILD_BASE)/ebin
+
+
+# In an OTP/rebar3-style application layout (not speaking of sibling base
+# directories here), at compilation time as well, modules compiled (directly or
+# not) by the WOOPER parse transform will expect its modules to be located in:
+#
+# (a third place could be considered, in the _build tree of WOOPER itself, yet
+# it would not provide any additional chance)
+#
+WOOPER_OTP_BEAM_DIR_FROM_OTP = $(LAYER_TOP)/../wooper/ebin/
+
+
+# To locate WOOPER modules from all OTP contexts:
+WOOPER_PARSE_TRANSFORMS_PZ_OPT = -pz $(WOOPER_OTP_BEAM_DIR_FROM_USUAL) \
+								 -pz $(WOOPER_OTP_BEAM_DIR_FROM_OTP)
+
+
 # We rely on Myriad and WOOPER as well:
 BEAM_DIRS += $(TRACES_BEAM_DIRS)
+
 
 
 ifndef VM_TEST_NAME
@@ -201,7 +242,7 @@ endif
 
 
 
-ERLANG_COMPILER_OPT_BASE += $(ENABLE_TRACE_OPT)
+ERLANG_COMPILER_OPT_BASE += $(ENABLE_TRACES_OPT)
 
 
 # Strangely not taken into account by the compiler, hence commented-out here and
@@ -229,7 +270,7 @@ endif
 
 
 #ifndef ERLANG_COMPILER_PARSE_TRANSFORM_OPT
-#	ERLANG_COMPILER_PARSE_TRANSFORM_OPT = $(empty)
+#  ERLANG_COMPILER_PARSE_TRANSFORM_OPT = $(empty)
 #endif
 
 
@@ -238,17 +279,83 @@ ifndef BOOTSTRAP_MODULES
 endif
 
 
+
+## Parse-transform related section.
+
+# At least currently, Traces does not need any parse-transform for itself: calls
+# akin to '?info_fmt(Str,Values)' are translated to calls like
+# 'class_TraceEmitter:send_*(Severity, State, text_utils:format( Message,
+# FormatValues))', and thus Myriad's checks in text_utils:format/2 apply
+# naturally.
+
+
+# List here all the directories expected to contain parse transforms:
+#
+# (to be overridden by each upper layer)
+#
+#ifndef PARSE_TRANSFORM_DIRS
+#
+#   PARSE_TRANSFORM_DIRS = $(TRACES_TOP)/src
+#
+#endif
+
+
+# Reusing for the (compilation of the) Traces parse transform the Myriad parse
+# transform (as it does not rely on WOOPER), so no need to update
+# ERLANG_COMPILER_OPT_FOR_PT.
+
+
+# Variable defined to be re-usable by upper layers, so that compiling their own
+# parse transforms can take advantage of the Traces one:
+#
+# (to find traces_parse_transform.beam, both the Traces 'src' and 'ebin'
+# directories are specified: the former for our native build, the latter for a
+# rebar3-based one)
+#
+#ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_TRACES = \
+#   $(OVERALL_PA_OPTS)                           \
+#   -pz $(TRACES_TOP)/ebin                       \
+#   -pz $(TRACES_TOP)/src                        \
+#   $(WOOPER_PARSE_TRANSFORMS_PZ_OPT)            \
+#   '+{parse_transform,traces_parse_transform}'
+
+
+# We conditionally defined this option, as upper layers may want to trigger
+# their own parse transforms *instead* (probably that they will call directly,
+# by themselves, at the Erlang level, this 'Traces' parse transform):
+#
+#ifndef ERLANG_COMPILER_PARSE_TRANSFORM_OPT
+#   ERLANG_COMPILER_PARSE_TRANSFORM_OPT = $(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_TRACES)
+#endif
+
+
+# Variable defined to be re-usable by upper layers, so that compiling their own
+# parse transforms can take advantage of the Traces one:
+#
+#COMPILER_PARSE_TRANSFORM_FOR_TRACES_CLASSES_OPT = \
+#   '+{parse_transform,traces_parse_transform}'
+
+
+
 # To be available from a Makefile despite not being in the user's PATH:
 KILL_TRACE_SUPERVISION_TOOL = $(TRACES_TOP)/priv/bin/kill-trace-supervision-tool.sh
 
 
+
+
+# No $(LAYER_TOP) in includes, it would be misleading as edoc is run from the
+# clone root, not from doc:
+#
 ifndef EDOC_OPTS
-	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["$(LAYER_TOP)/include", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["..", "$(WOOPER_TOP)/..", "$(MYRIAD_TOP)/.."]}, {overview, "doc/overview.edoc"}]'
 endif
 
 
 
 TRACES_FILES = $(wildcard *.traces)
+
+TRACES_PREVIOUS_FILES = $(wildcard *.traces.previous)
+
 
 
 AUX_GENERATED_FILES  := $(AUX_GENERATED_FILES)  \

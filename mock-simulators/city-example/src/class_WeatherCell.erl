@@ -1,26 +1,27 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
-
-% @doc Class modelling a <b>weather cell</b>, part of a weather system.
 -module(class_WeatherCell).
+
+-moduledoc "Class modelling a **weather cell**, part of a weather system.".
 
 
 -define( class_description,
@@ -29,10 +30,6 @@
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_Actor ] ).
-
-
--type cell_pid() :: actor_pid().
--type weather_system_pid() :: actor_pid().
 
 
 % The class-specific attributes of an instance of a weather cell are:
@@ -78,9 +75,9 @@
 -define( trace_emitter_categorization, "City-example.Weather.Cells" ).
 
 
-% The (uniform) weather in a cell is made of temperature, pressure and
-% hydrometry:
-%
+-doc """
+The (uniform) weather in a cell is made of temperature, pressure and hydrometry.
+""".
 -type weather_vector() :: vector3().
 
 
@@ -88,11 +85,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
-
-
-% For waste_tank() and al:
--include("city_example_types.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % Number of times that the Lorenz equation is iterated per scheduled time-step:
@@ -102,39 +95,40 @@
 
 % Implementation notes:
 %
-% The state vector of a cell corresponds to: ( temperature, pressure, hydrometry
-% ).
+% The state vector of a cell corresponds to: (temperature, pressure,
+% hydrometry).
 %
 % All cells share the same equations, but they start each with different initial
 % conditions (state vector).
 
 
-% Shorthands:
-
-%-type count() :: basic_utils:count().
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 -type point3() :: point3:point3().
 -type vector3() :: vector3:vector3().
 
+-type cell_pid() :: actor_pid().
+-type weather_system_pid() :: actor_pid().
 
 
 
-% @doc Creates a weather cell.
-%
-% Construction parameters are:
-%
-% - ActorSettings is the AAI assigned by the load-balancer to this actor
-%
-% - Name is the name of this weather cell (as a plain string)
-%
-% - InitialConditions is the initial (3D) state vector of this cell
-%
-% - Neighbours corresponds to the four adjacent cells
-%
-% - WeatherSystemPid is the PID of the overall weather system
-%
+-doc """
+Creates a weather cell.
+
+Construction parameters are:
+
+- ActorSettings is the AAI assigned by the load-balancer to this actor
+
+- Name is the name of this weather cell (as a plain string)
+
+- InitialConditions is the initial (3D) state vector of this cell
+
+- Neighbours corresponds to the four adjacent cells
+
+- WeatherSystemPid is the PID of the overall weather system
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), weather_vector(),
 				 { cell_pid(), cell_pid(), cell_pid(), cell_pid() },
@@ -192,7 +186,7 @@ construct( State, ActorSettings, Name, InitialConditions,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -215,7 +209,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc First scheduling of a weather cell.
+-doc "First scheduling of a weather cell.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -255,7 +249,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this weather cell.
+-doc "The definition of the spontaneous behaviour of this weather cell.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -277,7 +271,7 @@ actSpontaneous( State ) ->
 	CurrentWeatherState = ?getAttr(weather_state),
 
 	% TO-DO: determine here if it is raining or snowing, and if yes notify the
-	% relevant model instances (ex: roads) in this weather cell (the idea being
+	% relevant model instances (e.g. roads) in this weather cell (the idea being
 	% to couple them as much as possible).
 
 	NewWeatherState = evaluate_weather( IterationCount, CurrentWeatherState,
@@ -307,9 +301,10 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Called by a neighbouring cell so that this one knows its border
-% conditions and can update its own weather accordingly.
-%
+-doc """
+Called by a neighbouring cell so that this one knows its border conditions and
+can update its own weather accordingly.
+""".
 -spec notifyWeather( wooper:state(), weather_vector(), cell_pid() ) ->
 											actor_oneway_return().
 notifyWeather( State, NeighbourWeather, _NeighbourCellPid ) ->
@@ -333,10 +328,7 @@ notifyWeather( State, NeighbourWeather, _NeighbourCellPid ) ->
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Weather cell '~ts' (AAI: ~B), "
@@ -350,20 +342,19 @@ to_string( State ) ->
 % Helper section.
 
 
-% @doc Evaluates the next weather based on current one and the number of solver
-% iterations requested.
-%
-% Returns the updated weather.
-%
-% (helper)
-%
+-doc """
+Evaluates the next weather based on current one and the number of solver
+iterations requested.
+
+Returns the updated weather.
+""".
 evaluate_weather( _IterationCount=0, CurrentWeatherState, _Time, _Timestep ) ->
 	CurrentWeatherState;
 
 evaluate_weather( IterationCount, CurrentWeatherState, Time, Timestep ) ->
 
 	NewWeatherState = rk4_solver:compute_next_estimate3p( fun lorenz_function/2,
-						CurrentWeatherState, Time, Timestep ),
+		CurrentWeatherState, Time, Timestep ),
 
 	evaluate_weather( IterationCount-1, NewWeatherState, Time + Timestep,
 					  Timestep ).
@@ -371,10 +362,11 @@ evaluate_weather( IterationCount, CurrentWeatherState, Time, Timestep ) ->
 
 
 
-% @doc Function f(t,v) corresponding to the equations of the Lorenz system.
-%
-% See http://en.wikipedia.org/wiki/Lorenz_system
-%
+-doc """
+Function `f(t,v)` corresponding to the equations of the Lorenz system.
+
+See [http://en.wikipedia.org/wiki/Lorenz_system].
+""".
 -spec lorenz_function( rk4_solver:time(), point3() ) -> point3().
 lorenz_function( _Time, _Vector={ X0, Y0, Z0 } ) ->
 

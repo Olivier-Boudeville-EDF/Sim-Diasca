@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,29 +25,36 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, August 18, 2023.
 
-
-% @doc Unit tests for the management of <b>buttons</b>, possibly with icons in
-% them.
-%
 -module(gui_button_test).
+
+-moduledoc """
+Unit tests for the management of **buttons**, possibly with icons in them.
+""".
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
 
 
-% Shorthands:
+-doc """
+Here the main loop just has to remember the frame whose closing is awaited for
+(and a few buttons).
+""".
+-type my_test_state() :: { frame(),
+	{ toggle_button(), [ bitmap_button() ], [ button() ] } }.
+
+
+
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
-
-
--type my_test_state() :: frame().
-% Here the main loop just has to remember the frame whose closing is awaited
-% for.
+-type button() :: gui_button:button().
+-type toggle_button() :: gui_button:toggle_button().
+-type bitmap_button() :: gui_button:bitmap_button().
 
 
 
-% @doc Executes the actual test.
+-doc "Executes the actual test.".
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
@@ -83,37 +90,58 @@ run_gui_test() ->
 
 	gui_widget:set_sizer( Panel, GridSizer ),
 
-	% Fetching all known button identifiers:
+	% Fetching all standard button identifiers:
 	{ button_id, Entries, _ElemLookup } =
 		gui_constants:get_button_id_topic_spec(),
 
-	% Button identifier:
-	AllButtonIds = pair:firsts( Entries ),
+	% Button identifier, with the MyriadGUI specific ones added::
+	AllButtonIds = pair:firsts( Entries )
+		++ gui_button:get_myriadgui_identifiers(),
 
-	trace_utils:notice_fmt( "Identifiers of the ~B standard buttons: ~ts.",
+	trace_utils:notice_fmt( "Identifiers of the ~B MyriadGUI buttons: ~ts.",
 		[ length( AllButtonIds ),
 		  text_utils:atoms_to_listed_string( AllButtonIds ) ] ),
+
+
+	% First, two non-basic buttons:
+
+	ToggleButton = gui_button:create_toggle( "I am a\ntoggle button",
+		_TogId=toggle_button, ButtonParent ),
+
+
+	CustomImagePath = "../../../doc/myriad-very-small.png",
+
+	CustomBmp = gui_bitmap:create_from( CustomImagePath ),
+
+	CustomBitmapButton = gui_button:create_bitmap( CustomBmp,
+		_BmpId=bitmap_button, ButtonParent ),
+
+
+
+	AllBitmapButtons= [ CustomBitmapButton ],
 
 	% Showing that we cannot set custom labels if selecting a standard/stock
 	% identifier (so we cannot have both a non-default label and the
 	% corresponding icon unfortunately)
 	%
-	LostIconButton = gui_button:create( "My label\n(lost icon)",
+	LostIconButton = gui_button:create( "This is a label\n(thus no icon)",
 		_ButtId=zoom_factor_fit_button, ButtonParent ),
 
-	ToggleButton = gui_button:create_toggle( "I am a\ntoggle button",
-		_TogId=toggle_button, ButtonParent ),
 
 	% To force the use of the stock labels:
 	NoLabel = "",
 
-	AllPlainButtons = [ LostIconButton, ToggleButton |
-		[ gui_button:create( NoLabel, Position, ButtonSize, ButtonStyle, BId,
-							 ButtonParent ) || BId <- AllButtonIds ] ],
+	BasicButtons = [ LostIconButton |
+		[ gui_button:create( NoLabel, Position, ButtonSize, ButtonStyle,
+							 BId, ButtonParent ) || BId <- AllButtonIds ] ],
+
+	AllPlainButtons = AllBitmapButtons ++ BasicButtons,
+
+	AllButtons = [ ToggleButton | AllPlainButtons ],
 
 	ButtonFlags = [ { proportion, 0 }, { border_width, 4 }, all_borders ],
 
-	gui_sizer:add_elements( GridSizer, AllPlainButtons, ButtonFlags ),
+	gui_sizer:add_elements( GridSizer, AllButtons, ButtonFlags ),
 
 	% No specific need to call gui:layout/1 or gui:{refresh,update}/1.
 
@@ -123,17 +151,18 @@ run_gui_test() ->
 
 	gui_frame:show( Frame ),
 
-	test_main_loop( _InitialState=Frame ).
+	test_main_loop( _InitialState={ Frame,
+		{ ToggleButton, AllBitmapButtons, BasicButtons } } ).
 
 
 
-
-% @doc A very simple main loop, whose actual state is simply the GUI object
-% corresponding to the frame that shall be closed to stop the test
-% (i.e. CloseFrame).
-%
+-doc """
+A very simple main loop, whose actual state is simply the GUI object
+corresponding to the frame that shall be closed to stop the test
+(i.e. CloseFrame), and the buttons.
+""".
 -spec test_main_loop( my_test_state() ) -> no_return().
-test_main_loop( State=Frame ) ->
+test_main_loop( State={ Frame, _Buttons } ) ->
 
 	trace_utils:info( "Test main loop running..." ),
 
@@ -145,7 +174,7 @@ test_main_loop( State=Frame ) ->
 				[ gui:object_to_string( Button ),
 				  gui_id:id_to_string( ButtonId ),
 				  gui_event:context_to_string( EventContext ) ] ),
-			stop( Frame );
+			stop( State );
 
 		{ onButtonClicked, [ Button, ButtonId, EventContext ] } ->
 			trace_utils:debug_fmt( "Plain button ~ts (~ts) clicked (~ts).",
@@ -163,7 +192,7 @@ test_main_loop( State=Frame ) ->
 
 		{ onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
 			trace_utils:info( "Main frame has been closed." ),
-			stop( Frame );
+			stop( State );
 
 		Other ->
 			trace_utils:warning_fmt( "Test main loop ignored following "
@@ -173,14 +202,23 @@ test_main_loop( State=Frame ) ->
 	end.
 
 
-stop( Frame ) ->
-	trace_utils:info( "Test success, stopping." ),
+stop( _State={ Frame, { ToggleButton, AllBitmapButtons, BasicButtons } } ) ->
+	trace_utils:info( "Test success, destructing buttons." ),
+
+	gui_button:destruct_toggle( ToggleButton ),
+
+	[ gui_button:destruct_bitmap( BMB ) || BMB <- AllBitmapButtons ],
+
+	[ gui_button:destruct( B ) || B <- BasicButtons ],
+
 	gui_frame:destruct( Frame ),
+
+	trace_utils:info( "Stopping." ),
 	gui:stop().
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

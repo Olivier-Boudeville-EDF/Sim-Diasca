@@ -175,7 +175,7 @@ Note that:
 - the most common operations are defined for each datatype: creating, modifying, comparing, displaying and, whenever appropriate: adding, subtracting, scaling, multiplying, rotating, measuring, transposing, reversing, etc.
 - operations are not implemented defensively, in the sense that a base runtime error will be triggered if a type or a size does not match, rather than being tested explicitly (anyway generally no useful extra context could then be specifically reported)
 - additional runtime checks (e.g. to check whether parameters expected to be unit vectors are normalised indeed) can nevertheless be enabled by setting the ``myriad_check_linear`` flag (refer to ``GNUmakevars.inc``)
-- for `homogeneous coordinates <https://en.wikipedia.org/wiki/Homogeneous_coordinates#Use_in_computer_graphics_and_computer_vision>`_: any implicit homogeneous `w` coordinate is ``1.0``
+- for `homogeneous coordinates <https://en.wikipedia.org/wiki/Homogeneous_coordinates#Use_in_computer_graphics_and_computer_vision>`_: any implicit homogeneous `w` coordinate is ``1.0``; many operations are provided thanks to the ``matrix4`` and ``transform4`` modules, for translations, rotations, scaling (including mirroring/reflection), etc.
 - most operations here involve floating-point coordinates, rather than integer ones; as an Erlang's ``float()`` is a double-precision one, it requires more resources (CPU and memory footprint) than a basic, single-precision one; for applications not requiring extra precision, maybe the Erlang VM could be compiled in order to rely on single-precision floats instead
 
 
@@ -183,14 +183,14 @@ Note that:
 Geometric Conventions
 .....................
 
-.. _`3D referential`:
+.. _`3D coordinate system`:
 
-.. _`4D referential`:
+.. _`4D coordinate system`:
 
-:raw-html:`<center><img src="myriad-space-time-referential.png" id="responsive-image-tiny"></img></center>`
-:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.7]{myriad-space-time-referential} \end{figure}`
+:raw-html:`<center><img src="myriad-space-time-coordinate-system.png" id="responsive-image-tiny"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.7]{myriad-space-time-coordinate-system} \end{figure}`
 
-For **space** coordinates, three axes are defined for a global referential:
+For **space** coordinates, three axes are defined for a global coordinate system:
 
 - abscissa: X axis (in red, ``#FF0000``)
 - ordinate: Y axis (in green, ``#008000``)
@@ -201,14 +201,14 @@ By default, we consider right-handed Cartesian coordinate systems (like OpenGL; 
 .. [#] Unlike many games, for which the Y axis is up, Z being the depth, perpendicular to the screen. Anyway a simple camera transformation is enough to switch conventions.
 
 
-.. _`2D referential`:
+.. _`2D coordinate system`:
 
-In 2D, typically for on-screen coordinates (e.g. when drawing in a canvas), the corresponding projected referential applies, based on the X and Y axes, the origin being in the top-left corner, and all Z coordinates being zero [#]_:
+In 2D, typically for on-screen coordinates (e.g. when drawing in a canvas), the corresponding projected coordinate system applies, based on the X and Y axes, the origin being in the top-left corner, and all Z coordinates being zero [#]_:
 
-:raw-html:`<center><img src="myriad-2D-referential.png" id="responsive-image-xsmall"></img></center>`
-:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.7]{myriad-2D-referential} \end{figure}`
+:raw-html:`<center><img src="myriad-2D-coordinate-system.png" id="responsive-image-xsmall"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.7]{myriad-2D-coordinate-system} \end{figure}`
 
-.. [#] This 2D referential corresponds to the base space-time one, when the viewpoint is located in the negative Z axis and looks at the origin.
+.. [#] This 2D coordinate system corresponds to the base space-time one, when the viewpoint is located in the negative Z axis and looks at the origin.
 
 	   One may also refer to ``gui_opengl:enter_2d_mode/1`` to apply these conventions.
 
@@ -226,6 +226,12 @@ By default (see ``gui_opengl_transformation_shader_test.erl`` for an example the
 
   - with an **orthographic** one: the viewing volume is a cube within ``[-1.0, 1.0]`` in all dimensions; so for example a square whose edge length is 1.0, centered at the origin and pertaining to the X-Y plane will disappear as soon as its ``Z > 1.0`` or ``Z < -1.0``
   - with a **perspective** one: the same square will appear as soon as it is sufficiently far from the camera; more precisely, in the aforementioned test, the square starts at ``Z=0.0``, whereas for the camera the minimum viewable distance along the -Z axis is ``ZNear=0.1``; so the square shall move further down the Z axis so that the camera starts to see it (first at full size when its ``Z=ZNear``), until, as its Z still decreases, the square shrinks progressively in the distance
+
+This corresponds to this representation:
+
+:raw-html:`<center><img src="myriad-opengl-transformation-setting.png" id="responsive-image-medium"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.5]{myriad-opengl-transformation-setting.png} \end{figure}`
+
 
 
 For **face culling**, front-facing is determined by relying on a counter-clockwise order winding order of triangles (like default OpenGL's `GL_CCW <https://www.khronos.org/opengl/wiki/Face_Culling>`_):
@@ -250,7 +256,7 @@ Said otherwise, front-facing polygons are the ones whose signed area (determinan
 A fourth coordinate besides X, Y and Z could be used, as an extra axis (in yellow, ``#F6DE2D``):
 
 - either for **homogeneous** coordinates, in which case it will be considered to be spatial as well, with the same unit as the three first ones, and preferably designated as ``W``
-- or for **time** coordinates, with a single axis defined for a global referential: the ``T`` one, for which ``1.0`` corresponds to 1 second
+- or for **time** coordinates, with a single axis defined for a global coordinate system: the ``T`` one, for which ``1.0`` corresponds to 1 second
 
 We consider that **clip space** ranges in ``[-1.0, 1.0]`` (like OpenGL conventions; rather than for example ``[0.0, 1.0]``, which are the D3D ones).
 

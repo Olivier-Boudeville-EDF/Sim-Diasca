@@ -1,26 +1,29 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Basic circular test of the Actor class, regarding <b>time management</b>.
 -module(class_TestCircularActor).
+
+-moduledoc """
+Basic circular test of the Actor class, regarding **time management**.
+""".
 
 
 -define( class_description,
@@ -43,13 +46,13 @@
 
 
 
-% Shorthands:
+% Type shorthand:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a circular test actor.
+-doc "Constructs a circular test actor.".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), ustring() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, Message ) ->
@@ -68,19 +71,14 @@ construct( State, ActorSettings, ActorName, Message ) ->
 	%ReverseInitialCreation = true,
 	ReverseInitialCreation = false,
 
-	case ReverseInitialCreation of
-
-		true ->
+	ReverseInitialCreation andalso
+		begin
 			_TestActorPid = class_Actor:create_initial_actor( class_TestActor,
 				[ _Rev="Reverse test actor",
 				  _FirstSchedulingSettings={ erratic, 3 },
 				  _FirstCreationSettings=no_creation,
-				  _FirstTerminationTickOffset=107 ] );
-
-		false ->
-			ok
-
-	end,
+				  _FirstTerminationTickOffset=107 ] )
+		end,
 
 	setAttributes( ActorState, [
 		{ message, Message },
@@ -91,7 +89,7 @@ construct( State, ActorSettings, ActorName, Message ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -108,19 +106,20 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-% @doc This actor oneway is automatically called the next diasca after an actor
-% is created or, if the simulation was not running, on diasca 1 (that is just
-% after the spontaneous behaviours) of tick offset #0.
-%
+-doc """
+This actor oneway is automatically called the next diasca after an actor is
+created or, if the simulation was not running, on diasca 1 (that is just after
+the spontaneous behaviours) of tick offset #0.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+											actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 	actor:return_state( ScheduledState ).
 
 
 
-% @doc The core of the test actor behaviour.
+-doc "The core of the test actor behaviour.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -147,7 +146,7 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Adds specified peer to known peers.
+-doc "Adds the specified peer to known peers.".
 -spec addPeer( wooper:state(), actor_pid() ) -> oneway_return().
 addPeer( State, PeerPid ) ->
 
@@ -157,7 +156,7 @@ addPeer( State, PeerPid ) ->
 
 
 
-% Receives a hello message.
+-doc "Receives a hello message.".
 -spec receiveMessage( wooper:state(), class_Actor:name(), ustring(),
 					  sending_actor_pid() ) -> actor_oneway_return().
 receiveMessage( State, SenderName, Message, SenderPid ) ->
@@ -174,12 +173,13 @@ receiveMessage( State, SenderName, Message, SenderPid ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Says hello to all peers.
-%
-% Returns an updated state.
-%
-% (helper function)
-%
+-doc """
+Says hello to all peers.
+
+Returns an updated state.
+
+(helper)
+""".
 say_something( State ) ->
 
 	Peer = ?getAttr(peer),
@@ -200,30 +200,27 @@ say_something( State ) ->
 
 
 
-% @doc Outputs specified message in console, iff talkative.
-%
-% (helper)
-%
+-doc """
+Outputs the specified message in console, iff talkative.
+
+(helper)
+""".
 output( Message, State ) ->
 
-	case ?getAttr(talkative) of
-
-		true ->
+	?getAttr(talkative) andalso
+		begin
 			TickOffset = class_Actor:get_current_tick_offset( State ),
 			trace_utils:debug_fmt( " [~ts (~w) at ~p] " ++ Message,
-				[ ?getAttr(name), self(), TickOffset ] );
-
-		false ->
-			ok
-
-	end.
+								   [ ?getAttr(name), self(), TickOffset ] )
+		end.
 
 
 
-% @doc Outputs specified formatted message in console, iff talkative.
-%
-% (helper)
-%
+-doc """
+Outputs the specified formatted message in console, iff talkative.
+
+(helper)
+""".
 output( Format, Values, State ) ->
 	Message = text_utils:format( Format, Values ),
 	output( Message, State ).

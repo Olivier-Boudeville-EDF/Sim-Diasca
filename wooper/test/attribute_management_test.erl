@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,13 +25,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 31, 2018.
 
-
-
-% This module allows to test the management of the state attributes that can be
-% done by an instance.
-%
 -module(attribute_management_test).
 
+-moduledoc """
+This module allows to test the **management of the state attributes** that can
+be done by an instance.
+""".
 
 -export([ run/0 ]).
 

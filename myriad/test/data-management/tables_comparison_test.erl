@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 Olivier Boudeville
+% Copyright (C) 2011-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,26 +26,27 @@
 %          Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: November 10, 2011.
 
-
-% @doc Tests for comparing and illustrating the differences of following types
-% of <b>associative tables</b>:
-% - hashtable
-% - tracked hashtable
-% - lazy hashtable
-% - map hashtable
-% - list table
-%
-% See also hashtable.erl, tracked_hashtable.erl, lazy_hashtable.erl,
-% map_hashtable.erl, list_table.erl and their respective test modules.
-%
-% Directly depends on the following modules: hashtable, tracked_hashtable,
-% lazy_hashtable, map_hashtable, list_table.
-%
-% Note that the 'table' pseudo-module is not tested here: not only it is
-% actually one of the previous implementations, but also modules are applied
-% dynamically here, hence the parse transform will not replace anything.
-%
 -module(tables_comparison_test).
+
+-moduledoc """
+Tests for comparing and illustrating the differences of following types
+of **associative tables**:
+- hashtable
+- tracked hashtable
+- lazy hashtable
+- map hashtable
+- list table
+
+See also hashtable.erl, tracked_hashtable.erl, lazy_hashtable.erl,
+map_hashtable.erl, list_table.erl and their respective test modules.
+
+Directly depends on the following modules: hashtable, tracked_hashtable,
+lazy_hashtable, map_hashtable, list_table.
+
+Note that the 'table' pseudo-module is not tested here: not only it is
+actually one of the previous implementations, but also modules are applied
+dynamically here, hence the parse transform will not replace anything.
+""".
 
 
 % For run/0 export and al:
@@ -80,7 +81,9 @@ display_separator() ->
 
 
 
-% @doc Performs the same set of operations of an instance of each type of table.
+-doc """
+Performs the same set of operations of an instance of each type of table.
+""".
 run_basic_tests() ->
 
 	% Tests for each kind of table should be separated.
@@ -466,13 +469,13 @@ get_pairs( _Series=0, _Count, Acc ) ->
 get_pairs( Series, Count, Acc ) ->
 
 	ToAddStrings = [
-			 { io_lib:format( "key-~B", [ Count + 1 ] ) , self() },
-			 { io_lib:format( "key-~B", [ Count + 2 ] ) , "hello world!" },
-			 { io_lib:format( "key-~B", [ Count + 3 ] ) , an_atom },
-			 { io_lib:format( "key-~B", [ Count + 4 ] ) , [ "a", 123, list ] },
-			 { io_lib:format( "key-~B", [ Count + 5 ] ) , { 23, 45, 67, 90 } },
-			 { io_lib:format( "key-~B", [ Count + 6 ] ) , 1.0 },
-			 { io_lib:format( "key-~B", [ Count + 7 ] ) , << "A binary" >> } ],
+		{ io_lib:format( "key-~B", [ Count + 1 ] ) , self() },
+		{ io_lib:format( "key-~B", [ Count + 2 ] ) , "hello world!" },
+		{ io_lib:format( "key-~B", [ Count + 3 ] ) , an_atom },
+		{ io_lib:format( "key-~B", [ Count + 4 ] ) , [ "a", 123, list ] },
+		{ io_lib:format( "key-~B", [ Count + 5 ] ) , { 23, 45, 67, 90 } },
+		{ io_lib:format( "key-~B", [ Count + 6 ] ) , 1.0 },
+		{ io_lib:format( "key-~B", [ Count + 7 ] ) , << "A binary" >> } ],
 
 	ToAdd = [ { text_utils:string_to_atom( lists:flatten( K ) ), V }
 					|| { K, V } <- ToAddStrings ],
@@ -563,7 +566,7 @@ update_table( Table, Module, Pairs ) ->
 
 
 % Benchmarks look-up durations.
-benchmark_look_ups( Table, Module, Pairs ) ->
+benchmark_lookups( Table, Module, Pairs ) ->
 
 	%test_facilities:display( "Benchmarking ~ts on:~n~ts",
 	%		   [ Module, Module:to_string( Table ) ] ),
@@ -661,7 +664,7 @@ run_performance_tests() ->
 
 	ShuffledPairs = list_utils:random_permute( OtherPairs ),
 
-	LookedUpTimings = [ benchmark_look_ups( T, M, ShuffledPairs )
+	LookedUpTimings = [ benchmark_lookups( T, M, ShuffledPairs )
 						|| { M, T, _Timings } <- UpdatedTablesWithTimings ],
 
 	LookedUpStrings = [ text_utils:format( "for ~ts: ~.1f microsec",
@@ -679,7 +682,7 @@ run_performance_tests() ->
 	test_facilities:display(
 	  "~nBenchmarking look-ups (after optimisation)." ),
 
-	NewLookedUpTimings = [ benchmark_look_ups( T, M, ShuffledPairs )
+	NewLookedUpTimings = [ benchmark_lookups( T, M, ShuffledPairs )
 							|| { M, T, _Timings } <- OptimisedTables ],
 
 	NewLookedUpStrings = [ text_utils:format( "for ~ts: ~.1f microsec",

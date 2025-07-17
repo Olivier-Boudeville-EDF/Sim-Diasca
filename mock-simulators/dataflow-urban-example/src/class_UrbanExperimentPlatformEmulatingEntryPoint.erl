@@ -1,33 +1,34 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example of a <b>platform-emulating experiment entry point</b>.
 -module(class_UrbanExperimentPlatformEmulatingEntryPoint).
+
+-moduledoc "Example of a **platform-emulating experiment entry point**.".
 
 
 -define( class_description,
 		 "This example of experiment entry point starts each step of this "
 		 "urban case experiment."
 		 "It introduces changesets as if it had fetched them from an overall, "
-		 "unspecified platform (ex: through REST calls directly done from "
+		 "unspecified platform (e.g. through REST calls directly done from "
 		 "here): this entry point thus emulates the use of such a third-party "
 		 "platform." ).
 
@@ -64,7 +65,7 @@
 
 
 % For types and shorthands:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For transport_unit_pid/0 and all:
@@ -94,7 +95,7 @@
 %
 % Regarding event management:
 %
-% There is a gotcha when creating two dataflow objects (ex: a building and a
+% There is a gotcha when creating two dataflow objects (e.g. a building and a
 % district) thanks to two successive creation events, and wanting then to
 % connect them (declaring to both that the building is inside the district)
 % thanks to a third (association) event: initially they were each created with
@@ -116,7 +117,7 @@
 % 2. resolve the external identifiers they rely upon later (at their own first
 % diasca)
 %
-% More generally, respecting the causality (ex: a building must have been
+% More generally, respecting the causality (e.g. a building must have been
 % created *before* attempting to associate it) is to be done thanks to the
 % induced events: the association must be induced by the creation.
 %
@@ -136,7 +137,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -144,21 +145,22 @@
 
 
 
-% @doc Constructs the urban-example experiment entry point, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Dataflows is a list of the dataflows that this entry point should drive
-%
-% - ExperimentStepStart is the step at which the experiment shall start
-%
-% - ExperimentStepStop is the step at which the experiment shall stop
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
-% - WorldManagerPid is the PID of the world manager
-%
+-doc """
+Constructs the urban-example experiment entry point, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Dataflows is a list of the dataflows that this entry point should drive
+
+- ExperimentStepStart is the step at which the experiment shall start
+
+- ExperimentStepStop is the step at which the experiment shall stop
+
+- ExperimentManagerPid is the PID of the experiment manager
+
+- WorldManagerPid is the PID of the world manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	[ dataflow_pid() ], step_count(), step_count(),
 	experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
@@ -170,7 +172,7 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 	% First the direct mother class:
 	EntryState = class_ExperimentEntryPoint:construct( State, ActorSettings,
-						Dataflows, ExperimentManagerPid, WorldManagerPid ),
+		Dataflows, ExperimentManagerPid, WorldManagerPid ),
 
 	EntryProbeRef = create_entry_probe(),
 
@@ -184,10 +186,11 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 % Section for actor oneways.
 
 
-% @doc Starts the evaluation of the urban experiment for the current tick.
-%
-% Typically called by the experiment exit point, for synchronisation reasons.
-%
+-doc """
+Starts the evaluation of the urban experiment for the current tick.
+
+Typically called by the experiment exit point, for synchronisation reasons.
+""".
 -spec startExperimentTick( wooper:state(), sending_actor_pid() ) ->
 									actor_oneway_return().
 startExperimentTick( State, _SendingActorPid ) ->
@@ -222,7 +225,7 @@ startExperimentTick( State, _SendingActorPid ) ->
 % Helper functions.
 
 
-% @doc Creates a probe monitory the inputs from this entry point.
+-doc "Creates a probe monitory the inputs from this entry point.".
 -spec create_entry_probe() -> class_Probe:probe_ref().
 create_entry_probe() ->
 
@@ -252,16 +255,14 @@ create_entry_probe() ->
 
 
 
+-doc """
+Manages the dataflow changes for the specified year, by applying an hardcoded
+changeset as if it had been fetched from a third-party platform.
 
-% @doc Manages the dataflow changes for the specified year, by applying an
-% hardcoded changeset as if it had been fetched from a third-party platform.
-%
-% Note that (notably to inspect the traces), a tick offset T corresponds to the
-% year 2020+T (so, for example, the simulation timestamps for year 2026 are in
-% the form {6,_}).
-%
-% (helper)
-%
+Note that (notably to inspect the traces), a tick offset T corresponds to the
+year 2020+T (so, for example, the simulation timestamps for year 2026 are in the
+form {6,_}).
+""".
 -spec update_dataflow_for_year( unit_utils:years(), wooper:state() ) ->
 										wooper:state().
 update_dataflow_for_year( Year=2020, State ) ->
@@ -364,7 +365,7 @@ update_dataflow_for_year( Year=2022, State ) ->
 	WorldManagerPid = ?getAttr(world_manager_pid),
 
 	FirstSentState = class_Actor:send_actor_message( WorldManagerPid,
-						{ injectChangeset, [ FirstChangeset ] }, State ),
+		{ injectChangeset, [ FirstChangeset ] }, State ),
 
 
 	% The second building will be associated as well to District-9:
@@ -470,8 +471,7 @@ update_dataflow_for_year( Year=2022, State ) ->
 		{ injectChangeset, [ SecondChangeset ] }, FirstSentState ),
 
 	class_Actor:send_actor_message( WorldManagerPid,
-									notifyAllChangesetsInjected,
-									SecondSentState );
+		notifyAllChangesetsInjected, SecondSentState );
 
 
 
@@ -493,12 +493,12 @@ update_dataflow_for_year( Year=2023, State ) ->
 
 	?debug_fmt( "Sending a minimal update changeset to the world manager "
 		"for year ~B: ~ts",
-		[ Year,	dataflow_support:changeset_to_string( Changeset ) ] ),
+		[ Year, dataflow_support:changeset_to_string( Changeset ) ] ),
 
 	WorldManagerPid = ?getAttr(world_manager_pid),
 
 	SentState = class_Actor:send_actor_message( WorldManagerPid,
-									{ injectChangeset, [ Changeset ] }, State ),
+		{ injectChangeset, [ Changeset ] }, State ),
 
 	class_Actor:send_actor_message( WorldManagerPid,
 									notifyAllChangesetsInjected, SentState );
@@ -537,7 +537,7 @@ update_dataflow_for_year( Year=2024, State ) ->
 	WorldManagerPid = ?getAttr(world_manager_pid),
 
 	SentState = class_Actor:send_actor_message( WorldManagerPid,
-									{ injectChangeset, [ Changeset ] }, State ),
+		{ injectChangeset, [ Changeset ] }, State ),
 
 	class_Actor:send_actor_message( WorldManagerPid,
 									notifyAllChangesetsInjected, SentState );
@@ -564,7 +564,7 @@ update_dataflow_for_year( Year=2026, State ) ->
 		"performing a new update of the structure of the simulation "
 		"world, in terms of dataflow objects:~n"
 		" - creation of the '~ts' dataflow object, associated "
-		  "(living_in_building) to '~ts'~n",
+		"(living_in_building) to '~ts'~n",
 		[ Year, ThirdHouseholdExternalId, SecondBuildingExternalId ] ),
 
 	% As always, we start by the induced events:
@@ -610,7 +610,7 @@ update_dataflow_for_year( Year=2026, State ) ->
 	WorldManagerPid = ?getAttr(world_manager_pid),
 
 	SentState = class_Actor:send_actor_message( WorldManagerPid,
-						{ injectChangeset, [ Changeset ] }, State ),
+		{ injectChangeset, [ Changeset ] }, State ),
 
 	class_Actor:send_actor_message( WorldManagerPid,
 									notifyAllChangesetsInjected, SentState );
@@ -660,7 +660,7 @@ update_dataflow_for_year( Year=2027, State ) ->
 	WorldManagerPid = ?getAttr(world_manager_pid),
 
 	SentState = class_Actor:send_actor_message( WorldManagerPid,
-						{ injectChangeset, [ Changeset ] }, State ),
+		{ injectChangeset, [ Changeset ] }, State ),
 
 	class_Actor:send_actor_message( WorldManagerPid,
 									notifyAllChangesetsInjected, SentState );
@@ -680,10 +680,7 @@ update_dataflow_for_year( Year, State ) when Year > 2027 ->
 
 
 
-% @doc Returns a textual description of this entry point.
-%
-% (helper)
-%
+-doc "Returns a textual description of this entry point.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -699,5 +696,5 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Urban changeset-based ~ts, ~ts, ~ts, ~ts",
+	text_utils:format( "urban changeset-based ~ts, ~ts",
 					   [ EntryString, ProbeString ] ).

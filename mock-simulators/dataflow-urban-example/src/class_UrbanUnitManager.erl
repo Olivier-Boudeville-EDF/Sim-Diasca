@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc A joint <b>test unit manager</b>.
 -module(class_UrbanUnitManager).
+
+-moduledoc "A joint **test unit manager**.".
 
 
 -define( class_description,
@@ -70,27 +71,33 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+-type binding_managers() :: binding_utils:binding_managers().
 
 
-% @doc Constructs a urban unit manager, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - ExperimentManagerPid, the PID of the (parent) experiment manager
-%
-% - LoadBalancerPid, the PID of the load balancer that may be used by this unit
-% manager
-%
-% - IdentificationServerPid, the PID of the identification server (if any)
-%
+
+
+-doc """
+Constructs a urban unit manager, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- ExperimentManagerPid, the PID of the (parent) experiment manager
+
+- LoadBalancerPid, the PID of the load balancer that may be used by this unit
+manager
+
+- IdentificationServerPid, the PID of the identification server (if any)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	experiment_manager_pid(), binding_managers(), load_balancer_pid(),
-	maybe( identification_server_pid() ) ) -> wooper:state().
+	option( identification_server_pid() ) ) -> wooper:state().
 construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 		   LoadBalancerPid, IdentificationServerPid ) ->
 
@@ -119,9 +126,10 @@ construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 % Methods section.
 
 
-% @doc Returns the synchronization event matches that this unit manager is
-% interested in.
-%
+-doc """
+Returns the synchronization event matches that this unit manager is interested
+in.
+""".
 -spec get_listened_event_matches() -> static_return( [ event_match() ] ).
 get_listened_event_matches() ->
 
@@ -137,7 +145,7 @@ get_listened_event_matches() ->
 	% - a building is associated to a district, also to showcase this feature
 
 	HouseholdCreationMatch = #creation_event_match{
-			  object_type_match=class_Household },
+		object_type_match=class_Household },
 
 	HouseholdAssociationMatch = #binary_association_event_match{
 		association_type_match=living_in_building,
@@ -164,17 +172,18 @@ get_listened_event_matches() ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a building or a household has just been created.
-%
-% As a result, if the created dataflow object is:
-%
-% - a building, then ultimately (over diascas) a EnergyDemandUnit is created and
-% connected appropriately
-%
-% - a household, then ultimately (over diascas) a TransportationDemandUnit is
-% created and connected appropriately
-%
+-doc """
+ Called so that this unit manager can perform domain-specific actions of
+its choice whenever a building or a household has just been created.
+
+As a result, if the created dataflow object is:
+
+- a building, then ultimately (over diascas) a EnergyDemandUnit is created and
+connected appropriately
+
+- a household, then ultimately (over diascas) a TransportationDemandUnit is
+created and connected appropriately
+""".
 -spec onCreationEventMatched( wooper:state(), creation_event() ) ->
 									oneway_return().
 onCreationEventMatched( State, #creation_event{
@@ -245,12 +254,13 @@ onCreationEventMatched( State, #creation_event{
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a household has just been destructed.
-%
-% As a result, its corresponding transportation unit shall be removed as well,
-% once having been disconnected.
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a household has just been destructed.
+
+As a result, its corresponding transportation unit shall be removed as well,
+once having been disconnected.
+""".
 -spec onDestructionEventMatched( wooper:state(), destruction_event() ) ->
 										oneway_return().
 onDestructionEventMatched( State, #destruction_event{
@@ -281,9 +291,10 @@ onDestructionEventMatched( State, #destruction_event{
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching binary association happened.
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching binary association happened.
+""".
 -spec onBinaryAssociationEventMatched( wooper:state(),
 						binary_association_event() ) -> const_oneway_return().
 onBinaryAssociationEventMatched( State,
@@ -327,10 +338,11 @@ onBinaryAssociationEventMatched( State,
 
 
 
-% @doc Notifies this unit manager how a dataflow-level event shall be handled,
-% not relying on the changeset system for that (just useful in the context of a
-% programmatic case).
-%
+-doc """
+Notifies this unit manager how a dataflow-level event shall be handled, not
+relying on the changeset system for that (just useful in the context of a
+programmatic case).
+""".
 -spec notifyEvent( wooper:state(), urban_dataflow_event(), event_data(),
 				   sending_actor_pid() ) -> actor_oneway_return().
 notifyEvent( State, _Event=new_energy_demand_unit_needed, UnitName,
@@ -348,22 +360,23 @@ notifyEvent( State, _Event=new_energy_demand_unit_needed, UnitName,
 
 
 
-% @doc Called whenever a unit has been created, so that channels between this
-% new unit and the rest of the dataflow can be created.
-%
-% Parameters are:
-%
-% - CreatedUnitType is the type of the just created unit
-%
-% - CreatedUnitConstructionParameters is the construction parameters
-% corresponding to this new creation
-%
-% - CreatedUnitPid the PID of the just created unit
-%
-% - EventId is the identifier of the corresponding overall world event
-%
-% - CreationContext is the context of this creation
-%
+-doc """
+Called whenever a unit has been created, so that channels between this new unit
+and the rest of the dataflow can be created.
+
+Parameters are:
+
+- CreatedUnitType is the type of the just created unit
+
+- CreatedUnitConstructionParameters is the construction parameters corresponding
+to this new creation
+
+- CreatedUnitPid the PID of the just created unit
+
+- EventId is the identifier of the corresponding overall world event
+
+- CreationContext is the context of this creation
+""".
 -spec onUnitCreated( wooper:state(), dataflow_unit_type(),
 					 wooper:construction_parameters(), unit_pid(),
 					 event_id(), building_pid() ) -> oneway_return().
@@ -389,8 +402,8 @@ onUnitCreated( State, _CreatedUnitType=class_EnergyDemandUnit,
 		  BuildingPid, hd( BuildingChannelEndpointNames ) ] ),
 
 	BuildingChannelState = class_DataflowUnitManager:create_channels_for(
-								EventId, CreatedEnergyUnitPid, BuildingPid,
-								BuildingChannelEndpointNames, State ),
+		EventId, CreatedEnergyUnitPid, BuildingPid,
+		BuildingChannelEndpointNames, State ),
 
 	% We do not create the upstream connections of this energy demand unit
 	% (created after a building is created) here, as they will done later, when
@@ -520,7 +533,7 @@ onUnitCreated( State, _CreatedUnitType=class_TransportationDemandUnit,
 	% port iteration:
 	%
 	TransportChannelEndpointNames = [ { "energy_needed",
-					{ input_iteration_name, "energy_demand" } } ],
+		{ input_iteration_name, "energy_demand" } } ],
 
 	?debug_fmt( "Creating now a channel from this just created transportation "
 		"unit (~w) to the energy demand unit (~w) corresponding to the parent "
@@ -560,7 +573,7 @@ onUnitCreated( State, CreatedUnitType, CreatedUnitConstructParams,
 
 
 
-% @doc Returns a textual description of this unit manager.
+-doc "Returns a textual description of this unit manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -573,7 +586,7 @@ to_string( State ) ->
 			Strings = [ text_utils:format(
 							"to building ~w is associated the energy unit ~w",
 							[ BuildingPid, EnergyUnitPid ] )
-						|| { BuildingPid, EnergyUnitPid } <- Pairs ],
+                                || { BuildingPid, EnergyUnitPid } <- Pairs ],
 			text_utils:format( "~B building/energy unit associations "
 							   "are known: ~ts", [ length( Pairs ),
 				text_utils:strings_to_string( Strings ) ] )
@@ -584,10 +597,7 @@ to_string( State ) ->
 
 
 
-% @doc Returns the PID of the energy unit associated to specified building.
-%
-% (helper)
-%
+-doc "Returns the PID of the energy unit associated to specified building.".
 -spec get_energy_unit_for( building_pid(), wooper:state() ) ->
 									energy_unit_pid().
 get_energy_unit_for( BuildingPid, State ) ->

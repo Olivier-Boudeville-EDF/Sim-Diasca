@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 Olivier Boudeville
+% Copyright (C) 2011-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,13 +24,34 @@
 %
 % Authors: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 %          Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+%
 % Creation date: November 10, 2011.
 
+-module(tracked_hashtable).
 
-% @doc Implementation of so-called <b>tracked hashtables</b>.
+-moduledoc """
+A tracked_hashtable is a {Hashtable, NumberOfEntries, NumberOfBuckets} triplet
+where:
+- Hashtable is a hashtable(), refer to the hashtable module for more detail
+- NumberOfEntries represents the number of entries in the hashtable; it is zero
+when an hashtable is created
+- NumberOfBuckets is the number of buckets of the internal hashtable; a default
+number of buckets is chosen at the creation of an hashtable
+
+Directly depends on the hashtable module.
+""".
+
+% However this tracked version is deemed less effective than the lazy version,
+% and thus is not updated/tested as much as the others (for example: error cases
+% have not been uniformised, insofar that they can still issue badmatches while
+% other implementations raise more proper exceptions).
+
+
+
+% Implementation of so-called **tracked hashtables**.
 %
-% See `tracked_hashtable_test.erl' for the corresponding test.
-% See `hashtable.erl'.
+% See `tracked_hashtable_test.erl` for the corresponding test.
+% See `hashtable.erl`.
 %
 % We provide different multiple types of hashtables, including:
 %
@@ -51,29 +72,6 @@
 %
 % They are to provide the same API (signatures and contracts).
 
-
-
-% However this tracked version is deemed less effective than the lazy version,
-% and thus is not updated/tested as much as the others (for example: error cases
-% have not been uniformised, insofar that they can still issue badmatches while
-% other implementations raise more proper exceptions).
-
-
-
-% A tracked_hashtable is a {Hashtable, NumberOfEntries, NumberOfBuckets} triplet
-% where:
-%
-% - Hashtable is a hashtable(), refer to the hashtable module for more detail
-%
-% - NumberOfEntries represents the number of entries in the hashtable; it is
-% zero when an hashtable is created
-%
-% - NumberOfBuckets is the number of buckets of the internal hashtable; a
-% default number of buckets is chosen at the creation of an hashtable
-%
-% Directly depends on the hashtable module.
-%
--module(tracked_hashtable).
 
 
 % Same as hashtable:
@@ -104,10 +102,14 @@
 
 % Not supported since Erlang 18.0:
 %
+%-doc """
+%""".
 %-opaque tracked_hashtable( K, V ) ::
-%		  { hashtable:hashtable( K, V ), hashtable:entry_count(),
-%			hashtable:bucket_count() }.
+%   { hashtable:hashtable( K, V ), hashtable:entry_count(),
+%     hashtable:bucket_count() }.
 
+
+-doc "A tracked hashtable.".
 -opaque tracked_hashtable() :: { hashtable:hashtable(), hashtable:entry_count(),
 								 hashtable:bucket_count() }.
 
@@ -121,7 +123,9 @@
 
 
 % Shorthands:
+
 -type accumulator() :: basic_utils:accumulator().
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -135,11 +139,11 @@
 
 
 
+-doc """
+Creates an empty tracker table.
 
-% @doc Creates an empty tracker table.
-%
-% A new empty tracked hashtable is returned.
-%
+A new empty tracked hashtable is returned.
+""".
 -spec new() -> tracked_hashtable().
 new() ->
 	% Starts at minimal size, otherwise will soon be shrunk anyway:
@@ -148,29 +152,31 @@ new() ->
 
 
 
-% @doc As tracked hashtables manage by themselves their size, no need to specify
-% any target size. This function is only defined so that we can transparently
-% switch APIs with the hashtable module.
-%
+-doc """
+As tracked hashtables manage by themselves their size, no need to specify any
+target size. This function is only defined so that we can transparently switch
+APIs with the hashtable module.
+""".
 new( _ExpectedNumberOfEntries ) ->
 	new().
 
 
 
-% @doc Defined also to allow seamless change of hashtable modules.
+-doc "Defined also to allow seamless change of hashtable modules.".
 new_with_buckets( _NumberOfBuckets ) ->
 	new().
 
 
 
-% @doc Adds specified key/value pair into the specified tracked hashtable.
-%
-% If there is already a pair with this key, then its previous value will be
-% replaced by the specified one.
-%
-% As the load factor of the tracked hashtable is verified at each additional
-% entry, the tracked hashtable is optimised as soon as possible.
-%
+-doc """
+Adds specified key/value pair into the specified tracked hashtable.
+
+If there is already a pair with this key, then its previous value will be
+replaced by the specified one.
+
+As the load factor of the tracked hashtable is verified at each additional
+entry, the tracked hashtable is optimised as soon as possible.
+""".
 -spec add_entry( key(), value(), tracked_hashtable() ) -> tracked_hashtable().
 add_entry( Key, Value,
 		   _TrackedHashtable={ Hashtable, EntryCount, NumberOfBuckets } ) ->
@@ -219,11 +225,12 @@ add_entry( Key, Value,
 
 
 
-% @doc Adds specified list of key/value pairs into the specified hashtable.
-%
-% If there is already a pair with this key, then its previous value will be
-% replaced by the specified one.
-%
+-doc """
+Adds the specified list of key/value pairs into the specified hashtable.
+
+If there is already a pair with this key, then its previous value will be
+replaced by the specified one.
+""".
 -spec add_entries( entries(), tracked_hashtable() ) -> tracked_hashtable().
 add_entries( EntryList,
 		_TrackedHashtable={ Hashtable, _EntryCount, NumberOfBuckets } ) ->
@@ -256,10 +263,11 @@ add_entries( EntryList,
 
 
 
-% @doc Removes specified key/value pair from the specified hashtable.
-%
-% Does nothing if the key is not found.
-%
+-doc """
+Removes specified key/value pair from the specified hashtable.
+
+Does nothing if the key is not found.
+""".
 -spec remove_entry( key(), tracked_hashtable() ) -> tracked_hashtable().
 remove_entry( Key, TrackedHashtable={ Hashtable, EntryCount, BucketCount } ) ->
 
@@ -294,13 +302,12 @@ remove_entry( Key, TrackedHashtable={ Hashtable, EntryCount, BucketCount } ) ->
 
 
 
-% @doc Looks-up specified entry (designated by its key) in specified tracked
-% hashtable.
-%
-% Returns either 'key_not_found' if no such key is registered in the
-% table, or {value,Value}, with Value being the value associated to the
-% specified key.
-%
+-doc """
+Looks-up specified entry (designated by its key) in specified tracked hashtable.
+
+Returns either 'key_not_found' if no such key is registered in the table, or
+{value,Value}, with Value being the value associated to the specified key.
+""".
 -spec lookup_entry( key(), tracked_hashtable() ) ->
 							'key_not_found' | { 'value', value() }.
 lookup_entry( Key, _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
@@ -308,33 +315,35 @@ lookup_entry( Key, _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 
 
 
-% @doc Looks-up specified entry (designated by its key) in specified tracked
-% hashtable: returns eigher true or false.
-%
+-doc """
+Looks-up specified entry (designated by its key) in specified tracked hashtable:
+returns eigher true or false.
+""".
 -spec has_entry( key(), tracked_hashtable() ) -> boolean().
 has_entry( Key, _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 	hashtable:has_entry( Key, Hashtable ).
 
 
 
-% @doc Retrieves the value corresponding to specified key and returns it
-% directly.
-%
-% The key/value pair is expected to exist already, otherwise a bad match is
-% triggered.
-%
+-doc """
+Retrieves the value corresponding to specified key and returns it directly.
+
+The key/value pair is expected to exist already, otherwise a bad match is
+triggered.
+""".
 -spec get_value( key(), tracked_hashtable() ) -> value().
 get_value( Key, _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 	hashtable:get_value( Key, Hashtable ).
 
 
 
-% @doc Extracts specified entry from specified hashtable, ie returns the
-% associated value and removes that entry from the table.
-%
-% The key/value pair is expected to exist already, otherwise an exception is
-% raised.
-%
+-doc """
+Extracts specified entry from specified hashtable, ie returns the associated
+value and removes that entry from the table.
+
+The key/value pair is expected to exist already, otherwise an exception is
+raised.
+""".
 -spec extract_entry( key(), tracked_hashtable() ) ->
 							{ value(), tracked_hashtable() }.
 extract_entry( Key, _TrackedHashtable={ Hashtable, NEnt, NBuck } ) ->
@@ -347,9 +356,10 @@ extract_entry( Key, _TrackedHashtable={ Hashtable, NEnt, NBuck } ) ->
 
 
 
-% @doc Looks for specified entry in specified table and, if found, returns the
-% associated value; otherwise returns the specified default value.
-%
+-doc """
+Looks for specified entry in specified table and, if found, returns the
+associated value; otherwise returns the specified default value.
+""".
 -spec get_value_with_default( key(), value(), tracked_hashtable() ) -> value().
 get_value_with_default( Key, DefaultValue,
 						_TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
@@ -357,23 +367,26 @@ get_value_with_default( Key, DefaultValue,
 
 
 
-% @doc Returns the (ordered) list of values that correspond to the specified
-% (ordered) list of keys of this table.
-%
-% The key/value pairs are expected to exist already, otherwise an exception is
-% raised.
-%
-% For example [Color, Age, Mass] = tracked_hashtable:get_values([color, age,
-%   mass], MyTable])
-%
+-doc """
+Returns the (ordered) list of values that correspond to the specified (ordered)
+list of keys of this table.
+
+The key/value pairs are expected to exist already, otherwise an exception is
+raised.
+
+For example:
+```
+[Color, Age, Mass] = tracked_hashtable:get_values([color, age, mass], MyTable])
+```
+""".
 -spec get_values( [ key() ], tracked_hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
 
 	{ RevValues, _FinalTable } = lists:foldl(
 
 		fun( _Elem=Key, _Acc={ Values, Table } ) ->
-			    { Value, ShrunkTable } = extract_entry( Key, Table ),
-			    { [ Value | Values ], ShrunkTable }
+				{ Value, ShrunkTable } = extract_entry( Key, Table ),
+				{ [ Value | Values ], ShrunkTable }
 		end,
 		_Acc0={ [], Hashtable },
 		_List=Keys ),
@@ -382,16 +395,20 @@ get_values( Keys, Hashtable ) ->
 
 
 
-% @doc Returns the (ordered) list of values that correspond to the specified
-% (ordered) list of keys of this table, ensuring all entries have been read,
-% otherwise throwing an exception.
-%
-% The key/value pairs are expected to exist already, otherwise an exception is
-% raised.
-%
-% For example [Color=red, Age=23, Mass=51 ] = tracked_hashtable:get_all_values(
-%   [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
-%
+-doc """
+Returns the (ordered) list of values that correspond to the specified (ordered)
+list of keys of this table, ensuring all entries have been read, otherwise
+throwing an exception.
+
+The key/value pairs are expected to exist already, otherwise an exception is
+raised.
+
+For example:
+```
+[Color=red, Age=23, Mass=51 ] = tracked_hashtable:get_all_values(
+   [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
+```
+""".
 -spec get_all_values( [ key() ], tracked_hashtable() ) -> [ value() ].
 get_all_values( Keys, Hashtable ) ->
 
@@ -415,19 +432,20 @@ get_all_values( Keys, Hashtable ) ->
 
 
 
-% @doc Applies (maps) the specified anonymous function to each of the key-value
-% entries contained in this hashtable.
-%
-% Allows to apply "in-place" an operation on all entries without having to
-% enumerate the content of the hashtable and iterate on it (hence without having
-% to duplicate the whole content in memory).
-%
-% Note: as the fun may return modified keys, the whole structure of the
-% hashtable may change (e.g. different buckets used for replaced entries,
-% colliding keys resulting in having less entries afterwards, etc.).
-%
-% One may request the returned hashtable to be optimised after this call.
-%
+-doc """
+Applies (maps) the specified anonymous function to each of the key-value entries
+contained in this hashtable.
+
+Allows to apply "in-place" an operation on all entries without having to
+enumerate the content of the hashtable and iterate on it (hence without having
+to duplicate the whole content in memory).
+
+Note: as the fun may return modified keys, the whole structure of the hashtable
+may change (e.g. different buckets used for replaced entries, colliding keys
+resulting in having less entries afterwards, etc.).
+
+One may request the returned hashtable to be optimised after this call.
+""".
 -spec map_on_entries( fun( ( entry() ) -> entry() ), tracked_hashtable() ) ->
 							tracked_hashtable().
 map_on_entries( Fun, _TrackedHashtable={ Hashtable, _NEnt, _NBuck }  ) ->
@@ -442,16 +460,17 @@ map_on_entries( Fun, _TrackedHashtable={ Hashtable, _NEnt, _NBuck }  ) ->
 
 
 
-% @doc Applies (maps) the specified anonymous function to each of the values
-% contained in this hashtable.
-%
-% Allows to apply "in-place" an operation on all values without having to
-% enumerate the content of the hashtable and iterate on it (hence without having
-% to duplicate the whole content in memory).
-%
-% Note: the keys are left as are, hence the structure of the hashtable does not
-% change.
-%
+-doc """
+Applies (maps) the specified anonymous function to each of the values contained
+in this hashtable.
+
+Allows to apply "in-place" an operation on all values without having to
+enumerate the content of the hashtable and iterate on it (hence without having
+to duplicate the whole content in memory).
+
+Note: the keys are left as are, hence the structure of the hashtable does not
+change.
+""".
 -spec map_on_values( fun( ( value() ) -> value() ), tracked_hashtable() ) ->
 							tracked_hashtable().
 map_on_values( Fun, _TrackedHashtable={ Hashtable, NEnt, NBuck }  ) ->
@@ -462,13 +481,14 @@ map_on_values( Fun, _TrackedHashtable={ Hashtable, NEnt, NBuck }  ) ->
 
 
 
-% @doc Folds specified anonymous function on all entries of the specified
-% tracked hashtable.
-%
-% The order of transformation for entries is not specified.
-%
-% Returns the final accumulator.
-%
+-doc """
+Folds specified anonymous function on all entries of the specified tracked
+hashtable.
+
+The order of transformation for entries is not specified.
+
+Returns the final accumulator.
+""".
 -spec fold_on_entries( fun( ( entry(), accumulator() ) -> accumulator() ),
 					   accumulator(), tracked_hashtable() ) -> accumulator().
 fold_on_entries( Fun, InitialAcc, _TrackedHashtable={ Hashtable, _NEnt, _NBuck }
@@ -477,11 +497,12 @@ fold_on_entries( Fun, InitialAcc, _TrackedHashtable={ Hashtable, _NEnt, _NBuck }
 
 
 
-% @doc Returns a tracked hashtable which started from TrackedHashtableBase and
-% was enriched with the TrackedHashtableAdd entries whose keys where not already
-% in TrackedHashtableBase (if a key is in both tables, the one from
-% TrackedHashtableBase will be kept).
-%
+-doc """
+Returns a tracked hashtable which started from TrackedHashtableBase and was
+enriched with the TrackedHashtableAdd entries whose keys where not already in
+TrackedHashtableBase (if a key is in both tables, the one from
+TrackedHashtableBase will be kept).
+""".
 -spec merge( tracked_hashtable(), tracked_hashtable() ) -> tracked_hashtable().
 merge( _TrackedHashtableBase={ HashtableBase, _NEntB, _NBuckB },
 	 _TrackedHashtableAdd={ HashtableAdd, _NEntA, _NBuckA } ) ->
@@ -510,23 +531,24 @@ merge( _TrackedHashtableBase={ HashtableBase, _NEntB, _NBuckB },
 
 
 
+-doc """
+Optimises this hashtable.
 
-% @doc Optimises this hashtable.
-%
-% A no-operation for tracked hashtables.
-%
+A no-operation for tracked hashtables.
+""".
 -spec optimise( tracked_hashtable() ) -> tracked_hashtable().
 optimise( Hashtable ) ->
 	Hashtable.
 
 
 
-% @doc Adds a specified value to the value of specified key, supposed the
-% existing one to be numerical.
-%
-% A case clause is triggered if the key did not exist; a bad arithm is triggered
-% if no addition can be performed on the associated value.
-%
+-doc """
+Adds a specified value to the value of specified key, supposed the existing one
+to be numerical.
+
+A case clause is triggered if the key did not exist; a bad arithm is triggered
+if no addition can be performed on the associated value.
+""".
 -spec add_to_entry( key(), number(), tracked_hashtable() ) ->
 							tracked_hashtable().
 add_to_entry( Key, Value, TrackedHashtable ) ->
@@ -535,12 +557,13 @@ add_to_entry( Key, Value, TrackedHashtable ) ->
 
 
 
-% @doc Subtracts specified value to the value, supposed to be numerical,
-% associated to specified key.
-%
-% A case clause is triggered if the key did not exist, a bad arithm is triggered
-% if no subtraction can be performed on the associated value.
-%
+-doc """
+Subtracts specified value to the value, supposed to be numerical, associated to
+specified key.
+
+A case clause is triggered if the key did not exist, a bad arithm is triggered
+if no subtraction can be performed on the associated value.
+""".
 -spec subtract_from_entry( key(), number(), tracked_hashtable() ) ->
 									tracked_hashtable().
 subtract_from_entry( Key, Value, TrackedHashtable ) ->
@@ -549,12 +572,13 @@ subtract_from_entry( Key, Value, TrackedHashtable ) ->
 
 
 
-% @doc Toggles the boolean value associated with specified key: if true will be
-% false, if false will be true.
-%
-% A case clause is triggered if the entry does not exist or it is not a boolean
-% value.
-%
+-doc """
+Toggles the boolean value associated with specified key: if true will be false,
+if false will be true.
+
+A case clause is triggered if the entry does not exist or it is not a boolean
+value.
+""".
 -spec toggle_entry( key(), tracked_hashtable() ) -> tracked_hashtable().
 toggle_entry( Key,
 			  _TrackedHashtable={ Hashtable, EntryCount, NumberOfBuckets } ) ->
@@ -563,14 +587,15 @@ toggle_entry( Key,
 
 
 
-% @doc Appends specified element to the value of specified key, supposing the
-% value to be a list.
-%
-% A case clause is triggered if the entry does not exist.
-%
-% Note: no check is performed to ensure the value is a list indeed, and the
-% '[|]' operation will not complain if not.
-%
+-doc """
+Appends specified element to the value of specified key, supposing the value to
+be a list.
+
+A case clause is triggered if the entry does not exist.
+
+Note: no check is performed to ensure the value is a list indeed, and the '[|]'
+operation will not complain if not.
+""".
 -spec append_to_entry( key(), term(), tracked_hashtable() ) ->
 								tracked_hashtable().
 append_to_entry( Key, Element, TrackedHashtable ) ->
@@ -579,12 +604,14 @@ append_to_entry( Key, Element, TrackedHashtable ) ->
 
 
 
-% @doc Deletes the first match of specified element from the value associated to
-% specified key, that value being supposed to be a list.
-%
-% A case clause is triggered if the entry did not exist.
-% If the element is not in the specified list, the list will not be modified.
-%
+-doc """
+Deletes the first match of specified element from the value associated to
+specified key, that value being supposed to be a list.
+
+A case clause is triggered if the entry did not exist.
+
+If the element is not in the specified list, the list will not be modified.
+""".
 -spec delete_from_entry( key(), term(), tracked_hashtable() ) ->
 								tracked_hashtable().
 delete_from_entry( Key, Element, TrackedHashtable ) ->
@@ -593,10 +620,10 @@ delete_from_entry( Key, Element, TrackedHashtable ) ->
 
 
 
-% @doc Pops the head of the value (supposed to be a list) associated to
-% specified key, and returns a pair made of the popped head and the new
-% hashtable.
-%
+-doc """
+Pops the head of the value (supposed to be a list) associated to specified key,
+and returns a pair made of the popped head and the new hashtable.
+""".
 -spec pop_from_entry( key(), tracked_hashtable() ) ->
 							{ term(), tracked_hashtable() }.
 pop_from_entry( Key, TrackedHashtable ) ->
@@ -605,78 +632,85 @@ pop_from_entry( Key, TrackedHashtable ) ->
 
 
 
-% @doc Returns a flat list whose elements are all the key/value pairs of the
-% hashtable.
-%
-% For example [{K1,V1}, {K2,V2}, ...].
-%
+-doc """
+Returns a flat list whose elements are all the key/value pairs of the hashtable.
+
+For example `[{K1,V1}, {K2,V2}, ...]`.
+""".
 -spec enumerate( tracked_hashtable() ) -> entries().
 enumerate( _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 	lists:flatten( tuple_to_list( Hashtable ) ).
 
 
 
-% @doc Returns a list of key/value pairs corresponding to the list of specified
-% keys, or throws a badmatch is at least one key is not found.
-%
+-doc """
+Returns a list of key/value pairs corresponding to the list of specified keys,
+or throws a badmatch is at least one key is not found.
+""".
 -spec select_entries( [ key() ], tracked_hashtable() ) -> entries().
 select_entries( Keys, _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 
 	hashtable:select_entries( Keys, Hashtable ).
 
 
-% @doc Returns a list containing all the keys of this hashtable.
+
+-doc "Returns a list containing all the keys of this hashtable.".
 -spec keys( tracked_hashtable() ) -> [ key() ].
 keys( _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 	hashtable:keys( Hashtable ).
 
 
-% @doc Returns a list containing all the values of this hashtable.
-%
-% For example useful if the key was used as an index to generate this table
-% first.
-%
+
+-doc """
+Returns a list containing all the values of this hashtable.
+
+For example useful if the key was used as an index to generate this table first.
+""".
 -spec values( tracked_hashtable() ) -> [ value() ].
 values( _TrackedHashtable={ Hashtable, _NEnt, _NBuck }  ) ->
 	hashtable:values( Hashtable ).
 
 
 
-% @doc Returns whether the specified hashtable is empty (not storing any
-% key/value pair).
-%
+-doc """
+Returns whether the specified hashtable is empty (not storing any key/value
+pair).
+""".
 -spec is_empty( tracked_hashtable() ) -> boolean().
 is_empty( _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 	hashtable:is_empty( Hashtable ).
 
 
 
-% @doc Returns the size (number of entries, ie of key/value pairs) of the
-% specified table.
-%
+-doc """
+Returns the size (number of entries, ie of key/value pairs) of the specified
+table.
+""".
 -spec size( tracked_hashtable() ) -> entry_count().
 size( _TrackedHashTable={ _Hashtable, NEntries, _NBuckets } ) ->
 	NEntries.
 
 
 
-% @doc Returns a textual description of the specified hashtable.
+-doc "Returns a textual description of the specified hashtable.".
 -spec to_string( tracked_hashtable() ) -> ustring().
 to_string( _TrackedHashtable={ Hashtable, _NEnt, _NBuck } ) ->
 	hashtable:to_string( Hashtable ).
 
 
 
-% @doc Returns a textual description of the specified hashtable, with specified
-% display setting.
-%
+-doc """
+Returns a textual description of the specified hashtable, with specified display
+setting.
+""".
 -spec to_string( tracked_hashtable(), 'internal' | 'user_friendly' ) ->
-						                    ustring().
+											ustring().
 to_string( _TrackedHashtable={ Hashtable, _NEnt, _NBuck }, DescriptionType ) ->
 	hashtable:to_string( Hashtable, DescriptionType ).
 
 
-% @doc Displays the specified hashtable on the standard output.
+
+-doc "Displays the specified hashtable on the standard output.".
 -spec display( tracked_hashtable() ) -> void().
 display( _TrackedHashtable={ Hashtable, _ElementCount, NumberOfBuckets } ) ->
 	hashtable:display( Hashtable ),
@@ -684,9 +718,10 @@ display( _TrackedHashtable={ Hashtable, _ElementCount, NumberOfBuckets } ) ->
 
 
 
-% @doc Displays the specified hashtable on the standard output, with the
-% specified title on top.
-%
+-doc """
+Displays the specified hashtable on the standard output, with the specified
+title on top.
+""".
 -spec display( ustring(), tracked_hashtable() ) -> void().
 display( Title,
 		 _TrackedHashtable={ Hashtable, _ElementCount, NumberOfBuckets } ) ->

@@ -1,29 +1,31 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Unit tests for the implementation of the <b>resilience manager</b>.
-%
-% See the class_ResilienceManager.erl module.
-%
 -module(class_Resilience_test).
+
+-moduledoc """
+Unit tests for the implementation of the **resilience manager**.
+
+See the `class_ResilienceManager` module.
+""".
 
 
 % For facilities common to all cases:
@@ -39,7 +41,7 @@
 
 
 
-% @doc Runs the tests.
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 
@@ -79,7 +81,7 @@ run() ->
 		[ SecondResilienceLevel, NodeCount, SecondProtectedNodes ] ),
 
 	SecondTestKMap = class_ResilienceManager:build_k_map( SecondResilienceLevel,
-													SecondProtectedNodes ),
+		SecondProtectedNodes ),
 
 
 	% Can be cyclic, and better displayed with nodes on a circle:
@@ -97,8 +99,7 @@ run() ->
 		  [ begin
 				Link = class_Graphable:new_link( [ { label, "" } ] ),
 				ResilienceMesh ! { addLink, [ Link, N, Secured ] }
-			end
-			|| Secured <- KRecord#k_record.securing ]
+			end || Secured <- KRecord#k_record.securing ]
 
 	  end || { N, KRecord } <- KPairs ],
 
@@ -110,7 +111,8 @@ run() ->
 
 		Hint ->
 			?test_warning_fmt(
-			   "No support found for the rendering of a graph: ~ts.", [ Hint ] )
+				"No support found for the rendering of a graph: ~ts.",
+				[ Hint ] )
 
 	end,
 

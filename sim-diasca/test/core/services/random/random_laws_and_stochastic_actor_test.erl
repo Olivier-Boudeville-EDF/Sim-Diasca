@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,14 +19,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Unit tests for the interaction between the <b>random manager and
-% stochastic actors</b>.
-%
-% See the class_RandomManager.erl and class_TestStochasticActor.erl tested
-% modules.
-%
 -module(random_laws_and_stochastic_actor_test).
+
+-moduledoc """
+Unit tests for the interaction between the **random manager and stochastic
+actors**.
+
+See the `class_RandomManager` and `class_TestStochasticActor` tested modules.
+""".
 
 
 % For facilities common to all cases:
@@ -34,7 +34,7 @@
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

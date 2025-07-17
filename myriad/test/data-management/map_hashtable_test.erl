@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -21,17 +21,18 @@
 % along with this library.
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
-
-% Creation date: Tuesday, December 2, 2014
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Tuesday, December 2, 2014
 
-
-
-% Unit tests for the map-based hashtable implementation.
-%
-% See the map_hashtable.erl tested module.
-%
 -module(map_hashtable_test).
+
+-moduledoc """
+Unit tests for the **map-based hashtable** implementation.
+
+See the map_hashtable.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -107,7 +108,7 @@ run() ->
 	key_not_found = map_hashtable:lookup_entry( ?MyFirstKey, MyH5 ),
 
 	[ MySecondValue, MyFirstValue ] = map_hashtable:get_all_values(
-										[ ?MySecondKey, ?MyFirstKey ], MyH4 ),
+		[ ?MySecondKey, ?MyFirstKey ], MyH4 ),
 
 	EmptyTable = map_hashtable:new(),
 
@@ -150,7 +151,7 @@ run() ->
 												   MyH7 ),
 
 	MyH9 = map_hashtable:append_list_to_existing_entry( ?MyFourthKey,
-								[ third_element, fourth_element ], MyH8 ),
+		[ third_element, fourth_element ], MyH8 ),
 
 	map_hashtable:display( MyH9 ),
 
@@ -224,6 +225,6 @@ run() ->
 	Keys = [ ?MyFirstKey, ?MyThirdKey ],
 
 	test_facilities:display( "Listing the entries for keys ~p:~n ~p",
-					[ Keys, map_hashtable:select_entries( Keys, MyH12 ) ] ),
+		[ Keys, map_hashtable:select_entries( Keys, MyH12 ) ] ),
 
 	test_facilities:stop().

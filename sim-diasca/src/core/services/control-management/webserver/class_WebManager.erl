@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 EDF R&D
+% Copyright (C) 2019-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: Friday, June 7, 2019.
 
-
-% @doc Overall (singleton) manager of <b>web-based interactions</b>.
 -module(class_WebManager).
+
+-moduledoc "Overall (singleton) manager of **web-based interactions**.".
 
 
 -define( class_description, "Overall (singleton) manager of web-based
@@ -40,8 +40,8 @@
 -type probe_info() :: class_ResultManager:probe_info().
 
 
+-doc "Table storing the known (web) probes.".
 -type probe_table() :: table( probe_pid(), probe_info() ).
-% Table storing the known (web) probes.
 
 
 -export_type([ manager_pid/0, probe_table/0 ]).
@@ -72,42 +72,27 @@
 -define( default_webserver_tcp_port, 8080 ).
 
 
+%-doc """
+%Table allowing to associate class-level information about support facilities.
 
+%For example, a given type (i.e. class) of web probe might need one-time
+%operations to enable its support (e.g. a relevant CSS shall be copied once for
+%all in a target content directory). This operation shall be done exactly once,
+%iff at least one instance of such probe is needed (hence either not at all
+%should no instance of it be created, or once, at the creation of the first
+%instance).
+%
+%So the boolean associated to the classname tells whether the corresponding
+%support has already been initialized (or terminated since then).
+%""".
 %-type support_table() :: table( wooper:classname(), boolean() ).
-% Table allowing to associate class-level information about support facilities.
-%
-% For example, a given type (i.e. class) of web probe might need one-time
-% operations to enable its support (ex: a relevant CSS shall be copied once for
-% all in a target content directory). This operation shall be done exactly once,
-% iff at least one instance of such probe is needed (hence either not at all
-% should no instance of it be created, or once, at the creation of the first
-% instance).
-%
-% So the boolean associated to the classname tells whether the corresponding
-% support has already been initialized (or terminated since then).
-
-
-
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
-
--type directory_path() :: file_utils:directory_path().
--type file_path() :: file_utils:file_path().
-
--type bin_directory_path() :: file_utils:bin_directory_path().
--type bin_file_path() :: file_utils:bin_file_path().
-
--type probe_pid() :: class_WebProbe:probe_pid().
--type bin_probe_name() :: class_ResultProducer:bin_producer_name().
--type interactivity_mode() :: class_TimeManager:simulation_interactivity_mode().
 
 
 
 % The class-specific attributes of an instance of a web manager are:
 -define( class_attributes, [
 
-	{ webserver_install_root, maybe( bin_directory_path() ),
+	{ webserver_install_root, option( bin_directory_path() ),
 	  "the root directory of the webserver runtime install (if any)" },
 
 	{ webserver_content_root, bin_directory_path(),
@@ -116,7 +101,7 @@
 	{ result_manager_pid, class_ResultManager:manager_pid(),
 	  "PID of the result manager" },
 
-	{ result_dir, maybe( bin_directory_path() ),
+	{ result_dir, option( bin_directory_path() ),
 	  "the directory (if any) in which the (web) results to aggregate will be "
 	  "found" },
 
@@ -149,11 +134,6 @@
 -define( logo_filename, "sim-diasca.png" ).
 
 
-% Shorthands:
-
--type tcp_port() :: net_utils:tcp_port().
-
-
 
 % Implementation notes:
 %
@@ -171,7 +151,7 @@
 % typically to be done at 'http://localhost:8080/'. Of course a browser (such as
 % Firefox) will be needed.
 %
-% Recent browsers (ex: Firefox since the version 68) will block CORS requests
+% Recent browsers (e.g. Firefox since the version 68) will block CORS requests
 % about resources like remote *.js files (see
 % https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors/CORSRequestNotHttp).
 %
@@ -184,32 +164,52 @@
 % required. So, from now, a Node.js server is not started anymore (call to
 % start_webserver/4 commented-out).
 %
-% Moreover all remote resources (ex: see planner-header.html) have been cached
+% Moreover all remote resources (e.g. see planner-header.html) have been cached
 % locally, so that a simulation can be run with no Internet access at all.
 
 
 
-% @doc Creates the web manager.
-%
-% Construction parameters are:
-%
-% - SII is the identifier of this simulation run
-%
-% - EngineRootDir is the root directory of the engine
-%
-% - InteractivityMode tells whether we run in batch or interactive mode
-%
-% - ServerContentRoot designates the root directory of the web content to serve;
-% belonging to a  directory specific to the current simulaiton, it is
-% supposed to be created by this manager (hence not to exist already, whereas
-% its direct parent directory is expected to exist already)
-%
-% - MaybeTCPPort is, if defined, the TCP port at which the local webserver is to
-% run
-%
+
+% Type shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type directory_path() :: file_utils:directory_path().
+-type file_path() :: file_utils:file_path().
+
+-type bin_directory_path() :: file_utils:bin_directory_path().
+-type bin_file_path() :: file_utils:bin_file_path().
+-type file() :: file_utils:file().
+
+-type tcp_port() :: net_utils:tcp_port().
+
+-type probe_pid() :: class_WebProbe:probe_pid().
+-type bin_probe_name() :: class_ResultProducer:bin_producer_name().
+-type interactivity_mode() :: class_TimeManager:simulation_interactivity_mode().
+
+
+-doc """
+Creates the web manager.
+
+Construction parameters are:
+
+- SII is the identifier of this simulation run
+
+- EngineRootDir is the root directory of the engine
+
+- InteractivityMode tells whether we run in batch or interactive mode
+
+- ServerContentRoot designates the root directory of the web content to serve;
+belonging to a directory specific to the current simulaiton, it is supposed to
+be created by this manager (hence not to exist already, whereas its direct
+parent directory is expected to exist already)
+
+- MaybeTCPPort is, if defined, the TCP port at which the local webserver is to
+run
+""".
 -spec construct( wooper:state(), sim_diasca:sii(), bin_directory_path(),
 	interactivity_mode(), directory_path(), class_ResultManager:manager_pid(),
-	maybe( tcp_port() ) ) -> wooper:state().
+	option( tcp_port() ) ) -> wooper:state().
 construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 		   ResultManagerPid, MaybeTCPPort ) ->
 	construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
@@ -217,30 +217,31 @@ construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 
 
 
-% @doc Creates the web manager.
-%
-% Construction parameters are:
-%
-% - SII is the identifier of this simulation run
-%
-% - EngineRootDir is the root directory of the engine
-%
-% - InteractivityMode tells whether we run in batch or interactive mode
-%
-% - ServerContentRoot designates the root directory of the web content to serve;
-% it is located in an (already-created) directory that is specific to the
-% current simulation; it is supposed to be created by this manager (hence not to
-% exist already)
-%
-% - MaybeServerInstallRoot designates, if defined, the root directory of the
-% webserver installation
-%
-% - MaybeTCPPort is, if defined, the TCP port at which the local webserver is to
-% run
-%
+-doc """
+Creates the web manager.
+
+Construction parameters are:
+
+- SII is the identifier of this simulation run
+
+- EngineRootDir is the root directory of the engine
+
+- InteractivityMode tells whether we run in batch or interactive mode
+
+- ServerContentRoot designates the root directory of the web content to serve;
+it is located in an (already-created) directory that is specific to the current
+simulation; it is supposed to be created by this manager (hence not to exist
+already)
+
+- MaybeServerInstallRoot designates, if defined, the root directory of the
+webserver installation
+
+- MaybeTCPPort is, if defined, the TCP port at which the local webserver is to
+run
+""".
 -spec construct( wooper:state(), sim_diasca:sii(), bin_directory_path(),
 	interactivity_mode(), directory_path(), class_ResultManager:manager_pid(),
-	maybe( directory_path() ), maybe( tcp_port() ) ) -> wooper:state().
+	option( directory_path() ), option( tcp_port() ) ) -> wooper:state().
 construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 		   ResultManagerPid, MaybeServerInstallRoot, MaybeTCPPort ) ->
 
@@ -294,7 +295,7 @@ construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -314,9 +315,9 @@ destruct( State ) ->
 
 
 
-% @doc Declares a new web probe.
+-doc "Declares a new web probe.".
 -spec declareWebProbe( wooper:state(), bin_probe_name(), wooper:classname(),
-	maybe( bin_directory_path() ) ) -> request_return( 'web_probe_declared' ).
+	option( bin_directory_path() ) ) -> request_return( 'web_probe_declared' ).
 declareWebProbe( State, BinProbeName, WebProbeClassname, MaybeBinProbeDir ) ->
 
 	?debug_fmt( "Declaring web probe '~ts' of class '~ts'.",
@@ -380,9 +381,10 @@ declareWebProbe( State, BinProbeName, WebProbeClassname, MaybeBinProbeDir ) ->
 
 
 
-% @doc Callback triggered by the result manager, as the web manager is a
-% listener thereof.
-%
+-doc """
+Callback triggered by the result manager, as the web manager is a listener
+thereof.
+""".
 -spec results_collected( wooper:state(), bin_directory_path() ) ->
 								oneway_return().
 results_collected( State, ResultBaseDirName ) ->
@@ -435,15 +437,16 @@ results_collected( State, ResultBaseDirName ) ->
 % Static methods.
 
 
-% @doc Initializes synchronously (typically from the simulation case) the web
-% management service, using the specified SII and directories, respectively as
-% the root directory of the engine, as webserver content root and as webserver
-% installation root, and the specified TCP port.
-%
+-doc """
+Initialises synchronously (typically from the simulation case) the web
+management service, using the specified SII and directories, respectively as the
+root directory of the engine, as webserver content root and as webserver
+installation root, and the specified TCP port.
+""".
 -spec create_manager( sim_diasca:sii(), bin_directory_path(),
 	interactivity_mode(), bin_directory_path(),
-	class_ResultManager:manager_pid(), maybe( bin_directory_path() ),
-	maybe( tcp_port() ) ) -> static_return( manager_pid() ).
+	class_ResultManager:manager_pid(), option( bin_directory_path() ),
+	option( tcp_port() ) ) -> static_return( manager_pid() ).
 create_manager( SII, EngineRootDir, InteractivityMode, WebserverContentRoot,
 				ResultManagerPid, MaybeWebserverInstallRoot, MaybeTCPPort ) ->
 	wooper:return_static( synchronous_timed_new_link( SII, EngineRootDir,
@@ -452,18 +455,19 @@ create_manager( SII, EngineRootDir, InteractivityMode, WebserverContentRoot,
 
 
 
-% @doc Returns the atom corresponding to the name the web manager should be
-% registered as.
-%
+-doc """
+Returns the atom corresponding to the name the web manager should be registered
+as.
+""".
 -spec get_registration_name() -> static_return( net_utils:atom_node_name() ).
 get_registration_name() ->
 	wooper:return_static( ?web_manager_name ).
 
 
 
-% @doc Returns the web content root corresponding to specified base result
-% directory.
-%
+-doc """
+Returns the web content root corresponding to specified base result directory.
+""".
 -spec get_web_content_root( directory_path() ) ->
 									static_return( directory_path() ).
 get_web_content_root( ResultDir ) ->
@@ -477,11 +481,12 @@ get_web_content_root( ResultDir ) ->
 % Helper functions.
 
 
-% @doc Checks the settings assigned to this manager (and performs some side
-% effects like the creation of directories).
-%
--spec check_settings( directory_path(), maybe( directory_path() ),
-					  maybe( tcp_port() ), wooper:state() ) ->
+-doc """
+Checks the settings assigned to this manager (and performs some side effects
+like the creation of directories).
+""".
+-spec check_settings( directory_path(), option( directory_path() ),
+					  option( tcp_port() ), wooper:state() ) ->
 		{ bin_directory_path(), bin_directory_path(), tcp_port() }.
 check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 				State ) ->
@@ -512,7 +517,7 @@ check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 	%	undefined ->
 	%		InstDir = get_default_webserver_installation_root(),
 	%		?notice_fmt( "No user-defined webserver root directory specified, "
-	%					 "using the default one, '~ts'.", [ InstDir ] ),
+	%                    "using the default one, '~ts'.", [ InstDir ] ),
 	%		InstDir;
 	%
 	%	InstRoot ->
@@ -562,9 +567,10 @@ check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 
 
 
-% @doc Checks that no pending local (web)server is lingering at the TCP port we
-% target, to ensure that a next launch is possible.
-%
+-doc """
+Checks that no pending local (web)server is lingering at the TCP port we target,
+to ensure that a next launch is possible.
+""".
 -spec check_no_pending_webserver( tcp_port(), wooper:state() ) -> void().
 check_no_pending_webserver( TCPPort, State ) ->
 
@@ -583,7 +589,7 @@ check_no_pending_webserver( TCPPort, State ) ->
 
 
 
-% @doc Returns the default root directory of the webserver installation.
+-doc "Returns the default root directory of the webserver installation.".
 -spec get_default_webserver_installation_root() -> directory_path().
 get_default_webserver_installation_root() ->
 
@@ -593,11 +599,12 @@ get_default_webserver_installation_root() ->
 
 
 
-% @doc Generates a new, suitable Node.js configuration file.
-%
-% As mentioned, depending on the probes, running such a node may or may not be
-% necessary.
-%
+-doc """
+Generates a new, suitable Node.js configuration file.
+
+As mentioned, depending on the probes, running such a node may or may not be
+necessary.
+""".
 -spec generate_webserver_configuration_file( sim_diasca:sii(),
 		bin_directory_path(), bin_directory_path(),
 		tcp_port(), wooper:state() ) -> bin_file_path().
@@ -641,11 +648,12 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 
 
 
-% @doc Generates a landing page (index.html) at the root of the specified web
-% content directory, and returns its path.
-%
-% Any pre-existing version of that page will be removed first.
-%
+-doc """
+Generates a landing page (index.html) at the root of the specified web content
+directory, and returns its path.
+
+Any pre-existing version of that page will be removed first.
+""".
 -spec generate_landing_page( [ probe_info() ], [ probe_info() ],
 	class_ResultManager:meta_data(), wooper:state() ) -> file_path().
 generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
@@ -727,9 +735,10 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 
 
-% @doc Manages the termination of every registered, initialised support class,
-% by calling any appropriate class-level callbacks.
-%
+-doc """
+Manages the termination of every registered, initialised support class, by
+calling any appropriate class-level callbacks.
+""".
 -spec manage_support_termination( wooper:state() ) -> wooper:state().
 manage_support_termination( State ) ->
 
@@ -759,9 +768,9 @@ manage_support_termination( State ) ->
 
 
 
-% @doc Writes the header of the landing page.
+-doc "Writes the header of the landing page.".
 -spec write_header( sim_diasca:sii(), class_ResultManager:meta_data(),
-					file_utils:file() ) -> void().
+					file() ) -> void().
 write_header( SII, Metadata, File ) ->
 
 	SimString = list_table:get_value( simulation_name, Metadata ),
@@ -801,18 +810,24 @@ write_header( SII, Metadata, File ) ->
 
 
 
-% @doc Writes a suitable mini-table of contents.
+-doc "Writes a suitable mini-table of contents.".
+-spec write_toc( [ bin_probe_name() ], [ bin_probe_name() ], file() ) -> void().
 write_toc( _BasicProbeNames, _WebProbeNames, _File ) ->
 	ok.
 
 
-
-% Single probe here:
+-doc """
+Writes in the specified file the content relative to the specified web probes.
+""".
+-spec write_web_probes( [ probe_info() ], bin_directory_path(), file() ) ->
+                                                    void().
+% Single (web) probe here:
 write_web_probes( [ WebProbeInfo ], BinServerContentRoot, File ) ->
 	file_utils:write_ustring( File, "<a name=\"web_probes\"></a>~n"
 		"<p>A single web probe enabled: ~ts</p>~n",
 		[ get_probe_link( WebProbeInfo, BinServerContentRoot ) ] );
 
+% Multiple (web) probes here:
 write_web_probes( WebProbeInfos, BinServerContentRoot, File ) ->
 
 	ProbeLinks =
@@ -825,8 +840,7 @@ write_web_probes( WebProbeInfos, BinServerContentRoot, File ) ->
 
 
 
-% @doc Returns an HTML link (if possible) for specified probe.
-
+-doc "Returns an HTML link (if possible) for specified probe.".
 % Must be a tracked (non-facility) *web* probe, whose result location is a
 % priori known:
 %
@@ -853,17 +867,18 @@ get_probe_link( { BinProbeName, BinProbeDir }, BinServerContentRoot ) ->
 
 
 
-% At least one of them, possibly just one:
-write_basic_probes( _BasicProbeInfos=[ { ProbeName, _BinDirPath } ],
-					BinServerContentRoot, File ) ->
+-doc """
+Writes in the specified file the content relative to the specified web probes.
+""".
+-spec write_basic_probes( [ probe_info() ], bin_directory_path(), file() ) ->
+                                                    void().
+% Single (basic) probe here:
+write_basic_probes( [ WebProbeInfo ], BinServerContentRoot, File ) ->
+	file_utils:write_ustring( File, "<a name=\"basic_probes\"></a>~n"
+		"<p>A single basic probe enabled: ~ts</p>~n",
+		[ get_probe_link( WebProbeInfo, BinServerContentRoot ) ] );
 
-	ProbeLink = get_html_link_for( ProbeName, BinServerContentRoot ),
-
-	file_utils:write_ustring( File, "<a name=\"basic_probes\"></a>~n<p>"
-		"A single basic probe enabled: ~ts</p>~n", [ ProbeLink ] );
-
-
-% At least two of them:
+% Multiple (basic) probes here:
 write_basic_probes( BasicProbeInfos, BinServerContentRoot, File ) ->
 
 	ProbeLinks = [ get_html_link_for( PName, BinServerContentRoot )
@@ -876,7 +891,7 @@ write_basic_probes( BasicProbeInfos, BinServerContentRoot, File ) ->
 
 
 
-% @doc Returns an HTML link (if possible) for specified basic probe.
+-doc "Returns an HTML link (if possible) for the specified basic probe.".
 -spec get_html_link_for( bin_probe_name(), bin_directory_path() ) -> ustring().
 get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 
@@ -905,16 +920,16 @@ get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 
 
 
-% @doc Writes down the fact that there is no probe available.
+-doc "Writes down the fact that there is no probe available.".
 write_no_probe( File ) ->
 	file_utils:write_ustring( File,
 		"<p>No tracked probe available (see the "
-		" <code>result_specification</code> field of the "
+		"<code>result_specification</code> field of the "
 		"<code>simulation_settings</code> record to enable any "
 		"potential, either basic or web, probe).</p>~n", [] ).
 
 
-% @doc Writes the footer of the web page.
+-doc "Writes the footer of the web page.".
 write_footer( File ) ->
 	file_utils:write_ustring( File,
 		"   <hr>~n"
@@ -924,9 +939,10 @@ write_footer( File ) ->
 
 
 
-% @doc Starts the corresponding webserver, with specified configuration file,
-% with the current user.
-%
+-doc """
+Starts the corresponding webserver, with the specified configuration file, with
+the current user.
+""".
 -spec start_webserver( directory_path(), directory_path(), file_path(),
 					   wooper:state() ) -> void().
 start_webserver( ServerInstallRoot, _ServerContentRoot, ConfigFilename,
@@ -978,22 +994,22 @@ start_webserver( ServerInstallRoot, _ServerContentRoot, ConfigFilename,
 
 
 
-% @doc Returns a textual representation of this instance.
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	SupportString = case table:enumerate( ?getAttr(support_table) ) of
 
 		[] ->
-			"not having initialized support classes";
+			"not having initialised support classes";
 
 		[ { SupportClassname, IsInit } ] ->
 			text_utils:format(
-				"having initialized (to ~w) a single support class: ~ts",
+				"having initialised (to ~w) a single support class: ~ts",
 				[ IsInit, SupportClassname ] );
 
 		SupportClasses ->
-			text_utils:format( "having initialized ~B support classes: ~ts",
+			text_utils:format( "having initialised ~B support classes: ~ts",
 				[ length( SupportClasses ),
 				  table:to_string( SupportClasses ) ] )
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,16 +25,18 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, November 6, 2021.
 
-
-% Unit tests for the <b>Protocol Buffer</b> facilities, a.k.a. Protobuf.
-%
-% See the protobuf_support.erl tested module.
-%
-% If running directly with the makefile system (i.e. not from an OTP/rebar3
-% context), see, in GNUmakevars.inc, the USE_{PROTOBUF,GPB} variables to
-% enable/disable Protobuff support and/or backend ones.
-%
 -module(protobuf_support_test).
+
+-moduledoc """
+Unit tests for the **Protocol Buffer** facilities, a.k.a. Protobuf.
+
+See the protobuf_support.erl tested module.
+
+If running directly with the makefile system (i.e. not from an OTP/rebar3
+context), see, in GNUmakevars.inc, the USE_{PROTOBUF,GPB} variables to
+enable/disable Protobuff support and/or backend ones.
+""".
+
 
 
 % For run/0 export and al:
@@ -110,7 +112,6 @@ test_protobuf() ->
 
 
 test_protobuf() ->
-
 	test_facilities:display( "No Protocol Buffer support enabled "
 		"(see USE_PROTOBUF in GNUmakevars.inc), hence no test thereof." ).
 

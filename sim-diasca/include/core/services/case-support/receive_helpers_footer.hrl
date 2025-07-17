@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -23,8 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-%
-% Creation date: July 1, 2007.
+% Creation date: 2012.
 
 
 % Introduced so that for example static methods performing receives can still
@@ -50,45 +49,46 @@
 -define( test_receive( AnyMessage ), case_receive( AnyMessage ) ).
 
 
-% @doc Helper function to write receive clauses in cases which cannot interfere
-% with trace supervision, as a case may also receive trace control message the
-% case code should be unware of.
-%
-% Returns the received value.
-%
-% Ex: Pid ! {getBaz, [], self()}, MyBaz = case_receive(), ...
-%
-% to be used instead of:
-%
-% Pid ! {getBaz, [], self()},
-% receive
-%
-%   {wooper_result, V} ->
-%        V
-%
-% end,
-% ...
-%
-% Note that, should the result message be appropriately taggued (hence removing
-% any possibility of not selecting the right answer), a standard receive clause
-% may be used, however case_receive/1 may still be more appropriate.
-%
+-doc """
+Helper function to write receive clauses in cases which cannot interfere with
+trace supervision, as a case may also receive trace control message the case
+code should be unware of.
+
+Returns the received value.
+
+For example: `Pid ! {getBaz, [], self()}, MyBaz = case_receive(), ...`, to be
+used instead of:
+
+Pid ! {getBaz, [], self()},
+receive
+
+  {wooper_result, V} ->
+       V
+
+end,
+...
+
+Note that, should the result message be appropriately taggued (hence removing
+any possibility of not selecting the right answer), a standard receive clause
+may be used, however `case_receive/1` may still be more appropriate.
+""".
 -spec case_receive() -> any().
 case_receive() ->
 	traces:receive_applicative_message().
 
 
 
-% @doc Helper function to write receive clauses for specific messages in cases
-% while not interfering with trace supervision.
-%
+-doc """
+Helper function to write receive clauses for specific messages in cases while
+not interfering with trace supervision.
+""".
 -spec case_receive( any() ) -> void().
 case_receive( Message ) ->
 	traces:receive_applicative_message( Message ).
 
 
 
-% @doc Test support.
+-doc "Test support.".
 -spec test_receive() -> any().
 test_receive() ->
 	case_receive().

@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,17 +25,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, July 20, 2019.
 
-
-% @doc Module implementing the <b>Traces (active) OTP application</b> behaviour.
-%
-% Note that, thanks to the automatic creation of the class manager, Traces will
-% still work flawlessly even if not specifically started (typically then out of
-% any OTP context).
-%
 -module(traces_app).
 
+-moduledoc """
+Module implementing the **Traces (active) OTP application** behaviour.
 
-% Implementing the (active, OTP) application behaviour:
+Note that, thanks to the automatic creation of the class manager, Traces will
+still work flawlessly even if not specifically started (typically then out of
+any OTP context).
+""".
+
+
+
+% Implementing the (active, OTP) application behaviour.
 %
 % (see https://erlang.org/doc/design_principles/applications.html)
 %
@@ -50,10 +52,12 @@
 -include("class_TraceAggregator.hrl").
 
 
-% @doc Starts the Traces services.
-%
-% Note: RestartType and StartArgs at least currently ignored.
-%
+
+-doc """
+Starts the Traces services.
+
+Note: RestartType and StartArgs at least currently ignored.
+""".
 -spec start( application:start_type(), StartArgs :: term() ) -> { 'ok', pid() }
 		| { 'ok', pid() } | { 'error', Reason :: term() }.
 start( RestartType, StartArgs ) ->
@@ -95,7 +99,7 @@ start( RestartType, StartArgs ) ->
 
 
 
-% @doc Stops the Traces services.
+-doc "Stops the Traces services.".
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 

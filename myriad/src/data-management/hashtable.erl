@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,37 +25,34 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 2, 2007.
 
-
-% Generic hash table implementation.
-% See hashtable_test.erl for the corresponding test.
-
-
-% @doc Implementation of a simple, generic <b>hash table</b>.
-%
-% An hashtable is basically a tuple whose size (number of elements) is the
-% number of buckets in the hashtable. Each element of the tuple is a list
-% containing key/value pairs.
-%
-% We provide different multiple types of hashtables, including:
-%
-% - 'hashtable' (this module), the most basic, safest, reference implementation
-% - and quite efficient as well
-%
-% - 'tracked_hashtable', an attempt of optimisation of it (not necessarily the
-% best)
-%
-% - 'lazy_hashtable', deciding to optimise in a less costly way
-% than 'tracked_hashtable'
-%
-% - 'map_hashtable', which is probably the most efficient implementation
-% (speed/size compromise)
-%
-% - 'list_table', a list-based implementation, efficient for smaller tables (and
-% only them)
-%
-% They are to provide the same API (signatures and contracts).
-%
 -module(hashtable).
+
+-moduledoc """
+Generic hash table implementation.
+
+See hashtable_test.erl for the corresponding test.
+
+Implementation of a simple, generic **hash table**.
+
+An hashtable is basically a tuple whose size (number of elements) is the number
+of buckets in the hashtable. Each element of the tuple is a list containing
+key/value pairs.
+
+We provide different multiple types of hashtables, including:
+- 'hashtable' (this module), the most basic, safest, reference implementation -
+  and quite efficient as well
+- 'tracked_hashtable', an attempt of optimisation of it (not necessarily the
+best)
+- 'lazy_hashtable', deciding to optimise in a less costly way than
+'tracked_hashtable'
+- 'map_hashtable', which is probably the most efficient implementation
+(speed/size compromise)
+- 'list_table', a list-based implementation, efficient for smaller tables (and
+only them)
+
+They are to provide the same API (signatures and contracts).
+""".
+
 
 
 % To avoid code duplication yet having fastest speed:
@@ -125,73 +122,128 @@
 
 
 
+-doc "Not necessarily an atom, a key can be any term.".
 -type key() :: term().
-% Not necessarily an atom, a key can be any term.
 
 
+
+-doc "Any value associated to a key.".
 -type value() :: term().
-% Any value associated to a key.
 
+
+
+-doc "A default value, associated to a key.".
 -type default_value() :: term().
-% A default value, associated to a key.
 
+
+
+-doc "An entry stored in the hashtable.".
 -type entry() :: { key(), value() }.
+
+
+
+-doc "An entry stored in the hashtable.".
 -type entry( K, V ) :: { K, V }.
 
--type atom_entry() :: entry( atom(), term() ).
-% Very common, including in proplists.
 
+
+-doc "Very common, including in proplists.".
+-type atom_entry() :: entry( atom(), term() ).
+
+
+
+-doc "Entries stored in the hashtable.".
 -type entries() :: [ entry() ].
+
+
+
+-doc "Entries stored in the hashtable.".
 -type entries( K, V ) :: [ { K, V } ].
 
--type maybe_entry() :: { key(), maybe( value() ) }.
--type maybe_entries() :: [ maybe_entry() ].
 
 
+-doc "Maybe-entry stored in the hashtable.".
+-type option_entry() :: { key(), option( value() ) }.
+
+
+
+-doc "Maybe-entries stored in the hashtable.".
+-type option_entries() :: [ option_entry() ].
+
+
+
+-doc "A number of entries.".
 -type entry_count() :: basic_utils:count().
 
+
+
+-doc "A number of buckets.".
 -type bucket_count() :: pos_integer().
 
--type bucket() :: [ entries() ].
--type bucket( K, V ) :: [ entries( K, V ) ].
+
+
+-doc "An entry bucket.".
+-type bucket() :: [ entry() ].
+
+
+
+-doc "An entry bucket.".
+-type bucket( K, V ) :: [ entry( K, V ) ].
+
 
 
 % A problem is that the number of buckets (hence the size of the tuple) is
 % determined at runtime:
 %
+-doc "An hashtable.".
 -opaque hashtable() :: tuple().
 
+
+
 % Since 18.0, type tuple/1 does not seem to exist anymore:
-%-opaque hashtable( K, V ) :: tuple( bucket( K, V ) ).
+-doc "An hashtable.".
+-opaque hashtable( K, V ) :: type_utils:tuploid( bucket( K, V ) ).
 
+
+
+-doc """
+A type of bullet (e.g. " * ").
+""".
 -type bullet() :: ustring().
-% A type of bullet (e.g. " * ").
 
 
+
+-doc "A type of description.".
 -type description_type() :: bullet() | 'user_friendly' | 'full' | 'internal'.
 
 
 -export_type([ key/0, value/0, default_value/0, entry/0, entry/2, atom_entry/0,
-			   entries/0, entries/2, maybe_entry/0, maybe_entries/0,
+			   entries/0, entries/2, option_entry/0, option_entries/0,
 			   entry_count/0, bucket/0, bucket/2, bucket_count/0,
-			   hashtable/0, bullet/0, description_type/0 ]).
+			   hashtable/0, hashtable/2, bullet/0, description_type/0 ]).
 
 
-% Shorthands:
--type ustring() :: text_utils:ustring().
+% Type shorthands:
+
 -type accumulator() :: basic_utils:accumulator().
 
+-type ustring() :: text_utils:ustring().
 
-% @doc Returns an empty hashtable dimensioned for the default number of entries.
+
+
+-doc """
+Returns an empty hashtable dimensioned for the default number of entries.
+""".
 -spec new() -> hashtable().
 new() ->
 	new( ?default_entry_count ).
 
 
 
-% @doc Returns an empty hashtable dimensioned for the specified expected number
-% of entries.
-%
+-doc """
+Returns an empty hashtable dimensioned for the specified expected number of
+entries.
+""".
 -spec new( entry_count() | entries() ) -> hashtable().
 new( ExpectedNumberOfEntries ) when is_integer( ExpectedNumberOfEntries ) ->
 	NumberOfBuckets = get_ideal_bucket_count( ExpectedNumberOfEntries ),
@@ -204,21 +256,21 @@ new( InitialEntries ) when is_list( InitialEntries ) ->
 
 
 
-% @doc Returns an empty hashtable dimensioned with the specified number of
-% buckets.
-%
+-doc """
+Returns an empty hashtable dimensioned with the specified number of buckets.
+""".
 -spec new_with_buckets( bucket_count() ) -> hashtable().
 new_with_buckets( NumberOfBuckets ) ->
 	create_tuple( NumberOfBuckets, _DefaultValue=[] ).
 
 
 
+-doc """
+Adds the specified key/value pair into the specified hashtable.
 
-% @doc Adds the specified key/value pair into the specified hashtable.
-%
-% If there is already a pair with this key, then its previous value will be
-% replaced by the specified one.
-%
+If there is already a pair with this key, then its previous value will be
+replaced by the specified one.
+""".
 -spec add_entry( key(), value(), hashtable() ) -> hashtable().
 add_entry( Key, Value, Hashtable ) ->
 	KeyIndex = get_bucket_index( Key, Hashtable ),
@@ -232,12 +284,13 @@ add_entry( Key, Value, Hashtable ) ->
 
 
 
-% @doc Adds the specified key/value pair into the specified hashtable, and
-% returns an update diagnosis.
-%
-% If there is already a pair with this key, then its previous value will be
-% replaced by the specified one.
-%
+-doc """
+Adds the specified key/value pair into the specified hashtable, and returns an
+update diagnosis.
+
+If there is already a pair with this key, then its previous value will be
+replaced by the specified one.
+""".
 -spec add_diagnosed_entry( key(), value(), hashtable() ) ->
 								{ hashtable(), 'added' | 'updated' }.
 add_diagnosed_entry( Key, Value, Hashtable ) ->
@@ -255,11 +308,12 @@ add_diagnosed_entry( Key, Value, Hashtable ) ->
 
 
 
-% @doc Adds the specified list of key/value pairs into the specified hashtable.
-%
-% If there is already a pair with this key, then its previous value will be
-% replaced by the specified one.
-%
+-doc """
+Adds the specified list of key/value pairs into the specified hashtable.
+
+If there is already a pair with this key, then its previous value will be
+replaced by the specified one.
+""".
 -spec add_entries( entries(), hashtable() ) -> hashtable().
 add_entries( _EntryList=[], Hashtable ) ->
 	Hashtable;
@@ -269,12 +323,13 @@ add_entries( [ { EntryName, EntryValue } | Rest ], Hashtable ) ->
 
 
 
-% @doc Adds the specified list of key/value pairs into the specified hashtable,
-% and returns an updated diagnosis.
-%
-% If there is already a pair with this key, then its previous value will be
-% replaced by the specified one.
-%
+-doc """
+Adds the specified list of key/value pairs into the specified hashtable, and
+returns an updated diagnosis.
+
+If there is already a pair with this key, then its previous value will be
+replaced by the specified one.
+""".
 -spec add_diagnosed_entries( entries(), hashtable() ) ->
 									{ hashtable(), 'added' | 'updated' }.
 add_diagnosed_entries( Entries, Hashtable ) ->
@@ -293,13 +348,14 @@ add_diagnosed_entries( Entries, Hashtable ) ->
 
 
 
-% @doc Removes the specified key/value pair, as designated by the key, from the
-% specified hashtable.
-%
-% Does nothing if the key is not found.
-%
-% Returns an updated table.
-%
+-doc """
+Removes the specified key/value pair, as designated by the key, from the
+specified hashtable.
+
+Does nothing if the key is not found.
+
+Returns an updated table.
+""".
 -spec remove_entry( key(), hashtable() ) -> hashtable().
 remove_entry( Key, Hashtable ) ->
 
@@ -313,13 +369,14 @@ remove_entry( Key, Hashtable ) ->
 
 
 
-% @doc Removes the specified key/value pair, as designated by the key, from the
-% specified hashtable.
-%
-% Does nothing if the key is not found.
-%
-% Returns a diagnosis and an updated table.
-%
+-doc """
+Removes the specified key/value pair, as designated by the key, from the
+specified hashtable.
+
+Does nothing if the key is not found.
+
+Returns a diagnosis and an updated table.
+""".
 -spec remove_diagnosed_entry( key(), hashtable() ) ->
 						{ 'deleted', hashtable() } | 'unchanged'.
 remove_diagnosed_entry( Key, Hashtable ) ->
@@ -341,13 +398,12 @@ remove_diagnosed_entry( Key, Hashtable ) ->
 
 
 
-% @doc Looks-up the specified entry (designated by its key) in specified
-% hashtable.
-%
-% Returns either 'key_not_found' if no such key is registered in the
-% table, or {value, Valu }, with Value being the value associated to the
-% specified key.
-%
+-doc """
+Looks-up the specified entry (designated by its key) in specified hashtable.
+
+Returns either 'key_not_found' if no such key is registered in the table, or
+{value, Value }, with Value being the value associated to the specified key.
+""".
 -spec lookup_entry( key(), hashtable() ) ->
 						'key_not_found' | { 'value', value() }.
 lookup_entry( Key, Hashtable ) ->
@@ -356,7 +412,7 @@ lookup_entry( Key, Hashtable ) ->
 
 
 
-% @doc Tells whether the specified key exists in the table.
+-doc "Tells whether the specified key exists in the table.".
 -spec has_entry( key(), hashtable() ) -> boolean().
 has_entry( Key, Hashtable ) ->
 
@@ -374,12 +430,13 @@ has_entry( Key, Hashtable ) ->
 
 
 
-% @doc Retrieves the value corresponding to specified (existing) key, and
-% returns it directly.
-%
-% The key/value pair is expected to exist already, otherwise an exception is
-% raised.
-%
+-doc """
+Retrieves the value corresponding to specified (existing) key, and returns it
+directly.
+
+The key/value pair is expected to exist already, otherwise an exception is
+raised.
+""".
 -spec get_value( key(), hashtable() ) -> value().
 get_value( Key, Hashtable ) ->
 
@@ -399,12 +456,13 @@ get_value( Key, Hashtable ) ->
 
 
 
-% @doc Extracts the specified entry from specified hashtable: returns the
-% associated value and removes that entry from the table.
-%
-% The key/value pair is expected to exist already, otherwise an exception is
-% raised.
-%
+-doc """
+Extracts the specified entry from specified hashtable: returns the associated
+value and removes that entry from the table.
+
+The key/value pair is expected to exist already, otherwise an exception is
+raised.
+""".
 -spec extract_entry( key(), hashtable() ) -> { value(), hashtable() }.
 extract_entry( Key, Hashtable ) ->
 
@@ -428,9 +486,10 @@ extract_entry( Key, Hashtable ) ->
 
 
 
-% @doc Looks for the specified entry in specified table and, if found, returns
-% the associated value; otherwise returns the specified default value.
-%
+-doc """
+Looks for the specified entry in specified table and, if found, returns the
+associated value; otherwise returns the specified default value.
+""".
 -spec get_value_with_default( key(), value(), hashtable() ) -> value().
 get_value_with_default( Key, DefaultValue, Hashtable ) ->
 
@@ -449,25 +508,24 @@ get_value_with_default( Key, DefaultValue, Hashtable ) ->
 
 
 
-% @doc Returns the (ordered) list of values that correspond to the specified
-% (ordered) list of keys of this table.
-%
-% The key/value pairs are expected to exist already, otherwise an exception is
-% raised.
-%
-% For example `[Color, Age, Mass] = hashtable:get_values([color, age, mass],
-%           MyTable])'.
-%
+-doc """
+Returns the (ordered) list of values that correspond to the specified (ordered)
+list of keys of this table.
+
+The key/value pairs are expected to exist already, otherwise an exception is
+raised.
+
+For example `[Color, Age, Mass] = hashtable:get_values([color, age, mass],
+			MyTable])'`.
+""".
 -spec get_values( [ key() ], hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
 
 	{ RevValues, _FinalTable } = lists:foldl(
 
 		fun( _Elem=Key, _Acc={ Values, Table } ) ->
-
 			{ Value, ShrunkTable } = extract_entry( Key, Table ),
 			{ [ Value | Values ], ShrunkTable }
-
 		end,
 		_Acc0={ [], Hashtable },
 		_List=Keys ),
@@ -476,25 +534,24 @@ get_values( Keys, Hashtable ) ->
 
 
 
-% @doc Returns the (ordered) list of values that correspond to the specified
-% (ordered) list of keys of this table, ensuring all entries have been read,
-% otherwise throwing an exception.
-%
-% The key/value pairs are expected to exist already, otherwise an exception is
-% raised.
-%
-% For example `[Color=red, Age=23, Mass=51] = hashtable:get_all_values([color,
-%   age, mass], [{color, red}, {mass, 51}, {age, 23}])'.
-%
+-doc """
+Returns the (ordered) list of values that correspond to the specified (ordered)
+list of keys of this table, ensuring all entries have been read, otherwise
+throwing an exception.
+
+The key/value pairs are expected to exist already, otherwise an exception is
+raised.
+
+For example `[Color=red, Age=23, Mass=51] = hashtable:get_all_values([color,
+				 age, mass], [{color, red}, {mass, 51}, {age, 23}])`.
+""".
 -spec get_all_values( [ key() ], hashtable() ) -> [ value() ].
 get_all_values( Keys, Hashtable ) ->
 
 	{ RevValues, FinalTable } = lists:foldl(
 		fun( _Elem=Key, _Acc={ Values, Table } ) ->
-
 			{ Value, ShrunkTable } = extract_entry( Key, Table ),
 			{ [ Value | Values ], ShrunkTable }
-
 		end,
 		_Acc0={ [], Hashtable },
 		_List=Keys ),
@@ -511,19 +568,20 @@ get_all_values( Keys, Hashtable ) ->
 
 
 
-% @doc Applies (maps) the specified anonymous function to each of the key-value
-% entries contained in this hashtable.
-%
-% Allows to apply "in-place" an operation on all entries without having to
-% enumerate the content of the hashtable and iterate on it (hence without having
-% to duplicate the whole content in memory).
-%
-% Note: as the fun may return modified keys, the whole structure of the
-% hashtable may change (e.g. different buckets used for replaced entries,
-% colliding keys resulting in having less entries afterwards, etc.).
-%
-% One may request the returned hashtable to be optimised after this call.
-%
+-doc """
+Applies (maps) the specified anonymous function to each of the key-value entries
+contained in this hashtable.
+
+Allows to apply "in-place" an operation on all entries without having to
+enumerate the content of the hashtable and iterate on it (hence without having
+to duplicate the whole content in memory).
+
+Note: as the fun may return modified keys, the whole structure of the hashtable
+may change (e.g. different buckets used for replaced entries, colliding keys
+resulting in having less entries afterwards, etc.).
+
+One may request the returned hashtable to be optimised after this call.
+""".
 -spec map_on_entries( fun( ( entry() ) -> entry() ), hashtable() ) ->
 							hashtable().
 map_on_entries( Fun, Hashtable ) ->
@@ -565,16 +623,17 @@ map_on_entries( Fun, _BucketList=[ Bucket | T ], Hashtable ) ->
 
 
 
-% @doc Applies (maps) the specified anonymous function to each of the values
-% contained in this hashtable.
-%
-% Allows to apply "in-place" an operation on all values without having to
-% enumerate the content of the hashtable and iterate on it (hence without having
-% to duplicate the whole content in memory).
-%
-% Note: the keys are left as are, hence the structure of the hashtable does not
-% change.
-%
+-doc """
+Applies (maps) the specified anonymous function to each of the values contained
+in this hashtable.
+
+Allows to apply "in-place" an operation on all values without having to
+enumerate the content of the hashtable and iterate on it (hence without having
+to duplicate the whole content in memory).
+
+Note: the keys are left as are, hence the structure of the hashtable does not
+change.
+""".
 -spec map_on_values( fun( ( value() ) -> value() ), hashtable() ) ->
 												hashtable().
 map_on_values( Fun, Hashtable ) ->
@@ -597,20 +656,20 @@ map_bucket_for_values( Fun, Bucket ) ->
 
 
 
-% @doc Folds the specified anonymous function on all entries of the specified
-% hashtable.
-%
-% The order of transformation for entries is not specified.
-%
-% Returns the final accumulator.
-%
+-doc """
+Folds the specified anonymous function on all entries of the specified
+hashtable.
+
+The order of transformation for entries is not specified.
+
+Returns the final accumulator.
+""".
 -spec fold_on_entries( fun( ( entry(), accumulator() ) ->
 									accumulator() ),
 					   accumulator(), hashtable() ) -> accumulator().
 fold_on_entries( Fun, InitialAcc, Hashtable ) ->
 	BucketList = tuple_to_list( Hashtable ),
 	fold_on_entries_helper( Fun, BucketList, InitialAcc ).
-
 
 
 % (helper)
@@ -628,13 +687,13 @@ fold_on_entries_helper( Fun, _BucketList=[ Bucket | T ], Acc ) ->
 
 
 
+-doc """
+Adds the specified value to the value, supposed to be numerical, associated to
+specified key.
 
-% @doc Adds the specified value to the value, supposed to be numerical,
-% associated to specified key.
-%
-% An exception is thrown if the key does not exist, a bad arithm is triggered if
-% no addition can be performed on the associated value.
-%
+An exception is thrown if the key does not exist, a bad arithm is triggered if
+no addition can be performed on the associated value.
+""".
 -spec add_to_entry( key(), number(), hashtable() ) -> hashtable().
 add_to_entry( Key, Value, Hashtable ) ->
 
@@ -653,12 +712,13 @@ add_to_entry( Key, Value, Hashtable ) ->
 
 
 
-% @doc Subtracts the specified value to the value, supposed to be numerical,
-% associated to specified key.
-%
-% An exception is thrown if the key does not exist, a bad arithm is triggered if
-% no subtraction can be performed on the associated value.
-%
+-doc """
+Subtracts the specified value to the value, supposed to be numerical, associated
+to specified key.
+
+An exception is thrown if the key does not exist, a bad arithm is triggered if
+no subtraction can be performed on the associated value.
+""".
 -spec subtract_from_entry( key(), number(), hashtable() ) -> hashtable().
 subtract_from_entry( Key, Value, Hashtable ) ->
 
@@ -677,13 +737,13 @@ subtract_from_entry( Key, Value, Hashtable ) ->
 
 
 
+-doc """
+Toggles the boolean value associated with specified key: if true will be false,
+if false will be true.
 
-% @doc Toggles the boolean value associated with specified key: if true will be
-% false, if false will be true.
-%
-% An exception is thrown if the key does not exist or if its associated value is
-% not a boolean.
-%
+An exception is thrown if the key does not exist or if its associated value is
+not a boolean.
+""".
 -spec toggle_entry( key(), hashtable() ) -> hashtable().
 toggle_entry( Key, Hashtable ) ->
 
@@ -707,11 +767,11 @@ toggle_entry( Key, Hashtable ) ->
 
 
 
-% @doc Returns a new hashtable, which started from HashtableBase and was
-% enriched with the HashtableAdd entries whose keys where not already in
-% HashtableBase (if a key is in both tables, the one from HashtableBase will be
-% kept).
-%
+-doc """
+Returns a new hashtable, which started from HashtableBase and was enriched with
+the HashtableAdd entries whose keys where not already in HashtableBase (if a key
+is in both tables, the one from HashtableBase will be kept).
+""".
 -spec merge( hashtable(), hashtable() ) -> hashtable().
 merge( HashtableBase, HashtableAdd ) ->
 
@@ -725,14 +785,15 @@ merge( HashtableBase, HashtableAdd ) ->
 
 
 
-% @doc Appends the specified element to the value, supposed to be a list,
-% associated to specified key.
-%
-% An exception is thrown if the key does not exist.
-%
-% Note: no check is performed to ensure the value is a list indeed, and the
-% '[|]' operation will not complain if not.
-%
+-doc """
+Appends the specified element to the value, supposed to be a list, associated to
+specified key.
+
+An exception is thrown if the key does not exist.
+
+Note: no check is performed to ensure the value is a list indeed, and the '[|]'
+operation will not complain if not.
+""".
 -spec append_to_entry( key(), term(), hashtable() ) -> hashtable().
 append_to_entry( Key, Element, Hashtable ) ->
 
@@ -750,13 +811,14 @@ append_to_entry( Key, Element, Hashtable ) ->
 
 
 
-% @doc Deletes the first match of the specified element in the value associated
-% to specified key, this value being assumed to be a list.
-%
-% An exception is thrown if the key does not exist.
-%
-% If the element is not in the specified list, the list will not be modified.
-%
+-doc """
+Deletes the first match of the specified element in the value associated to
+specified key, this value being assumed to be a list.
+
+An exception is thrown if the key does not exist.
+
+If the element is not in the specified list, the list will not be modified.
+""".
 -spec delete_from_entry( key(), term(), hashtable() ) -> hashtable().
 delete_from_entry( Key, Element, Hashtable ) ->
 
@@ -775,10 +837,10 @@ delete_from_entry( Key, Element, Hashtable ) ->
 
 
 
-% @doc Pops the head of the value (supposed to be a list) associated to
-% specified key, and returns a pair made of the popped head and of the new
-% hashtable.
-%
+-doc """
+Pops the head of the value (supposed to be a list) associated to specified key,
+and returns a pair made of the popped head and of the new hashtable.
+""".
 -spec pop_from_entry( key(), hashtable() ) -> { term(), hashtable() }.
 pop_from_entry( Key, Hashtable ) ->
 
@@ -796,21 +858,22 @@ pop_from_entry( Key, Hashtable ) ->
 
 
 
+-doc """
+Returns a flat list whose elements are all the key/value pairs of the hashtable,
+in no particular order.
 
-% @doc Returns a flat list whose elements are all the key/value pairs of the
-% hashtable, in no particular order.
-%
-% For example `[{K1,V1}, {K2,V2}, ...]'.
-%
+For example `[{K1,V1}, {K2,V2}, ...]`.
+""".
 -spec enumerate( hashtable() ) -> entries().
 enumerate( Hashtable ) ->
 	lists:flatten( tuple_to_list( Hashtable ) ).
 
 
 
-% @doc Returns a list of key/value pairs corresponding to the list of specified
-% keys, or throws a badmatch is at least one key is not found.
-%
+-doc """
+Returns a list of key/value pairs corresponding to the list of specified keys,
+or throws a badmatch is at least one key is not found.
+""".
 -spec select_entries( [ key() ], hashtable() ) -> entries().
 select_entries( Keys, Hashtable ) ->
 	select_entries( Keys, Hashtable, _Acc=[] ).
@@ -834,27 +897,28 @@ select_entries( _Keys=[ K | T ], Hashtable, Acc ) ->
 
 
 
-% @doc Returns a list containing all the keys of this hashtable.
+-doc "Returns a list containing all the keys of this hashtable.".
 -spec keys( hashtable() ) -> [ key() ].
 keys( Hashtable ) ->
 	get_keys_from_buckets( tuple_to_list( Hashtable ), _Acc=[] ).
 
 
 
-% @doc Returns a list containing all the values of this hashtable.
-%
-% For example useful if the key was used as an index to generate this table
-% first.
-%
+-doc """
+Returns a list containing all the values of this hashtable.
+
+For example useful if the key was used as an index to generate this table first.
+""".
 -spec values( hashtable() ) -> [ value() ].
 values( Hashtable ) ->
 	get_values_from_buckets( tuple_to_list( Hashtable ), _Acc=[] ).
 
 
 
-% @doc Returns whether the specified hashtable is empty (not storing any
-% key/value pair).
-%
+-doc """
+Returns whether the specified hashtable is empty (not storing any key/value
+pair).
+""".
 -spec is_empty( hashtable() ) -> boolean().
 is_empty( Hashtable ) ->
 	BucketList = tuple_to_list( Hashtable ),
@@ -876,29 +940,32 @@ is_empty_helper( _Any ) ->
 	false.
 
 
-% @doc Returns the size (number of entries, namely of key/value pairs) of the
-% specified table.
-%
+
+-doc """
+Returns the size (number of entries, namely of key/value pairs) of the specified
+table.
+""".
 -spec size( hashtable() ) -> entry_count().
 size( Hashtable ) ->
 
 	lists:foldl( fun( Bucket, Sum ) ->
-						 Sum + length( Bucket )
+					Sum + length( Bucket )
 				 end,
 				 _InitialAcc=0,
 				 _List=tuple_to_list( Hashtable ) ).
 
 
 
-% @doc Optimises this hashtable with regard to its load factor (see
-% [http://en.wikipedia.org/wiki/Hash_table#Load_factor]).
-%
-% To be called whenever the size of a given hashtable is not expected to change
-% substantially. The principle is to determine the optimal number of buckets for
-% the current number of stored entries, allowing to perform fast look-ups and to
-% use the right amount of memory for that (ie to rely on the best CPU vs RAM
-% trade-off).
-%
+-doc """
+Optimises this hashtable with regard to its load factor (see
+<http://en.wikipedia.org/wiki/Hash_table#Load_factor>).
+
+To be called whenever the size of a given hashtable is not expected to change
+substantially. The principle is to determine the optimal number of buckets for
+the current number of stored entries, allowing to perform fast look-ups and to
+use the right amount of memory for that (ie to rely on the best CPU vs RAM
+trade-off).
+""".
 -spec optimise( hashtable() ) -> hashtable().
 optimise( Hashtable ) ->
 
@@ -923,11 +990,12 @@ optimise( Hashtable ) ->
 
 
 
-% @doc Returns whether an optimisation ought to be triggered.
-%
-% Too high a load factor (more than 0.75) induces slow look-ups, too small (less
-% than 0.5) wastes memory:
-%
+-doc """
+Returns whether an optimisation ought to be triggered.
+
+Too high a load factor (more than 0.75) induces slow look-ups, too small (less
+than 0.5) wastes memory:
+""".
 -spec must_optimise( entry_count(), bucket_count() ) -> boolean().
 must_optimise( EntryCount, BucketCount ) ->
 
@@ -938,7 +1006,7 @@ must_optimise( EntryCount, BucketCount ) ->
 
 
 
-% @doc Performs an optimisation of the specified hashtable.
+-doc "Performs an optimisation of the specified hashtable.".
 -spec optimise_unconditionally( entry_count(), bucket_count(), entries(),
 								hashtable() ) -> hashtable().
 optimise_unconditionally( EntryCount, CurrentBucketCount, Entries,
@@ -960,19 +1028,20 @@ optimise_unconditionally( EntryCount, CurrentBucketCount, Entries,
 
 
 
-% @doc Returns a textual description of the specified hashtable.
+-doc "Returns a textual description of the specified hashtable.".
 -spec to_string( hashtable() ) -> ustring().
 to_string( Hashtable ) ->
 	to_string( Hashtable, user_friendly ).
 
 
 
-% @doc Returns a textual description of the specified hashtable.
-%
-% Either a bullet is specified, or the returned string is ellipsed if needed (if
-% using 'user_friendly'), or quite raw and non-ellipsed (if using 'full'), or
-% even completly raw ('internal').
-%
+-doc """
+Returns a textual description of the specified hashtable.
+
+Either a bullet is specified, or the returned string is ellipsed if needed (if
+using 'user_friendly'), or quite raw and non-ellipsed (if using 'full'), or even
+completly raw ('internal').
+""".
 -spec to_string( hashtable(), description_type() ) -> ustring().
 to_string( Hashtable, DescriptionType ) ->
 
@@ -1049,16 +1118,17 @@ to_string( Hashtable, DescriptionType ) ->
 
 
 
-% @doc Displays the specified hashtable on the standard output.
+-doc "Displays the specified hashtable on the standard output.".
 -spec display( hashtable() ) -> void().
 display( Hashtable ) ->
 	io:format( "~ts~n", [ to_string( Hashtable ) ] ).
 
 
 
-% @doc Displays the specified hashtable on the standard output, with the
-% specified title on top.
-%
+-doc """
+Displays the specified hashtable on the standard output, with the specified
+title on top.
+""".
 -spec display( ustring(), hashtable() ) -> void().
 display( Title, Hashtable ) ->
 	io:format( "~ts:~n~ts~n", [ Title, to_string( Hashtable ) ] ).
@@ -1069,10 +1139,9 @@ display( Title, Hashtable ) ->
 % Section for helper functions.
 
 
-
-% @doc Returns the ideal number of buckets needed for specified number of
-% entries.
-%
+-doc """
+Returns the ideal number of buckets needed for specified number of entries.
+""".
 -spec get_ideal_bucket_count( entry_count() ) -> bucket_count().
 get_ideal_bucket_count( EntryCount ) ->
 
@@ -1083,11 +1152,12 @@ get_ideal_bucket_count( EntryCount ) ->
 
 
 
-% Returns a new tuple, whose size is the specified length and whose elements are
-% all set to specified default value.
-%
-% (helper)
-%
+-doc """
+Returns a new tuple, whose size is the specified length and whose elements are
+all set to specified default value.
+
+(helper)
+""".
 create_tuple( _Length=0, _DefaultValue ) ->
 	throw( at_least_one_bucket_per_hashtable );
 
@@ -1106,12 +1176,11 @@ create_tuple( N, DefaultValue, Acc ) ->
 
 
 
-% Removes the (first) entry pair whose key matches the specified one, if any.
-%
-% (returns an identical list if the key is not found)
-%
-% @private
-%
+-doc """
+Removes the (first) entry pair whose key matches the specified one, if any.
+
+(returns an identical list if the key is not found)
+""".
 delete_bucket( Key, [ { Key, _Value } | T ], Acc ) ->
 	% Forget the pair if the key if matching, and just stop:
 	lists:append( T, Acc );
@@ -1126,15 +1195,14 @@ delete_bucket( _Key, [], Acc ) ->
 
 
 
-% Returns, if an entry with the specified key was found, {'deleted',NewBucket},
-% that is a pair made of an atom telling whether a deletion was done, and a list
-% whose first entry having a matching key is removed, otherwise 'unchanged'.
-%
-% (like delete_bucket/3, but gives more information, used for example by
-% tracked_hashtable)
-%
-% @private
-%
+-doc """
+Returns, if an entry with the specified key was found, {'deleted',NewBucket},
+that is a pair made of an atom telling whether a deletion was done, and a list
+whose first entry having a matching key is removed, otherwise 'unchanged'.
+
+(like delete_bucket/3, but gives more information, used for example by
+tracked_hashtable)
+""".
 -spec delete_bucket_verbose( key(), entries(), entries() ) ->
 				{ 'deleted', entries() } | 'unchanged'.
 delete_bucket_verbose( Key, _Entries=[ { Key, _Value } | T ], Acc ) ->
@@ -1151,17 +1219,15 @@ delete_bucket_verbose( _Key, _Entries=[], _Acc ) ->
 
 
 
-% Replaces, in the specified list, a key/value pair by another.
-%
-% Updates the pair if this key was already declared, otherwise add the new
-% entry.
-%
-% Note: order does not matter.
-%
-% (helper)
-%
-% @private
-%
+-doc """
+Replaces, in the specified list, a key/value pair by another.
+
+Updates the pair if this key was already declared, otherwise add the new entry.
+
+Note: order does not matter.
+
+(helper)
+""".
 -spec replace_bucket( key(), value(), entries(), entries() ) -> entries().
 replace_bucket( Key, Value, _Entries=[], Acc ) ->
 	% Key was not there previously, just adding it:
@@ -1177,23 +1243,21 @@ replace_bucket( Key, Value, _Entries=[ H | T ], Acc ) ->
 
 
 
-% Replaces in the specified list a key/value pair by another, and tells whether
-% it is an addition or an update.
-%
-% Updates the pair if this key was already declared, otherwise add the new
-% entry.
-%
-% (like replace_bucket/4, but gives more information, used for example by
-% tracked_hashtable)
-%
-% Note: order does not matter.
-%
-% Returns {Diagnosis, NewBucket}.
-%
-% (helper)
-%
-% @private
-%
+-doc """
+Replaces in the specified list a key/value pair by another, and tells whether it
+is an addition or an update.
+
+Updates the pair if this key was already declared, otherwise add the new entry.
+
+(like replace_bucket/4, but gives more information, used for example by
+tracked_hashtable)
+
+Note: order does not matter.
+
+Returns {Diagnosis, NewBucket}.
+
+(helper)
+""".
 replace_bucket_diagnose( Key, Value, _RestOfBucket=[], Acc ) ->
 	% Key was not there previously, just adding it:
 	{ added, [ { Key, Value } | Acc ] };
@@ -1208,24 +1272,24 @@ replace_bucket_diagnose( Key, Value, [ H | T ], Acc ) ->
 
 
 
-% Returns the number of buckets in this hashtable.
-%
-% Not intended to be used by user code.
-%
-% (helper)
-%
-% @private
-%
+-doc """
+Returns the number of buckets of this hashtable.
+
+Not intended to be used by user code.
+
+(helper)
+""".
 -spec get_bucket_count( hashtable() ) -> bucket_count().
 get_bucket_count( Hashtable ) ->
 	tuple_size( Hashtable ).
 
 
 
-% Returns a string describing a hashtable bucket (list of key/value pairs):
-%
-% (helper)
-%
+-doc """
+Returns a string describing a hashtable bucket (list of key/value pairs):
+
+(helper)
+""".
 bucket_to_string( _EmptyBucket=[] ) ->
 	"empty bucket";
 
@@ -1244,7 +1308,7 @@ bucket_to_string( Bucket ) ->
 
 
 
-% Returns the value corresponding to the key in the specified list.
+-doc "Returns the value corresponding to the key in the specified list.".
 lookup_in_list( _Key, _TargetList=[] ) ->
 
 	% We hesitated and considered returning the key since, if this function is
@@ -1265,9 +1329,10 @@ lookup_in_list( Key, _TargetList=[ _H | T ] ) ->
 
 
 
-% Returns the value corresponding to the key in the specified list, and the list
-% without this entry: {Value, ShortenList}, or 'key_not_found'.
-%
+-doc """
+Returns the value corresponding to the key in the specified list, and the list
+without this entry: {Value, ShortenList}, or 'key_not_found'.
+""".
 extract_from_list( Key, TargetList ) ->
 	extract_from_list( Key, TargetList, _AccList=[] ).
 
@@ -1285,8 +1350,7 @@ extract_from_list( Key, _TargetList=[ H | T ], AccList ) ->
 
 
 
-
-% Iterates over buckets and fetches the keys.
+-doc "Iterates over buckets and fetches the keys.".
 get_keys_from_buckets( _Buckets=[], Acc ) ->
 	Acc;
 
@@ -1295,7 +1359,7 @@ get_keys_from_buckets(  _Buckets=[ H | T ], Acc ) ->
 
 
 
-% Iterates over buckets and fetches the values.
+-doc "Iterates over buckets and fetches the values.".
 get_values_from_buckets( _Buckets=[], Acc ) ->
 	Acc;
 
@@ -1304,29 +1368,29 @@ get_values_from_buckets( _Buckets=[ H | T ], Acc ) ->
 
 
 
-% Returns the number of the bucket associated to specified key in specified
-% hashtable.
-%
-% If having N buckets, returns a value in [1,N].
-%
-% Typically defined to avoid code duplication, but meant to be inlined.
-%
+-doc """
+Returns the number of the bucket associated to specified key in specified
+hashtable.
+
+If having N buckets, returns a value in [1,N].
+
+Typically defined to avoid code duplication, but meant to be inlined.
+""".
 -spec get_bucket_index( key(), hashtable() ) -> bucket_count().
 get_bucket_index( Key, Hashtable ) ->
 	erlang:phash2( Key, tuple_size( Hashtable ) ) + 1.
 
 
 
-% Returns the number of the bucket associated to specified key in specified
-% hashtable.
-%
-% If having N buckets, returns a value in [1,N].
-%
-% Defined (exactly as get_bucket_index/2, which is defined for inlining) and
-% exported only for opaqueness purposes.
-%
-% @private
-%
+-doc """
+Returns the number of the bucket associated to specified key in specified
+hashtable.
+
+If having N buckets, returns a value in [1,N].
+
+Defined (exactly as get_bucket_index/2, which is defined for inlining) and
+exported only for opaqueness purposes.
+""".
 -spec get_bucket_index_for( key(), hashtable() ) -> bucket_count().
 get_bucket_index_for( Key, Hashtable ) ->
 	erlang:phash2( Key, tuple_size( Hashtable ) ) + 1.

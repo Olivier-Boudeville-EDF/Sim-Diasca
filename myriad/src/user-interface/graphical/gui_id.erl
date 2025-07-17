@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,16 +25,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, April 24, 2022.
 
-
-% @doc Management of (higher-level) <b>widget identifiers</b>.
-%
-% User-defined, atom-based identifiers can be introduced in order to simplify
-% the GUI-related processings.
-%
-% They can be managed thanks to a separate server (process), or directly through
-% an embedded allocation table (like the MyriadGUI main loop).
-%
 -module(gui_id).
+
+-moduledoc """
+Management of (higher-level) **widget identifiers**.
+
+User-defined, atom-based identifiers can be introduced in order to simplify
+the GUI-related processings.
+
+They can be managed thanks to a separate server (process), or directly through
+an embedded allocation table (like the MyriadGUI main loop).
+""".
 
 
 
@@ -60,58 +61,72 @@
 
 
 
+-doc """
+A higher-level, user-defined identifier of a widget as a name (an atom,
+e.g. 'my_file_menu_id'); internally translated transparently to a relevant
+backend identifier (wx_id()).
+
+The 'undefined' atom is reserved.
+""".
 -type name_id() :: atom().
-% A higher-level, user-defined identifier of a widget as a name (an atom,
-% e.g. 'my_file_menu_id'); internally translated transparently to a relevant
-% backend identifier (wx_id()).
-%
-% The 'undefined' atom is reserved.
 
 
+-doc "Lowest-level, backend-specific identifier.".
 -type backend_id() :: wx_id().
-% Lowest-level, backend-specific identifier.
 
 
--type id() :: maybe( backend_id() ) | name_id().
-% Object identifier, backend-specific or not.
-%
-% Defined here so that no user-level datastructure (like the event_context
-% public record) bears any trace of any GUI actual backend.
-%
-% An 'undefined' value means that any identifier may be used, as chosen by the
-% backend rather than by the user.
-%
-% May not be defined if the actual event comes from MyriadGUI itself (and thus
-% not wx).
-%
-% As a consequence, such an identifier can be 'undefined', 'my_action_id', 147,
-% and thus shall better be printed as "~w" (see id_to_string/1).
+
+-doc """
+Object identifier, backend-specific or not.
+
+Defined here so that no user-level datastructure (like the event_context public
+record) bears any trace of any GUI actual backend.
+
+An 'undefined' value means that any identifier may be used, as chosen by the
+backend rather than by the user.
+
+May not be defined if the actual event comes from MyriadGUI itself (and thus not
+wx).
+
+As a consequence, such an identifier can be 'undefined', 'my_action_id', 147,
+and thus shall better be printed as "~w" (see id_to_string/1).
+""".
+-type id() :: option( backend_id() ) | name_id().
 
 
+
+-doc "An identifier of a button.".
 -type button_id() :: id().
-% An identifier of a button.
 
+
+-doc "A backend-level button identifier.".
 -type button_backend_id() :: backend_id().
-% A backend-level button identifier.
 
 
+
+-doc "The PID of a MyriadGUI allocator of (unique) object identifiers.".
 -type id_allocator_pid() :: pid().
-% The PID of a MyriadGUI allocator of (unique) object identifiers.
 
+
+
+-doc """
+Any kind of reference onto a MyriadGUI allocator of (unique) object identifiers.
+""".
 -type id_allocator_ref() :: pid_ref().
-% Any kind of reference onto a MyriadGUI allocator of (unique) object
-% identifiers.
 
 
+
+-doc """
+Myriad-specific instance identifier, corresponding to a Myriad object reference
+in the internal MyriadGUI type table.
+
+This is a different identifier from id(), name_id() or backend_id(): it is not a
+standalone, user-level symbol to be used to designate directly an instance, but
+a part of its internal technical reference, like in {myriad_object_ref,
+myr_canvas, CanvasId} (similar in spirit to the integer in wx object references,
+like {wx_ref, 35, wxFrame, []}).
+""".
 -type myriad_instance_id() :: count().
-% Myriad-specific instance identifier, corresponding to a Myriad object
-% reference in the internal MyriadGUI type table.
-%
-% This is a different identifier from id(), name_id() or backend_id(): it is not
-% a standalone, user-level symbol to be used to designate directly an instance,
-% but a part of its internal technical reference, like in {myriad_object_ref,
-% myr_canvas, CanvasId} (similar in spirit to the integer in wx object
-% references, like {wx_ref, 35, wxFrame, []}).
 
 
 -export_type([ name_id/0, id/0, button_id/0, button_backend_id/0,
@@ -178,13 +193,14 @@
 -define( min_allocated_id, ?wxID_HIGHEST + 4001 ).
 
 
+-doc """
+A table to convert between (MyriadGUI) name identifiers and backend ones.
+""".
 -type id_name_alloc_table() :: bijective_table( name_id(), backend_id() ).
-% A table to convert between (MyriadGUI) name identifiers and backend ones.
 
 
 
-
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -199,12 +215,14 @@
 
 
 
+
 % Section concentrating functions to implement an identifier allocator.
 
 
-% @doc Returns the first backend-specific widget identifier that may be
-% allocated by MyriadGUI.
-%
+-doc """
+Returns the first backend-specific widget identifier that may be allocated by
+MyriadGUI.
+""".
 -spec get_first_allocatable_id() -> backend_id().
 get_first_allocatable_id() ->
 	% Just a sanity check:
@@ -227,7 +245,7 @@ get_first_allocatable_id() ->
 
 
 
-% @doc Returns the initial allocation table for named identifiers.
+-doc "Returns the initial allocation table for named identifiers.".
 -spec get_initial_allocation_table() -> id_name_alloc_table().
 get_initial_allocation_table() ->
 
@@ -244,21 +262,22 @@ get_initial_allocation_table() ->
 
 
 
-% @doc Uses the calling process so that it becomes the identifier allocator.
-%
-% At least currently, with wx, no service seems to be provided in order to
-% generate unique user-level wx_id(), so we provide ours.
-%
-% Otherwise the user would have to hardcode their own identifiers (e.g. for menu
-% items), which is fragile and error-prone.
-%
-% Note that the standard name/id associations (typically the standard buttons /
-% menu items, like 'zoom_factor_one' or 'undo_menu_item') are reserved and
-% automatically registered.
-%
-% This created identifier allocator shall be best looked-up thanks to the
-% gui:get_id_allocator_pid/{0,1} functions.
-%
+-doc """
+Uses the calling process so that it becomes the identifier allocator.
+
+At least currently, with wx, no service seems to be provided in order to
+generate unique user-level wx_id(), so we provide ours.
+
+Otherwise the user would have to hardcode their own identifiers (e.g. for menu
+items), which is fragile and error-prone.
+
+Note that the standard name/id associations (typically the standard buttons /
+menu items, like 'zoom_factor_one' or 'undo_menu_item') are reserved and
+automatically registered.
+
+This created identifier allocator shall be best looked-up thanks to the
+gui:get_id_allocator_pid/{0,1} functions.
+""".
 -spec embody_as_id_allocator() -> no_return().
 embody_as_id_allocator() ->
 
@@ -369,20 +388,21 @@ id_allocator_main_loop( NextId, NameTable ) ->
 		terminate ->
 			cond_utils:if_defined( myriad_debug_gui_id,
 				trace_utils:debug_fmt( "Identifier allocator ~w terminating.",
-									   [ self() ] ) ),
-			ok
+									   [ self() ] ),
+				ok )
 
 	end.
 
 
 
-% @doc Declares the specified name identifier internally (directly from the
-% current process), possibly enriching the specified name allocation table,
-% returning updated information, notably the corresponding backend identifier.
-%
-% Typically called directly through the MyriadGUI main loop (thus without
-% involving messages), which takes care of the identifier management as well.
-%
+-doc """
+Declares the specified name identifier internally (directly from the current
+process), possibly enriching the specified name allocation table, returning
+updated information, notably the corresponding backend identifier.
+
+Typically called directly through the MyriadGUI main loop (thus without
+involving messages), which takes care of the identifier management as well.
+""".
 -spec declare_name_id_internal( name_id(), backend_id(),
 								id_name_alloc_table() ) ->
 			{ backend_id(), backend_id(), id_name_alloc_table() }.
@@ -397,6 +417,12 @@ declare_name_id_internal( NameId, NextId, NameTable ) ->
 			case gui_generated:get_maybe_second_for_menu_item_id( NameId ) of
 
 				undefined ->
+
+					cond_utils:if_defined( myriad_debug_gui_id,
+						trace_utils:debug_fmt(
+							"Registered name identifier: ~ts",
+							[ bijective_table:to_string( NameTable ) ] ) ),
+
 					% Neither a standard button nor a menu item name, hence this
 					% identifier must be auto-allocated:
 					%
@@ -419,14 +445,15 @@ declare_name_id_internal( NameId, NextId, NameTable ) ->
 
 
 
-% @doc Resolves the specified name identifier into a backend one, internally
-% (directly from the current process), from the specified name allocation table.
-%
-% Throws an exception if no corresponding backend identifier can be found.
-%
-% Typically called directly through the MyriadGUI main loop (thus without
-% involving messages), which takes care of the identifier management as well.
-%
+-doc """
+Resolves the specified name identifier into a backend one, internally (directly
+from the current process), from the specified name allocation table.
+
+Throws an exception if no corresponding backend identifier can be found.
+
+Typically called directly through the MyriadGUI main loop (thus without
+involving messages), which takes care of the identifier management as well.
+""".
 -spec resolve_named_id_internal( name_id(), id_name_alloc_table() ) ->
 											backend_id().
 resolve_named_id_internal( NameId, NameTable ) ->
@@ -448,12 +475,13 @@ resolve_named_id_internal( NameId, NameTable ) ->
 % Section to manage user-originating identifier operations.
 
 
-% @doc Returns a backend identifier corresponding to the specified identifier of
-% any type (MyriadGUI name identifier, possibly an undefined one, or already a
-% backend identifier).
-%
-% Throws an exception should the resolution fail.
-%
+-doc """
+Returns a backend identifier corresponding to the specified identifier of any
+type (MyriadGUI name identifier, possibly an undefined one, or already a backend
+identifier).
+
+Throws an exception should the resolution fail.
+""".
 -spec resolve_any_id( id() ) -> backend_id().
 % Module-local, meant to resolve quickly most cases.
 resolve_any_id( undefined ) ->
@@ -468,12 +496,13 @@ resolve_any_id( NameId ) when is_atom( NameId ) ->
 
 
 
-% @doc Resolves, if possible, the specified name identifier into a backend one
-% and internally (directly from the current process), from the specified name
-% allocation table.
-%
+-doc """
+Resolves, if possible, the specified name identifier into a backend one and
+internally (directly from the current process), from the specified name
+allocation table.
+""".
 -spec maybe_resolve_named_id_internal( name_id(), id_name_alloc_table() ) ->
-											maybe( backend_id() ).
+											option( backend_id() ).
 maybe_resolve_named_id_internal( NameId, NameTable ) ->
 
 	% As standard/stock identifiers do not have to be stored (thanks to the
@@ -506,17 +535,20 @@ maybe_resolve_named_id_internal( NameId, NameTable ) ->
 % Allocation section.
 
 
-% @doc Returns a new, original (never used) unnamed backend object identifier,
-% obtained from the MyriadGUI identifier allocator (if any).
-%
+-doc """
+Returns a new, original (never used) unnamed backend object identifier, obtained
+from the MyriadGUI identifier allocator (if any).
+""".
 -spec allocate_backend_id() -> backend_id().
 allocate_backend_id() ->
 	allocate_backend_id( _IdAllocRef=gui:get_id_allocator_pid()  ).
 
 
-% @doc Returns a new, original (never used) unnamed backend object identifier,
-% obtained from the specified identifier allocator.
-%
+
+-doc """
+Returns a new, original (never used) unnamed backend object identifier, obtained
+from the specified identifier allocator.
+""".
 -spec allocate_backend_id( id_allocator_ref() ) -> backend_id().
 allocate_backend_id( IdAllocRef ) ->
 	IdAllocRef ! { allocateBackendIdentifier, self() },
@@ -529,18 +561,20 @@ allocate_backend_id( IdAllocRef ) ->
 
 
 
-% @doc Returns the specified number of new, original (never used) unnamed
-% backend object identifiers, obtained from the MyriadGUI identifier allocator
-% (if any).
-%
+-doc """
+Returns the specified number of new, original (never used) unnamed backend
+object identifiers, obtained from the MyriadGUI identifier allocator (if any).
+""".
 -spec allocate_backend_ids( count() ) -> [ backend_id() ].
 allocate_backend_ids( Count ) ->
 	allocate_backend_ids( Count, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
-% @doc Returns the specified number of new, original (never used) unnamed
-% backend object identifiers, obtained from the specified identifier allocator.
-%
+
+-doc """
+Returns the specified number of new, original (never used) unnamed backend
+object identifiers, obtained from the specified identifier allocator.
+""".
 -spec allocate_backend_ids( count(), id_allocator_ref() ) -> [ backend_id() ].
 allocate_backend_ids( Count, IdAllocRef ) ->
 	IdAllocRef ! { allocateBackendIdentifiers, Count, self() },
@@ -553,28 +587,32 @@ allocate_backend_ids( Count, IdAllocRef ) ->
 
 
 
+
 % Declaration section.
 
 
-% @doc Declares the specified named identifier, so that it becomes registered by
-% the MyriadGUI identifier allocator (if any), and returns the associated
-% backend object identifier.
-%
-% Note that the standard name/id association (typically the standard menu items
-% like 'undo_menu_item') are reserved (but not already registered).
-%
+-doc """
+Declares the specified named identifier, so that it becomes registered by the
+MyriadGUI identifier allocator (if any), and returns the associated backend
+object identifier.
+
+Note that the standard name/id association (typically the standard menu items
+like 'undo_menu_item') are reserved (but not already registered).
+""".
 -spec declare_name_id( name_id() ) -> backend_id().
 declare_name_id( NameId ) ->
 	declare_name_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
-% @doc Declares the specified named identifier, so that it becomes registered by
-% the specified identifier allocator, and returns the associated backend object
-% identifier.
-%
-% Note that the standard name/id association (typically the standard menu items
-% like 'undo_menu_item') are reserved (but not already registered).
-%
+
+-doc """
+Declares the specified named identifier, so that it becomes registered by the
+specified identifier allocator, and returns the associated backend object
+identifier.
+
+Note that the standard name/id association (typically the standard menu items
+like 'undo_menu_item') are reserved (but not already registered).
+""".
 -spec declare_name_id( name_id(), id_allocator_ref() ) -> void().
 declare_name_id( NameId, IdAllocRef ) ->
 	IdAllocRef ! { declareNameIdentifier, NameId, self() },
@@ -587,23 +625,26 @@ declare_name_id( NameId, IdAllocRef ) ->
 
 
 
-% @doc Declares the specified named identifiers, so that they become registered
-% by the MyriadGUI identifier allocator (if any).
-%
-% Note that the standard name/id associations (typically the standard menu
-% items, like 'undo_menu_item') are reserved and automatically registered.
-%
+-doc """
+Declares the specified named identifiers, so that they become registered by the
+MyriadGUI identifier allocator (if any).
+
+Note that the standard name/id associations (typically the standard menu items,
+like 'undo_menu_item') are reserved and automatically registered.
+""".
 -spec declare_name_ids( [ name_id() ] ) -> void().
 declare_name_ids( NameIds ) ->
 	declare_name_ids( NameIds, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
-% @doc Declares the specified named identifiers, so that they become registered
-% by the specified identifier allocator.
-%
-% Note that the standard name/id associations (typically the standard menu
-% items, like 'undo_menu_item') are reserved and automatically registered.
-%
+
+-doc """
+Declares the specified named identifiers, so that they become registered by the
+specified identifier allocator.
+
+Note that the standard name/id associations (typically the standard menu items,
+like 'undo_menu_item') are reserved and automatically registered.
+""".
 -spec declare_name_ids( [ name_id() ], id_allocator_ref() ) -> void().
 declare_name_ids( NameIds, IdAllocRef ) ->
 	IdAllocRef ! { declareNameIdentifiers, NameIds, self() },
@@ -616,12 +657,13 @@ declare_name_ids( NameIds, IdAllocRef ) ->
 
 
 
-% @doc Returns a backend-specific widget identifier associated to the specified
-% new identifier, expected not to have already been declared.
-%
-% Specifying a name identifier requires interacting with the MyriadGUI process
-% in charge of the identifier allocation.
-%
+-doc """
+Returns a backend-specific widget identifier associated to the specified new
+identifier, expected not to have already been declared.
+
+Specifying a name identifier requires interacting with the MyriadGUI process in
+charge of the identifier allocation.
+""".
 -spec declare_any_id( id() ) -> backend_id().
 declare_any_id( undefined ) ->
 	?gui_any_id;
@@ -639,22 +681,26 @@ declare_any_id( NameId ) when is_atom( NameId ) ->
 
 
 
+
 % Resolution section.
 
 
-% @doc Returns the low-level backend object identifier corresponding to the
-% specified named identifier, which is expected to be already registered by the
-% MyriadGUI identifier allocator (if any).
-%
+-doc """
+Returns the low-level backend object identifier corresponding to the specified
+named identifier, which is expected to be already registered by the MyriadGUI
+identifier allocator (if any).
+""".
 -spec resolve_named_id( name_id() ) -> backend_id().
 resolve_named_id( NameId ) ->
 	resolve_named_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
-% @doc Returns the low-level backend object identifier corresponding to the
-% specified named identifier, which is expected to be already registered by the
-% specified identifier allocator.
-%
+
+-doc """
+Returns the low-level backend object identifier corresponding to the specified
+named identifier, which is expected to be already registered by the specified
+identifier allocator.
+""".
 -spec resolve_named_id( name_id(), id_allocator_ref() ) -> backend_id().
 resolve_named_id( NameId, IdAllocRef ) ->
 	IdAllocRef! { resolveNameIdentifier, NameId, self() },
@@ -667,19 +713,22 @@ resolve_named_id( NameId, IdAllocRef ) ->
 
 
 
-% @doc Returns the low-level backend object identifiers corresponding to the
-% specified named identifiers, which are expected to be already registered by
-% the MyriadGUI identifier allocator (if any).
-%
+-doc """
+Returns the low-level backend object identifiers corresponding to the specified
+named identifiers, which are expected to be already registered by the MyriadGUI
+identifier allocator (if any).
+""".
 -spec resolve_named_ids( [ name_id() ] ) -> [ backend_id() ].
 resolve_named_ids( NameIds ) ->
 	resolve_named_ids( NameIds, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
-% @doc Returns the low-level backend object identifiers corresponding to the
-% specified named identifiers, which are expected to be already registered by
-% the specified identifier allocator.
-%
+
+-doc """
+Returns the low-level backend object identifiers corresponding to the specified
+named identifiers, which are expected to be already registered by the specified
+identifier allocator.
+""".
 -spec resolve_named_ids( [ name_id() ], id_allocator_ref() ) ->
 								[ backend_id() ].
 resolve_named_ids( NameIds, IdAllocRef ) ->
@@ -692,21 +741,24 @@ resolve_named_ids( NameIds, IdAllocRef ) ->
 	end.
 
 
-% @doc Tries to resolve the specified backend identifier into a named one,
-% otherwise returns 'undefined', based on the MyriadGUI identifier allocator (if
-% any).
-%
--spec maybe_resolve_backend_id( backend_id() ) -> maybe( name_id() ).
+
+-doc """
+Tries to resolve the specified backend identifier into a named one, otherwise
+returns 'undefined', based on the MyriadGUI identifier allocator (if any).
+""".
+-spec maybe_resolve_backend_id( backend_id() ) -> option( name_id() ).
 maybe_resolve_backend_id( BackendId ) ->
-	maybe_resolve_backend_id( BackendId, _IdAllocRef=gui:get_id_allocator_pid() ).
+	maybe_resolve_backend_id( BackendId,
+							  _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
-% @doc Tries to resolve the specified backend identifier into a named one,
-% otherwise returns 'undefined', based on the specified identifier allocator.%
-% any).
-%
+
+-doc """
+Tries to resolve the specified backend identifier into a named one, otherwise
+returns 'undefined', based on the specified identifier allocator.% any).
+""".
 -spec maybe_resolve_backend_id( backend_id(), id_allocator_ref() ) ->
-										maybe( name_id() ).
+										option( name_id() ).
 maybe_resolve_backend_id( BackendId, IdAllocRef ) ->
 	IdAllocRef ! { resolveBackendIdentifier, BackendId, self() },
 	receive
@@ -718,15 +770,16 @@ maybe_resolve_backend_id( BackendId, IdAllocRef ) ->
 
 
 
-% @doc Tries to resolve the specified backend-specific identifier into a
-% higher-level named identifier, internally (directly from the current process):
-% returns any corresponding named one.
-%
-% Looks up either, for stock identifiers, first the button table, then the menu
-% item one or, for MyriadGUI ones, the specified name allocation table.
-%
+-doc """
+Tries to resolve the specified backend-specific identifier into a higher-level
+named identifier, internally (directly from the current process): returns any
+corresponding named one.
+
+Looks up either, for stock identifiers, first the button table, then the menu
+item one or, for MyriadGUI ones, the specified name allocation table.
+""".
 -spec maybe_resolve_backend_id_internal( backend_id(),
-						id_name_alloc_table() ) -> maybe( name_id() ).
+						id_name_alloc_table() ) -> option( name_id() ).
 % If a standard/stock identifier:
 maybe_resolve_backend_id_internal( BackendId, _NameTable )
 								when BackendId < ?min_allocated_id ->
@@ -754,7 +807,7 @@ maybe_resolve_backend_id_internal( BackendId, NameTable ) ->
 
 
 
-% @doc Returns an unconstrained identifier, whose value is left free.
+-doc "Returns an unconstrained identifier, whose value is left free.".
 -spec get_any_id() -> id().
 get_any_id() ->
 	% Not wanting the other MyriadGUI module to depend on wx includes.
@@ -765,22 +818,24 @@ get_any_id() ->
 	?gui_any_id.
 
 
-% @doc Returns the best (highest-level) identifier for the specified backend
-% one, from the MyriadGUI identifier allocator (if any): if able to determine a
-% name identifier for it, returns it, otherwise returns said backend identifier
-% as it is.
-%
+
+-doc """
+Returns the best (highest-level) identifier for the specified backend one, from
+the MyriadGUI identifier allocator (if any): if able to determine a name
+identifier for it, returns it, otherwise returns said backend identifier as it
+is.
+""".
 -spec get_best_id( backend_id() ) -> id().
 get_best_id( BackendId ) ->
 	get_best_id( BackendId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
-% @doc Returns the best (highest-level) identifier for the specified backend
-% one, from the specified identifier allocator: if able to determine a name
-% identifier for it, returns it, otherwise returns said backend identifier as it
-% is.
-%
+-doc """
+Returns the best (highest-level) identifier for the specified backend one, from
+the specified identifier allocator: if able to determine a name identifier for
+it, returns it, otherwise returns said backend identifier as it is.
+""".
 -spec get_best_id( backend_id(), id_allocator_ref() ) -> id().
 get_best_id( BackendId, IdAllocRef ) ->
 	IdAllocRef ! { getBestId, BackendId, self() },
@@ -793,10 +848,11 @@ get_best_id( BackendId, IdAllocRef ) ->
 
 
 
-% @doc Tries to resolve the specified lower-level, backend-specific identifier,
-% internally (directly from the current process): returns any corresponding
-% named one, otherwise returns that backend identifier as it is.
-%
+-doc """
+Tries to resolve the specified lower-level, backend-specific identifier,
+internally (directly from the current process): returns any corresponding named
+one, otherwise returns that backend identifier as it is.
+""".
 -spec get_best_id_internal( backend_id(), id_name_alloc_table() ) -> id().
 get_best_id_internal( NameId, _NameTable ) when is_atom( NameId ) ->
 	NameId;
@@ -813,11 +869,13 @@ get_best_id_internal( BackendId, NameTable ) ->
 	end.
 
 
-% @doc Tries to resolve the specified lower-level, backend-specific identifier
-% supposedly of a menu item, internally (directly from the current process):
-% returns any corresponding named one, otherwise returns that backend identifier
-% as it is.
-%
+
+-doc """
+Tries to resolve the specified lower-level, backend-specific identifier
+supposedly of a menu item, internally (directly from the current process):
+returns any corresponding named one, otherwise returns that backend identifier
+as it is.
+""".
 -spec get_best_menu_item_id_internal( backend_id(), id_name_alloc_table() ) ->
 											id().
 get_best_menu_item_id_internal( BackendId, _NameTable )
@@ -845,11 +903,11 @@ get_best_menu_item_id_internal( BackendId, NameTable ) ->
 
 
 
-% @doc Tries to resolve the specified lower-level, backend-specific identifier
-% supposedly of a button internally (directly from the current process): returns
-% any corresponding named one, otherwise returns that backend identifier as it
-% is.
-%
+-doc """
+Tries to resolve the specified lower-level, backend-specific identifier
+supposedly of a button internally (directly from the current process): returns
+any corresponding named one, otherwise returns that backend identifier as it is.
+""".
 -spec get_best_button_id_internal( backend_id(), id_name_alloc_table() ) ->
 											id().
 get_best_button_id_internal( BackendId, _NameTable )
@@ -877,12 +935,13 @@ get_best_button_id_internal( BackendId, NameTable ) ->
 
 
 
-% @doc Returns any MyriadGUI name identifier associated to the specified
-% backend-specific widget identifier.
-%
-% Not exactly the reciprocal of resolve_any_id/1.
-%
--spec get_maybe_name_id( backend_id() ) -> maybe( name_id() ).
+-doc """
+Returns any MyriadGUI name identifier associated to the specified
+backend-specific widget identifier.
+
+Not exactly the reciprocal of resolve_any_id/1.
+""".
+-spec get_maybe_name_id( backend_id() ) -> option( name_id() ).
 get_maybe_name_id( BackendId ) when is_integer( BackendId ) ->
 	% Relies on the fact that the MyriadGUI main process now impersonates a
 	% standalone gui_id server:
@@ -892,7 +951,9 @@ get_maybe_name_id( BackendId ) when is_integer( BackendId ) ->
 
 
 
-% @doc Returns a textual representation of the specified object identifier.
+-doc """
+Returns a textual representation of the specified object identifier.
+""".
 -spec id_to_string( id() ) -> ustring().
 id_to_string( BackendId ) when is_integer( BackendId ) ->
 	text_utils:format( "#~B", [ BackendId ] );

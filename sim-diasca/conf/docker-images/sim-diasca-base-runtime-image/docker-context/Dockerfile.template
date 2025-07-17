@@ -4,6 +4,8 @@
 # itself (both as sources and prebuilt binaries), and nothing more (e.g. no
 # LogMX, no ErlPort, etc.).
 
+# Note that this file shall be preferably edited from the main branch, as the CI
+# will fetch it to create images.
 
 # This IMAGE_DESCRIPTION_TAG image has for Docker tag 'IMAGE_NAME_TAG', and
 # its full tag will be 'FULL_IMAGE_NAME_TAG'.
@@ -18,14 +20,17 @@
 # Indeed this template shall be updated regarding notably the following tags in
 # order to become a proper Dockerfile (the '_TAG' suffix has been removed from
 # the next symbols so that they are not substituted):
-#  - PARENT_IMAGE (e.g. "debian:buster")
-#  - ERLANG_VERSION (e.g. "24.2")
+#  - PARENT_IMAGE (e.g. "debian:bookworm")
+#  - ERLANG_VERSION (e.g. "28.0")
 
 
 # Parent image, from which this image will derive.
 #
-# For example 'debian:bullseye' (Debian 11), possibly obtained from an
+# For example 'debian:bookworm' (Debian 12), possibly obtained from an
 # organisation-specific registry distributing adapted versions:
+#
+# (to investigate the content of an image, use: 'docker run -it
+# ${DOCKER_INTERNAL_SPECIALISED_REGISTRY}/PARENT_IMAGE_TAG /bin/bash')
 #
 FROM PARENT_IMAGE_TAG
 
@@ -59,17 +64,40 @@ ENV SD_BASE="${SOFTWARE_BASE}/Sim-Diasca"
 ENV SD_ENV_FILE="${SD_USER_HOME}/sim-diasca-environment.sh"
 
 
+RUN echo "Creating a Sim-Diasca base runtime image of Docker tag ${IMAGE_NAME_TAG} from parent image ${PARENT_IMAGE}, and relying on Erlang version ${ERL_VERSION}."
+
+
 # Base install (with a final cleaning):
 #
-# (we gather all relevant Erlang prerequisites, so that its build can be used in
-#  various contexts)
+# (we used to gather all relevant prerequisites to the Erlang build, to be
+# used in various contexts; now relying on 'apt-get build-dep')
 #
+#RUN apt-get update && \
+#	apt-get install --yes bzip2 coreutils build-essential g++ \
+#	libncurses5-dev openssl libssl-dev libwxgtk3.0-dev \
+#	libgl1-mesa-dev libglu1-mesa-dev libpng16-16 \
+#	gcc make git sudo unzip wget uuid-runtime gnuplot-nox && \
+#	/bin/rm -rf /var/lib/apt/lists/*
+
+
+# Using build-dep (and therefore 'deb-src' repositories) notably as not wanting
+# to fix again and again the naming of libwxgtk3.0-dev and alike:
+#
+# In a vanilla Bookworm, to have 'deb-src' repositories we would need: "sed -i
+# 's|^Types: deb|Types: deb deb-src|g' /etc/apt/sources.list.d/debian.sources'".
+#
+# Here relying on the former (pre-deb822) syntax:
+RUN echo '\n# (forcing newline)\n' >> /etc/apt/sources.list && \
+    cat /etc/apt/sources.list | sed 's|^deb |deb-src |1' >> /etc/apt/sources.list && cat /etc/apt/sources.list
+
 RUN apt-get update && \
 	apt-get install --yes bzip2 coreutils build-essential g++ \
-	libncurses5-dev openssl libssl-dev libwxgtk3.0-dev \
-	libgl1-mesa-dev libglu1-mesa-dev libpng16-16 \
-	gcc make git sudo unzip wget uuid-runtime gnuplot-nox && \
-	/bin/rm -rf /var/lib/apt/lists/*
+	libncurses5-dev openssl libssl-dev libgl1-mesa-dev libglu1-mesa-dev \
+	gcc make git sudo unzip wget uuid-runtime gnuplot-nox
+
+RUN apt-get build-dep --yes erlang
+
+RUN /bin/rm -rf /var/lib/apt/lists/*
 
 
 # Secure Sim-Diasca first (needed for Erlang install script):
@@ -99,19 +127,23 @@ RUN mkdir -p "${ERL_BASE}"
 COPY "${ERL_SRC_ARCHIVE}" "${ERL_BASE}"
 
 
-# Add a (sudoer) user (his home may be preserved as a volume):
+# Add a (sudoer) user (their home may be preserved as a volume):
 RUN useradd -ms /bin/bash ${SD_USER_NAME};\
 	echo "${SD_USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 
-RUN chown -R ${SD_USER_NAME}:${SD_USER_GROUP} ${SOFTWARE_BASE}
+RUN /bin/chown -R ${SD_USER_NAME}:${SD_USER_GROUP} ${SOFTWARE_BASE}
 
 # A bit of documentation:
-COPY README-About-This-Docker-Image.txt ${SD_USER_HOME}/README-About-This-Docker-Image.txt
+COPY --chown=${SD_USER_NAME}:${SD_USER_GROUP} README-About-This-Docker-Image.txt ${SD_USER_HOME}/README-About-This-Docker-Image.txt
+
 RUN sed -i "s|OPERATION_SYSTEM_TAG|$(/bin/cat /etc/issue.net)|g" ${SD_USER_HOME}/README-About-This-Docker-Image.txt
 
 
 RUN /bin/cp -f ${SD_BASE}/sim-diasca/doc/common-elements/licence/LGPL-licence.txt ${SD_USER_HOME}/LICENSE
+
+RUN /bin/chown ${SD_USER_NAME}:${SD_USER_GROUP} ${SD_USER_HOME}/*.txt ${SD_USER_HOME}/LICENSE
+
 
 # Now set-up the environment of the normal user:
 
@@ -147,11 +179,15 @@ RUN (echo ; echo "# This is the Sim-Diasca environment file."; \
 #RUN . ${SD_ENV_FILE} && cd ${SD_BASE}/sim-diasca && make info-tools
 
 # Building Sim-Diasca:
+# (comment-out to debug directly from container)
 RUN . ${SD_ENV_FILE} && cd ${SD_BASE} && make all
 
 RUN echo "export SIM_DIASCA_ROOT=${SD_BASE}" >> ${SD_ENV_FILE}
 
-# Optional integrated testing (convenient but slowing down the image creation):
+# Optional integrated testing (convenient but slowing down *a lot* the image
+# creation; better to be run manually and punctually from a separate, ad hoc
+# container):
+#
 #RUN . ${SD_ENV_FILE} && cd ${SD_BASE} && make test
 
 # Not building Sim-Diasca documentation here.

@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2024 Olivier Boudeville
+% Copyright (C) 2020-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,11 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, December 6, 2020.
 
-
-% @doc Test of the integration of the standard Erlang logs into the Traces
-% subsystem.
-%
 -module(standard_trace_integration_test).
+
+-moduledoc """
+Test of the integration of the standard Erlang logs into the Traces subsystem.
+""".
 
 
 
@@ -38,14 +38,15 @@
 
 
 
-% @doc Runs the test.
-%
-% Sort of a counterpart of Myriad's trace_utils_test.erl.
-%
-% Not that if this test fails because it is not able to remove an handler, it
-% might be the sign that some traces could not be properly sent. This should be
-% displayed in the traces themselves.
-%
+-doc """
+Runs the test.
+
+Sort of a counterpart of Myriad's trace_utils_test.erl.
+
+Not that if this test fails because it is not able to remove an handler, it
+might be the sign that some traces could not be properly sent. This should be
+displayed in the traces themselves.
+""".
 -spec run() -> no_return().
 run() ->
 

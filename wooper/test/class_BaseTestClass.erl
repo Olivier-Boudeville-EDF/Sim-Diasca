@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, December 24, 2014.
 
-
-% @doc Class introduced notably to test <b>inheritance</b>.
 -module(class_BaseTestClass).
+
+-moduledoc """
+Class introduced notably to test **inheritance**.
+""".
 
 
 -define( class_description,
@@ -42,8 +44,10 @@
 %-define( superclasses, [] ).
 
 
+% Local types:
+
 -type name() :: text_utils:ustring().
--type gender() :: maybe( 'male' | 'female' ).
+-type gender() :: option( 'male' | 'female' ).
 
 -export_type([ name/0, gender/0 ]).
 
@@ -64,7 +68,7 @@
 -include("wooper.hrl").
 
 
-% @doc Constructs an instance of this class.
+-doc "Constructs an instance of this class.".
 -spec construct( wooper:state(), name(), gender() ) -> wooper:state().
 construct( State, Name, Gender ) ->
 	% No mother class.
@@ -79,7 +83,7 @@ construct( State, Name, Gender ) ->
 % One method of each nature, with or without a spec.
 
 
-% @doc Returns the name of this instance.
+-doc "Returns the name of this instance.".
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
 
@@ -91,39 +95,45 @@ getName( State ) ->
 	wooper:const_return_result( Name ).
 
 
-% @doc Sets the name of this instance.
+
+-doc "Sets the name of this instance.".
 setName( State, Name ) ->
 	NewState = setAttribute( State, name, Name ),
 	wooper:return_state( NewState ).
 
 
-% @doc A request not meant to be overridden.
+
+-doc "A request not meant to be overridden.".
 -spec aRequest( wooper:state(), integer() ) ->
 						const_request_return( integer() ).
 aRequest( State, Arg ) ->
 	wooper:const_return_result( Arg + 5 ).
 
 
-% @doc A request meant to be overridden.
+
+-doc "A request meant to be overridden.".
 -spec someRequest( wooper:state(), integer() ) ->
 							const_request_return( integer() ).
 someRequest( State, Arg ) ->
 	wooper:const_return_result( Arg + 7 ).
 
 
-% @doc Used to mask to WOOPER an actual throw.
+
+-doc "Used to mask to WOOPER an actual throw.".
 -spec my_throw_helper() -> no_return().
 my_throw_helper() ->
 	throw( report_exception ).
 
 
-% @doc To test wooper:throwing/1.
+
+-doc "To test wooper:throwing/1.".
 -spec testThrow( wooper:state() ) -> const_oneway_return().
 testThrow( _State ) ->
 	%wooper:const_return().
 	wooper:throwing( my_throw_helper() ).
 
 
-% @doc Returns some mean count.
+
+-doc "Returns some mean count.".
 get_some_mean_count() ->
 	wooper:return_static( 6 ).

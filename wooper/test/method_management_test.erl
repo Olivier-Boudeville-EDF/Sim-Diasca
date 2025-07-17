@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 31, 2018.
 
-
-% @doc Testing the <b>management of the methods of a class</b>.
 -module(method_management_test).
+
+-moduledoc """
+Testing the **management of the methods** of a class.
+""".
 
 
 -export([ run/0 ]).

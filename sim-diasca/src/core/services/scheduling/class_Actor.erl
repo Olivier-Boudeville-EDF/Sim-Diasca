@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc This is the mother class of <b>all (simulation) actors</b>.
 -module(class_Actor).
+
+-moduledoc "This is the mother class of **all (simulation) actors**.".
 
 
 -define( class_description,
@@ -37,36 +37,14 @@
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_EngineBaseObject ] ).
 
+
+% Duplicates types, convenient to be available from here as well:
+
 -type tick_offset() :: class_TimeManager:tick_offset().
 
--type tick_duration() :: class_TimeManager:tick_duration().
 % A duration expressed as a difference of ticks.
+-type tick_duration() :: class_TimeManager:tick_duration().
 
-
-% Shorthands:
-
--type count() :: basic_utils:count().
-
--type ustring() :: text_utils:ustring().
--type title() :: text_utils:title().
--type label() :: text_utils:label().
-
--type timestamp() :: time_utils:timestamp().
-
--type percent() :: math_utils:percent().
-
--type any_seconds() :: unit_utils:any_seconds().
--type milliseconds() :: unit_utils:milliseconds().
-
--type logical_timestamp() :: class_TimeManager:logical_timestamp().
--type virtual_seconds() :: class_TimeManager:virtual_seconds().
--type tick() :: class_TimeManager:tick().
--type diasca() :: class_TimeManager:diasca().
-
--type key() :: class_DataExchanger:key().
--type value() :: class_DataExchanger:value().
--type qualified_value() :: class_DataExchanger:qualified_value().
--type qualifier() :: class_DataExchanger:qualifier().
 
 
 
@@ -90,7 +68,7 @@
 	  "this actor sent an actor message this diasca; it allows it to notify "
 	  "adequately the time manager that its diasca is finished indeed" },
 
-	{ previous_schedule, maybe( logical_timestamp() ),
+	{ previous_schedule, option( logical_timestamp() ),
 	  "the logical timestamp of the latest scheduling (spontaneous or "
 	  "triggered) of this actor (only used for scheduling checking, not "
 	  "strictly necessary)" },
@@ -117,7 +95,7 @@
 	  "which this actor expects to develop a spontaneous behaviour (only used "
 	  "for scheduling checking, not strictly necessary)" },
 
-	{ last_sent_schedule_trigger, maybe( logical_timestamp() ),
+	{ last_sent_schedule_trigger, option( logical_timestamp() ),
 	  "records whether this actor has already sent a schedule_trigger message "
 	  "to its time manager, specifying timestamp {T,D} (corresponding to the "
 	  "expected processing timestamp of the message, hence for its next "
@@ -154,25 +132,29 @@
 	  "between two simulation ticks" } ] ).
 
 
+-doc "The PID of an actor.".
 -type actor_pid() :: pid().
-% PID of an actor.
 
 
+-doc "The PID of an actor having sent a message to the current actor.".
 -type sending_actor_pid() :: actor_pid().
-% PID of an actor having sent a message to the current actor.
 
 
+-doc "The PID of a just created actor.".
 -type created_actor_pid() :: actor_pid().
-% PID of a just created actor.
 
 
+-doc "A number of actors.".
 -type actor_count() :: count().
-% A number of actors.
 
 
+-doc """
+A number of diascas.
+
+Note that counting them generally leads to bad practices, as they account for
+the sorting out of causality - they do not represent durations.
+""".
 -type diasca_count() :: count().
-% A number of diascas (counting them generally leads to bad practices, as they
-% account for the sorting out of causality - they do not represent durations).
 
 
 % For #actor_settings:
@@ -187,20 +169,24 @@
 -include("class_InstanceTracker.hrl").
 
 
--type actor_settings() :: #actor_settings{}.
+-doc """
+Describes the actor settings, as determined by the load balancer, at actor
+creation.
+""".
 % The record is defined in class_LoadBalancer.hrl:
+-type actor_settings() :: #actor_settings{}.
 
 
+-doc "To designate more specialised classnames afterwards.".
 -type actor_classname() :: wooper:classname().
-% To designate more specialised classnames afterwards.
 
 
+-doc "The return type for the specification of non-const actor oneways.".
 -type actor_oneway_return() :: wooper:state().
-% Return types for the specification of non-const actor oneways.
 
 
+-doc "The return type for the specification of const actor oneways.".
 -type const_actor_oneway_return() :: wooper:state().
-% Return types for the specification of const actor oneways.
 
 
 % Re-exporting some types from class_TimeManager, for a better model-level
@@ -300,77 +286,90 @@
 
 
 
+-doc """
+Abstract Actor Identifier (AAI).
+
+Live actors have non-null AAI (starting at 1, the AAI of the load balancer,
+which itself is an actor); a null AAI designates a "zombi" actor,
+i.e. information about an actor that does not exist anymore.
+""".
 -type aai() :: non_neg_integer().
-% Abstract Actor Identifier (AAI).
-%
-% Live actors have non-null AAI (starting at 1, the AAI of the load balancer); a
-% null AAI designates a "zombi" actor, i.e. information about an actor that does
-% not exist anymore.
 
 
+-doc """
+Name of an actor, as supplied by the user.
+
+This is either a (plain or binary) string, or a pair made of two (plain or
+binary) strings, respectively the emitter name and its categorization.
+
+Once fully constructed, both the name and categorization are binary strings.
+""".
 -type name() :: class_TraceEmitter:emitter_init().
-% Name of an actor, as supplied by the user.
-%
-% This is either a (plain or binary) string, or a pair made of two (plain or
-% binary) strings, respectively the emitter name and its categorization.
-%
-% Once fully constructed, both the name and categorization are binary strings.
 
 
+-doc "Name of an actor, as stored internally.".
 -type internal_name() :: binary().
-% Name of an actor, as stored internally.
 
 
+-doc """
+Specifies how an actor organises its termination process, from its declaration
+to its realisation: either a positive count of diascas (possibly zero) to wait,
+or 'unlimited', so that the actor is deleted only at the next tick.
+
+In most cases, the default, 'unlimited', is the best setting.
+""".
 -type termination_delay() :: diasca() | 'unlimited'.
-% Specifies how an actor organises its termination process, from its declaration
-% to its realisation: either a positive count of diascas (possibly zero) to
-% wait, or 'unlimited', so that the actor is deleted only at the next tick.
-%
-% In most cases, the default, 'unlimited', is the best setting.
 
 
--type diasca_maybe() :: 'no_diasca_requested' | 'new_diasca_needed'.
-% Tells whether a next diasca is requested (shorthand for clarity).
+-doc "Tells whether a next diasca is requested (shorthand for clarity).".
+-type diasca_option() :: 'no_diasca_requested' | 'new_diasca_needed'.
 
 
+-doc """
+Used by actors internally, to record the new next action that they plan (in
+their next_action attribute); this can be:
+
+- in a normal, ongoing mode of operation: either nothing, or needing a new
+diasca (either to process an actor message or to go through its termination
+procedure)
+
+- or when having decided to terminate (either being in the course of, or
+considering having terminated for good), in both cases with or without having
+sent at least one actor message (hence in that case needing a new diasca)
+""".
 -type next_actor_action() ::
-	diasca_maybe()
-  | { 'terminating', termination_delay(), diasca_maybe() }
-  | { 'terminated', diasca_maybe() }.
-% Used by actors internally, to record the new next action that they plan (in
-% their next_action attribute); this can be:
-%
-% - in a normal, ongoing mode of operation: either nothing, or needing a new
-% diasca (either to process an actor message or to go through its termination
-% procedure)
-%
-% - or when having decided to terminate (either being in the course of, or
-% considering having terminated for good), in both cases with or without having
-% sent at least one actor message (hence in that case needing a new diasca)
+	diasca_option()
+  | { 'terminating', termination_delay(), diasca_option() }
+  | { 'terminated', diasca_option() }.
 
 
 
+-doc """
+Used by actors in their dialog with their time manager, to notify it of the next
+action they plan: respectively, either nothing, or needing a new diasca to
+manage messages, or terminating with intermediary diascas, or terminating with
+no specific limit in terms of diascas, or having terminated for good.
+
+(difference with next_actor_action/0: the time manager does not have to know how
+many diascas, if any, remain until a planned termination)
+""".
 -type next_reported_action() ::
 
-	diasca_maybe()
+	diasca_option()
 
-	% No need for diasca_maybe(), as implies new_diasca_needed:
+	% No need for diasca_option(), as implies new_diasca_needed:
   | 'terminating'
 
-  | { 'terminating_unlimited', diasca_maybe() }
-  | { 'terminated', diasca_maybe() }.
-% Used by actors in their dialog with their time manager, to notify it of the
-% next action they plan: respectively, either nothing, or needing a new diasca
-% to manage messages, or terminating with intermediary diascas, or terminating
-% with no specific limit in terms of diascas, or having terminated for good.
-%
-% (difference with next_actor_action/0: the time manager does not have to know
-% how many diascas, if any, remain until a planned termination)
+  | { 'terminating_unlimited', diasca_option() }
+  | { 'terminated', diasca_option() }.
 
 
+
+-doc """
+Ordered list of tick offsets at which this actor expects to develop a
+spontaneous behaviour.
+""".
 -type agenda() :: [ tick_offset() ].
-% Ordered list of tick offsets at which this actor expects to develop a
-% spontaneous behaviour.
 
 
 -type actor_oneway_name() :: oneway_name().
@@ -401,52 +400,61 @@
 	actual_message :: oneway_call() } ).
 
 
+-doc """
+Describes a pending actor message, as stored by an actor once having received
+it, before evaluating it.
+""".
 -type actor_message() :: #actor_message{}.
-% Describes a pending actor message, as stored by an actor once having received
-% it.
 
 
+-doc """
+Describes the information needed in order to create (without tag) an actor.
+""".
 -type instance_creation_spec() :: { classname(), [ method_argument() ] }
   | { classname(), [ method_argument() ], class_LoadBalancer:placement_hint() }.
-% Describes the information needed in order to create (without tag) an actor:
 
 
+-doc """
+A tag is a means of identifying the origin of a call on the client side
+(caller), i.e. to identify to which initial oneway an answer corresponds (can be
+freely defined by the user).
+""".
 -type tag() :: any().
-% A tag is a means of identifying the origin of a call on the client side
-% (caller), i.e. to identify to which initial oneway an answer corresponds (can
-% be freely defined by the user).
 
 
+-doc """
+Describes the information needed in order to create, thanks to a tag, an actor.
+""".
 -type tagged_instance_creation_spec() ::
-		{ classname(), [ method_argument() ], tag() }
-	  | { classname(), [ method_argument() ], tag(),
-		  class_LoadBalancer:placement_hint() }.
-% Describes the information needed in order to create, thanks to a tag, an
-% actor.
+	{ classname(), [ method_argument() ], tag() }
+  | { classname(), [ method_argument() ], tag(),
+	  class_LoadBalancer:placement_hint() }.
 
 
 
+-doc """
+Tells what kind of reordering of actor messages is wanted, among:
+
+- 'unordered': the actor processes messages in their arrival order; smallest
+possible overhead, but the order is dictated by the technical context, and is
+not reproducible
+
+- 'constant_arbitrary_order': messages are ordered only according to their
+content and their sender; this order is totally reproducible, but will only
+exhibit one of the many possible trajectories of the simulated system
+
+- 'constant_permuted_order': messages are first reordered like in the case of
+'constant_arbitrary_order', then they are uniformly permuted based on the random
+seed the actor received on creation, either coming from a reproducible or an
+ergodic context; all possible trajectories have then a fair probability of being
+chosen by this more advanced reordering
+
+Note: the overhead induced by this last, more advanced order is sufficiently low
+that it is used as the default order.
+""".
 -type message_ordering_mode() :: 'unordered'
 							   | 'constant_arbitrary_order'
 							   | 'constant_permuted_order'.
-% Tells what kind of reordering of actor messages is wanted, among:
-%
-% - 'unordered': the actor processes messages in their arrival order; smallest
-% possible overhead, but the order is dictated by the technical context, and is
-% not reproducible
-%
-% - 'constant_arbitrary_order': messages are ordered only according to their
-% content and their sender; this order is totally reproducible, but will only
-% exhibit one of the many possible trajectories of the simulated system
-%
-% - 'constant_permuted_order': messages are first reordered like in the case of
-% 'constant_arbitrary_order', then they are uniformly permuted based on the
-% random seed the actor received on creation, either coming from a reproducible
-% or an ergodic context; all possible trajectories have then a fair probability
-% of being chosen by this more advanced reordering
-%
-% Note: the overhead induced by this last, more advanced order is sufficiently
-% low that it is used as the default order.
 
 
 
@@ -702,7 +710,7 @@
 %  is the 'unlimited' atom.
 %
 %  Independently, that actor may or may not send an actor message in the current
-%  diasca, which is covered by the diasca_maybe() element.
+%  diasca, which is covered by the diasca_option() element.
 %
 %  2. at the end of the diasca Dt (see notify_diasca_ended/1), if:
 %
@@ -743,15 +751,46 @@
 % efficiency purposes.
 
 
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+-type title() :: text_utils:title().
+-type label() :: text_utils:label().
+
+-type timestamp() :: time_utils:timestamp().
+
+-type percent() :: math_utils:percent().
+
+-type any_seconds() :: unit_utils:any_seconds().
+-type milliseconds() :: unit_utils:milliseconds().
+
+-type logical_timestamp() :: class_TimeManager:logical_timestamp().
+-type virtual_seconds() :: class_TimeManager:virtual_seconds().
+-type tick() :: class_TimeManager:tick().
+-type diasca() :: class_TimeManager:diasca().
+
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+-type actor_info() :: class_InstanceTracker:actor_info().
+
+-type key() :: class_DataExchanger:key().
+-type value() :: class_DataExchanger:value().
+-type qualified_value() :: class_DataExchanger:qualified_value().
+-type qualifier() :: class_DataExchanger:qualifier().
+
+
 
 -compile({ inline, [ get_trace_timestamp/3 ] } ).
 
 
-% @doc Returns a rather detailed (hence more expensive) timestamp to be included
-% in traces.
-%
-% Meant to be inlined as much as possible to lessen the cost of such traces.
-%
+-doc """
+Returns a rather detailed (hence more expensive) timestamp to be included in
+traces.
+
+Meant to be inlined as much as possible to lessen the cost of such traces.
+""".
 -spec get_trace_timestamp( tick_offset(), diasca(), wooper:state() ) ->
 															ustring().
 get_trace_timestamp( TickOffset, Diasca, State ) ->
@@ -771,19 +810,20 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 
 
 
-% @doc Constructs a simulation actor.
-%
-% Construction parameters:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - ActorInit is a human-readable name for that actor (as a plain string); it is
-% preferably not too long, and without whitespaces; the engine, through child
-% classes, may call this constructor not with a single name (ActorName), but
-% with a ActorInit={ActorName, TraceCategorization} pair instead, see this
-% name() type
-%
+-doc """
+Constructs a simulation actor.
+
+Construction parameters:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- ActorInit is a human-readable name for that actor (as a plain string); it is
+preferably not too long, and without whitespaces; the engine, through child
+classes, may call this constructor not with a single name (ActorName), but with
+a `ActorInit={ActorName, TraceCategorization}` pair instead, see this name()
+type
+""".
 -spec construct( wooper:state(), actor_settings(), name() ) -> wooper:state().
 construct( State,
 		   #actor_settings{ aai=ActorAbstractIdentifier,
@@ -896,7 +936,7 @@ construct( State,
 	% class names, and AAI to its PID and get time information:
 	%
 	TimeManagerPid ! { subscribe,
-				[ ActorAbstractIdentifier, BinActorName, Classname ], self() },
+		[ ActorAbstractIdentifier, BinActorName, Classname ], self() },
 
 	% Note: in the future, subscription may be a single oneway call, and all
 	% information (besides AAI and seeding) will be given to created actors by
@@ -952,13 +992,14 @@ construct( State,
 
 
 
-% @doc Overridden destructor.
-%
-% Unsubscribing from the time manager supposed already done if needed, thanks to
-% a termination message.
-%
-% See also: onTerminationRequested/1.
-%
+-doc """
+Overridden destructor.
+
+Unsubscribing from the time manager supposed already done if needed, thanks to a
+termination message.
+
+See also: onTerminationRequested/1.
+""".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -992,24 +1033,25 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-% @doc Notifies this initial actor that the simulation just started.
-%
-% Request called:
-%
-% - by the time manager when this actor enters the simulation while it was not
-% running at the actor's subscription
-%
-% - directly by this actor itself if upon subscribing it is told that the
-% simulation is already running
-%
-% Note: this simulationStarted/3 method belongs to the engine internals and
-% should not be overridden. See the onFirstDiasca/2 actor oneway instead, whose
-% sole purpose is to ease the implementation of model initialization (this
-% method is a callback, intentionally left blank by the engine).
-%
-% Returns {started,Pid}, Pid being the PID of this actor (the atom is used as a
-% security to discriminate among answers to requests).
-%
+-doc """
+Notifies this initial actor that the simulation just started.
+
+Request called:
+
+- by the time manager when this actor enters the simulation while it was not
+running at the actor's subscription
+
+- directly by this actor itself if upon subscribing it is told that the
+simulation is already running
+
+Note: this `simulationStarted/3` method belongs to the engine internals and
+should not be overridden. See the onFirstDiasca/2 actor oneway instead, whose
+sole purpose is to ease the implementation of model initialization (this method
+is a callback, intentionally left blank by the engine).
+
+Returns `{started,Pid}`, Pid being the PID of this actor (the atom is used as a
+security to discriminate among answers to requests).
+""".
 -spec simulationStarted( wooper:state(), tick(), logical_timestamp() ) ->
 							request_return( { 'actor_started', actor_pid() } ).
 simulationStarted( State, SimulationInitialTick,
@@ -1048,13 +1090,14 @@ simulationStarted( State, SimulationInitialTick,
 
 
 
-% @doc Synchronises directly this actor to the specified simulation (logical)
-% timestamp.
-%
-% Useful for example when terminating, so that each destructed actor knows the
-% right, final simulation time (and not the last one it saw, which is generally
-% in the past).
-%
+-doc """
+Synchronises directly this actor to the specified simulation (logical)
+timestamp.
+
+Useful for example when terminating, so that each destructed actor knows the
+right, final simulation time (and not the last one it saw, which is generally in
+the past).
+""".
 -spec synchroniseTo( wooper:state(), tick_offset(), diasca() ) ->
 											oneway_return().
 synchroniseTo( State, CurrentTickOffset, CurrentDiasca ) ->
@@ -1074,12 +1117,13 @@ synchroniseTo( State, CurrentTickOffset, CurrentDiasca ) ->
 
 
 
-% @doc Notifies this actor that the simulation ended.
-%
-% For the vast majority of actors (but unlike the load balancer for example),
-% this means deletion (overridden for the load balancer, which has a different
-% life cycle).
-%
+-doc """
+Notifies this actor that the simulation ended.
+
+For the vast majority of actors (but unlike the load balancer for example), this
+means deletion (overridden for the load balancer, which has a different life
+cycle).
+""".
 -spec simulationEnded( wooper:state() ) -> const_oneway_return().
 simulationEnded( State ) ->
 
@@ -1090,32 +1134,38 @@ simulationEnded( State ) ->
 
 
 
-% @doc This actor oneway is automatically called the next diasca after an actor
-% is created or, if the simulation was not running, on diasca 1 (that is just
-% after the spontaneous behaviours) of tick offset #0.
-%
-% This method is meant to be overridden, knowing that otherwise the created
-% actor will be scheduled only once (this time), and never again.
-%
-% Its purpose is to gather one-time only operations, otherwise each call of
-% actSpontaneous/1 would have to test whether it is the first one or not.
-%
-% A typical yet simplistic implementation can be, in order to trigger a first
-% scheduling at the next tick:
-%
-%-spec onFirstDiasca(wooper:state(), sending_actor_pid()) ->
-%                                               actor_oneway_return().
-% onFirstDiasca(State, _SendingActorPid) ->
-%   ScheduledState = executeOneway(State, scheduleNextSpontaneousTick),
-%   wooper:return_state(ScheduledState).
-%
-% or even, if wanting this actor to remain passive:
-%
-%-spec onFirstDiasca(wooper:state(), load_balancer_pid()) ->
-%                                          const_actor_oneway_return().
-%onFirstDiasca(State, _SendingActorPid) ->
-%   actor:const_return().
-%
+-doc """
+This actor oneway is automatically called the next diasca after an actor is
+created or, if the simulation was not running, on diasca 1 (that is just after
+the spontaneous behaviours) of tick offset #0.
+
+This method is meant to be overridden, knowing that otherwise the created actor
+will be scheduled only once (this time), and never again.
+
+Its purpose is to gather one-time only operations, otherwise each call of
+actSpontaneous/1 would have to test whether it is the first one or not.
+
+A typical yet simplistic implementation can be, in order to trigger a first
+scheduling at the next tick:
+
+```
+-spec onFirstDiasca(wooper:state(), sending_actor_pid()) ->
+                                              actor_oneway_return().
+onFirstDiasca(State, _SendingActorPid) ->
+  ScheduledState = executeOneway(State, scheduleNextSpontaneousTick),
+  wooper:return_state(ScheduledState).
+```
+
+or even, if wanting this actor to remain passive:
+
+```
+-spec onFirstDiasca(wooper:state(), load_balancer_pid()) ->
+                                         const_actor_oneway_return().
+onFirstDiasca(State, _SendingActorPid) ->
+   actor:const_return().
+
+```
+""".
 -spec onFirstDiasca( wooper:state(), load_balancer_pid() ) ->
 											actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -1144,12 +1194,13 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Called by the local time manager in order to schedule this actor for a
-% new tick, starting with its spontaneous behaviour (diasca 0).
-%
-% Returns an updated state, and triggers back a notification to the
-% corresponding time manager when the spontaneous action has been completed.
-%
+-doc """
+Called by the local time manager in order to schedule this actor for a new tick,
+starting with its spontaneous behaviour (diasca 0).
+
+Returns an updated state, and triggers back a notification to the corresponding
+time manager when the spontaneous action has been completed.
+""".
 -spec beginTick( wooper:state(), tick_offset() ) -> oneway_return().
 beginTick( State, NewTickOffset ) ->
 
@@ -1205,7 +1256,7 @@ beginTick( State, NewTickOffset ) ->
 
 
 
-% @doc Performs checks, in the case of the beginning of a new tick.
+-doc "Performs checks, in the case of the beginning of a new tick.".
 check_spontaneous_tick_consistency( NewTickOffset, State ) ->
 
 	% First, time must always progress:
@@ -1219,7 +1270,7 @@ check_spontaneous_tick_consistency( NewTickOffset, State ) ->
 
 
 
-% @doc Checks that this scheduling returned a sensible result.
+-doc "Checks that this scheduling returned a sensible result.".
 validate_scheduling_outcome( State ) ->
 
 	AddedTicks = ?getAttr(added_spontaneous_ticks),
@@ -1258,9 +1309,10 @@ validate_scheduling_outcome( State ) ->
 
 
 
-% @doc Ensures that all specified ticks are in the future and that none is added
-% and withdrawn at the same time.
-%
+-doc """
+Ensures that all specified ticks are in the future and that none is added and
+withdrawn at the same time.
+""".
 validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 
 	AddedTicks =:= [] orelse
@@ -1302,12 +1354,13 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 
 
 
-% @doc Called by the local time manager in order to schedule this actor for a
-% new non-null diasca, after its spontaneous behaviour.
-%
-% Returns an updated state, and triggers back a notification to the
-% corresponding time manager when the triggered actions have been completed.
-%
+-doc """
+Called by the local time manager in order to schedule this actor for a new
+non-null diasca, after its spontaneous behaviour.
+
+Returns an updated state, and triggers back a notification to the corresponding
+time manager when the triggered actions have been completed.
+""".
 -spec beginDiasca( wooper:state(), tick_offset(), diasca() ) -> oneway_return().
 beginDiasca( State, TickOffset, NewDiasca ) ->
 
@@ -1358,10 +1411,11 @@ beginDiasca( State, TickOffset, NewDiasca ) ->
 
 
 
-% @doc Checks diasca consistency, when an actor begins a new diasca.
-%
-% (optional checkings)
-%
+-doc """
+Checks diascas' consistency, when an actor begins a new diasca.
+
+(optional checkings)
+""".
 check_diasca_consistency( TickOffset, NewDiasca, State ) ->
 
 	check_trigger_tick_consistency( TickOffset, NewDiasca, State ),
@@ -1397,7 +1451,7 @@ check_diasca_consistency( TickOffset, NewDiasca, State ) ->
 
 				% Implicitly no_diasca_requested:
 				{ terminating, DiascaCount, no_diasca_requested }
-				  when is_integer( DiascaCount ) ->
+                                        when is_integer( DiascaCount ) ->
 					ok;
 
 				{ terminated, new_diasca_needed } ->
@@ -1412,7 +1466,6 @@ check_diasca_consistency( TickOffset, NewDiasca, State ) ->
 			end;
 
 		_ ->
-
 			% Receiving a message masks any local planification, as a result no
 			% specified check can be performed here:
 			%
@@ -1422,9 +1475,10 @@ check_diasca_consistency( TickOffset, NewDiasca, State ) ->
 
 
 
-% @doc Performs check, in the case of a new, triggered (i.e. non-spontaneous)
-% diasca (D>0).
-%
+-doc """
+Performs checks, in the case of a new, triggered (i.e. non-spontaneous) diasca
+(D>0).
+""".
 check_trigger_tick_consistency( TickOffset, NewDiasca, State ) ->
 
 	% First, time must always progress:
@@ -1440,9 +1494,10 @@ check_trigger_tick_consistency( TickOffset, NewDiasca, State ) ->
 
 
 
-% @doc Helps checking whether the actor is scheduled for a new diasca as
-% expected, by ensuring that the causality always progresses.
-%
+-doc """
+Helps checking whether the actor is scheduled for a new diasca as expected, by
+ensuring that the causality always progresses.
+""".
 check_time_consistency_at_new_diasca( TickOffset, NewDiasca, State ) ->
 
 	false = ( NewDiasca < 1 ),
@@ -1482,15 +1537,16 @@ check_time_consistency_at_new_diasca( TickOffset, NewDiasca, State ) ->
 
 		WrongTimestamp ->
 			throw( { wrong_timestamp, WrongTimestamp,
-						{ TickOffset, NewDiasca } } )
+					{ TickOffset, NewDiasca } } )
 
 	end.
 
 
 
-% @doc Called by the time manager in order to schedule this actor a last time,
-% so that it can safely terminate.
-%
+-doc """
+Called by the time manager in order to schedule this actor a last time, so that
+it can safely terminate.
+""".
 -spec beginTerminationDiasca( wooper:state(), tick_offset(), diasca() ) ->
 									const_oneway_return().
 beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
@@ -1558,7 +1614,7 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 
 
 
-% @doc Performs checks, in the case of a termination tick.
+-doc "Performs checks, in the case of a termination tick.".
 check_termination_time_consistency( TickOffset, NewDiasca, State ) ->
 
 	% A termination can *only* happen just afterwards the previous diasca on the
@@ -1571,9 +1627,10 @@ check_termination_time_consistency( TickOffset, NewDiasca, State ) ->
 
 
 
-% @doc Helps checking whether the actor is scheduled for a new tick as expected,
-% by ensuring time always progresses.
-%
+-doc """
+Helps checking whether the actor is scheduled for a new tick as expected, by
+ensuring time always progresses.
+""".
 check_time_consistency_at_new_tick( NewTickOffset, State ) ->
 
 	case ?getAttr(previous_schedule) of
@@ -1599,20 +1656,20 @@ check_time_consistency_at_new_tick( NewTickOffset, State ) ->
 
 
 
-% @doc Checks that no pending actor message targets an impossible future for the
-% specified new tick.
-%
-% To be called just once this actor was scheduled for a new tick.
-%
-% This check is useful as, when an actor receives a message, it cannot check
-% whether it comes from a too distant (incorrect) future, as the actor may be
-% still lingering in a remote past, short of having been scheduled recently.
-%
-% So the only point in time where it can check messages against future is once
-% being just scheduled (whatever the reason - an actor may already have received
-% messages once it starts its new tick, although it is not the most common
-% case).
-%
+-doc """
+Checks that no pending actor message targets an impossible future for the
+specified new tick.
+
+To be called just once this actor was scheduled for a new tick.
+
+This check is useful as, when an actor receives a message, it cannot check
+whether it comes from a too distant (incorrect) future, as the actor may be
+still lingering in a remote past, short of having been scheduled recently.
+
+So the only point in time where it can check messages against future is once
+being just scheduled (whatever the reason - an actor may already have received
+messages once it starts its new tick, although it is not the most common case).
+""".
 check_messages_at_new_tick( CurrentTickOffset, State ) ->
 	check_messages_at_new_tick_helper( ?getAttr(pending_messages),
 									   CurrentTickOffset ).
@@ -1650,20 +1707,20 @@ check_messages_at_new_tick_helper( [ M | _T ], CurrentTickOffset ) ->
 
 
 
-% @doc Checks that no pending actor message targets an impossible future for
-% the specified diasca at the specified tick.
-%
-% To be called just once this actor was scheduled for a new diasca.
-%
-% This check is useful as, when an actor receives a message, it cannot check
-% whether it comes from a too distant (incorrect) future, as the actor may be
-% still lingering in a remote past, short of having been scheduled recently.
-%
-% So the only point in time where it can check messages against future is once
-% being just scheduled (whatever the reason - an actor may already have received
-% messages once it starts its new tick, although it is not the most common
-% case).
-%
+-doc """
+Checks that no pending actor message targets an impossible future for the
+specified diasca at the specified tick.
+
+To be called just once this actor was scheduled for a new diasca.
+
+This check is useful as, when an actor receives a message, it cannot check
+whether it comes from a too distant (incorrect) future, as the actor may be
+still lingering in a remote past, short of having been scheduled recently.
+
+So the only point in time where it can check messages against future is once
+being just scheduled (whatever the reason - an actor may already have received
+messages once it starts its new tick, although it is not the most common case).
+""".
 check_messages_at_new_diasca( CurrentTickOffset, CurrentDiasca, State ) ->
 	check_messages_at_new_diasca_helper( ?getAttr(pending_messages),
 										 CurrentTickOffset, CurrentDiasca ).
@@ -1685,8 +1742,10 @@ check_messages_at_new_diasca_helper(
 	check_messages_at_new_diasca_helper( T, CurrentTickOffset, CurrentDiasca );
 
 check_messages_at_new_diasca_helper(
-  [ #actor_message{ tick_offset=CurrentTickOffset, diasca=NextDiasca } | T ],
-  CurrentTickOffset, CurrentDiasca ) when NextDiasca =:= CurrentDiasca + 1 ->
+        [ #actor_message{ tick_offset=CurrentTickOffset,
+                          diasca=NextDiasca } | T ],
+        CurrentTickOffset, CurrentDiasca )
+            when NextDiasca =:= CurrentDiasca + 1 ->
 
 	% Next diasca, message must have been sent by an early actor:
 	check_messages_at_new_diasca_helper( T, CurrentTickOffset, CurrentDiasca );
@@ -1699,10 +1758,11 @@ check_messages_at_new_diasca_helper( [ M | _T ], CurrentTickOffset,
 
 
 
-% @doc Throws an exception iff the specified tick offset was actually not
-% registered as a schedule tick for this actor, or if was registered, but not as
-% the first deadline.
-%
+-doc """
+Throws an exception iff the specified tick offset was actually not registered as
+a schedule tick for this actor, or if was registered, but not as the first
+deadline.
+""".
 check_spontaneous_indeed( NewTickOffset, State ) ->
 
 	% An actor may have received an early message from a remote actor before
@@ -1741,9 +1801,10 @@ check_spontaneous_indeed( NewTickOffset, State ) ->
 
 
 
-% @doc Throws an exception iff there is no pending actor messages for this
-% diasca of the current tick, for this actor.
-%
+-doc """
+Throws an exception iff there is no pending actor messages for this diasca of
+the current tick, for this actor.
+""".
 check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 
 	PendingMessages = ?getAttr(pending_messages),
@@ -1756,7 +1817,7 @@ check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 		case ?getAttr(next_action) of
 
 			{ terminating, DiascaCount, no_diasca_requested }
-						when is_integer( DiascaCount ) ->
+                                        when is_integer( DiascaCount ) ->
 				ok;
 
 			Unexpected ->
@@ -1767,11 +1828,12 @@ check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 
 
 
-% @doc Determines whether there is at least one pending actor message for the
-% specified timestamp.
-%
-% Intercepts as well actor messages in the past.
-%
+-doc """
+Determines whether there is at least one pending actor message for the specified
+timestamp.
+
+Intercepts as well actor messages in the past.
+""".
 find_message_for_timestamp( _TickOffset, _Diasca, _Acc=[] ) ->
 	false;
 
@@ -1797,9 +1859,10 @@ find_message_for_timestamp( TickOffset, Diasca, [ _H | T ] ) ->
 
 
 
-% @doc Requests the next tick to be added (if not already registered) to the
-% future spontaneous ticks of this actor.
-%
+-doc """
+Requests the next tick to be added (if not already registered) to the future
+spontaneous ticks of this actor.
+""".
 -spec scheduleNextSpontaneousTick( wooper:state() ) -> oneway_return().
 scheduleNextSpontaneousTick( State ) ->
 
@@ -1809,12 +1872,12 @@ scheduleNextSpontaneousTick( State ) ->
 
 
 
-% @doc Adds the specified spontaneous tick offset to the already registered
-% ones.
-%
-% Note: adding a given tick more than once is allowed (and will result of course
-% in a single spontaneous scheduling at that tick).
-%
+-doc """
+Adds the specified spontaneous tick offset to the already registered ones.
+
+Note: adding a given tick more than once is allowed (and will result of course
+in a single spontaneous scheduling at that tick).
+""".
 -spec addSpontaneousTick( wooper:state(), tick_offset() ) -> oneway_return().
 addSpontaneousTick( State, SpontaneousTickToAdd ) ->
 
@@ -1824,12 +1887,12 @@ addSpontaneousTick( State, SpontaneousTickToAdd ) ->
 
 
 
-% @doc Adds the specified spontaneous tick offsets to the already registered
-% ones.
-%
-% Note: adding a given tick more than once is allowed (and will result of course
-% in a single spontaneous scheduling at that tick).
-%
+-doc """
+Adds the specified spontaneous tick offsets to the already registered ones.
+
+Note: adding a given tick more than once is allowed (and will result of course
+in a single spontaneous scheduling at that tick).
+""".
 -spec addSpontaneousTicks( wooper:state(), [ tick_offset() ]  ) ->
 															oneway_return().
 addSpontaneousTicks( State, SpontaneousTicksToAdd ) ->
@@ -1840,12 +1903,13 @@ addSpontaneousTicks( State, SpontaneousTicksToAdd ) ->
 
 
 
-% @doc Adds the specified spontaneous tick offset to the already registered
-% ones, and returns an updated state.
-%
-% Note: adding a given tick more than once is allowed (and will result of course
-% for that actor in a single spontaneous scheduling at that tick).
-%
+-doc """
+Adds the specified spontaneous tick offset to the already registered ones, and
+returns an updated state.
+
+Note: adding a given tick more than once is allowed (and will result of course
+for that actor in a single spontaneous scheduling at that tick).
+""".
 -spec add_spontaneous_tick( tick_offset(), wooper:state() ) -> wooper:state().
 add_spontaneous_tick( SpontaneousTickToAdd, State )
 									when is_integer( SpontaneousTickToAdd ) ->
@@ -1858,12 +1922,13 @@ add_spontaneous_tick( Other, _State ) ->
 
 
 
-% @doc Adds the specified spontaneous tick offsets to the already registered
-% ones, and returns an updated state.
-%
-% Note: adding a given tick more than once is allowed (and will result of course
-% for that actor in a single spontaneous scheduling at that tick).
-%
+-doc """
+Adds the specified spontaneous tick offsets to the already registered ones, and
+returns an updated state.
+
+Note: adding a given tick more than once is allowed (and will result of course
+for that actor in a single spontaneous scheduling at that tick).
+""".
 -spec add_spontaneous_ticks( [ tick_offset() ], wooper:state() ) ->
 									wooper:state().
 add_spontaneous_ticks( SpontaneousTicksToAdd, State ) ->
@@ -1882,12 +1947,13 @@ add_spontaneous_ticks( SpontaneousTicksToAdd, State ) ->
 
 
 
-% @doc Adds the spontaneous tick offset determined from the current one plus the
-% specified one to the already registered ones, and returns an updated state.
-%
-% Note: adding a given tick more than once is allowed (and will result of course
-% for that actor in a single spontaneous scheduling at that tick).
-%
+-doc """
+Adds the spontaneous tick offset determined from the current one plus the
+specified one to the already registered ones, and returns an updated state.
+
+Note: adding a given tick more than once is allowed (and will result of course
+for that actor in a single spontaneous scheduling at that tick).
+""".
 -spec add_spontaneous_tick_in( tick_offset(), wooper:state() ) ->
 										wooper:state().
 add_spontaneous_tick_in( InSpontaneousDurationOffset, State )
@@ -1904,12 +1970,13 @@ add_spontaneous_tick_in( Other, _State ) ->
 
 
 
-% @doc Adds the spontaneous tick offset corresponding to specified timestamp to
-% the already registered ones, and returns an updated state.
-%
-% Note: adding a given tick more than once is allowed (and will result of course
-% for that actor in a single spontaneous scheduling at that tick).
-%
+-doc """
+Adds the spontaneous tick offset corresponding to the specified timestamp to the
+already registered ones, and returns an updated state.
+
+Note: adding a given tick more than once is allowed (and will result of course
+for that actor in a single spontaneous scheduling at that tick).
+""".
 -spec add_spontaneous_timestamp( timestamp(), wooper:state() ) ->
 										wooper:state().
 add_spontaneous_timestamp( Timestamp, State ) ->
@@ -1921,11 +1988,12 @@ add_spontaneous_timestamp( Timestamp, State ) ->
 
 
 
-% @doc Withdraws the specified spontaneous tick offset from the already
-% registered ones.
-%
+-doc """
+Withdraws the specified spontaneous tick offset from the already registered
+ones.
+""".
 -spec withdrawSpontaneousTick( wooper:state(), tick_offset() ) ->
-									oneway_return().
+                                        oneway_return().
 withdrawSpontaneousTick( State, SpontaneousTickToWithdraw ) ->
 
 	NewState = withdraw_spontaneous_tick( SpontaneousTickToWithdraw, State ),
@@ -1934,9 +2002,10 @@ withdrawSpontaneousTick( State, SpontaneousTickToWithdraw ) ->
 
 
 
-% @doc Withdraws the specified spontaneous tick offsets from the already
-% registered ones.
-%
+-doc """
+Withdraws the specified spontaneous tick offsets from the already registered
+ones.
+""".
 -spec withdrawSpontaneousTicks( wooper:state(), [ tick_offset() ] ) ->
 										oneway_return().
 withdrawSpontaneousTicks( State, SpontaneousTicksToWithdraw ) ->
@@ -1947,9 +2016,10 @@ withdrawSpontaneousTicks( State, SpontaneousTicksToWithdraw ) ->
 
 
 
-% @doc Withdraws the specified spontaneous tick offset from the already
-% registered ones, and returns an updated state.
-%
+-doc """
+Withdraws the specified spontaneous tick offset from the already registered
+ones, and returns an updated state.
+""".
 -spec withdraw_spontaneous_tick( tick_offset(), wooper:state() ) ->
 										wooper:state().
 withdraw_spontaneous_tick( SpontaneousTickToWithdraw, State )
@@ -1962,9 +2032,10 @@ withdraw_spontaneous_tick( Other, _State ) ->
 
 
 
-% @doc Withdraws the specified spontaneous tick offsets to the already
-% registered ones, and returns an updated state.
-%
+-doc """
+Withdraws the specified spontaneous tick offsets to the already registered ones,
+and returns an updated state.
+""".
 -spec withdraw_spontaneous_ticks( [ tick_offset() ], wooper:state() ) ->
 										wooper:state().
 withdraw_spontaneous_ticks( SpontaneousTicksToWithdraw, State ) ->
@@ -1983,11 +2054,12 @@ withdraw_spontaneous_ticks( SpontaneousTicksToWithdraw, State ) ->
 
 
 
-% @doc Called by an actor when it determines it is to be removed from the
-% simulation and deleted: starts its termination procedure, with no specific
-% upper bound in terms of diascas until actual termination (so this actor will
-% be actually deleted at the next tick (diasca 0).
-%
+-doc """
+Called by an actor when it determines it is to be removed from the simulation
+and deleted: starts its termination procedure, with no specific upper bound in
+terms of diascas until actual termination (so this actor will be actually
+deleted at the next tick (diasca 0).
+""".
 -spec declareTermination( wooper:state() ) -> oneway_return().
 declareTermination( State ) ->
 
@@ -2002,17 +2074,17 @@ declareTermination( State ) ->
 
 
 
-% @doc Called by an actor when it determines it is to be removed from the
-% simulation and deleted: starts its termination procedure, waiting for exactly
-% the specified number of diascas (supposedly sufficient so that all actors
-% knowing it become aware of its termination) until performing its actual
-% termination.
-%
-% Of course it is up to this actor to notify appropriately the relevant actors
-% and to ensure they have a sufficient number of diascas to do so.
-%
-% Note: selecting a 'unlimited' termination delay is strongly recommended.
-%
+-doc """
+Called by an actor when it determines it is to be removed from the simulation
+and deleted: starts its termination procedure, waiting for exactly the specified
+number of diascas (supposedly sufficient so that all actors knowing it become
+aware of its termination) until performing its actual termination.
+
+Of course it is up to this actor to notify appropriately the relevant actors and
+to ensure they have a sufficient number of diascas to do so.
+
+Note: selecting a 'unlimited' termination delay is strongly recommended.
+""".
 -spec declareTermination( wooper:state(), termination_delay() ) ->
 								oneway_return().
 declareTermination( State, TerminationDelay ) ->
@@ -2028,11 +2100,10 @@ declareTermination( State, TerminationDelay ) ->
 
 
 
-% @doc Called by an actor when it determines it is to be removed from the
-% simulation and deleted, which could be done on the very next diasca.
-%
-% (helper)
-%
+-doc """
+Called by an actor when it determines it is to be removed from the simulation
+and deleted, which could be done on the very next diasca.
+""".
 -spec declare_termination( termination_delay(), wooper:state() ) ->
 									wooper:state().
 declare_termination( _IntercalaryDiasca=0, State ) ->
@@ -2102,7 +2173,9 @@ declare_termination( IntercalaryDiasca, State ) ->
 
 
 
-% @doc Reacts to a notification of time manager shutdown by deleting this actor.
+-doc """
+Reacts to a notification of time manager shutdown by deleting this actor.
+""".
 -spec timeManagerShutdown( wooper:state() ) -> const_oneway_return().
 timeManagerShutdown( State ) ->
 
@@ -2116,15 +2189,16 @@ timeManagerShutdown( State ) ->
 
 
 
-% @doc Defines the spontaneous behaviour of this actor.
-%
-% The actSpontaneous/1 oneway is expected to update the actor state, send any
-% relevant actor message(s) and/or update the spontaneous agenda of this actor.
-%
-% Note that this is a (standard) oneway, not an actor oneway.
-%
-% Default implementation, made to be overridden.
-%
+-doc """
+Defines the spontaneous behaviour of this actor.
+
+The actSpontaneous/1 oneway is expected to update the actor state, send any
+relevant actor message(s) and/or update the spontaneous agenda of this actor.
+
+Note that this is a (standard) oneway, not an actor oneway.
+
+Default implementation, made to be overridden.
+""".
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
@@ -2136,10 +2210,11 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Oneway called by another actor (A) to send to this current actor
-% (S=self()) a behaviour-specific message: this S actor stores this message for
-% a later processing, but acknowleges it immediately to A.
-%
+-doc """
+Oneway called by another actor (A) to send to this current actor (`S=self()`) a
+behaviour-specific message: this S actor stores this message for a later
+processing, but acknowleges it immediately to A.
+""".
 -spec receiveActorMessage( wooper:state(), tick_offset(), diasca(),
 					oneway_call(), actor_pid(), aai() ) -> oneway_return().
 receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
@@ -2346,9 +2421,10 @@ receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
 
 
 
-% @doc Callback triggered by the reception of an acknowledgement from an actor
-% to which this actor sent a message.
-%
+-doc """
+Callback triggered by the reception of an acknowledgement from an actor to which
+this actor sent a message.
+""".
 -spec acknowledgeMessage( wooper:state(), actor_pid() ) -> oneway_return().
 acknowledgeMessage( State, CalledActorPid ) ->
 
@@ -2395,13 +2471,11 @@ acknowledgeMessage( State, CalledActorPid ) ->
 
 
 
-% @doc Sends to the local time manager a notification that the current diasca
-% ended.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Sends to the local time manager a notification that the current diasca ended.
+
+Returns an updated state.
+""".
 notify_diasca_ended( State ) ->
 
 	cond_utils:if_defined( sim_diasca_check_time_management,
@@ -2435,7 +2509,7 @@ notify_diasca_ended( State ) ->
 			cond_utils:if_defined( sim_diasca_debug_life_cycles,
 				trace_utils:debug_fmt( "Actor ~w unlimited-terminating at ~w, "
 					"requesting ~w.", [ self(), DiascaRequest,
-							{ CurrentTickOffset, CurrentDiasca } ] ) ),
+						{ CurrentTickOffset, CurrentDiasca } ] ) ),
 			{
 				% Diasca request reset internally:
 				{ terminating, unlimited, no_diasca_requested },
@@ -2500,9 +2574,10 @@ notify_diasca_ended( State ) ->
 
 
 
-% @doc Returns the current simulation time of this actor, expressed as an offset
-% of simulation ticks relative to the beginning of the simulation.
-%
+-doc """
+Returns the current simulation time of this actor, expressed as an offset of
+simulation ticks relative to the beginning of the simulation.
+""".
 -spec getSimulationTickOffset( wooper:state() ) ->
 									const_request_return( tick_offset() ).
 getSimulationTickOffset( State ) ->
@@ -2510,21 +2585,23 @@ getSimulationTickOffset( State ) ->
 
 
 
-% @doc Returns the current simulation time of this actor, expressed as an
-% absolute number of simulation ticks.
-%
+-doc """
+Returns the current simulation time of this actor, expressed as an absolute
+number of simulation ticks.
+""".
 -spec getSimulationTick( wooper:state() ) -> const_request_return( tick() ).
 getSimulationTick( State ) ->
 	wooper:const_return_result( get_current_tick( State ) ).
 
 
 
-% @doc Returns the current simulation time of this actor, structured as follows:
-% {{SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond}}.
-%
-% This date might be less precise than the actual simulation tick, so the latter
-% cannot be obtained from the former.
-%
+-doc """
+Returns the current simulation time of this actor, structured as follows:
+`{{SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond}}`.
+
+This date might be less precise than the actual simulation tick, so the latter
+cannot be obtained from the former.
+""".
 -spec getSimulationDate( wooper:state() ) ->
 								const_request_return( timestamp() ).
 getSimulationDate( State ) ->
@@ -2537,20 +2614,20 @@ getSimulationDate( State ) ->
 
 
 
-% @doc Returns a textual description of the simulation and real time, for this
-% actor.
-%
+-doc """
+Returns a textual description of the simulation and real time, for this actor.
+""".
 -spec getTextualTimings( wooper:state() ) -> const_request_return( ustring() ).
 getTextualTimings( State ) ->
 	wooper:const_return_result( get_textual_timings( State ) ).
 
 
 
-% @doc Returns an atom corresponding to the Erlang node on which this actor
-% runs.
-%
-% Note: mostly useful for the test of the placement heuristics.
-%
+-doc """
+Returns an atom corresponding to the Erlang node on which this actor runs.
+
+Note: mostly useful for the test of the placement heuristics.
+""".
 -spec getHostingNode( wooper:state() ) ->
 							const_request_return( net_utils:node_name() ).
 getHostingNode( State ) ->
@@ -2558,25 +2635,28 @@ getHostingNode( State ) ->
 
 
 
-% @doc Converts the specified duration in seconds (expressed as an integer or a
-% floating point value) into an integer (rounded) number of simulation ticks,
-% which is at least equal to one tick.
-%
-% For example convertSecondsToTicks( State, 0.001 ).
-% Note: the convert_seconds_to_ticks helper function can be used as well.
-%
--spec convertSecondsToTicks( wooper:state(), unit_utils:any_seconds() ) ->
+-doc """
+Converts the specified duration in seconds (expressed as an integer or a
+floating point value) into an integer (rounded) number of simulation ticks,
+which is at least equal to one tick.
+
+For example `convertSecondsToTicks(State, 0.001)`.
+
+Note: the `convert_seconds_to_ticks/2` helper function can be used as well.
+""".
+-spec convertSecondsToTicks( wooper:state(), any_seconds() ) ->
 								const_request_return( tick_offset() ).
 convertSecondsToTicks( State, Seconds ) ->
 	wooper:const_return_result( convert_seconds_to_ticks( Seconds, State ) ).
 
 
 
-% @doc Converts the specified tick count into a fractional (floating-point)
-% number of seconds.
-%
-% Note: the convert_ticks_to_seconds helper function can be used as well.
-%
+-doc """
+Converts the specified tick count into a fractional (floating-point) number of
+seconds.
+
+Note: the `convert_ticks_to_seconds/2` helper function can be used as well.
+""".
 -spec convertTicksToSeconds( wooper:state(), tick_offset() ) ->
 						const_request_return( unit_utils:float_second() ).
 convertTicksToSeconds( State, Ticks ) ->
@@ -2584,12 +2664,13 @@ convertTicksToSeconds( State, Ticks ) ->
 
 
 
-% @doc Returns (asynchronously, to avoid deadlocks) the current list of waited
-% actors (if any) for that actor.
-%
-% Allows the TimeManager to know why this actor may be stalling the simulation,
-% and who it is.
-%
+-doc """
+Returns (asynchronously, to avoid deadlocks) the current list of waited actors
+(if any) for that actor.
+
+Allows the TimeManager to know why this actor may be stalling the simulation,
+and who it is.
+""".
 -spec nudge( wooper:state(), pid() ) -> const_oneway_return().
 nudge( State, SenderPid ) ->
 
@@ -2600,14 +2681,14 @@ nudge( State, SenderPid ) ->
 
 
 
-% @doc Returns the AAI of that instance.
+-doc "Returns the AAI of that instance.".
 -spec getAAI( wooper:state() ) -> const_request_return( aai() ).
 getAAI( State ) ->
 	wooper:const_return_result( ?getAttr(actor_abstract_id) ).
 
 
 
-% @doc Returns an information record about this actor.
+-doc "Returns an information record about this actor.".
 -spec getActorInfo( wooper:state() ) -> const_request_return( actor_info() ).
 getActorInfo( State ) ->
 
@@ -2622,24 +2703,25 @@ getActorInfo( State ) ->
 
 
 
-% @doc Called automatically after (generally after two diascas) this actor
-% called create_actor/{3,4} or create_placed_actor/{4,5}, to notify it the
-% creation was done, resulting in a newly created actor.
-%
-% Parameters are:
-%
-% - CreatedActorPid the PID of the just created actor
-%
-% - CreatedActorTag the tag used for this actor creation so that it is able to
-% discriminate among the multiple creations it might have requested; this is
-% either a user-defined tag or { ActorClassname, ActorConstructionParameters },
-% i.e. a pair made of the classname of that created actor and of the parameters
-% which were specified for its creation
-%
-% Note: this is a default implementation, meant to be overridden.
-%
-% Typically called by the load balancer.
-%
+-doc """
+Called automatically after (generally after two diascas) this actor called
+`create_actor/{3,4}` or `create_placed_actor/{4,5}`, to notify it the creation
+was done, resulting in a newly created actor.
+
+Parameters are:
+
+- CreatedActorPid the PID of the just created actor
+
+- CreatedActorTag the tag used for this actor creation so that it is able to
+discriminate among the multiple creations it might have requested; this is
+either a user-defined tag or { ActorClassname, ActorConstructionParameters },
+i.e. a pair made of the classname of that created actor and of the parameters
+which were specified for its creation
+
+Note: this is a default implementation, meant to be overridden.
+
+Typically called by the load balancer.
+""".
 -spec onActorCreated( wooper:state(), actor_pid(), tag(),
 					  sending_actor_pid() ) -> const_actor_oneway_return().
 onActorCreated( State, CreatedActorPid, CreatedActorTag, _SendingActorPid ) ->
@@ -2657,9 +2739,10 @@ onActorCreated( State, CreatedActorPid, CreatedActorTag, _SendingActorPid ) ->
 
 
 
-% @doc Requires the caller (generally the time manager) to be notified
-% (asynchronously) of the name (as a binary) of this actor.
-%
+-doc """
+Requires the caller (generally the time manager) to be notified (asynchronously)
+of the name (as a binary) of this actor.
+""".
 -spec triggerNameNotification( wooper:state(), wooper:caller_pid() ) ->
 										const_oneway_return().
 triggerNameNotification( State, CallerPid ) ->
@@ -2670,10 +2753,11 @@ triggerNameNotification( State, CallerPid ) ->
 
 
 
-% @doc Relinks this actor, supposing it was just deserialised.
-%
-% (request, for synchronicity)
-%
+-doc """
+Relinks this actor, supposing it was just deserialised.
+
+(request, for synchronicity)
+""".
 -spec relink( wooper:state() ) ->
 					const_request_return( { 'relinked', actor_pid() } ).
 relink( State ) ->
@@ -2685,30 +2769,32 @@ relink( State ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Returns the (supposed opaque) identifier (AAI) of that actor.
-%
-% During a given simulation, an actor bears a unique identifier, and this
-% identifier will be the same from one simulation to another.
-%
-% (helper function)
-%
+-doc """
+Returns the (supposed opaque) identifier (AAI) of that actor.
+
+During a given simulation, an actor bears a unique identifier, and this
+identifier will be the same from one simulation to another.
+
+(helper function)
+""".
 -spec get_abstract_identifier( wooper:state() ) -> aai().
 get_abstract_identifier( State ) ->
 	?getAttr(actor_abstract_id).
 
 
 
-% @doc Returns a path to the root directory of the deployed elements, as a plain
-% string.
-%
-% Useful to be able to look-up and read third-party (simulation-specific)
-% deployed data.
-%
-% For example "/tmp/sim-diasca-My_Case-boudevil-2012-12-7-at-13h-56m-03s-1f79"
-% "3a6ba507/deployed-elements" may be returned.
-%
-% (helper function)
-%
+-doc """
+Returns a path to the root directory of the deployed elements, as a plain
+string.
+
+Useful to be able to look-up and read third-party (simulation-specific) deployed
+data.
+
+For example `"/tmp/sim-diasca-My_Case-boudevil-2012-12-7-at-13h-56m-03s-1f79"
+"3a6ba507/deployed-elements"` may be returned.
+
+(helper function)
+""".
 -spec get_deployed_root_directory( wooper:state() ) ->
 										file_utils:directory_path().
 get_deployed_root_directory( _State ) ->
@@ -2728,22 +2814,23 @@ get_deployed_root_directory( _State ) ->
 % within an actor.
 
 
-% @doc Converts the specified duration in virtual seconds (expressed as an
-% integer or a floating-point value) into an integer (non-negative, rounded)
-% number of simulation ticks.
-%
-% Note: this time conversion will be checked for accuracy based on the default
-% threshold in terms of relative error, and thus may fail at runtime, should it
-% be deemed too inaccurate.
-%
-% For example TickCount = class_Actor:convert_seconds_to_ticks(_Secs=0.001,
-% State).
-%
-% This function can be called as soon as the class_Actor constructor has been
-% executed.
-%
-% (helper function)
-%
+-doc """
+Converts the specified duration in virtual seconds (expressed as an integer or a
+floating-point value) into an integer (non-negative, rounded) number of
+simulation ticks.
+
+Note: this time conversion will be checked for accuracy based on the default
+threshold in terms of relative error, and thus may fail at runtime, should it be
+deemed too inaccurate.
+
+For example `TickCount = class_Actor:convert_seconds_to_ticks(_Secs=0.001,
+State)`.
+
+This function can be called as soon as the class_Actor constructor has been
+executed.
+
+(helper function)
+""".
 -spec convert_seconds_to_ticks( any_seconds(), wooper:state() ) ->
 													tick_duration().
 convert_seconds_to_ticks( Seconds, State ) ->
@@ -2752,19 +2839,20 @@ convert_seconds_to_ticks( Seconds, State ) ->
 
 
 
-% @doc Converts the specified duration in virtual seconds (expressed as an
-% integer or a floating-point value) into an integer (non-negative, rounded)
-% number of simulation ticks.
-%
-% Note: this time conversion will be checked for accuracy based on the default
-% threshold in terms of relative error, and thus may fail, should it be deemed
-% to inaccurate.
-%
-% For example TickCount = class_Actor:convert_seconds_to_ticks_explicit(_Secs=5,
-%                                       _TickDur=0.01)
-%
-% (helper function)
-%
+-doc """
+Converts the specified duration in virtual seconds (expressed as an
+integer or a floating-point value) into an integer (non-negative, rounded)
+number of simulation ticks.
+
+Note: this time conversion will be checked for accuracy based on the default
+threshold in terms of relative error, and thus may fail, should it be deemed
+to inaccurate.
+
+For example `TickCount = class_Actor:convert_seconds_to_ticks_explicit(_Secs=5,
+_TickDur=0.01)`.
+
+(helper function)
+""".
 -spec convert_seconds_to_ticks_explicit( any_seconds(), virtual_seconds() ) ->
 												tick_duration().
 convert_seconds_to_ticks_explicit( Seconds, TickDuration )  ->
@@ -2773,14 +2861,15 @@ convert_seconds_to_ticks_explicit( Seconds, TickDuration )  ->
 
 
 
-% @doc Converts the specified number of (floating-point) seconds into an integer
-% (rounded) number of ticks, checking that any rounding error stays within
-% specified maximum relative error.
-%
-% For example, to limit the relative error to 5%, use MaxRelativeError=0.05.
-%
-% (helper function)
-%
+-doc """
+Converts the specified number of (floating-point) seconds into an integer
+(rounded) number of ticks, checking that any rounding error stays within
+specified maximum relative error.
+
+For example, to limit the relative error to 5%, use `MaxRelativeError=0.05`.
+
+(helper function)
+""".
 -spec convert_seconds_to_ticks( any_seconds(), percent(),
 								wooper:state() ) -> tick_duration().
 convert_seconds_to_ticks( Seconds, MaxRelativeError, State ) ->
@@ -2789,15 +2878,16 @@ convert_seconds_to_ticks( Seconds, MaxRelativeError, State ) ->
 
 
 
-% @doc Converts the specified number of (floating-point) seconds into an integer
-% (rounded) number of ticks, checking that any rounding error stays within
-% specified maximum relative error.
-%
-% For example, to limit the relative error to 5%, use MaxRelativeError=0.05.
-%
-% Helper introduced to be exported, so that it may be used by non-actors as well
-% (e.g. WOOPER helper instances).
-%
+-doc """
+Converts the specified number of (floating-point) seconds into an integer
+(rounded) number of ticks, checking that any rounding error stays within
+specified maximum relative error.
+
+For example, to limit the relative error to 5%, use `MaxRelativeError=0.05`.
+
+Helper introduced to be exported, so that it may be used by non-actors as well
+(e.g. WOOPER helper instances).
+""".
 -spec convert_seconds_to_ticks_explicit( any_seconds(), percent(),
 										 virtual_seconds() ) -> tick_duration().
 convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError, TickDuration )
@@ -2846,14 +2936,15 @@ convert_seconds_to_ticks_explicit( Seconds, _MaxRelativeError,
 
 
 
-% @doc Converts the specified duration in seconds (expressed as an integer or a
-% floating point value) into an integer (strictly positive, rounded) number of
-% simulation ticks, which is at least equal to one tick.
-%
-% For example TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001, State)
-%
-% (helper function)
-%
+-doc """
+Converts the specified duration in seconds (expressed as an integer or a
+floating point value) into an integer (strictly positive, rounded) number of
+simulation ticks, which is at least equal to one tick.
+
+For example `TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001, State)`.
+
+(helper function)
+""".
 -spec convert_seconds_to_non_null_ticks( any_seconds(), wooper:state() ) ->
 												tick_offset().
 convert_seconds_to_non_null_ticks( Seconds, State )
@@ -2873,17 +2964,18 @@ convert_seconds_to_non_null_ticks( Seconds, State ) ->
 
 
 
-% @doc Converts the specified duration in seconds (expressed as an integer or a
-% floating point value) into an integer (strictly positive, rounded) number of
-% simulation ticks, checking that any rounding error stays within specified
-% maximum relative error and then ensuring the returned duration is at least
-% equal to one tick.
-%
-% For example TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001,
-%                   _MaxRelativeError=0.01, State)
-%
-% (helper function)
-%
+-doc """
+Converts the specified duration in seconds (expressed as an integer or a
+floating point value) into an integer (strictly positive, rounded) number of
+simulation ticks, checking that any rounding error stays within specified
+maximum relative error and then ensuring the returned duration is at least equal
+to one tick.
+
+For example `TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001,
+_MaxRelativeError=0.01, State)`.
+
+(helper function)
+""".
 -spec convert_seconds_to_non_null_ticks( any_seconds(), percent(),
 										 wooper:state() ) -> tick_offset().
 convert_seconds_to_non_null_ticks( Seconds, MaxRelativeError, State ) ->
@@ -2900,14 +2992,15 @@ convert_seconds_to_non_null_ticks( Seconds, MaxRelativeError, State ) ->
 
 
 
-% @doc Converts the specified tick count into a duration expressed as a
-% fractional (floating-point) number of seconds.
-%
-% This function can be called as soon as the class_Actor constructor has been
-% executed.
-%
-% (helper function)
-%
+-doc """
+Converts the specified tick count into a duration expressed as a fractional
+(floating-point) number of seconds.
+
+This function can be called as soon as the class_Actor constructor has been
+executed.
+
+(helper function)
+""".
 -spec convert_ticks_to_seconds( tick_offset(), wooper:state() ) ->
 										virtual_seconds().
 convert_ticks_to_seconds( Ticks, State ) ->
@@ -2916,13 +3009,14 @@ convert_ticks_to_seconds( Ticks, State ) ->
 
 
 
-% @doc Converts the specified tick count into a duration expressed as a
-% fractional (floating-point) number of seconds.
-%
-% This function may be called from any context (possibly non-actor ones).
-%
-% (helper function)
-%
+-doc """
+Converts the specified tick count into a duration expressed as a fractional
+(floating-point) number of seconds.
+
+This function may be called from any context (possibly non-actor ones).
+
+(helper function)
+""".
 -spec convert_ticks_to_seconds_explicit( tick_offset(), virtual_seconds() ) ->
 												virtual_seconds().
 convert_ticks_to_seconds_explicit( Ticks, TickDuration ) ->
@@ -2938,10 +3032,11 @@ convert_ticks_to_seconds_explicit( Ticks, TickDuration ) ->
 
 
 
-% @doc Returns a textual description of the real and simulated time.
-%
-% (helper function)
-%
+-doc """
+Returns a textual description of the real and simulated time.
+
+(helper function)
+""".
 -spec get_textual_timings( wooper:state() ) -> ustring().
 get_textual_timings( State ) ->
 
@@ -2963,56 +3058,59 @@ get_textual_timings( State ) ->
 
 
 
-% @doc Returns the current (numerical) simulation tick offset this actor is in,
-% relatively to the simulation initial time (initial_tick), expressed in
-% simulation ticks.
-%
-% Returns for example 14011.
-%
+-doc """
+Returns the current (numerical) simulation tick offset this actor is in,
+relatively to the simulation initial time (initial_tick), expressed in
+simulation ticks.
+
+Returns for example `14011`.
+""".
 -spec get_current_tick_offset( wooper:state() ) -> tick_offset().
 get_current_tick_offset( State ) ->
 	?getAttr(current_tick_offset).
 
 
 
-% @doc Returns the current diasca.
-%
-% Note: this function is defined for completeness, we see little reason for the
-% user code to call it (except for debugging purposes).
-%
-% Returns for example 0.
-%
+-doc """
+Returns the current diasca.
+
+Note: this function is defined for completeness, we see little reason for the
+user code to call it (except for debugging purposes).
+
+Returns for example ``0``.
+""".
 -spec get_current_diasca( wooper:state() ) -> diasca().
 get_current_diasca( State ) ->
 	?getAttr(current_diasca).
 
 
 
-% @doc Returns the current logical timestamp, that is a tick offset and diasca
-% pair.
-%
-% Note: this function is defined for completeness, we see little reason for the
-% user code to call it (except for debugging purposes), as the actual value of a
-% diasca should remain opaque.
-%
-% Returns for example {14011,0}.
-%
+-doc """
+Returns the current logical timestamp, that is a tick offset and diasca pair.
+
+Note: this function is defined for completeness, we see little reason for the
+user code to call it (except for debugging purposes), as the actual value of a
+diasca should remain opaque.
+
+Returns for example `{14011, 0}`.
+""".
 -spec get_current_logical_timestamp( wooper:state() ) -> logical_timestamp().
 get_current_logical_timestamp( State ) ->
 	{ ?getAttr(current_tick_offset), ?getAttr(current_diasca) }.
 
 
 
-% @doc Returns the current simulation timestamp (that is absolute date and time,
-% with a 1-second accuracy) at which this actor is.
-%
-% Note that, depending on the simulation frequency, the timestamp granularity
-% might be finer or coarser than the one of ticks.
-%
-% Returns for example {{2000,11,7}, {13,14,53}}.
-%
-% (helper function)
-%
+-doc """
+Returns the current simulation timestamp (that is absolute date and time, with a
+1-second accuracy) at which this actor is.
+
+Note that, depending on the simulation frequency, the timestamp granularity
+might be finer or coarser than the one of ticks.
+
+Returns for example `{{2000,11,7}, {13,14,53}}`.
+
+(helper function)
+""".
 -spec get_current_timestamp( wooper:state() ) -> timestamp().
 get_current_timestamp( State ) ->
 	CurrentTick = get_current_tick( State ),
@@ -3023,24 +3121,26 @@ get_current_timestamp( State ) ->
 
 
 
-% @doc Returns, as the string, the current simulation timestamp (that is the
-% absolute date and time, with a 1-second accuracy), at which this actor is.
-%
-% Note that, depending on the simulation frequency, the timestamp granularity
-% might be finer or coarser than the one of ticks.
-%
-% (helper function)
-%
+-doc """
+Returns, as the string, the current simulation timestamp (that is the absolute
+date and time, with a 1-second accuracy), at which this actor is.
+
+Note that, depending on the simulation frequency, the timestamp granularity
+might be finer or coarser than the one of ticks.
+
+(helper function)
+""".
 -spec get_current_timestamp_as_string( wooper:state() ) -> ustring().
 get_current_timestamp_as_string( State ) ->
 	time_utils:get_textual_timestamp( get_current_timestamp( State ) ).
 
 
 
-% @doc Converts the specified absolute tick into a tick offset.
-%
-% (helper function)
-%
+-doc """
+Converts the specified absolute tick into a tick offset.
+
+(helper function)
+""".
 -spec convert_absolute_tick_to_tick_offset( tick(), wooper:state() ) ->
 												tick_offset().
 convert_absolute_tick_to_tick_offset( AbsoluteTick, State ) ->
@@ -3048,14 +3148,15 @@ convert_absolute_tick_to_tick_offset( AbsoluteTick, State ) ->
 
 
 
-% @doc Converts the specified timestamp (that is absolute date and time) into a
-% tick offset.
-%
-% Note that, depending on the simulation frequency, the timestamp granularity
-% might be finer or coarser than the one of ticks.
-%
-% (helper function)
-%
+-doc """
+Converts the specified timestamp (that is absolute date and time) into a tick
+offset.
+
+Note that, depending on the simulation frequency, the timestamp granularity
+might be finer or coarser than the one of ticks.
+
+(helper function)
+""".
 -spec convert_timestamp_to_tick_offset( timestamp(), wooper:state() ) ->
 												tick_offset().
 convert_timestamp_to_tick_offset( Timestamp, State )
@@ -3075,14 +3176,15 @@ convert_timestamp_to_tick_offset( Timestamp, _State ) ->
 
 
 
-% @doc Converts the specified tick offset in a corresponding timestamp (that is
-% absolute date and time), with an accuracy of one second.
-%
-% Note that, depending on the simulation frequency, the timestamp granularity
-% might be finer or coarser than the one of ticks.
-%
-% (helper function)
-%
+-doc """
+Converts the specified tick offset in a corresponding timestamp (that is
+absolute date and time), with an accuracy of one second.
+
+Note that, depending on the simulation frequency, the timestamp granularity
+might be finer or coarser than the one of ticks.
+
+(helper function)
+""".
 -spec convert_tick_offset_to_timestamp( tick_offset(), wooper:state() ) ->
 												timestamp().
 convert_tick_offset_to_timestamp( TickOffset, State ) ->
@@ -3095,14 +3197,15 @@ convert_tick_offset_to_timestamp( TickOffset, State ) ->
 
 
 
-% @doc Converts the specified tick offset in a corresponding textual timestamp
-% (that is absolute date and time, as a string), with an accuracy of one second.
-%
-% Note that, depending on the simulation frequency, the timestamp granularity
-% might be finer or coarser than the one of ticks.
-%
-% (helper function)
-%
+-doc """
+Converts the specified tick offset in a corresponding textual timestamp
+(that is absolute date and time, as a string), with an accuracy of one second.
+
+Note that, depending on the simulation frequency, the timestamp granularity
+might be finer or coarser than the one of ticks.
+
+(helper function)
+""".
 -spec convert_tick_offset_to_timestamp_as_string( tick_offset(),
 												  wooper:state() ) -> ustring().
 convert_tick_offset_to_timestamp_as_string( TickOffset, State ) ->
@@ -3113,14 +3216,15 @@ convert_tick_offset_to_timestamp_as_string( TickOffset, State ) ->
 
 
 
-% @doc Converts the specified tick offset in a corresponding timestamp (that is
-% absolute date and time), with an accuracy of one second.
-%
-% Note that, depending on the simulation frequency, the timestamp granularity
-% might be finer or coarser than the one of ticks.
-%
-% (helper function)
-%
+-doc """
+Converts the specified tick offset in a corresponding timestamp (that is
+absolute date and time), with an accuracy of one second.
+
+Note that, depending on the simulation frequency, the timestamp granularity
+might be finer or coarser than the one of ticks.
+
+(helper function)
+""".
 -spec convert_tick_offset_to_timestamp_explicit( tick_offset(), tick(),
 											tick_duration() ) -> timestamp().
 convert_tick_offset_to_timestamp_explicit( TickOffset, InitialTick,
@@ -3134,14 +3238,15 @@ convert_tick_offset_to_timestamp_explicit( TickOffset, InitialTick,
 
 
 
-% @doc Converts the specified tick offset in a corresponding textual timestamp
-% (that is absolute date and time, as a string), with an accuracy of one second.
-%
-% Note that, depending on the simulation frequency, the timestamp granularity
-% might be finer or coarser than the one of ticks.
-%
-% (helper function)
-%
+-doc """
+Converts the specified tick offset in a corresponding textual timestamp (that is
+absolute date and time, as a string), with an accuracy of one second.
+
+Note that, depending on the simulation frequency, the timestamp granularity
+might be finer or coarser than the one of ticks.
+
+(helper function)
+""".
 -spec convert_tick_offset_to_timestamp_as_string_explicit( tick_offset(),
 			tick(), tick_duration() ) -> ustring().
 convert_tick_offset_to_timestamp_as_string_explicit( TickOffset, InitialTick,
@@ -3155,19 +3260,20 @@ convert_tick_offset_to_timestamp_as_string_explicit( TickOffset, InitialTick,
 
 
 
-% @doc Returns the current (numerical) absolute (that is relative to year #0 of
-% the Gregorian calendar) simulation tick this actor is in.
-%
-% Note: class_TraceEmitter:get_current_tick/1 could be used as well. This
-% version, to be called only when this actor is synchronized, must be slightly
-% faster.
-%
-% It has been defined in class_Actor as well as in class_TraceEmitter, as the
-% former is a child class of the latter, and, from the point of view of the
-% user, relying on class_Actor:get_current_tick is more intuitive than using its
-% class_TraceEmitter counterpart (inheritance, which is here a technical detail,
-% is hidden).
-%
+-doc """
+Returns the current (numerical) absolute (that is relative to year #0 of the
+Gregorian calendar) simulation tick this actor is in.
+
+Note: `class_TraceEmitter:get_current_tick/1` could be used as well. This
+version, to be called only when this actor is synchronised, must be slightly
+faster.
+
+It has been defined in class_Actor as well as in class_TraceEmitter, as the
+former is a child class of the latter, and, from the point of view of the user,
+relying on `class_Actor:get_current_tick/1` is more intuitive than using its
+class_TraceEmitter counterpart (inheritance, which is here a technical detail,
+is hidden).
+""".
 -spec get_current_tick( wooper:state() ) -> tick().
 get_current_tick( State ) ->
 	?getAttr(initial_tick) + ?getAttr(current_tick_offset).
@@ -3175,62 +3281,62 @@ get_current_tick( State ) ->
 
 
 
-% @doc Sends specified (actor) message to the specified actor, records this
-% sending to wait for its acknowledgement, and returns an updated state. These
-% inter-actor messages exchanged during simulation are the only allowed way of
-% communicating between actors.
-%
-% An actor message parameter describes the behaviour (actor oneway, translating
-% to an Erlang function) to trigger when this message will be taken into account
-% by the targeted actor, once incoming messages will have been properly
-% reordered.
-%
-% This sent message corresponds to a oneway, not a request, to avoid any
-% blocking operation, as the time management service must be the only one to
-% control the course of the simulation.
-%
-% The sender PID is automatically added to the message, thus it does not need to
-% be specified explicitly here. The sender AAI is also automatically added as
-% well, as the receiver will need it to reorder its incoming actor messages.
-%
-% The specified diasca is the one expected for the delivery, i.e. the next
-% diasca, hence the +1.
-%
-% The actor message is a oneway call: it is described by the name of the actor
-% oneway to trigger on the target actor (specified as an atom, e.g. 'setColor')
-% on the next diasca, and by a (possibly empty) list of the corresponding
-% arguments; so the call is either 'my_oneway' or
-% '{my_oneway,SingleNonListParameter}' or '{my_oneway,[Arg1,...]}'.
-%
-% As mentioned, in all cases, the actual call resulting from the sending of this
-% actor message will be performed with on additional parameter, which is the PID
-% of the sending actor (its AAI will be sent as well, yet will not be available
-% to the users). These extra parameters are transparently added, so an actor
-% oneway that looks like a call to a oneway with N parameters specified will
-% trigger a call to a function whose arity is N+2: the state, then the N
-% parameters, then the PID of the sending actor (i.e.: in that order).
-%
-% So a typical call made by an actor whose PID is P1 to an actor P2 can be made
-% thanks to the following actor message:
-% NewState = class_Actor:send_actor_message(P2, {setColor,[red,15]}, AState)
-%
-% This would trigger on the target actor, setColor/4 on the next tick, as the
-% PID of the sending actor is automatically added as last parameter:
-% 'setColor(State, red, 15, P1) ->'.
-%
-% Note that:
-% - an actor is allowed to send an actor message to itself
-% - actor messages shall not be sent from a constructor; the first legit moment
-% to do so is the onFirstDiasca/2 actor oneway
-% - to preserve reproducibility, a message that references an actor shall
-% designate it by its AAI rather than by its PID (refer to getAAI/1 and
-% class_InstanceTracker:get_identifier_for/2)
-%
-% Returns an updated state, appropriate to wait automatically for this call to
-% be acknowledged.
-%
-% (helper function)
-%
+-doc """
+Sends the specified (actor) message to the specified actor, records this sending
+to wait for its acknowledgement, and returns an updated state. These inter-actor
+messages exchanged during simulation are the only allowed way of communicating
+directly between actors.
+
+An actor message parameter describes the behaviour (actor oneway, translating to
+an Erlang function) to trigger when this message will be taken into account by
+the targeted actor, once incoming messages will have been properly reordered.
+
+This sent message corresponds to a oneway, not a request, to avoid any blocking
+operation, as the time management service must be the only one to control the
+course of the simulation.
+
+The sender PID is automatically added to the message, thus it does not need to
+be specified explicitly here. The sender AAI is also automatically added as
+well, as the receiver will need it to reorder its incoming actor messages.
+
+The specified diasca is the one expected for the delivery, i.e. the next diasca,
+hence the +1.
+
+The actor message is a oneway call: it is described by the name of the actor
+oneway to trigger on the target actor (specified as an atom, e.g. `setColor`) on
+the next diasca, and by a (possibly empty) list of the corresponding arguments;
+so the call is either `my_oneway` or `{my_oneway, SingleNonListParameter}` or
+`{my_oneway, [Arg1,...]}`.
+
+As mentioned, in all cases, the actual call resulting from the sending of this
+actor message will be performed with on additional parameter, which is the PID
+of the sending actor (its AAI will be sent as well, yet will not be available to
+the users). These extra parameters are transparently added, so an actor oneway
+that looks like a call to a oneway with N parameters specified will trigger a
+call to a function whose arity is N+2: the state, then the N parameters, then
+the PID of the sending actor (in that order).
+
+So a typical call made by an actor whose PID is P1 to an actor P2 can be made
+thanks to the following actor message and call:
+`NewState = class_Actor:send_actor_message(P2, {setColor,[red,15]}, AState)`
+
+This would trigger, on the target actor P2, `setColor/4` on the next diasca, as
+the PID of the sending actor is automatically added as last parameter:
+`setColor(State, red, 15, P1) -> ...`.
+
+Note that:
+- an actor is allowed to send an actor message to itself
+- actor messages shall not be sent from a constructor; the first legit moment
+to do so is from the `onFirstDiasca/2` actor oneway
+- to preserve reproducibility, a message that references an actor shall
+designate it by its AAI rather than by its PID (refer to `getAAI/1` and
+`class_InstanceTracker:get_identifier_for/2`)
+
+Returns an updated state, appropriate to wait automatically for this call to be
+acknowledged.
+
+(helper function)
+""".
 -spec send_actor_message( actor_pid(), oneway_call(), wooper:state() ) ->
 								wooper:state().
 send_actor_message( ActorPid, ActorOneway, State ) when is_pid( ActorPid ) ->
@@ -3295,63 +3401,21 @@ send_actor_message( Unexpected, _ActorOneway, _State ) ->
 
 
 
-% @doc Sends the (same) specified (actor) message to the specified actors,
-% records these sendings to wait for the corresponding acknowledgements, and
-% returns an updated state. These inter-actor messages exchanged during
-% simulation are the only allowed way of communicating between actors.
-%
-% An actor message parameter describes the behaviour (actor oneway, translating
-% to an Erlang function) to trigger when this message will be taken into account
-% by the targeted actor, once incoming messages will have been properly
-% reordered.
-%
-% This sent message corresponds to a oneway, not a request, to avoid any
-% blocking operation, as the time management service must be the only one to
-% control the course of the simulation.
-%
-% The sender PID is automatically added to the message, thus it does not need to
-% be specified explicitly here. The sender AAI is also automatically added as
-% well, as the receiver will need it to reorder its incoming actor messages.
-%
-% The specified diasca is the one expected for the delivery, i.e. the next
-% diasca, hence the +1.
-%
-% The actor message is a oneway call: it is described by the name of the actor
-% oneway to trigger on the target actor (specified as an atom, e.g. 'setColor')
-% on the next diasca, and by a (possibly empty) list of the corresponding
-% arguments; so the call is either 'my_oneway' or
-% '{my_oneway, SingleNonListParameter}' or '{my_oneway, [ Arg1, ...]}'.
-%
-% As mentioned, in all cases, the actual call resulting from the sending of this
-% actor message will be performed with on additional parameter, which is the PID
-% of the sending actor (its AAI will be sent as well, yet will not be available
-% to the users). These extra parameters are transparently added, so an actor
-% oneway that looks like a call to a oneway with N parameters specified will
-% trigger a call to a function whose arity is N+2: the state, then the N
-% parameters, then the PID of the sending actor (i.e.: in that order).
-%
-% So a typical call made by an actor whose PID is P1 to actors P2 and P3 can be
-% made thanks to the following actor message:
-% NewState = class_Actor:send_actor_messages([P2, P3], {setColor,[red,15]},
-% AState)
-%
-% This would trigger on the target actors, setColor/4 on the next tick, as the
-% PID of the sending actor is automatically added as last parameter:
-% 'setColor(State, red, 15, P1) ->'.
-%
-% Note that:
-% - an actor is allowed to send an actor message to itself
-% - actor messages shall not be sent from a constructor; the first legit moment
-% to do so is the onFirstDiasca/2 actor oneway
-% - to preserve reproducibility, a message that references an actor shall
-% designate it by its AAI rather than by its PID (refer to getAAI/1 and
-% class_InstanceTracker:get_identifier_for/2)
-%
-% Returns an updated state, appropriate to wait automatically for this call to
-% be acknowledged.
-%
-% (helper function)
-%
+-doc """
+Sends the (same) specified (actor) message to the specified actors, records
+these sendings to wait for the corresponding acknowledgements, and returns an
+updated state. These inter-actor messages exchanged during simulation are the
+only allowed way of communicating between actors.
+
+A bit more efficient than sending actor messages thanks to a list comprehension.
+
+Refer to `send_actor_message/3` for all details.
+
+Returns an updated state, appropriate to wait automatically for this call to
+be acknowledged.
+
+(helper function)
+""".
 -spec send_actor_messages( [ actor_pid() ], oneway_call(), wooper:state() ) ->
 									wooper:state().
 send_actor_messages( _ActorPids=[], _ActorOneway, State ) ->
@@ -3425,9 +3489,10 @@ send_actor_messages( Other, _ActorOneway, _State ) ->
 
 
 
-% @doc Executes the specified actor oneway of this actor: executes a (often
-% inherited) actor oneway from the current actor oneway.
-%
+-doc """
+Executes the specified (argument-less) actor oneway of this actor: executes a
+(often inherited) actor oneway from the current actor oneway.
+""".
 -spec execute_actor_oneway( oneway_name(), wooper:state() ) -> wooper:state().
 execute_actor_oneway( Onewayname, State ) ->
 	% Just a WOOPER call:
@@ -3435,9 +3500,10 @@ execute_actor_oneway( Onewayname, State ) ->
 
 
 
-% @doc Executes the specified actor oneway of this actor: executes a (often
-% inherited) actor oneway from the current actor oneway.
-%
+-doc """
+Executes the specified actor oneway of this actor: executes a (often inherited)
+actor oneway from the current actor oneway.
+""".
 -spec execute_actor_oneway( oneway_name(), method_arguments(),
 							wooper:state() ) -> wooper:state().
 execute_actor_oneway( Onewayname, MethodArgs, State ) ->
@@ -3446,9 +3512,10 @@ execute_actor_oneway( Onewayname, MethodArgs, State ) ->
 
 
 
-% @doc Executes the specified actor oneway of this actor: executes, as specified
-% class, an actor oneway from the current actor oneway.
-%
+-doc """
+Executes the specified (argument-less) actor oneway of this actor, as it has
+been defined by the specified parent class of the current instance.
+""".
 -spec execute_actor_oneway_as( classname(), oneway_name(), wooper:state() ) ->
 										wooper:state().
 execute_actor_oneway_as( Classname, Onewayname, State ) ->
@@ -3457,9 +3524,10 @@ execute_actor_oneway_as( Classname, Onewayname, State ) ->
 
 
 
-% @doc Executes the specified actor oneway of this actor: executes, as specified
-% class, an actor oneway from the current actor oneway.
-%
+-doc """
+Executes the specified actor oneway of this actor, as it has been defined by the
+specified parent class of the current instance.
+""".
 -spec execute_actor_oneway_as( classname(), oneway_name(), method_arguments(),
 							   wooper:state() ) -> wooper:state().
 execute_actor_oneway_as( Classname, Onewayname, MethodArgs, State ) ->
@@ -3469,21 +3537,22 @@ execute_actor_oneway_as( Classname, Onewayname, MethodArgs, State ) ->
 
 
 
-% @doc Self-triggers specified actor message in the specified number of diascas:
-% allows for a deferred actor oneway execution by this actor, through diascas in
-% the current tick.
-%
-% If an actor executes this helper at {T,D}, the actual (self) execution of the
-% specified trigger is to happen at {T,D+DiascaOffset} (hence the corresponding
-% actor oneway will be auto-sent at {T,D+DiascaOffset-1}).
-%
-% Note: relying on diasca counts is generally prohibited, as it is hackish and
-% error-prone (execution order to come from the causality reflected by actor
-% messages); it is only useful when wanting to address very specific corner
-% cases, for example when needing, at a given physical time, to act depending to
-% actor messages being received *or not* in the prior diascas (no causality
-% chain to build upon, and not wanting to suffer from offsets in physical time).
-%
+-doc """
+Self-triggers the specified actor message in the specified number of diascas:
+allows for a deferred actor oneway execution by this actor, through diascas in
+the current tick.
+
+If an actor executes this helper at `{T,D}`, the actual (self) execution of the
+specified trigger is to happen at `{T,D+DiascaOffset}` (hence the corresponding
+actor oneway will be auto-sent at `{T,D+DiascaOffset-1}`).
+
+Note: relying on diasca counts is generally prohibited, as it is hackish and
+error-prone (execution order to come from the causality reflected by actor
+messages); it is only useful when wanting to address very specific corner cases,
+for example when needing, at a given physical time, to act depending to actor
+messages being received *or not* in the prior diascas (no causality chain to
+build upon, and not wanting to suffer from offsets in physical time).
+""".
 -spec self_trigger_actor_message_in( diasca_count(), oneway_call(),
 									 wooper:state() ) -> wooper:state().
 self_trigger_actor_message_in( _DiascaOffset=1, ActorOneway, State ) ->
@@ -3530,11 +3599,16 @@ sd_reserved_selfTrigger( State, DiascaCount, ActorOneway,
 
 
 
-% @doc Makes this actor search for its messages associated to its current tick
-% and diasca, sorts them in a particular order, and requests to process them.
-%
-% Returns an updated state.
-%
+-doc """
+Makes this actor search for its messages associated to its current tick and
+diasca, sorts them in a particular order, and requests to process them.
+
+Returns an updated state.
+
+(internal function)
+""".
+-spec process_last_diasca_messages( tick_offset(), diasca(), wooper:state() ) ->
+                                                    wooper:state().
 process_last_diasca_messages( CurrentTickOffset, CurrentDiasca, State ) ->
 
 	% Messages are checked at reception, but another checking is nevertheless
@@ -3582,7 +3656,7 @@ process_last_diasca_messages( CurrentTickOffset, CurrentDiasca, State ) ->
 
 
 
-% @doc Checks that actor messages in the future are legitimate:
+-doc "Checks that actor messages in the future are legitimate.".
 check_future_messages( _FutureMessages=[], _CurrentTickOffset,
 					   _CurrentDiasca ) ->
 	ok;
@@ -3609,17 +3683,19 @@ check_future_messages( _FutureMessages=[ #actor_message{
 
 
 
-% @doc Sends in turn the specified oneways (here no third parameter is
-% specified, like for requests, however the sender PID is specified in the
-% parameters nevertheless, as last argument) to this same process. Appending it
-% at end (rather than at beginning) is a bit more expensive, but it is far
-% clearer for the implementor of the methods corresponding to the received actor
-% messages.
-%
-% (AAI is ignored here, as not useful anymore here)
-%
+-doc """
+Sends in turn the specified oneways (here no third parameter is specified, like
+for requests, however the sender PID is specified in the parameters
+nevertheless, as last argument) to this same process.
+
+Appending it at end (rather than at beginning) is a bit more expensive, but it
+is far clearer for the implementor of the methods corresponding to the received
+actor messages.
+
+(AAI is ignored, as not useful anymore here)
+
+""".
 % Basically a three-clause fold:
-%
 execute_reordered_oneways( _Messages=[], State ) ->
 	State;
 
@@ -3734,10 +3810,10 @@ execute_reordered_oneways( _Messages=[
 
 					CoreParamCount ->
 						ArgStrings = [ text_utils:format( "~p", [ Arg ] )
-										|| Arg <- OnewayArgList ],
+                                            || Arg <- OnewayArgList ],
 
 						ArgString = text_utils:strings_to_enumerated_string(
-										ArgStrings ),
+							ArgStrings ),
 
 						text_utils:format( "and the ~B core parameters of "
 							"the actor oneway were (initial state and "
@@ -3797,17 +3873,18 @@ execute_reordered_oneways( _Messages=[
 				KnownBeamString = text_utils:atoms_to_sorted_string( Beams ),
 
 				FullErrorMessage = text_utils:format(
-									"~ts~nFull stack trace is: ~ts~n~n",
-									[ ErrorMessage, FullStackTraceString ] )
+							"~ts~nFull stack trace is: ~ts~n~n",
+							[ ErrorMessage, FullStackTraceString ] )
 						++ case Exception of
 
 					undef ->
 						% Internal state and process dictionary are not
-						% needed:
+						% needed here:
 						%
 						text_utils:format(
-							"Consequently, following ~B BEAM files are "
-							"available (listed in alphabetical order): ~ts~n",
+							"Consequently, while ~ts, the following ~B BEAM "
+                            "files are available (listed in alphabetical "
+                            "order): ~ts~n",
 							[ code_utils:get_code_path_as_string(),
 							  length( Beams ), KnownBeamString ] );
 
@@ -3898,10 +3975,11 @@ execute_reordered_oneways( _Messages=[
 
 
 
-% @doc Returns the best description of the location found for that error.
-%
-% (we want to avoid specifying multiple times the same MFA if matching)
+-doc """
+Returns the best description of the location found for that error.
 
+(we want to avoid specifying multiple times the same MFA if matching)
+""".
 % Canonicalised:
 locate_error( _StackTraceItem={ AnyActorClassname, AnyOnewayName, OnewayArgs,
 								LocInfos },
@@ -3950,11 +4028,12 @@ location_to_string( Other ) ->
 
 
 
-% @doc Returns the best user-level stacktrace we can produce, that is a purely
-% user-level one, stripped from the engine internals.
-%
-% (helper)
-%
+-doc """
+Returns the best user-level stacktrace we can produce, that is a purely
+user-level one, stripped from the engine internals.
+
+(helper)
+""".
 -spec get_user_stacktrace( code_utils:stack_trace() ) -> ustring().
 get_user_stacktrace( StackTrace ) ->
 
@@ -3983,7 +4062,8 @@ get_user_stacktrace( StackTrace ) ->
 
 
 
-% @doc Removes all calls from the k level (if found):
+-doc "Returns a shorter, cleared stacktrace, expurged from actor machinery.".
+% Removes all calls from the k level (if found):
 filter_stacktrace( _Trace=[], Acc ) ->
 	lists:reverse( Acc );
 
@@ -4007,10 +4087,11 @@ filter_stacktrace( _Trace=[ StackItem | T ], Acc ) ->
 % Actor-side management.
 
 
-% @doc Updates this actor's agenda for checking with specified future action.
-%
-% Returns an updated agenda.
-%
+-doc """
+Updates this actor's agenda for checking with the specified future action.
+
+Returns an updated agenda.
+""".
 -spec update_agenda_with( [ tick_offset() ], [ tick_offset() ], agenda() ) ->
 								agenda().
 update_agenda_with( AddedTicks, WithdrawnTicks, Agenda ) ->
@@ -4035,7 +4116,7 @@ update_agenda_with( AddedTicks, WithdrawnTicks, Agenda ) ->
 
 
 
-% @doc Inserts the specified tick offset into specified agenda.
+-doc "Inserts the specified tick offset into the specified agenda.".
 insert_in_agenda( TickOffset, Agenda ) ->
 	insert_in_agenda( TickOffset, Agenda, _FirstAgendaEntries=[] ).
 
@@ -4074,14 +4155,15 @@ insert_in_agenda( TickOffset, [ H | T ], FirstAgendaEntries ) ->
 
 
 
-% @doc Sorts the specified list of messages into three lists (returned as a
-% triplet): the messages corresponding to the specified tick, the ones in the
-% future of that tick, and the ones in its past.
-%
-% For messages corresponding to the current tick, the tick information is
-% removed: instead of a 4-element tuple, a {Pid,Aai,Message} triplet is
-% returned.
-%
+-doc """
+Sorts the specified list of messages into three lists (returned as a triplet):
+the messages corresponding to the specified tick, the ones in the future of that
+tick, and the ones in its past.
+
+For messages corresponding to the current tick, the tick information is removed:
+instead of a quadruplet, a `{Pid,Aai,Message}` triplet is returned.
+
+""".
 split_messages_over_time( Messages, CurrentTickOffset, CurrentDiasca ) ->
 	split_messages_over_time( Messages, CurrentTickOffset, CurrentDiasca,
 							  _CurrentOnes=[], _FutureOnes=[], _PastOnes=[] ).
@@ -4103,7 +4185,7 @@ split_messages_over_time(
 split_messages_over_time(
 		[ H=#actor_message{ tick_offset=MessageTickOffset } | T ],
 		CurrentTickOffset, CurrentDiasca, CurrentOnes, FutureOnes, PastOnes )
-  when MessageTickOffset > CurrentTickOffset ->
+                                when MessageTickOffset > CurrentTickOffset ->
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca,
 							  CurrentOnes, [ H | FutureOnes ], PastOnes );
 
@@ -4147,28 +4229,31 @@ split_messages_over_time( [ #actor_message{ sender_pid=Pid, sender_aai=Aai,
 
 
 
-% @doc Creates synchronously an initial actor, whereas the simulation has not
-% been started yet.
-%
-% This must be called only directly from test/simulation cases, to create the
-% initial situation before the simulation time starts progressing.
-%
-% This is a synchronous operation, to ensure that no race condition occurs
-% between the creation of initial actors and the start of the simulation.
-%
-% The new actor will be placed according to the default placement heuristic of
-% the engine.
-%
-% Use create_actor/{3,4} or create_placed_actor/{4,5} whenever needing to create
-% an actor in the course of the simulation (in that case, actors must be created
-% by other actors only).
-%
-% The single method parameter is ActorClassname, which is the classname of the
-% actor to create (e.g. 'class_TestActor'). No specific actor construction
-% parameter is used here.
-%
-% Returns the PID of the newly created (initial) actor, or throws an exception.
-%
+-doc """
+Creates synchronously an initial actor from no specified construction
+parameters, whereas the simulation has not been started yet.
+
+This must be called only directly from test/simulation cases, to create the
+initial situation before the simulation time starts progressing.
+
+This is a synchronous operation, to ensure that no race condition occurs between
+the creation of initial actors and the start of the simulation.
+
+The new actor will be placed according to the default placement heuristic of the
+engine.
+
+Use `create_actor/{3,4}` or `create_placed_actor/{4,5}` whenever needing to
+create an actor in the course of the simulation (in that case, actors must be
+created only by other actors).
+
+The single method parameter is ActorClassname, which is the classname of the
+actor to create (e.g. `class_TestActor`). No specific actor construction
+parameter is used here, knowing that the first two actual construction
+parameters (the initial state and the actor settings) are automatically added by
+the engine.
+
+Returns the PID of the newly created (initial) actor, or throws an exception.
+""".
 -spec create_initial_actor( classname() ) -> static_return( actor_pid() ).
 create_initial_actor( ActorClassname ) ->
 
@@ -4180,40 +4265,41 @@ create_initial_actor( ActorClassname ) ->
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
 	ActorPid = create_initial_actor( ActorClassname,
-					_ActorConstructionParameters=[], LoadBalancerPid ),
+		_ActorConstructionParameters=[], LoadBalancerPid ),
 
 	wooper:return_static( ActorPid ).
 
 
 
-% @doc Creates synchronously an initial actor, whereas the simulation has not
-% been started yet.
-%
-% This must be called only directly from test/simulation cases, to create the
-% initial situation before the simulation time starts progressing.
-%
-% This is a synchronous operation, to ensure that no race condition occurs
-% between the creation of initial actors and the start of the simulation.
-%
-% The new actor will be placed according to the default placement heuristic of
-% the engine.
-%
-% Use create_actor/{3,4} or create_placed_actor/{4,5} whenever needing to create
-% an actor in the course of the simulation (in that case, actors must be created
-% by other actors only).
-%
-% Method parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. [ "MyActorName", 50 ]), knowing that the first two
-% actual parameters (the initial state and the actor settings) are automatically
-% added by the engine
-%
-% Returns the PID of the newly created (initial) actor, or throws an exception.
-%
+-doc """
+Creates synchronously an initial actor from the specified construction
+parameters, whereas the simulation has not been started yet.
+
+This must be called only directly from test/simulation cases, to create the
+initial situation before the simulation time starts progressing.
+
+This is a synchronous operation, to ensure that no race condition occurs between
+the creation of initial actors and the start of the simulation.
+
+The new actor will be placed according to the default placement heuristic of the
+engine.
+
+Use `create_actor/{3,4}` or `create_placed_actor/{4,5}` whenever needing to
+create an actor in the course of the simulation (in that case, actors must be
+created by other actors only).
+
+Method parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+`class_TestActor`)
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. `["MyActorName", 50]`), knowing that the first two
+actual construction parameters (the initial state and the actor settings) are
+automatically added by the engine
+
+Returns the PID of the newly created (initial) actor, or throws an exception.
+""".
 -spec create_initial_actor( classname(), [ method_argument() ] ) ->
 									static_return( actor_pid() ).
 create_initial_actor( ActorClassname, ActorConstructionParameters ) ->
@@ -4232,24 +4318,25 @@ create_initial_actor( ActorClassname, ActorConstructionParameters ) ->
 
 
 
-% @doc Creates synchronously an initial actor, whereas the simulation has not
-% been started yet.
-%
-% Behaves exactly like the create_initial_actor/2 static method, except it
-% relies on a user-specified PID for the load balancer.
-%
-% It is useful whenever having a large number of initial actors to create, as it
-% allows to retrieve the load balancer PID only once for all, instead of having
-% each create_initial_actor/2 performing a useless look-up for it.
-%
-% This static method is synchronous (blocking) to help the caller (typically the
-% simulation case) avoiding race conditions with the start of the simulation;
-% however creations are internally asynchronous (to support their nesting), and
-% could be requested in a row and their acknowledgement waited later (provided
-% the caller keeps track of the order of the requested creations).
-%
-% Returns the PID of the newly created (initial) actor, or throws an exception.
-%
+-doc """
+Creates synchronously an initial actor from the specified construction
+parameters, whereas the simulation has not been started yet.
+
+Behaves exactly like the `create_initial_actor/2` static method, except that it
+relies on a user-specified PID for the load balancer.
+
+It is useful whenever having a large number of initial actors to create, as it
+allows to retrieve the load balancer PID only once for all, instead of having
+each `create_initial_actor/2` performing a useless look-up for it.
+
+This static method is synchronous (blocking) to help the caller (typically the
+simulation case) avoiding race conditions with the start of the simulation;
+however creations are internally asynchronous (to support their nesting), and
+could be requested in a row and their acknowledgement waited later (provided
+that the caller keeps track of the order of the requested creations).
+
+Returns the PID of the newly created (initial) actor, or throws an exception.
+""".
 -spec create_initial_actor( classname(), [ method_argument() ],
 						load_balancer_pid() ) -> static_return( actor_pid() ).
 create_initial_actor( ActorClassname, ActorConstructionParameters,
@@ -4287,41 +4374,41 @@ create_initial_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates synchronously a placed initial actor, whereas the simulation has
-% not been started yet.
-%
-% This must be called only directly from test/simulation cases, to create the
-% initial situation before the simulation time starts to progress.
-%
-% This is a synchronous operation, to ensure that no race condition occurs
-% between the creation of initial actors and the start of the simulation.
-%
-% The new actor will be placed by the engine according to the specified
-% placement hint: all actors created with a given placement hint are guaranteed
-% to be placed on the same computing node, automatically selected approriately
-% by the engine.
-%
-% This allows to ensure that the actors that are the most tightly linked are
-% co-allocated and thus, being in the same node, interact with as little
-% overhead as possible.
-%
-% Use create_actor/3 whenever needing to create an actor in the course of the
-% simulation (in that case, actors must be created by other actors only).
-%
-% Method parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. [ "MyActorName", 50 ])
-%
-% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
-% actors (both initial or simulation-time ones) for which the same placement
-% hint was specified on the same computing node, for best performances
-%
-% Returns the PID of the newly created (initial) actor, or throws an exception.
-%
+-doc """
+Creates synchronously a placed initial actor, whereas the simulation has not
+been started yet.
+
+This must be called only directly from test/simulation cases, to create the
+initial situation before the simulation time starts to progress.
+
+This is a synchronous operation, to ensure that no race condition occurs between
+the creation of initial actors and the start of the simulation.
+
+The new actor will be placed by the engine according to the specified placement
+hint: all actors created with a given placement hint are guaranteed to be placed
+on the same computing node, automatically selected approriately by the engine.
+
+This allows to ensure that the actors that are the most tightly linked are
+co-allocated and thus, being in the same node, interact with as little overhead
+as possible.
+
+Use `create_actor/3` whenever needing to create an actor in the course of the
+simulation (in that case, actors must be created only by other actors).
+
+Method parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+`class_TestActor`)
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. `[ "MyActorName", 50 ]`)
+
+- PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
+actors (both initial or simulation-time ones) for which the same placement hint
+was specified on the same computing node, for best performances
+
+Returns the PID of the newly created (initial) actor, or throws an exception.
+""".
 -spec create_initial_placed_actor( classname(), [ method_argument() ],
 		class_LoadBalancer:placement_hint() ) -> static_return( actor_pid() ).
 create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
@@ -4341,21 +4428,22 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates synchronously an initial actor, whereas the simulation has not
-% been started yet.
-%
-% Behaves exactly like the create_initial_placed_actor/3 static method, except
-% it relies on a user-specified PID for the load balancer.
-%
-% It is useful whenever having a large number of initial actors to create, as it
-% allows to retrieve the load balancer PID only once for all, instead of having
-% each create_initial_actor/2 performing a useless look-up for it.
-%
-% This static method is specific to the Sim-Diasca distributed version (as the
-% load balancer is involved).
-%
-% Returns the PID of the newly created (initial) actor, or throws an exception.
-%
+-doc """
+Creates synchronously an initial actor, whereas the simulation has not been
+started yet.
+
+Behaves exactly like the `create_initial_placed_actor/3` static method, except
+it relies on a user-specified PID for the load balancer.
+
+It is useful whenever having a large number of initial actors to create, as it
+allows to retrieve the load balancer PID only once for all, instead of having
+each create_initial_actor/2 performing a useless look-up for it.
+
+This static method is specific to the Sim-Diasca distributed version (as the
+load balancer is involved).
+
+Returns the PID of the newly created (initial) actor, or throws an exception.
+""".
 -spec create_initial_placed_actor( classname(), [ method_argument() ],
 			load_balancer_pid(), class_LoadBalancer:placement_hint() ) ->
 											static_return( actor_pid() ).
@@ -4395,16 +4483,18 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates synchronously - and in parallel - the specified list of new
-% initial actors, whereas the simulation has not been started yet.
-%
-% Each actor is created based on the specified class name and construction
-% parameters, possibly augmented of a placement hint. For example: {class_X,
-% [P1, P2]} or {class_Y, [34], my_hint}.
-%
-% Returns the list of the PID of the newly created (initial) actors (in the
-% order of their specification in the input list), or throws an exception.
-%
+-doc """
+Creates synchronously - and in parallel - the specified list of new initial
+actors, whereas the simulation has not been started yet.
+
+Each actor is created based on the specified class name and construction
+parameters, possibly augmented of a placement hint.
+
+For example: `{class_X, [P1, P2]}` or `{class_Y, [34], my_hint}`.
+
+Returns the list of the PIDs of the newly created (initial) actors (in the order
+of their specification in the input list), or throws an exception.
+""".
 -spec create_initial_actors( [ instance_creation_spec() ] ) ->
 											static_return( [ actor_pid() ] ).
 create_initial_actors( ActorConstructionList ) ->
@@ -4422,23 +4512,17 @@ create_initial_actors( ActorConstructionList ) ->
 
 
 
-% @doc Creates synchronously - and in parallel - the specified list of new
-% initial actors, whereas the simulation has not been started yet.
-%
-% Each actor is created based on the specified class name and construction
-% parameters, possibly augmented of a placement hint. For example: {class_X,
-% [P1, P2]} or {class_Y, [34], my_hint}.
-%
-% Returns the list of the PIDs of the newly created (initial) actors (in the
-% order of their specification in the input list), or throws an exception.
-%
-% Behaves exactly like the create_initial_actors/1 static method, except it
-% relies on a user-specified PID for the load balancer.
-%
-% It is useful whenever having a large number of initial actors to create, as it
-% allows to retrieve the load balancer PID only once for all, instead of having
-% each create_initial_actor/2 performing a useless look-up for it.
-%
+-doc """
+Creates synchronously - and in parallel - the specified list of new initial
+actors, whereas the simulation has not been started yet.
+
+Behaves exactly like the `create_initial_actors/1` static method, except it
+relies on a user-specified PID for the load balancer.
+
+It is useful whenever having a large number of initial actors to create, as it
+allows to retrieve the load balancer PID only once for all, instead of having
+each create_initial_actor/2 performing a useless look-up for it.
+""".
 -spec create_initial_actors( [ instance_creation_spec() ],
 				load_balancer_pid() ) -> static_return( [ actor_pid() ] ).
 create_initial_actors( ActorConstructionList, LoadBalancerPid )
@@ -4486,29 +4570,31 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 % Helper functions.
 
 
-% @doc Returns the name of this actor, as a binary.
-%
-% Note: is never and cannot be overridden.
-%
-% Allows to mask the inheritance from TraceEmitter.
-%
-% (const helper)
-%
+-doc """
+Returns the name of this actor, as a binary.
+
+Note: is never and cannot be overridden.
+
+Allows to mask the inheritance from TraceEmitter, best never used in user code.
+
+(const helper)
+""".
 -spec get_name( wooper:state() ) -> class_Actor:internal_name().
 get_name( State ) ->
 	?getAttr(name).
 
 
 
-% @doc Returns true iff this actor is running, that is if it has been
-% synchronised to the simulation, that thus has already been started.
-%
-% Note: there are very few legitimate reasons for using this helper. Hint: do
-% not try to abuse the engine, for example by special-casing initial actors
-% (instead onFirstDiasca/2 shall be relied upon in all cases).
+-doc """
+Returns true iff this actor is running, that is if it has been synchronised to
+the simulation (and thus has already been started).
 
-% (const helper)
-%
+Note: there are very few legitimate reasons for using this helper.
+Hint: do not try to abuse the engine, for example by special-casing initial
+actors (instead `onFirstDiasca/2` shall be relied upon in all cases).
+
+(const helper)
+""".
 -spec is_running( wooper:state() ) -> boolean().
 is_running( State ) ->
 	% simulationStarted/3 is the only one to set it:
@@ -4516,43 +4602,48 @@ is_running( State ) ->
 
 
 
-% @doc Triggers the creation of an actor, while the simulation is running, with
-% no user tag specified.
-%
-% This is an actor-level helper function, which takes care automatically of the
-% sending (at this tick T, diasca D) of the createActor actor message to the
-% load balancer, which in turn, at the next diasca (still during T, at diasca
-% D+1), will effectively create the targeted actor (with a remote synchronous
-% timed new) until, at diasca D+2 of the same tick T, this creating actor has
-% its onActorCreated/4 method called with the PID of the newly created actor;
-% unlike with initial creations (which can return directly the PID of the newly
-% created instance), the creation tag (by default a pair made of the classname
-% and the list of construction parameters) is returned to the caller so that it
-% can establish to which creation each callback corresponds.
-%
-% The load balancer is to create actors based on actor messages, for
-% reproducibility reasons.
-%
-% The actual placement of the created actor is fully determined by the load
-% balancer.
-%
-% Parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g. the
-% 'class_TestActor' atom)
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. [ "MyActorName", 50 ])
-%
-% Note: if wanting to create an actor before the simulation is started, then
-% create_initial_actor/{1,2,3} or create_initial_placed_actor/{2,3,4} must be
-% used instead.
-%
-% Returns an updated state, and will trigger a callback to the onActorCreated/4
-% actor oneway of this creating actor when the created one will be ready.
-%
-% (exported helper function, to be used by actual actors)
-%
+
+% Section for actor creations.
+
+
+-doc """
+Triggers the creation of an actor, whilst the simulation is running, with no
+user tag specified.
+
+This is an actor-level helper function, which takes care automatically of the
+sending (at this tick T, diasca D) of the createActor actor message to the load
+balancer, which in turn, at the next diasca (still during T, at diasca D+1),
+will effectively create the targeted actor (with a remote synchronous timed new)
+until, at diasca D+2 of the same tick T, this creating actor has its
+`onActorCreated/4` method called with the PID of the newly created actor; unlike
+with initial creations (which can return directly the PID of the newly created
+instance), the creation tag (by default a pair made of the classname and the
+list of construction parameters) is returned to the caller so that it can
+establish to which creation each callback corresponds.
+
+The load balancer is to create actors based on actor messages, for
+reproducibility reasons.
+
+The actual placement of the created actor is fully determined by the load
+balancer.
+
+Parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g. the
+`class_TestActor` atom)
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. `["MyActorName", 50]`)
+
+Note: if wanting to create an actor before the simulation is started, then
+`create_initial_actor/{1,2,3}` or `create_initial_placed_actor/{2,3,4}` must be
+used instead.
+
+Returns an updated state, and will trigger a callback to the `onActorCreated/4`
+actor oneway of this creating actor when the created one will be ready.
+
+(exported helper function, to be used by actual actors)
+""".
 -spec create_actor( classname(), [ method_argument() ], wooper:state() ) ->
 						wooper:state().
 create_actor( ActorClassname, ActorConstructionParameters, State )
@@ -4583,46 +4674,47 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 
 
 
-% @doc Triggers the creation of an actor, while the simulation is running, using
-% the specified user tag for that.
-%
-% This is an actor-level helper function, which takes care automatically of the
-% sending (at this tick T, diasca D) of the createActor actor message to the
-% load balancer, which in turn, at the next diasca (still during T, at diasca
-% D+1), will effectively create the targeted actor (with a remote synchronous
-% timed new) until, at diasca D+2 of the same tick T, this creating actor has
-% its onActorCreated/4 method called with the PID of the newly created actor;
-% unlike with initial creations (which can return directly the PID of the newly
-% created instance), the creation tag (by default a pair made of the classname
-% and the list of construction parameters) is returned to the caller so that it
-% can establish to which creation each callback corresponds.
-%
-% The load balancer is to create actors based on actor messages, for
-% reproducibility reasons.
-%
-% The actual placement of the created actor is fully determined by the load
-% balancer.
-%
-% Parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% the 'class_TestActor' atom)
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - CreatedActorTag can be any term chosen by the user (e.g. an atom like
-% 'my_building_147')
-%
-% Note: if wanting to create an actor before the simulation is started, then
-% create_initial_actor/{2,3} or create_initial_placed_actor/{3,4} must be used
-% instead.
-%
-% Returns an updated state, and will trigger a callback to the onActorCreated/4
-% actor oneway of this creating actor when the created one will be ready.
-%
-% (exported helper function, to be used by actual actors)
-%
+-doc """
+Triggers the creation of an actor, whilst the simulation is running, using the
+specified user tag for that.
+
+This is an actor-level helper function, which takes care automatically of the
+sending (at this tick T, diasca D) of the createActor actor message to the load
+balancer, which in turn, at the next diasca (still during T, at diasca D+1),
+will effectively create the targeted actor (with a remote synchronous timed new)
+until, at diasca D+2 of the same tick T, this creating actor has its
+`onActorCreated/4` method called with the PID of the newly created actor; unlike
+with initial creations (which can return directly the PID of the newly created
+instance), the creation tag (by default a pair made of the classname and the
+list of construction parameters) is returned to the caller so that it can
+establish to which creation each callback corresponds.
+
+The load balancer is to create actors based on actor messages, for
+reproducibility reasons.
+
+The actual placement of the created actor is fully determined by the load
+balancer.
+
+Parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g. the
+`class_TestActor` atom)
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. `["MyActorName", 50]`)
+
+- CreatedActorTag can be any term chosen by the user (e.g. an atom like
+`my_building_147`)
+
+Note: if wanting to create an actor before the simulation is started, then
+`create_initial_actor/{2,3}` or `create_initial_placed_actor/{3,4}` must be used
+instead.
+
+Returns an updated state, and will trigger a callback to the `onActorCreated/4`
+actor oneway of this creating actor when the created one will be ready.
+
+(exported helper function, to be used by actual actors)
+""".
 -spec create_actor( classname(), [ method_argument() ], tag(),
 					wooper:state() ) -> wooper:state().
 create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
@@ -4647,40 +4739,41 @@ create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
 
 
 
-% @doc Triggers the creation of a set of actors, while the simulation is
-% running, each instance creation being able to include a creation tag.
-%
-% This is an actor-level helper function, which takes care automatically of the
-% sending (at this tick T, diasca D) of the createActor actor messages to the
-% load balancer, which in turn, at the next diasca (still during T, at diasca
-% D+1), will effectively create the targeted actors (with a remote synchronous
-% timed new) until, at diasca D+2 of the same tick T, this creating actor
-% receives as many calls to its onActorCreated/4 method as it had actors to
-% created, each of these calls specifying the PID of one of the newly created
-% actor; unlike with initial creations (which can return directly the PID of the
-% newly created instance), the creation tag (by default a pair made of the
-% classname and the list of construction parameters) is returned to the caller
-% so that it can establish to which creation each callback corresponds.
-%
-% The load balancer is to create actors based on actor messages, for
-% reproducibility reasons.
-%
-% The actual placement of the created actors is fully determined by the load
-% balancer.
-%
-% Parameters are:
-%
-% - ActorConstructionList is a list of instance creation specifications (tagged
-% or not)
-%
-% - State: the initial state
-%
-% Returns an updated state, and will trigger one callback to the
-% onActorCreated/4 actor oneway of this creating actor when each created one
-% will be ready.
-%
-% (exported helper function, to be used by actual actors)
-%
+-doc """
+Triggers the creation of a set of actors, whilst the simulation is running, each
+instance creation being able to include a creation tag.
+
+This is an actor-level helper function, which takes care automatically of the
+sending (at this tick T, diasca D) of the createActor actor messages to the load
+balancer, which in turn, at the next diasca (still during T, at diasca D+1),
+will effectively create the targeted actors (with a remote synchronous timed
+new) until, at diasca D+2 of the same tick T, this creating actor receives as
+many calls to its `onActorCreated/4` method as it had actors to created, each of
+these calls specifying the PID of one of the newly created actor; unlike with
+initial creations (which can return directly the PID of the newly created
+instance), the creation tag (by default a pair made of the classname and the
+list of construction parameters) is returned to the caller so that it can
+establish to which creation each callback corresponds.
+
+The load balancer is to create actors based on actor messages, for
+reproducibility reasons.
+
+The actual placement of the created actors is fully determined by the load
+balancer.
+
+Parameters are:
+
+- ActorConstructionList is a list of instance creation specifications (tagged or
+not)
+
+- State: the initial state
+
+Returns an updated state, and will trigger one callback to the
+`onActorCreated/4` actor oneway of this creating actor when each created one
+will be ready.
+
+(exported helper function, to be used by actual actors)
+""".
 -spec create_actors(
 		[ instance_creation_spec() | tagged_instance_creation_spec() ],
 		wooper:state() ) -> wooper:state().
@@ -4717,43 +4810,44 @@ create_actors( ActorConstructionList, State )
 
 
 
-% @doc Triggers the creation of an actor with a placement hint, while the
-% simulation is running.
-%
-% This is an actor-level helper function, which takes care automatically of the
-% sending (at this tick T, diasca D) of the createActor actor message to the
-% load balancer, which in turn, at the next diasca (still during T, at diasca
-% D+1), will effectively create the targeted actor (with a remote synchronous
-% timed new) until, at diasca D+2 of the same tick T, this creating actor has
-% its onActorCreated/4 method called with the PID of the newly created actor.
-%
-% The load balancer is to create actors based on actor messages, for
-% reproducibility reasons.
-%
-% The actual placement of the created actor is fully determined by the specified
-% placement hint.
-%
-% Helper parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
-% actors (both initial or simulation-time ones) for which the same placement
-% hint was specified on the same computing node, for best performances
-%
-% Note: if wanting to create an actor before the simulation is started, then
-% create_initial_actor/{2,3} or create_initial_placed_actor/{3,4} must be used
-% instead.
-%
-% Returns an updated state, and will trigger a callback to the onActorCreated/4
-% actor oneway of this creating actor when the created one will be ready.
-%
-% (exported helper function, used by actors)
-%
+-doc """
+Triggers the creation of an actor with a placement hint, whilst the simulation
+is running.
+
+This is an actor-level helper function, which takes care automatically of the
+sending (at this tick T, diasca D) of the createActor actor message to the load
+balancer, which in turn, at the next diasca (still during T, at diasca D+1),
+will effectively create the targeted actor (with a remote synchronous timed new)
+until, at diasca D+2 of the same tick T, this creating actor has its
+`onActorCreated/4` method called with the PID of the newly created actor.
+
+The load balancer is to create actors based on actor messages, for
+reproducibility reasons.
+
+The actual placement of the created actor is fully determined by the specified
+placement hint.
+
+Helper parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+`class_TestActor`)
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. `["MyActorName", 50]`)
+
+- PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
+actors (both initial or simulation-time ones) for which the same placement hint
+was specified on the same computing node, for best performances
+
+Note: if wanting to create an actor before the simulation is started, then
+`create_initial_actor/{2,3}` or `create_initial_placed_actor/{3,4}` must be used
+instead.
+
+Returns an updated state, and will trigger a callback to the `onActorCreated/4`
+actor oneway of this creating actor when the created one will be ready.
+
+(exported helper function, used by actors)
+""".
 -spec create_placed_actor( classname(), [ method_argument() ],
 	  class_LoadBalancer:placement_hint(), wooper:state() ) -> wooper:state().
 create_placed_actor( ActorClassname, ActorConstructionParameters,
@@ -4771,46 +4865,47 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Triggers the creation of an actor with a user-defined tag and a placement
-% hint, while the simulation is running.
-%
-% This is an actor-level helper function, which takes care automatically of the
-% sending (at this tick T, diasca D) of the createActor actor message to the
-% load balancer, which in turn, at the next diasca (still during T, at diasca
-% D+1), will effectively create the targeted actor (with a remote synchronous
-% timed new) until, at diasca D+2 of the same tick T, this creating actor has
-% its onActorCreated/4 method called with the PID of the newly created actor.
-%
-% The load balancer is to create actors based on actor messages, for
-% reproducibility reasons.
-%
-% The actual placement of the created actor is fully determined by the specified
-% placement hint.
-%
-% Helper parameters are:
-%
-% - ActorClassname is the classname of the actor to create (e.g.
-% 'class_TestActor')
-%
-% - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (e.g. ["MyActorName", 50])
-%
-% - CreatedActorTag can be any term chosen by the user (e.g. an atom like
-% 'my_building_147')
-%
-% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
-% actors (both initial or simulation-time ones) for which the same placement
-% hint was specified on the same computing node, for best performances
-%
-% Note: if wanting to create an actor before the simulation is started, then
-% create_initial_actor/{2,3} or create_initial_placed_actor/{3,4} must be used
-% instead.
-%
-% Returns an updated state, and will trigger a callback to the onActorCreated/4
-% actor oneway of this creating actor when the created one will be ready.
-%
-% (exported helper function, used by actors)
-%
+-doc """
+Triggers the creation of an actor with a user-defined tag and a placement hint,
+whilst the simulation is running.
+
+This is an actor-level helper function, which takes care automatically of the
+sending (at this tick T, diasca D) of the createActor actor message to the load
+balancer, which in turn, at the next diasca (still during T, at diasca D+1),
+will effectively create the targeted actor (with a remote synchronous timed new)
+until, at diasca D+2 of the same tick T, this creating actor has its
+`onActorCreated/4` method called with the PID of the newly created actor.
+
+The load balancer is to create actors based on actor messages, for
+reproducibility reasons.
+
+The actual placement of the created actor is fully determined by the specified
+placement hint.
+
+Helper parameters are:
+
+- ActorClassname is the classname of the actor to create (e.g.
+`class_TestActor`)
+
+- ActorConstructionParameters is the list of parameters that will be used to
+construct that actor (e.g. `["MyActorName", 50]`)
+
+- CreatedActorTag can be any term chosen by the user (e.g. an atom like
+`my_building_147`)
+
+- PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
+actors (both initial or simulation-time ones) for which the same placement hint
+was specified on the same computing node, for best performances
+
+Note: if wanting to create an actor before the simulation is started, then
+`create_initial_actor/{2,3}` or `create_initial_placed_actor/{3,4}` must be used
+instead.
+
+Returns an updated state, and will trigger a callback to the `onActorCreated/4`
+actor oneway of this creating actor when the created one will be ready.
+
+(exported helper function, used by actors)
+""".
 -spec create_placed_actor( classname(), [ method_argument() ], tag(),
 			class_LoadBalancer:placement_hint(), wooper:state() ) ->
 								wooper:state().
@@ -4829,20 +4924,26 @@ create_placed_actor( ActorClassname, ActorConstructionParameters, ActorTag,
 
 
 
-% @doc Allows an actor to declare a probe, whose timestamps will be expressed in
-% ticks, with specified parameters.
-%
-% The probe creation may or may not be accepted by the result manager.
-%
-% If yes, PID of the newly created probe will be returned.
-%
-% If no, the 'non_wanted_probe' atom will be returned.
-%
-% (helper function)
-%
+
+% Probe-related section.
+
+
+
+-doc """
+Allows an actor to declare a probe, whose timestamps will be expressed in ticks,
+with the specified parameters.
+
+The probe creation may or may not be accepted by the result manager.
+
+If yes, PID of the newly created probe will be returned.
+
+If no, the `non_wanted_probe` atom will be returned.
+
+(helper function)
+""".
 -spec declare_probe( class_Probe:name_options(),
 		[ class_Probe:declared_curve_name() ], [ class_Probe:declared_zone() ],
-		title(), maybe( label() ), label() ) -> class_Probe:probe_ref().
+		title(), option( label() ), label() ) -> class_Probe:probe_ref().
 declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel ) ->
 
 	% From an actor, any created probe will write its files under the directory
@@ -4854,22 +4955,23 @@ declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel ) ->
 
 
 
-% @doc Allows an actor to declare a probe, whose timestamps will be expressed as
-% actual times and dates, with specified parameters.
-%
-% The probe creation may or may not be accepted by the result manager.
-%
-% If yes, PID of the newly created probe will be returned.
-%
-% If no, the 'non_wanted_probe' atom will be returned.
-%
-% Note that the specified state shall be the one of a class_Actor instance.
-%
-% (helper function)
-%
+-doc """
+Allows an actor to declare a probe, whose timestamps will be expressed as actual
+times and dates, with specified parameters.
+
+The probe creation may or may not be accepted by the result manager.
+
+If yes, PID of the newly created probe will be returned.
+
+If no, the `non_wanted_probe` atom will be returned.
+
+Note that the specified state shall be the one of a `class_Actor` instance.
+
+(helper function)
+""".
 -spec declare_probe( class_Probe:name_options(),
 		[ class_Probe:declared_curve_name() ], [ class_Probe:declared_zone() ],
-		title(), maybe( label() ), label(),
+		title(), option( label() ), label(),
 		virtual_seconds() | wooper:state() ) -> class_Probe:probe_ref().
 declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 			   TickDuration ) when is_float( TickDuration ) ->
@@ -4891,22 +4993,23 @@ declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 
 
 
-% @doc Allows an actor to declare a probe, whose timestamps will be expressed as
-% actual times and dates, with specified parameters and extra settings.
-%
-% The probe creation may or may not be accepted by the result manager.
-%
-% If yes, PID of the newly created probe will be returned.
-%
-% If no, the 'non_wanted_probe' atom will be returned.
-%
-% Note that the specified state shall be the one of a class_Actor instance.
-%
-% (helper function)
-%
+-doc """
+Allows an actor to declare a probe, whose timestamps will be expressed as actual
+times and dates, with specified parameters and extra settings.
+
+The probe creation may or may not be accepted by the result manager.
+
+If yes, PID of the newly created probe will be returned.
+
+If no, the `non_wanted_probe` atom will be returned.
+
+Note that the specified state shall be the one of a `class_Actor` instance.
+
+(helper function)
+""".
 -spec declare_probe( class_Probe:name_options(),
 		[ class_Probe:declared_curve_name() ], [ class_Probe:declared_zone() ],
-		title(), maybe( label() ), label(),
+		title(), option( label() ), label(),
 		class_Probe:settings_table(), virtual_seconds() | wooper:state() ) ->
 							class_Probe:probe_ref().
 declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
@@ -4930,12 +5033,17 @@ declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 
 
 
-% @doc Allows to enable this actor to make use of the data-exchange service.
-%
-% Returns an updated state.
-%
-% (helper function)
-%
+
+% Section relative the data-exchange service.
+
+
+-doc """
+Enables the use by this actor of the data-exchange service.
+
+Returns an updated state.
+
+(helper function)
+""".
 -spec enable_data_exchange( wooper:state() ) -> wooper:state().
 enable_data_exchange( State ) ->
 
@@ -4947,17 +5055,19 @@ enable_data_exchange( State ) ->
 
 
 
-% @doc Allows this actor to define a new set of data entries.
-%
-% A data not specifying a qualifier will be defined with the default one.
-%
-% Note: this is a synchronous operation to avoid race conditions.
-%
-% If the simulation is not running, the definition will happen immediately and
-% be available everywhere in the exchanger hierarchy. If the simulation is
-% running, the definition will occur in-between the end of the current tick and
-% the beginning of the next one.
-%
+-doc """
+Allows this actor to define a new set of data entries, in the context of the
+data-exchange service.
+
+A data not specifying a qualifier will be defined with the default one.
+
+Note: this is a synchronous operation to avoid race conditions.
+
+If the simulation is not running, the definition will happen immediately and be
+available everywhere in the exchanger hierarchy. If the simulation is running,
+the definition will occur in-between the end of the current tick and the
+beginning of the next one.
+""".
 -spec define_data( class_DataExchanger:entries(), wooper:state() ) -> void().
 define_data( EntryList, State ) ->
 
@@ -4975,17 +5085,19 @@ define_data( EntryList, State ) ->
 
 
 
-% @doc Allows this actor to define a new data entry.
-%
-% The data will be defined with the default qualifier.
-%
-% Note: this is a synchronous operation to avoid race conditions.
-%
-% If the simulation is not running, the definition will happen immediately and
-% be available everywhere in the exchanger hierarchy. If the simulation is
-% running, the definition will occur in-between the end of the current tick and
-% the beginning of the next one.
-%
+-doc """
+Allows this actor to define a new data entry, in the context of the
+data-exchange service.
+
+The data will be defined with the default qualifier.
+
+Note: this is a synchronous operation to avoid race conditions.
+
+If the simulation is not running, the definition will happen immediately and be
+available everywhere in the exchanger hierarchy. If the simulation is running,
+the definition will occur in-between the end of the current tick and the
+beginning of the next one.
+""".
 -spec define_data( key(), value(), wooper:state() ) -> void().
 define_data( Key, Value, State ) ->
 
@@ -5003,15 +5115,17 @@ define_data( Key, Value, State ) ->
 
 
 
-% @doc Allows this actor to define a new data entry.
-%
-% Note: this is a synchronous operation to avoid race conditions.
-%
-% If the simulation is not running, the definition will happen immediately and
-% be available everywhere in the exchanger hierarchy. If the simulation is
-% running, the definition will occur in-between the end of the current tick and
-% the beginning of the next one.
-%
+-doc """
+Allows this actor to define a new data entry, in the context of the
+data-exchange service.
+
+Note: this is a synchronous operation to avoid race conditions.
+
+If the simulation is not running, the definition will happen immediately and be
+available everywhere in the exchanger hierarchy. If the simulation is running,
+the definition will occur in-between the end of the current tick and the
+beginning of the next one.
+""".
 -spec define_data( key(), value(), qualifier(), wooper:state() ) -> void().
 define_data( Key, Value, Qualifier, State ) ->
 
@@ -5029,17 +5143,19 @@ define_data( Key, Value, Qualifier, State ) ->
 
 
 
-% @doc Allows this actor to modify a new set of data entries.
-%
-% A data not specifying a qualifier will be defined with the default one.
-%
-% Note: this is a synchronous operation to avoid race conditions.
-%
-% If the simulation is not running, the modification will happen immediately and
-% be available everywhere in the exchanger hierarchy. If the simulation is
-% running, the modification will occur in-between the end of the current tick
-% and the beginning of the next one.
-%
+-doc """
+Allows this actor to modify a new set of data entries, in the context of the
+data-exchange service.
+
+A data not specifying a qualifier will be defined with the default one.
+
+Note: this is a synchronous operation to avoid race conditions.
+
+If the simulation is not running, the modification will happen immediately and
+be available everywhere in the exchanger hierarchy. If the simulation is
+running, the modification will occur in-between the end of the current tick and
+the beginning of the next one.
+""".
 -spec modify_data( class_DataExchanger:entries(), wooper:state() ) -> void().
 modify_data( EntryList, State ) ->
 
@@ -5057,17 +5173,19 @@ modify_data( EntryList, State ) ->
 
 
 
-% @doc Allows this actor to define a new data entry.
-%
-% The data will be defined with the default qualifier.
-%
-% Note: this is a synchronous operation to avoid race conditions.
-%
-% If the simulation is not running, the modification will happen immediately and
-% be available everywhere in the exchanger hierarchy. If the simulation is
-% running, the modification will occur in-between the end of the current tick
-% and the beginning of the next one.
-%
+-doc """
+Allows this actor to define a new data entry, in the context of the
+data-exchange service.
+
+The data will be defined with the default qualifier.
+
+Note: this is a synchronous operation to avoid race conditions.
+
+If the simulation is not running, the modification will happen immediately and
+be available everywhere in the exchanger hierarchy. If the simulation is
+running, the modification will occur in-between the end of the current tick and
+the beginning of the next one.
+""".
 -spec modify_data( key(), value(), wooper:state() ) -> void().
 modify_data( Key, Value, State ) ->
 
@@ -5085,15 +5203,17 @@ modify_data( Key, Value, State ) ->
 
 
 
-% @doc Allows this actor to define a new data entry.
-%
-% Note: this is a synchronous operation to avoid race conditions.
-%
-% If the simulation is not running, the modification will happen immediately and
-% be available everywhere in the exchanger hierarchy. If the simulation is
-% running, the modification will occur in-between the end of the current tick
-% and the beginning of the next one.
-%
+-doc """
+Allows this actor to define a new data entry, in the context of the
+data-exchange service.
+
+Note: this is a synchronous operation to avoid race conditions.
+
+If the simulation is not running, the modification will happen immediately and
+be available everywhere in the exchanger hierarchy. If the simulation is
+running, the modification will occur in-between the end of the current tick and
+the beginning of the next one.
+""".
 -spec modify_data( key(), value(), qualifier(), wooper:state() ) -> void().
 modify_data( Key, Value, Qualifier, State ) ->
 
@@ -5111,15 +5231,15 @@ modify_data( Key, Value, Qualifier, State ) ->
 
 
 
+-doc """
+Returns the value associated to the specified key (an atom), in the context of
+the data-exchange service.
 
-% @doc Returns the value associated to the specified key (an atom).
-%
-% Actors can read directly any number of data without any particular precautions
-% on the same tick, and these operations will be as cheap as reasonably
-% possible.
-%
-% (helper function)
-%
+Actors can read directly any number of data without any particular precautions
+on the same tick, and these operations will be as cheap as reasonably possible.
+
+(helper function)
+""".
 -spec read_data( key(), wooper:state() ) -> value().
 read_data( Key, State ) ->
 
@@ -5140,14 +5260,15 @@ read_data( Key, State ) ->
 
 
 
-% @doc Returns the value and qualifier (as a {Value,Qualifier} pair) associated
-% to the specified key (an atom).
-%
-% Actors can read directly any number of data without any particular precautions
-% on the same tick, and these operations will be as cheap as reasonably
-% possible.
-%
-% (helper function)
+-doc """
+Returns the value and qualifier (as a `{Value,Qualifier}` pair) associated to
+the specified key (an atom), in the context of the data-exchange service.
+
+Actors can read directly any number of data without any particular precautions
+on the same tick, and these operations will be as cheap as reasonably possible.
+
+(helper function)
+""".
 -spec read_qualified_data( key(), wooper:state() ) -> qualified_value().
 read_qualified_data( Key, State ) ->
 
@@ -5169,19 +5290,22 @@ read_qualified_data( Key, State ) ->
 
 
 
-% @doc Returns a reordered version of the specified list of messages for the
-% current diasca, to obtain an order satisfying the expected properties for the
-% simulation.
-%
-% Depending on the simulator settings (second parameter of this function), the
-% ordering (if any is requested) will be performed either so that reproductivity
-% is ensured (i.e. events are sorted according to a constant arbitrary order),
-% and/or so that "ergodicity" is ensured, i.e. so that events are shuffled in an
-% uniform way (random permutations).
-%
-% See the 'Reordering Of Actor Messages' section of documentation for more
-% information.
-%
+
+
+-doc """
+Returns a reordered version of the specified list of messages for the current
+diasca, to obtain an order satisfying the expected properties for the
+simulation.
+
+Depending on the simulator settings (second parameter of this function), the
+ordering (if any is requested) will be performed either so that reproductivity
+is ensured (i.e. events are sorted according to a constant arbitrary order),
+and/or so that "ergodicity" is ensured, i.e. so that events are shuffled in an
+uniform way (random permutations).
+
+See the 'Reordering Of Actor Messages' section of documentation for more
+information.
+""".
 apply_reordering( MessagesForCurrentDiasca, unordered ) ->
 	% Nothing to do here!
 	MessagesForCurrentDiasca;
@@ -5238,10 +5362,13 @@ apply_reordering( MessagesForCurrentDiasca, constant_permuted_order ) ->
 
 
 
-% @doc Returns a textual representation of the specified state, listing only the
-% attributes specifically introduced to specialise the actor generic class
-% (omitting all technical ones introduced by the engine), in an ellipsed form.
-%
+-doc """
+Returns a textual representation of the specified state, listing only the
+attributes specifically introduced to specialise the actor generic class
+(omitting all technical ones introduced by the engine), in an ellipsed form.
+
+Useful for actor debugging purpose.
+""".
 -spec state_to_string( wooper:state() ) -> ustring().
 state_to_string( State ) ->
 
@@ -5258,14 +5385,17 @@ state_to_string( State ) ->
 
 
 
-% @doc Returns a list of the state attribute entries of this instance, from
-% which all the ones inherited through class_Actor and above (mother classes)
-% have been removed.
-%
-% As a consequence, only the ones specific to the current type of actor remain.
-%
-% (internal helper)
-%
+-doc """
+Returns a list of the state attribute entries of this instance, from which all
+the ones inherited through `class_Actor` and above (mother classes) have been
+removed.
+
+As a consequence, only the ones specific to the current type of actor remain.
+
+Useful for actor debugging purpose.
+
+(internal helper)
+""".
 -spec get_actor_specialised_attributes( wooper:state() ) ->
 											[ attribute_entry() ].
 get_actor_specialised_attributes( State ) ->
@@ -5277,9 +5407,10 @@ get_actor_specialised_attributes( State ) ->
 
 
 
-% @doc Returns the names of all the base state attributes (be they defined by
-% this class or inherited).
-%
+-doc """
+Returns the names of all the base state attributes (be they defined by this
+class or inherited).
+""".
 -spec get_all_base_attribute_names() ->
 								static_return( [ wooper:attribute_name() ] ).
 get_all_base_attribute_names() ->
@@ -5294,9 +5425,10 @@ get_all_base_attribute_names() ->
 
 
 
-% @doc Returns the highest acceptable idle duration, in milliseconds, for the
-% completion of the subscription process.
-%
+-doc """
+Returns the highest acceptable idle duration, in milliseconds, for the
+completion of the subscription process.
+""".
 -spec get_maximum_subscription_duration() -> milliseconds().
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2024 Olivier Boudeville
+% Copyright (C) 2015-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,84 +25,99 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, May 12, 2015.
 
-
-% @doc This module allows to generate <b>read-only associative tables whose
-% key/value pairs can be read from any number (potentially extremely large) of
-% readers very efficiently</b> (possibly the most efficient way in Erlang).
-%
-% These key/value pairs can be decided at runtime, from any source; keys must be
-% atoms while values can be of any permanent (non-transient) type (and two
-% values in a table do not have to be of the same type). Using a transient type
-% is bound to result in a badarg.
-%
-% These tables may be kept in-memory only (hence with the corresponding modules
-% being generated and used at runtime) and/or be generated and stored in an
-% actual BEAM file, for a later direct (re)loading thereof.
-%
-% No ETS table, replication (e.g. per-user table copy) or message sending is
-% involved: thanks to meta-programming, a module is generated on-the-fly,
-% exporting as many functions as there are different keys in the entries of
-% interest; calling a function corresponding to a key returns the associated
-% value.
-%
-% More precisely, a module name (e.g. 'foobar') and a list of `{atom(), any()}'
-% entries are provided to the `const_table:generate*/*' functions; for each
-% key/value pair in the specified entries (e.g. `{'baz', 42.0}'), a 0-arity
-% function is generated and exported in that module, as if we had:```
-%
-% -module(foobar).
-%
-% [...]
-%
-% -export([baz/0]).
-%
-% -spec baz() -> term().
-% baz() ->
-%    42.0.'''
-%
-% Then third-party code can call for example `foobar:baz()' and have `42.0'
-% returned. This is presumably the most efficient way of sharing constants in
-% Erlang.
-%
-% Keys must be atoms (as they will correspond to function names), and the
-% resulting table is immutable (const), even if, thanks to hot code upgrade, one
-% may imagine updating the table at will, having any number of successive
-% versions of it.
-%
-% However generating a table of the same name more than once should be done with
-% care, as if a given table is generated three times (hence updated twice), the
-% initial table would become 'current', then 'old', and then be removed. Any
-% process that would linger in it would then be terminated (see
-% [http://www.erlang.org/doc/reference_manual/code_loading.html]). However, due
-% to the nature of these tables (just one-shot fully-qualified calls, no
-% recursion or message-waiting construct), this is not expected to happen.
-%
-% Refer to:
-% - const_table_test.erl for an usage example and testing thereof
-% - map_hashtable.erl for a runtime, mutable, term-based table
-% - const_bijective_table.erl for a constant, two-way (bijective) table
-%
 -module(const_table).
+
+-moduledoc """
+This module allows to generate **read-only associative tables whose key/value
+pairs can be read from any number (potentially extremely large) of readers very
+efficiently** (possibly the most efficient way in Erlang).
+
+These key/value pairs can be decided at runtime, from any source; keys must be
+atoms while values can be of any permanent (non-transient) type (and two values
+in a table do not have to be of the same type). Using a transient type is bound
+to result in a badarg.
+
+These tables may be kept in-memory only (hence with the corresponding modules
+being generated and used at runtime) and/or be generated and stored in an actual
+BEAM file, for a later direct (re)loading thereof.
+
+No ETS table, replication (e.g. per-user table copy) or message sending is
+involved: thanks to meta-programming, a module is generated on-the-fly,
+exporting as many functions as there are different keys in the entries of
+interest; calling a function corresponding to a key returns the associated
+value.
+
+More precisely, a module name (e.g. 'foobar') and a list of `{atom(), any()}`
+entries are provided to the `const_table:generate*/*` functions; for each
+key/value pair in the specified entries (e.g. `{'baz', 42.0}`), a 0-arity
+function is generated and exported in that module, as if we had:
+
+```
+-module(foobar).
+
+[...]
+
+-export([baz/0]).
+
+-spec baz() -> term().
+baz() ->
+   42.0.
+```
+
+Then third-party code can call for example `foobar:baz()` and have `42.0`
+returned. This is presumably the most efficient way of sharing constants in
+Erlang.
+
+Keys must be atoms (as they will correspond to function names), and the
+resulting table is immutable (const), even if, thanks to hot code upgrade, one
+may imagine updating the table at will, having any number of successive versions
+of it.
+
+However generating a table of the same name more than once should be done with
+care, as if a given table is generated three times (hence updated twice), the
+initial table would become 'current', then 'old', and then be removed. Any
+process that would linger in it would then be terminated (see
+[http://www.erlang.org/doc/reference_manual/code_loading.html]). However, due to
+the nature of these tables (just one-shot fully-qualified calls, no recursion or
+message-waiting construct), this is not expected to happen.
+
+Refer to:
+- const_table_test.erl for an usage example and testing thereof
+- map_hashtable.erl for a runtime, mutable, term-based table
+- const_bijective_table.erl for a constant, two-way (bijective) table
+""".
 
 
 % User API:
 -export([ generate_in_memory/2, generate_in_file/2, generate_in_file/3 ]).
 
 
+-doc """
+Designates the keys of the table.
+
+A module-based storage cannot hold transient terms.
+""".
 -type key() :: permanent_term().
-% Designates the keys of the table.
-% A module-based storage cannot hold transient terms.
 
+
+
+-doc """
+Designates the values of the table.
+
+A module-based storage cannot hold transient terms.
+""".
 -type value() :: permanent_term().
-% Designates the values of the table.
-% A module-based storage cannot hold transient terms.
 
 
+
+-doc "An entry to be fed to a const-table.".
 -type entry() :: { key(), value() }.
-% An entry to be fed to a const-table.
 
+
+
+-doc "Entries to be fed to a const-table.".
 -type entries() :: [ entry() ].
-% Entries to be fed to a const-table.
+
 
 -export_type([ key/0, value/0, entry/0, entries/0 ]).
 
@@ -116,7 +131,7 @@
 % TO-DO: add a corresponding type specification (see ast_function).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type module_name() :: basic_utils:module_name().
 
@@ -126,13 +141,15 @@
 -type permanent_term() :: type_utils:permanent_term().
 
 
-% @doc Generates in memory (only) and loads a module sharing the specified
-% entries by exporting as many functions named according to the keys, and
-% returning the value corresponding to the selected key.
-%
-% Note that no actual module file is generated (e.g. no 'foobar.beam'), the
-% operation remains fully in-memory.
-%
+
+-doc """
+Generates in memory (only) and loads a module sharing the specified entries by
+exporting as many functions named according to the keys, and returning the value
+corresponding to the selected key.
+
+Note that no actual module file is generated (e.g. no 'foobar.beam'), the
+operation remains fully in-memory.
+""".
 -spec generate_in_memory( module_name(), entries() ) -> void().
 generate_in_memory( ModuleName, Entries ) ->
 
@@ -172,31 +189,33 @@ generate_in_memory( ModuleName, Entries ) ->
 
 
 
-% @doc Generates in-file (a BEAM file created in the current directory) and
-% loads a module sharing the specified entries by exporting as many functions
-% named according to the keys, and returning the value corresponding to the
-% selected key.
-%
-% Returns the generated filename (not path), for any further reference.
-%
+-doc """
+Generates in-file (a BEAM file created in the current directory) and loads a
+module sharing the specified entries by exporting as many functions named
+according to the keys, and returning the value corresponding to the selected
+key.
+
+Returns the generated filename (not path), for any further reference.
+""".
 -spec generate_in_file( module_name(), entries() ) -> file_name().
 generate_in_file( ModuleName, Entries ) ->
 	generate_in_file( ModuleName, Entries,
 					  file_utils:get_current_directory() ).
 
 
-% @doc Generates in-file (a BEAM file created in the specified directory) a
-% module sharing the specified entries by exporting as many functions named
-% according to the keys, and returning the value corresponding to the selected
-% key.
-%
-% For a clearer setting, generated modules may be named as such
-% (e.g. 'foobar_generated').
-%
-% The resulting module is not loaded by this function.
-%
-% Returns the generated filename (not path), for any further reference.
-%
+
+-doc """
+Generates in-file (a BEAM file created in the specified directory) a module
+sharing the specified entries by exporting as many functions named according to
+the keys, and returning the value corresponding to the selected key.
+
+For a clearer setting, generated modules may be named as such
+(e.g. 'foobar_generated').
+
+The resulting module is not loaded by this function.
+
+Returns the generated filename (not path), for any further reference.
+""".
 -spec generate_in_file( module_name(), entries(), any_directory_path() ) ->
 														file_name().
 generate_in_file( ModuleName, Entries, TargetDir ) ->
@@ -246,9 +265,9 @@ generate_in_file( ModuleName, Entries, TargetDir ) ->
 
 
 
-% @doc Returns a filename corresponding to the specified BEAM module to be
-% generated.
-%
+-doc """
+Returns a filename corresponding to the specified BEAM module to be generated.
+""".
 -spec get_generated_beam_filename_for( module_name() ) -> file_name().
 get_generated_beam_filename_for( ModName ) ->
 
@@ -257,7 +276,6 @@ get_generated_beam_filename_for( ModName ) ->
 	%
 	%"const_table_generated_" ++ code_utils:get_beam_filename( ModName ).
 	code_utils:get_beam_filename( ModName ).
-
 
 
 

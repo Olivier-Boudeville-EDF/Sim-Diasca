@@ -20,6 +20,9 @@
 <p>Ceylan-WOOPER relies on the <a href="http://myriad.esperide.org" target="_blank">Myriad layer</a>, a generic Erlang toolbox.
 </p>
 
+<p>
+<b>Note that, currently, code based on WOOPER is not correctly taken into account by edoc</b>: due to some limitations, most of the listed functions lack their documentation, and all methods and also generated code, such as constructors, are invisible to edoc, respectively as it is not aware that they are actually exported in, or added to, the AST. However the full WOOPER codebase <em>is</em> intensely documented, refer to <a href="https://github.com/Olivier-Boudeville/Ceylan-WOOPER/tree/master/src" target="_blank">this repository</a> for full information.
+</p>
 
 @reference See the <a href="http://wooper.esperide.org" target="_blank">WOOPER official website</a> or <a href="https://olivier-boudeville.github.io/Ceylan-WOOPER/index.html" target="_blank">its mirror</a>
 

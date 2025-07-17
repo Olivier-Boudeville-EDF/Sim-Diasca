@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class modelling the <b>reparation behaviour</b> of pieces of equipment
-% according to a Gaussian (normal) law (probability density).
-%
 -module(class_GaussianRepairModel).
+
+-moduledoc """
+Class modelling the **reparation behaviour** of pieces of equipment according to
+a Gaussian (normal) law (probability density).
+""".
 
 
 -define( class_description,
@@ -48,17 +49,18 @@
 
 
 
-% @doc Constructs a gaussian repair model actor.
-%
-% - ActorSettings corresponds to the engine settings for this actor, as
-% determined by the load-balancer
-%
-% - MTTR is Mean time to repair, the mean (average) time that a device will take
-% to recover from a non-terminal failure; it is measured thanks to a tuple
-% {Days, Hours, Minutes, Seconds}
-%
-% - RepairStdDeviation is the standard deviation of the repair gaussian law
-%
+-doc """
+Constructs a gaussian repair model actor.
+
+- ActorSettings corresponds to the engine settings for this actor, as determined
+by the load-balancer
+
+- MTTR is Mean time to repair, the mean (average) time that a device will take
+to recover from a non-terminal failure; it is measured thanks to a tuple `{Days,
+Hours, Minutes, Seconds}`
+
+- RepairStdDeviation is the standard deviation of the repair gaussian law
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_RepairModel:mttr(), math_utils:standard_deviation() ) ->
 						wooper:state().

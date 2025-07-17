@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,12 +7,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Cat-based example. Those are the ones that work best.
-%
-% Guaranteed to be implemented by a cat.
-%
 -module(class_Cat).
+
+-moduledoc """
+**Cat-based** example. Those are the ones that work best.
+
+Guaranteed to be implemented by a cat.
+""".
+
 
 
 -define( class_description,
@@ -20,8 +22,8 @@
 
 
 % Determines what are the direct mother classes of this class (if any):
--define( superclasses, [ class_Mammal, class_ViviparousBeing,
-						 class_Serialisable ] ).
+-define( superclasses,
+		 [ class_Mammal, class_ViviparousBeing, class_Serialisable ] ).
 
 
 -define( class_attributes, [
@@ -39,12 +41,13 @@
 -include("ecosystem_types.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
-% @doc Constructs a cat instance.
+
+-doc "Constructs a cat instance.".
 -spec construct( wooper:state(), age(), gender(), fur_color(),
 				 whisker_color() ) -> wooper:state().
 construct( State, Age, Gender, FurColor, WhiskerColor ) ->
@@ -71,13 +74,14 @@ destruct( State ) ->
 
 
 
-% @doc No guarantee on biological fidelity.
+-doc "No guarantee on biological fidelity.".
 -spec getTeatCount( wooper:state() ) -> const_request_return( teat_count() ).
 getTeatCount( State ) ->
 	wooper:const_return_result( 6 ).
 
 
-% @doc Cats are supposed carnivorous though.
+
+-doc "Cats are supposed carnivorous though.".
 -spec canEat( wooper:state(), food() ) -> const_request_return( boolean() ).
 canEat( State, soup ) ->
 	wooper:const_return_result( true );
@@ -96,7 +100,7 @@ canEat( State, _OtherFood ) ->
 
 
 
-% @doc Returns the whisker color of this cat.
+-doc "Returns the whisker's color of this cat.".
 -spec getWhiskerColor( wooper:state() ) -> const_request_return( color() ).
 getWhiskerColor( State )->
 
@@ -106,7 +110,7 @@ getWhiskerColor( State )->
 
 
 
-% @doc Requests this cat to terminate, based on specified halting procedure.
+-doc "Requests this cat to terminate, based on specified halting procedure.".
 -spec terminate( wooper:state(), 'crash' ) -> const_oneway_return().
 terminate( State, crash ) ->
 	basic_utils:crash(),
@@ -130,7 +134,7 @@ toString( State ) ->
 % Static section.
 
 
-% @doc Returns the mean life expectancy of a cat, in years.
+-doc "Returns the mean life expectancy of a cat, in years.".
 -spec get_mean_life_expectancy() -> static_return( age() ).
 get_mean_life_expectancy() ->
 	wooper:return_static( 18 ).

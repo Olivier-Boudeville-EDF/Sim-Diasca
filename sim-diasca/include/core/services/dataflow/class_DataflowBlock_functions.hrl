@@ -1,21 +1,21 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2016.
 
@@ -41,9 +41,10 @@
 
 
 
-% @doc Validates user-specified port name (expecting a ustring()) and returns a
-% correct internal form thereof.
-%
+-doc """
+Validates the user-specified port name (expecting a `ustring/0`) and returns a
+correct internal form thereof.
+""".
 -spec validate_port_name( basic_utils:user_data(), wooper:state() ) ->
 								port_name().
 validate_port_name( Name, State ) ->
@@ -78,9 +79,10 @@ validate_port_name( Name, State ) ->
 
 
 
-% @doc Validates user-specified port iteration name (expecting a ustring()) and
-% returns a correct internal form thereof.
-%
+-doc """
+Validates the user-specified port iteration name (expecting a `ustring/0`) and
+returns a correct internal form thereof.
+""".
 -spec validate_iteration_name( basic_utils:user_data(), wooper:state() ) ->
 											iteration_name().
 validate_iteration_name( Name, State ) ->
@@ -117,28 +119,28 @@ validate_iteration_name( Name, State ) ->
 
 
 
-% @doc Returns directly the corresponding (internal) port name.
+-doc "Returns directly the corresponding (internal) port name.".
 -spec get_port_name( text_utils:ustring() ) -> port_name().
 get_port_name( Name ) ->
 	text_utils:string_to_binary( Name ).
 
 
 
+-doc """
+Validates the user-specified port iteration (expecting an iteration_spec()), and
+returns a canonical form for this iteration, which is:
 
+```
+{CurrentCount :: port_count(),
+    {MinCount :: min_port_count(), MaxCount :: max_port_count()}}.
+```
 
-% @doc Validates user-specified port iteration (expecting an iteration_spec()),
-% and returns a canonical form for this iteration, which is:
-%
-% {CurrentCount :: port_count(),
-%     {MinCount :: min_port_count(), MaxCount :: max_port_count()}}.
-%
-% CurrentCount being the corresponding required number of initial port
-% instances.
-%
-% Iterations relying on a boolean value expected to already have been filtered.
-%
+CurrentCount being the corresponding required number of initial port instances.
+
+Iterations relying on a boolean value expected to already have been filtered.
+""".
 -spec validate_iteration( basic_utils:user_data(), wooper:state() ) ->
-							{ port_count(), iteration_spec() }.
+                                { port_count(), iteration_spec() }.
 validate_iteration( Spec={ InitialCount, { MinPortCount, MaxPortCount } },
 					State ) ->
 
@@ -204,9 +206,10 @@ validate_port_count( PortCount ) ->
 
 
 
-% @doc Validates a user-specified port comment (expecting a ustring() or
-% 'undefined'), and returns a correct internal form thereof.
-%
+-doc """
+Validates a user-specified port comment (expecting a `ustring/0` or
+`undefined`), and returns a correct internal form thereof.
+""".
 -spec validate_comment( basic_utils:user_data(), wooper:state() ) ->
 									internal_comment().
 validate_comment( _Comment=undefined, _State ) ->
@@ -228,10 +231,11 @@ validate_comment( Comment, State ) ->
 
 
 
-% @doc Validates user-specified result settings, telling whether this port is to
-% produce results (expecting a boolean()) and returns a correct internal form
-% thereof.
-%
+-doc """
+Validates user-specified result settings, telling whether this port is to
+produce results (expecting a `boolean/0`) and returns a correct internal form
+thereof.
+""".
 -spec validate_result_settings( basic_utils:user_data(), wooper:state() ) ->
 										boolean().
 validate_result_settings( V, _State ) when is_boolean( V ) ->
@@ -244,21 +248,21 @@ validate_result_settings( Other, State ) ->
 
 
 
-% @doc Returns directly the corresponding result producer settings.
+-doc "Returns directly the corresponding result producer settings.".
 -spec get_result_settings( boolean() ) -> boolean().
 get_result_settings( ResultSettings ) ->
 	ResultSettings.
 
 
 
-% @doc Validates user-specified semantics (expecting a user_value_semantics(),
-% i.e. a list of plain strings) and returns the internal counterpart form
-% thereof.
-%
+-doc """
+Validates user-specified semantics (expecting a user_value_semantics(), i.e. a
+list of plain strings) and returns the internal counterpart form thereof.
+""".
 -spec validate_semantics( basic_utils:user_data(), semantic_server_pid(),
 						  wooper:state() ) -> value_semantics().
 validate_semantics( Semantics, SemanticServerPid, State )
-							when is_list( Semantics ) ->
+                                            when is_list( Semantics ) ->
 
 	% Check mostly added because semantics used to be strings, not list of
 	% strings:
@@ -304,9 +308,10 @@ validate_semantics( Semantics, _SemanticServerPid, State ) ->
 
 
 
-% @doc Validates user-specified unit (expecting a unit_utils:unit_string()) and
-% returns the corresponding internal form.
-%
+-doc """
+Validates user-specified unit (expecting a `unit_utils:unit_string/0`) and
+returns the corresponding internal form.
+""".
 -spec validate_unit( basic_utils:user_data(), wooper:state() ) -> value_unit().
 validate_unit( Unit, State ) ->
 
@@ -351,7 +356,7 @@ validate_unit( Unit, State ) ->
 
 
 
-% @doc Returns directly the corresponding unit.
+-doc "Returns directly the corresponding unit.".
 -spec get_unit( unit_utils:unit_string() ) -> value_unit().
 get_unit( UnitString ) ->
 	%trace_utils:debug_fmt( "Parsing unit '~ts'.", [ UnitString ] ),
@@ -359,9 +364,10 @@ get_unit( UnitString ) ->
 
 
 
-% @doc Validates the user-specified described type (expecting a
-% value_type_description()), and returns its corresponding internal form.
-%
+-doc """
+Validates the user-specified described type (expecting a
+`value_type_description/0`), and returns its corresponding internal form.
+""".
 -spec validate_type_description( basic_utils:user_data(), type_server_pid(),
 								 wooper:state() ) -> value_type().
 validate_type_description( _TypeDescription, _TypeServerPid, _State ) ->
@@ -377,9 +383,10 @@ validate_type_description( _TypeDescription, _TypeServerPid, _State ) ->
 
 
 
-% @doc Validates the user-specified described type (expecting a list of
-% value_constraint()), and returns its corresponding internal form.
-%
+-doc """
+Validates the user-specified described type (expecting a list of
+`value_constraint/0`), and returns its corresponding internal form.
+""".
 -spec validate_constraints( basic_utils:user_data(), wooper:state() ) ->
 									value_type().
 validate_constraints( Constraints, State ) when is_list( Constraints ) ->
@@ -391,12 +398,14 @@ validate_constraints( Constraints, State ) ->
 	throw( { invalid_constraints_type, Constraints } ).
 
 
-% @doc Valides the specified constraint.
-%
-% Ideally we should ensure that the constraints can apply to the type at hand
-% (ex: 'greater_than' meaningless for atoms here) and to the bounds (ex:
-% N=foobar).
-%
+
+-doc """
+Validates the specified constraint.
+
+Ideally we should ensure that the constraints can apply to the type at hand
+(e.g. `greater_than` meaningless for atoms here) and to the bounds (e.g.
+N=foobar).
+""".
 validate_constraint( C={ greater_than, N }, _State ) when is_number( N ) ->
 	C;
 
@@ -433,20 +442,19 @@ validate_constraint( C, State ) ->
 
 
 
-% @doc Connects the specified output port of the specified upstream block to the
-% specified, local, (standard) input port.
-%
-% Allows to factor code between:
-%
-% - initial connections, for which InitiatorInfo is the caller PID, typically
-% the PID of the upstream block (for synchronicity)
-%
-% - connections in the course of the simulation, for which InitiatorInfo is the
-% 'direct' atom (called from an actor oneway, hence the actor sender is already
-% available here)
-%
-% (helper)
-%
+-doc """
+Connects the specified output port of the specified upstream block to the
+specified, local (standard) input port.
+
+Allows to factor code between:
+
+- initial connections, for which InitiatorInfo is the caller PID, typically the
+PID of the upstream block (for synchronicity)
+
+- connections in the course of the simulation, for which InitiatorInfo is the
+`direct` atom (called from an actor oneway, hence the actor sender is already
+available here)
+""".
 -spec connect_to_input_port( input_port_name(), input_port_table(),
 			block_pid(), output_port_name(), port_description(),
 			pid() | 'direct', wooper:state() ) ->
@@ -572,7 +580,7 @@ connect_to_input_port( InputPortBinName, InputPortTable,
 		{ direct, { set, Value } } ->
 
 			ChannelValue =
-				create_channel_value_for_input_port( Value,	InputPort ),
+				create_channel_value_for_input_port( Value, InputPort ),
 
 			EnablePortReemission = true,
 
@@ -634,11 +642,12 @@ connect_to_input_port( InputPortBinName, InputPortTable,
 
 
 
-% @doc Creates, from the specified raw value, a channel value that is suitable
-% for the specified input port.
-%
-% (helper, for internal use only)
-%
+-doc """
+Creates, from the specified raw value, a channel value that is suitable for the
+specified input port.
+
+(helper, for internal use only)
+""".
 -spec create_channel_value_for_input_port( actual_value(), input_port() ) ->
 													channel_value().
 create_channel_value_for_input_port( ActualValue, #input_port{
@@ -650,14 +659,15 @@ create_channel_value_for_input_port( ActualValue, #input_port{
 
 
 
-% @doc Tells whether an (upstream) output port, described as specified, can be
-% connected to the specified input port.
-%
-% Note: constraints are currently ignored here (only enforced at value-feeding
-% time, not at port-connecting time), yet could also be checked at least to some
-% extent, as some may be statically incompatible ('lower than X' versus 'higher
-% than X+1').
-%
+-doc """
+Tells whether an (upstream) output port, described as specified, can be
+connected to the specified input port.
+
+Note: constraints are currently ignored here (only enforced at value-feeding
+time, not at port-connecting time), yet could also be checked at least to some
+extent, as some may be statically incompatible (`lower than X` versus `higher
+than X+1`).
+""".
 -spec can_be_connected( port_description(), output_port_name(),
 						input_port(), input_port_name() ) ->
 				'true' | { 'true', text_utils:ustring() } | { 'false', term() }.
@@ -723,10 +733,11 @@ can_be_connected( OutputPortDescription=#port_description{
 
 
 
-% @doc Checks that the semantics in the specified output port description are
-% compliant with the ones of the specified input port, so that the former may
-% feed the latter.
-%
+-doc """
+Checks that the semantics in the specified output port description are compliant
+with the ones of the specified input port, so that the former may feed the
+latter.
+""".
 -spec check_semantics( value_semantics(), value_semantics(), port_description(),
 					   output_port_name(), input_port(), input_port_name() ) ->
 			'true' | { 'true', text_utils:ustring() } | { 'false', term() }.
@@ -783,14 +794,13 @@ check_semantics( OutputPortSemantics, InputPortSemantics, OutputPortDescription,
 
 
 
-% @doc Ensures that any class-level information about semantics and types
-% matches the ones for the ports actually specified and created.
-%
-% Note: the same could be done for iteration ports (as they may have no initial
-% iterated port).
+-doc """
+Ensures that any class-level information about semantics and types matches the
+ones for the ports actually specified and created.
 
-% (helper)
-%
+Note: the same could be done for iteration ports (as they may have no initial
+iterated port).
+""".
 -spec check_static_consistency( input_port_table(), output_port_table(),
 								wooper:state() ) -> void().
 check_static_consistency( InputTable, OutputTable, State ) ->
@@ -810,7 +820,7 @@ check_static_consistency( InputTable, OutputTable, State ) ->
 			% Thus we can check:
 
 			Vocabulary = class_SemanticServer:transform_as_internal(
-						   UserVocabulary ),
+				UserVocabulary ),
 
 			case check_input_semantics( Vocabulary, InputTable ) of
 
@@ -848,18 +858,19 @@ check_static_consistency( InputTable, OutputTable, State ) ->
 
 			end
 
-	end,
+	end.
 
 	% Later, types will be checked as well, but at the level of the type server,
 	% which is the best placed to resolve all types.
 
-	ok.
 
 
 
-% @doc Checks that the semantics used by all input ports in the specified table
-% are listed in the specified vocabulary.
-%
+
+-doc """
+Checks that the semantics used by all input ports in the specified table are
+listed in the specified vocabulary.
+""".
 -spec check_input_semantics( class_SemanticServer:vocabulary(),
 							 input_port_table() ) ->
 					'ok' | { input_port_name(), value_semantics() }.
@@ -867,15 +878,16 @@ check_input_semantics( Vocabulary, PortTable ) ->
 
 	% {Name, Semantics} pairs, to handle input and output ports identically:
 	Pairs = [ { Name, Port#input_port.value_semantics }
-				|| { Name, Port } <- table:enumerate( PortTable ) ],
+                    || { Name, Port } <- table:enumerate( PortTable ) ],
 
 	check_pair_semantics( Pairs, Vocabulary ).
 
 
 
-% @doc Checks that the semantics used by all output ports in the specified table
-% are listed in the specified vocabulary.
-%
+-doc """
+Checks that the semantics used by all output ports in the specified table are
+listed in the specified vocabulary.
+""".
 -spec check_output_semantics( class_SemanticServer:vocabulary(),
 							  output_port_table() ) ->
 					'ok' | { output_port_name(), value_semantics() }.
@@ -883,7 +895,7 @@ check_output_semantics( Vocabulary, PortTable ) ->
 
 	% {Name, Semantics} pairs, to handle output and output ports identically:
 	Pairs = [ { Name, Port#output_port.value_semantics }
-				|| { Name, Port } <- table:enumerate( PortTable ) ],
+                    || { Name, Port } <- table:enumerate( PortTable ) ],
 
 	check_pair_semantics( Pairs, Vocabulary ).
 
@@ -915,14 +927,13 @@ check_pair_semantics( _Pairs=[ E={ _PortName, PortSemantics } | T ],
 
 
 
-% @doc Tells whether specified value satisfies the specified constraints.
+-doc "Tells whether the specified value satisfies the specified constraints.".
 -spec satisfies_constraints( actual_value(), value_constraints() ) ->
 									'true' | { 'false', value_constraint() }.
 satisfies_constraints( _Value, _Constraints=[] ) ->
 	true;
 
 satisfies_constraints( Value, _Constraints=[ C | T ] ) ->
-
 	case satisfies_constraint( Value, C ) of
 
 		true ->
@@ -935,10 +946,10 @@ satisfies_constraints( Value, _Constraints=[ C | T ] ) ->
 
 
 
-% @doc Checks that the specified value complies with the specified constraint
-% (tries to be relatively conservative, that is more prone to returning false
-% than true).
-%
+-doc """
+Checks that the specified value complies with the specified constraint (tries to
+be relatively conservative, that is more prone to returning false than true).
+""".
 satisfies_constraint( Value, _Constraint={ greater_than, N } )
 				when is_number( Value ) andalso Value >= N ->
 	true;
@@ -1015,11 +1026,10 @@ satisfies_constraint( _Value, Constraint ) ->
 
 
 
-% @doc Returns a list of the input ports that are currently set, along with the
-% corresponding values.
-%
-% (const helper)
-%
+-doc """
+Returns a list of the input ports that are currently set, along with the
+corresponding values.
+""".
 -spec get_input_entries( wooper:state() ) ->
 								[ { input_port_name(), actual_value() } ].
 get_input_entries( State ) ->
@@ -1032,11 +1042,10 @@ get_input_entries( State ) ->
 
 
 
-% @doc Returns a list of the output ports that are currently set, along with the
-% corresponding values.
-%
-% (const helper)
-%
+-doc """
+Returns a list of the output ports that are currently set, along with the
+corresponding values.
+""".
 -spec get_output_entries( wooper:state() ) ->
 								[ { output_port_name(), actual_value() } ].
 get_output_entries( State ) ->
@@ -1058,7 +1067,7 @@ get_output_entries( State ) ->
 
 
 
-% @doc Turns a {key,value} table into an input_port_spec() record.
+-doc "Turns a `{key,value}` table into an `input_port_spec/0` record.".
 -spec parse_raw_input_port_spec( [ { atom(), term() } ] ) -> input_port_spec().
 parse_raw_input_port_spec( RawInputPortSpec ) ->
 
@@ -1080,7 +1089,7 @@ parse_raw_input_port_spec( RawInputPortSpec ) ->
 
 
 
-% @doc Turns a {key,value} table into an output_port_spec() record.
+-doc "Turns a `{key,value}` table into an `output_port_spec/0` record.".
 -spec parse_raw_output_port_spec( [ { atom(), term() } ] ) ->
 										output_port_spec().
 parse_raw_output_port_spec( RawOutputPortSpec ) ->
@@ -1115,12 +1124,11 @@ parse_raw_output_port_spec( RawOutputPortSpec ) ->
 
 
 
-% @doc Returns a textual description of this input port specification.
-%
-% Made not to crash even in the presence of faulty field entries.
-%
-% (helper)
-%
+-doc """
+Returns a textual description of this input port specification.
+
+Designed not to crash even in the presence of faulty field entries.
+""".
 -spec input_port_spec_to_string( input_port_spec() ) -> text_utils:ustring().
 input_port_spec_to_string( #input_port_spec{
 								name=Name,
@@ -1159,12 +1167,11 @@ input_port_spec_to_string( #input_port_spec{
 
 
 
-% @doc Returns a textual description of this output port specification.
-%
-% Made not to crash even in the presence of faulty field entries.
-%
-% (helper)
-%
+-doc """
+Returns a textual description of this output port specification.
+
+Designed not to crash even in the presence of faulty field entries.
+""".
 -spec output_port_spec_to_string( output_port_spec() ) -> text_utils:ustring().
 output_port_spec_to_string( #output_port_spec{
 								name=Name,
@@ -1230,10 +1237,7 @@ output_port_spec_to_string( #output_port_spec{
 
 
 
-% @doc Returns a textual description of this iteration specification.
-%
-% (const helper)
-%
+-doc "Returns a textual description of this iteration specification.".
 -spec iteration_spec_to_string( iteration_spec() ) -> text_utils:ustring().
 % Not possible here: iteration_spec_to_string( false ) -> ...
 iteration_spec_to_string( { PortCount, { MinPortCount, unbounded } } ) ->
@@ -1262,10 +1266,7 @@ iteration_spec_to_string( Other ) ->
 
 
 
-% @doc Returns a textual description of this dataflow block.
-%
-% (const helper)
-%
+-doc "Returns a textual description of this dataflow block.".
 -spec to_string( wooper:state() ) -> text_utils:ustring().
 to_string( State ) ->
 
@@ -1282,11 +1283,10 @@ to_string( State ) ->
 
 
 
-% @doc Returns a textual description (as a pair of strings) respectively of the
-% inputs and outputs (hence, as ports) of this dataflow block.
-%
-% (const helper)
-%
+-doc """
+Returns a textual description (as a pair of strings) respectively of the inputs
+and outputs (hence, as ports) of this dataflow block.
+""".
 -spec io_to_string( wooper:state() ) ->
 							{ text_utils:ustring(), text_utils:ustring() }.
 io_to_string( State ) ->
@@ -1294,11 +1294,10 @@ io_to_string( State ) ->
 
 
 
-% @doc Returns a textual description (as a pair of strings) respectively of the
-% inputs and outputs (ports) of this block, at specified indentation level.
-%
-% (const helper)
-%
+-doc """
+Returns a textual description (as a pair of strings) respectively of the inputs
+and outputs (ports) of this block, at specified indentation level.
+""".
 -spec io_to_string( text_utils:indentation_level(), wooper:state() ) ->
 							{ text_utils:ustring(), text_utils:ustring() }.
 io_to_string( IndentationLevel, State ) ->
@@ -1315,7 +1314,7 @@ io_to_string( IndentationLevel, State ) ->
 
 		[ { SingleIName, SingleIDesc } ] ->
 			text_utils:format( "a single ~ts ", [ input_port_to_string(
-						SingleIName, SingleIDesc, IndentationLevel+1 ) ] );
+				SingleIName, SingleIDesc, IndentationLevel+1 ) ] );
 
 		_ ->
 			InputStrings = [ input_port_to_string( IName, IPort,
@@ -1355,20 +1354,22 @@ io_to_string( IndentationLevel, State ) ->
 
 
 
-% @doc Returns a textual description of specified input port, using a top-level
-% (bullet) indentation for that.
-%
+-doc """
+Returns a textual description of the specified input port, using a top-level
+(bullet) indentation for that.
+""".
 -spec input_port_to_string( input_port_name(), input_port() ) ->
-						text_utils:ustring().
+                                        text_utils:ustring().
 input_port_to_string( PortName, InputPort ) ->
 	% Using default bullet style and identation:
 	input_port_to_string( PortName, InputPort, _IndentationLevel=0 ).
 
 
 
-% @doc Returns a textual description of specified input port, using specified
-% bullet for that.
-%
+-doc """
+Returns a textual description of the specified input port, using specified
+bullet for that.
+""".
 input_port_to_string( PortName, _InputPort=#input_port{
 											comment=Comment,
 											value_semantics=Semantics,
@@ -1383,14 +1384,14 @@ input_port_to_string( PortName, _InputPort=#input_port{
 	CommentString = dataflow_support:comment_to_string( Comment ),
 
 	SemanticString = dataflow_support:semantics_to_string( Semantics,
-												IndentationLevel + 1 ),
+		IndentationLevel + 1 ),
 
 	UnitString = dataflow_support:value_unit_to_string( Unit ),
 
 	TypeString = dataflow_support:value_type_to_string( Type ),
 
 	ConstraintString = dataflow_support:value_constraint_to_string( Constraints,
-													IndentationLevel ),
+		IndentationLevel ),
 
 	StatusString = dataflow_support:value_status_to_string( Status ),
 
@@ -1428,19 +1429,21 @@ input_port_to_string( PortName, _InputPort=#input_port{
 
 
 
-% @doc Returns a textual description of specified output port, using a top-level
-% (bullet) indentation for that.
-%
+-doc """
+Returns a textual description of specified output port, using a top-level
+(bullet) indentation for that.
+""".
 -spec output_port_to_string( output_port_name(), output_port() ) ->
-						text_utils:ustring().
+                                        text_utils:ustring().
 output_port_to_string( PortName, OutputPort ) ->
 	% Using default bullet style and identation:
 	output_port_to_string( PortName, OutputPort, _IndentationLevel=0 ).
 
 
-% @doc Returns a textual description of specified output port, using specified
-% bullet for that.
-%
+-doc """
+Returns a textual description of the specified output port, using specified
+bullet for that.
+""".
 output_port_to_string( PortName, _OutputPort=#output_port{
 											comment=Comment,
 											produces_result=ResultSettings,
@@ -1472,7 +1475,7 @@ output_port_to_string( PortName, _OutputPort=#output_port{
 	TypeString = dataflow_support:value_type_to_string( Type ),
 
 	ConstraintString = dataflow_support:value_constraint_to_string( Constraints,
-															IndentationLevel ),
+		IndentationLevel ),
 
 	StatusString = dataflow_support:value_status_to_string( Status ),
 
@@ -1501,7 +1504,7 @@ output_port_to_string( PortName, _OutputPort=#output_port{
 
 		_ ->
 			FedStrings = [ text_utils:format( "port '~ts' of dataflow block ~p",
-					[ PName, BName ] ) || { BName, PName } <- FedPorts ],
+				[ PName, BName ] ) || { BName, PName } <- FedPorts ],
 
 			text_utils:format( "feeding following ~B input ports: ~ts",
 				[ length( FedPorts ),
@@ -1517,9 +1520,9 @@ output_port_to_string( PortName, _OutputPort=#output_port{
 
 
 
-% @doc Returns a textual description of the specified input port iteration.
+-doc "Returns a textual description of the specified input port iteration.".
 -spec input_port_iteration_to_string( input_port_iteration() ) ->
-						text_utils:ustring().
+                                        text_utils:ustring().
 input_port_iteration_to_string( #input_port_iteration{
 									base_name=BaseName,
 									comment=Comment,
@@ -1544,7 +1547,7 @@ input_port_iteration_to_string( #input_port_iteration{
 	TypeString = dataflow_support:value_type_to_string( Type ),
 
 	ConstraintString = dataflow_support:value_constraint_to_string( Constraints,
-														IndentationLevel ),
+		IndentationLevel ),
 
 	text_utils:format( "input port iteration having for base name '~ts', "
 		"~ts, ~ts, ~ts, ~ts, ~ts, ~ts and following indexes of "
@@ -1555,7 +1558,7 @@ input_port_iteration_to_string( #input_port_iteration{
 
 
 
-% @doc Returns a textual description of the specified output port iteration.
+-doc "Returns a textual description of the specified output port iteration.".
 -spec output_port_iteration_to_string( output_port_iteration() ) ->
 						text_utils:ustring().
 output_port_iteration_to_string( #output_port_iteration{
@@ -1582,7 +1585,7 @@ output_port_iteration_to_string( #output_port_iteration{
 	TypeString = dataflow_support:value_type_to_string( Type ),
 
 	ConstraintString = dataflow_support:value_constraint_to_string( Constraints,
-													IndentationLevel ),
+		IndentationLevel ),
 
 	text_utils:format( "output port iteration having for base name '~ts', "
 		"~ts, ~ts, ~ts, ~ts, ~ts, ~ts and following indexes of "
@@ -1593,14 +1596,14 @@ output_port_iteration_to_string( #output_port_iteration{
 
 
 
-% @doc Returns a textual description of the specified port description.
+-doc "Returns a textual description of the specified port description.".
 -spec port_description_to_string( port_description() ) -> text_utils:ustring().
 port_description_to_string( PortDescription ) ->
 	port_description_to_string( PortDescription, _IndentationLevel=0 ).
 
 
 
-% @doc Returns a textual description of the specified port description.
+-doc "Returns a textual description of the specified port description.".
 -spec port_description_to_string( port_description(),
 		text_utils:indentation_level() ) -> text_utils:ustring().
 port_description_to_string( #port_description{
@@ -1633,9 +1636,9 @@ port_description_to_string( #port_description{
 
 
 
-% @doc Returns a textual description of the specified list of connection
-% information.
-%
+-doc """
+Returns a textual description of the specified list of connection information.
+""".
 -spec inbound_connection_infos_to_string( [ inbound_connection_info() ] ) ->
 												text_utils:ustring().
 inbound_connection_infos_to_string( ConnInfos ) ->
@@ -1648,7 +1651,9 @@ inbound_connection_infos_to_string( ConnInfos ) ->
 
 
 
-% @doc Returns a textual description of the specified connection information.
+-doc """
+Returns a textual description of the specified connection information.
+""".
 -spec inbound_connection_info_to_string( inbound_connection_info() ) ->
 												text_utils:ustring().
 inbound_connection_info_to_string(
@@ -1664,7 +1669,9 @@ inbound_connection_info_to_string(
 
 
 
-% @doc Returns a textual description of the specified port pair informations.
+-doc """
+Returns a textual description of the specified port pair information elements.
+""".
 -spec port_pairs_to_string( [ { output_port_name(), input_port_name() } ] ) ->
 									text_utils:ustring().
 port_pairs_to_string( PortPairs ) ->
@@ -1675,7 +1682,7 @@ port_pairs_to_string( PortPairs ) ->
 
 
 
-% @doc Returns a textual description of the specified port pair information.
+-doc "Returns a textual description of the specified port pair information.".
 -spec port_pair_to_string( { output_port_name(), input_port_name() } ) ->
 									text_utils:ustring().
 port_pair_to_string( _PortPair={ OutputPortName, InputPortName } ) ->
@@ -1687,7 +1694,7 @@ port_pair_to_string( PortPair ) ->
 
 
 
-% @doc Returns a textual description of the specified channel value.
+-doc "Returns a textual description of the specified channel value.".
 -spec value_to_string( channel_value() ) -> text_utils:ustring().
 value_to_string( #channel_value{ actual_value=Value,
 								 semantics=Semantics,

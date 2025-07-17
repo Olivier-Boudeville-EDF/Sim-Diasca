@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 10, 2021.
 
-
-% @doc Module implementing the support for <b>4D vectors</b>.
-%
-% See also:
-% - the corresponding points (in point4.erl) and matrices (in matrix4.erl)
-% - the (unspecialised) vectors of arbitrary dimensions, in vector.erl
-% - the various 4D extra services in linear_4D.erl
-%
 -module(vector4).
+
+-moduledoc """
+Module implementing the support for **4D vectors**.
+
+See also:
+- the corresponding points (in `point4.erl`) and matrices (in `matrix4.erl`)
+- the (unspecialised) vectors of arbitrary dimensions, in `vector.erl`
+- the various 4D extra services in `linear_4D.erl`
+""".
 
 
 % For printout_*, inline_size, etc.:
@@ -47,48 +48,71 @@
 -include("math_utils.hrl").
 
 
+-doc """
+A user-specified 4D vector, as a list (hence not a tuple) with 4 integer or
+floating-point coordinates.
+""".
 -type user_vector4() :: [ any_coordinate() ].
-% A user-specified 4D vector, as a list (hence not a tuple) with 4 integer or
-% floating-point coordinates.
 
 
+
+-doc """
+An (internal) 4D vector, with (exactly) 4 floating-point coordinates.  They are
+typically referenced as [X, Y, Z, W]. This last axis can also be designated as
+the T axis.
+
+Such a vector can also be considered as an homogeneous vector, whose last
+coordinate, W, is then an homogeneous coordinate. If W is zero, the vector is
+just a direction vector. Otherwise, it is used to divide all other coordinates
+(unless it is already kept equal to 1.0).
+""".
 -type vector4() :: [ coordinate() ].
-% An (internal) 4D vector, with (exactly) 4 floating-point coordinates.  They
-% are typically referenced as [X, Y, Z, W]. This last axis can also be
-% designated as the T axis.
-%
-% Such a vector can also be considered as an homogeneous vector, whose last
-% coordinate, W, is then an homogeneous coordinate. If W is zero, the vector is
-% just a direction vector. Otherwise, it is used to divide all other coordinates
-% (unless it is already kept equal to 1.0).
 
 
+
+-doc """
+A 4D vector, with (exactly) 4 integer coordinates.
+
+They are typically referenced as [X, Y, Z, W].
+""".
 -type integer_vector4() :: [ integer_coordinate() ].
-% A 4D vector, with (exactly) 4 integer coordinates.
-% They are typically referenced as [X, Y, Z, W].
 
 
+
+-doc """
+A 4D vector, with any (homogeneous) type of numerical coordinates (hence a
+special case of user_vector4/0).
+
+They are typically referenced as [X, Y, Z, W].
+""".
 -type any_vector4() :: vector4() | integer_vector4().
-% A 4D vector, with any types of numerical coordinates.
-% They are typically referenced as [X, Y, Z, W].
 
 
+
+-doc """
+A unit 4D vector, that is a vector of magnitude 1.0.
+
+Defined for documentation purpose.
+""".
 -type unit_vector4() :: vector4().
-% A unit 4D vector, that is a vector of magnitude 1.0.
-%
-% Defined for documentation purpose.
 
 
+
+-doc """
+A 4D vector orthogonal to a plane.
+
+Defined for documentation purpose.
+""".
 -type normal4() :: vector4().
-% A 4D vector orthogonal to a plane.
-%
-% Defined for documentation purpose.
 
 
+
+-doc """
+A unit 4D vector orthogonal to a plane.
+
+Defined for documentation purpose.
+""".
 -type unit_normal4() :: unit_vector4().
-% A unit 4D vector orthogonal to a plane.
-%
-% Defined for documentation purpose.
 
 
 -export_type([ user_vector4/0, vector4/0, integer_vector4/0, any_vector4/0,
@@ -127,7 +151,7 @@
 
 
 
-% @doc Returns a 4D vector corresponding to the user-specified one.
+-doc "Returns a 4D vector corresponding to the user-specified one.".
 -spec new( user_vector4() ) -> vector4().
 %new( UserVector ) when is_tuple( UserVector ) ->
 %   new( tuple_to_list( UserVector ) );
@@ -137,7 +161,7 @@ new( UserVector ) -> %when is_list( UserVector ) ->
 
 
 
-% @doc Returns a 4D vector corresponding to the user-specified one.
+-doc "Returns a 4D vector corresponding to the user-specified one.".
 -spec new( user_coordinate(), user_coordinate(), user_coordinate(),
 		   user_coordinate() ) -> vector4().
 new( X, Y, Z, W ) ->
@@ -146,7 +170,7 @@ new( X, Y, Z, W ) ->
 
 
 
-% @doc Returns an integer 4D vector corresponding to the user-specified one.
+-doc "Returns an integer 4D vector corresponding to the user-specified one.".
 -spec new_integer( integer_coordinate(), integer_coordinate(),
 			integer_coordinate(), integer_coordinate() ) -> integer_vector4().
 new_integer( X, Y, Z, W ) when is_integer( X ) andalso is_integer( Y )
@@ -155,9 +179,10 @@ new_integer( X, Y, Z, W ) when is_integer( X ) andalso is_integer( Y )
 
 
 
-% @doc Returns the null (4D) vector, that is a 4D vector whose coordinates are
-% all null.
-%
+-doc """
+Returns the null (4D) vector, that is a 4D vector whose coordinates are all
+null.
+""".
 -spec null() -> vector4().
 null() ->
 	Zero = 0.0,
@@ -165,9 +190,10 @@ null() ->
 
 
 
-% @doc Returns a 4D vector corresponding to the X axis of the current
-% referential.
-%
+-doc """
+Returns a 4D vector corresponding to the X axis of the current coordinate
+system.
+""".
 -spec x_axis() -> vector4().
 x_axis() ->
 	Zero = 0.0,
@@ -175,9 +201,10 @@ x_axis() ->
 
 
 
-% @doc Returns a 4D vector corresponding to the Y axis of the current
-% referential.
-%
+-doc """
+Returns a 4D vector corresponding to the Y axis of the current coordinate
+system.
+""".
 -spec y_axis() -> vector4().
 y_axis() ->
 	Zero = 0.0,
@@ -185,9 +212,10 @@ y_axis() ->
 
 
 
-% @doc Returns a 4D vector corresponding to the Z axis of the current
-% referential.
-%
+-doc """
+Returns a 4D vector corresponding to the Z axis of the current coordinate
+system.
+""".
 -spec z_axis() -> vector4().
 z_axis() ->
 	Zero = 0.0,
@@ -195,9 +223,10 @@ z_axis() ->
 
 
 
-% @doc Returns a 4D vector corresponding to the W axis of the current
-% referential.
-%
+-doc """
+Returns a 4D vector corresponding to the W axis of the current coordinate
+system.
+""".
 -spec w_axis() -> vector4().
 w_axis() ->
 	Zero = 0.0,
@@ -205,28 +234,30 @@ w_axis() ->
 
 
 
-% @doc Returns a 4D vector corresponding to the specified 4D point.
+-doc "Returns a 4D vector corresponding to the specified 4D point.".
 -spec from_point( any_point4() ) -> vector4().
 from_point( P4 ) ->
 	[ type_utils:ensure_float( C ) || C <- tuple_to_list( P4 ) ].
 
 
-% @doc Returns a 4D point corresponding to the specified 4D vector.
+
+-doc "Returns a 4D point corresponding to the specified 4D vector.".
 -spec to_point( any_vector4() ) -> any_point4().
 to_point( V4 ) ->
 	point4:from_vector( V4 ).
 
 
 
-% @doc Returns the sum of the two specified 4D vectors: V = V1 + V2.
+-doc "Returns the sum of the two specified 4D vectors: `V = V1 + V2`.".
 -spec add( vector4(), vector4() ) -> vector4().
 add( _V1=[ X1, Y1, Z1, W1 ], _V2=[ X2, Y2, Z2, W2 ] ) ->
 	[ X1+X2, Y1+Y2, Z1+Z2, W1+W2 ].
 
 
-% @doc Returns the sum of all 4D vectors in the specified (supposedly non-empty)
-% list.
-%
+
+-doc """
+Returns the sum of all 4D vectors in the specified (supposedly non-empty) list.
+""".
 -spec add( [ vector4() ] ) -> vector4().
 add( _Vectors=[ VFirst | VOthers ]  ) ->
 	lists:foldl( fun( [ X, Y, Z, W ], _AccVec=[ Xa, Ya, Za, Wa ] ) ->
@@ -237,19 +268,20 @@ add( _Vectors=[ VFirst | VOthers ]  ) ->
 
 
 
-% @doc Returns whether the two specified 4D vectors are close, that is if they
-% could be considered as representing the same vector (equality operator on
-% vectors).
-%
+-doc """
+Returns whether the two specified 4D vectors are close, that is if they could be
+considered as representing the same vector (equality operator on vectors).
+""".
 -spec are_close( vector4(), vector4() ) -> boolean().
 are_close( V1, V2 ) ->
 	are_equal( V1, V2 ).
 
 
-% @doc Returns whether the two specified 4D vectors are equal, that is if they
-% could be considered as representing the same vector (equality operator on
-% vectors).
-%
+
+-doc """
+Returns whether the two specified 4D vectors are equal, that is if they could be
+considered as representing the same vector (equality operator on vectors).
+""".
 -spec are_equal( vector4(), vector4() ) -> boolean().
 are_equal( _V1=[X1,Y1,Z1,W1], _V2=[X2,Y2,Z2,W2] ) ->
 	math_utils:are_close( X1, X2 ) andalso math_utils:are_close( Y1, Y2 )
@@ -261,38 +293,40 @@ are_equal( _V1=[X1,Y1,Z1,W1], _V2=[X2,Y2,Z2,W2] ) ->
 % No cross_product/2 for dimensions different from 3.
 
 
-% @doc Returns the square of the magnitude of the specified 4D vector.
+-doc "Returns the square of the magnitude of the specified 4D vector.".
 -spec square_magnitude( vector4() ) -> any_square_distance().
 square_magnitude( _V=[X,Y,Z,W] ) ->
 	X*X + Y*Y + Z*Z + W*W.
 
 
-% @doc Returns the magnitude of the specified 4D vector.
+
+-doc "Returns the magnitude of the specified 4D vector.".
 -spec magnitude( vector4() ) -> distance().
 magnitude( V ) ->
 	math:sqrt( square_magnitude( V ) ).
 
 
 
-% @doc Negates the specified vector: returns the opposite one (of the same
-% magnitude).
-%
+-doc """
+Negates the specified vector: returns the opposite one (of the same magnitude).
+""".
 -spec negate( vector4() ) -> vector4().
 negate( _V=[X,Y,Z,W] ) ->
 	[ -X, -Y, -Z, -W ].
 
 
 
-% @doc Scales the specified 4D vector of the specified scalar factor.
+-doc "Scales the specified 4D vector of the specified scalar factor.".
 -spec scale( any_vector4(), factor() ) -> vector4().
 scale( _V=[X,Y,Z,W], Factor ) ->
 	[ Factor*X, Factor*Y, Factor*Z, Factor*W ].
 
 
 
-% @doc Normalises the specified non-null 4D vector, that is returns it once
-% scaled to an unit length (whose magnitude is thus 1.0).
-%
+-doc """
+Normalises the specified non-null 4D vector, that is returns it once scaled to
+an unit length (whose magnitude is thus 1.0).
+""".
 -spec normalise( vector4() ) -> unit_vector4().
 normalise( V ) ->
 	case magnitude( V ) of
@@ -307,16 +341,17 @@ normalise( V ) ->
 
 
 
-% @doc Returns the dot-product of the two specified 4D vectors: D = V1.V2.
+-doc "Returns the dot-product of the two specified 4D vectors: `D = V1.V2`.".
 -spec dot_product( vector4(), vector4() ) -> float().
 dot_product( _V1=[ X1, Y1, Z1, W1 ], _V2=[ X2, Y2, Z2, W2 ] ) ->
 	X1*X2 + Y1*Y2 + Z1*Z2 + W1*W2.
 
 
 
-% @doc Returns whether the specified vector is unitary, that is whether it is of
-% magnitude 1.0.
-%
+-doc """
+Returns whether the specified vector is unitary, that is whether it is of
+magnitude 1.0.
+""".
 -spec is_unitary( vector4() ) -> boolean().
 is_unitary( V ) ->
 	% No specific need of computing the square root thereof:
@@ -324,14 +359,15 @@ is_unitary( V ) ->
 
 
 
-% @doc Checks that the specified 4D vector is legit, and returns it.
+-doc "Checks that the specified 4D vector is legit, and returns it.".
 -spec check( vector4() ) -> vector4().
 check( V ) ->
 	4 = length( V ),
 	type_utils:check_floats( V ).
 
 
-% @doc Checks that the specified 4D integer vector is legit, and returns it.
+
+-doc "Checks that the specified 4D integer vector is legit, and returns it.".
 -spec check_integer( integer_vector4() ) -> integer_vector4().
 check_integer( V ) ->
 	4 = length( V ),
@@ -339,14 +375,15 @@ check_integer( V ) ->
 
 
 
-% @doc Checks that the specified 4D vector is normalised, and returns it.
+-doc "Checks that the specified 4D vector is normalised, and returns it.".
 -spec check_unit_vector( vector4() ) -> unit_vector4().
 check_unit_vector( V ) ->
 	true = is_unitary( V ),
 	V.
 
 
-% @doc Checks that the specified 4D vectors are normalised, and returns them.
+
+-doc "Checks that the specified 4D vectors are normalised, and returns them.".
 -spec check_unit_vectors( [ vector4() ] ) -> [ unit_vector4() ].
 check_unit_vectors( Vs ) ->
 	[ true = is_unitary( V ) || V <- Vs ],
@@ -354,19 +391,20 @@ check_unit_vectors( Vs ) ->
 
 
 
-% @doc Returns a textual representation of the specified 4D vector; full float
-% precision is shown.
-%
--spec to_string( vector4() ) -> ustring().
+-doc """
+Returns a textual representation of the specified 4D vector; full float
+precision is shown.
+""".
+-spec to_string( user_vector4() ) -> ustring().
 to_string( Vector ) ->
 	to_user_string( Vector ).
 
 
 
-% @doc Returns a compact, textual, informal representation of the specified 4D
-% vector.
-%
--spec to_compact_string( vector4() ) -> ustring().
+-doc """
+Returns a compact, textual, informal representation of the specified 4D vector.
+""".
+-spec to_compact_string( user_vector4() ) -> ustring().
 to_compact_string( Vector ) ->
 
 	%Ws = [ "~w" || _ <- Vector ],
@@ -377,11 +415,11 @@ to_compact_string( Vector ) ->
 
 
 
-% @doc Returns a basic, not even fixed-width for floating-vector coordinates
-% (see linear.hrl for width and precision) representation of the specified 4D
-% vector.
-%
--spec to_basic_string( vector4() ) -> ustring().
+-doc """
+Returns a basic, not even fixed-width for floating-vector coordinates (see
+linear.hrl for width and precision) representation of the specified 4D vector.
+""".
+-spec to_basic_string( user_vector4() ) -> ustring().
 to_basic_string( Vector ) ->
 
 	% Vectors supposed to be lists of floats:
@@ -396,12 +434,13 @@ to_basic_string( Vector ) ->
 
 
 
-% @doc Returns a textual, more user-friendly representation of the specified 4D
-% vector; full float precision is shown.
-%
-% This is the recommended representation.
-%
--spec to_user_string( vector4() ) -> ustring().
+-doc """
+Returns a textual, more user-friendly representation of the specified 4D vector;
+full float precision is shown.
+
+This is the recommended representation.
+""".
+-spec to_user_string( user_vector4() ) -> ustring().
 to_user_string( Vector ) ->
 
 	Strs = linear:coords_to_best_width_strings( Vector ),

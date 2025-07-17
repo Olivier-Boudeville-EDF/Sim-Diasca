@@ -38,3 +38,4 @@ doc/Ceylan-Myriad-Layer-technical-manual-english.html
 *GNUmakedeps.protobuf
 test/data-management/myriad_example.erl
 test/data-management/myriad_example.hrl
+*.preprocessed

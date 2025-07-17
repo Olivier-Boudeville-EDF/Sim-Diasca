@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 27, 2022.
 
-
-% @doc Testing of the <b>environment</b> service.
-%
-% See the environment.erl tested module.
-%
 -module(environment_test).
+
+-moduledoc """
+Testing of the **environment** service.
+
+See the environment.erl tested module.
+""".
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 EDF R&D
+% Copyright (C) 2016-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -20,11 +20,12 @@
 %          Samuel Thiriot     [samuel (dot) thiriot (at) edf (dot) fr]
 % Creation date: 2016.
 
-
-% @doc Mother class of all actual managers for a given set of <b>types of
-% dataflow objects</b>.
-%
 -module(class_DataflowObjectManager).
+
+-moduledoc """
+Mother class of all actual managers for a given set of **types of dataflow
+objects**.
+""".
 
 
 -define( class_description,
@@ -36,16 +37,16 @@
 		 "dataflow objects, these instances could be managed by a "
 		 "BuildingManager that may inherit (probably directly) from the "
 		 "current class, if some domain-specific handling of dataflow objects "
-		 "is needed (ex: to manage specific associations); "
+		 "is needed (e.g. to manage specific associations); "
 		 "otherwise this BuildingManager may simply be directly an instance of "
 		 "the current class. "
 		 "If relevant, a given object manager may take care of multiple types "
-		 "of objects (ex: a manager may be in charge of the building "
+		 "of objects (e.g. a manager may be in charge of the building "
 		 "instances, but also the ones of dwellings, households, lifts, etc.). "
 		 "Each object manager is directly linked to the world manager. "
 		 "Each object manager is a singleton and registers itself globally "
 		 "under its name - which is, conventionally, its actual classname "
-		 "(ex: 'class_BuildingManager' or, if needing more clarity, "
+		 "(e.g. 'class_BuildingManager' or, if needing more clarity, "
 		 "'class_BuildingObjectManager'). It registers as well to the world "
 		 "manager. "
 		 "As an object manager may have to create dataflow objects at runtime "
@@ -67,7 +68,7 @@
 % managed in a single operation).
 %
 % We want ultimately that the world manager (i.e. the root, top-level object
-% manager) stores the full table allowing to convert an object type (ex:
+% manager) stores the full table allowing to convert an object type (e.g.
 % 'Building' or 'Dwelling') into the PID of the object manager in charge of that
 % type.
 %
@@ -135,14 +136,14 @@
 	  "reported yet to the world manager" },
 
 	{ injected_events, [ world_event() ], "a list of the world events that "
-	  "the processing of another event led to inject (ex: if a child class of "
+	  "the processing of another event led to inject (e.g. if a child class of "
 	  "this class processed the creation of a car, it may inject 4 creation "
 	  "events for each of the associated wheels)" },
 
 	{ load_balancer_pid, load_balancer_pid(), "PID of the load balancer, "
 	  "useful to create new objects for example" },
 
-	{ identification_server_pid, maybe( identification_server_pid() ),
+	{ identification_server_pid, option( identification_server_pid() ),
 	  "if enabled by the case, the PID of the identification server" } ] ).
 
 
@@ -152,18 +153,20 @@
 		  create_runtime_object/4 ]).
 
 
+-doc "Records all instances of a managed object type.".
 -type object_table() :: table( dataflow_object_type(), [ object_pid() ] ).
-% Records all instances of a managed object type.
 
 
 
+-doc """
+Records the identifier of a completed event and any additional relevant
+information (such as the PID of the created object should it refers to a
+creation event)
+
+(exported to avoid unused warning)
+""".
 -type completed_event_info() ::
-		{ event_id(), class_WorldManager:completion_extra_info() }.
-% Records the identifier of a completed event and any additional relevant
-% information (such as the PID of the created object should it refers to a
-% creation event)
-%
-% (exported to avoid unused warning)
+	{ event_id(), class_WorldManager:completion_extra_info() }.
 
 
 -export_type([ object_table/0, completed_event_info/0 ]).
@@ -182,19 +185,14 @@
 -include("sim_diasca_for_actors.hrl").
 
 
+-doc """
+Definition of any object manager that is defined by default (i.e. with no
+specific construction parameter), based only on its name and on a list of the
+types of dataflow objects it is to manage.
+""".
 -type object_manager_def() ::
-		{ object_manager_name(), [ dataflow_object_type() ] }.
-% Definition of any object manager that is defined by default (i.e. with no
-% specific construction parameter), based only on its name and on a list of the
-% types of dataflow objects it is to manage.
+	{ object_manager_name(), [ dataflow_object_type() ] }.
 
-
-
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
-
--type classname() :: wooper:classname().
 
 
 
@@ -205,32 +203,41 @@
 
 
 
-% @doc Constructs an object manager.
-%
-% Parameters:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Name, an atom designating the classname of this singleton manager (ex:
-% 'class_FooObjectManager')
-%
-% - ManagedObjectTypes is a (non-empty) list of the dataflow object types
-% (classnames) that this object manager is to take care of (ex:
-% ['class_Building','class_Dwelling'])
-%
-% - WorldManagerPid is the PID of the world manager
-%
-% - LoadBalancerPid, the PID of the load balancer, useful when instances have to
-% be created
-%
-% - IdentificationServerPid, the PID of the identification server (if any)
-%
+% Type shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+
+
+-doc """
+Constructs an object manager.
+
+Parameters:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Name, an atom designating the classname of this singleton manager (e.g.
+'class_FooObjectManager')
+
+- ManagedObjectTypes is a (non-empty) list of the dataflow object types
+(classnames) that this object manager is to take care of (e.g.
+['class_Building','class_Dwelling'])
+
+- WorldManagerPid is the PID of the world manager
+
+- LoadBalancerPid, the PID of the load balancer, useful when instances have to
+be created
+
+- IdentificationServerPid, the PID of the identification server (if any)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		classname()
 			| { classname(), class_TraceEmitter:emitter_categorization() },
 		[ dataflow_object_type() ], world_manager_pid(), load_balancer_pid(),
-		maybe( identification_server_pid() ) ) -> wooper:state().
+		option( identification_server_pid() ) ) -> wooper:state().
 construct( _State, _ActorSettings, Name, _ManagedObjectTypes=[],
 		   _WorldManagerPid, _LoadBalancerPid, _IdentificationServerPid ) ->
 	throw( { no_object_type_specified_for_manager, Name } );
@@ -294,10 +301,11 @@ construct( State, ActorSettings, Name, ManagedObjectTypes, WorldManagerPid,
 
 
 
-% @doc Prepares the management of the specified types of objects.
-%
-% (helper)
-%
+-doc """
+Prepares the management of the specified types of objects.
+
+(helper)
+""".
 -spec prepare_for_objects( [ dataflow_object_type() ], wooper:state() ) ->
 									object_table().
 prepare_for_objects( ObjectTypes, State ) ->
@@ -322,7 +330,7 @@ prepare_for_objects( ObjectTypes, State ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -336,9 +344,9 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Callback executed on the first diasca of existence of this object
-% manager.
-%
+-doc """
+Callback executed on the first diasca of existence of this object manager.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -349,11 +357,12 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Creates, synchronously and while the simulation is not running, an
-% (initial) instance of the specified object type, associated to specified
-% dataflow, using specified core construction parameters for that, and returning
-% the corresponding instance PID.
-%
+-doc """
+Creates, synchronously and while the simulation is not running, an (initial)
+instance of the specified object type, associated to specified dataflow, using
+specified core construction parameters for that, and returning the corresponding
+instance PID.
+""".
 -spec createInitialObjectInstance( wooper:state(), dataflow_object_type(),
 		dataflow_pid(), construction_parameters() ) ->
 										request_return( object_pid() ).
@@ -373,7 +382,7 @@ createInitialObjectInstance( State, ObjectType, DataflowPid,
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
 
 	ObjectPid = class_Actor:create_initial_actor( ObjectType,
-								FullConstructParams, LoadBalancerPid ),
+		FullConstructParams, LoadBalancerPid ),
 
 	% Will register itself to its dataflow at the first diasca of this object.
 
@@ -387,11 +396,12 @@ createInitialObjectInstance( State, ObjectType, DataflowPid,
 
 
 
-% @doc Creates, synchronously and while the simulation is not running, a set of
-% (initial) instances of the specified object type, using the specified list of
-% core construction parameters for that, and returning the corresponding
-% instance PIDs, in the same order.
-%
+-doc """
+Creates, synchronously and while the simulation is not running, a set of
+(initial) instances of the specified object type, using the specified list of
+core construction parameters for that, and returning the corresponding instance
+PIDs, in the same order.
+""".
 -spec createInitialObjectInstances( wooper:state(), dataflow_object_type(),
 		dataflow_pid(), [ construction_parameters() ] ) ->
 										request_return( [ object_pid() ] ).
@@ -430,11 +440,12 @@ createInitialObjectInstances( State, ObjectType, DataflowPid,
 
 
 
-% @doc Applies the specified changeset (a list of world events), expected to be
-% emitted by the object manager.
-%
-% (actor oneway, that can possibly be overridden)
-%
+-doc """
+Applies the specified changeset (a list of world events), expected to be emitted
+by the object manager.
+
+(actor oneway, that can possibly be overridden)
+""".
 -spec applyChangeset( wooper:state(), changeset(), actor_pid() ) ->
 							actor_oneway_return().
 applyChangeset( State, Changeset, SendingActorPid ) ->
@@ -458,10 +469,11 @@ applyChangeset( State, Changeset, SendingActorPid ) ->
 
 
 
-% @doc Ensures that there is no unacknowledged, past triggered event.
-%
-% (helper)
-%
+-doc """
+Ensures that there is no unacknowledged, past triggered event.
+
+(helper)
+""".
 check_no_pending_triggered_event( State ) ->
 
 	CurrentTick = class_Actor:get_current_tick_offset( State ),
@@ -496,20 +508,20 @@ check_triggered( Event, CurrentTick ) ->
 
 
 
-% @doc Applies in turn the specified list of world events (which is a
-% changeset).
-%
-% Only events that can be generically managed are expected to be found there;
-% the other events are expected to have been filtered out and processed by a
-% dedicated object manager (inheriting from this class).
-%
-% Note: induced events (if any) originally registered in an event will be
-% triggered when the callback associated to this parent event will be executed
-% (ex: onActorCreated/4, for a creation event, will trigger in turn its
-% top-level induced events); as a result they are not handled there.
-%
-% (exported helper)
-%
+-doc """
+Applies in turn the specified list of world events (which is a changeset).
+
+Only events that can be generically managed are expected to be found there; the
+other events are expected to have been filtered out and processed by a dedicated
+object manager (inheriting from this class).
+
+Note: induced events (if any) originally registered in an event will be
+triggered when the callback associated to this parent event will be executed
+(e.g. onActorCreated/4, for a creation event, will trigger in turn its top-level
+induced events); as a result they are not handled there.
+
+(exported helper)
+""".
 -spec apply_world_events( [ world_event() ], [ dataflow_object_type() ],
 						  wooper:state() ) -> wooper:state().
 apply_world_events( _WorldEvents=[], _ManagedTypes, State ) ->
@@ -565,7 +577,7 @@ apply_world_events( _WorldEvents=[ CreationEvent=#creation_event{
 
 			% Will trigger back onActorCreated/4:
 			CreationState = class_Actor:create_actor( ObjectType,
-												ActualConstructParams, State ),
+				ActualConstructParams, State ),
 
 			TrigState = appendToAttribute( CreationState, triggered_events,
 										   CreationEvent ),
@@ -614,23 +626,16 @@ apply_world_events( _WorldEvents=[ DestructionEvent=#destruction_event{
 		%external_id=ExternalID,
 		object_pid=ObjectPid } | T ], ManagedTypes, State ) ->
 
-	case lists:member( ObjectType, ManagedTypes ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { unsupported_object_type, ObjectType, ManagedTypes } )
-
-	end,
+	lists:member( ObjectType, ManagedTypes ) orelse
+		throw( { unsupported_object_type, ObjectType, ManagedTypes } ),
 
 	?info_fmt( "Requesting the destruction of dataflow object ~p.",
 			   [ ObjectPid ] ),
 
 	% Will result into a onAttributeDestructionPerformed/3 callback:
 	SentState = class_Actor:send_actor_message( ObjectPid,
-					% Not to collide with built-in destruct/1:
-					{ triggerDestruction, [ EventId ] }, State ),
+		% Not to collide with built-in destruct/1:
+		{ triggerDestruction, [ EventId ] }, State ),
 
 	TrigState = appendToAttribute( SentState, triggered_events,
 								   DestructionEvent ),
@@ -659,7 +664,7 @@ apply_world_events( _WorldEvents=[ UpdateEvent=#update_event{
 
 			% Reinjecting a now complete event for next clause:
 			UpdatedEvents = [ UpdateEvent#update_event{
-									object_pid=ObjectPid } | T ],
+				object_pid=ObjectPid } | T ],
 
 			apply_world_events( UpdatedEvents, ManagedTypes, State )
 
@@ -675,15 +680,8 @@ apply_world_events( _WorldEvents=[ UpdateEvent=#update_event{
 		object_pid=ObjectPid,
 		updates=Updates } | T ], ManagedTypes, State ) ->
 
-	case lists:member( ObjectType, ManagedTypes ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { unsupported_object_type, ObjectType, ManagedTypes } )
-
-	end,
+	lists:member( ObjectType, ManagedTypes ) orelse
+		throw( { unsupported_object_type, ObjectType, ManagedTypes } ),
 
 	% Remove empty events from the updates:
 	UpdatesFiltered = [ Update || Update <- Updates, Update =/= {} ],
@@ -708,7 +706,7 @@ apply_world_events( _WorldEvents=[ UpdateEvent=#update_event{
 
 	% Will result into a onAttributeUpdatePerformed/3 callback:
 	SentState = class_Actor:send_actor_message( ObjectPid,
-					{ updateAttributes, [ BinUpdates, EventId ] }, State ),
+		{ updateAttributes, [ BinUpdates, EventId ] }, State ),
 
 	TrigState =
 		appendToAttribute( SentState, triggered_events, UpdateEvent ),
@@ -792,19 +790,19 @@ apply_world_events( _WorldEvents=[ Event | _T ], _ManagedTypes, State ) ->
 
 
 
-% @doc Called automatically after (generally after two diascas) this manager
-% created a requested object instance.
-%
-% Parameters are:
-%
-% - CreatedActorPid the PID of the just created object
-%
-% - CreatedActorTag the tag used for this actor creation so that it is able to
-% discriminate among the multiple creations it might have requested; this is {
-% ActorClassname, ActorConstructionParameters }, i.e. a pair made of the
-% classname of that created actor and of the parameters that were specified for
-% its creation
-%
+-doc """
+Called automatically after (generally after two diascas) this manager created a
+requested object instance.
+
+Parameters are:
+
+- CreatedActorPid the PID of the just created object
+
+- CreatedActorTag the tag used for this actor creation so that it is able to
+discriminate among the multiple creations it might have requested; this is {
+ActorClassname, ActorConstructionParameters }, i.e. a pair made of the classname
+of that created actor and of the parameters that were specified for its creation
+""".
 -spec onActorCreated( wooper:state(), object_pid(), class_Actor:tag(),
 					  load_balancer_pid() ) -> actor_oneway_return().
 onActorCreated( State, CreatedObjectPid,
@@ -824,7 +822,6 @@ onActorCreated( State, CreatedObjectPid,
 			ok;
 
 		IdPid ->
-
 			BinActorName = text_utils:ensure_binary( ActorName ),
 
 			wooper:execute_request( IdPid, declareIdentifierAssociation,
@@ -876,10 +873,11 @@ find_creation_event( _CreatedActorTag={ ObjectType, [ ObjectName | _ ] },
 
 
 
-% @doc Extracts the specified creation event from specified events.
-%
-% (helper)
-%
+-doc """
+Extracts the specified creation event from specified events.
+
+(helper)
+""".
 -spec extract_creation_event( [ world_event() ], dataflow_object_type(),
 				external_id() ) -> { creation_event(), [ world_event() ] }.
 extract_creation_event( Events, ObjectType, ObjectName ) ->
@@ -907,10 +905,11 @@ extract_creation_event( _Events=[ E | T ], ObjectType, ObjectName, Acc ) ->
 
 
 
-% @doc Checks that no creation event matches specified parameters.
-%
-% (helper)
-%
+-doc """
+Checks that no creation event matches specified parameters.
+
+(helper)
+""".
 check_no_creation_matching( _Events=[], _ObjectType, _ObjectName ) ->
 	ok;
 
@@ -924,12 +923,13 @@ check_no_creation_matching( _Events=[ _E | T ],  ObjectType, ObjectName ) ->
 
 
 
-% @doc Called automatically after a requested object (non-binary) association is
-% performed.
-%
-% Parameter is EventId, the identifier of the corresponding completed
-% association event.
-%
+-doc """
+Called automatically after a requested object (non-binary) association is
+performed.
+
+Parameter is EventId, the identifier of the corresponding completed association
+event.
+""".
 -spec onAssociationEstablished( wooper:state(), event_id(),
 								sending_actor_pid() ) -> actor_oneway_return().
 onAssociationEstablished( State, EventId, _SendingActorPid ) ->
@@ -966,12 +966,12 @@ onAssociationEstablished( State, EventId, _SendingActorPid ) ->
 
 
 
-% @doc Called automatically after a requested binary object association is
-% performed.
-%
-% Parameter is EventId, the identifier of the corresponding completed binary
-% association event.
-%
+-doc """
+Called automatically after a requested binary object association is performed.
+
+Parameter is EventId, the identifier of the corresponding completed binary
+association event.
+""".
 -spec onBinaryAssociationEstablished( wooper:state(), event_id(),
 			sending_actor_pid() ) -> actor_oneway_return().
 onBinaryAssociationEstablished( State, EventId, _SendingActorPid ) ->
@@ -1008,11 +1008,12 @@ onBinaryAssociationEstablished( State, EventId, _SendingActorPid ) ->
 
 
 
-% @doc Called automatically after a requested disassociation is performed.
-%
-% Parameter is EventId, the identifier of the corresponding completed
-% disassociation event.
-%
+-doc """
+Called automatically after a requested disassociation is performed.
+
+Parameter is EventId, the identifier of the corresponding completed
+disassociation event.
+""".
 -spec onDisassociationPerformed( wooper:state(), event_id(),
 			sending_actor_pid() ) -> actor_oneway_return().
 onDisassociationPerformed( State, EventId, _SendingActorPid ) ->
@@ -1049,12 +1050,13 @@ onDisassociationPerformed( State, EventId, _SendingActorPid ) ->
 
 
 
-% @doc Called automatically after a request update of attributes of a dataflow
-% object is performed.
-%
-% Parameter is EventId, the identifier of the corresponding completed attribute
-% update event.
-%
+-doc """
+Called automatically after a request update of attributes of a dataflow object
+is performed.
+
+Parameter is EventId, the identifier of the corresponding completed attribute
+update event.
+""".
 -spec onAttributeUpdatePerformed( wooper:state(), event_id(),
 							sending_actor_pid() ) -> actor_oneway_return().
 onAttributeUpdatePerformed( State, EventId, _SendingActorPid ) ->
@@ -1091,14 +1093,15 @@ onAttributeUpdatePerformed( State, EventId, _SendingActorPid ) ->
 
 
 
-% @doc Called automatically after a requested destruction of a dataflow object
-% is performed (the sender being this destructed object).
-%
-% Parameter is EventId, the identifier of the corresponding completed
-% destruction event.
-%
-% (actor oneway)
-%
+-doc """
+Called automatically after a requested destruction of a dataflow object is
+performed (the sender being this destructed object).
+
+Parameter is EventId, the identifier of the corresponding completed
+destruction event.
+
+(actor oneway)
+""".
 -spec onDestructionTriggered( wooper:state(), event_id(),
 							  sending_actor_pid() ) -> actor_oneway_return().
 onDestructionTriggered( State, EventId, DestructedObjectPid ) ->
@@ -1126,8 +1129,8 @@ onDestructionTriggered( State, EventId, DestructedObjectPid ) ->
 	TriggeredEvents = ?getAttr(triggered_events),
 
 	{ #destruction_event{
-			object_type=DestructedObjectType,
-			object_pid=DestructedObjectPid },
+		object_type=DestructedObjectType,
+		object_pid=DestructedObjectPid },
 	  OtherTriggeredEvents } =
 		dataflow_support:find_event_by_id( EventId, TriggeredEvents ),
 
@@ -1165,10 +1168,11 @@ onDestructionTriggered( State, EventId, DestructedObjectPid ) ->
 
 
 
-% @doc Manages the completion of an event, when it has been reported.
-%
-% (helper)
-%
+-doc """
+Manages the completion of an event, when it has been reported.
+
+(helper)
+""".
 -spec manage_post_event( changeset(),
 		[ { event_id(), class_WorldManager:completion_extra_info() } ],
 		wooper:state() ) -> wooper:state().
@@ -1209,14 +1213,14 @@ manage_post_event( RemainingTriggeredEvents, CompletedEventInfos, State ) ->
 % Helper functions.
 
 
-% @doc Returns a textual description of the object instances currently managed.
+-doc "Returns a textual description of the object instances currently managed.".
 -spec object_table_to_string( wooper:state() ) -> ustring().
 object_table_to_string( State ) ->
 
 	case table:enumerate( ?getAttr(object_table) ) of
 
 		[] ->
-			 "not managing any object type";
+			"not managing any object type";
 
 		Types ->
 
@@ -1241,7 +1245,7 @@ object_table_to_string( State ) ->
 
 
 
-% @doc Returns a textual description of this object manager.
+-doc "Returns a textual description of this object manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -1283,39 +1287,40 @@ to_string( State ) ->
 
 
 
-% @doc Creates (initially, that is before the simulation is started) the
-% specified default (meaning not specifically defined in a class of their own)
-% object managers, from their respective name and a list of the types of
-% dataflow objects they are each to manage, with no identification server
-% specified.
-%
-% Returns the list of their PIDs in the same order as the one of their names.
-%
+-doc """
+Creates (initially, that is before the simulation is started) the specified
+default (meaning not specifically defined in a class of their own) object
+managers, from their respective name and a list of the types of dataflow objects
+they are each to manage, with no identification server specified.
+
+Returns the list of their PIDs in the same order as the one of their names.
+""".
 -spec create_default_managers( [ object_manager_def() ], world_manager_pid(),
 			load_balancer_pid() ) -> static_return( [ object_manager_pid() ] ).
 create_default_managers( ObjectManagerDefs, WorldManagerPid,
 						 LoadBalancerPid ) ->
 
 	Managers = create_default_managers( ObjectManagerDefs, WorldManagerPid,
-				LoadBalancerPid, _IdentificationServerPid=undefined ),
+		LoadBalancerPid, _IdentificationServerPid=undefined ),
 
 	wooper:return_static( Managers ).
 
 
 
 
-% @doc Creates (initially, that is before the simulation is started) multiple
-% default (meaning not specifically defined in a class of their own) object
-% managers, based on their respective names and managed object types, and also
-% on the number of computing cores (thus on the user host).
-%
-% A default manager is supposed to be stateless.
-%
-% One of the several managers will be chosen randomly (yet consistently) to
-% process a given event, thus providing a simple load balancing.
-%
-% Returns the list of their PIDs in the same order as the one of their names.
-%
+-doc """
+Creates (initially, that is before the simulation is started) multiple default
+(meaning not specifically defined in a class of their own) object managers,
+based on their respective names and managed object types, and also on the number
+of computing cores (thus on the user host).
+
+A default manager is supposed to be stateless.
+
+One of the several managers will be chosen randomly (yet consistently) to
+process a given event, thus providing a simple load balancing.
+
+Returns the list of their PIDs in the same order as the one of their names.
+""".
 -spec create_default_managers( [ object_manager_def() ], world_manager_pid(),
 			load_balancer_pid(), identification_server_pid() ) ->
 									static_return( [ object_manager_pid() ] ).
@@ -1342,43 +1347,44 @@ create_default_managers( ObjectManagerDefs, WorldManagerPid, LoadBalancerPid,
 
 
 
-% @doc Creates (initially, that is before the simulation is started) the
-% specified specific (meaning defined in a class of their own, as opposed to
-% default ones, direct instances of this class) object managers, supposing here
-% that they each accept exactly three construction parameters, that is the PID
-% of the world manager, the one of the dataflow and the one of the load
-% balancer. No identification server is specified here.
-%
-% No need to specify the types of dataflow objects that they manage, as this is
-% directly defined in their respective implementations.
-%
-% Returns the list of their PIDs in the same order as the one of their names.
-%
+-doc """
+Creates (initially, that is before the simulation is started) the specified
+specific (meaning defined in a class of their own, as opposed to default ones,
+direct instances of this class) object managers, supposing here that they each
+accept exactly three construction parameters, that is the PID of the world
+manager, the one of the dataflow and the one of the load balancer. No
+identification server is specified here.
+
+No need to specify the types of dataflow objects that they manage, as this is
+directly defined in their respective implementations.
+
+Returns the list of their PIDs in the same order as the one of their names.
+""".
 -spec create_specific_managers( [ classname() ], world_manager_pid(),
 			load_balancer_pid() ) -> static_return( [ object_manager_pid() ] ).
 create_specific_managers( ObjectManagerNames, WorldManagerPid,
 						  LoadBalancerPid ) ->
 
 	Managers = create_specific_managers( ObjectManagerNames, WorldManagerPid,
-					LoadBalancerPid, _IdentificationServerPid=undefined ),
+		LoadBalancerPid, _IdentificationServerPid=undefined ),
 
 	wooper:return_static( Managers ).
 
 
 
 
-% @doc Creates (initially, that is before the simulation is started) the
-% specified specific (meaning defined in a class of their own, as opposed to
-% default ones, direct instances of this class) object managers, supposing here
-% that they each accept exactly three construction parameters, that is the PID
-% of the world manager, the one of the dataflow and the one of the load
-% balancer.
-%
-% No need to specify the types of dataflow objects that they manage, as this is
-% defined in their respective implementations.
-%
-% Returns the list of their PIDs in the same order as the one of their names.
-%
+-doc """
+Creates (initially, that is before the simulation is started) the specified
+specific (meaning defined in a class of their own, as opposed to default ones,
+direct instances of this class) object managers, supposing here that they each
+accept exactly three construction parameters, that is the PID of the world
+manager, the one of the dataflow and the one of the load balancer.
+
+No need to specify the types of dataflow objects that they manage, as this is
+defined in their respective implementations.
+
+Returns the list of their PIDs in the same order as the one of their names.
+""".
 -spec create_specific_managers( [ classname() ], world_manager_pid(),
 						load_balancer_pid(), identification_server_pid()  ) ->
 		static_return( [ object_manager_pid() ] ).
@@ -1398,21 +1404,22 @@ create_specific_managers( ObjectManagerNames, WorldManagerPid, LoadBalancerPid,
 
 
 
-% @doc Requests the synchronous creation by specified object manager of an
-% initial (that is not dynamic, at runtime) instance of specified object type,
-% using specified core construction parameters for that, and returns the PID of
-% the created object instance.
-%
-% Note: only the core, object-specific construction parameters shall be
-% specified; the others (actor-specific ones, dataflow PID, etc.) will be added
-% automatically.
-%
-% For example, for a call to class_Foobar:construct(State, ActorSettings, A, B,
-% C, DataflowPid) to happen, only [A, B, C] shall be specified as core
-% construction parameters.
-%
-% Defined for convenience, typically when implementing a simulation case.
-%
+-doc """
+Requests the synchronous creation by specified object manager of an initial
+(that is not dynamic, at runtime) instance of specified object type, using
+specified core construction parameters for that, and returns the PID of the
+created object instance.
+
+Note: only the core, object-specific construction parameters shall be specified;
+the others (actor-specific ones, dataflow PID, etc.) will be added
+automatically.
+
+For example, for a call to `class_Foobar:construct(State, ActorSettings, A, B,
+C, DataflowPid)` to happen, only `[A, B, C]` shall be specified as core
+construction parameters.
+
+Defined for convenience, typically when implementing a simulation case.
+""".
 -spec create_initial_object( object_manager_pid(), dataflow_object_type(),
 							 dataflow_pid(), construction_parameters() ) ->
 			static_return( object_pid() ).
@@ -1431,22 +1438,22 @@ create_initial_object( ObjectManagerPid, ObjectClassname, DataflowPid,
 
 
 
-% @doc Requests the synchronous creations by specified object manager of a set
-% of initial (that is not dynamic, at runtime) instances of the specified object
-% type, associated to specified dataflow, using specified list of core
-% construction parameters for that, and returns the list of the PIDs of the
-% created object instances, in the order of their construction parameters.
-%
-% Note: only the core, object-specific construction parameters shall be
-% specified (actor-specific ones, dataflow PID, etc.) will be added
-% automatically.
-%
-% For example, for a call to class_Foobar:construct(State, ActorSettings, A, B,
-% C, DataflowPid) to happen, only [A, B, C] shall be specified as core
-% construction parameters.
-%
-% Defined for convenience, typically when implementing a simulation case.
-%
+-doc """
+Requests the synchronous creations by specified object manager of a set of
+initial (that is not dynamic, at runtime) instances of the specified object
+type, associated to specified dataflow, using specified list of core
+construction parameters for that, and returns the list of the PIDs of the
+created object instances, in the order of their construction parameters.
+
+Note: only the core, object-specific construction parameters shall be specified
+(actor-specific ones, dataflow PID, etc.) will be added automatically.
+
+For example, for a call to ``class_Foobar:construct(State, ActorSettings, A, B,
+C, DataflowPid)`` to happen, only ``[A, B, C]`` shall be specified as core
+construction parameters.
+
+Defined for convenience, typically when implementing a simulation case.
+""".
 -spec create_initial_objects( object_manager_pid(), dataflow_object_type(),
 			dataflow_pid(), [ construction_parameters() ] ) ->
 									static_return( [ object_pid() ] ).
@@ -1465,14 +1472,15 @@ create_initial_objects( ObjectManagerPid, ObjectClassname, DataflowPid,
 
 
 
-% @doc Creates, at runtime (that is in the course of the simulation), an object
-% of specified type (classname), associated to specified dataflow, based on
-% specified list of core construction parameters, and returns an updated state.
-%
-% To be called from an actor, typically from a specialised object manager.
-%
-% (exported helper)
-%
+-doc """
+Creates, at runtime (that is in the course of the simulation), an object of
+specified type (classname), associated to specified dataflow, based on specified
+list of core construction parameters, and returns an updated state.
+
+To be called from an actor, typically from a specialised object manager.
+
+(exported helper)
+""".
 -spec create_runtime_object( dataflow_object_type(), dataflow_pid(),
 			[ construction_parameters() ], wooper:state() ) -> wooper:state().
 create_runtime_object( ObjectType, DataflowPid, CoreConstructionParameters,
@@ -1494,9 +1502,10 @@ create_runtime_object( ObjectType, DataflowPid, CoreConstructionParameters,
 
 
 
-% @doc Returns the PID of the specified dataflow objects, as designated by their
-% external identifier.
-%
+-doc """
+Returns the PID of the specified dataflow objects, as designated by their
+external identifier.
+""".
 -spec get_object_pids( [ external_id() ], wooper:state() ) -> [ object_pid() ].
 get_object_pids( ExternalIdentifiers, State ) ->
 

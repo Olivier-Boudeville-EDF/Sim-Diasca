@@ -34,6 +34,17 @@ else
 endif
 
 
+ERLANG_COMPILER_OPT_BASE += -Dmock_simulators_version=\"$(MOCK_SIMULATORS_VERSION)\"
+
+
+# Useful to target for example the root of the current layer (e.g. to locate the
+# relevant, layer-local '_build' directory):
+#
+ifndef LAYER_TOP
+	LAYER_TOP := $(MOCK_SIMULATORS_TOP)
+endif
+
+
 
 # Project section.
 
@@ -41,6 +52,21 @@ endif
 ifndef PROJECT_NAME
 	PROJECT_NAME = Mock-Simulators
 endif
+
+
+# PROJECT_SHORT_NAME should be defined on a per-project basis.
+# (no dash allowed)
+#
+ifndef PROJECT_SHORT_NAME
+	PROJECT_SHORT_NAME := mock_simulators
+endif
+
+
+# PROJECT_NAME_FOR_OTP should be defined on a per-project basis.
+ifndef PROJECT_NAME_FOR_OTP
+	PROJECT_NAME_FOR_OTP := $(PROJECT_SHORT_NAME)
+endif
+
 
 
 MOCK_SIMULATORS_VERSION := 1.0.1
@@ -65,6 +91,14 @@ USE_PYTHON_BINDING = true
 
 # Deactivated to avoid that the default build fails if Java is lacking:
 #USE_JAVA_BINDING = true
+
+
+# No $(LAYER_TOP) in includes, it would be misleading as edoc is run from the
+# clone root, not from doc:
+#
+ifndef EDOC_OPTS
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["..", "city-example/include", "$(SIM_DIASCA_TOP)/..", "$(TRACES_TOP)/..", "$(WOOPER_TOP)/..", "$(MYRIAD_TOP)/.."]}, {overview, "doc/overview.edoc"}]'
+endif
 
 
 MOCK_SIMULATORS_RELEASE_BASE := Mock-Simulators-$(PROJECT_VERSION)

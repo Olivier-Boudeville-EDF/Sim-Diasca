@@ -1,32 +1,34 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Agent to be sent, thanks to deployment workers, on all computing nodes,
-% so that it can <b>deploy automatically all elements needed there in order to
-% run a simulation</b>.
-%
-% Not using WOOPER here, in order to avoid needing extra dependencies and
-% environment during this bootstrap phase.
-%
 -module(deployment_agent).
+
+-moduledoc """
+Agent to be sent, thanks to deployment workers, on all computing nodes, so that
+it can **deploy automatically all elements needed there in order to run a
+simulation**.
+
+Not using WOOPER here, in order to avoid needing extra dependencies and
+environment during this bootstrap phase.
+""".
 
 
 -export([ deploy/6 ]).
@@ -40,7 +42,7 @@
 % should be as self-contained as reasonably possible.
 %
 % Thus some functions defined in other modules were duplicated verbatim
-% from other base modules (ex: system_utils), to avoid having to rely on too
+% from other base modules (e.g. system_utils), to avoid having to rely on too
 % many prerequisite modules (the pioneer list must be lean and mean).
 %
 % Finally, we included more pioneer modules, as verbatim duplication is
@@ -95,7 +97,7 @@
 -compile({ nowarn_unused_function, [ set_handler/1, get_handler_config/1 ] }).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type directory_name() :: file_utils:directory_name().
 
@@ -106,17 +108,21 @@
 
 -type sii() :: sim_diasca:sii().
 
+-type trace_aggregator_pid() :: class_TraceAggregator:trace_aggregator_pid().
+
+-type computing_host_manager_pid() :: class_ComputingHostManager:manager_pid().
 
 
 
-% @doc Performs the actual deployment; triggered by a rpc:cast/4 called by the
-% associated computing host manager.
-%
-% io:format print-outs will end up in the user console.
-%
-% ComputerHostManagerPid is sent, as it is the main user-side interlocutor for
-% remote deployment agents.
-%
+-doc """
+Performs the actual deployment; triggered by a `rpc:cast/4` called by the
+associated computing host manager.
+
+io:format print-outs will end up in the user console.
+
+ComputerHostManagerPid is sent, as it is the main user-side interlocutor for
+remote deployment agents.
+""".
 -spec deploy( computing_host_manager_pid(), pid(), unit_utils:seconds(),
 			  bin_string(), [ file_utils:bin_directory_name() ], sii() ) ->
 					'onDatabaseStarted' | 'onDatabaseStopped'.
@@ -140,7 +146,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 	% All nodes must behave the same:
 	change_initiated = net_kernel:set_net_ticktime( InterNodeTickTimeOut ),
 
-	% Should a computing node fail (ex: bug in an actor), not only the relevant
+	% Should a computing node fail (e.g. bug in an actor), not only the relevant
 	% processes shall be stopped, but also (all) computing nodes and the user
 	% one. So we monitor nodes from that agent (basically we monitor the user
 	% node):
@@ -178,7 +184,6 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 		prepare_package( BinDeployBaseDir, TraceAggregatorPid ),
 
 	receive
-
 
 		{ wooper_result, deploy_time_out } ->
 			Message = "overall deployment time-out reached",
@@ -266,7 +271,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 
 
 
-% @doc Prepares to receive the deployment package.
+-doc "Prepares to receive the deployment package.".
 -spec prepare_package( bin_string(), pid() ) ->
 							{ directory_name(), directory_name() }.
 prepare_package( BinDeployBaseDir, TraceAggregatorPid ) ->
@@ -322,7 +327,7 @@ prepare_package( BinDeployBaseDir, TraceAggregatorPid ) ->
 
 
 
-% @doc Manages the received deployment package.
+-doc "Manages the received deployment package.".
 -spec manage_package( binary(), directory_name(), directory_name(), pid() ) ->
 							void().
 manage_package( PackageBin, DeployBaseDir, DeployBeamDir,
@@ -374,7 +379,8 @@ manage_package( PackageBin, DeployBaseDir, DeployBeamDir,
 	% We prefer that the VM of the computing nodes remain at the root of the
 	% temporary directory created for deployment:
 	%
-	% (ex: '/tmp/sim-diasca-My_case-My_User-2017-11-21-at-16h-14m-33s-1007882/')
+	% (e.g.
+    % '/tmp/sim-diasca-My_case-My_User-2017-11-21-at-16h-14m-33s-1007882/')
 	%
 	% file_utils:set_current_directory( OutputDir ).
 
@@ -382,7 +388,7 @@ manage_package( PackageBin, DeployBaseDir, DeployBeamDir,
 
 
 
-% @doc Final loop of this deploy agent.
+-doc "Final loop of this deploy agent.".
 final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 				 SII ) ->
 
@@ -395,7 +401,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 		% that was ignored in the previous receiving:
 		%
 		{ wooper_result, DeployFilenameBin }
-		  when is_binary( DeployFilenameBin ) ->
+                                when is_binary( DeployFilenameBin ) ->
 
 			log_on_file( SII, "(package archive was '~ts')",
 						 [ DeployFilenameBin ] ),
@@ -409,8 +415,8 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 			% application:set_env( mnesia, dir, ... ) taken into account here).
 
 			send_trace_fmt( TraceAggregatorPid,
-							"Deployment agent starting database on node ~ts.",
-							[ node() ], info ),
+				"Deployment agent starting database on node ~ts.",
+				[ node() ], info ),
 
 			%io:format( "Deployment agent starting database on node ~ts.~n",
 			%           [ node() ] ),
@@ -420,7 +426,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 			%%case application:load(mnesia) of
 
 			%%   ok ->
-			%%		ok;
+			%%      ok;
 
 			%%  LoadError ->
 			%%      throw( { mnesia_load_failed, node(), LoadError } )
@@ -481,7 +487,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 			on_node_down( NodeDown );
 
 
-		% Ignored (ex: coming from port):
+		% Ignored (e.g. coming from port):
 		{ 'EXIT', SourcePid, _ExitReason=normal } ->
 
 			log_on_file( SII, "Normal EXIT received for ~w.", [ SourcePid ] ),
@@ -519,7 +525,6 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 			case RemoveDeployedDirectory of
 
 				true ->
-
 					RemoveCommand = "/bin/rm -rf '" ++ DeployDirString ++ "'",
 
 					case system_utils:run_command( RemoveCommand ) of
@@ -565,11 +570,10 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 
 
 
-% @doc Called whenever a node (most probably the user node, the only other node
-% known) is detected as down.
-%
-% (helper)
-%
+-doc """
+Called whenever a node (most probably the user node, the only other node known)
+is detected as down.
+""".
 -spec on_node_down( net_utils:atom_node_name() ) -> no_return().
 on_node_down( NodeDown ) ->
 
@@ -588,9 +592,10 @@ on_node_down( NodeDown ) ->
 
 
 
-% @doc Reports the specified termination reason on the console and as a trace,
-% and terminate.
-%
+-doc """
+Reports the specified termination reason on the console and as a trace, and
+terminate.
+""".
 -spec terminate( atom(), ustring(), trace_aggregator_pid(), sii() ) ->
 						no_return().
 terminate( _TraceLevel, Reason, _TraceAggregatorPid, SII ) ->
@@ -615,7 +620,7 @@ terminate( _TraceLevel, Reason, _TraceAggregatorPid, SII ) ->
 
 
 
-% @doc Terminates this agent.
+-doc "Terminates this agent.".
 -spec terminate( sii() ) -> no_return().
 terminate( SII ) ->
 
@@ -781,11 +786,12 @@ current_time_to_string() ->
 
 % Duplicated verbatim from class_TraceEmitter.erl:
 
-% @doc Returns the (numerical) priority associated to specified trace severity
-% (i.e. emergency, alert, etc.).
-%
-% See also: its reciprocal get_severity_for/1.
-%
+-doc """
+Returns the (numerical) priority associated to specified trace severity
+(i.e. emergency, alert, etc.).
+
+See also: its reciprocal `get_severity_for/1`.
+""".
 -spec get_priority_for( trace_utils:trace_severity() ) ->
 									trace_utils:trace_priority().
 % From most common to least:
@@ -821,10 +827,12 @@ get_priority_for( Other ) ->
 
 % Duplicated almost verbatim (cf. module) from traces.erl:
 
-% @doc Replaces the current (probably default) logger handler with this Traces
-% one (registered as 'default'), based on the specified trace aggregator.
-%
--spec set_handler( aggregator_pid() ) -> void().
+
+-doc """
+Replaces the current (probably default) logger handler with this Traces one
+(registered as `default`), based on the specified trace aggregator.
+""".
+-spec set_handler( trace_aggregator_pid() ) -> void().
 set_handler( AggregatorPid ) ->
 
 	% Note: if set before actual deployment, trace_utils and all not ready yet:
@@ -862,12 +870,12 @@ set_handler( AggregatorPid ) ->
 
 
 
-% @doc Returns the (initial) configuration of the Traces logger handler,
-% branching to the specified trace aggregator.
-%
--spec get_handler_config( aggregator_pid() ) -> logger:handler_config().
+-doc """
+Returns the (initial) configuration of the Traces logger handler, branching to
+the specified trace aggregator.
+""".
+-spec get_handler_config( trace_aggregator_pid() ) -> logger:handler_config().
 get_handler_config( AggregatorPid ) ->
-
 	#{ config => AggregatorPid
 	   % Defaults:
 	   % level => all,
@@ -885,12 +893,14 @@ get_handler_config( AggregatorPid ) ->
 % Duplicated verbatim from naming_utils:
 
 
-% @doc Waits (up to 10 seconds) until specified name is globally registered.
-%
-% Returns the resolved PID, or throws {global_registration_waiting_timeout,
-% Name}.
-%
-%-spec wait_for_global_registration_of( registration_name() ) -> pid().
+-doc """
+Waits (up to 10 seconds) until specified name is globally registered.
+
+Returns the resolved PID, or throws `{global_registration_waiting_timeout,
+Name}`.
+""".
+-spec wait_for_global_registration_of(
+        naming_utils:registration_name() ) -> pid().
 wait_for_global_registration_of( Name ) ->
 	wait_for_global_registration_of( Name, _Seconds=10 ).
 

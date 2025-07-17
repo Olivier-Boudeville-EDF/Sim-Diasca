@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example of <b>object manager</b>.
 -module(class_BuildingHouseholdObjectManager).
+
+-moduledoc "Example of **object manager**.".
 
 -define( class_description,
 		 "This object manager is in charge both of the buildings and of the "
@@ -69,21 +70,28 @@
 % No attribute is specific to this object manager.
 
 
-% @doc Constructs a building and household manager, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - WorldManagerPid, the PID of the parent object manager
-%
-% - LoadBalancerPid, the PID of the load balancer that may be used by this
-% object manager
-%
-% - IdentificationServerPid, the PID of the identification server (if any)
-%
+% Type shorthand:
+
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+
+
+-doc """
+Constructs a building and household manager, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- WorldManagerPid, the PID of the parent object manager
+
+- LoadBalancerPid, the PID of the load balancer that may be used by this object
+manager
+
+- IdentificationServerPid, the PID of the identification server (if any)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_DataflowObjectManager:parent_pid(), load_balancer_pid(),
-				 maybe( identification_server_pid() ) ) -> wooper:state().
+				 option( identification_server_pid() ) ) -> wooper:state().
 construct( State, ActorSettings, WorldManagerPid, LoadBalancerPid,
 		   IdentificationServerPid ) ->
 
@@ -98,9 +106,9 @@ construct( State, ActorSettings, WorldManagerPid, LoadBalancerPid,
 % Methods section.
 
 
-% @doc Applies the specified changeset (a list of world events).
+-doc "Applies the specified changeset (a list of world events).".
 -spec applyChangeset( wooper:state(), changeset(), actor_pid() ) ->
-								actor_oneway_return().
+                                        actor_oneway_return().
 applyChangeset( State, Changeset, SendingActorPid ) ->
 
 	% This oneway has been overridden so that the domain-specific
@@ -126,15 +134,14 @@ applyChangeset( State, Changeset, SendingActorPid ) ->
 
 
 
-% @doc Filters the specified events: selects a subset of them (the ones managed
-% specifically by this child object manager) and process them, and returns the
-% other, unmanaged events (expected to be managed generically by the object
-% manager class).
-%
-% Anything can be done here: adding, modifying, reordering, removing events.
-%
-% (helper)
-%
+-doc """
+Filters the specified events: selects a subset of them (the ones managed
+specifically by this child object manager) and process them, and returns the
+other, unmanaged events (expected to be managed generically by the object
+manager class).
+
+Anything can be done here: adding, modifying, reordering, removing events.
+""".
 -spec filter_world_events( [ world_event() ], [ dataflow_object_type() ],
 						   wooper:state() ) -> { changeset(), wooper:state() }.
 filter_world_events( Events, State ) ->
@@ -163,7 +170,7 @@ filter_world_events(
 		[ self(), BuildingExternalId, DistrictExternalId ] ),
 
 	[ BuildingPid, DistrictPid ] = class_DataflowObjectManager:get_object_pids(
-					[ BuildingExternalId, DistrictExternalId ], State ),
+		[ BuildingExternalId, DistrictExternalId ], State ),
 
 	BuildingSentState = class_Actor:send_actor_message( BuildingPid,
 		{ setDistrict, [ DistrictPid ] }, State ),
@@ -178,8 +185,8 @@ filter_world_events(
 		{ onBinaryAssociationEstablished, [ EventId ] }, DistrictSentState ),
 
 	UpdatedBinAssocEvent = BinAssocEvent#binary_association_event{
-								source_object_pid=BuildingPid,
-								target_object_pid=DistrictPid },
+		source_object_pid=BuildingPid,
+		target_object_pid=DistrictPid },
 
 	% To prepare upcoming completion:
 	RegisterState = appendToAttribute( SelfSentState, triggered_events,
@@ -206,13 +213,13 @@ filter_world_events(
 		[ self(), HouseholdExternalId, BuildingExternalId ] ),
 
 	[ HouseholdPid, BuildingPid ] = class_DataflowObjectManager:get_object_pids(
-					[ HouseholdExternalId, BuildingExternalId ], State ),
+		[ HouseholdExternalId, BuildingExternalId ], State ),
 
-	 HouseholdSentState = class_Actor:send_actor_message( HouseholdPid,
-				{ setBuilding, [ BuildingPid ] }, State ),
+	HouseholdSentState = class_Actor:send_actor_message( HouseholdPid,
+		{ setBuilding, [ BuildingPid ] }, State ),
 
-	 BuildingSentState = class_Actor:send_actor_message( BuildingPid,
-				{ registerHousehold, [ HouseholdPid ] }, HouseholdSentState ),
+	BuildingSentState = class_Actor:send_actor_message( BuildingPid,
+		{ registerHousehold, [ HouseholdPid ] }, HouseholdSentState ),
 
 	% Hence handled next diasca, as wanted:
 	SelfSentState = class_Actor:send_actor_message( self(),
@@ -220,8 +227,8 @@ filter_world_events(
 		BuildingSentState ),
 
 	UpdatedBinAssocEvent = BinAssocEvent#binary_association_event{
-							 source_object_pid=HouseholdPid,
-							 target_object_pid=BuildingPid },
+		source_object_pid=HouseholdPid,
+		target_object_pid=BuildingPid },
 
 	RegisterState = appendToAttribute( SelfSentState, triggered_events,
 									   UpdatedBinAssocEvent ),
@@ -249,7 +256,7 @@ filter_world_events(
 		[ self(), HouseholdExternalId, BuildingExternalId ] ),
 
 	[ HouseholdPid, BuildingPid ] = class_DataflowObjectManager:get_object_pids(
-					[ HouseholdExternalId, BuildingExternalId ], State ),
+		[ HouseholdExternalId, BuildingExternalId ], State ),
 
 	 HouseholdSentState = class_Actor:send_actor_message( HouseholdPid,
 		{ unsetBuilding, [ BuildingPid ] }, State ),

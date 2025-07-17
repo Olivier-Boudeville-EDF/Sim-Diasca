@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2024 EDF R&D
+% Copyright (C) 2024-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,19 +19,21 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: Monday, January 15, 2024.
 
-
-% @doc <b>Integration test</b> for the <b>testing of graph stream probes</b>.
-%
-% See the class_GraphStreamProbe.erl module.
-%
 -module(graph_stream_probe_test).
+
+-moduledoc """
+Integration test for the **testing of graph stream probes**.
+
+See the class_GraphStreamProbe.erl module.
+""".
 
 
 % For facilities common to all cases:
 -include("sim_diasca_for_cases.hrl").
 
 
-% @doc Runs the tests.
+
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 
@@ -62,7 +64,7 @@ run() ->
 
 	% Specifies the list of computing hosts that can be used:
 	%
-	% (see the sim-diasca-host-candidates-sample.txt example in the
+	% (see the sim-diasca-host-candidates-sample.etf example in the
 	% sim-diasca/conf directory)
 	%
 	DeploymentSettings = #deployment_settings{

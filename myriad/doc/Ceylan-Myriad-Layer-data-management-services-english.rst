@@ -84,7 +84,7 @@ Generating a table of the same name more than once should be done with care, as 
 Finally, two extra table types exist:
 
 - ``const_bijective_table``, like a crossbreeding of ``const_table`` and ``bijective_table``, to rely on module-supported const, bijective tables: a list of ``{type_utils:permanent_term(), type_utils:permanent_term()}`` entries can then provided so that a corresponding module (e.g. ``foobar``) is generated (either in-memory or as a file) that allows to resolve any element of a pair into the other one, thanks to two functions, ``foobar:get_first_for/1`` and ``foobar:get_second_for/1``, automatically defined in that module; this is especially useful as soon as having non-small, const, bijective tables (since typing all information twice, one in a first direction and one in the other, is time-consuming and error-prone); refer to ``const_bijective_table_test.erl`` for an example and a test thereof
-- ``const_bijective_topics`` is the same as the previous type, except that it allows *multiple* of such (const, bijective) tables (named "topics" here) to be defined in the same module (e.g. ``foobar``); for that, each of such tables is designated by a topic (an atom, like: ``colour``, ``bar_identifier`` or ``font_style``) that is associated to a declared list of corresponding entries (here also each with no duplicate); then, for each of these topics (e.g. ``colour``), two functions are automatically defined: ``foobar:get_first_for_colour/1`` and ``foobar:get_second_for_colour/1``, returning respective elements of the specified pair, for the specified topic; extra options can be set, in order to generate strict conversions or ones returning a maybe-type (typically so that they cannot be crashed), or to generate only one-way conversions (should either collection of elements have duplicates); refer to ``const_bijective_topics_test.erl`` for an example and a test thereof; the ability of defining multiple const, bijective tables in a single generated module can be useful typically when developping a binding (e.g. for a GUI, see `gui_constants.erl <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/user-interface/graphical/gui_constants.erl>`_) or when translating protocols (e.g. between a third-party library and internal conventions); refer to `Ceylan-Oceanic <http://oceanic.esperide.org>`_ for an example thereof, including about its build integration (based on the ``EXTRA_BEAM_FILES`` make variable)
+- ``const_bijective_topics`` is the same as the previous type, except that it allows *multiple* of such (const, bijective) tables (named "topics" here) to be defined in the same module (e.g. ``foobar``); for that, each of such tables is designated by a topic (an atom, like: ``colour``, ``bar_identifier`` or ``font_style``) that is associated to a declared list of corresponding entries (here also each with no duplicate); then, for each of these topics (e.g. ``colour``), two functions are automatically defined: ``foobar:get_first_for_colour/1`` and ``foobar:get_second_for_colour/1``, returning respective elements of the specified pair, for the specified topic; extra options can be set, in order to generate strict conversions or ones returning an optional type (typically so that they cannot be crashed), or to generate only one-way conversions (should either collection of elements have duplicates); refer to ``const_bijective_topics_test.erl`` for an example and a test thereof; the ability of defining multiple const, bijective tables in a single generated module can be useful typically when developping a binding (e.g. for a GUI, see `gui_constants.erl <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/user-interface/graphical/gui_constants.erl>`_) or when translating protocols (e.g. between a third-party library and internal conventions); refer to `Ceylan-Oceanic <http://oceanic.esperide.org>`_ for an example thereof, including about its build integration (based on the ``EXTRA_BEAM_FILES`` make variable)
 
 
 
@@ -104,7 +104,7 @@ One may also refer for operations on:
 Pseudo-Builtin Types
 ....................
 
-Such types, as ``void/0`` (for functions only useful for their side-effects - this happens!), ``maybe/1`` (``maybe(T)`` is either ``T`` or ``undefined``), ``safe_maybe/1`` (either ``{just,T}`` or ``nothing``) and ``fallible/{1,2}`` (an operation either is successful and returns a result, or returns an error) are supported, thanks to `the Myriad parse-transform`_.
+Such types, as ``void/0`` (for functions only useful for their side-effects - this happens!), ``option/1`` (``option(T)`` is either ``T`` or ``undefined``), ``safe_option/1`` (either ``{just,T}`` or ``nothing``) and ``fallible/{1,2}`` (an operation either is successful and returns a result, or returns an error) are supported, thanks to `the Myriad parse-transform`_.
 
 
 
@@ -171,7 +171,7 @@ In this case, the process dictionary of these clients is used to store the cache
 
 So a client process should cache a key mainly if no other is expected to update that key, i.e. typically if the associated value is const, or if this process is considered as the owner (sole controller) of that key (or if some other organisation ensures, possibly thanks to ``sync/1``, that its cache is kept consistent with the corresponding environment server.
 
-As soon as a key is declared to be cached, its value is set in the cache; there is thus always a value associated to a cached key (not a maybe-value), and thus cached values may be ``undefined``.
+As soon as a key is declared to be cached, its value is set in the cache; there is thus always a value associated to a cached key (not an option-value), and thus cached values may be ``undefined``.
 
 Multiple environments may be used concurrently. A specific case of environment corresponds to the user preferences. See our ``preferences`` module for that, whose default settings file is ``~/.ceylan-settings.etf``.
 
@@ -201,7 +201,7 @@ Resource Holders
 
 Myriad provides, through its ``resource`` module, two types of holders so that resources of interest can be obtained once, returned as often as needed, and stored for as long as wanted:
 
-- resource **referentials**, which are process-local terms akin to associative tables
+- resource **repositories**, which are process-local terms akin to associative tables
 - resource **servers**, i.e. dedicated processes sharing resources (especially `large-enough binaries <https://www.erlang.org/doc/efficiency_guide/binaryhandling.html#how-binaries-are-implemented>`_) between any number of consumer processes
 
 See also the ``resource.hrl`` include and the ``resource_test`` testing module.
@@ -215,8 +215,8 @@ File Formats
 Basic File Formats
 ..................
 
-
 A built-in very basic support for the `CSV <https://en.wikipedia.org/wiki/Comma-separated_values>`_, for *Comma-Separated Values* (see ``csv_utils``) and `RDF <https://en.wikipedia.org/wiki/Resource_Description_Framework>`_ (see ``rdf_utils``) conventions is provided.
+
 
 
 Most Usual, Standard File Formats
@@ -228,9 +228,11 @@ Besides the support for XML, an optional support (as it depends on third-party p
 - HDF5
 - SQLite
 
+
 .. _`XML use`:
 
-Some useful information for **XML use**:
+About XML use
+*************
 
 - Myriad's XML support is implemented by the ``xml_utils`` module (so one shall refer to ``xml_utils.{e,h}rl`` and ``xml_utils_test.erl``), which relies on the built-in ``xmerl`` modules
 - XML documents can be parsed from strings (see ``string_to_xml/1``) or files (see ``parse_xml_file/1``), and conversely can be serialised to strings (see ``xml_to_string/{1,2}``)
@@ -265,13 +267,14 @@ Refer to the ``xml_utils`` module for further details.
 
 .. _`JSON use`:
 
-Some useful information for **JSON use**:
+About JSON use
+**************
 
 - the nesting of elements shall be done thanks to (Erlang) maps, whose keys are binary strings (``text_utils:bin_string/0``); their order should not matter
 - it may thus be convenient to add ``-define(table_type, map_hashtable).`` in a user module, so that the ``table`` pseudo-module can be relied upon when building a ``json_term``, while being sure that the JSON parser at hand will be fed afterwards with the relevant datastructure
 - no comments shall be specified (even though some parsers may be configured to support them)
 - strings shall be specified as binary ones
-- the actual JSON backend used are either `jsx <https://github.com/talentdeficit/jsx/>`_ or `jiffy <https://github.com/davisp/jiffy>`_; to better understand their (mostly common) mapping between Erlang and JSON, one may refer to the `this section <https://github.com/talentdeficit/jsx/#json---erlang-mapping>`_ of the jsx documentation  and to `this one <https://github.com/davisp/jiffy#data-format>`_ regarding jiffy
+- the actual JSON backend used is by default the built-in `json <https://www.erlang.org/doc/apps/stdlib/json.html>`_ one, otherwise `jsx <https://github.com/talentdeficit/jsx/>`_ or `jiffy <https://github.com/davisp/jiffy>`_; to better understand their (mostly common) mapping between Erlang and JSON, one may refer first to `this section of EEP 68 <https://github.com/erlang/eep/blob/master/eeps/eep-0068.md#data-mapping>`_, otherwise to `this section <https://github.com/talentdeficit/jsx/#json---erlang-mapping>`_ of the jsx documentation and to `this one <https://github.com/davisp/jiffy#data-format>`_ regarding jiffy
 
 Example:
 
@@ -340,10 +343,10 @@ ETF files are notably used as **configuration files**. In this case following ex
 
 - their extension is preferably changed from ``.etf`` to ``.config``
 - before each entry, a comment describing it in general terms shall be available, with typing information
-- entries are pairs:
+- entries are generally expected to be strict tagged pairs (see the ``tagged_pair`` module), i.e. entries:
 
   - whose first element is an atom
-  - their second element can be any value, typically of algebraic types; if a string value is included, for readability purpose it shall preferably be specified as a plain one (e.g. ``"James Bond"``) rather than a binary one (e.g. ``<<"James Bond">>``); it is up to the reading logic to accommodate both forms; it is tolerated to reference, in the comments of these configuration files, types that actually include *binary* strings (not plain ones, even though plain ones are used in the configuration files)
+  - whose second element can be any value, typically of algebraic types; if a string value is included, for readability purpose it shall preferably be specified as a plain one (e.g. ``"James Bond"``) rather than a binary one (e.g. ``<<"James Bond">>``); it is up to the reading logic to accommodate both forms; it is tolerated to reference, in the comments of these configuration files, types that actually include *binary* strings (not plain ones, even though plain ones are used in the configuration files)
 
 
 .. _`glTF file format`:
@@ -398,7 +401,7 @@ Erlang supports, out of the box, `three main ASN.1 encodings <https://www.erlang
 
 - BER (`Basic Encoding Rules <https://en.wikipedia.org/wiki/X.690#BER_encoding>`_): a type-length-value encoding, too basic to be compact; its DER (for *Distinguished Encoding Rules*) variation is also available
 - PER (*Packed Encoding Rules*): a bit-level serialisation stream, either aligned to byte boundaries (PER) or not (UPER, for *Unaligned PER*); if both are very compact and complex to marshall/demarshall, it is especially true for the size/processing trade-off of UPER
-- JER (*JSON Encoding Rules*), hence based on JSON_
+- JER (*JSON Encoding Rules*), hence based on `JSON <#json-use>`_
 
 
 Our preference goes towards first UPER, then PER. A strength of ASN.1 is the expected ability to switch encodings easily; so, should the OER encoding (*Octet Encoding Rules*; faster to decode/encode than BER and PER, and almost as compact as PER) be supported in the future, it could be adopted "transparently".

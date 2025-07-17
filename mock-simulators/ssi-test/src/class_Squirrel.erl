@@ -1,35 +1,37 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% This file is part of forest ecosystem test case, which is a Sim-Diasca
-% integration test example.
-
-
-% @doc The objective of this module is to show the significant features of a
-% Sim-Diasca actor in multiple scheduling modes.
-%
-% This means that it has a periodic scheduling and that it can be also triggered
-% by messages.
-%
 -module(class_Squirrel).
+
+-moduledoc """
+The objective of this module is to show the significant features of a Sim-Diasca
+actor in multiple scheduling modes.
+
+This means that it has a periodic scheduling and that it can be also triggered
+by messages.
+
+This file is part of forest ecosystem test case, which is a Sim-Diasca
+integration test example.
+""".
+
 
 
 -define( class_description,
@@ -49,24 +51,25 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
-% @doc Constructs a squirrel actor:
-%
-% - oak_pid: records the PID of the tree where this squirrel lives
-%
-% - lifespan: is the nature longevity of a squirrel. In this test case, it is
-% defined as a static value: 208 weeks
-%
-% - state: can be
-%
-%  - beNursed: if it is a newborn
-%  - available
-%  - gestation: if the female squirrel is waiting for baby
-%  - nursing: if the female is nursing its offsprings
-%
+-doc """
+Constructs a squirrel actor:
+
+- oak_pid: records the PID of the tree where this squirrel lives
+
+- lifespan: is the nature longevity of a squirrel. In this test case, it is
+defined as a static value: 208 weeks
+
+- state: can be
+
+ - beNursed: if it is a newborn
+ - available
+ - gestation: if the female squirrel is waiting for baby
+ - nursing: if the female is nursing its offsprings
+""".
 construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 	% Firstly, the mother class
@@ -110,7 +113,9 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 
 
-% @doc Simply schedules this just created actor at the next tick (diasca 0).
+-doc """
+Simply schedules this just created actor at the next tick (diasca 0).
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -121,11 +126,12 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Called by a relative oak for notifying this squirrel that it is removed
-% from the oak.
-%
-% When receiving this message, the squirrel asks its forest for a relocation.
-%
+-doc """
+Called by a relative oak for notifying this squirrel that it is removed
+from the oak.
+
+When receiving this message, the squirrel asks its forest for a relocation.
+""".
 -spec beMoved( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 beMoved( State, SendingActorPid ) ->
 
@@ -161,7 +167,7 @@ beMoved( State, SendingActorPid ) ->
 
 
 
-% @doc Called by the forest for informing this squirrel of a new oak.
+-doc "Called by the forest for informing this squirrel of a new oak.".
 -spec beAllocated( wooper:state(), actor_pid(), sending_actor_pid() ) ->
 							actor_oneway_return().
 beAllocated( State, OakPid, _SendingActorPid ) ->
@@ -175,8 +181,8 @@ beAllocated( State, OakPid, _SendingActorPid ) ->
 			?notice( "I am moved from my tree and I am homeless." ),
 
 			NState = setAttributes( State, [
-										{ oak_pid, undefined },
-										{ target_peers, TargetPeers } ] ),
+				{ oak_pid, undefined },
+				{ target_peers, TargetPeers } ] ),
 
 			executeOneway( NState, notifyTermination );
 
@@ -192,7 +198,7 @@ beAllocated( State, OakPid, _SendingActorPid ) ->
 
 
 
-% @doc Deletes a specified squirrel PID from the target peers.
+-doc "Deletes a specified squirrel PID from the target peers.".
 -spec deleteFromPeers( wooper:state(), sending_actor_pid() ) ->
 											actor_oneway_return().
 deleteFromPeers( State, SendingActorPid ) ->
@@ -207,7 +213,7 @@ deleteFromPeers( State, SendingActorPid ) ->
 
 
 
-% @doc Received from the forest.
+-doc "Received from the forest.".
 -spec forestDestroyed( wooper:state(), sending_actor_pid() ) ->
 								actor_oneway_return().
 forestDestroyed( State, SendingActorPid )->
@@ -226,7 +232,7 @@ forestDestroyed( State, SendingActorPid )->
 
 
 
-% @doc The squirrel actor informs its target peers about its termination.
+-doc "The squirrel actor informs its target peers about its termination.".
 -spec notifyTermination( wooper:state() ) -> actor_oneway_return().
 notifyTermination( State ) ->
 
@@ -265,11 +271,12 @@ notifyTermination( State ) ->
 
 
 
-% @doc Called when is_registered is false.
-%
-% The actor sends a addInPeers message when the forest PID exists and then an
-% updated state is returned; otherwise, the original state is returned.
-%
+-doc """
+Called when is_registered is false.
+
+The actor sends a addInPeers message when the forest PID exists and then an
+updated state is returned; otherwise, the original state is returned.
+""".
 -spec tryToRegister( wooper:state(), classname(), sending_actor_pid() ) ->
 							actor_oneway_return().
 tryToRegister( State, Classname, _SendingActorPid ) ->
@@ -282,7 +289,7 @@ tryToRegister( State, Classname, _SendingActorPid ) ->
 		ForestPid  ->
 
 			NewState = class_Actor:send_actor_message( ForestPid,
-								{ addInPeers, Classname }, State ),
+				{ addInPeers, Classname }, State ),
 
 			TargetPeers = ?getAttr(target_peers),
 

@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Base processing unit, defined for testing.
 -module(class_BaseTestProcessingUnit).
+
+-moduledoc "Base processing unit, defined for testing.".
 
 
 -define( class_description,
@@ -41,28 +42,29 @@
 
 
 % For types and shorthands:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 -include("dataflow_unit_test_defines.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a test dataflow unit instance.
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - UnitName is a human-readable name for that unit instance (as a plain,
-% non-empty string)
-%
-% - DataflowPid is the PID of the dataflow instance
-%
+-doc """
+Constructs a test dataflow unit instance.
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- UnitName is a human-readable name for that unit instance (as a plain,
+non-empty string)
+
+- DataflowPid is the PID of the dataflow instance
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_DataflowProcessingUnit:unit_name(), dataflow_pid() ) ->
 						wooper:state().
@@ -87,10 +89,11 @@ construct( State, ActorSettings, UnitName, DataflowPid ) ->
 
 
 
-% @doc Callback executed automatically whenever this unit gets activated.
-%
-% Meant to be overridden.
-%
+-doc """
+Callback executed automatically whenever this unit gets activated.
+
+Meant to be overridden.
+""".
 -spec activate( wooper:state() ) -> oneway_return().
 activate( State ) ->
 
@@ -101,10 +104,10 @@ activate( State ) ->
 	NewRawValue = InputRawValue + 1,
 
 	OutputChannelValue = class_Dataflow:create_channel_value( NewRawValue,
-									[ ?base_test_semantics ], "W", "integer" ),
+		[ ?base_test_semantics ], "W", "integer" ),
 
 	SetState = class_DataflowBlock:set_output_port_value( "my_output_port",
-												 OutputChannelValue, State ),
+		OutputChannelValue, State ),
 
 	?notice_fmt( "Activated! Current state: ~ts; read from input: ~p; "
 		"written to output: ~ts.",
@@ -119,9 +122,10 @@ activate( State ) ->
 % Static section.
 
 
-% @doc Returns the specifications for the input and output ports of that
-% dataflow processing unit.
-%
+-doc """
+Returns the specifications for the input and output ports of that dataflow
+processing unit.
+""".
 -spec get_port_specifications() ->
 			static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
 get_port_specifications() ->
@@ -129,9 +133,10 @@ get_port_specifications() ->
 
 
 
-% @doc Returns a list of the specifications of the (initial) input ports for
-% that dataflow block.
-%
+-doc """
+Returns a list of the specifications of the (initial) input ports for that
+dataflow block.
+""".
 -spec get_input_port_specs() -> static_return( [ input_port_spec() ] ).
 get_input_port_specs() ->
 
@@ -144,9 +149,10 @@ get_input_port_specs() ->
 
 
 
-% @doc Returns a list of the specifications of the (initial) output ports for
-% that unit.
-%
+-doc """
+Returns a list of the specifications of the (initial) output ports for that
+unit.
+""".
 -spec get_output_port_specs() -> static_return( [ output_port_spec() ] ).
 get_output_port_specs() ->
 
@@ -162,7 +168,7 @@ get_output_port_specs() ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this unit.
+-doc "Returns a textual description of this unit.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Basic test unit; this is a ~ts",

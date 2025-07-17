@@ -9,11 +9,11 @@ usage="Usage: $(basename $0) [${doc_opt}|${dev_opt}] [${erl_version_opt} ERL_VER
 
  By default, a base, freely-redistributable runtime image will be prepared.
 
- Other images shall not be shared externally:
+ The other images shall not be shared externally:
    - if the ${doc_opt} option is specified, an image for the generation of
-	 documentation will be prepared instead (only of use for internal GitLab)
+	 documentation will be prepared instead (only of use for internal GitLab); it will derive from the previous base runtime image
    - if the ${dev_opt} option is specified, a richer image for development will
-	 be prepared instead, comprising by default a LogMX licence file
+	 be prepared instead, comprising by default a (non-public) LogMX licence file; it will derive from the previous documentation image
 "
 
 # Typically to be executed from an image-specific subdirectory of
@@ -23,7 +23,7 @@ usage="Usage: $(basename $0) [${doc_opt}|${dev_opt}] [${erl_version_opt} ERL_VER
 # Stop on error:
 set -e
 
-# Stop on unitialized variables (not used as $1 may not be set):
+# Stop on uninitialised variables (not used, as $1 may not be set):
 #set -u
 
 # Stop on failed pipes (not always supported apparently):
@@ -32,8 +32,8 @@ set -e
 
 # General settings
 
-# Debian 10 currently:
-os_base_image="debian:buster"
+# Debian 12 currently:
+os_base_image="debian:bookworm"
 
 # If using a public repository:
 #os_image="${os_base_image}"
@@ -75,7 +75,7 @@ prepare_sd=0
 prepare_logmx=1
 
 
-# If wanting extra user facilities (ex: packages, shell configuration):
+# If wanting extra user facilities (e.g. packages, shell configuration):
 prepare_extra_env=1
 
 
@@ -218,7 +218,7 @@ case $image_type in
 	   ;;
 
 	*)
-		echo "Unexpected image type."
+		echo "Unexpected image type ($image_type)."
 		exit 25
 		;;
 
@@ -299,25 +299,32 @@ if [ $prepare_sd -eq 0 ]; then
 
 	sd_clone_root="Sim-Diasca"
 
+	git="$(which git 2>/dev/null)"
 
 	if [ ! -d "${sd_clone_root}" ]; then
 
 		# The default Git is the public one:
 		SIM_DIASCA_GIT="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.git"
 
+		# SIM_DIASCA_INTERNAL_GIT to be found in one's environment:
 		if [ -n "${SIM_DIASCA_INTERNAL_GIT}" ]; then
-			echo " - cloning Sim-Diasca internal repository"
 			SIM_DIASCA_GIT="${SIM_DIASCA_INTERNAL_GIT}"
+			echo " - cloning Sim-Diasca internal repository (${SIM_DIASCA_GIT})"
 		else
-			echo " - cloning Sim-Diasca public repository"
+			echo " - cloning Sim-Diasca public repository (${SIM_DIASCA_GIT})"
 		fi
 
-		git clone "${SIM_DIASCA_GIT}" "${sd_clone_root}"
+		if [ ! -x "${git}" ]; then
+			echo "Error, no 'git' available." 1>&2
+			exit 80
+		fi
+
+		"${git}" clone "${SIM_DIASCA_GIT}" "${sd_clone_root}"
 
 	else
 
 		echo " - updating prior Sim-Diasca repository"
-		cd "${sd_clone_root}" && git pull && cd ..
+		cd "${sd_clone_root}" && "${git}" pull && cd ..
 
 	fi
 
@@ -335,7 +342,7 @@ fi
 
 full_image_name="${image_name}:${sd_version}"
 
-# Tag substitution matters, as some tag names are subsets of others.
+# Tag substitution order matters, as some tag names are subsets of others.
 # OPERATION_SYSTEM_TAG replaced directly from the image:
 cat "${dockerfile_template}" | sed "s|FULL_IMAGE_NAME_TAG|${full_image_name}|g" | sed "s|IMAGE_NAME_TAG|${image_name}|g" | sed "s|IMAGE_DESCRIPTION_TAG|${image_description}|g" | sed "s|PARENT_IMAGE_TAG|${parent_image}|g" | sed "s|ERLANG_VERSION_TAG|${erl_version}|g" | sed "s|SIM_DIASCA_VERSION_TAG|${sd_version}|g" | sed "s|GENERATION_TIMESTAMP_TAG|$(LC_ALL= date '+%A, %B %-e, %Y, at %H:%M:%S')|g" > "${dockerfile}"
 

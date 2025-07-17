@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,13 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2016.
 
-
-% Unit tests for the text_ui toolbox.
-%
-% See the text_ui.erl tested module.
-%
 -module(text_ui_test).
+
+-moduledoc """
+Unit tests for the `text_ui` toolbox.
+
+See the text_ui.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -70,8 +73,8 @@ run_test_ui() ->
 	text_ui:add_separation(),
 
 	SecondChoice = text_ui:choose_numbered_item_with_default(
-					 "This is my label; just choose below:",
-					 [ "Choice 1", "Choice 2", "Choice 3", "Choice 4" ], 2 ),
+		"This is my label; just choose below:",
+		[ "Choice 1", "Choice 2", "Choice 3", "Choice 4" ], 2 ),
 
 	text_ui:display( "Second choice has been ~p", [ SecondChoice ] ),
 

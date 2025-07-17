@@ -1,6 +1,5 @@
 SIM_DIASCA_TOP = ../../..
 
-
 MODULES_DIRS = bindings case-support control-management                 \
 			   dataflow data-management deployment                      \
 			   instance-creation plugins random resilience scheduling

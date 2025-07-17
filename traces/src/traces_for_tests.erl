@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,11 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc This module gathers all the code that allows to <b>lighten the trace
-% macros for (Myriad) applications</b>.
-%
 -module(traces_for_tests).
+
+-moduledoc """
+This module gathers all the code that allows to **lighten the trace macros for
+(Myriad) applications**.
+""".
+
 
 
 -export([ test_start/2, test_stop/3, test_immediate_stop/2,
@@ -54,7 +56,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type module_name() :: basic_utils:module_name().
 
@@ -62,21 +64,22 @@
 
 
 
-% @doc Starts the specified test.
-%
-% To be called from the counterpart macro.
-%
-% The trace supervisor can be requested to be initialized now or not at all, or
-% later (typically only once the desired filename for the traces file will be
-% known for good, i.e. at its first renaming).
-%
-% Here we disable explicitly the trapping of EXIT signals, as a function run
-% through "erl -eval" (like our apps) or through "erl -run" will be executed in
-% a process that will silently trap EXIT signals, which would mean that the
-% crash of any process created from the app, even thanks to spawn_link, would
-% most probably remain unnoticed (just leading to an EXIT message happily
-% sitting in the mailbox of the app process).
-%
+-doc """
+Starts the specified test.
+
+To be called from the counterpart macro.
+
+The trace supervisor can be requested to be initialized now or not at all, or
+later (typically only once the desired filename for the traces file will be
+known for good, i.e. at its first renaming).
+
+Here we disable explicitly the trapping of EXIT signals, as a function run
+through `erl -eval` (like our apps) or through `erl -run` will be executed in a
+process that will silently trap EXIT signals, which would mean that the crash of
+any process created from the app, even thanks to spawn_link, would most probably
+remain unnoticed (just leading to an EXIT message happily sitting in the mailbox
+of the app process).
+""".
 -spec test_start( module_name(),
 		class_TraceAggregator:initialise_supervision() ) -> aggregator_pid().
 % All values possible for InitTraceSupervisor here:
@@ -140,9 +143,11 @@ test_start( ModuleName, InitTraceSupervisor ) ->
 
 
 
-% @doc Stops the specified test, waiting for the trace supervisor if requested.
-%
-% To be called from the counterpart macro.
+-doc """
+Stops the specified test, waiting for the trace supervisor if requested.
+
+To be called from the counterpart macro.
+""".
 -spec test_stop( module_name(), aggregator_pid(), boolean() ) -> no_return().
 test_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
@@ -160,11 +165,12 @@ test_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 
 
-% @doc Stops specified test immediately, not waiting for any trace supervisor,
-% stopping the trace aggregator, and finishing on the shell.
-%
-% To be called from the counterpart macro.
-%
+-doc """
+Stops the specified test immediately, not waiting for any trace supervisor,
+stopping the trace aggregator, and finishing on the shell.
+
+To be called from the counterpart macro.
+""".
 -spec test_immediate_stop( module_name(), aggregator_pid() ) -> no_return().
 test_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
@@ -178,10 +184,12 @@ test_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 
 
-% @doc Stops specified test, stopping the trace aggregator and finishing on the
-% shell.
-%
-% To be called from the counterpart macro, directly or not.
+-doc """
+Stops the specified test, stopping the trace aggregator and finishing on the
+shell.
+
+To be called from the counterpart macro, directly or not.
+""".
 -spec test_stop_on_shell( module_name(), aggregator_pid() ) -> no_return().
 test_stop_on_shell( ModuleName, TraceAggregatorPid ) ->
 

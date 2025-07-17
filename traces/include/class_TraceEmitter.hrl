@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -318,7 +318,7 @@
 % state.
 %
 -define( send_emergency_full( State, Message, MessageCategorization,
-						  ApplicationTimestamp ),
+							  ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( emergency, State, Message,
 			MessageCategorization, ApplicationTimestamp )
 ).
@@ -746,7 +746,7 @@
 % state.
 %
 -define( send_critical_fmt_cat( State, Message, FormatValues,
-							MessageCategorization ),
+								MessageCategorization ),
 		 class_TraceEmitter:send_safe( critical, State,
 			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
@@ -772,7 +772,7 @@
 % state.
 %
 -define( send_critical_fmt_full( State, Message, FormatValues,
-							MessageCategorization, ApplicationTimestamp ),
+				MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State,
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization, ApplicationTimestamp )
@@ -784,7 +784,7 @@
 % a variable named 'State'.
 %
 -define( critical_fmt_full( Message, FormatValues, MessageCategorization,
-						ApplicationTimestamp ),
+							ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State,
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization, ApplicationTimestamp )
@@ -1341,7 +1341,7 @@
 % state.
 %
 -define( send_notice_fmt_cat( State, Message, FormatValues,
-							MessageCategorization ),
+							  MessageCategorization ),
 		 class_TraceEmitter:send( notice, State,
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization )

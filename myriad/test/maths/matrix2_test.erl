@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 17, 2021.
 
-
-% @doc Unit tests for the <b>specialised 2x2 matrix</b> facilities.
-%
-% See the matrix2 tested module.
-%
 -module(matrix2_test).
+
+-moduledoc """
+Unit tests for the **specialised 2x2 matrix** facilities.
+
+See the matrix2 tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -127,8 +129,8 @@ run() ->
 	SubSetMatrix = matrix2:set_element( RwC=2, ClC=1, 21.0, SubMatrix ),
 	21.0 = matrix2:get_element( RwC, ClC, SubSetMatrix ),
 
-	TransposedCoordMatrix = matrix2:from_coordinates(  10.0, 30.0,
-													   20.0, 40.0 ),
+	TransposedCoordMatrix = matrix2:from_coordinates( 10.0, 30.0,
+													  20.0, 40.0 ),
 
 	TransposedCoordMatrix = matrix2:transpose( CoordMatrix ),
 	true = matrix2:are_equal( TransposedCoordMatrix, TransposedCoordMatrix ),
@@ -140,8 +142,8 @@ run() ->
 	% ScaledMatrix = 2.0 * CoordMatrix
 	% RowMatrix = [ 10, 25, -7; 1, 2 4; 0, 0, 5 ]
 
-	MultCanMatrix = matrix2:from_coordinates(  240.0,  580.0,
-											   680.0, 1660.0 ),
+	MultCanMatrix = matrix2:from_coordinates( 240.0,  580.0,
+											  680.0, 1660.0 ),
 
 	MultCanMatrix = matrix2:mult( ScaledMatrix, RowMatrix ),
 

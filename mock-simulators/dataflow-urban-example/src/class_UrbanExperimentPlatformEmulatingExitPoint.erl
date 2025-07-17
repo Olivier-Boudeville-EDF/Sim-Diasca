@@ -1,33 +1,34 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example of a platform-emulating experiment exit point.
 -module(class_UrbanExperimentPlatformEmulatingExitPoint).
+
+-moduledoc "Example of a **platform-emulating experiment exit point**".
 
 
 -define( class_description,
 		 "This example of experiment exit point starts, as at least most exit "
 		 "points, each step of this urban case experiment."
 		 "It introduces changesets as if it had fetched them from an overall, "
-		 "unspecified platform (ex: through REST calls directly done from "
+		 "unspecified platform (e.g. through REST calls directly done from "
 		 "here)." ).
 
 
@@ -45,7 +46,7 @@
 
 
 % For types and shorthands:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For transport_unit_pid/0 and all:
@@ -59,7 +60,8 @@
 	  "extracted by this exit point from the dataflow" } ] ).
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -67,25 +69,26 @@
 
 
 
-% @doc Constructs the urban-example experiment exit point, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Dataflows is a list of the dataflows that this exit point should drive
-%
-% - ExperimentStepStart is the number of steps the overall experiment shall
-% start from (ex: first year)
-%
-% - ExperimentStepStop is the number of steps the overall experiment shall stop
-% at (ex: last year)
-%
-% - ExperimentEntryPointPid is the PID of the entry point of the experiment
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
-% - WorldManagerPid is the PID of the world manager
-%
+-doc """
+Constructs the urban-example experiment exit point, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Dataflows is a list of the dataflows that this exit point should drive
+
+- ExperimentStepStart is the number of steps the overall experiment shall start
+from (e.g. first year)
+
+- ExperimentStepStop is the number of steps the overall experiment shall stop at
+(e.g. last year)
+
+- ExperimentEntryPointPid is the PID of the entry point of the experiment
+
+- ExperimentManagerPid is the PID of the experiment manager
+
+- WorldManagerPid is the PID of the world manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	[ dataflow_pid() ], step_count(),step_count(),
 	experiment_entry_point_pid(), experiment_manager_pid(),
@@ -121,10 +124,11 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 
 
-% @doc The core of the behaviour of this exit point.
-%
-% Overrides the default behaviour, yet reuses it.
-%
+-doc """
+The core of the behaviour of this exit point.
+
+Overrides the default behaviour, yet reuses it.
+""".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -146,7 +150,7 @@ actSpontaneous( State ) ->
 
 	end,
 
-	% We call our direct mother class (ex: so that the *entry* point is
+	% We call our direct mother class (e.g. so that the *entry* point is
 	% triggered at the next diasca):
 	%
 	ScheduleState = executeOnewayAs( UpdatedState, class_ExperimentExitPoint,
@@ -161,10 +165,7 @@ actSpontaneous( State ) ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this exit point.
-%
-% (helper)
-%
+-doc "Returns a textual description of this exit point.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -176,7 +177,7 @@ to_string( State ) ->
 			"not referencing any energy demand unit";
 
 		EnergyDemandUnits ->
-			 text_utils:format( "referencing ~B energy demand units: ~p",
+			text_utils:format( "referencing ~B energy demand units: ~p",
 				[ length( EnergyDemandUnits ), EnergyDemandUnits ] )
 
 	end,

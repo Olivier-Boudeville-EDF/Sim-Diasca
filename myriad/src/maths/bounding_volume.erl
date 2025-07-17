@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,17 +25,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various facilities for (3D) <b>bounding volume</b>
-% management.
-%
-% Currently the types of supported bounding volumes are:
-% - right-cuboids, see <a href="http://en.wikipedia.org/wiki/Cuboid">cuboids</a>
-% - spheres
-%
-% See `bounding_volume_test.erl' for the corresponding test.
-%
 -module(bounding_volume).
+
+-moduledoc """
+Gathering of various facilities for (3D) **bounding volume** management.
+
+Currently the types of supported bounding volumes are:
+- right-cuboids, see [cuboids](http://en.wikipedia.org/wiki/Cuboid)
+- spheres
+
+See `bounding_volume_test.erl` for the corresponding test.
+""".
 
 
 -export([ get_lazy_bounding_sphere/1, get_minimal_enclosing_sphere/1,
@@ -46,24 +46,29 @@
 -include("bounding_volume.hrl").
 
 
+
+-doc "Allows to designate a type of bounding volume.".
 -type bounding_volume_type() :: 'right_cuboid' | 'sphere'.
-% Allows to designate a type of bounding volume.
 
 
+
+-doc "A bounding volume defined based on a right cuboid.".
 -type right_cuboid() :: #right_cuboid{}.
-% A bounding volume defined based on a right cuboid.
 
 
+
+-doc "A bounding volume defined based on a sphere.".
 -type sphere() :: #sphere{}.
-% A bounding volume defined based on a sphere.
 
 
+
+-doc "All supported types of bounding volumes.".
 -type bounding_volume() :: right_cuboid() | sphere().
-% All supported types of bounding volumes.
 
 
 -export_type([ bounding_volume_type/0,
 			   right_cuboid/0, sphere/0, bounding_volume/0 ]).
+
 
 
 % Implementation notes:
@@ -85,14 +90,15 @@
 
 
 
-% @doc Returns a sphere that is a bounding volume for the specified list of
-% points, which must not be empty.
-%
-% Note: this bounding volume is very lightweight to compute, yet not a minimal
-% one.
-%
-% Returns the sphere information: {Center, SquareRadius}.
-%
+-doc """
+Returns a sphere that is a bounding volume for the specified list of points,
+which must not be empty.
+
+Note: this bounding volume is very lightweight to compute, yet not a minimal
+one.
+
+Returns the sphere information: {Center, SquareRadius}.
+""".
 -spec get_lazy_bounding_sphere( [ point3() ] ) -> sphere().
 get_lazy_bounding_sphere( Points ) ->
 
@@ -108,16 +114,17 @@ get_lazy_bounding_sphere( Points ) ->
 
 
 
-% @doc Returns {Center, SquareRadius} which defines a bounding volume consisting
-% on the Minimal Enclosing Sphere (MES) for the specified list of points.
-%
-% Note: this bounding volume is the smallest possible sphere, but requires quite
-% a lot of computations.
-%
-% Apparently there is now way of adding a point to an existing MES without
-% recomputing everything from scratch. So we do not rely on an 'updateMES'
-% function.
-%
+-doc """
+Returns {Center, SquareRadius} which defines a bounding volume consisting on the
+Minimal Enclosing Sphere (MES) for the specified list of points.
+
+Note: this bounding volume is the smallest possible sphere, but requires quite a
+lot of computations.
+
+Apparently there is now way of adding a point to an existing MES without
+recomputing everything from scratch. So we do not rely on an 'updateMES'
+function.
+""".
 -spec get_minimal_enclosing_sphere( [ point3() ] ) -> sphere().
 get_minimal_enclosing_sphere( _Points=[] ) ->
 	throw( no_point_to_enclose );
@@ -127,7 +134,7 @@ get_minimal_enclosing_sphere( _Points=[ _P ] ) ->
 
 
 
-% @doc Returns a textual description of the specified bounding volume.
+-doc "Returns a textual description of the specified bounding volume.".
 -spec to_string( bounding_volume() ) -> ustring().
 to_string( #right_cuboid{ base_vertex=BaseVertex, abscissa_length=XLen,
 						  ordinate_length=YLen, elevation_length=ZLen } ) ->

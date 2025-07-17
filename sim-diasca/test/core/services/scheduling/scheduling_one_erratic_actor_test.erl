@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,20 +19,21 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Overall unit test of the Sim-Diasca deployment and scheduling framework.
-%
-% The test could run until tick offset #120, however the next tick after offset
-% #80 at which this only actor will be scheduled will trigger its
-% termination. Therefore the simulation should end automatically at this tick.
-%
-% The test actor actually intended to stop at offset #50, but it planned
-% actually its spontaneous ticks at #48 then #51, thus delaying its termination.
-%
-% Test can be run on for example two computers, to ensure an empty node (as
-% there is only one actor) is correctly managed.
-%
 -module(scheduling_one_erratic_actor_test).
+
+-moduledoc """
+Overall unit test of the Sim-Diasca deployment and scheduling framework.
+
+The test could run until tick offset #120, however the next tick after offset
+#80 at which this only actor will be scheduled will trigger its
+termination. Therefore the simulation should end automatically at this tick.
+
+The test actor actually intended to stop at offset #50, but it planned actually
+its spontaneous ticks at #48 then #51, thus delaying its termination.
+
+Test can be run on for example two computers, to ensure an empty node (as there
+is only one actor) is correctly managed.
+""".
 
 
 
@@ -45,9 +46,10 @@
 
 
 
-% @doc Runs a distributed simulation (of course if relevant computing hosts are
-% specified).
-%
+-doc """
+Runs a distributed simulation (of course if relevant computing hosts are
+specified).
+""".
 -spec run() -> no_return().
 run() ->
 

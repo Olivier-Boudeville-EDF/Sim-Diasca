@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 EDF R&D
+% Copyright (C) 2019-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: Wednesday, June 19, 2019.
 
-
-% @doc Actor test class regarding web probes.
 -module(class_TestWebActor).
+
+-moduledoc "Actor test class regarding **web probes**.".
 
 
 -define( class_description, "Actor test class regarding web probes" ).
@@ -48,19 +48,20 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type tick_offset() :: class_TimeManager:tick_offset().
 
 
 
-% @doc Constructs a test actor:
-%
-% - ActorSettings corresponds to the various information (ex: AAI, seeding,
-% ordering mode, etc.) that the load-balancer sets for each newly created actor
-%
-% - ActorName the name of the actor
-%
+-doc """
+Constructs a test actor:
+
+- ActorSettings corresponds to the various information (e.g. AAI, seeding,
+ ordering mode, etc.) that the load-balancer sets for each newly created actor
+
+- ActorName the name of the actor
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name() ) -> wooper:state().
 construct( State, ActorSettings, ActorName ) ->
@@ -85,7 +86,7 @@ construct( State, ActorSettings, ActorName ) ->
 % Management section of the actor.
 
 
-% @doc The core of the test actor behaviour.
+-doc "The core of the test actor behaviour.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -108,9 +109,10 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Overridden, in order to synchronise correctly the internal planning that
-% this test actor maintains, and to start its behaviour.
-%
+-doc """
+Overridden, in order to synchronise correctly the internal planning that this
+test actor maintains, and to start its behaviour.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 											actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -121,13 +123,8 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Manages the normal, non-termination behaviour of this actor.
-%
-% Returns an updated state.
-%
-% (helper)
-%
--spec behave_normally( tick_offset(), wooper:state() ) -> void().
+-doc "Manages the normal, non-termination behaviour of this actor.".
+-spec behave_normally( tick_offset(), wooper:state() ) -> wooper:state().
 behave_normally( CurrentOffset, State ) ->
 
 	?debug( "Acting spontaneously." ),

@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Dataflow <b>mock-up unit</b> class.
 -module(class_DataflowMockupUnit).
+
+-moduledoc "Dataflow **mock-up unit** class.".
 
 -define( class_description,
 		 "Dataflow mock-up unit class, corresponding to the implementation "
@@ -114,7 +115,7 @@
 -include_lib("traces/include/traces.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 -type ustring() :: text_utils:ustring().
@@ -122,35 +123,36 @@
 
 
 
-% @doc Constructs a dataflow mock-up unit:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - MockupUnitName is a human-readable name for that mock-up unit (as a plain,
-% non-empty string)
-%
-% - ActivationPolicy is the policy driving the activations of the mock-up unit
-%
-% - InputPortSpecs is a list of the specifications of the input ports defined
-% for this mock-up unit
-%
-% - OutputPortSpecs is a list of the specifications of the output ports defined
-% for this mock-up unit
-%
-% - MockupClauses is a list of the specifications of the clauses ruling the
-% behaviour of this mock-up unit (determining the state of its output ports from
-% the simulation time and the state of its input ports)
-%
+-doc """
+Constructs a dataflow mock-up unit:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- MockupUnitName is a human-readable name for that mock-up unit (as a plain,
+non-empty string)
+
+- ActivationPolicy is the policy driving the activations of the mock-up unit
+
+- InputPortSpecs is a list of the specifications of the input ports defined for
+this mock-up unit
+
+- OutputPortSpecs is a list of the specifications of the output ports defined
+for this mock-up unit
+
+- MockupClauses is a list of the specifications of the clauses ruling the
+behaviour of this mock-up unit (determining the state of its output ports from
+the simulation time and the state of its input ports)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_DataflowProcessingUnit:unit_name(), mockup_unit_spec(),
 				 dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, UnitName,
 		   _MockupUnitSpec=#mockup_unit_spec{
-								activation_policy=ActivationPolicy,
-								input_port_specs=InputPortSpecs,
-								output_port_specs=OutputPortSpecs,
-								mockup_clauses=MockupClauses },
+				activation_policy=ActivationPolicy,
+				input_port_specs=InputPortSpecs,
+				output_port_specs=OutputPortSpecs,
+				mockup_clauses=MockupClauses },
 		   DataflowPid ) ->
 
 	% First, sets the attributes of the direct mother class:
@@ -170,7 +172,7 @@ construct( State, ActorSettings, UnitName,
 % Methods section.
 
 
-% @doc Callback executed on the first diasca of existence of this mock-up unit.
+-doc "Callback executed on the first diasca of existence of this mock-up unit.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -181,10 +183,11 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Callback executed automatically whenever the mock-up unit is activated.
-%
-% Meant to be overridden.
-%
+-doc """
+Callback executed automatically whenever the mock-up unit is activated.
+
+Meant to be overridden.
+""".
 -spec activate( wooper:state() ) -> oneway_return().
 activate( State ) ->
 
@@ -196,24 +199,25 @@ activate( State ) ->
 
 
 
-% @doc Triggers the behaviour of the mock-up unit, based on the registered
-% mock-up clauses.
-%
-% Note: this activation embeds several actions usually defined in the child unit
-% classes (designed by a model implementor):
-%
-% - reading/getting the input port values
-%
-% - deducing the output values from input ones (this is what really "applying
-% the clauses" means)
-%
-% - setting these output values to the corresponding outputs ports (including
-% the creation of the channel values)
-%
-% Indeed, the genericity of the behaviour of mock-ups (following predefined
-% rules) allows the automation of these first and third operations, and the
-% execution of the second operation based on data (not code).
-%
+-doc """
+Triggers the behaviour of the mock-up unit, based on the registered mock-up
+clauses.
+
+Note: this activation embeds several actions usually defined in the child unit
+classes (designed by a model implementor):
+
+- reading/getting the input port values
+
+- deducing the output values from input ones (this is what really "applying the
+clauses" means)
+
+- setting these output values to the corresponding outputs ports (including the
+creation of the channel values)
+
+Indeed, the genericity of the behaviour of mock-ups (following predefined rules)
+allows the automation of these first and third operations, and the execution of
+the second operation based on data (not code).
+""".
 -spec apply_clauses( wooper:state() ) -> wooper:state().
 apply_clauses( State ) ->
 
@@ -231,9 +235,9 @@ apply_clauses( State ) ->
 % Helper section.
 
 
-% @doc Checking the structure of a set of mock-up clauses, that they are indeed
-% a list.
-%
+-doc """
+Checking the structure of a set of mock-up clauses, that they are indeed a list.
+""".
 -spec check_clauses( [ mockup_clause() ] ) -> void().
 check_clauses( MockupClauses ) when is_list( MockupClauses ) ->
 	check_each_clause( MockupClauses, _ClauseCount=1 );
@@ -245,7 +249,7 @@ check_clauses( MockupClauses ) ->
 
 
 
-% @doc Checks that a particular mock-up clause is a triplet:
+-doc "Checks that a particular mock-up clause is a triplet.".
 -spec check_each_clause( [ mockup_clause() ], clause_count() ) -> void().
 check_each_clause( _MockupClauses=[], _ClauseCount ) ->
 	ok;
@@ -266,13 +270,12 @@ check_each_clause( [ MockupClause | _T ], ClauseCount ) ->
 
 
 
-% @doc Checks that the time specification of a clause is legit:
+-doc "Checks that the time specification of a clause is legit.".
 -spec check_time_spec_format( clause_time_spec(), clause_count() ) -> void().
 check_time_spec_format( any_time, _ClauseCount ) ->
 	ok;
 
-check_time_spec_format( TimeSpec, _ClauseCount )
-  when is_integer( TimeSpec ) ->
+check_time_spec_format( TimeSpec, _ClauseCount ) when is_integer( TimeSpec ) ->
 	ok;
 
 check_time_spec_format( TimeSpec, ClauseCount ) ->
@@ -283,7 +286,9 @@ check_time_spec_format( TimeSpec, ClauseCount ) ->
 
 
 
-% @doc Checks that the input match specifications of a clause are valid choices:
+-doc """
+Checks that the input match specifications of a clause are valid choices.
+""".
 -spec check_input_match_spec_format( [ clause_input_match_spec() ],
 									 clause_count() ) -> void().
 check_input_match_spec_format( [], _ClauseCount ) ->
@@ -308,18 +313,13 @@ check_input_match_spec_format( [ _InputMatchSpec={ IPName, IPMatchSpec } | T ],
 
 		{ between, Value1, Value2 } when is_number( Value1 ) andalso
 										 is_number( Value2 ) ->
-			case Value1 =< Value2 of
-
-				true ->
-					ok;
-
-				false ->
+			Value1 =< Value2 orelse
+                begin
 					?notify_error_fmt( "Inconsistent bounds for the 'between' "
 						"input match spec in the clause #~B of the current "
 						"mock-up unit: ~p", [ ClauseCount, IPMatchSpec ] ),
 					throw( { invalid_input_match_spec, IPMatchSpec } )
-
-			end;
+                end;
 
 		{ around, Value, Tolerance } when is_number( Value ) andalso
 										  is_number( Tolerance ) ->
@@ -341,8 +341,8 @@ check_input_match_spec_format( [ _InputMatchSpec={ IPName, IPMatchSpec } | T ],
 
 	check_input_match_spec_format( T, ClauseCount );
 
-check_input_match_spec_format(
-  [ _InputMatchSpec={ IPName, _IPMatchSpec } | _T ], ClauseCount ) ->
+check_input_match_spec_format( [ _InputMatchSpec={ IPName, _IPMatchSpec }
+                                   | _T ], ClauseCount ) ->
 	?notify_error_fmt( "The input port name of an input match specification of "
 		"the clause #~B of the current mock-up unit is not a "
 		"string: ~p", [ ClauseCount, IPName ] ),
@@ -364,17 +364,17 @@ check_input_match_spec_format( InputMatchSpecs, ClauseCount ) ->
 
 
 
-% @doc Checks that the output match specifications of a clause are valid
-% choices:
-%
+-doc """
+Checks that the output match specifications of a clause are valid choices.
+""".
 -spec check_output_match_spec_format( [ clause_output_match_spec() ],
 									  clause_count() ) -> void().
 check_output_match_spec_format( _OutputMatchSpecs=[], _ClauseCount ) ->
 	ok;
 
 check_output_match_spec_format(
-  [ _OutputMatchSpec={ OPName, OPMatchSpec } | T ], ClauseCount )
-  when is_list( OPName ) ->
+        [ _OutputMatchSpec={ OPName, OPMatchSpec } | T ],
+        ClauseCount ) when is_list( OPName ) ->
 
 	case OPMatchSpec of
 
@@ -406,8 +406,8 @@ check_output_match_spec_format(
 
 	check_output_match_spec_format( T, ClauseCount );
 
-check_output_match_spec_format(
-  [ _OutputMatchSpec={ OPName, _OPMatchSpec } | _T ], ClauseCount ) ->
+check_output_match_spec_format(  [ _OutputMatchSpec={ OPName, _OPMatchSpec }
+                                            | _T ], ClauseCount ) ->
 	?notify_error_fmt( "The output port name of an output match specification "
 		"of the clause #~B of the current mock-up unit is not "
 		"a string: ~p", [ ClauseCount, OPName ] ),
@@ -428,7 +428,7 @@ check_output_match_spec_format( OutputMatchSpecs, ClauseCount ) ->
 
 
 
-% @doc Clause per clause application.
+-doc "Clause per clause application.".
 -spec try_clause( [ mockup_clause() ], wooper:state() ) -> wooper:state().
 try_clause( _Clauses=[], State ) ->
 	State;
@@ -451,7 +451,7 @@ try_clause( [ _Clause={ any_time, InputSpecs, OutputSpecs } | T ], State ) ->
 	end;
 
 try_clause( [ _Clause={ TimeSpec, InputSpecs, OutputSpecs } | T ], State )
-  when is_integer( TimeSpec ) ->
+                                            when is_integer( TimeSpec ) ->
 
 	% Gets the simulation time:
 	SimulationStep = class_Actor:getSimulationTickOffset( State ),
@@ -498,17 +498,18 @@ try_clause( [ Clause | _T ], State ) ->
 
 
 
-% @doc Checks if the input specifications match the states of the input ports.
-%
-% This is done recursively over the list of port specifications. Any mismatch
-% will break the recursion and will make the function return 'false' (spec not
-% matched).
-%
-% (refer to the Dataflow-HOWTO documentation for more details about each kind of
-%  specification)
-%
+-doc """
+Checks if the input specifications match the states of the input ports.
+
+This is done recursively over the list of port specifications. Any mismatch will
+break the recursion and will make the function return 'false' (spec not
+matched).
+
+(refer to the Dataflow-HOWTO documentation for more details about each kind of
+specification)
+""".
 -spec check_input_specs( [ clause_input_match_spec() ], wooper:state() ) ->
-								boolean().
+                                                            boolean().
 check_input_specs( _InputMatchSpecs=[], _State ) ->
 	true;
 
@@ -534,7 +535,7 @@ check_input_specs( _InputMatchSpecs=[
 
 
 
-% @doc Performs the match checking whether an input port is unset.
+-doc "Performs the match checking whether an input port is unset.".
 check_unset_input_port( _InputPortStatusSpec=any_state, _State ) ->
 	true ;
 
@@ -570,7 +571,7 @@ check_unset_input_port( InputPortStatusSpec, State ) ->
 
 
 
-% @doc Performs the match checking whether an input port is set.
+-doc "Performs the match checking whether an input port is set.".
 check_set_input_port( _InputPortStatusSpec=any_state, _InputPortValue,
 					  _State ) ->
 	true;
@@ -615,18 +616,19 @@ check_set_input_port( InputPortStatusSpec, _InputPortValue, State ) ->
 
 
 
-% @doc Sets the specified output values to the specified output ports, as would
-% have to do any user-defined model unit inheriting from class_ProcessingUnit.
-%
-% When successful, this process automatically generates the channel values from
-% the specifications used to build the output ports (during the construction of
-% the mock-up unit).
-%
-% (refer to the Dataflow-HOWTO documentation for more details about each kind of
-%  specification)
-%
+-doc """
+Sets the specified output values to the specified output ports, as would have to
+do any user-defined model unit inheriting from class_ProcessingUnit.
+
+When successful, this process automatically generates the channel values from
+the specifications used to build the output ports (during the construction of
+the mock-up unit).
+
+(refer to the Dataflow-HOWTO documentation for more details about each kind of
+specification)
+""".
 -spec apply_output_specs( [ clause_output_match_spec() ], wooper:state() ) ->
-								wooper:state().
+                                                            wooper:state().
 apply_output_specs( _OutputMatchSpecs=[], State ) ->
 	State;
 
@@ -699,12 +701,13 @@ apply_output_specs( [ _OutputMatchSpecs={ OutputPortNameSpec,
 
 
 
-% @doc All-in-one function constructing a channel value from the user-defined
-% port description and a value, then using it to set the state of the specified
-% output port.
-%
-% (helper)
-%
+-doc """
+All-one function constructing a channel value from the user-defined port
+description and a value, then using it to set the state of the specified output
+port.
+
+(helper)
+""".
 -spec set_output_port_from_name( output_port_string_name(), actual_value(),
 								 wooper:state() ) -> wooper:state().
 set_output_port_from_name( OutputPortName, Value, State ) ->
@@ -719,7 +722,7 @@ set_output_port_from_name( OutputPortName, Value, State ) ->
 	ValueTypeDescription = type_utils:type_to_description( ValueType ),
 
 	ChannelValue = class_Dataflow:create_channel_value( Value, ValueSemantics,
-										ValueUnit, ValueTypeDescription ),
+		ValueUnit, ValueTypeDescription ),
 
 	% Sets the output port with this channel value:
 	class_DataflowBlock:set_output_port_value( OutputPortName, ChannelValue,
@@ -731,11 +734,12 @@ set_output_port_from_name( OutputPortName, Value, State ) ->
 % Helper functions dealing with the parameters defining mock-up varieties.
 
 
-% @doc Reads a DUMF file and generates from it a mock-up variety that will be
-% further instantiated by adding a name to its attributes.
-%
-% (helper)
-%
+-doc """
+Reads a DUMF file and generates from it a mock-up variety that will be further
+instantiated by adding a name to its attributes.
+
+(helper)
+""".
 -spec read_mockup_unit_spec( file_path() ) -> mockup_unit_spec().
 read_mockup_unit_spec( DUMFFilename ) ->
 
@@ -744,17 +748,13 @@ read_mockup_unit_spec( DUMFFilename ) ->
 
 	AbsolutePath = file_utils:ensure_path_is_absolute( DUMFFilename ),
 
-	case file_utils:is_existing_file_or_link( AbsolutePath ) of
-
-		true ->
-			ok;
-
-		false ->
+	file_utils:is_existing_file_or_link( AbsolutePath ) orelse
+        begin
 			?notify_error_fmt( "Error: the mock-up specification file '~ts' "
 				"could not be found on node ~p.", [ AbsolutePath, node() ] ),
 			throw( { mockup_variety_file_not_found, AbsolutePath, node() } )
 
-	end,
+        end,
 
 	MockupSpecTable = try table:new( file_utils:read_terms( AbsolutePath ) ) of
 
@@ -786,21 +786,16 @@ read_mockup_unit_spec( DUMFFilename ) ->
 
 	Keys = table:keys( MockupSpecTable ),
 
-	case lists:all( fun( ReadKey ) ->
+	lists:all( fun( ReadKey ) ->
 							lists:member( ReadKey, AllExpectedKeys )
 					end,
-					Keys ) of
+					Keys ) orelse
 
-		true ->
-			ok;
-
-		false ->
-
+        begin
 			?notify_error_fmt( "This DUMF file contains a table with either "
 				"corrupted or extra keys, among:~n~p", [ Keys ] ),
 			throw( { invalid_keys_in_dumf_table, DUMFFilename, Keys } )
-
-	end,
+        end,
 
 	[ ReadDUMFVersion, ReadUnitType, ReadAuthor, ReadAuthorContact, UnitVersion,
 	  ReadDate, ReadActPolicy, ReadIPSpecs, ReadOPSpecs, ReadMockupClauses ] =
@@ -845,7 +840,7 @@ read_mockup_unit_spec( DUMFFilename ) ->
 
 	% Checks if the ActivationPolicy provided is supported:
 	ActivationPolicy =
-					class_DataflowProcessingUnit:check_policy( ReadActPolicy ),
+		class_DataflowProcessingUnit:check_policy( ReadActPolicy ),
 
 	% Gets the specifications of the input and output ports of the targeted
 	% mock-up variety.
@@ -855,7 +850,7 @@ read_mockup_unit_spec( DUMFFilename ) ->
 	% respectively by the input_port_spec() and output_port_spec() types:
 	%
 	InputPortSpecs = [ class_DataflowBlock:parse_raw_input_port_spec( IPS )
-						|| IPS <- ReadIPSpecs ],
+                            || IPS <- ReadIPSpecs ],
 
 	OutputPortSpecs = [ class_DataflowBlock:parse_raw_output_port_spec( OPS )
 							|| OPS <- ReadOPSpecs ],
@@ -881,7 +876,7 @@ read_mockup_unit_spec( DUMFFilename ) ->
 
 
 
-% @doc Searches for specified key in specified table.
+-doc "Searches for specified key in specified table.".
 -spec parse_mockup_spec_table( table:key(), [ { atom(), term() } ],
 							   file_path() ) -> [ table:value() ].
 parse_mockup_spec_table( Key, MockupSpecTable, FileName ) ->
@@ -904,7 +899,7 @@ parse_mockup_spec_table( Key, MockupSpecTable, FileName ) ->
 % Helper functions dealing with formatted strings for displays.
 
 
-% @doc Returns a textual description of specified mock-up clauses.
+-doc "Returns a textual description of specified mock-up clauses.".
 -spec mockup_clauses_to_string( [ mockup_clause() ] ) -> ustring().
 mockup_clauses_to_string( MockupClauses ) ->
 
@@ -915,7 +910,7 @@ mockup_clauses_to_string( MockupClauses ) ->
 
 
 
-% @doc Returns a textual description of this mock-up unit.
+-doc "Returns a textual description of this mock-up unit.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

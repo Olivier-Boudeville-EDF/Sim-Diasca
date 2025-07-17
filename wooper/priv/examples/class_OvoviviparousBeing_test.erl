@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,12 +7,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Unit tests for the <b>OvoviviparousBeing class implementation</b>.
-%
-% See the class_OvoviviparousBeing.erl tested module.
-%
 -module(class_OvoviviparousBeing_test).
+
+-moduledoc """
+Unit tests for the **OvoviviparousBeing class** implementation.
+
+See the class_OvoviviparousBeing.erl tested module.
+""".
+
 
 
 -include_lib("myriad/include/test_facilities.hrl").
@@ -37,7 +39,7 @@ run( IsDebug ) ->
 	test_facilities:display( "Debug mode: ~ts.",
 							 [ class_OvoviviparousBeing:is_wooper_debug() ] ),
 
-	MyV = class_OvoviviparousBeing:synchronous_new_link( _Age=11, 
+	MyV = class_OvoviviparousBeing:synchronous_new_link( _Age=11,
 														 _Gender=male ),
 
 	MyV ! { getClassname, [], self() },

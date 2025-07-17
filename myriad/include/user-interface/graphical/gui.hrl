@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2024 Olivier Boudeville
+% Copyright (C) 2013-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,7 +26,7 @@
 % Creation date: Tuesday, January 29, 2013.
 
 
-% Header to export <b>MyriadGUI-related defines</b>, both for user code and for
+% Header to export **MyriadGUI-related defines**, both for user code and for
 % internal one - although more selective includes are to be preferred in the
 % latter case.
 %

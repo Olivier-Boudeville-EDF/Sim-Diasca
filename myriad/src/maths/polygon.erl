@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,21 +25,24 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various facilities for <b>polygon</b> management.
-%
-% When used for rendering, coordinates are expected to be often integers.
-%
-% See `polygon_test.erl' for the corresponding test.
-%
 -module(polygon).
+
+-moduledoc """
+Gathering of various facilities for **polygon** management.
+
+When used for rendering, coordinates are expected to be often integers.
+
+See `polygon_test.erl` for the corresponding test.
+""".
+
 
 
 -include("polygon.hrl").
 
 
+-doc "Describes a polygon, convex or not, simple or not.".
 -type polygon() :: #polygon{}.
-% Describes a polygon, convex or not, simple or not.
+
 
 -export_type([ polygon/0 ]).
 
@@ -67,7 +70,7 @@
 -export([ update_bounding_surface/2 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type option_list() :: option_list:option_list().
 
@@ -77,7 +80,7 @@
 -type any_vertex2() :: point2:any_vertex2().
 
 -type color() :: gui_color:color().
--type canvas() :: gui:canvas().
+-type canvas() :: gui_canvas:canvas().
 
 -type distance() :: linear:distance().
 -type square_distance() :: linear:square_distance().
@@ -86,21 +89,23 @@
 -type bounding_algorithm() :: bounding_surface:bounding_algorithm().
 
 
+
 % Construction-related section.
 
 
-% @doc Returns a triangle (defined as a polygon) corresponding to the specified
-% three vertices.
-%
+-doc """
+Returns a triangle (defined as a polygon) corresponding to the specified three
+vertices.
+""".
 -spec get_triangle( any_point2(), any_point2(), any_point2() ) -> polygon().
 get_triangle( P1, P2, P3 ) ->
 	#polygon{ vertices=[ P1, P2, P3 ] }.
 
 
 
-% @doc Returns an upright square corresponding to the specified center and edge
-% length.
-%
+-doc """
+Returns an upright square corresponding to the specified center and edge length.
+""".
 -spec get_upright_square( any_vertex2(), distance() ) -> polygon().
 get_upright_square( _Center={Xc,Yc}, EdgeLength ) ->
 	Offset = erlang:round( EdgeLength / 2 ),
@@ -112,7 +117,7 @@ get_upright_square( _Center={Xc,Yc}, EdgeLength ) ->
 
 
 
-% @doc Returns a new polygon whose vertices are the specified ones.
+-doc "Returns a new polygon whose vertices are the specified ones.".
 -spec get_polygon( [ any_vertex2() ] ) -> polygon().
 get_polygon( Vertices ) ->
 	#polygon{ vertices=Vertices }.
@@ -122,12 +127,13 @@ get_polygon( Vertices ) ->
 % Operations on polygons.
 
 
-% @doc Returns a polygon diameter, that is two points in the polygon that are at
-% the maximum distance one of the other.
-%
-% Returns {P1,P2,D} when P1 and P2 are the endpoints of a diameter and SquareD
-% is its square length: `SquareD = square_distance(P1, P2)'.
-%
+-doc """
+Returns a polygon diameter, that is two points in the polygon that are at the
+maximum distance one of the other.
+
+Returns {P1,P2,D} when P1 and P2 are the endpoints of a diameter and SquareD is
+its square length: `SquareD = square_distance(P1, P2)`.
+""".
 -spec get_diameter( polygon() ) ->
 				{ any_vertex2(), any_vertex2(), square_distance() }.
 get_diameter( Polygon ) ->
@@ -148,12 +154,12 @@ get_diameter( Polygon ) ->
 
 
 
-% @doc Returns the smallest upright rectangle that encompasses the specified
-% polygon.
-%
-% More precisely a {TopLeftCorner, BottomRightCorner} pair is returned, which
-% defines the rectangle from two opposite points.
-%
+-doc """
+Returns the smallest upright rectangle that encompasses the specified polygon.
+
+More precisely a {TopLeftCorner, BottomRightCorner} pair is returned, which
+defines the rectangle from two opposite points.
+""".
 -spec get_smallest_enclosing_rectangle( polygon() ) ->
 											{ any_point2(), any_point2() }.
 get_smallest_enclosing_rectangle( Polygon ) ->
@@ -174,26 +180,28 @@ get_smallest_enclosing_rectangle( Polygon ) ->
 
 
 
-% @doc Returns the (unsigned) area enclosed of the polygon, supposed to be
-% non-self-intersecting and having at least two vertices.
-%
-% Vertices can be listed clockwise or counter-clockwise.
-%
-% Should there be no absolute value computed, and should the polygon be convex,
-% then the area would be positive iff vertices were listed in counter-clockwise
-% order.
-%
-% See [http://en.wikipedia.org/wiki/Polygon#Area_and_centroid].
-%
+-doc """
+Returns the (unsigned) area enclosed of the polygon, supposed to be
+non-self-intersecting and having at least two vertices.
+
+Vertices can be listed clockwise or counter-clockwise.
+
+Should there be no absolute value computed, and should the polygon be convex,
+then the area would be positive iff vertices were listed in counter-clockwise
+order.
+
+See <http://en.wikipedia.org/wiki/Polygon#Area_and_centroid>.
+""".
 -spec get_area( polygon() ) -> area().
 get_area( Polygon ) ->
 	erlang:abs( get_signed_area( Polygon#polygon.vertices ) ).
 
 
 
-% @doc Tells whether the specified polygon has its vertices in clockwise order
-% (otherwise they are in counter-clockwise order).
-%
+-doc """
+Tells whether the specified polygon has its vertices in clockwise order
+(otherwise they are in counter-clockwise order).
+""".
 -spec is_in_clockwise_order( polygon() ) -> boolean().
 is_in_clockwise_order( Polygon ) ->
 	case get_signed_area( Polygon#polygon.vertices ) of
@@ -208,11 +216,11 @@ is_in_clockwise_order( Polygon ) ->
 
 
 
-% @doc Tells whether the specified polygon is convex (iff true) or concave
-% (otherwise).
-%
-% Polygon must have at least one vertex.
-%
+-doc """
+Tells whether the specified polygon is convex (iff true) or concave (otherwise).
+
+Polygon must have at least one vertex.
+""".
 -spec is_convex( polygon() ) -> boolean().
 is_convex( Polygon ) ->
 	[ First | T ] = Polygon#polygon.vertices,
@@ -283,7 +291,7 @@ is_convex( [ V={X,Y} | T ], _Previous={Xp,Yp}, Sign ) ->
 % Color-related section.
 
 
-% @doc Sets the edge color of specified polygon.
+-doc "Sets the edge color of specified polygon.".
 -spec set_edge_color( color(), polygon() ) -> polygon().
 set_edge_color( Color, Polygon ) ->
 	Polygon#polygon{ rendering=option_list:set(
@@ -292,19 +300,21 @@ set_edge_color( Color, Polygon ) ->
 
 
 
-% @doc Returns the current edge color of the specified polygon, if specified,
-% otherwise 'undefined'.
-%
--spec get_edge_color( polygon() ) -> maybe( color() ).
+-doc """
+Returns the current edge color of the specified polygon, if specified, otherwise
+'undefined'.
+""".
+-spec get_edge_color( polygon() ) -> option( color() ).
 get_edge_color( Polygon ) ->
 	option_list:lookup( edge_color, Polygon#polygon.rendering ).
 
 
 
-% @doc Sets the fill color of the specified polygon.
-%
-% Use 'none' to disable filling.
-%
+-doc """
+Sets the fill color of the specified polygon.
+
+Use 'none' to disable filling.
+""".
 -spec set_fill_color( color(), polygon() ) -> polygon().
 set_fill_color( Color, Polygon ) ->
 	Polygon#polygon{ rendering=option_list:set(
@@ -313,28 +323,31 @@ set_fill_color( Color, Polygon ) ->
 
 
 
-% @doc Returns the current fill color of the specified polygon, if specified,
-% otherwise 'undefined'.
-%
--spec get_fill_color( polygon() ) -> maybe( color() ).
+-doc """
+Returns the current fill color of the specified polygon, if specified, otherwise
+'undefined'.
+""".
+-spec get_fill_color( polygon() ) -> option( color() ).
 get_fill_color( Polygon ) ->
 	option_list:lookup( _Key=fill, _OptionList=Polygon#polygon.rendering ).
 
 
 
-% @doc Returns options for the rendering of this polygon that can be directly
-% passed to the graphical back-end.
-%
+-doc """
+Returns options for the rendering of this polygon that can be directly passed to
+the graphical backend.
+""".
 -spec get_rendering_options( polygon() ) -> option_list().
 get_rendering_options( Polygon ) ->
 	Polygon#polygon.rendering.
 
 
 
-% @doc Renders specified polygon in specified canvas.
-%
-% Throws an exception if the polygon is not valid.
-%
+-doc """
+Renders specified polygon in specified canvas.
+
+Throws an exception if the polygon is not valid.
+""".
 -spec render( polygon(), canvas() ) -> void().
 render( Polygon, Canvas ) ->
 
@@ -393,7 +406,7 @@ render( Polygon, Canvas ) ->
 
 
 
-% @doc Returns a textual description of the specified polygon.
+-doc "Returns a textual description of the specified polygon.".
 -spec to_string( polygon() ) -> ustring().
 to_string( Polygon ) ->
 
@@ -418,14 +431,14 @@ to_string( Polygon ) ->
 % Bounding-surface related section.
 
 
-% @doc Updates, for the specified polygon, its internal bounding surface, with
-% regard to the specified bounding-surface algorithm.
-%
-% Returns a polygon with updated information.
-%
-% @end
-%
-% The lazy bounding circle is fast to determine, but not optimal:
+-doc """
+Updates, for the specified polygon, its internal bounding surface, with regard
+to the specified bounding-surface algorithm.
+
+Returns a polygon with updated information.
+
+The lazy bounding circle is fast to determine, but not optimal:
+""".
 -spec update_bounding_surface( bounding_algorithm(), polygon() ) -> polygon().
 update_bounding_surface( lazy_circle, Polygon ) ->
 
@@ -440,11 +453,12 @@ update_bounding_surface( lazy_circle, Polygon ) ->
 % Helper functions.
 
 
-% @doc Returns the signed area enclosed of the polygon, supposed to be
-% non-self-intersecting and having at least two vertices.
-%
-% Vertices can be listed clockwise or counter-clockwise.
-%
+-doc """
+Returns the signed area enclosed of the polygon, supposed to be
+non-self-intersecting and having at least two vertices.
+
+Vertices can be listed clockwise or counter-clockwise.
+""".
 -spec get_signed_area( [ any_vertex2() ] ) -> area().
 get_signed_area( _Vertices=[ First | T ] ) ->
 
@@ -454,7 +468,7 @@ get_signed_area( _Vertices=[ First | T ] ) ->
 	get_signed_area( T, _FirstOfAll=First, _Previous=First, _Area=0 ).
 
 
-
+% (helper)
 get_signed_area( _Vertices=[ _Last={X,Y} ], _FirstOfAll={Xf,Yf},
 				 _Previous={Xp,Yp}, Area ) ->
 

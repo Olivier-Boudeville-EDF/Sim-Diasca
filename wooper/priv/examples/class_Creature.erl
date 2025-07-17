@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,9 +7,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Top-level class modelling any kind of creature.
 -module(class_Creature).
+
+-moduledoc """
+Top-level class modelling **any kind of creature**.
+""".
 
 
 -define( class_description, "Top-level class modelling any kind of creature." ).
@@ -39,13 +41,13 @@
 -include("ecosystem_types.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a creature instance.
+-doc "Constructs a creature instance.".
 -spec construct( wooper:state(), age(), gender() ) -> wooper:state().
 construct( State, Age, Gender ) ->
 	% No mother class.
@@ -56,14 +58,14 @@ construct( State, Age, Gender ) ->
 % Method implementations.
 
 
-% @doc Returns the age of this creature.
+-doc "Returns the age of this creature.".
 -spec getAge( wooper:state() ) -> const_request_return( age() ).
 getAge( State ) ->
 	wooper:const_return_result( ?getAttr(age) ).
 
 
 
-% @doc Sets the age of this creature.
+-doc "Sets the age of this creature.".
 -spec setAge( wooper:state(), age() ) -> oneway_return().
 setAge( State, _NewAge ) ->
 	% Mother implementation chosen faulty to check override:
@@ -71,7 +73,7 @@ setAge( State, _NewAge ) ->
 
 
 
-% @doc Increments the age of this creature.
+-doc "Increments the age of this creature.".
 -spec declareBirthday( wooper:state() ) -> oneway_return().
 declareBirthday( State ) ->
 	wooper:return_state(
@@ -79,26 +81,27 @@ declareBirthday( State ) ->
 
 
 
-% @doc Returns the gender of this creature.
+-doc "Returns the gender of this creature.".
 -spec getGender( wooper:state() ) -> const_request_return( gender() ).
 getGender( State ) ->
 	wooper:const_return_result( ?getAttr(gender) ).
 
 
 
-% @doc Returns a class-specific arbitrary number.
+-doc "Returns a class-specific arbitrary number.".
 getArbitraryNumber( State ) ->
 	wooper:const_return_result( 10 ).
 
 
 
-% @doc Tests direct (synchronous) self-invocation of methods (oneway).
-%
-% To be called only from a Mammal instance, as there is an hardcoded
-% pattern-matching that should work only for a Mammal.
-%
-% Must not be called from the Creature test, otherwise will fail.
-%
+-doc """
+Tests direct (synchronous) self-invocation of methods (oneway).
+
+To be called only from a Mammal instance, as there is an hardcoded
+pattern-matching that should work only for a Mammal.
+
+Must not be called from the Creature test, otherwise will fail.
+""".
 -spec testDirectMethodExecution( wooper:state(), age() ) -> oneway_return().
 testDirectMethodExecution( State, NewAge ) ->
 
@@ -132,15 +135,16 @@ testDirectMethodExecution( State, NewAge ) ->
 
 
 
-% @doc Allows to test that calling an attribute macro with a state parameter
-% returned by a function will trigger that function only once.
-%
-% Indeed a faulty implementation, due to a macro pitfall, used to make a
-% statement like 'setAttribute( f(State), attr, value )' call f/1 twice.
-%
-% The returned value of the setAttribute call was correct, but any side-effect
-% triggered by f/1 (sending a message, writing a trace, etc.) happened twice.
-%
+-doc """
+Allows to test that calling an attribute macro with a state parameter returned
+by a function will trigger that function only once.
+
+Indeed a faulty implementation, due to a macro pitfall, used to make a statement
+like `setAttribute(f(State), attr, value)` call f/1 twice.
+
+The returned value of the setAttribute call was correct, but any side-effect
+triggered by f/1 (sending a message, writing a trace, etc.) happened twice.
+""".
 -spec testSingleExecution( wooper:state() ) -> oneway_return().
 testSingleExecution( State ) ->
 	wooper:return_state(
@@ -158,16 +162,17 @@ side_effect_function( State ) ->
 
 
 
-% Helper function.
+% Helper functions.
 
 
-% @doc Just to show it can exist.
+-doc "Just to show it can exist.".
 -spec example_fun() -> 'ok'.
 example_fun() ->
 	ok.
 
 
-% @doc This looks like a method, but it is not (returning only a string).
+
+-doc "This looks like a method, but it is not (returning only a string).".
 -spec toString( wooper:state() ) -> ustring().
 toString( State ) ->
 	table:to_string( State#state_holder.attribute_table ).

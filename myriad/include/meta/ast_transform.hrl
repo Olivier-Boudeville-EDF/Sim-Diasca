@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -36,36 +36,36 @@
 
 	% Transformations (if any) defined for module-local types:
 	local_types = undefined ::
-		basic_utils:maybe( ast_transform:local_type_transform_table() ),
+		type_utils:option( ast_transform:local_type_transform_table() ),
 
 
 	% Transformations (if any) defined for remote types:
 	remote_types = undefined ::
-		basic_utils:maybe( ast_transform:remote_type_transform_table() ),
+		type_utils:option( ast_transform:remote_type_transform_table() ),
 
 
 	% Transformations (if any) defined for module-local calls:
 	local_calls = undefined ::
-		basic_utils:maybe( ast_transform:local_call_transform_table() ),
+		type_utils:option( ast_transform:local_call_transform_table() ),
 
 
 	% Transformations (if any) defined for remote calls:
 	remote_calls = undefined ::
-		basic_utils:maybe( ast_transform:remote_call_transform_table() ),
+		type_utils:option( ast_transform:remote_call_transform_table() ),
 
 
 	% Allows to record the name of the module being transformed (useful for
 	% example for error messages, to report the source filename):
 	%
 	transformed_module_name = undefined ::
-		basic_utils:maybe( basic_utils:module_name() ),
+		type_utils:option( basic_utils:module_name() ),
 
 
 	% Allows to record the name and arity of the function (if any) being
 	% transformed (useful for example for error messages):
 	%
 	transformed_function_identifier = undefined ::
-		basic_utils:maybe( meta_utils:function_id() ),
+		type_utils:option( meta_utils:function_id() ),
 
 
 	% Records the transformations (if any) to be applied on AST elements as a
@@ -75,7 +75,7 @@
 	% Triggers currently supported: 'call', 'body'.
 	%
 	transform_table = undefined ::
-		basic_utils:maybe( ast_transform:ast_transform_table() ),
+		type_utils:option( ast_transform:ast_transform_table() ),
 
 
 	% Any user-defined transformation state that is to be kept and updated

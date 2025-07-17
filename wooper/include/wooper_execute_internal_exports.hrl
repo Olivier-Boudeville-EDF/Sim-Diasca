@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,24 +23,21 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Modular WOOPER header gathering export for all direct primitives for method
-% execution.
+% Modular WOOPER header gathering **exports** for all direct primitives for
+% method execution.
 
 
 % These methods/functions are defined for all classes:
-%
--export([
-		 wooper_execute_method/3,
-		 wooper_execute_method_as/4,
+-export([ wooper_execute_method/3,
+		  wooper_execute_method_as/4,
 
-		 wooper_effective_method_execution/4,
+		  wooper_effective_method_execution/4,
 
-		 wooper_handle_remote_request_execution/4,
-		 wooper_handle_local_request_execution/3,
+		  wooper_handle_remote_request_execution/4,
+		  wooper_handle_local_request_execution/3,
 
-		 wooper_handle_remote_oneway_execution/3,
-		 wooper_handle_local_oneway_execution/3
-
-		]).
+		  wooper_handle_remote_oneway_execution/3,
+		  wooper_handle_local_oneway_execution/3 ]).

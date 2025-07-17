@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, October 9, 2021.
 
-
-% @doc Module implementing the support for <b>2D points</b>.
-%
-% See also:
-% - the corresponding vectors (in vector2.erl) and matrices (in matrix3.erl)
-% - the (unspecialised) points of arbitrary dimensions, in point.erl
-% - the various 2D services in linear_2D.erl
-%
 -module(point2).
+
+-moduledoc """
+Module implementing the support for **2D points**.
+
+See also:
+- the corresponding vectors (in `vector2.erl`) and matrices (in `matrix3.erl`)
+- the (unspecialised) points of arbitrary dimensions, in `point.erl`
+- the various 2D services in `linear_2D.erl`
+""".
+
 
 
 % For printout_*, inline_size, etc.:
@@ -51,33 +53,44 @@
 -include("math_utils.hrl").
 
 
+
+-doc """
+A user-specified point, preferably as a tuple, otherwise as a list (hence as a
+vector), with two integer or floating-point coordinates.
+""".
 -type user_point2() :: any_point2()
 					 | [ coordinate() ] | [ integer_coordinate() ].
-% A user-specified point, preferably as a tuple, otherwise as a list (hence as a
-% vector), with two integer or floating-point coordinates.
 
 
+
+-doc "A point in a 2D space, with (exactly) 2 floating-point coordinates.".
 -type point2() :: { X :: coordinate(), Y :: coordinate() }.
-% A point in a 2D space, with (exactly) 2 floating-point coordinates.
 
 
+
+-doc "A point in a 2D space, with (exactly) 2 integer coordinates.".
 -type integer_point2() :: { X :: integer_coordinate(),
 							Y :: integer_coordinate() }.
- % A point in a 2D space, with (exactly) 2 integer coordinates.
 
 
+
+-doc "A point in a 2D space, with any numerical coordinates (2 of them).".
 -type any_point2() :: point2() | integer_point2().
-% A point in a 2D space, with any numerical coordinates (2 of them).
 
 
+
+-doc "A 2D (floating-point) vertex of a polygon.".
 -type vertex2() :: point2().
-% A 2D (floating-point) vertex of a polygon.
 
+
+
+-doc "A 2D integer vertex of a polygon.".
 -type integer_vertex2() :: point2().
-% A 2D integer vertex of a polygon.
 
+
+
+-doc "A 2D vertex of a polygon, with any numerical coordinates (2 of them).".
 -type any_vertex2() :: any_point2().
-% A 2D vertex of a polygon, with any numerical coordinates (2 of them).
 
 
 -export_type([ user_point2/0, point2/0, integer_point2/0, any_point2/0,
@@ -101,7 +114,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -122,12 +135,13 @@
 
 
 
-% @doc Returns a 2D point corresponding to the user-specified one (preferably a
-% tuple rather than a list).
-%
-% We do not check whether all coordinates are either integer or floating-point
-% ones.
-%
+-doc """
+Returns a 2D point corresponding to the user-specified one (preferably a tuple
+rather than a list).
+
+We do not check whether all coordinates are either integer or floating-point
+ones.
+""".
 -spec new( user_point2() ) -> any_point2().
 new( [ P1, P2 ] ) ->
 	{ P1, P2 };
@@ -137,14 +151,14 @@ new( UserPoint2 ) when is_tuple( UserPoint2 ) ->
 
 
 
-% @doc Returns a 2D point corresponding to the user-specified one.
+-doc "Returns a 2D point corresponding to the user-specified one.".
 -spec new( user_coordinate(), user_coordinate() ) -> point2().
 new( X, Y ) ->
 	{ type_utils:ensure_float( X ), type_utils:ensure_float( Y ) }.
 
 
 
-% @doc Returns an integer 2D point corresponding to the user-specified one.
+-doc "Returns an integer 2D point corresponding to the user-specified one.".
 -spec new_integer( integer_coordinate(), integer_coordinate() ) ->
 			integer_point2().
 new_integer( X, Y ) when is_integer( X ) andalso is_integer( Y ) ->
@@ -152,9 +166,10 @@ new_integer( X, Y ) when is_integer( X ) andalso is_integer( Y ) ->
 
 
 
-% @doc Returns a 2D point whose coordinates are all null, that is the origin of
-% the local referential.
-%
+-doc """
+Returns a 2D point whose coordinates are all null, that is the origin of the
+local coordinate system.
+""".
 -spec null() -> point2().
 null() ->
 	Zero = 0.0,
@@ -162,86 +177,96 @@ null() ->
 
 
 
-% @doc Returns a 2D point corresponding to the specified vector (expected to be
-% type-homogeneous).
-%
+-doc """
+Returns a 2D point corresponding to the specified vector (expected to be
+type-homogeneous).
+""".
 -spec from_vector( any_vector2() ) -> any_point2().
 from_vector( [ X, Y ] ) ->
 	{ X, Y }.
 
 
 
-% @doc Returns a 2D vector (with floating-vector coordinates) corresponding to
-% the specified 2D point.
-%
+-doc """
+Returns a 2D vector (with floating-vector coordinates) corresponding to the
+specified 2D point.
+""".
 -spec to_vector( any_point2() ) -> vector2().
 to_vector( { X, Y } ) ->
 	[ type_utils:ensure_float( X ), type_utils:ensure_float( Y ) ].
 
 
-% @doc Returns a 2D vector (with coordinates of the same type) corresponding to
-% the specified 2D point.
-%
+
+-doc """
+Returns a 2D vector (with coordinates of the same type) corresponding to the
+specified 2D point.
+""".
 -spec to_any_vector( any_point2() ) -> any_vector2().
 to_any_vector( { X, Y } ) ->
 	[ X, Y ].
 
 
 
-% @doc Returns a binary buffer of floats, corresponding to the specified points.
-%
-% Typically suitable for OpenGL.
-%
+-doc """
+Returns a binary buffer of floats, corresponding to the specified points.
+
+Typically suitable for OpenGL.
+""".
 -spec to_buffer( [ any_point2() ] ) -> binary().
 to_buffer( Points ) ->
 	<< <<X:?F32, Y:?F32>> || { X, Y } <- Points >>.
 
 
 
-% @doc Returns a point whose floating-point coordinates have been rounded to the
-% respective nearest integers.
-%
+-doc """
+Returns a point whose floating-point coordinates have been rounded to the
+respective nearest integers.
+""".
 -spec roundify( point2() ) -> integer_point2().
 roundify( _P={X,Y} ) ->
 	{ erlang:round(X), erlang:round(Y) }.
 
 
 
-% @doc Returns a point corresponding the midpoint (middle) of the two specified
-% points.
-%
+-doc """
+Returns a point corresponding the midpoint (middle) of the two specified points.
+""".
 -spec get_center( any_point2(), any_point2() ) -> point2().
 get_center( _P1={X1,Y1}, _P2={X2,Y2} ) ->
 	{ (X1+X2)/2, (Y1+Y2)/2 }.
 
 
 
-% @doc Returns a point corresponding the middle of the two specified points,
-% returned with integer coordinates.
-%
+-doc """
+Returns a point corresponding the middle of the two specified points, returned
+with integer coordinates.
+""".
 -spec get_integer_center( point2(), point2() ) -> integer_point2().
 get_integer_center( P1, P2 ) ->
 	roundify( get_center( P1, P2 ) ).
 
 
 
-% @doc Returns a point corresponding to the specified point translated of the
-% specified vector.
-%
+-doc """
+Returns a point corresponding to the specified point translated of the specified
+vector.
+""".
 -spec translate( any_point2(), any_vector2() ) -> any_point2().
 translate( _P={X,Y}, _V=[Vx,Vy] ) ->
 	{ X+Vx, Y+Vy }.
 
 
 
-% @doc Scales the specified 2D point of the specified scalar factor.
+-doc "Scales the specified 2D point of the specified scalar factor.".
 -spec scale( any_point2(), factor() ) -> point2().
 scale( _P={X,Y}, Factor ) ->
 	{ Factor*X, Factor*Y }.
 
 
 
-% @doc Returns a vector V made from the specified two points P1 and P2: V=P2-P1.
+-doc """
+Returns a vector V made from the specified two points P1 and P2: V=P2-P1.
+""".
 -spec vectorize( point2(), point2() ) -> vector2();
 			   ( integer_point2(), integer_point2() ) -> integer_vector2().
 vectorize( _P1={X1,Y1}, _P2={X2,Y2} ) ->
@@ -249,39 +274,42 @@ vectorize( _P1={X1,Y1}, _P2={X2,Y2} ) ->
 
 
 
-% @doc Returns a point corresponding to the specified point translated of the
-% specified point, to be understood as a vector.
-%
-% May be useful to offset points by sizes.
-%
+-doc """
+Returns a point corresponding to the specified point translated of the specified
+point, to be understood as a vector.
+
+May be useful to offset points by sizes.
+""".
 -spec add( any_point2(), any_point2() ) -> any_point2().
 add( _P1={X1,Y1}, _P2={X2,Y2} ) ->
 	{ X1+X2, Y1+Y2 }.
 
 
 
-% @doc Returns whether the two specified 2D points are close, that is if they
-% could be considered as representing the same point (equality operator on
-% points).
-%
+-doc """
+Returns whether the two specified 2D points are close, that is if they could be
+considered as representing the same point (equality operator on points).
+""".
 -spec are_close( point2(), point2() ) -> boolean().
 are_close( P1, P2 ) ->
 	are_equal( P1, P2 ).
 
 
-% @doc Returns whether the two specified 2D points are equal, that is if they
-% could be considered as representing the same point (equality operator on
-% points).
-%
+
+-doc """
+Returns whether the two specified 2D points are equal, that is if they could be
+considered as representing the same point (equality operator on points).
+""".
 -spec are_equal( point2(), point2() ) -> boolean().
 are_equal( _P1={X1,Y1}, _P2={X2,Y2} ) ->
 	math_utils:are_close( X1, X2 ) andalso math_utils:are_close( Y1, Y2 ).
 
 
 
-% @doc Tells whether the specified 2D point P1 is within a distance D from 2D
-% point P2, using some margin to overcome numerical errors.
-%
+-doc """
+Tells whether the specified 2D point P1 is within a distance D from 2D point P2,
+using some margin to overcome numerical errors.
+""".
 -spec is_within( point2(), point2(), distance() ) -> boolean().
 is_within( P1, P2, D ) ->
 	% "Taylor series", square(epsilon) is negligible here:
@@ -289,21 +317,23 @@ is_within( P1, P2, D ) ->
 
 
 
-% @doc Tells whether the specified 2D point P1 is within a square distance
-% SquareD from 2D point P2.
-%
+-doc """
+Tells whether the specified 2D point P1 is within a square distance SquareD from
+2D point P2.
+""".
 -spec is_within_square( point2(), point2(), square_distance() ) -> boolean().
 is_within_square( P1, P2, SquareD ) ->
 	square_distance( P1, P2 ) < SquareD.
 
 
 
-% @doc Returns the square of the distance between the two specified 2D points.
-%
-% For comparison purposes, computing the square root is useless.
-%
-% Could rely on vectorize and square_magnitude as well.
-%
+-doc """
+Returns the square of the distance between the two specified 2D points.
+
+For comparison purposes, computing the square root is useless.
+
+Could rely on vectorize and square_magnitude as well.
+""".
 -spec square_distance( point2(), point2() ) -> square_distance().
 square_distance( _P1={X1,Y1}, _P2={X2,Y2} ) ->
 
@@ -314,19 +344,20 @@ square_distance( _P1={X1,Y1}, _P2={X2,Y2} ) ->
 
 
 
-% @doc Returns the distance between the two specified 2D points.
-%
-% Note: just for comparison purposes, computing the square root is useless.
-%
+-doc """
+Returns the distance between the two specified 2D points.
+
+Note: just for comparison purposes, computing the square root is useless.
+""".
 -spec distance( point2(), point2() ) -> distance().
 distance( P1, P2 ) ->
 	math:sqrt( square_distance( P1, P2 ) ).
 
 
 
-% @doc Draws a random point between specified (included) bounds (for both
-% dimensions).
-%
+-doc """
+Draws a random point between specified (included) bounds (for both dimensions).
+""".
 -spec draw_integer_random( integer_coordinate(), integer_coordinate() ) ->
 											integer_point2().
 draw_integer_random( Min, Max ) ->
@@ -334,9 +365,11 @@ draw_integer_random( Min, Max ) ->
 	{ X, Y }.
 
 
-% @doc Draws the specified number of random points between specified (included)
-% bounds (for both dimensions).
-%
+
+-doc """
+Draws the specified number of random points between specified (included) bounds
+(for both dimensions).
+""".
 -spec draw_integer_random( integer_coordinate(), integer_coordinate(),
 						   count() ) -> [ integer_point2() ].
 draw_integer_random( Min, Max, Count ) ->
@@ -353,34 +386,36 @@ gather_as_points( _Coords=[ X, Y | T ], Acc ) ->
 
 
 
-% @doc Checks that the specified 2D point is legit, and returns it.
+-doc "Checks that the specified 2D point is legit, and returns it.".
 -spec check( point2() ) -> point2().
 check( P ) ->
 	point:check( P ).
 
 
 
-% @doc Returns a textual representation of the specified 2D point; full float
-% precision is shown.
-%
+-doc """
+Returns a textual representation of the specified 2D point; full float precision
+is shown.
+""".
 -spec to_string( any_point2() ) -> ustring().
 to_string( Point2 ) ->
 	to_user_string( Point2 ).
 
 
 
-% @doc Returns a compact, textual, informal representation of the specified
-% 2D point.
-%
+-doc """
+Returns a compact, textual, informal representation of the specified 2D point.
+""".
 -spec to_compact_string( any_point2() ) -> ustring().
 to_compact_string( Point2 ) ->
 	text_utils:format( "~w", [ Point2 ] ).
 
 
 
-% @doc Returns a basic, not even fixed-width for floating-point coordinates (see
-% linear.hrl for width and precision) representation of the specified 2D point.
-%
+-doc """
+Returns a basic, not even fixed-width for floating-point coordinates (see
+linear.hrl for width and precision) representation of the specified 2D point.
+""".
 -spec to_basic_string( any_point2() ) -> ustring().
 to_basic_string( _Point={ X, Y } ) ->
 
@@ -408,11 +443,12 @@ to_basic_string( _Point={ X, Y } ) ->
 
 
 
-% @doc Returns a textual, more user-friendly representation of the specified
-% 2D point; full float precision is shown.
-%
-% This is the recommended representation.
-%
+-doc """
+Returns a textual, more user-friendly representation of the specified 2D point;
+full float precision is shown.
+
+This is the recommended representation.
+""".
 -spec to_user_string( any_point2() ) -> ustring().
 to_user_string( _Point={ X, Y } ) ->
 
@@ -430,11 +466,11 @@ to_user_string( _Point={ X, Y } ) ->
 
 
 
-
-% @doc Returns a human-friendly, approximated textual representation of
-% specified point, based on specified print-out precision (number of digits
-% after the comma).
-%
+-doc """
+Returns a human-friendly, approximated textual representation of specified
+point, based on specified print-out precision (number of digits after the
+comma).
+""".
 -spec to_string( point2(), basic_utils:count() ) -> ustring().
 to_string( { X, Y }, DigitCountAfterComma ) ->
 

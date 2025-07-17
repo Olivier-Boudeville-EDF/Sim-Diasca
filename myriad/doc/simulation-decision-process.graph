@@ -1,0 +1,62 @@
+digraph G {
+
+
+	node [
+		shape = "rectangle"
+		style = "filled"
+		fillcolor = "#ececff"
+	]
+
+	PROP   [ label = "Define the desired properties" ]
+
+	DET    [ label = "Determine a candidate system" ]
+    MODL   [ label = "Model it" ]
+    SIM    [ label = "Simulate it" ]
+	RANK   [ label = "Rank it" ]
+    RET    [ label = "Retain it for proposal" ]
+
+    node [
+		shape = "note"
+		style = "filled"
+		fillcolor = "#ffffe0"
+	]
+
+	subgraph cluster_prop {
+
+		color=transparent
+
+		PROPHINT [ label = "Domain-specific\nRequirements", rank = same ]
+        PROPHINT -> PROP [ arrowhead = none, style = dashed, constraint = false ]
+
+	}
+
+
+	subgraph cluster_det {
+
+		color=transparent
+
+		DETHINT [ label = "Directly specified\nor generated", rank = same ]
+		DETHINT -> DET [ arrowhead = none, style = dashed, constraint = false ]
+
+    }
+
+    PROP -> DET;
+	DET  -> MODL;
+	MODL -> SIM;
+	SIM  -> RANK;
+	RANK -> DET [ label = " If not satisfying" ];
+	RANK -> RET [ label = " If satisfying" ];
+
+    // Title:
+    labelloc="t";
+
+	// Newline used to create a small vertical margin:
+    label="Classical Simulation-based Decision Process\n ";
+
+	fontname = "Bitstream Vera Sans"
+    fontsize  = 20
+    fontcolor = "#3232dd"
+
+	pad = 0.1
+
+}

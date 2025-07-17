@@ -4,11 +4,11 @@
 #target_mode='eval'
 target_mode='run'
 
-usage="Usage: $(basename $0) [-h|--help] [-n|--non-interactive] [-epmd] [PROG_NAME]: interactively terminates otherwise kills the user-selected Erlang (BEAM) virtual machines that were launched thanks to '-${target_mode}'.
+usage="Usage: $(basename $0) [-h|--help] [-n|--non-interactive] [-e|--epmd] [PROG_NAME]: interactively terminates otherwise kills the user-selected Erlang (BEAM) virtual machines that were launched thanks to '-${target_mode}'.
 
   Options (in that order):
 	-n or --non-interactive: no user acknowledgement will be requested before killing (use with care!)
-	-epmd: kills also any EPMD daemon found
+	-e or --epmd: kills also any EPMD daemon found
 	PROG_NAME: only the processes started as '-${target_mode} PROG_NAME' will be selected for killing
 
 For example: $(basename $0) -n foobar_app
@@ -36,7 +36,7 @@ if [ "$1" = "-n" ] || [ "$1" = "--non-interactive" ]; then
 fi
 
 
-if [ "$1" = "-epmd" ]; then
+if [ "$1" = "-e" ] || [ "$1" = "--epmd" ]; then
 
 	#echo "(EPMD daemons will be killed as well)"
 	kill_epmds=0
@@ -63,7 +63,7 @@ for target_pid in $(ps -edf | grep beam.smp | grep " -${target_mode} ${prog_name
 
 		   done ); do
 
-	if [ $is_interactive eq 0 ]; then
+	if [ $is_interactive -eq 0 ]; then
 
 		mfa="$(ps -p "${target_pid}" -o cmd= | sed "s|^.*${target_mode} ||1" | sed 's|\(\) .*$||1')"
 
@@ -133,41 +133,21 @@ if [ $kill_epmds -eq 0 ]; then
 
 	if [ -n "${epmd_pids}" ]; then
 
-		echo "EPMD daemon(s) found; kill as well? [y/N]"
-		read answer
+		if [ $is_interactive -eq 0 ]; then
 
-		if [ "${answer}" = "y" ]; then
+			echo "EPMD daemon(s) found; kill as well? [y/N]"
+			read answer
 
-			for target_pid in ${epmd_pids}; do
+			if [ "${answer}" != "y" ]; then
 
-				kill ${target_pid}
+				echo "(no EPMD killing accepted)"
 
-			done
-
-			# Hopefully enough:
-			sleep 1
-
-			epmd_pids="$(ps -edf | grep 'epmd -daemon' | grep -v grep | awk '{print $2}')"
-
-			if [ -n "${epmd_pids}" ]; then
-
-				echo "(EPMD processes ${epmd_pids} survived TERM signal; killing them for good)"
+				exit
 
 			fi
 
-			for target_pid in ${epmd_pids}; do
-
-				kill -9 "${target_pid}" && echo "Killed!"
-
-			done
-
-		else
-
-			echo "(termination cancelled)"
-
 		fi
 
-	else
 
 		for target_pid in ${epmd_pids}; do
 
@@ -180,11 +160,21 @@ if [ $kill_epmds -eq 0 ]; then
 
 		epmd_pids="$(ps -edf | grep 'epmd -daemon' | grep -v grep | awk '{print $2}')"
 
+		if [ -n "${epmd_pids}" ]; then
+
+			echo "(EPMD processes ${epmd_pids} survived TERM signal; killing them for good)"
+
+		fi
+
 		for target_pid in ${epmd_pids}; do
 
 			kill -9 "${target_pid}" && echo "Killed!"
 
 		done
+
+	else
+
+		echo "(no EPMD process found)"
 
 	fi
 

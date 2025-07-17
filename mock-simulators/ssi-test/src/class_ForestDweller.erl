@@ -1,26 +1,27 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Class modelling a generic forest dweller.
 -module(class_ForestDweller).
+
+-moduledoc "Class modelling a generic forest dweller.".
 
 
 -define( class_description,
@@ -41,35 +42,36 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 -include("ssi_test_types.hrl").
 
 
 
-% @doc Constructs a forest dweller actor:
-%
-% - is_registered: shows if the actor is registered to a forest
-%
-% - givenAge: for an initially created actor,an given age can be other than 0
-% for making difference between all initially created ones; it is 0 for an actor
-% created during simulation
-%
-% - termination_tick_off_set: duration after which this actor should terminate
-%
-% - termination_waiting_ticks: the ticks between the actor informs its
-% termination and execute its termination. This attribute is defined for
-% avoiding termination_but_trigger error. The value of this attribute should be
-% defined according to the specific actor behavior
-%
-% - termination_initiated: when it is true, means the forest instance is ready
-% to be terminated. By default, its value is false
-%
-% - target_peers: records a list of pids to which the actor sends messages
-%
-% Reference to class_Actor.erl for other attributes
-%
+-doc """
+Constructs a forest dweller actor:
+
+- is_registered: shows if the actor is registered to a forest
+
+- givenAge: for an initially created actor,an given age can be other than 0 for
+making difference between all initially created ones; it is 0 for an actor
+created during simulation
+
+- termination_tick_off_set: duration after which this actor should terminate
+
+- termination_waiting_ticks: the ticks between the actor informs its termination
+and execute its termination. This attribute is defined for avoiding
+termination_but_trigger error. The value of this attribute should be defined
+according to the specific actor behavior
+
+- termination_initiated: when it is true, means the forest instance is ready to
+be terminated. By default, its value is false
+
+- target_peers: records a list of pids to which the actor sends messages
+
+Refer to `class_Actor` for other attributes.
+""".
 construct( State, ActorSettings, DwellerName, GivenAge, ForestPid ) ->
 
 	% Firstly, the mother class:
@@ -93,7 +95,7 @@ construct( State, ActorSettings, DwellerName, GivenAge, ForestPid ) ->
 
 
 
-% @doc Message received from the forest with the forest PID in parameter.
+-doc "Message received from the forest with the forest PID in parameter.".
 -spec beRegistered( wooper:state(), actor_pid() ) -> actor_oneway_return().
 beRegistered( State, ForestPid ) ->
 
@@ -106,10 +108,11 @@ beRegistered( State, ForestPid ) ->
 
 
 
-% @doc Called whenever an Alert message is received.
-%
-% This method will be overridden by the specific dweller.
-%
+-doc """
+Called whenever an Alert message is received.
+
+This method will be overridden by the specific dweller.
+""".
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
 										const_actor_oneway_return().
 beAlert( State, _Alert, _SendingActorPID ) ->
@@ -117,10 +120,7 @@ beAlert( State, _Alert, _SendingActorPID ) ->
 
 
 
-% @doc Allows to prepare the termination of a dweller.
-%
-% (helper)
-%
+-doc "Allows to prepare the termination of a dweller.".
 -spec prepareTermination( wooper:state() ) -> wooper:state().
 prepareTermination( State ) ->
 

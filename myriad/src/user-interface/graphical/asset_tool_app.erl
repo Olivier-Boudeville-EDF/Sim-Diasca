@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2010.
 
-
-% @doc The very beginning of a tool to manage <b>assets</b>, especially for
-% rendering.
-%
-% @hidden Note: extremely far from being ready.
-%
 -module(asset_tool_app).
+
+-moduledoc """
+The very beginning of a tool to manage **assets**, especially for rendering.
+
+Note: extremely far from being ready.
+""".
 
 
 -export([ exec/0 ]).
@@ -47,12 +47,12 @@
 	left_panel :: panel(),
 	canvas :: canvas() } ).
 
+-doc "The application state.".
 -type app_state() :: #app_state{}.
-% The application state.
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type width() :: gui:width().
 -type height() :: gui:height().
@@ -75,30 +75,31 @@
 		  render_main_view/1, load_image/1 ]).
 
 
-% @doc Returns the width of the main frame.
+-doc "Returns the width of the main frame.".
 -spec get_main_frame_width() -> width().
 get_main_frame_width() ->
 	800.
 
-% @doc Returns the height of the main frame.
+
+-doc "Returns the height of the main frame.".
 -spec get_main_frame_height() -> height().
 get_main_frame_height() ->
 	600.
 
 
-% @doc Returns the width of the displayed canvas.
+-doc "Returns the width of the displayed canvas.".
 -spec get_canvas_width() -> width().
 get_canvas_width() ->
 	640.
 
-% @doc Returns the height of the displayed canvas.
+
+-doc "Returns the height of the displayed canvas.".
 -spec get_canvas_height() -> height().
 get_canvas_height() ->
 	480.
 
 
 
-% (helper)
 -spec init_app_gui() -> no_return().
 init_app_gui() ->
 
@@ -205,7 +206,8 @@ app_main_loop( _AppState ) ->
 	fixme.
 
 
-% @doc Renders the main view of the tool.
+
+-doc "Renders the main view of the tool.".
 -spec render_main_view( canvas() ) -> void().
 render_main_view( Canvas ) ->
 
@@ -292,16 +294,17 @@ gui_main_loop( _GUIState=#app_state{ main_frame=_MainFrame,
 
 
 
-% @doc Loads image in specified canvas, and returns a list of information texts
-% about it.
-%
+-doc """
+Loads image in specified canvas, and returns a list of information texts about
+ it.
+""".
 load_image( Canvas ) ->
 	gui_canvas:load_image( Canvas, { 40, 20 }, "../../doc/example.bmp" ),
 	[ "eeee", "aaaa", "rrrrr" ].
 
 
 
-% @doc Updates information sizer with specified texts.
+-doc "Updates the information sizer with specified texts.".
 update_information_sizer( InfoSizer, Panel, Texts ) ->
 
 	%gui_sizer:clear( InfoSizer ),
@@ -313,7 +316,7 @@ update_information_sizer( InfoSizer, Panel, Texts ) ->
 
 
 
-% @doc Executes that application.
+-doc "Executes that application.".
 -spec exec() -> no_return().
 exec() ->
 

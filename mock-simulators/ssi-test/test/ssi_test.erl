@@ -1,81 +1,81 @@
-% Copyright (C) 2010-2024 EDF R&D
-
+% Copyright (C) 2010-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Creation date: 2010.
 
-% SSI-test stands for 'Sim-Diasca Scalability Integration Test', a business-free
-% test dedicated to scalability assessment.
-
-% This is one of the test cases of the Mock Simulators, used to emulate a
-% third-party set of simulation cases and models that are to form with the
-% Sim-Diasca engine a full-blown simulator: we test the ability of the engine to
-% integrate approriately any user code.
-
-% Aiming at showing and testing all main sim-diasca features, a simplified
-% forest ecosystem context is designed. This ecosystem is composed of the
-% following components:
-
-% - class_Forest.erl
-% - class_ForestDweller.erl
-% - class_Oak.erl
-% - class_Squirrel.erl
-% - class_FemaleRedSquirrel.erl
-% - class_MaleRedSquirrel.erl
-
-
-
-% @doc This test shows:
-%
-% - the different ways for actor creation:
-%
-%  - initial actor creation: an actor created before simulation starting (see
-%  initial squirrel instance creation in class_Forest.erl)
-%
-%  - initial placed actor creation: an actor created with a place hint before
-%     simulation starting (see initial oak instance creation in class_Forest)
-%
-%  - placed actor creation in run time, i.e during the simulation (see female
-%  and male squirrel creation in class_FemaleRedSquirrel.erl)
-%
-% - the different scheduling modes for actor spontaneous activities:
-%
-%   - in periodic way: see class_forest instance
-%
-%   - in passive way: see class_oak instance
-%
-%   - in mix way: see class_FemaleRedSquirrel and class_MaleRedSquirrel.erl
-%   instance
-%
-% - the different ways for probe creation:
-%
-%   - create probe by class_Probe.erl and save the data in plain text
-%
-%   - create probe (or rather virtual probe) via class_DataLogger.erl and save
-%   data in mnesia with setData by sending wooper message and setData directly
-%   in probe table by calling dataLogger static method
-%
-% - the actor communication
-%
-% - the scalable capacity by parametering the forest dweller number, longevity
-% of the dweller and the simulation duration time
-%
 -module(ssi_test).
 
+-moduledoc """
+SSI-test stands for *Sim-Diasca Scalability Integration Test*, a
+domain-independent test dedicated to scalability assessment.
+
+This is one of the test cases of the Mock Simulators, used to emulate a
+third-party set of simulation cases and models that are to form with the
+Sim-Diasca engine a full-blown simulator: we test the ability of the engine to
+integrate approriately any user code.
+
+Aiming at showing and testing all main Sim-diasca features, a simplified forest
+ecosystem context is designed. This ecosystem is composed of the following
+models:
+
+- class_Forest.erl
+- class_ForestDweller.erl
+- class_Oak.erl
+- class_Squirrel.erl
+- class_FemaleRedSquirrel.erl
+- class_MaleRedSquirrel.erl
+
+This test shows:
+
+- the different ways for actor creation:
+
+ - initial actor creation: an actor created before simulation starting (see
+ initial squirrel instance creation in class_Forest.erl)
+
+ - initial placed actor creation: an actor created with a place hint before
+    simulation starting (see initial oak instance creation in class_Forest)
+
+ - placed actor creation in run time, i.e during the simulation (see female and
+ male squirrel creation in class_FemaleRedSquirrel.erl)
+
+- the different scheduling modes for actor spontaneous activities:
+
+  - in periodic way: see class_forest instance
+
+  - in passive way: see class_oak instance
+
+  - in mix way: see class_FemaleRedSquirrel and class_MaleRedSquirrel.erl
+  instance
+
+- the different ways for probe creation:
+
+  - create probe by class_Probe.erl and save the data in plain text
+
+  - create probe (or rather virtual probe) via class_DataLogger.erl and save
+  data in mnesia with setData by sending wooper message and setData directly in
+  probe table by calling dataLogger static method
+
+- the actor communication
+
+- the scalable capacity by parametering the forest dweller number, longevity of
+the dweller and the simulation duration time
+""".
 
 
 % For facilities common to all cases:
@@ -83,7 +83,7 @@
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
@@ -176,16 +176,11 @@ run() ->
 	ForestPid ! { getVirtualProbe, [], self() },
 	ProbePid = test_receive(),
 
-	case is_pid( DataLoggerPid ) andalso is_pid( ProbePid ) of
-
-		true ->
+	is_pid( DataLoggerPid ) andalso is_pid( ProbePid ) andalso
+        begin
 			?test_info( "Changing the canvas size." ),
-			DataLoggerPid ! { setCanvasSize, [ ProbePid, 800, 500 ] };
-
-		false ->
-			ok
-
-	end,
+			DataLoggerPid ! { setCanvasSize, [ ProbePid, 800, 500 ] }
+        end,
 
 	% Waits until simulation is finished:
 	receive

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, April 6, 2022.
 
-
-% @doc Test of the <b>resource</b> implementation.
-%
-% See the bijective_table.erl tested module.
-%
 -module(resource_test).
+
+-moduledoc """
+Test of the **resource** implementation.
+
+See the bijective_table.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -38,15 +40,15 @@
 
 
 
--spec test_referentials() -> void().
-test_referentials() ->
+-spec test_repositories() -> void().
+test_repositories() ->
 
-	test_facilities:display( "Testing resource referentials." ),
+	test_facilities:display( "Testing resource repositories." ),
 
-	EmptyRef = resource:create_referential( _RootDir="." ),
+	EmptyRef = resource:create_repository( _RootDir="." ),
 
-	test_facilities:display( "Initial anchored referential: ~ts.",
-							 [ resource:referential_to_string( EmptyRef ) ] ),
+	test_facilities:display( "Initial anchored repository: ~ts.",
+							 [ resource:repository_to_string( EmptyRef ) ] ),
 
 	TestFileId = "resource_test.erl",
 
@@ -57,8 +59,8 @@ test_referentials() ->
 	test_facilities:display( "Read for '~ts': ~p",
 							 [ TestFileId, TestFileRsc ] ),
 
-	test_facilities:display( "First non-empty referential: ~ts.",
-							 [ resource:referential_to_string( FirstRef ) ] ),
+	test_facilities:display( "First non-empty repository: ~ts.",
+							 [ resource:repository_to_string( FirstRef ) ] ),
 
 	true = resource:has( TestFileId, FirstRef ),
 
@@ -72,24 +74,24 @@ test_referentials() ->
 
 	SecondRef = resource:register( TestLogId, 42.0, FirstRef ),
 
-	test_facilities:display( "Second non-empty referential: ~ts.",
-							 [ resource:referential_to_string( SecondRef ) ] ),
+	test_facilities:display( "Second non-empty repository: ~ts.",
+							 [ resource:repository_to_string( SecondRef ) ] ),
 
 	true = resource:has( TestLogId, SecondRef ),
 
 
 	ThirdRef = resource:remove( TestFileId, SecondRef ),
 
-	test_facilities:display( "Third non-empty referential: ~ts.",
-							 [ resource:referential_to_string( ThirdRef ) ] ),
+	test_facilities:display( "Third non-empty repository: ~ts.",
+							 [ resource:repository_to_string( ThirdRef ) ] ),
 
 	false = resource:has( TestFileId, ThirdRef ),
 
 
-	InitialNonAnchoredRef = resource:create_referential(),
+	InitialNonAnchoredRef = resource:create_repository(),
 
-	test_facilities:display( "Initial non-anchored referential: ~ts.",
-		[ resource:referential_to_string( InitialNonAnchoredRef ) ] ),
+	test_facilities:display( "Initial non-anchored repository: ~ts.",
+		[ resource:repository_to_string( InitialNonAnchoredRef ) ] ),
 
 	false = resource:has( TestFileId, InitialNonAnchoredRef ),
 
@@ -98,8 +100,8 @@ test_referentials() ->
 
 	true = resource:has( TestFileId, FirstNonAncRef ),
 
-	test_facilities:display( "Final non-anchored referential: ~ts.",
-		[ resource:referential_to_string( FirstNonAncRef ) ] ).
+	test_facilities:display( "Final non-anchored repository: ~ts.",
+		[ resource:repository_to_string( FirstNonAncRef ) ] ).
 
 
 
@@ -159,7 +161,7 @@ run() ->
 
 	test_facilities:start( ?MODULE ),
 
-	test_referentials(),
+	test_repositories(),
 
 	test_servers(),
 

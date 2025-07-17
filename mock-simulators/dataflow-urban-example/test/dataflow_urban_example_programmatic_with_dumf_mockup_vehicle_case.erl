@@ -1,34 +1,36 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-
-% @doc Programmatic test for the 'Dataflow Urban Example' case, illustrating the
-% use of a <b>processing unit specified as a DUMF mockup</b>.
-%
-% The purpose of this module is to perform an overall, integrated testing of the
-% dataflow support taking into account the DUMF format.
-%
-% See also the 'Sim-Diasca Dataflow HOWTO'.
-%
 -module(dataflow_urban_example_programmatic_with_dumf_mockup_vehicle_case).
+
+-moduledoc """
+Programmatic test for the `Dataflow Urban Example` case, illustrating the use of
+a **processing unit specified as a DUMF mockup**.
+
+The purpose of this module is to perform an overall, integrated testing of the
+dataflow support taking into account the DUMF format.
+
+See also the `Sim-Diasca Dataflow HOWTO`.
+""".
+
 
 
 % For facilities common to all cases:
@@ -39,12 +41,12 @@
 -include("urban_example_defines.hrl").
 
 
-% In this simulation case, we have no third-party (ex: a remote platform) to
+% In this simulation case, we have no third-party (e.g. a remote platform) to
 % deal with, hence we do not need any specific identification server.
 
 
 
-% @doc Runs the case.
+-doc "Runs the case.".
 -spec run() -> no_return().
 run() ->
 
@@ -59,7 +61,7 @@ run() ->
 
 	% Just for the sake of checking it on the display:
 	ExpectedTimestepCount = round( time_utils:years_to_seconds(
-								SimulationDurationInYears ) / TickDuration ),
+		SimulationDurationInYears ) / TickDuration ),
 
 	SimulationDurationInYears = ExpectedTimestepCount,
 
@@ -373,8 +375,8 @@ run() ->
 	% The only construction parameter used here is the name of the unit.
 	%
 	EnergyUnit = class_DataflowUnitManager:create_initial_unit(
-					UrbanUnitManagerPid, class_EnergyDemandUnit,
-					DataflowPid, [ "My Single Initial Energy Demand Unit" ] ),
+		UrbanUnitManagerPid, class_EnergyDemandUnit,
+		DataflowPid, [ "My Single Initial Energy Demand Unit" ] ),
 
 	EnergyUnits = [ EnergyUnit ],
 

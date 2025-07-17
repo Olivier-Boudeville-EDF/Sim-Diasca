@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2024 Olivier Boudeville
+% Copyright (C) 2017-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,18 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, July 30, 2017.
 
-
-% @doc Gathering of various facilities regarding the management of <b>binary,
-% bit-level operations</b>, like cyclic redundancy check (CRC) calculations.
-%
-% See bin_utils_test.erl for the corresponding test.
-%
 -module(bin_utils).
+
+-moduledoc """
+Gathering of various facilities regarding the management of
+**binary, bit-level operations**, like cyclic redundancy check (CRC)
+calculations.
+
+See bin_utils_test.erl for the corresponding test.
+""".
+
+
+% See also the 'binary' native module (for example for part/3).
 
 
 % Binary basics (see also the 'binary' standard module):
@@ -50,13 +55,19 @@
 		  concatenate_as_uint32s/1, concatenate_as_uint32s/2 ]).
 
 
+-export([ ellipse/1, ellipse/2 ]).
+
+
+% For CRC:
 -export([ get_crc8_table/0, compute_crc8_checksum/1 ]).
 
 
 
+-doc "A (binary) buffer, a series of bytes.".
 -type buffer() :: binary().
-% A (binary) buffer, a series of bytes.
 
+
+-doc "A CRC8 checksum.".
 -type crc8_checksum() :: byte().
 
 
@@ -70,7 +81,7 @@
 % - https://cheatography.com/fylke/cheat-sheets/erlang-binaries/
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -78,13 +89,16 @@
 
 -type byte_size() :: system_utils:byte_size().
 
+-type length() :: byte_size().
 
 
-% @doc Creates a (binary) buffer of the specified size, containing only zeroes.
-%
-% Possibly useful in order to provide a buffer to non-allocating functions (like
-% gl:getDebugMessageLog/2 was wrongly believed to be).
-%
+
+-doc """
+Creates a (binary) buffer of the specified size, containing only zeroes.
+
+Possibly useful in order to provide a buffer to non-allocating functions (like
+gl:getDebugMessageLog/2 was wrongly believed to be).
+""".
 -spec create_binary( byte_size() ) -> buffer().
 create_binary( ByteCount ) ->
 
@@ -102,17 +116,19 @@ create_binary( ByteCount ) ->
 
 
 
-% @doc Concatenates the specified binaries into the returned one.
-%
-% Note: mostly added for documentation purpose; can/should be inlined by the
-% developer.
-%
+-doc """
+Concatenates the specified binaries into the returned one.
+
+Note: mostly added for documentation purpose; can/should be inlined by the
+developer.
+""".
 -spec concatenate( binary(), binary() ) -> binary().
 concatenate( Bin1, Bin2 ) ->
 	<<Bin1/binary, Bin2/binary>>.
 
 
-% @doc Concatenates the specified binaries into the returned one.
+
+-doc "Concatenates the specified binaries into the returned one.".
 -spec concatenate( [ binary() ] ) -> binary().
 concatenate( BinStrs ) ->
 
@@ -123,9 +139,10 @@ concatenate( BinStrs ) ->
 
 
 
-% @doc Concatenates to the specified original binary (on its right) the
-% specified number of copies of the second specified binary.
-%
+-doc """
+Concatenates to the specified original binary (on its right) the specified
+number of copies of the second specified binary.
+""".
 -spec concatenate( binary(), count(), binary() ) -> binary().
 concatenate( OrigBin, ReplicationCount, ToReplicateBin ) ->
 	% Avoids too many transient copies:
@@ -141,9 +158,10 @@ concat_helper( ReplicationCount, ToReplicateBin, Bin ) ->
 
 
 
-% @doc Returns the binary obtained when concatenating the specified binary the
-% specified number of times.
-%
+-doc """
+Returns the binary obtained when concatenating the specified binary the
+specified number of times.
+""".
 -spec replicate( binary(), count() ) -> binary().
 replicate( Bin, Count ) ->
 	replicate( Bin, Count, _Acc= <<>> ).
@@ -170,30 +188,31 @@ replicate( Bin, Count, Acc ) ->
 % Float serialisation subsection.
 
 
-% @doc Returns the binary obtained by serialising in-order all floats specified
-% as tuples of arbitrary size, as 32-bit floats, based on the native endianess.
-%
-% Example: Bin = tuples_to_float32s_binary([{0.0, 1.0}, {0.5, 0.5, 0.5}])
-%
-% Typically useful to create suitable OpenGL arrays from heterogenous tuples
-% aggregating vertices, normals, colors, etc. on a per vertex attribute basis.
-%
+-doc """
+Returns the binary obtained by serialising in-order all floats specified as
+tuples of arbitrary size, as 32-bit floats, based on the native endianess.
+
+Example: Bin = tuples_to_float32s_binary([{0.0, 1.0}, {0.5, 0.5, 0.5}])
+
+Typically useful to create suitable OpenGL arrays from heterogeneous tuples
+aggregating vertices, normals, colors, etc. on a per vertex attribute basis.
+""".
 -spec tuples_to_float32s_binary( [ tuple( float() ) ] ) -> binary().
 tuples_to_float32s_binary( Tuples ) ->
 	tuples_to_float32s_binary( Tuples, _AccBin= <<>> ).
 
 
 
-% @doc Returns the binary obtained by appending (on the right) to the specified
-% one the in-order serialisation of all floats specified as tuples of arbitrary
-% size, as 32-bit floats, based on the native endianess.
-%
-% Example: FullBin = tuples_to_float32s_binary([{0.0, 1.0}, {0.5, 0.5, 0.5}],
-%                                              Bin)
-%
-% Typically useful to create suitable OpenGL arrays from heterogenous tuples
-% aggregating vertices, normals, colors, etc. on a per vertex attribute basis.
-%
+-doc """
+Returns the binary obtained by appending (on the right) to the specified one the
+in-order serialisation of all floats specified as tuples of arbitrary size, as
+32-bit floats, based on the native endianess.
+
+Example: FullBin = tuples_to_float32s_binary([{0.0, 1.0}, {0.5, 0.5, 0.5}], Bin)
+
+Typically useful to create suitable OpenGL arrays from heterogeneous tuples
+aggregating vertices, normals, colors, etc. on a per vertex attribute basis.
+""".
 -spec tuples_to_float32s_binary( [ tuple( float() ) ], binary() ) -> binary().
 tuples_to_float32s_binary( _Tuples=[], Bin ) ->
 	Bin;
@@ -206,17 +225,19 @@ tuples_to_float32s_binary( _Tuples=[ Tuple | T ], Bin ) ->
 
 
 
-% @doc Concatenates the specified floats as 32-bit floats, based on the native
-% endianess.
-%
+-doc """
+Concatenates the specified floats as 32-bit floats, based on the native
+endianess.
+""".
 -spec concatenate_as_float32s( [ float() ] ) -> binary().
 concatenate_as_float32s( Floats ) ->
 	concatenate_as_float32s( Floats, _Bin= <<>> ).
 
 
-% @doc Concatenates the specified floats after (not before) the specified
-% binary.
-%
+
+-doc """
+Concatenates the specified floats after (not before) the specified binary.
+""".
 -spec concatenate_as_float32s( [ float() ], binary() ) -> binary().
 concatenate_as_float32s( _Floats=[], Bin ) ->
 	Bin;
@@ -234,25 +255,30 @@ concatenate_as_float32s( _Floats=[ F | T ], Bin ) ->
 
 
 
+
 % Integer serialisation subsection.
 
-% @doc Returns the binary obtained by serialising in-order all integers
-% specified as tuples of arbitrary size, as 32-bit signed integers, based on the
-% native endianess.
-%
-% Example: Bin = tuples_to_int32s_binary([{40,50}, {5, 10, -15}]).
-%
+
+-doc """
+Returns the binary obtained by serialising in-order all integers specified as
+tuples of arbitrary size, as 32-bit signed integers, based on the native
+endianess.
+
+Example: Bin = tuples_to_int32s_binary([{40,50}, {5, 10, -15}]).
+""".
 -spec tuples_to_int32s_binary( [ tuple( integer() ) ] ) -> binary().
 tuples_to_int32s_binary( Tuples ) ->
 	tuples_to_int32s_binary( Tuples, _AccBin= <<>> ).
 
 
-% @doc Returns the binary obtained by appending (on the right) to the specified
-% one the in-order serialisation of all integers specified as tuples of
-% arbitrary size, as 32-bit signed integers, based on the native endianess.
-%
-% Example: FullBin = tuples_to_int32s_binary([{40,50}, {5, 10, -15}], Bin).
-%
+
+-doc """
+Returns the binary obtained by appending (on the right) to the specified one the
+in-order serialisation of all integers specified as tuples of arbitrary size, as
+32-bit signed integers, based on the native endianess.
+
+Example: FullBin = tuples_to_int32s_binary([{40,50}, {5, 10, -15}], Bin).
+""".
 -spec tuples_to_int32s_binary( [ tuple( integer() ) ], binary() ) -> binary().
 tuples_to_int32s_binary( _Tuples=[], Bin ) ->
 	Bin;
@@ -265,17 +291,19 @@ tuples_to_int32s_binary( _Tuples=[ Tuple | T ], Bin ) ->
 
 
 
-% @doc Concatenates the specified integers as 32-bit integers, based on the
-% native endianess.
-%
+-doc """
+Concatenates the specified integers as 32-bit integers, based on the native
+endianess.
+""".
 -spec concatenate_as_int32s( [ integer() ] ) -> binary().
 concatenate_as_int32s( Ints ) ->
 	concatenate_as_int32s( Ints, _Bin= <<>> ).
 
 
-% @doc Concatenates the specified integers after (not before) the specified
-% binary.
-%
+
+-doc """
+Concatenates the specified integers after (not before) the specified binary.
+""".
 -spec concatenate_as_int32s( [ integer() ], binary() ) -> binary().
 concatenate_as_int32s( _Ints=[], Bin ) ->
 	Bin;
@@ -290,30 +318,34 @@ concatenate_as_int32s( _Ints=[ I | T ], Bin ) ->
 
 
 
+
 % Unsigned integer serialisation subsection.
 
 
-% @doc Returns the binary obtained by serialising in-order all positive or null
-% integers specified as tuples of arbitrary size, as 32-bit unsigned integers,
-% based on the native endianess.
-%
-% Example: Bin = tuples_to_uint32s_binary([{40,50}, {5, 10, 15}])
-%
-% Typically useful to create suitable OpenGL arrays from indices.
-%
+-doc """
+Returns the binary obtained by serialising in-order all positive or null
+integers specified as tuples of arbitrary size, as 32-bit unsigned integers,
+based on the native endianess.
+
+Example: Bin = tuples_to_uint32s_binary([{40,50}, {5, 10, 15}])
+
+Typically useful to create suitable OpenGL arrays from indices.
+""".
 -spec tuples_to_uint32s_binary( [ tuple( non_neg_integer() ) ] ) -> binary().
 tuples_to_uint32s_binary( Tuples ) ->
 	tuples_to_uint32s_binary( Tuples, _AccBin= <<>> ).
 
 
-% @doc Returns the binary obtained by appending (on the right) to the specified
-% one the in-order serialisation of all integers specified as tuples of
-% arbitrary size, as 32-bit unsigned integers, based on the native endianess.
-%
-% Example: FullBin = tuples_to_uint32s_binary([{40,50}, {5, 10, 15}], Bin).
-%
-% Typically useful to create suitable OpenGL arrays from indices.
-%
+
+-doc """
+Returns the binary obtained by appending (on the right) to the specified one the
+in-order serialisation of all integers specified as tuples of arbitrary size, as
+32-bit unsigned integers, based on the native endianess.
+
+Example: FullBin = tuples_to_uint32s_binary([{40,50}, {5, 10, 15}], Bin).
+
+Typically useful to create suitable OpenGL arrays from indices.
+""".
 tuples_to_uint32s_binary( _Tuples=[], AccBin ) ->
 	AccBin;
 
@@ -325,17 +357,20 @@ tuples_to_uint32s_binary( _Tuples=[ Tuple | T ], AccBin ) ->
 
 
 
-% @doc Concatenates the specified positive or null integers as 32-bit unsigned
-% integers, based on the native endianess.
-%
+-doc """
+Concatenates the specified positive or null integers as 32-bit unsigned
+integers, based on the native endianess.
+""".
 -spec concatenate_as_uint32s( [ non_neg_integer() ] ) -> binary().
 concatenate_as_uint32s( Ints ) ->
 	concatenate_as_uint32s( Ints, _Bin= <<>> ).
 
 
-% @doc Concatenates the specified positive or null integers after (not before)
-% the specified binary.
-%
+
+-doc """
+Concatenates the specified positive or null integers after (not before) the
+specified binary.
+""".
 -spec concatenate_as_uint32s( [ non_neg_integer() ], binary() ) -> binary().
 concatenate_as_uint32s( _UInts=[], Bin ) ->
 	Bin;
@@ -353,11 +388,37 @@ concatenate_as_uint32s( _UInts=[ UI | T ], Bin ) ->
 	concatenate_as_uint32s( T, NewBin ).
 
 
+-doc """
+Ellipses the specified binary: returns it, truncated to a maximum default length
+if needed.
+""".
+-spec ellipse( binary() ) -> binary().
+ellipse( Bin ) ->
+	% Short, but anyway not really useful to display:
+	ellipse( Bin, _DefaultMaxLen=50 ).
+
+
+
+-doc """
+Ellipses the specified binary: returns it, truncated to the specified maximum
+length if needed.
+""".
+-spec ellipse( binary(), length() | 'unlimited' ) -> binary().
+ellipse( Bin, _MaxLen=unlimited ) ->
+	Bin;
+
+ellipse( Bin, MaxLen ) when size( Bin ) > MaxLen ->
+	binary:part( Bin, _Pos=0, MaxLen );
+
+ellipse( Bin, _MaxLen ) ->
+	Bin.
+
+
 
 % CRC section.
 
 
-% @doc Returns the table used to compute CRC8.
+-doc "Returns the table used to compute CRC8 checksums.".
 -spec get_crc8_table() -> tuple().
 get_crc8_table() ->
 
@@ -406,7 +467,7 @@ get_crc8_table() ->
 
 
 
-% @doc Returns the CRC8 checksum corresponding to specified binary.
+-doc "Returns the CRC8 checksum corresponding to specified binary.".
 -spec compute_crc8_checksum( binary() ) -> crc8_checksum().
 compute_crc8_checksum( Binary ) ->
 

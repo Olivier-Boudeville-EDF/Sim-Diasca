@@ -1,7 +1,7 @@
 SIM_DIASCA_TOP = ../../../../..
 
 
-.PHONY: test test-dumf-generation-from-excel-format \
+.PHONY: test test-dumf-generation-from-excel-format               \
 		test-dumf-generation-from-open-document-format info-tools \
 		clean clean-tmp
 

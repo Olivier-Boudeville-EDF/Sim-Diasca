@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 EDF R&D
+% Copyright (C) 2011-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2011.
 
-
-% @doc The data exchanger offers to actors <b>extra communication patterns</b>
-% within the simulation.
-%
 -module(class_DataExchanger).
+
+-moduledoc """
+The data exchanger offers to actors **extra communication patterns** within the
+simulation.
+""".
 
 
 -define( class_description,
@@ -57,7 +58,7 @@
 	{ child_exchangers, [ data_exchanger_pid() ],
 	  "a list of the PID of the direct child exchangers, if any" },
 
-	{ json_parser_state, maybe( json_parser_state() ),
+	{ json_parser_state, option( json_parser_state() ),
 	  "stores the current state of the JSON parser (if any); incidently "
 	  "tells whether the reading of JSON files is enabled (note that "
 	  "*all* nodes are expected to have this support enabled for this feature "
@@ -118,8 +119,8 @@
 -type data_table() :: table( key(), qualified_value() ).
 
 
+-doc "Designates the PID of a data-exchanger.".
 -type data_exchanger_pid() :: sim_diasca:agent_pid().
-% Designates the PID of a data-exchanger.
 
 
 % Could be changed later in, say, a record:
@@ -153,20 +154,6 @@
 
 % The (global) registration name of the root data exchanger:
 -define( root_data_exchanger_name, sim_diasca_root_data_exchanger ).
-
-
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
-
--type file_path() :: file_utils:file_path().
--type bin_file_path() :: file_utils:bin_file_path().
-
--type json_parser_state() :: json_utils:parser_state().
-
--type node_type() :: class_DeploymentManager:node_type().
-
--type time_manager_pid() :: class_TimeManager:time_manager_pid().
 
 
 
@@ -290,39 +277,52 @@
 
 
 
+% Type shorthands:
 
-% @doc Constructs a data exchanger:
-%
-% - ExchangerName is the name of this exchanger, as a string
-%
-% - ExchangerInfos is either:
-%
-%   - {ParentExchangerPid, NodeType} where:
-%
-%      - the PID of the parent exchanger of this exchanger, in which case we are
-%      creating a child exchanger, which will retrieve information from its
-%      parent
-%
-%      - NodeType is either 'computing_node' or 'user_node'; the latter case
-%      happens only when a data-exchanger local to the user node has to be
-%      created; it allows to update the paths accordingly
-%
-%   - or {ConfigurationFiles, RootTimeManagerPid} where:
-%
-%      - ConfigurationFiles is a list of plain strings, corresponding to the
-%      paths, relative to the root of the deployment archive, of the
-%      configuration files that shall be read (we then create here a root
-%      exchanger)
-%
-%      - RootTimeManagerPid is the PID of the root time manager, to insert
-%      updates between diascas
-%
+-type ustring() :: text_utils:ustring().
+
+-type file_path() :: file_utils:file_path().
+-type bin_file_path() :: file_utils:bin_file_path().
+
+-type json_parser_state() :: json_utils:parser_state().
+
+-type node_type() :: class_DeploymentManager:node_type().
+
+-type time_manager_pid() :: class_TimeManager:time_manager_pid().
+
+
+
+-doc """
+Constructs a data exchanger:
+
+- ExchangerName is the name of this exchanger, as a string
+
+- ExchangerInfos is either:
+
+  - {ParentExchangerPid, NodeType} where:
+
+     - the PID of the parent exchanger of this exchanger, in which case we are
+     creating a child exchanger, which will retrieve information from its parent
+
+     - NodeType is either 'computing_node' or 'user_node'; the latter case
+     happens only when a data-exchanger local to the user node has to be
+     created; it allows to update the paths accordingly
+
+  - or {ConfigurationFiles, RootTimeManagerPid} where:
+
+     - ConfigurationFiles is a list of plain strings, corresponding to the
+     paths, relative to the root of the deployment archive, of the configuration
+     files that shall be read (we then create here a root exchanger)
+
+     - RootTimeManagerPid is the PID of the root time manager, to insert updates
+     between diascas
+""".
 -spec construct( wooper:state(), ustring(),
 				 { data_exchanger_pid(), node_type() }
 				 | { [ file_path() ], time_manager_pid() } ) -> wooper:state().
 construct( State, ExchangerName, { ConfigurationFiles, RootTimeManagerPid } )
-		when is_list( ConfigurationFiles )
-			 andalso is_pid( RootTimeManagerPid ) ->
+                        when is_list( ConfigurationFiles )
+                             andalso is_pid( RootTimeManagerPid ) ->
 
 	% We construct the root exchanger here:
 
@@ -431,7 +431,7 @@ construct( State, ExchangerName, { ParentExchangerPid, NodeType } )
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -464,11 +464,12 @@ destruct( State ) ->
 % Member methods section.
 
 
-% @doc Requests this exchanger to send back synchronisation information to the
-% caller one, which becomes a (direct) additional child exchanger thereof.
-%
-% Returns {FeederFiles, RootExchangerPid}.
-%
+-doc """
+Requests this exchanger to send back synchronisation information to the caller
+one, which becomes a (direct) additional child exchanger thereof.
+
+Returns {FeederFiles, RootExchangerPid}.
+""".
 -spec synchronise( wooper:state() ) ->
 		request_return( { [ bin_file_path() ], data_exchanger_pid() } ).
 synchronise( State ) ->
@@ -483,11 +484,12 @@ synchronise( State ) ->
 
 
 
-% @doc Requests to parse specified list of files (to be read from the deployment
-% archive) and register the corresponding data.
-%
-% Used by non-root data exchangers.
-%
+-doc """
+Requests to parse specified list of files (to be read from the deployment
+archive) and register the corresponding data.
+
+Used by non-root data exchangers.
+""".
 -spec parse( wooper:state(), [ file_path() ] ) -> oneway_return().
 parse( State, FileList ) ->
 
@@ -514,10 +516,11 @@ parse( State, FileList ) ->
 
 
 
-% @doc Called by the time-manager on the root data-exchanger (as the latter is a
-% listener of the former), so that commits can be managed with regard to diascas
-% once the simulation is running.
-%
+-doc """
+Called by the time-manager on the root data-exchanger (as the latter is a
+listener of the former), so that commits can be managed with regard to diascas
+once the simulation is running.
+""".
 -spec simulation_started( wooper:state() ) -> oneway_return().
 simulation_started( State ) ->
 
@@ -531,7 +534,7 @@ simulation_started( State ) ->
 
 
 
-% @doc Not used here.
+-doc "Not used here.".
 -spec simulation_suspended( wooper:state() ) -> const_oneway_return().
 simulation_suspended( State ) ->
 	none = ?getAttr(parent_exchanger_pid),
@@ -539,23 +542,21 @@ simulation_suspended( State ) ->
 
 
 
-% @doc Not used here.
+-doc "Not used here.".
 -spec simulation_resumed( wooper:state() ) -> const_oneway_return().
 simulation_resumed( State ) ->
 	none = ?getAttr(parent_exchanger_pid),
 	wooper:const_return().
 
 
-
-% @doc Not used here.
+-doc "Not used here.".
 -spec simulation_succeeded( wooper:state() ) -> const_oneway_return().
 simulation_succeeded( State ) ->
 	none = ?getAttr(parent_exchanger_pid),
 	wooper:const_return().
 
 
-
-% @doc Not used here.
+-doc "Not used here.".
 -spec simulation_stopped( wooper:state() ) -> oneway_return().
 simulation_stopped( State ) ->
 	none = ?getAttr(parent_exchanger_pid),
@@ -564,12 +565,13 @@ simulation_stopped( State ) ->
 
 
 
-% @doc Called by the root time manager when the current diasca is finished,
-% waiting for the next one to start, only when this root data-exchanger will
-% have achieved its commit propagation and then notified it.
-%
-% (request, for synchronization purposes)
-%
+-doc """
+Called by the root time manager when the current diasca is finished, waiting for
+the next one to start, only when this root data-exchanger will have achieved its
+commit propagation and then notified it.
+
+(request, for synchronization purposes)
+""".
 -spec onInterDiascaBegin( wooper:state() ) ->
 								request_return( 'interdiasca_ended' ).
 onInterDiascaBegin( State ) ->
@@ -617,14 +619,15 @@ onInterDiascaBegin( State ) ->
 % Subsection for initial definition.
 
 
-% @doc Defines specified (non-already existing) initial data, returns
-% initial_data_defined for synchronisation purposes, or throws an exception.
-%
-% Data defined with no qualifier will use the default one.
-%
-% Only to be called on the root data exchanger, and while the simulation is not
-% running.
-%
+-doc """
+Defines the specified (non-already existing) initial data, returns
+initial_data_defined for synchronisation purposes, or throws an exception.
+
+Data defined with no qualifier will use the default one.
+
+Only to be called on the root data exchanger, and while the simulation is not
+running.
+""".
 -spec defineInitialData( wooper:state(), entries() ) ->
 								request_return( 'initial_data_defined' ).
 defineInitialData( State, EntryList ) ->
@@ -643,14 +646,15 @@ defineInitialData( State, EntryList ) ->
 
 
 
-% @doc Defines specified (non-already existing) initial data, returns
-% initial_data_defined for synchronisation purposes, or throws an exception.
-%
-% Note: the default qualifier is implied here.
-%
-% Only to be called on the root data exchanger, and while the simulation is not
-% running.
-%
+-doc """
+Defines the specified (non-already existing) initial data, returns
+initial_data_defined for synchronisation purposes, or throws an exception.
+
+Note: the default qualifier is implied here.
+
+Only to be called on the root data exchanger, and while the simulation is not
+running.
+""".
 -spec defineInitialData( wooper:state(), key(), value() ) ->
 								request_return( 'initial_data_defined' ).
 defineInitialData( State, Key, Value ) ->
@@ -669,13 +673,14 @@ defineInitialData( State, Key, Value ) ->
 
 
 
-% @doc Defines specified (non-already existing) initial data with a qualifier,
-% returns initial_data_defined for synchronisation purposes, or throws an
-% exception.
-%
-% Only to be called on the root data exchanger, and while the simulation is not
-% running.
-%
+-doc """
+Defines the specified (non-already existing) initial data with a qualifier,
+returns initial_data_defined for synchronisation purposes, or throws an
+exception.
+
+Only to be called on the root data exchanger, and while the simulation is not
+running.
+""".
 -spec defineInitialData( wooper:state(), key(), value(), qualifier() ) ->
 								request_return( 'initial_data_defined' ).
 defineInitialData( State, Key, Value, Qualifier ) ->
@@ -698,12 +703,13 @@ defineInitialData( State, Key, Value, Qualifier ) ->
 % Subsection for initial modification.
 
 
-% @doc Sets specified (already defined) initial data, returns
-% initial_data_modified for synchronisation purposes, or throws an exception.
-%
-% Only to be called on the root data exchanger, and while the simulation is not
-% running.
-%
+-doc """
+Sets the specified (already defined) initial data, returns initial_data_modified
+for synchronisation purposes, or throws an exception.
+
+Only to be called on the root data exchanger, and while the simulation is not
+running.
+""".
 -spec modifyInitialData( wooper:state(), entries() )  ->
 								request_return( 'initial_data_modified' ).
 modifyInitialData( State, EntryList ) ->
@@ -722,14 +728,15 @@ modifyInitialData( State, EntryList ) ->
 
 
 
-% @doc Sets specified (already defined) initial data, returns
-% initial_data_modified for synchronisation purposes, or throws an exception.
-%
-% Note: the already-defined qualifier will be kept there.
-%
-% Only to be called on the root data exchanger, and while the simulation is not
-% running.
-%
+-doc """
+Sets the specified (already defined) initial data, returns initial_data_modified
+for synchronisation purposes, or throws an exception.
+
+Note: the already-defined qualifier will be kept there.
+
+Only to be called on the root data exchanger, and while the simulation is not
+running.
+""".
 -spec modifyInitialData( wooper:state(), key(), value() ) ->
 								request_return( 'initial_data_modified' ).
 modifyInitialData( State, Key, Value ) ->
@@ -748,12 +755,13 @@ modifyInitialData( State, Key, Value ) ->
 
 
 
-% @doc Sets specified (already defined) initial data, returns
-% initial_data_modified for synchronisation purposes, or throws an exception.
-%
-% Only to be called on the root data exchanger, and while the simulation is not
-% running.
-%
+-doc """
+Sets the specified (already defined) initial data, returns initial_data_modified
+for synchronisation purposes, or throws an exception.
+
+Only to be called on the root data exchanger, and while the simulation is not
+running.
+""".
 -spec modifyInitialData( wooper:state(), key(), value(), qualifier() ) ->
 							request_return( 'initial_data_modified' ).
 modifyInitialData( State, Key, Value, Qualifier ) ->
@@ -776,13 +784,13 @@ modifyInitialData( State, Key, Value, Qualifier ) ->
 % Subsection for initial reading.
 
 
-% @doc Returns the values (without the qualifiers) associated to the specified
-% keys as a list of key/value pairs (e.g. [{K1,V1}, {K2,V2}]), or throws an
-% exception.
-%
-% Preferably to be called on a local data exchanger; the simulation must not be
-% started yet.
-%
+-doc """
+Returns the values (without the qualifiers) associated to the specified keys as
+a list of key/value pairs (e.g. [{K1,V1}, {K2,V2}]), or throws an exception.
+
+Preferably to be called on a local data exchanger; the simulation must not be
+started yet.
+""".
 -spec readInitialData( wooper:state(), [ key() ] ) ->
 							const_request_return( entries() );
 					 ( wooper:state(), key() ) ->
@@ -832,13 +840,14 @@ readInitialData( State, Key ) when is_atom( Key ) ->
 
 
 
-% @doc Returns the values associated to the specified keys as a list of
-% key/value/qualifier triplets (e.g. [{K1,V1,Q1}, {K2,V2,Q2}]), or throws an
-% exception.
-%
-% Preferably to be called on a local data exchanger; the simulation must not be
-% started yet.
-%
+-doc """
+Returns the values associated to the specified keys as a list of
+key/value/qualifier triplets (e.g. [{K1,V1,Q1}, {K2,V2,Q2}]), or throws an
+exception.
+
+Preferably to be called on a local data exchanger; the simulation must not be
+started yet.
+""".
 -spec readQualifiedInitialData( wooper:state(), key() ) ->
 									const_request_return( qualified_value() );
 							  ( wooper:state(), [ key() ] ) ->
@@ -902,12 +911,14 @@ readQualifiedInitialData( State, Key ) when is_atom( Key ) ->
 
 
 
-% @doc Defines specified (non-already existing) data, returns data_defined for
-% synchronisation purposes, or throws an exception.
-%
-% Only to be called on the root data exchanger, from actors; the simulation
-% might be already running or not.
-%
+-doc """
+Defines the specified (non-already existing) data, returns data_defined for
+synchronisation purposes, or throws an exception.
+
+Only to be called on the root data exchanger, from actors; the simulation might
+be already running or not.
+
+""".
 -spec defineData( wooper:state(), entries() ) ->
 						request_return( 'data_defined' ).
 defineData( State, _EntryList=[] ) ->
@@ -974,14 +985,15 @@ defineData( State, EntryList ) ->
 
 
 
-% @doc Defines specified (non-already existing) data, returns data_defined for
-% synchronisation purposes, or throws an exception.
-%
-% Note: the default qualifier is implied here.
-%
-% Only to be called on the root data exchanger, from actors; the simulation
-% might be already running or not.
-%
+-doc """
+Defines the specified (non-already existing) data, returns data_defined for
+synchronisation purposes, or throws an exception.
+
+Note: the default qualifier is implied here.
+
+Only to be called on the root data exchanger, from actors; the simulation might
+be already running or not.
+""".
 -spec defineData( wooper:state(), key(), value() ) ->
 						request_return( 'data_defined' ).
 defineData( State, Key, Value ) ->
@@ -993,12 +1005,13 @@ defineData( State, Key, Value ) ->
 
 
 
-% @doc Defines specified (non-already existing) data, returns data_defined for
-% synchronisation purposes, or throws an exception.
-%
-% Only to be called on the root data exchanger, from actors; the simulation
-% might be already running, or not.
-%
+-doc """
+Defines the specified (non-already existing) data, returns data_defined for
+synchronisation purposes, or throws an exception.
+
+Only to be called on the root data exchanger, from actors; the simulation might
+be already running, or not.
+""".
 -spec defineData( wooper:state(), key(), value(), qualifier() ) ->
 						request_return( 'data_defined' ).
 defineData( State, Key, Value, Qualifier ) ->
@@ -1036,16 +1049,16 @@ defineData( State, Key, Value, Qualifier ) ->
 
 
 
+-doc """
+Sets the specified (already defined) data, returns data_modified for
+synchronisation purposes, or throws an exception.
 
-% @doc Sets specified (already defined) data, returns data_modified for
-% synchronisation purposes, or throws an exception.
-%
-% If a qualifier is not specified, the default one (thus not necessarily the
-% previous one) will be used.
-%
-% Only to be called on the root data exchanger, from actors; the simulation
-% might be already running or not.
-%
+If a qualifier is not specified, the default one (thus not necessarily the
+previous one) will be used.
+
+Only to be called on the root data exchanger, from actors; the simulation might
+be already running or not.
+""".
 -spec modifyData( wooper:state(), entries() ) ->
 						request_return( 'data_modified' ).
 modifyData( State, _EntryList=[] ) ->
@@ -1112,15 +1125,16 @@ modifyData( State, EntryList ) ->
 
 
 
-% @doc Sets specified (already defined) data, returns data_modified for
-% synchronisation purposes, or throws an exception.
-%
-% If a qualifier is not specified, the default one (thus not necessarily the
-% previous one) will be used.
-%
-% Only to be called on the root data exchanger, from actors; the simulation
-% might be already running or not.
-%
+-doc """
+Sets the specified (already defined) data, returns data_modified for
+synchronisation purposes, or throws an exception.
+
+If a qualifier is not specified, the default one (thus not necessarily the
+previous one) will be used.
+
+Only to be called on the root data exchanger, from actors; the simulation might
+be already running or not.
+""".
 -spec modifyData( wooper:state(), key(), value() ) ->
 						request_return( 'data_modified' ).
 modifyData( State, Key, Value ) ->
@@ -1162,13 +1176,13 @@ modifyData( State, Key, Value ) ->
 
 
 
+-doc """
+Sets the specified (already defined) data, returns data_modified for
+synchronisation purposes, or throws an exception.
 
-% @doc Sets specified (already defined) data, returns data_modified for
-% synchronisation purposes, or throws an exception.
-%
-% Only to be called on the root data exchanger, from actors; the simulation
-% might be already running or not.
-%
+Only to be called on the root data exchanger, from actors; the simulation might
+be already running or not.
+""".
 -spec modifyData( wooper:state(), key(), value(), qualifier() ) ->
 						request_return( 'data_modified' ).
 modifyData( State, Key, Value, Qualifier ) ->
@@ -1210,13 +1224,13 @@ modifyData( State, Key, Value, Qualifier ) ->
 
 
 
+-doc """
+Returns the values associated to the specified keys as a list of key/value pairs
+(e.g. [{K1,V1}, {K2,V2}]), or throws an exception.
 
-% @doc Returns the values associated to the specified keys as a list of
-% key/value pairs (e.g. [{K1,V1}, {K2,V2}]), or throws an exception.
-%
-% Preferably to be called on a local data exchanger; the simulation must not be
-% started yet.
-%
+Preferably to be called on a local data exchanger; the simulation must not be
+started yet.
+""".
 -spec readData( wooper:state(), key() ) ->
 						const_request_return( value() );
 			  ( wooper:state(), [ key() ] ) ->
@@ -1260,13 +1274,14 @@ readData( State, Key ) when is_atom( Key ) ->
 
 
 
-% @doc Returns the values associated to the specified keys as a list of
-% key/value/qualifier triplets (e.g. [{K1,V1,Q1}, {K2,V2,Q2}]), or throws an
-% exception.
-%
-% Preferably to be called on a local data exchanger; the simulation must not be
-% started yet.
-%
+-doc """
+Returns the values associated to the specified keys as a list of
+key/value/qualifier triplets (e.g. [{K1,V1,Q1}, {K2,V2,Q2}]), or throws an
+exception.
+
+Preferably to be called on a local data exchanger; the simulation must not be
+started yet.
+""".
 -spec readQualifiedData( wooper:state(), key() ) ->
 								const_request_return( qualified_value() );
 					   ( wooper:state(), [ key() ] ) ->
@@ -1285,13 +1300,6 @@ readQualifiedData( State, Keys ) when is_list( Keys ) ->
 	wooper:const_return_result( ReadPairs );
 
 
-
-% @doc Returns the value and qualifier associated to the specified key as a
-% {Value,Qualifier} pair, or throws an exception.
-%
-% Preferably to be called on a local data exchanger; the simulation must not be
-% started yet.
-%
 readQualifiedData( State, Key ) when is_atom( Key ) ->
 
 	case table:lookup_entry( Key, ?getAttr(data_table) ) of
@@ -1310,12 +1318,12 @@ readQualifiedData( State, Key ) when is_atom( Key ) ->
 % Section for recursive data-management helpers through the exchanger hierarchy.
 
 
-% @doc Helper request to recurse in the data-exchange tree with an entry.
-%
-% Entry is {Key, {Value,Qualifier}}.
-%
+-doc """
+Helper request to recurse in the data-exchange tree with an entry.
+""".
 -spec defineDataHelper( wooper:state(), entry() | entries() ) ->
 								request_return( 'data_defined' ).
+% Entry is {Key, {Value,Qualifier}}:
 defineDataHelper( State, _Entry={ Key, V } ) ->
 
 	% This entry list must have been already checked, thus is to be stored
@@ -1341,11 +1349,11 @@ defineDataHelper( State, EntryList ) -> % when is_list(EntryList) ->
 
 
 
-% @doc Helper request to recurse in the data-exchange tree with an entry, a
-% qualifier being specified.
-%
-% Here V={Value,Qualifier}
-%
+-doc """
+Helper request to recurse in the data-exchange tree with an entry, a qualifier
+being specified.
+""".
+% Here V={Value,Qualifier}:
 -spec modifyDataHelper( wooper:state(), entry() | entries() ) ->
 							request_return( 'data_modified' ).
 modifyDataHelper( State, _Entry={ Key, V } ) ->
@@ -1361,8 +1369,7 @@ modifyDataHelper( State, _Entry={ Key, V } ) ->
 
 % Helper request to recurse in the data-exchange tree with an entry list.
 %
-% EntryList is a list of {Key, {Value, Qualifier}} elements.
-%
+% EntryList is a list of {Key, {Value, Qualifier}} elements:
 modifyDataHelper( State, EntryList ) -> % when is_list(Entries) ->
 
 	% This entry list must have been already checked, thus is to be stored
@@ -1376,10 +1383,10 @@ modifyDataHelper( State, EntryList ) -> % when is_list(Entries) ->
 
 
 
-% @doc Helper request to recurse in the data-exchange tree with an entry list.
-%
-% EntryList is a list of {Key, {Value, Qualifier}} elements.
-%
+-doc """
+Helper request to recurse in the data-exchange tree with an entry list.
+""".
+% EntryList is a list of {Key, {Value, Qualifier}} elements:
 -spec commitDataHelper( wooper:state(), qualified_basic_entries() ) ->
 								request_return( 'data_committed' ).
 commitDataHelper( State, EntryList ) ->
@@ -1395,29 +1402,31 @@ commitDataHelper( State, EntryList ) ->
 
 
 
-% @doc Returns all the data stored by this data exchanger, as a unordered list
-% of {Key,Value} pairs.
-%
-% Note: mostly for debugging purpose.
-%
+-doc """
+Returns all the data stored by this data exchanger, as a unordered list of
+{Key,Value} pairs.
+
+Note: mostly for debugging purpose.
+""".
 -spec getAllData( wooper:state() ) -> const_request_return( entries() ).
 getAllData( State ) ->
 	wooper:const_return_result( table:enumerate( ?getAttr(data_table) ) ).
 
 
 
-% @doc Outputs, as a debug trace, the current data held by this data exchanger,
-% as a unordered list of {Key,Value} pairs.
-%
-% Note: mostly for debugging purpose.
-%
+-doc """
+Outputs, as a debug trace, the current data held by this data exchanger, as a
+unordered list of {Key,Value} pairs.
+
+Note: mostly for debugging purpose.
+""".
 -spec traceData( wooper:state() ) -> const_request_return( 'data_traced' ).
 traceData( State ) ->
 
 	DataPairs = table:enumerate( ?getAttr(data_table) ),
 
 	PairStrings = [ text_utils:format( "~ts: ~p", [ K, V ] )
-						|| { K, V } <- DataPairs ],
+                            || { K, V } <- DataPairs ],
 
 	?debug_fmt( "Current data table on ~p (~p): ~ts~n~n",
 		[ self(), node(), text_utils:strings_to_string( PairStrings ) ] ),
@@ -1426,11 +1435,12 @@ traceData( State ) ->
 
 
 
-% @doc Outputs, as debug traces, the current data held by all data exchangers,
-% as a unordered list of {Key,Value} pairs.
-%
-% Note: mostly for debugging purpose.
-%
+-doc """
+Outputs, as debug traces, the current data held by all data exchangers, as a
+unordered list of {Key,Value} pairs.
+
+Note: mostly for debugging purpose.
+""".
 -spec traceDistributedData( wooper:state() ) ->
 							const_request_return( 'distributed_data_traced' ).
 traceDistributedData( State ) ->
@@ -1447,7 +1457,9 @@ traceDistributedData( State ) ->
 
 
 
-% @doc Returns the name under which a data-exchanger will be locally registered.
+-doc """
+Returns the name under which a data-exchanger will be locally registered.
+""".
 -spec get_local_exchanger_name() ->
 						static_return( naming_utils:registration_name() ).
 get_local_exchanger_name() ->
@@ -1455,13 +1467,14 @@ get_local_exchanger_name() ->
 
 
 
-% @doc Returns the name under which the data-exchanger to be used by the
-% simulation case is to be registered globally.
-%
-% Indeed, if the user host is included in the simulation, then it will use the
-% data-exchanger local to the computing node created on that same user host, in
-% order to avoid to replicate it.
-%
+-doc """
+Returns the name under which the data-exchanger to be used by the simulation
+case is to be registered globally.
+
+Indeed, if the user host is included in the simulation, then it will use the
+data-exchanger local to the computing node created on that same user host, in
+order to avoid to replicate it.
+""".
 -spec get_global_name_of_exchanger_for_case() ->
 						static_return( naming_utils:registration_name() ).
 get_global_name_of_exchanger_for_case() ->
@@ -1469,9 +1482,9 @@ get_global_name_of_exchanger_for_case() ->
 
 
 
-% @doc Returns the PID of the data exchanger instantiated on the node of the
-% caller.
-%
+-doc """
+Returns the PID of the data exchanger instantiated on the node of the caller.
+""".
 -spec get_local_exchanger() -> static_return( data_exchanger_pid() ).
 get_local_exchanger() ->
 
@@ -1482,9 +1495,9 @@ get_local_exchanger() ->
 
 
 
-% @doc Returns the PID of the data exchanger instantiated on the node of the
-% caller.
-%
+-doc """
+Returns the PID of the data exchanger instantiated on the node of the caller.
+""".
 -spec get_root_exchanger() -> static_return( data_exchanger_pid() ).
 get_root_exchanger() ->
 
@@ -1495,9 +1508,10 @@ get_root_exchanger() ->
 
 
 
-% @doc Returns an opaque datatype that allows to make use of the data-exchange
-% service from a simulation case (e.g. a test case).
-%
+-doc """
+Returns an opaque datatype that allows to make use of the data-exchange service
+from a simulation case (e.g. a test case).
+""".
 -spec get_case_exchange_settings() -> static_return( exchange_settings() ).
 get_case_exchange_settings() ->
 
@@ -1556,9 +1570,10 @@ get_case_exchange_settings() ->
 
 
 
-% @doc Returns an opaque datatype that allows an actor to make use then of the
-% data-exchange service.
-%
+-doc """
+Returns an opaque datatype that allows an actor to make use then of the
+data-exchange service.
+""".
 -spec get_actor_exchange_settings() -> static_return( exchange_settings() ).
 get_actor_exchange_settings() ->
 
@@ -1596,13 +1611,14 @@ get_actor_exchange_settings() ->
 
 
 
-% @doc Registers into the root data exchanger (based on the specified PID) the
-% specified initial data.
-%
-% An exception will be thrown if the data was already defined.
-%
-% This method is synchronous, to avoid race conditions.
-%
+-doc """
+Registers into the root data exchanger (based on the specified PID) the
+specified initial data.
+
+An exception will be thrown if the data was already defined.
+
+This method is synchronous, to avoid race conditions.
+""".
 -spec define_initial_data( key(), value(), qualifier(), exchange_settings() ) ->
 									static_void_return().
 define_initial_data( Key, Value, Qualifier,
@@ -1620,14 +1636,15 @@ define_initial_data( Key, Value, Qualifier,
 
 
 
-% @doc Registers into the root data exchanger (based on the specified PID) the
-% specified initial data. No qualifier was specified here, the default one will
-% be used instead.
-%
-% An exception will be thrown if the data was already defined.
-%
-% This method is synchronous, to avoid race conditions.
-%
+-doc """
+Registers into the root data exchanger (based on the specified PID) the
+specified initial data. No qualifier was specified here, the default one will be
+used instead.
+
+An exception will be thrown if the data was already defined.
+
+This method is synchronous, to avoid race conditions.
+""".
 -spec define_initial_data( key(), value(),
 				exchange_settings() | qualifier() ) -> static_void_return().
 define_initial_data( Key, Value,
@@ -1665,14 +1682,15 @@ define_initial_data( Key, Value, Qualifier ) ->
 
 
 
-% @doc Registers into the root data exchanger (based on the specified PID) the
-% specified initial data, which is a list of data entries, each entry being
-% either {Key, Value} or {Key, Value, Qualifier}.
-%
-% An exception will be thrown if the data was already defined.
-%
-% This method is synchronous, to avoid race conditions.
-%
+-doc """
+Registers into the root data exchanger (based on the specified PID) the
+specified initial data, which is a list of data entries, each entry being either
+{Key, Value} or {Key, Value, Qualifier}.
+
+An exception will be thrown if the data was already defined.
+
+This method is synchronous, to avoid race conditions.
+""".
 -spec define_initial_data( mixed_entries(), exchange_settings() ) ->
 									static_void_return();
 						 ( key(), value() ) -> static_void_return().
@@ -1709,17 +1727,18 @@ define_initial_data( Key, Value ) when is_atom( Key ) ->
 
 
 
-% @doc Registers into the root data exchanger (whose PID will be determined by a
-% specific look-up) the specified data, which is a list of data entries, each
-% entry being either {Key, Value} or {Key, Value, Qualifier}.
-%
-% This method is synchronous, to avoid race conditions.
-%
-% Note: for efficiency reasons, the counterpart version relying on exchange
-% settings being obtained as parameters is to be preferred (call then
-% get_case_exchange_settings/0 at the beginning of the simulation case and
-% specify its result to next data-exchange calls).
-%
+-doc """
+Registers into the root data exchanger (whose PID will be determined by a
+specific look-up) the specified data, which is a list of data entries, each
+entry being either {Key, Value} or {Key, Value, Qualifier}.
+
+This method is synchronous, to avoid race conditions.
+
+Note: for efficiency reasons, the counterpart version relying on exchange
+settings being obtained as parameters is to be preferred (call then
+get_case_exchange_settings/0 at the beginning of the simulation case and specify
+its result to next data-exchange calls).
+""".
 -spec define_initial_data( mixed_entries() ) -> static_void_return().
 define_initial_data( EntryList ) when is_list( EntryList ) ->
 	define_initial_data( EntryList, get_case_exchange_settings() ),
@@ -1732,13 +1751,14 @@ define_initial_data( EntryList ) when is_list( EntryList ) ->
 
 
 
-% @doc Registers into the root data exchanger (based on the specified PID) the
-% specified initial data, which must have been already defined.
-%
-% An exception will be thrown if the data was already set.
-%
-% This method is synchronous, to avoid race conditions.
-%
+-doc """
+Registers into the root data exchanger (based on the specified PID) the
+specified initial data, which must have been already defined.
+
+An exception will be thrown if the data was already set.
+
+This method is synchronous, to avoid race conditions.
+""".
 -spec modify_initial_data( key(), value(), qualifier(), exchange_settings() ) ->
 											static_void_return().
 modify_initial_data( Key, Value, Qualifier,
@@ -1756,22 +1776,23 @@ modify_initial_data( Key, Value, Qualifier,
 
 
 
-% @doc Registers into the root data exchanger (based on the specified PID) the
-% specified initial data, which must have been already defined.
-%
-% No qualifier is specified here, the default one will be used instead (not
-% necessarily the current qualifier).
-%
-% An exception will be thrown if the data was already set.
-%
-% This method is synchronous, to avoid race conditions.
-%
+-doc """
+Registers into the root data exchanger (based on the specified PID) the
+specified initial data, which must have been already defined.
+
+No qualifier is specified here, the default one will be used instead (not
+necessarily the current qualifier).
+
+An exception will be thrown if the data was already set.
+
+This method is synchronous, to avoid race conditions.
+""".
 -spec modify_initial_data( key(), value(),
 				exchange_settings() | qualifier() ) -> static_void_return().
 modify_initial_data( Key, Value,
 					 _ExchangeSettings={ RootExchangerPid,
 										 _LocalExchangerPid } )
-		when is_pid( RootExchangerPid ) ->
+            when is_pid( RootExchangerPid ) ->
 
 	% No qualifier here.
 
@@ -1804,22 +1825,23 @@ modify_initial_data( Key, Value, Qualifier ) ->
 
 
 
-% @doc Registers into the root data exchanger (based on the specified PID) the
-% specified initial data, which is a list of data entries, each entry being
-% either {Key,Value} (in this case the default qualifier will be implied) or
-% {Key,Value,Qualifier}.
-%
-% An exception will be thrown if the data was already set.
-%
-% This method is synchronous, to avoid race conditions.
-%
+-doc """
+Registers into the root data exchanger (based on the specified PID) the
+specified initial data, which is a list of data entries, each entry being either
+{Key,Value} (in this case the default qualifier will be implied) or
+{Key,Value,Qualifier}.
+
+An exception will be thrown if the data was already set.
+
+This method is synchronous, to avoid race conditions.
+""".
 -spec modify_initial_data( mixed_entries(), exchange_settings() ) ->
 								static_void_return();
 						 ( key(), value() ) ->
 								static_void_return().
 modify_initial_data( EntryList,
-			_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } )
-  when is_list( EntryList ) andalso is_pid( RootExchangerPid ) ->
+		_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } )
+            when is_list( EntryList ) andalso is_pid( RootExchangerPid ) ->
 
 	RootExchangerPid ! { modifyInitialData, [ EntryList ], self() },
 
@@ -1831,21 +1853,22 @@ modify_initial_data( EntryList,
 	end;
 
 
-% @doc Registers into the root data exchanger (whose PID will be determined by a
+% at-doc """
+% Registers into the root data exchanger (whose PID will be determined by a
 % specific look-up) the specified data, which must have already been defined.
-%
+
 % No qualifier is specified here, the default one will be used instead (not
 % necessarily the current qualifier).
-%
+
 % An exception will be thrown if the data was already set.
-%
+
 % This method is synchronous, to avoid race conditions.
-%
+
 % Note: for efficiency reasons, the counterpart version relying on exchange
 % settings being obtained as parameters is to be preferred (call then
 % get_case_exchange_settings/0 at the beginning of the simulation case and
 % specify its result to next data-exchange calls).
-%
+% """.
 modify_initial_data( Key, Value ) when is_atom( Key ) ->
 	modify_initial_data( Key, Value, get_case_exchange_settings() ),
 	wooper:return_static_void().
@@ -1853,18 +1876,19 @@ modify_initial_data( Key, Value ) when is_atom( Key ) ->
 
 
 
-% @doc Registers into the root data exchanger (whose PID will be determined by a
-% specific look-up) the specified data, which is a list of data entries, each
-% entry being either {Key,Value} or {Key,Value,Qualifier}. This data have
-% already been defined.
-%
-% This method is synchronous, to avoid race conditions.
-%
-% Note: for efficiency reasons, the counterpart version relying on exchange
-% settings being obtained as parameters is to be preferred (call then
-% get_case_exchange_settings/0 at the beginning of the simulation case and
-% specify its result to next data-exchange calls).
-%
+-doc """
+Registers into the root data exchanger (whose PID will be determined by a
+specific look-up) the specified data, which is a list of data entries, each
+entry being either {Key,Value} or {Key,Value,Qualifier}. This data have already
+been defined.
+
+This method is synchronous, to avoid race conditions.
+
+Note: for efficiency reasons, the counterpart version relying on exchange
+settings being obtained as parameters is to be preferred (call then
+get_case_exchange_settings/0 at the beginning of the simulation case and specify
+its result to next data-exchange calls).
+""".
 -spec modify_initial_data( mixed_entries() ) -> static_void_return().
 modify_initial_data( EntryList ) when is_list( EntryList ) ->
 	modify_initial_data( EntryList, get_case_exchange_settings() ),
@@ -1877,14 +1901,14 @@ modify_initial_data( EntryList ) when is_list( EntryList ) ->
 % Section about data reading.
 
 
-% @doc Returns the value associated to specified key in the data-exchange
-% service.
-%
-% Note: for efficiency reasons, the counterpart version relying on exchange
-% settings being obtained as parameters is to be preferred (call then
-% get_case_exchange_settings/0 at the beginning of the simulation case and
-% specify its result to next data-exchange calls).
-%
+-doc """
+Returns the value associated to the specified key in the data-exchange service.
+
+Note: for efficiency reasons, the counterpart version relying on exchange
+settings being obtained as parameters is to be preferred (call then
+get_case_exchange_settings/0 at the beginning of the simulation case and specify
+its result to next data-exchange calls).
+""".
 -spec read_initial_data( key() ) -> static_return( value() ).
 read_initial_data( Key ) ->
 	Value = read_initial_data( Key, get_case_exchange_settings() ),
@@ -1893,12 +1917,12 @@ read_initial_data( Key ) ->
 
 
 
-% @doc Returns the value associated to specified key(s) in the data-exchange
-% service: if Key is an atom, only the corresponding value will be returned,
-% whereas if Key is a list of keys [K1, K2, ...] (as atoms) then the
-% corresponding list of key/value pairs will be returned: [{K1,V1}, {K2,V2},
-% ...].
-%
+-doc """
+Returns the value associated to the specified key(s) in the data-exchange
+service: if Key is an atom, only the corresponding value will be returned,
+whereas if Key is a list of keys [K1, K2, ...] (as atoms) then the corresponding
+list of key/value pairs will be returned: [{K1,V1}, {K2,V2}, ...].
+""".
 -spec read_initial_data( key(), exchange_settings() ) ->
 										static_return( value() ).
 read_initial_data( Key,
@@ -1915,14 +1939,15 @@ read_initial_data( Key,
 
 
 
-% @doc Returns the value and qualifier (as a {Value,Qualifier} pair) associated
-% to specified key in the data-exchange service.
-%
-% Note: for efficiency reasons, the counterpart version relying on exchange
-% settings being obtained as parameters is to be preferred (call then
-% get_case_exchange_settings/0 at the beginning of the simulation case and
-% specify its result to next data-exchange calls).
-%
+-doc """
+Returns the value and qualifier (as a {Value,Qualifier} pair) associated to the
+specified key in the data-exchange service.
+
+Note: for efficiency reasons, the counterpart version relying on exchange
+settings being obtained as parameters is to be preferred (call then
+get_case_exchange_settings/0 at the beginning of the simulation case and specify
+its result to next data-exchange calls).
+""".
 -spec read_qualified_initial_data( key() ) ->
 										static_return( qualified_value() ).
 read_qualified_initial_data( Key ) ->
@@ -1932,12 +1957,13 @@ read_qualified_initial_data( Key ) ->
 
 
 
-% @doc Returns the value and qualifier associated to specified key(s) in the
-% data-exchange service: if Key is an atom, only the corresponding
-% {Value,Qualifier} pair will be returned, whereas if Key is a list of keys [K1,
-% K2, ...] (as atoms) then the corresponding list of key/value triplets will be
-% returned: [{K1,V1,Q1}, {K2,V2,Q2}, ...].
-%
+-doc """
+Returns the value and qualifier associated to the specified key(s) in the
+data-exchange service: if Key is an atom, only the corresponding
+{Value,Qualifier} pair will be returned, whereas if Key is a list of keys [K1,
+K2, ...] (as atoms) then the corresponding list of key/value triplets will be
+returned: [{K1,V1,Q1}, {K2,V2,Q2}, ...].
+""".
 -spec read_qualified_initial_data( key(), exchange_settings() ) ->
 										static_return( qualified_value() );
 								 ( [ key() ], exchange_settings() ) ->
@@ -1960,9 +1986,10 @@ read_qualified_initial_data( Key,
 
 
 
-% @doc Checks that, in the specified list of tuples, the first element of each
-% tuple is unique.
-%
+-doc """
+Checks that, in the specified list of tuples, the first element of each tuple is
+unique.
+""".
 -spec check_no_duplicated_key( [ tuple() ] ) -> void().
 check_no_duplicated_key( TupleList ) ->
 	check_no_duplicated_key( TupleList, _Acc=[] ).
@@ -1998,19 +2025,21 @@ check_no_duplicated_key( [ H | T ], Acc ) ->
 % Definition section.
 
 
-% @doc Checks that no entry was already defined. Whether or not a qualifier was
-% omitted, the returned triplet list is ready for a commit definition (that is
-% qualifiers are already the ones to write directly).
-%
+-doc """
+Checks that no entry was already defined. Whether or not a qualifier was
+omitted, the returned triplet list is ready for a commit definition (that is
+qualifiers are already the ones to write directly).
+""".
 prepare_entries_to_define( Entries, Table ) ->
 	% Each entry is either a pair or a triplet, and will be managed accordingly:
 	[ get_entry_to_define( E, Table ) || E <- Entries ].
 
 
 
-% @doc Returns the {K, {V, Q}} final entry corresponding to the qualifier-less
-% specified one.
-%
+-doc """
+Returns the {K, {V, Q}} final entry corresponding to the qualifier-less
+specified one.
+""".
 get_entry_to_define( _Entry={ K, V }, Table ) when is_atom( K ) ->
 
 	% No qualifier specified here:
@@ -2061,11 +2090,12 @@ get_entry_to_define( Other, _Table ) ->
 % Modification section.
 
 
-% @doc Checks that all entries were already defined and that their qualifier was
-% mutable indeed. Whether or not a qualifier was omitted, the returned triplet
-% list is ready for a commit modification (that is qualifiers are already the
-% ones to write directly).
-%
+-doc """
+Checks that all entries were already defined and that their qualifier was
+mutable indeed. Whether or not a qualifier was omitted, the returned triplet
+list is ready for a commit modification (that is qualifiers are already the ones
+to write directly).
+""".
 prepare_entries_to_modify( Entries, Table ) ->
 	% Each entry is either a pair or a triplet, and will be managed accordingly:
 	[ get_entry_to_modify( E, Table ) || E <- Entries ].
@@ -2073,9 +2103,10 @@ prepare_entries_to_modify( Entries, Table ) ->
 
 
 
-% @doc Returns the {K, {V,Q}} final entry corresponding to qualifier-less
-% specified one.
-%
+-doc """
+Returns the {K, {V,Q}} final entry corresponding to the qualifier-less specified
+one.
+""".
 get_entry_to_modify( E={ K, V }, Table ) when is_atom( K ) ->
 
 	% No qualifier specified here:
@@ -2133,11 +2164,12 @@ get_entry_to_modify( Other, _Table ) ->
 
 
 
-% @doc Adds specified entries to the pending commits.
-%
-% We check each of these entries against the already-pending ones, but also
-% against the other entries of the input list.
-%
+-doc """
+Adds the specified entries to the pending commits.
+
+We check each of these entries against the already-pending ones, but also
+against the other entries of the input list.
+""".
 add_commits( _EntryList=[], PendingCommits ) ->
 	PendingCommits;
 
@@ -2147,12 +2179,13 @@ add_commits( _EntryList=[ E | T ], PendingCommits ) ->
 
 
 
-% @doc Adds specified entry in the pending commits.
-%
-% Returns a new commit list.
-%
-% We check this entry against the already-pending ones.
-%
+-doc """
+Adds the specified entry in the pending commits.
+
+Returns a new commit list.
+
+We check this entry against the already-pending ones.
+""".
 add_commit( Entry={ Key, _P }, PendingCommits ) ->
 
 	case lists:keysearch( Key, _Index=1, PendingCommits ) of
@@ -2246,15 +2279,15 @@ modify_data_recursive( Entry, State ) ->
 
 
 
+-doc """
+Requests (up to once per diasca) the root time manager to trigger an
+inter-diasca notification for the current diasca, if needed. Will trigger in
+turn a onInterDiascaBegin/1 call.
 
-% @doc Requests (up to once per diasca) the root time manager to trigger an
-% inter-diasca notification for the current diasca, if needed. Will trigger in
-% turn a onInterDiascaBegin/1 call.
-%
-% Returns an updated state.
-%
-% (helper function)
-%
+Returns an updated state.
+
+(helper function)
+""".
 -spec manage_inter_diasca_notification( wooper:state() ) -> wooper:state().
 manage_inter_diasca_notification( State ) ->
 
@@ -2283,15 +2316,16 @@ manage_inter_diasca_notification( State ) ->
 
 
 
-% @doc eturns the qualifier that shall apply if the data definition did not
-% specify it.
-%
+-doc """
+Returns the qualifier that shall apply if the data definition did not specify
+it.
+""".
 -spec get_default_qualifier() -> qualifier().
 get_default_qualifier() ->
 	const.
 
 
-% @doc Checks that specified qualifier is a known supported one.
+-doc "Checks that the specified qualifier is a known supported one.".
 -spec check_qualifier( basic_utils:user_data() ) -> void().
 check_qualifier( const ) ->
 	ok;
@@ -2344,19 +2378,20 @@ common_construct( ExchangerName, State ) ->
 
 
 
-% @doc Parses specified configuration files, updates the data table accordingly,
-% and returns a new state.
-%
-% FileList must be a list of plain strings.
-%
-% NodeType allows to tell whether we are a (normal) computing-node based
-% data-exchanger or a user-node based data-exchanger (created ad-hoc as no other
-% was available on the user host).
-%
-% Returns an updated state.
-%
-% (helper function)
-%
+-doc """
+Parses the specified configuration files, updates the data table accordingly,
+and returns a new state.
+
+FileList must be a list of plain strings.
+
+NodeType allows to tell whether we are a (normal) computing-node based
+data-exchanger or a user-node based data-exchanger (created ad-hoc as no other
+was available on the user host).
+
+Returns an updated state.
+
+(helper function)
+""".
 -spec parse_files( [ file_path() ], node_type(), wooper:state() ) ->
 							wooper:state().
 parse_files( FileList, NodeType, State ) ->
@@ -2401,12 +2436,13 @@ parse_files( FileList, NodeType, State ) ->
 
 
 
-% @doc Parses specified file, updates the specified data table accordingly, and
-% returns it.
-%
-% (helper function)
-%
--spec parse_file( file_path(), data_table(), maybe( json_parser_state() ) ) ->
+-doc """
+Parses the specified configuration file, updates the specified data table
+accordingly, and returns it.
+
+(helper function)
+""".
+-spec parse_file( file_path(), data_table(), option( json_parser_state() ) ) ->
 						data_table().
 parse_file( Filename, DataTable, MaybeJsonParserState ) ->
 
@@ -2471,9 +2507,10 @@ parse_file( Filename, DataTable, MaybeJsonParserState ) ->
 
 
 
-% @doc Returns the table entries corresponding to the content of specified file
-% (containing Erlang terms).
-%
+-doc """
+Returns the table entries corresponding to the content of the specified file in
+the ETF format (i.e. containing Erlang terms).
+""".
 -spec manage_term_file( file_path() ) -> data_table().
 manage_term_file( Filename ) ->
 
@@ -2493,10 +2530,11 @@ manage_term_file( Filename ) ->
 
 
 
-% @doc Returns the table entries corresponding to the content of specified JSON
-% file.
-%
--spec manage_json_file( file_path(), maybe( json_parser_state() ) ) ->
+-doc """
+Returns the table entries corresponding to the content of the specified JSON
+file.
+""".
+-spec manage_json_file( file_path(), option( json_parser_state() ) ) ->
 															data_table().
 manage_json_file( Filename, JsonParserState ) ->
 
@@ -2514,17 +2552,18 @@ manage_json_file( Filename, JsonParserState ) ->
 
 
 
-% Helper functions to manage operation in the full data-exchanger tree.
+% Helper functions to manage operations in the full data-exchanger tree.
 % Somewhat similar to a map/reduce.
 
 
-% @doc Executes specified request (atom) with specified list of parameters
-% recursively through the whole data-exchanger hierarchy.
-%
-% Returns a list of the results.
-%
+-doc """
+Executes the specified request (atom) with the specified list of parameters
+recursively through the whole data-exchanger hierarchy.
+
+Returns a list of the results.
+""".
 -spec executeRequestInTree( wooper:state(), method_name(),
-				method_arguments() ) -> request_return( [ term() ] ).
+		method_arguments() ) -> request_return( [ term() ] ).
 executeRequestInTree( State, MethodName, Parameters ) ->
 
 	%trace_utils:debug_fmt( "executeRequestInTree in for ~ts with "
@@ -2583,7 +2622,7 @@ executeRequestInTreeHelper( State, MethodName, Parameters ) ->
 
 
 
-% Waits for specified list of PIDs, and aggregates their result.
+% Waits for the pecified list of PIDs, and aggregates their result.
 %
 % Will block forever if at least one child does not answer.
 %

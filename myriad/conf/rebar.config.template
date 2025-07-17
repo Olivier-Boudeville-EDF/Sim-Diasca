@@ -47,10 +47,11 @@
 {deps, []}.
 
 
-% Include directories found in INC:
+% Include directories found in INC.
 %
 % No need to select here a JSON backend (i.e. neither use_jsx_json_backend nor
-% use_jiffy_json_backend is useful), as their look-up is now done at runtime.
+% use_jiffy_json_backend is useful), as their look-up is now done at runtime
+% (and anyway we now rely an Erlang builtin support for JSON).
 %
 {erl_opts, [ {myriad_version,"VERSION_FOR_OTP"}, {d,myriad_debug_mode}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR ]}.
 
@@ -159,9 +160,7 @@
 	% Test profile, like the production one except for the three, final,
 	% token-related defines:
 	%
-	% No need to select here a JSON backend (i.e. neither use_jsx_json_backend
-	% nor use_jiffy_json_backend is useful), as their look-up is now done at
-	% runtime.
+	% (see erl_opts above about JSON backends)
 	%
 	{erl_opts, [ {myriad_version,"VERSION_FOR_OTP"}, {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR, {d,my_first_test_token}, {d,my_second_test_token,200}, {d,my_third_test_token,some_text} ]}
 

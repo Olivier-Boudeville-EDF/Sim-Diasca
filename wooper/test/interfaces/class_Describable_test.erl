@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 Olivier Boudeville
+% Copyright (C) 2008-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,18 +25,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2008.
 
-
-% @doc Unit tests for the <b>Describable</b> class implementation.
-%
-% See the class_Describable module.
-%
 -module(class_Describable_test).
+
+-moduledoc """
+Unit tests for the **Describable** class implementation.
+
+See the class_Describable module.
+""".
 
 
 -export([ run/0 ]).
 
 
-% @doc Runs the tests.
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 

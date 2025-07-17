@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,68 +25,83 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, September 2, 2023.
 
-
-% @doc Gathering of various facilities related to the <b>management of bitmap
-% content</b>.
-%
-% Bitmaps correspond to the locally-native image format that is the
-% quickest/easiest to operate with - as opposed to images, which are generic
-% elements, independent from platform and image file format (these are just
-% buffers of RGB bytes, with an optional buffer for the alpha bytes).
-%
-% See also the gui_canvas and gui_render (e.g. for draw_bitmap/*) modules.
-%
-% Bitmaps belong to the reference-counted resources; their life-cycle shall be
-% managed by the caller: a creation shall be ultimately paired to a destruction
-% (see destruct/1).
-%
 -module(gui_bitmap).
 
+-moduledoc """
+Gathering of various facilities related to the **management of bitmap content**.
 
+Bitmaps correspond to the locally-native image format that is the
+quickest/easiest to operate with - as opposed to images, which are generic
+elements, independent from platform and image file format (these are just
+buffers of RGB bytes, with an optional buffer for the alpha bytes).
+
+See also the gui_canvas and gui_render (e.g. for draw_bitmap/*) modules.
+
+Bitmaps belong to the reference-counted resources; their life-cycle shall be
+managed by the caller: a creation shall be ultimately paired to a destruction
+(see destruct/1).
+""".
+
+
+
+-doc """
+Platform-dependent bitmap, either monochrome or colour (with or without alpha
+channel).
+
+Intended to be a wrapper of whatever is the native image format, which is
+quickest/easiest to draw to a display context (as opposed to images, which are
+platform-independent).
+
+A given bitmap may or may not have its internal data buffer set.
+
+Bitmaps belong to the reference-counted resources; their life-cycle shall be
+managed by the caller: a creation shall be ultimately paired to a destruction
+(see destruct/1).
+""".
 -type bitmap() :: gui_image:bitmap().
-% Platform-dependent bitmap, either monochrome or colour (with or without alpha
-% channel).
-%
-% Intended to be a wrapper of whatever is the native image format, which is
-% quickest/easiest to draw to a display context (as opposed to images, which are
-% platform-independent).
-%
-% A given bitmap may or may not have its internal data buffer set.
-%
-% Bitmaps belong to the reference-counted resources; their life-cycle shall be
-% managed by the caller: a creation shall be ultimately paired to a destruction
-% (see destruct/1).
 
 
+-doc """
+A bitmap with no internal data buffer set.
+
+When a bitmap is constructed as empty, it embeds no data buffer; use typically
+populate_buffer/4 to add such data.
+""".
 -type empty_bitmap() :: bitmap().
-% A bitmap with no internal data buffer set.
-%
-% When a bitmap is constructed as empty, it embeds no data buffer; use typically
-% populate_buffer/4 to add such data.
 
 
 
 % For the raw_bitmap record:
 -include("gui_image.hrl").
 
+
+-doc """
+A record describing a raw, ready-to-use, bitmap, as a term, possibly loaded from
+file, or generated, etc., as opposed to an image (which respects a format like
+PNG or JPEG, has metadata, etc.).
+
+Note: currently not used, as a bitmap() offers all services needed.
+""".
 -type raw_bitmap() :: #raw_bitmap{}.
 
 
-% A record describing a raw, ready-to-use, bitmap, as a term, possibly loaded
-% from file, or generated, etc., as opposed to an image (which respects a format
-% like PNG or JPEG, has metadata, etc.).
-%
-% Note: currently not used, as a bitmap() offers all services needed.
 
-
+-doc """
+A widget displaying a bitmap; a bitmap display behaves like a panel dedicated to
+the rendering of a bitmap.
+""".
 -opaque bitmap_display() :: gui_image:bitmap_display().
-% A widget displaying a bitmap; a bitmap display behaves like a panel dedicated
-% to the rendering of a bitmap.
+
 
 
 % In the same order as listed in
 % https://docs.wxwidgets.org/stable/classwx_art_provider.html:
 %
+-doc """
+The name identifiers of the standard bitmaps.
+
+See also gui_constants:get_standard_bitmap_name_id_topic_spec/0.
+""".
 -type standard_bitmap_name_id() ::
 	'error_bitmap' | 'question_bitmap' | 'warning_bitmap'
  | 'information_bitmap' | 'add_bookmark_bitmap'
@@ -107,23 +122,27 @@
  | 'full_screen_bitmap' | 'edit_bitmap' | 'hard_disk_bitmap'
  | 'floppy_bitmap' | 'cdrom_bitmap' | 'removable_bitmap'
  | 'backend_logo_bitmap'.
-% The name identifiers of the standard bitmaps.
-%
-% See also gui_constants:get_bitmap_id_topic_spec/0.
 
 
+
+-doc "Any bitmap name identifier.".
 -type bitmap_name_id() :: standard_bitmap_name_id() | id().
+
+
+-doc "An identifier of a bitmap provided by the GUI backend.".
+-type backend_bitmap_id() :: wx_art_id().
 
 
 -export_type([ bitmap/0, empty_bitmap/0, raw_bitmap/0,
 			   bitmap_display/0, standard_bitmap_name_id/0,
-			   bitmap_name_id/0 ]).
+			   bitmap_name_id/0, backend_bitmap_id/0 ]).
+
 
 
 % Local types:
 
--type wx_art_id() :: unicode:chardata().
-% For example "wxART_NEW".
+-type wx_art_id() :: gui_wx_backend:wx_art_id().
+
 
 
 % Functions on bitmaps:
@@ -141,15 +160,15 @@
 
 
 % Functions about bitmap displays:
--export([ create_static_display/2, create_static_display/3,
-		  destruct_static_display/1 ]).
+-export([ create_display/2, create_display/3, destruct_display/1 ]).
 
 
 % For the wxBITMAP_SCREEN_DEPTH defined:
 -include_lib("wx/include/wx.hrl").
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type any_file_path() :: file_utils:any_file_path().
 
@@ -173,20 +192,23 @@
 
 
 
-% @doc Returns a bitmap of the specified dimensions, using the current system
-% color depth.
-%
-% To be explicitly destructed (see destruct/1) when done with it.
-%
+-doc """
+Returns a bitmap of the specified dimensions, using the current system color
+depth.
+
+To be explicitly destructed (see destruct/1) when done with it.
+""".
 -spec create( width(), height() ) -> bitmap().
 create( Width, Height ) ->
 	create( Width, Height, ?wxBITMAP_SCREEN_DEPTH ).
 
 
-% @doc Returns a bitmap of the specified dimensions and color depth.
-%
-% To be explicitly destructed (see destruct/1) when done with it.
-%
+
+-doc """
+Returns a bitmap of the specified dimensions and color depth.
+
+To be explicitly destructed (see destruct/1) when done with it.
+""".
 -spec create( width(), height(), color_depth() ) -> bitmap().
 create( Width, Height, ColorDepth ) ->
 	NewBitmap = create_empty( Width, Height ),
@@ -194,17 +216,19 @@ create( Width, Height, ColorDepth ) ->
 	NewBitmap.
 
 
-% @doc Returns a bitmap created from the image at the specified path.
-%
-% To be explicitly destructed (see destruct/1) when done with it.
-%
+
+-doc """
+Returns a bitmap created from the image at the specified path.
+
+To be explicitly destructed (see destruct/1) when done with it.
+""".
 -spec create_from( any_file_path() ) -> bitmap().
 create_from( ImagePath ) ->
 	gui_image:create_bitmap( ImagePath ).
 
 
 
-% @doc Returns an empty (buffer-less) bitmap of the specified size.
+-doc "Returns an empty (buffer-less) bitmap of the specified size.".
 -spec create_empty( size() ) -> empty_bitmap().
 %
 % To be explicitly destructed (see destruct/1) when done with it.
@@ -213,10 +237,12 @@ create_empty( _Size={ Width, Height } ) ->
 	create_empty( Width, Height ).
 
 
-% @doc Returns an empty (buffer-less) bitmap of the specified dimensions.
-%
-% To be explicitly destructed (see destruct/1) when done with it.
-%
+
+-doc """
+Returns an empty (buffer-less) bitmap of the specified dimensions.
+
+To be explicitly destructed (see destruct/1) when done with it.
+""".
 -spec create_empty( width(), height() ) -> empty_bitmap().
 create_empty( Width, Height ) ->
 	ImgBitmap = wxBitmap:new( Width, Height ),
@@ -232,11 +258,12 @@ create_empty( Width, Height ) ->
 	end.
 
 
-% @doc Returns an empty bitmap whose size is the client one of the specified
-% widget.
-%
-% To be explicitly destructed (see destruct/1) when done with it.
-%
+
+-doc """
+Returns an empty bitmap whose size is the client one of the specified widget.
+
+To be explicitly destructed (see destruct/1) when done with it.
+""".
 -spec create_empty_for( widget() ) -> empty_bitmap().
 create_empty_for( Widget ) ->
 	ClientSize = wxWindow:getClientSize( Widget ),
@@ -244,20 +271,22 @@ create_empty_for( Widget ) ->
 
 
 
-% @doc Destructs the specified bitmap (which must not be locked).
-%
-% Decrements its reference count; may trigger an actual destruction immediately
-% or not.
-%
+-doc """
+Destructs the specified bitmap (which must not be locked).
+
+Decrements its reference count; may trigger an actual destruction immediately or
+not.
+""".
 -spec destruct( bitmap() ) -> void().
 destruct( Bitmap ) ->
 	wxBitmap:destroy( Bitmap ).
 
 
 
-% @doc Returns the standard bitmap of default dimensions, corresponding to the
-% specified identifier.
-%
+-doc """
+Returns the standard bitmap of default dimensions, corresponding to the
+specified identifier.
+""".
 -spec get_standard( standard_bitmap_name_id() ) -> bitmap().
 get_standard( StdBitmapId ) ->
 
@@ -277,9 +306,11 @@ get_standard( StdBitmapId ) ->
 	end.
 
 
-% @doc Returns the standard bitmap corresponding to the specified identifier and
-% dimensions.
-%
+
+-doc """
+Returns the standard bitmap corresponding to the specified identifier and
+dimensions.
+""".
 -spec get_standard( standard_bitmap_name_id(), dimensions() ) -> bitmap().
 get_standard( StdBitmapId, Dimensions ) ->
 
@@ -301,9 +332,10 @@ get_standard( StdBitmapId, Dimensions ) ->
 
 
 
-% @doc Creates the internal data buffer of the specific (supposedly empty)
-% bitmap according to the specified settings.
-%
+-doc """
+Creates the internal data buffer of the specific (supposedly empty) bitmap
+according to the specified settings.
+""".
 -spec populate_buffer( empty_bitmap(), width(), height(), color_depth() ) ->
 											void().
 populate_buffer( EmptyBitmap, Width, Height, ColorDepth ) ->
@@ -313,30 +345,33 @@ populate_buffer( EmptyBitmap, Width, Height, ColorDepth ) ->
 
 
 
-% @doc Returns the current width of the specified bitmap.
+-doc "Returns the current width of the specified bitmap.".
 -spec get_width( bitmap() ) -> width().
 get_width( Bitmap ) ->
 	wxBitmap:getWidth( Bitmap ).
 
 
-% @doc Returns the current height of the specified bitmap.
+
+-doc "Returns the current height of the specified bitmap.".
 -spec get_height( bitmap() ) -> height().
 get_height( Bitmap ) ->
 	wxBitmap:getHeight( Bitmap ).
 
 
-% @doc Returns the current size of the specified bitmap.
+
+-doc "Returns the current size of the specified bitmap.".
 -spec get_size( bitmap() ) -> size().
 get_size( Bitmap ) ->
 	{ wxBitmap:getWidth( Bitmap ), wxBitmap:getHeight( Bitmap ) }.
 
 
 
-% @doc Locks the specified bitmap, so that direct access to its content can be
-% done, through the returned device context.
-%
-% Once the desired changes will have been made, this bitmap must be unlocked.
-%
+-doc """
+Locks the specified bitmap, so that direct access to its content can be done,
+through the returned device context.
+
+Once the desired changes will have been made, this bitmap must be unlocked.
+""".
 -spec lock( bitmap() ) -> device_context().
 lock( Bitmap ) ->
 	DC = wxMemoryDC:new( Bitmap ),
@@ -351,17 +386,21 @@ lock( Bitmap ) ->
 	end.
 
 
-% @doc Unlocks the specified bitmap, based on the specified device context
-% obtained from a previous locking.
-%
+
+-doc """
+Unlocks the specified bitmap, based on the specified device context obtained
+from a previous locking.
+""".
 -spec unlock( device_context() ) -> void().
 unlock( DC ) ->
 	wxMemoryDC:destroy( DC ).
 
 
-% @doc Draws the specified bitmap on the specified device context, at the
-% specified position.
-%
+
+-doc """
+Draws the specified bitmap on the specified device context, at the specified
+position.
+""".
 -spec draw( bitmap(), device_context(), point() ) -> void().
 draw( SourceBitmap, TargetDC, PosInTarget ) ->
 	wxDC:drawBitmap( TargetDC, SourceBitmap, PosInTarget ).
@@ -372,31 +411,36 @@ draw( SourceBitmap, TargetDC, PosInTarget ) ->
 % Bitmap display section.
 
 
-% @doc Creates a static bitmap display from the specified bitmap.
--spec create_static_display( bitmap(), parent() ) -> bitmap_display().
-create_static_display( Bitmap, Parent ) ->
-	create_static_display( Bitmap, _Opts=[], Parent ).
+-doc "Creates a bitmap display from the specified bitmap.".
+-spec create_display( bitmap(), parent() ) -> bitmap_display().
+create_display( Bitmap, Parent ) ->
+	create_display( Bitmap, _Opts=[], Parent ).
 
 
-% @doc Creates a bitmap display from the specified bitmap and with the specified
-% options.
-%
--spec create_static_display( bitmap(), [ window_option() ], parent() ) ->
+
+-doc """
+Creates a bitmap display from the specified bitmap and with the specified
+options.
+""".
+-spec create_display( bitmap(), [ window_option() ], parent() ) ->
 												bitmap_display().
-create_static_display( Bitmap, Options, Parent ) ->
+create_display( Bitmap, Options, Parent ) ->
 	wxStaticBitmap:new( Parent, gui_id:get_any_id(), Bitmap, Options ).
 
 
-% @doc Destructs the specified bitmap display.
--spec destruct_static_display( bitmap_display() ) -> void().
-destruct_static_display( BitmapDisplay ) ->
+
+-doc "Destructs the specified bitmap display.".
+-spec destruct_display( bitmap_display() ) -> void().
+destruct_display( BitmapDisplay ) ->
 	wxStaticBitmap:destroy( BitmapDisplay ).
 
 
 
-% @doc Return the wx null bitmap, which is typically returned whenever a bitmap
-% is not found.
-%
+
+-doc """
+Returns the wx null bitmap, which is typically returned whenever a bitmap is not
+found.
+""".
 -spec get_wx_null_bitmap() -> bitmap().
 get_wx_null_bitmap() ->
 	% Computed (not a literal constant):
@@ -404,12 +448,14 @@ get_wx_null_bitmap() ->
 
 
 
-% @doc Converts the specified bitmap identifier (for an already-existing item)
-% into a wx-specific one.
-%
+-doc """
+Converts the specified bitmap identifier (for an already-existing item) into a
+wx-specific one.
+""".
 -spec to_wx_bitmap_id( bitmap_name_id() ) -> wx_art_id().
 to_wx_bitmap_id( BitmapId ) ->
-	case gui_generated:get_maybe_second_for_bitmap_id( BitmapId ) of
+	case gui_generated:get_maybe_second_for_standard_bitmap_name_id(
+			BitmapId ) of
 
 		undefined ->
 			throw( { unknown_bitmap_id, BitmapId } );

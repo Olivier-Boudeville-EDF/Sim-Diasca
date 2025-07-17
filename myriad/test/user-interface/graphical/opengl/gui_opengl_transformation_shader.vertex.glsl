@@ -5,6 +5,11 @@
  * Each vertex shader instance is to transform exactly one vertex attribute
  * (received from the vertex stream) into another.
  *
+ * As a consequence, for each vertex attribute, each instance of this shader
+ * will multiply the projection matrix with the model-view one, which is
+ * suboptimal (it should better be done once for all on the host CPU, see
+ * gui_opengl_mvp_shader.vertex.glsl for that).
+ *
  * At least generally, this transformation should behave as a pure
  * (context-free) function.
  *

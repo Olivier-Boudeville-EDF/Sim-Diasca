@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,13 +7,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Unit tests for the <b>Platypus class implementation</b>, remarkable for
-% its diamond-shaped inheritance.
-%
-% See the class_Platypus.erl tested module.
-%
 -module(class_Platypus_test).
+
+-moduledoc """
+Unit tests for the **Platypus class implementation**, remarkable for its
+diamond-shaped inheritance.
+
+See the class_Platypus.erl tested module.
+""".
 
 
 -include_lib("myriad/include/test_facilities.hrl").
@@ -133,7 +134,7 @@ run( IsDebug ) ->
 
 		{ wooper_result, 6 } ->
 			test_facilities:display(
-			   "After declareBirthday/1, getAge/1 returned 6 as expected." );
+				"After declareBirthday/1, getAge/1 returned 6 as expected." );
 
 		{ wooper_result, UnexpectedLastAge } ->
 			test_facilities:fail( "wrong age: ~p", [ UnexpectedLastAge ] )
@@ -149,7 +150,7 @@ run( IsDebug ) ->
 
 		{ wooper_result, true } ->
 			test_facilities:display(
-						"isHotBlooded/1 returned true as expected." );
+				"isHotBlooded/1 returned true as expected." );
 
 		{ wooper_result, UnexpectedBlood } ->
 			test_facilities:fail( "wrong blood type: ~p", [ UnexpectedBlood ] )
@@ -286,8 +287,8 @@ run( IsDebug ) ->
 
 		{ wooper_result, ExpectedNames } ->
 			test_facilities:display(
-			  "This Platypus has the right alternate names: ~w.",
-			  [ ExpectedNames ] )
+				"This Platypus has the right alternate names: ~w.",
+				[ ExpectedNames ] )
 
 	end,
 
@@ -297,28 +298,22 @@ run( IsDebug ) ->
 
 		 { wooper_result, FirstName } ->
 			test_facilities:display(
-			  "This Platypus forgot its first alternate name: ~w.",
-			  [ FirstName ] )
+				"This Platypus forgot its first alternate name: ~w.",
+				[ FirstName ] )
 
 	end,
 
 
-	case IsDebug of
-
-		true ->
-
+	IsDebug andalso
+		begin
 			MyP ! { wooper_get_instance_description, [], self() },
 			receive
 
 				{ wooper_result, InspectString } ->
 					test_facilities:display( "Instance description: ~ts",
 											 [ InspectString ] )
-			end;
-
-		false ->
-			ok
-
-	end,
+			end
+		end,
 
 
 	MyP ! { getAlternateNames, [], self() },

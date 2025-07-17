@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, May 4, 2019.
 
-
-% @doc Test of the <b>bijective table</b> implementation.
-%
-% See the bijective_table.erl tested module.
-%
 -module(bijective_table_test).
+
+-moduledoc """
+Test of the **bijective table** implementation.
+
+See the bijective_table.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -44,7 +46,7 @@ run() ->
 	test_facilities:start( ?MODULE ),
 
 	TestTable = bijective_table:new( [ { "one", 1 }, { "two", 2 },
-						{ "three", 3 }, { "four", 4 }, { "five", 5 } ] ),
+		{ "three", 3 }, { "four", 4 }, { "five", 5 } ] ),
 
 	"four" = bijective_table:get_first_for( 4, TestTable ),
 

@@ -1,8 +1,8 @@
 MYRIAD_TOP = ../..
 
 
-.PHONY: test-local prepare-otp-test test-distributions archive info-archive \
-		clean-distribution-files
+.PHONY: test-local prepare-otp-test test-distributions test-interactive-shell \
+		archive info-archive clean-distribution-files
 
 
 PLOT_ARCHIVE := $$(date '+%Y%m%d')-probability-density-functions.zip
@@ -23,6 +23,10 @@ prepare-otp-test:
 
 test-distributions: clean-distribution-files
 	-@killall eog; $(MAKE) -s random_utils_run
+
+
+test-interactive-shell:
+	@$(MAKE) -s shell_utils_run CMD_LINE_OPT="-extra --interactive-shell"
 
 
 archive: random_utils_run

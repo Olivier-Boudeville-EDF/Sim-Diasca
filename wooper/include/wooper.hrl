@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -26,7 +26,7 @@
 % Creation date: Friday, July 6, 2007.
 
 
-% WOOPER: Wrapper for OOP in ERlang.
+% WOOPER: **Wrapper for OOP in ERlang**.
 % See documentation at http://wooper.esperide.org.
 
 
@@ -82,23 +82,22 @@
 % Zero arity is not possible since there is at least the 'State' first
 % parameter. So one just increments the number of intended real
 % function-specific parameters in this export.
-% Ex: a function 'setAge' taking in input only one logical parameter, NewAge,
-% should actually be defined as 'setAge(State,NewAge) -> [..]' and therefore
-% declared as: '-define( wooper_method_export, a/1, setAge/2, b/2 ).'
+
+% For example a function 'setAge' taking in input only one logical parameter,
+% NewAge, should actually be defined as 'setAge(State,NewAge) -> [..]' and
+% therefore declared as: '-define( wooper_method_export, a/1, setAge/2, b/2 ).'
 % Note: one should not forget, when overloading a method F/A, to specify it in
 % wooper_method_export, otherwise its closest ancestor method will be called
 % instead. In this case a warning is issued at compilation of the child class:
 % 'Warning: function F/A is unused.'; static methods can be declared also here.
 %
 % '-define( wooper_construct_export, new/p, new_link/p, construct/p+1, ...).'
-% Ex:
-% '-define( wooper_construct_export, new/2, new_link/2, construct/3, ...).'
-% to declare the appropriate construction-related functions (the 'new'
-% variations and the 'construct' operator), p being the number of
-% parameters defined in the wooper_construct_parameters variable.
-% Only the relevant 'construct' function has to be actually defined by the
-% developer: all new variations are automatically defined appropriately
-% (see in this file).
+% For example '-define( wooper_construct_export, new/2, new_link/2, construct/3,
+% ...).'  to declare the appropriate construction-related functions (the 'new'
+% variations and the 'construct' operator), p being the number of parameters
+% defined in the wooper_construct_parameters variable.  Only the relevant
+% 'construct' function has to be actually defined by the developer: all new
+% variations are automatically defined appropriately (see in this file).
 % Declaring and implementing a toString/1 method is optional, but may be
 % convenient for the debugging of method implementations.
 %

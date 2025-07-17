@@ -1,5 +1,10 @@
 # Prerequisite: MYRIAD_TOP must be set.
 
+# Useful for generic rules:
+ifndef PROJECT_TOP
+	PROJECT_TOP = $(MYRIAD_TOP)
+endif
+
 
 # On conditional variables depending on conditionals.
 #
@@ -151,10 +156,12 @@ endif
 #  - lists: how lists are processed
 #  - datastructures: how (non-list) datastructures are processed
 #  - registration: regarding naming registering
-#  - csv_support: the support of CSV files
+#  - json_support: the support of JSON documents
+#  - csv_support: the support of CSV documents
 #  - sql_support: the support of SQL (database) operations
 #  - protobuf_support: regarding how Protocol Buffer shall be managed
-#  - environments: about the sharing/caching of application information
+#  - environments: about the sharing/caching of application information (hence
+#    not GUI-related)
 #  - resources: about the management of resources
 #  - files: about the management of files
 #  - network: regarding network-related operations
@@ -163,26 +170,34 @@ endif
 #  - graph: for graph-related operations, typically involving Gephi
 #  - math: for math-related operations
 #  - plot: for the rendering of all kinds of plots and graphs
+#  - shell: for (Erlang) Myriad shells
+#  - text_edit: for text edition
 #
 #  - user_interface: all support regarding user interfaces of all sorts
 #  - gui_repaint_logic: how MyriadGUI manages repaints
 #  - gui_events: how MyriadGUI manages interface-related events
 #  - gui_canvas: how MyriadGUI manages canvases
+#  - gui_buttons: how MyriadGUI manages buttons
 #  - gui_font: about font support
 #  - gui_splash: about splash screens
+#  - gui_shell: about (Erlang) MyriadGUI shells
 #  - gui_instances: how MyriadGUI manages widget instances
-#  - gui_environments: the management of backend environments
+#  - gui_environments: the management of backend GUI environments
 #  - gui_memory: how MyriadGUI manages memory allocated and related lower-level
 #    operations
 #  - gui_id: about widget identifiers
 #  - gui_performance: about the runtime performance monitoring of MyriadGUI
 #
 #  - linear: for operations on vectors, matrices, etc.
+#  - ref_frames: for operations on reference frames in general
+#  - ref_trees: for operations on trees of reference frames
 #  - mesh: for the management of (3D) meshes
 #  - bounding_spaces: for computations of bounding spaces (surfaces, volumes)
 #  - opengl: outcome of OpenGL-related operations
 #  - textures: regarding the (OpenGL) texture management
 #  - shaders: regarding the GLSL shaders and programs
+#  - gl_encoding: about the encoding of data for OpenGL (e.g. to write VBOs)
+#  - gl_decoding: about the decoding of data for OpenGL (e.g. to read VBOs)
 #  - gltf_support: for the support of the glTF 2.0 format
 #
 # Defining debug flags (at least the most verbose are by default commented-out):
@@ -199,6 +214,7 @@ ifeq ($(ENABLE_DEBUG),true)
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_lists
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_datastructures
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_registration
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_json_support
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_csv_support
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_sql_support
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_protobuf_support
@@ -211,13 +227,18 @@ ifeq ($(ENABLE_DEBUG),true)
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_graph
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_math
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_plot
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_shell
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_text_edit
 
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_user_interface
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_repaint_logic
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_events
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_canvas
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_buttons
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_select_boxes
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_font
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_splash
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_shell
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_instances
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_environments
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_memory
@@ -225,11 +246,15 @@ ifeq ($(ENABLE_DEBUG),true)
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_performance
 
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_linear
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_ref_frames
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_ref_trees
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_mesh
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_bounding_spaces
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_opengl
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_textures
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_shaders
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gl_encoding
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gl_decoding
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gltf_support
 
 endif
@@ -237,19 +262,21 @@ endif
 # Defining check flags:
 ifeq ($(EXECUTION_TARGET),development)
 
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_code_generation
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_waited_operations
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_strings
-	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_binaries
-	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_lists
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_protobuf_support
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_files
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_user_interface
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_linear
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_mesh
-	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_opengl
-	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_textures
-	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_shaders
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_code_generation
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_waited_operations
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_strings
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_binaries
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_lists
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_protobuf_support
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_resources
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_files
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_user_interface
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_linear
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_mesh
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_opengl
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_textures
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_shaders
+	MYRIAD_CHECK_FLAGS += -Dmyriad_check_text_edit
 
 endif
 
@@ -320,13 +347,19 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar, hex
 # and the code itself, see basic_utils:get_myriad_version{_string,}/0):
 #
-MYRIAD_VERSION := 1.0.37
+MYRIAD_VERSION := 1.0.39
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
 ifndef PROJECT_VERSION
 	PROJECT_VERSION := $(MYRIAD_VERSION)
 endif
+
+
+PROJECT_WEB_HOST := esperide.org
+
+PROJECT_URL := "https://$(PROJECT_SHORT_NAME).$(PROJECT_WEB_HOST)"
+
 
 # So that edoc has the right define:
 PROJECT_EDOC_VERSION_KEY = $(PROJECT_SHORT_NAME)_version
@@ -485,6 +518,11 @@ BOOTSTRAP_INCLUDES := -I$(MYRIAD_TOP)/../../include/meta      \
 					  -I$(MYRIAD_TOP)/../../include/utils
 
 
+# To be used for homogeneous offsets ('echo "$(ECHO_PREFIX)Doing something"'):
+ECHO_OFFSET = "\ \ \ \ "
+
+
+
 # Extra prerequisite includes:
 
 
@@ -612,20 +650,27 @@ endif
 
 ifeq ($(USE_JSON),true)
 
-	# At least one parser backend shall then be selected:
+	# At least one parser backend had to be selected previously, however now
+	# JSON support is built-in.
 
-	# Default choice, should the JSON support be enabled:
-	USE_JSX = true
-	#USE_JSX = false
+	# Default choice (built-in in Erlang 27.0 and more recent), should the JSON
+	# support be enabled:
+	#
+	USE_BUILTIN_JSON = true
+	#USE_BUILTIN_JSON = false
+
+	# Second default choice, should the JSON support be enabled:
+	#USE_JSX = true
+	USE_JSX = false
 
 	#USE_JIFFY = true
 	USE_JIFFY = false
 
 	ifeq ($(USE_JSX),true)
 
-		# JSX Installation section.
+		# jsx Installation section.
 
-		# The JSX JSON parser is available at
+		# The jsx JSON parser is available at
 		# https://github.com/talentdeficit/jsx.
 
 		# An install of it can be obtained thanks to (see also
@@ -653,7 +698,7 @@ ifeq ($(USE_JSON),true)
 		#JSON_OPT = -Duse_jsx_json_backend
 
 		# If the relevant USE_* variables are set to true, in the case of
-		# multiple dependencies involving Myriad, the same JSX lookup would be
+		# multiple dependencies involving Myriad, the same jsx lookup would be
 		# repeatedly done with different paths, possibly resulting in having the
 		# same install declared more than once in BEAM_DIRS, leading to a
 		# pseudo-clash of BEAM files (e.g. jsx.beam) being detected at runtime
@@ -696,7 +741,7 @@ ifeq ($(USE_JSON),true)
 			JSX_SOFTWARE_BASE := $(HOME)/Software/jsx/jsx-current-install
 			JSX_SOFTWARE_EBIN := $(JSX_SOFTWARE_BASE)/ebin
 
-			# No includes for JSX:
+			# No includes for jsx:
 			#INC += -I$(JSX_REBAR_CHECKOUTS_BASE)/include -I$(JSX_REBAR_AS_DEP_BASE)/include -I$(JSX_REBAR_DIRECT_INSTALL_BASE)/include -I$(JSX_SOFTWARE_BASE)/include
 			# ($(JSX_*_BASE)/ebin/*.beam found at runtime)
 
@@ -737,7 +782,7 @@ ifeq ($(USE_JSON),true)
 							# No trailing dot shall be specified here
 							# (as it is automatically added):
 							#
-							FORCE_EVAL := $(error Unable to find a JSX installation base (looked to $(JSX_REBAR_CHECKOUTS_EBIN) first, then $(JSX_REBAR_AS_DEP_EBIN), $(JSX_REBAR_DIRECT_INSTALL_EBIN) and finally $(JSX_SOFTWARE_EBIN), from $(PWD)))
+							FORCE_EVAL := $(error Unable to find a jsx installation base (looked to $(JSX_REBAR_CHECKOUTS_EBIN) first, then $(JSX_REBAR_AS_DEP_EBIN), $(JSX_REBAR_DIRECT_INSTALL_EBIN) and finally $(JSX_SOFTWARE_EBIN), from $(PWD)))
 						endif
 					endif
 				endif
@@ -779,9 +824,12 @@ ifeq ($(USE_JSON),true)
 
 	endif
 
-	ifeq ($(USE_JSX),false)
-		ifeq ($(USE_JIFFY),false)
-			$(error JSON use enabled, yet no corresponding backend selected.)
+    # Ensure a fallback is available if requested:
+	ifeq ($(USE_BUILTIN_JSON),false)
+		ifeq ($(USE_JSX),false)
+			ifeq ($(USE_JIFFY),false)
+				$(error JSON use enabled, yet no corresponding backend selected.)
+			endif
 		endif
 	endif
 
@@ -1269,21 +1317,8 @@ ifndef COOKIE
 endif
 
 
+# For ERL_PARAMETERIZED_LAUNCHER:
 COOKIE_OPT = -c $(COOKIE)
-
-
-# One may switch to short names if network configuration does not allow for long
-# ones:
-#
-ifeq (NODE_NAMING,"--ln")
-
-	DISTRIBUTED_NODE_OPT := -name $(VM_NAME)@$(HOSTNAME_FOR_NODE) -setcookie $(COOKIE)
-
-else ifeq (NODE_NAMING,"--sn")
-
-	DISTRIBUTED_NODE_OPT := -sname $(VM_NAME) -setcookie $(COOKIE)
-
-endif
 
 
 STARTUP_FUNCTION := run
@@ -1297,16 +1332,17 @@ STARTUP_FUNCTION := run
 # Not far from being candidate for deprecation (next: schedule for removal), as
 # top-level 'ebin' does the trick.
 #
-MYRIAD_BEAM_DIRS := $(MYRIAD_BEAM)/apps/generate-password       \
-					$(MYRIAD_BEAM)/apps/merge-tool              \
-					$(MYRIAD_BEAM)/data-management              \
-					$(MYRIAD_BEAM)/maths                        \
-					$(MYRIAD_BEAM)/meta                         \
-					$(MYRIAD_BEAM)/scripts                      \
-					$(MYRIAD_BEAM)/user-interface/graphical     \
-					$(MYRIAD_BEAM)/user-interface/textual       \
-					$(MYRIAD_BEAM)/user-interface/audio         \
-					$(MYRIAD_BEAM)/user-interface               \
+MYRIAD_BEAM_DIRS := $(MYRIAD_BEAM)/apps/generate-password              \
+					$(MYRIAD_BEAM)/apps/merge-tool                     \
+					$(MYRIAD_BEAM)/data-management                     \
+					$(MYRIAD_BEAM)/maths                               \
+					$(MYRIAD_BEAM)/meta                                \
+					$(MYRIAD_BEAM)/scripts                             \
+					$(MYRIAD_BEAM)/user-interface                      \
+					$(MYRIAD_BEAM)/user-interface/audio                \
+					$(MYRIAD_BEAM)/user-interface/textual              \
+					$(MYRIAD_BEAM)/user-interface/graphical            \
+					$(MYRIAD_BEAM)/user-interface/graphical/opengl     \
 					$(MYRIAD_BEAM)/utils
 
 
@@ -1779,6 +1815,22 @@ ifndef NODE_NAMING
 endif
 
 
+# One may switch to short names if network configuration does not allow for long
+# ones:
+#
+# (currently not used, see ERL_PARAMETERIZED_LAUNCHER)
+#
+ifeq (NODE_NAMING,"--ln")
+
+	DISTRIBUTED_NODE_OPT = -name $(VM_NAME)@$(HOSTNAME_FOR_NODE) -setcookie $(COOKIE)
+
+else ifeq (NODE_NAMING,"--sn")
+
+	DISTRIBUTED_NODE_OPT = -sname $(VM_NAME) -setcookie $(COOKIE)
+
+endif
+
+
 # Force your local hostname, if ever relevant in your setting, and depending on
 # NODE_NAMING:
 #
@@ -1824,9 +1876,15 @@ TIME_OPTS =
 #TIME_OPTS = +C no_time_warp
 
 
-# Any extra options that shall be passed as it is to 'erl' through our launcher:
-EXTRA_OPTS = $(TIME_OPTS)
+# To disable non-systematic, unsolved warnings like "'global' at node
+# us_main@xxx requested disconnect from node 'us_main_controller_exec-uu@yyy' in
+# order to prevent overlapping partitions":
+#
+#DIST_OPTS := -kernel prevent_overlapping_partitions false
+DIST_OPTS :=
 
+# Any extra options that shall be passed as it is to 'erl' through our launcher:
+EXTRA_OPTS = $(TIME_OPTS) $(DIST_OPTS)
 
 
 
@@ -1855,10 +1913,10 @@ EXTRA_OPTS = $(TIME_OPTS)
 # that marker) from the ones that shall be passed "as are" to the Erlang VM
 # (after that marker), while the '-extra' marker delimits user/system Erlang
 # flags from the application-specific command line arguments (which are
-# specifically managed by executable_utils).
+# specifically managed by cmd_line_utils).
 #
-# So additional arguments FOO_ARGS to be passed to the VM while not being known
-# of launch-erl.sh shall be specified between -start-verbatim-options and
+# So additional arguments FOO_ARGS, to be passed to the VM while not being known
+# of launch-erl.sh, shall be specified between -start-verbatim-options and
 # -extra, like in: '-start-verbatim-options $(FOO_ARGS) -extra'.
 
 
@@ -1898,6 +1956,9 @@ GLSL_REF_COMPILER_OPT :=
 
 
 ## Documentation section.
+#
+# Refer to https://myriad.esperide.org/#for-documentation-generation for further
+# information.
 
 # Available in Ceylan-Hull:
 DOC_TRACKER := $$(which track-make-automatic-source.sh 2>/dev/null)
@@ -1909,29 +1970,52 @@ ifdef PROJECT_ICON
 endif
 
 
-# When relying directly on edoc (the default):
+# We now rely on ExDoc, rather than on edoc:
+# (see the generate-api-doc-with-exdoc target)
+#
+# Can be installed with: 'mix escript.install hex ex_doc':
+EXDOC := $$(which ex_doc 2>/dev/null)
+
+# Finally not used, as specifying the options on the command line allows the
+# Makefiles to set/override them conveniently:
+#
+#EXDOC_CONFIG_FILE := $(MYRIAD_ROOT)/conf/myriad-for-exdoc.config
+
+# Not using multiple --paths with $(BEAM_DIRS), relying on ebin instead:
+EXDOC_OPTS = --formatter html --homepage-url "$(PROJECT_URL)" --language en --logo "$(MYRIAD_TOP)/doc/myriad-title.png" --output "$(API_DOC_ROOT)" --proglang erlang
+
 
 ifndef API_DOC_ROOT
-	API_DOC_ROOT := $(LAYER_TOP)/doc/api-doc
+	# Relative links with "$(LAYER_TOP)" removed, as were misleading (evaluated
+	# in 'doc', so as ".." - but edoc is run from the clone root)
+	#
+	#API_DOC_ROOT := $(LAYER_TOP)/doc/api-doc
+	API_DOC_ROOT := doc/api-doc
 endif
 
 
+# When relying directly on edoc:
+# (see the generate-api-with-edoc target)
+#
+# See API_DOC_ROOT above to understand why $(LAYER_TOP) is not used.
+#
+# (edoc is natively installed)
+#
 ifndef EDOC_OPTS
-	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{use_crypto_module,false}, {$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["$(LAYER_TOP)/include"]}, {overview,"$(LAYER_TOP)/overview.edoc"}]'
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{use_crypto_module,false}, {$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,[".."]}, {overview,"doc/overview.edoc"}]'
 endif
 
 
-# When relying directly on erldocs:
-
-API_DOC_ALT_ROOT := $(LAYER_TOP)/doc/api-doc-alt
+# When relying directly on a second doc generator (like erldocs):
+#API_DOC_ALT_ROOT := $(LAYER_TOP)/doc/api-doc-alt
 
 
 # We tested erldocs (see https://github.com/erldocs/erldocs), yet vanilla edoc
-# seems to generate a lot more informational content so is preferred now:
+# seems to generate a lot more informational content so was preferred:
 #
 # (commented out as was misleading)
 #ifndef API_DOC_GENERATOR
-#	API_DOC_GENERATOR := $$(which erldocs 2>/dev/null)
+#   API_DOC_GENERATOR := $$(which erldocs 2>/dev/null)
 #endif
 
 
@@ -2070,11 +2154,14 @@ NOTIFIER_TOOL := $$(which bong.sh 2>/dev/null || true)
 #
 # (json_utils and related not listed here, as not needing specific includes)
 #
-UNSUPPORTED_SOURCES := src/data-management/sql_support.erl          \
-					   src/data-management/sql_support_test.erl     \
-					   src/data-management/hdf5_support.erl         \
-					   src/data-management/hdf5_support_test.erl    \
-					   src/data-management/raw_hdf5_test.erl
+REBAR3_UNSUPPORTED_SOURCES := src/data-management/sql_support.erl          \
+							  src/data-management/sql_support_test.erl     \
+							  src/data-management/hdf5_support.erl         \
+							  src/data-management/hdf5_support_test.erl    \
+							  src/data-management/raw_hdf5_test.erl
+
+
+CI_CONF_FILE := $(LAYER_TOP)/.github/workflows/erlang-ci.yml
 
 
 # For the sync-* targets:
@@ -2082,12 +2169,26 @@ ifndef SYNC_TOOL
 
 	SYNC_TOOL := $$(which rsync 2>/dev/null)
 
+	# One may set the next environment variables to adapt to local settings.
+
 	ifdef SSH_PORT
 		SSH_OPT := -e "ssh -p $(SSH_PORT)"
 	endif
 
-	SYNC_BASE_OPT := -rlpD -vz $(SSH_OPT) --exclude '.git'
+	# To set the group (and possibly user) of the target (remote) filesystem
+	# content, rather than having it overridden by the main group of the local
+	# user:
+	#
+	ifdef SYNC_TARGET_GROUP
+		SYNC_TARGET_GROUP_OPT := --chown=$(SYNC_TARGET_USER):$(SYNC_TARGET_GROUP)
+	endif
 
+	# Using '--no-perms' to avoid errors should the content on the remote host
+	# have a different owner (e.g. an in-production different user, yet being in
+	# the same group), to avoid 'rsync: [generator] failed to set permissions on
+	# "xxx/.": Operation not permitted (1)':
+	#
+	SYNC_BASE_OPT += -rlpD -vz $(SSH_OPT) $(SYNC_TARGET_GROUP_OPT) --exclude '.git' --no-perms
 
 	# General-purpose, mostly to synchronise a remote webserver in terms of
 	# content, so:
@@ -2096,12 +2197,12 @@ ifndef SYNC_TOOL
 	#  - no "-t" either, as having not enough permissions to
 	# update the time metadata on the server
 	#
-	SYNC_OPT := $(SYNC_BASE_OPT)
+	SYNC_OPT += $(SYNC_BASE_OPT)
 
 	# Mostly to synchronise code to a remote server (without having to introduce
 	# bogus Git commits):
 	#
-	SYNC_CODE_OPT := -at $(SYNC_BASE_OPT)
+	SYNC_CODE_OPT += -at $(SYNC_BASE_OPT)
 
 endif
 

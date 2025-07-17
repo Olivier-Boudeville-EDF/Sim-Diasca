@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 4, 2018.
 
-
-% @doc Module in charge of handling <b>records defined or used within an
-% AST</b>.
-%
-% See [http://erlang.org/doc/apps/erts/absform.html] for more information.
-%
 -module(ast_record).
+
+-moduledoc """
+Module in charge of handling **records defined or used within an AST**.
+
+See <http://erlang.org/doc/apps/erts/absform.html> for more information.
+""".
 
 
 
@@ -57,86 +57,71 @@
 % managed here.
 
 
-% Shorthands:
-
--type file_loc() :: ast_base:file_loc().
--type form() :: ast_base:form().
--type located_form() :: ast_info:located_form().
-
--type ast_element() :: ast_base:ast_element().
--type ast_transforms() :: ast_transform:ast_transforms().
 
 
--type ast_type() :: ast_type:ast_type().
--type maybe_ast_type() :: ast_type:maybe_ast_type().
-
--type maybe_ast_immediate_value() :: ast_value:maybe_ast_immediate_value().
-
--type record_table() :: ast_info:record_table().
-
--type record_name() :: basic_utils:record_name().
-
--type record_definition() :: ast_info:record_definition().
--type record_pair() :: { record_name(), record_definition() }.
-
--type field_table() :: ast_info:field_table().
-
--type field_name() :: basic_utils:field_name().
-
-
-
+-doc """
+Defines the field of a type of record (type and default value, if specified;
+lines are also stored so that the full, actual form can be recreated - far
+clearer to interpret afterwards).
+""".
 -type field_definition() :: { maybe_ast_type(), maybe_ast_immediate_value(),
 							  file_loc(), file_loc() }.
-% Defines the field of a type of record (type and default value, if specified;
-% lines are also stored so that the full, actual form can be recreated - far
-% clearer to interpret afterwards).
 
 
+-doc "A field pair.".
 -type field_pair() :: { field_name(), field_definition() }.
 
 
+-doc "Field identifier, possibly '_'.".
 -type field_id() :: field_name() | '_'.
-% Field identifier, possibly '_'.
 
 
+
+-doc "A field identifier in the AST.".
 -type ast_field_id() :: ast_base:ast_atom().
 
 
+-doc "AST definition for a field of a record, when creating it.".
 -type ast_record_field_definition() ::
 		ast_record_field_definition( ast_base:ast_element() ).
-% AST definition for a field of a record, when creating it.
 
 
 
+
+-doc """
+AST definition for a field of a record, when creating it.
+
+Precisely: `{record_field, FILE_LOC, Rep(Field_1), Rep(ValueType)}`.
+""".
 -type ast_untyped_record_field_definition( ValueType ) ::
 		{ 'record_field', file_loc(), ast_field_id(), ValueType }.
-% AST definition for a field of a record, when creating it.
-%
-% Precisely: {record_field, FILE_LOC, Rep(Field_1), Rep(ValueType)}
-%
 
 
+-doc "Non-typed AST definition for a field of a record.".
 -type ast_untyped_record_field_definition() ::
 		ast_untyped_record_field_definition( term() ).
 
 
+-doc "Typed AST definition for a field of a record.".
 -type ast_typed_record_field_definition( ValueType ) ::
 		{ 'typed_record_field', file_loc(),
 		  ast_untyped_record_field_definition( ValueType ), ast_type() }.
 
 
+-doc "AST definition for a field of a record.".
 -type ast_record_field_definition( ValueType ) ::
 		ast_untyped_record_field_definition( ValueType )
 	  | ast_typed_record_field_definition( ValueType ).
 
 
+-doc "Typically used in ast_pattern.".
 -type ast_pattern_field() :: { 'record_field', file_loc(),
 							   ast_field_id() | { 'var', file_loc(), '_' },
 							   ast_pattern:ast_pattern() }.
-% Typically used in ast_pattern.
 
 
 % TO-DO:
+-doc "AST initialisation of a record field.".
 -type ast_record_field_init() :: any().
 
 
@@ -167,6 +152,34 @@
 -include("ast_utils.hrl").
 
 
+% Shorthands:
+
+-type file_loc() :: ast_base:file_loc().
+-type form() :: ast_base:form().
+-type located_form() :: ast_info:located_form().
+
+-type ast_element() :: ast_base:ast_element().
+-type ast_transforms() :: ast_transform:ast_transforms().
+
+
+-type ast_type() :: ast_type:ast_type().
+-type maybe_ast_type() :: ast_type:maybe_ast_type().
+
+-type maybe_ast_immediate_value() :: ast_value:maybe_ast_immediate_value().
+
+-type record_table() :: ast_info:record_table().
+
+-type record_name() :: basic_utils:record_name().
+
+-type record_definition() :: ast_info:record_definition().
+-type record_pair() :: { record_name(), record_definition() }.
+
+-type field_table() :: ast_info:field_table().
+
+-type field_name() :: basic_utils:field_name().
+
+
+
 
 % Often names (e.g. of a record, or a field) are transmitted as parameters
 % whereas they are usually not necessary, yet it is useful at least for error
@@ -174,9 +187,10 @@
 
 
 
-% @doc Transforms the specified record definitions (e.g. coming for the
-% 'records' field of a module_info record), according to specified transforms.
-%
+-doc """
+Transforms the specified record definitions (e.g. coming for the 'records' field
+of a module_info record), according to specified transforms.
+""".
 -spec transform_record_definitions( ast_info:record_table(),
 			ast_transforms() ) -> { ast_info:record_table(), ast_transforms() }.
 transform_record_definitions( RecordTable, Transforms ) ?rec_guard ->
@@ -197,11 +211,11 @@ transform_record_definitions( RecordTable, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms the specified record pair: {RecordName, RecordDef}.
-%
-% Allows to keep around the record name, to recreate the record table more
-% easily.
-%
+-doc """
+Transforms the specified record pair: {RecordName, RecordDef}.
+
+Allows to keep around the record name, to recreate the record table more easily.
+""".
 -spec transform_record_pair( record_pair(), ast_transforms() ) ->
 									{ record_pair(), ast_transforms() }.
 transform_record_pair(
@@ -226,7 +240,7 @@ transform_record_pair(
 
 
 
-% @doc Transforms the specified field definition.
+-doc "Transforms the specified field definition.".
 -spec transform_field_pair( { field_name(), field_definition() },
 							ast_transforms() ) ->
 					 { { field_name(), field_definition() }, ast_transforms() }.
@@ -247,7 +261,7 @@ transform_field_pair( { FieldName,
 
 
 
-% @doc Transforms the specified field type.
+-doc "Transforms the specified field type.".
 -spec transform_field_definition_type( maybe_ast_type(), ast_transforms() ) ->
 										{ maybe_ast_type(), ast_transforms() }.
 transform_field_definition_type( _FieldType=undefined,
@@ -259,7 +273,7 @@ transform_field_definition_type( FieldType, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms the specified field default value.
+-doc "Transforms the specified field default value.".
 -spec transform_field_definition_default_value( maybe_ast_immediate_value(),
 	  ast_transforms() ) -> { maybe_ast_immediate_value(), ast_transforms() }.
 transform_field_definition_default_value( _FieldDefaultValue=undefined,
@@ -272,12 +286,13 @@ transform_field_definition_default_value( FieldDefaultValue,
 
 
 
-% @doc Transforms the specified record fields, at creation, applying to each
-% record field the specified function to perform the relevant transformations
-% (that depends on the context; e.g. if being in a guard, in an expression).
-%
-% (counterpart of record_inits/1 in erl_id_trans)
-%
+-doc """
+Transforms the specified record fields, at creation, applying to each record
+field the specified function to perform the relevant transformations (that
+depends on the context; e.g. if being in a guard, in an expression).
+
+(counterpart of record_inits/1 in erl_id_trans)
+""".
 -spec transform_record_field_definitions( [ ast_record_field_definition() ],
 										  ast_transforms() ) ->
 			{ [ ast_record_field_definition() ], ast_transforms() }.
@@ -287,10 +302,11 @@ transform_record_field_definitions( RecordFields, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms the specified record field definition.
-%
-% For example {record_field, FILE_LOC, Rep(Field_k), Rep(Gt_k)}.
-%
+-doc """
+Transforms the specified record field definition.
+
+For example {record_field, FILE_LOC, Rep(Field_k), Rep(Gt_k)}.
+""".
 -spec transform_record_field_definition( ast_record_field_definition(),
 										 ast_transforms() ) ->
 			{ ast_record_field_definition(), ast_transforms() }.
@@ -371,8 +387,7 @@ transform_record_field_definition( _RF={ 'typed_record_field',
 
 
 
-
-% @doc Transforms the name of the specified field.
+-doc "Transforms the name of the specified field.".
 -spec transform_record_field_name( ast_element(), ast_transforms() ) ->
 										{ ast_element(), ast_transforms() }.
 transform_record_field_name( ASTFieldName, Transforms ) ?rec_guard ->
@@ -391,8 +406,7 @@ transform_record_field_name( ASTFieldName, Transforms ) ?rec_guard ->
 
 
 
-
-% @doc Returns the located forms corresponding to specified record table.
+-doc "Returns the located forms corresponding to specified record table.".
 -spec get_located_forms_for( record_table() ) -> [ located_form() ].
 get_located_forms_for( RecordTable ) ->
 
@@ -406,7 +420,7 @@ get_located_forms_for( RecordTable ) ->
 
 
 
-% @doc Returns a located form corresponding to specified record.
+-doc "Returns a located form corresponding to specified record.".
 -spec get_located_form_for_record( record_name(), record_definition() ) ->
 											located_form().
 get_located_form_for_record( RecordName,
@@ -420,7 +434,7 @@ get_located_form_for_record( RecordName,
 
 
 
-% @doc Recomposes the forms corresponding to the specified record fields.
+-doc "Recomposes the forms corresponding to the specified record fields.".
 -spec recompose_field_definitions( field_table() ) -> [ form() ].
 recompose_field_definitions( FieldTable ) ->
 	[ recompose_field_definition( FieldName, FieldDef )
@@ -428,7 +442,7 @@ recompose_field_definitions( FieldTable ) ->
 
 
 
-% @doc Recomposes the form corresponding to the specified record field.
+-doc "Recomposes the form corresponding to the specified record field.".
 -spec recompose_field_definition( field_name(), field_definition() ) -> form().
 recompose_field_definition( FieldName,
 		_FieldDef={ _MaybeASTType=undefined, _MaybeASTDefaultValue=undefined,

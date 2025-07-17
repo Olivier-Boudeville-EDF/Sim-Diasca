@@ -1,26 +1,27 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
-
-% @doc A test class for <b>spatialised tests</b>.
 -module(class_TestSpatialisedActor).
+
+-moduledoc "A test class for **spatialised actors**.".
 
 
 -define( class_description, "Test class for spatialised tests." ).
@@ -31,7 +32,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type tick_offset() :: class_TimeManager:tick_offset().
 -type entity_pid() :: class_TwoDimensionalEnvironment:entity_pid().
@@ -70,27 +71,28 @@
 
 
 
-% @doc Creates a test spatialised actor, in a 2D environment.
-%
-% Construction parameters are:
-%
-% - ActorSettings is the AAI assigned by the load-balancer to this actor
-%
-% - Name is the name of this actor
-%
-% - InitialPosition is the initial position of this actor in the specified
-% environment
-%
-% - PerceptionRadius is the perception radius of this actor (in meters)
-%
-% - MaxSpeed is an upper-bound (if any) of the maximum speed of this actor
-% (allows for better environment-level performances)
-%
-% - TerminationTickOffset is the tick offset at which this test actor is to
-% terminate (or 'none')
-%
-% - EnvironmentPid is the PID of the environment this actor will live in
-%
+-doc """
+Creates a test spatialised actor, in a 2D environment.
+
+Construction parameters are:
+
+- ActorSettings is the AAI assigned by the load-balancer to this actor
+
+- Name is the name of this actor
+
+- InitialPosition is the initial position of this actor in the specified
+environment
+
+- PerceptionRadius is the perception radius of this actor (in meters)
+
+- MaxSpeed is an upper-bound (if any) of the maximum speed of this actor (allows
+for better environment-level performances)
+
+- TerminationTickOffset is the tick offset at which this test actor is to
+terminate (or 'none')
+
+- EnvironmentPid is the PID of the environment this actor will live in%
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_SpatialisedActor:position(),
 				 linear:radius(), tick_offset(),
@@ -124,7 +126,7 @@ construct( State, ActorSettings, Name, InitialPosition, PerceptionRadius,
 
 
 
-% @doc First scheduling on this test actor.
+-doc "First scheduling of this test actor.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 											actor_oneway_return().
 onFirstDiasca( State, SendingActorPid ) ->
@@ -162,7 +164,7 @@ onFirstDiasca( State, SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this test actor.
+-doc "The definition of the spontaneous behaviour of this test actor.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -179,7 +181,7 @@ actSpontaneous( State ) ->
 				[ self(), CurrentTickOffset ] ),
 
 			UndeclaredState = class_Actor:send_actor_message(
-					?getAttr(environment_pid), undeclareEntity, State ),
+				?getAttr(environment_pid), undeclareEntity, State ),
 
 			executeOneway( UndeclaredState, declareTermination );
 
@@ -242,7 +244,7 @@ act_normally( CurrentTickOffset, State ) ->
 
 
 
-% @doc Called in response to the getEntitiesWithin request.
+-doc "Called in response to a getEntitiesWithin request.".
 -spec notifyEntitiesNearby( wooper:state(), [ entity_pid() ],
 							environment_pid() ) -> const_actor_oneway_return().
 notifyEntitiesNearby( State, _NearbyEntities=[], _EnvironmentPid ) ->

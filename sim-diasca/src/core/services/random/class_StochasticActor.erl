@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,19 +19,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc This child class offers basic services in order to easily <b>obtain
-% values from random laws</b>.
-%
-% Basic actors may also directly generate their random values (see
-% class_RandomManager.erl for that).
-%
-% Important note: this way of managing random values through inheritance is
-% mostly deprecated, since a full stochastic support is now available to all
-% instances of class_Actor. This class is now mostly useful for its static
-% methods.
-%
 -module(class_StochasticActor).
+
+-moduledoc """
+This child class offers basic services in order to easily **obtain values from
+random laws**.
+
+Basic actors may also directly generate their random values (see
+class_RandomManager.erl for that).
+
+Important note: this way of managing random values through inheritance is mostly
+deprecated, since a full stochastic support is now available to all instances of
+class_Actor. This class is now mostly useful for its static methods.
+""".
 
 
 -define( class_description,
@@ -87,23 +87,28 @@
 
 % Request identifiers allow to designate a particular law of a stochastic actor.
 
+
+-doc """
+Designates, as an identifier, a model-specific random law (usually an atom), so
+that can once a law has been defined the model can readily obtain random samples
+from it.
+
+Law identifiers are themselves model-specific.
+""".
 -type law_identifier() :: term().
-% Designates, as an identifier, a model-specific random law (usually an atom),
-% so that can once a law has been defined the model can readily obtain random
-% samples from it.
-%
-% Law identifiers are themselves model-specific.
 
 
+-doc "Describes a random law to be used by this stochastic actor.".
 -type law_description() :: { law_identifier(), random_law_spec() }.
-% Describes a random law to be used by this stochastic actor.
 
 
+-doc """
+Describes a law entry set in this stochastic actor.
+
+Entries are stored in a table, registered in an conventional attribute of this
+actor.
+""".
 -type law_entry() :: { law_identifier(), random_law_data() }.
-% Describes a law entry set in this stochastic actor.
-%
-% Entries are stored in a table, registered in an conventional attribute of this
-% actor.
 
 
 -export_type([ law_entry/0 ]).
@@ -114,7 +119,7 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 %-type list_table( K, V ) :: list_table:list_table( K, V).
 
@@ -124,29 +129,28 @@
 
 
 
-% @doc Constructs a stochastic actor.
-%
-% - ActorSettings corresponds to the engine settings for this actor, as
-% determined by the load-balancer
-%
-% - StochasticActorName is the name of this stochastic actor
-%
-% - RandomLawDescs is a list of pairs, each pair being in the form of
-% {AttributeNameOfLaw, RandomSpec}, where:
-%
-%  - AttributeNameOfLaw is a random law identifier (preferably as an atom),
-%  it can be chosen freely (avoid collision, though!); e.g.
-%  'my_first_uniform_law'
-%
-%  - RandomSpec is a tuple that specifies the corresponding random law; its
-%  first element is the name of the random law (e.g. uniform, exponential,
-%  gaussian, etc.) and the following elements are the corresponding settings for
-%  that law
-%
-% For example, RandomLawDescs may be [{test_first_uniform, {uniform,5,15}}].
-%
-% See also: get_random_value_from/2 for more details.
-%
+-doc """
+Constructs a stochastic actor.
+
+- ActorSettings corresponds to the engine settings for this actor, as determined
+by the load-balancer
+
+- StochasticActorName is the name of this stochastic actor
+
+- RandomLawDescs is a list of pairs, each pair being in the form of
+{AttributeNameOfLaw, RandomSpec}, where:
+
+ - AttributeNameOfLaw is a random law identifier (preferably as an atom), it can
+ be chosen freely (avoid collision, though!); e.g.  'my_first_uniform_law'
+
+ - RandomSpec is a tuple that specifies the corresponding random law; its first
+ element is the name of the random law (e.g. uniform, exponential, gaussian,
+ etc.) and the following elements are the corresponding settings for that law
+
+For example, RandomLawDescs may be [{test_first_uniform, {uniform,5,15}}].
+
+See also: get_random_value_from/2 for more details.
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), [ law_description() ] ) -> wooper:state().
 construct( State, ActorSettings, StochasticActorName, RandomLawDescs ) ->
@@ -176,7 +180,7 @@ construct( State, ActorSettings, StochasticActorName, RandomLawDescs ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -204,15 +208,14 @@ destruct( State ) ->
 % Helper section.
 
 
-% @doc Returns a new random value from the random law that is specified by its
-% identifier (as declared at creation).
-%
-% State is unchanged, hence not returned.
-%
-% Returns the random value.
-%
-% (helper)
-%
+-doc """
+Returns a new random value from the random law that is specified by its
+identifier (as declared at creation).
+
+State is unchanged, hence not returned.
+
+Returns the random value.
+""".
 -spec get_random_value_from( law_identifier(), wooper:state() ) -> sample().
 get_random_value_from( LawIdentifier, State ) ->
 
@@ -222,13 +225,12 @@ get_random_value_from( LawIdentifier, State ) ->
 
 
 
-% @doc Declares the specified random law in the returned state, for a later
-% possible reuse.
-%
-% Any law declared with the same identifier will be overridden by this one.
-%
-% (helper)
-%
+-doc """
+Declares the specified random law in the returned state, for a later possible
+reuse.
+
+Any law declared with the same identifier will be overridden by this one.
+""".
 -spec add_law( law_identifier(), random_law_spec(), wooper:state() ) ->
 											wooper:state().
 add_law( LawIdentifier, LawSpec, State ) ->
@@ -242,10 +244,7 @@ add_law( LawIdentifier, LawSpec, State ) ->
 
 
 
-% @doc Removes the specified random law from the known laws.
-%
-% (helper)
-%
+-doc "Removes the specified random law from the known laws.".
 -spec remove_law( law_identifier(), wooper:state() ) -> wooper:state().
 remove_law( LawIdentifier, State ) ->
 

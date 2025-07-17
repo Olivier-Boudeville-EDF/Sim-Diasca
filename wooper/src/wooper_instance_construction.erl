@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,11 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, December 24, 2014.
 
-
-% @doc Centralises, on behalf of the WOOPER parse transform, the support for
-% <b>instance construction</b>.
-%
 -module(wooper_instance_construction).
+
+-moduledoc """
+Centralises, on behalf of the WOOPER parse transform, the support for **instance
+construction**.
+""".
+
 
 
 -export([ manage_constructors/1 ]).
@@ -42,7 +44,8 @@
 -include("wooper_info.hrl").
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type file_loc() :: ast_base:file_loc().
 -type form_element() :: ast_base:form_element().
@@ -58,11 +61,12 @@
 
 
 
-% @doc Extracts the constructors found in the specified function table, and
-% interprets them to enrich the specified class information.
-%
-% Returns an updated pair thereof.
-%
+-doc """
+Extracts the constructors found in the specified function table, and interprets
+them to enrich the specified class information.
+
+Returns an updated pair thereof.
+""".
 -spec manage_constructors( compose_pair() ) -> compose_pair().
 manage_constructors( { FunctionTable, ClassInfo } ) ->
 
@@ -88,11 +92,10 @@ manage_constructors( { FunctionTable, ClassInfo } ) ->
 
 		_ ->
 			%trace_utils:debug_fmt( "~B constructor(s) found: ~ts",
-			%					   [ length( ConstructPairs ),
-			%						 text_utils:strings_to_string(
-			%						   [ ast_info:function_info_to_string( FI )
-			%							 || { _Arity, FI } <- ConstructPairs ] )
-			%					   ] ),
+			%                       [ length( ConstructPairs ),
+			%                         text_utils:strings_to_string(
+			%                         [ ast_info:function_info_to_string( FI )
+			%          || { _Arity, FI } <- ConstructPairs ] ) ] ),
 
 			% Returns {NewFunctionTable, NewClassInfo}:
 			manage_new_operators( ConstructPairs, ShrunkFunctionTable,
@@ -102,11 +105,12 @@ manage_constructors( { FunctionTable, ClassInfo } ) ->
 
 
 
-% @doc Returns a list of {arity(), function_info()} pairs and the shrunk
-% function table from which they were extracted.
-%
-% (helper)
-%
+-doc """
+Returns a list of {arity(), function_info()} pairs and the shrunk function table
+from which they were extracted.
+
+(helper)
+""".
 extract_constructors_from( FunctionTable, Classname ) ->
 
 	% We are looking, among the keys (i.e. function ids), for those matching
@@ -125,9 +129,9 @@ filter_constructors( _FunIdInfos=[], _Classname, AccPairs, AccFunInfos ) ->
 % Should a constructor have a spec yet not actually being defined:
 filter_constructors( _FunIdInfos=[ { { construct, Arity },
 		#function_info{
-		   clauses=[],
-		   spec={ _Loc, _FunSpec={ attribute, SpecFileLoc, spec, _SpecElems } }
-		  } } | _T ], Classname, _AccPairs, _AccFunInfos ) ->
+			clauses=[],
+			spec={ _Loc, _FunSpec={ attribute, SpecFileLoc, spec, _SpecElems } }
+		} } | _T ], Classname, _AccPairs, _AccFunInfos ) ->
 	wooper_internals:raise_usage_error( "the constructor construct/~B "
 		"has a spec, yet it has never been defined.", [ Arity ], Classname,
 		SpecFileLoc );
@@ -145,11 +149,12 @@ filter_constructors( _FunIdInfos=[ Other | T ], Classname, AccPairs,
 
 
 
-% @doc Adds the new operators and all their relevant variations for each of the
-% specified constructors construct/N.
-%
-% Returns {NewFunctionTable, NewClassInfo}.
-%
+-doc """
+Adds the new operators and all their relevant variations for each of the
+specified constructors construct/N.
+
+Returns {NewFunctionTable, NewClassInfo}.
+""".
 manage_new_operators( _ConstructPairs=[], FunctionTable, ClassInfo ) ->
 	{ FunctionTable, ClassInfo };
 
@@ -161,7 +166,7 @@ manage_new_operators( _ConstructPairs=[ { Arity, FunInfo } | T ], FunctionTable,
 											 markers=MarkerTable  } ) ->
 
 	%trace_utils:debug_fmt( "Processing constructor of arity ~B: ~ts",
-	%			   [ Arity, ast_info:function_info_to_string( FunInfo ) ] ),
+	%   [ Arity, ast_info:function_info_to_string( FunInfo ) ] ),
 
 	% Where the generated 'new*' operators (and possibly the constructor) will
 	% be exported:
@@ -231,10 +236,10 @@ manage_new_operators( _ConstructPairs=[ { Arity, FunInfo } | T ], FunctionTable,
 
 
 
-
-% @doc Adds the V1 operators, that is new/N-1 and new_link/N-1, by updating the
-% specified operator table.
-%
+-doc """
+Adds the V1 operators, that is new/N-1 and new_link/N-1, by updating the
+specified operator table.
+""".
 -spec add_v1_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v1_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -268,9 +273,9 @@ add_v1_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	% Preparing the form elements involved:
 
 
-	% For the header of the new function, that is for 'new( A, B ) ->'.
+	% For the header of the new function, that is for 'new(A, B) ->'.
 	%
-	% Ex: [ {var,0,'Myriad_Param_1'}, {var,0,'Myriad_Param_2'} ]
+	% E.g. [{var,0,'Myriad_Param_1'}, {var,0,'Myriad_Param_2'}]
 	%
 	HeaderParams = ast_generation:get_header_params( NewArity ),
 
@@ -282,8 +287,8 @@ add_v1_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	% For the application of the parameters to the later function,
 	% that is for 'wooper:construct_and_run( class_Foo, [ A, B ] )'.
 	%
-	% Ex: [ {atom,0,class_Foo}, { cons, 0, {var,0,'Myriad_Param_1'},
-	% { cons, 0, {var,0,'Myriad_Param_2'}, {nil,0} } } ].
+	% E.g. [{atom,0,class_Foo}, {cons, 0, {var,0,'Myriad_Param_1'},
+	%   {cons, 0, {var,0,'Myriad_Param_2'}, {nil,0} }}].
 	%
 	CallParams = [ {atom,FileGenLoc,Classname},
 				   ast_generation:enumerated_variables_to_form( NewArity ) ],
@@ -334,7 +339,7 @@ add_v1_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	%
 	% new_link( A, B ) ->
 	%     spawn_link( fun() ->
-	%		  wooper:construct_and_run( class_Foo, [ A, B ] )
+	%		wooper:construct_and_run( class_Foo, [ A, B ] )
 	% end ).
 
 	SpawnLinkExpr = get_spawn_link_expression_for( IsDebugMode, FileGenLoc ),
@@ -370,10 +375,11 @@ add_v1_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Adds the V2 operators, that is synchronous_new/N-1 and
-% synchronous_new_link/N-1, by updating the specified operator table; they
-% correspond roughly to the V1 ones, augmented with a receive clause.
-%
+-doc """
+Adds the V2 operators, that is synchronous_new/N-1 and synchronous_new_link/N-1,
+by updating the specified operator table; they correspond roughly to the V1
+ones, augmented with a receive clause.
+""".
 -spec add_v2_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v2_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -384,7 +390,7 @@ add_v2_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	SyncNewArity = Arity - 1,
 
 	%trace_utils:debug_fmt( "Adding {synchronous_new,synchronous_new_link}/~B.",
-	%					   [ SyncNewArity ] ),
+	%                       [ SyncNewArity ] ),
 
 	% Let's start with:
 	SyncNewName = synchronous_new,
@@ -397,14 +403,14 @@ add_v2_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	% synchronous_new( A, B ) ->
 	% [S1]  CreatorPid = self(),
 	% [S2]  SpawnedPid = spawn( fun() ->
-	%		  wooper:construct_and_run_synchronous( class_Foo, [ A, B ],
+	%         wooper:construct_and_run_synchronous( class_Foo, [ A, B ],
 	%                                               CreatorPid )
 	%                       end ),
 	%
 	% [S3]  receive
 	%
-	%		  { spawn_successful, SpawnedPid } ->
-	%			  SpawnedPid
+	%          { spawn_successful, SpawnedPid } ->
+	%               SpawnedPid
 	%
 	% end.
 
@@ -434,8 +440,8 @@ add_v2_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 	HeaderParams = ast_generation:get_header_params( SyncNewArity ),
 
-	SyncNewClause = { clause, FileGenLoc, HeaderParams, [],
-					  [ S1, S2, S3 ] },
+	SyncNewClause =
+		{ clause, FileGenLoc, HeaderParams, [], [ S1, S2, S3 ] },
 
 
 	% Then, its spec:
@@ -484,14 +490,14 @@ add_v2_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 		 } ] } },
 
 	SyncNewLinkOpInfo = #function_info{
-						   name=SyncNewLinkName,
-						   arity=SyncNewArity,
-						   ast_location=DefinitionASTLoc,
-						   file_location=FileGenLoc,
-						   clauses=[ SyncNewLinkClause ],
-						   spec={ DefinitionASTLoc, SyncNewLinkSpecForm },
-						   callback=false,
-						   exported=[ ExportASTLocation ] },
+							name=SyncNewLinkName,
+							arity=SyncNewArity,
+							ast_location=DefinitionASTLoc,
+							file_location=FileGenLoc,
+							clauses=[ SyncNewLinkClause ],
+							spec={ DefinitionASTLoc, SyncNewLinkSpecForm },
+							callback=false,
+							exported=[ ExportASTLocation ] },
 
 	% Ensure not already defined (ex: by an unwary user):
 	table:add_new_entries( [ { SyncNewId, SyncNewOpInfo },
@@ -499,10 +505,11 @@ add_v2_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Adds the V3 operators, that is synchronous_timed_new/N-1 and
-% synchronous_timed_new_link/N-1, by updating the specified operator table; they
-% correspond roughly to the V2 ones, augmented with an after clause.
-%
+-doc """
+Adds the V3 operators, that is synchronous_timed_new/N-1 and
+synchronous_timed_new_link/N-1, by updating the specified operator table; they
+correspond roughly to the V2 ones, augmented with an after clause.
+""".
 -spec add_v3_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v3_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -529,14 +536,14 @@ add_v3_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	% synchronous_timed_new( A, B ) ->
 	% [S1]  CreatorPid = self(),
 	% [S2]  SpawnedPid = spawn( fun() ->
-	%		  wooper:construct_and_run_synchronous( class_Foo, [ A, B ],
-	%                                               CreatorPid )
+	%           wooper:construct_and_run_synchronous( class_Foo, [ A, B ],
+	%                                                 CreatorPid )
 	%                           end ),
 	%
 	% [S3]  receive
 	%
-	%		  { spawn_successful, SpawnedPid } ->
-	%			  SpawnedPid
+	%           { spawn_successful, SpawnedPid } ->
+	%               SpawnedPid
 	%
 	% [S4]  after 5000 ->
 	%
@@ -607,8 +614,8 @@ add_v3_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 						 [ {call,FileGenLoc,SyncRunCall,CallParams } ]
 						} ] } } ] } },
 
-	OpNewLinkClause = { clause, FileGenLoc, HeaderParams, [],
-						[ S1, S2Link, S3 ] },
+	OpNewLinkClause =
+		{ clause, FileGenLoc, HeaderParams, [], [ S1, S2Link, S3 ] },
 
 	OpNewLinkId = { OpNewLinkName, OpArity },
 
@@ -632,10 +639,11 @@ add_v3_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Adds the V4 operators, that is remote_new/N and remote_new_link/N by
-% updating the specified operator table; they correspond roughly to the V1 ones,
-% augmented with a node specification at the spawn call.
-%
+-doc """
+Adds the V4 operators, that is remote_new/N and remote_new_link/N by updating
+the specified operator table; they correspond roughly to the V1 ones, augmented
+with a node specification at the spawn call.
+""".
 -spec add_v4_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v4_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -648,7 +656,7 @@ add_v4_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	ArgArity = OpArity - 1,
 
 	%trace_utils:debug_fmt( "Adding {remote_new,remote_new_link}/~B.",
-	%					   [ OpArity ] ),
+	%                       [ OpArity ] ),
 
 	% Let's start with:
 	OpNewName = remote_new,
@@ -662,7 +670,7 @@ add_v4_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	%
 	% remote_new( Node, A, B ) ->
 	% [S1]  spawn( Node, fun() ->
-	%		  wooper:construct_and_run( class_Foo, [ A, B ] )
+	%           wooper:construct_and_run( class_Foo, [ A, B ] )
 	%                    end ).
 
 	% First element must be the node parameter:
@@ -702,9 +710,9 @@ add_v4_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	Result = forge_pid_type(),
 
 	OpSpecForm = { attribute, FileGenLoc, spec, { OpNewId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
+		  } ] } },
 
 	OpNewInfo = #function_info{ name=OpNewName,
 								arity=OpArity,
@@ -723,22 +731,22 @@ add_v4_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	SpawnLinkExpr = get_spawn_link_expression_for( IsDebugMode, FileGenLoc ),
 
 	OpNewLinkClause = { clause, FileGenLoc, HeaderParams, [],
-					[{ call, FileGenLoc, SpawnLinkExpr,
-					   [ {var,FileGenLoc,'Node'},
-						 {'fun', FileGenLoc,
-						  { clauses,
-							[ { clause, FileGenLoc,[],[],
-								[ { call, FileGenLoc, RunCall, CallParams } ]
-							  }]
-						  }}]
-					 }]},
+		[{ call, FileGenLoc, SpawnLinkExpr,
+		   [ {var,FileGenLoc,'Node'},
+			 {'fun', FileGenLoc,
+			  { clauses,
+				[ { clause, FileGenLoc,[],[],
+					[ { call, FileGenLoc, RunCall, CallParams } ]
+				  }]
+			  }}]
+		 }]},
 
 	OpNewLinkId = { OpNewLinkName, OpArity },
 
 	OpLinkSpecForm = { attribute, FileGenLoc, spec, { OpNewLinkId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
+		  } ] } },
 
 	OpNewLinkInfo = #function_info{ name=OpNewLinkName,
 									arity=OpArity,
@@ -755,11 +763,12 @@ add_v4_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Adds the V5 operators, that is remote_synchronous_new/N and
-% remote_synchronous_new_link/N, by updating the specified operator table; they
-% correspond roughly to the V4 ones, augmented with a synchronous variant and a
-% receive clause.
-%
+-doc """
+Adds the V5 operators, that is remote_synchronous_new/N and
+remote_synchronous_new_link/N, by updating the specified operator table; they
+correspond roughly to the V4 ones, augmented with a synchronous variant and a
+receive clause.
+""".
 -spec add_v5_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v5_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -789,13 +798,13 @@ add_v5_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	%
 	% [S1] CreatorPid = self(),
 	% [S2] SpawnedPid = spawn( Node, fun() ->
-	%					   wooper:construct_and_run_synchronous(
-	%									 [ A, B ], CreatorPid )
-	%								 end ),
+	%           wooper:construct_and_run_synchronous(
+	%               [ A, B ], CreatorPid )
+	%                                end ),
 	% [S3] receive
-	%		  { spawn_successful, SpawnedPid } ->
-	%			  SpawnedPid
-	%	   end.
+	%        { spawn_successful, SpawnedPid } ->
+	%           SpawnedPid
+	%      end.
 
 	S1 = { match, FileGenLoc, {var,FileGenLoc,'CreatorPid'},
 		   { call, FileGenLoc, {atom,FileGenLoc,self}, [] } },
@@ -824,8 +833,8 @@ add_v5_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	HeaderParams = [ {var,FileGenLoc,'Node'}
 					 | ast_generation:get_header_params( ArgArity ) ],
 
-	OpNewClause = { clause, FileGenLoc, HeaderParams, [],
-					  [ S1, S2, S3 ] },
+	OpNewClause =
+		{ clause, FileGenLoc, HeaderParams, [], [ S1, S2, S3 ] },
 
 
 	% Now the spec, which is:
@@ -842,9 +851,9 @@ add_v5_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	Result = forge_pid_type(),
 
 	OpSpecForm = { attribute, FileGenLoc, spec, { OpNewId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
+		  } ] } },
 
 	OpNewInfo = #function_info{ name=OpNewName,
 								arity=OpArity,
@@ -879,9 +888,9 @@ add_v5_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 	OpLinkSpecForm = { attribute, FileGenLoc, spec, { OpNewLinkId,
-	   [ { type, FileGenLoc, 'fun',
+		[ { type, FileGenLoc, 'fun',
 		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		  } ] } },
 
 	OpNewLinkInfo = #function_info{ name=OpNewLinkName,
 									arity=OpArity,
@@ -898,11 +907,12 @@ add_v5_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Adds the V6 operators, that is remote_synchronisable_new/N and
-% remote_synchronisable_new_link/N, by updating the specified operator table;
-% they correspond roughly to the V5 ones, except there is no integrated receive,
-% as it is left at the hand of the user.
-%
+-doc """
+Adds the V6 operators, that is remote_synchronisable_new/N and
+remote_synchronisable_new_link/N, by updating the specified operator table; they
+correspond roughly to the V5 ones, except there is no integrated receive, as it
+is left at the hand of the user.
+""".
 -spec add_v6_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v6_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -915,8 +925,8 @@ add_v6_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	ArgArity = OpArity - 1,
 
 	%trace_utils:debug_fmt(
-	%  "Adding {remote_synchronisable_new,remote_synchronisable_new_link}/~B.",
-	%  [ OpArity ] ),
+	%   "Adding {remote_synchronisable_new,remote_synchronisable_new_link}/~B.",
+	%   [ OpArity ] ),
 
 	% Let's start with:
 	OpNewName = remote_synchronisable_new,
@@ -932,9 +942,9 @@ add_v6_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	%
 	% [S1] CreatorPid = self(),
 	% [S2] spawn( Node, fun() ->
-	%					   wooper:construct_and_run_synchronous(
-	%									 [ A, B ], CreatorPid )
-	%	   end ).
+	%       wooper:construct_and_run_synchronous(
+	%           [ A, B ], CreatorPid )
+	%					end ).
 
 	S1 = { match, FileGenLoc, {var,FileGenLoc,'CreatorPid'},
 		   { call, FileGenLoc, {atom,FileGenLoc,self}, [] } },
@@ -958,7 +968,7 @@ add_v6_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 	% First element must be the node parameter:
 	HeaderParams = [ {var,FileGenLoc,'Node'}
-					 | ast_generation:get_header_params( ArgArity ) ],
+						| ast_generation:get_header_params( ArgArity ) ],
 
 	OpNewClause = { clause, FileGenLoc, HeaderParams, [], [ S1, S2 ] },
 
@@ -977,9 +987,9 @@ add_v6_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	Result = forge_pid_type(),
 
 	OpSpecForm = { attribute, FileGenLoc, spec, { OpNewId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
+		  } ] } },
 
 	OpNewInfo = #function_info{ name=OpNewName,
 								arity=OpArity,
@@ -1011,9 +1021,9 @@ add_v6_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	OpNewLinkId = { OpNewLinkName, OpArity },
 
 	OpLinkSpecForm = { attribute, FileGenLoc, spec, { OpNewLinkId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
+		  } ] } },
 
 	OpNewLinkInfo = #function_info{ name=OpNewLinkName,
 									arity=OpArity,
@@ -1030,10 +1040,11 @@ add_v6_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Adds the V7 operators, that is remote_synchronous_timed_new/N and
-% remote_synchronous_timed_new/N, by updating the specified operator table; they
-% correspond roughly to a version of V5 with an additional after clause.
-%
+-doc """
+Adds the V7 operators, that is remote_synchronous_timed_new/N and
+remote_synchronous_timed_new/N, by updating the specified operator table; they
+correspond roughly to a version of V5 with an additional after clause.
+""".
 -spec add_v7_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v7_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -1062,14 +1073,14 @@ add_v7_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	%
 	% [S1] CreatorPid = self(),
 	% [S2] SpawnedPid = spawn( Node, fun() ->
-	%					   wooper:construct_and_run_synchronous(
-	%									 [ A, B ], CreatorPid )
-	%								 end ),
+	%                       wooper:construct_and_run_synchronous(
+	%                                    [ A, B ], CreatorPid )
+	%                                end ),
 	% [S3] receive
-	%		  { spawn_successful, SpawnedPid } ->
-	%			  SpawnedPid
-	%      after TimeOut ->
-	%		  throw( { remote_synchronous_time_out, Node, Classname } )
+	%       { spawn_successful, SpawnedPid } ->
+	%           SpawnedPid
+	%         after TimeOut ->
+	%           throw( { remote_synchronous_time_out, Node, Classname } )
 	%      end.
 
 	S1 = { match, FileGenLoc, {var,FileGenLoc,'CreatorPid'},
@@ -1097,7 +1108,7 @@ add_v7_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 	% First element must be the node parameter:
 	HeaderParams = [ {var,FileGenLoc,'Node'}
-					 | ast_generation:get_header_params( ArgArity ) ],
+						| ast_generation:get_header_params( ArgArity ) ],
 
 	OpNewClause = { clause, FileGenLoc, HeaderParams, [], [ S1, S2, S3 ] },
 
@@ -1105,8 +1116,8 @@ add_v7_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	% Now the spec, which is:
 	%
 	% -spec remote_synchronous_timed_new( net_utils:atom_node_name(),
-	%                   wooper:construction_parameter(),
-	%                   wooper:construction_parameter() ) -> pid().
+	%   wooper:construction_parameter(),
+	%   wooper:construction_parameter() ) -> pid().
 
 	NodeType = forge_node_type( FileGenLoc ),
 
@@ -1116,9 +1127,9 @@ add_v7_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	Result = forge_pid_type(),
 
 	OpSpecForm = { attribute, FileGenLoc, spec, { OpNewId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
+		  } ] } },
 
 	OpNewInfo = #function_info{ name=OpNewName,
 								arity=OpArity,
@@ -1146,15 +1157,15 @@ add_v7_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 							{var,FileGenLoc,'CreatorPid'}
 						  ] } ] } } ] } },
 
-	OpNewLinkClause = { clause, FileGenLoc, HeaderParams, [],
-						[ S1, S2Link, S3 ] },
+	OpNewLinkClause =
+		{ clause, FileGenLoc, HeaderParams, [],	[ S1, S2Link, S3 ] },
 
 	OpNewLinkId = { OpNewLinkName, OpArity },
 
 	OpLinkSpecForm = { attribute, FileGenLoc, spec, { OpNewLinkId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes }, Result ]
+		  } ] } },
 
 	OpNewLinkInfo = #function_info{ name=OpNewLinkName,
 									arity=OpArity,
@@ -1171,9 +1182,9 @@ add_v7_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Adds the V8 operator, that is new_passive/N-1 (no other variation makes
-% sense).
-%
+-doc """
+Adds the V8 operator, that is new_passive/N-1 (no other variation makes sense).
+""".
 -spec add_v8_operators( classname(), arity(), form_location(),
 			form_location(), boolean(), operator_table() ) -> operator_table().
 add_v8_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
@@ -1219,10 +1230,10 @@ add_v8_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 	PassiveInstanceType = forge_passive_instance_type( FileGenLoc ),
 
 	PassiveNewSpecForm = { attribute, FileGenLoc, spec, { PassiveNewId,
-	   [ { type, FileGenLoc, 'fun',
-		   [ { type, FileGenLoc, product, ConstructParamTypes },
-			 _Result=PassiveInstanceType ]
-		 } ] } },
+		[ { type, FileGenLoc, 'fun',
+			[ { type, FileGenLoc, product, ConstructParamTypes },
+			  _Result=PassiveInstanceType ]
+		  } ] } },
 
 	PassiveNewOpInfo = #function_info{ name=PassiveNewName,
 									   arity=PassiveNewArity,
@@ -1239,26 +1250,34 @@ add_v8_operators( Classname, Arity, ExportASTLocation, DefinitionASTLoc,
 
 
 
-% @doc Returns the form element corresponding to pid().
+-doc "Returns the form element corresponding to pid().".
 forge_pid_type() ->
 	ast_type:forge_pid_type().
 
 
-% @doc Returns the form element corresponding to net_utils:atom_node_name().
+
+-doc """
+Returns the form element corresponding to net_utils:atom_node_name().
+""".
 forge_node_type( FileGenLoc ) ->
 	% Corresponds to node():
 	ast_type:forge_remote_type( _ModuleName=net_utils, _TypeName=atom_node_name,
 								_TypeVars=[], FileGenLoc ).
 
 
-% @doc Returns the form element corresponding to wooper:passive_instance().
+
+-doc """
+Returns the form element corresponding to wooper:passive_instance().
+""".
 forge_passive_instance_type( FileGenLoc ) ->
 	ast_type:forge_remote_type( _ModuleName=wooper, _TypeName=passive_instance,
 								_TypeVars=[], FileGenLoc ).
 
 
 
-% @doc Returns the form element corresponding to wooper:construct_and_run/2.
+-doc """
+Returns the form element corresponding to wooper:construct_and_run/2.
+""".
 -spec get_run_call( file_loc() ) -> form_element().
 get_run_call( FileGenLoc ) ->
 	{ remote, FileGenLoc, {atom,FileGenLoc,wooper},
@@ -1266,9 +1285,10 @@ get_run_call( FileGenLoc ) ->
 
 
 
-% @doc Returns the form element corresponding to
-% wooper:construct_and_run_synchronous/2.
-%
+-doc """
+Returns the form element corresponding to
+wooper:construct_and_run_synchronous/2.
+""".
 -spec get_sync_run_call( file_loc() ) -> form_element().
 get_sync_run_call( FileGenLoc ) ->
 	{ remote, FileGenLoc, {atom,FileGenLoc,wooper},
@@ -1276,18 +1296,19 @@ get_sync_run_call( FileGenLoc ) ->
 
 
 
-% @doc Returns the form element corresponding to a receive.
-%
-% Like:
-% ```
-%receive
-%
-%	{spawn_successful, SpawnedPid} ->
-%		SpawnedPid
-%
-% end
-% '''
-%
+-doc """
+Returns the form element corresponding to a receive.
+
+Like:
+```
+receive
+
+   {spawn_successful, SpawnedPid} ->
+		SpawnedPid
+
+end
+```
+""".
 -spec get_receive( file_loc() ) -> form_element().
 get_receive( FileGenLoc ) ->
 	{ 'receive', FileGenLoc, [
@@ -1298,22 +1319,23 @@ get_receive( FileGenLoc ) ->
 
 
 
-% @doc Returns the form element corresponding to a fixed-timed receive.
-%
-% Like:
-% ```
-% receive
-%
-%	{spawn_successful, SpawnedPid} ->
-%		SpawnedPid
-%
-% after 5000 ->
-%
-%	throw( { synchronous_time_out, ?MODULE } )
-%
-% end
-% '''
-%
+-doc """
+Returns the form element corresponding to a fixed-timed receive.
+
+Like:
+```
+receive
+
+  {spawn_successful, SpawnedPid} ->
+		SpawnedPid
+
+after 5000 ->
+
+ throw( { synchronous_time_out, ?MODULE } )
+
+end
+```
+""".
 -spec get_local_receive_with_after( basic_utils:module_name(), boolean(),
 									file_loc() ) -> form_element().
 get_local_receive_with_after( ModuleName, IsDebugMode, FileGenLoc ) ->
@@ -1327,29 +1349,29 @@ get_local_receive_with_after( ModuleName, IsDebugMode, FileGenLoc ) ->
 		  [], [ {var,FileGenLoc,'SpawnedPid'} ] } ],
 	  {integer,FileGenLoc,TimeOut},
 	  [ { call, FileGenLoc, {atom,FileGenLoc,throw},
-		   [ { tuple, FileGenLoc,
-			   [ {atom,FileGenLoc,synchronous_time_out},
-				 {atom,FileGenLoc,ModuleName} ] } ] } ] }.
+		  [ { tuple, FileGenLoc,
+			  [ {atom,FileGenLoc,synchronous_time_out},
+				{atom,FileGenLoc,ModuleName} ] } ] } ] }.
 
 
 
-% @doc Returns the form element corresponding to a user-defined timed receive.
-%
-% Like:
-% ```
-%
-% receive
-%
-%	{spawn_successful, SpawnedPid} ->
-%		SpawnedPid
-%
-% after TimeOut  ->
-%
-%	throw( {remote_synchronous_time_out, node(), ?MODULE})
-%
-% end
-% '''
-%
+-doc """
+Returns the form element corresponding to a user-defined timed receive.
+
+Like:
+```
+receive
+
+	{spawn_successful, SpawnedPid} ->
+		SpawnedPid
+
+after TimeOut  ->
+
+	throw( {remote_synchronous_time_out, node(), ?MODULE})
+
+end
+```
+""".
 -spec get_remote_receive_with_after( basic_utils:module_name(), boolean(),
 									 file_loc() ) -> form_element().
 get_remote_receive_with_after( ModuleName, IsDebugMode, FileGenLoc ) ->
@@ -1370,9 +1392,10 @@ get_remote_receive_with_after( ModuleName, IsDebugMode, FileGenLoc ) ->
 
 
 
-% @doc Returns a list of adequate types for the specified number of construction
-% parameters, that is of type wooper:construction_parameter().
-%
+-doc """
+Returns a list of adequate types for the specified number of construction
+parameters, that is of type wooper:construction_parameter().
+""".
 -spec get_construction_types( basic_utils:count(), file_loc() ) ->
 									form_element().
 get_construction_types( Count, FileGenLoc ) ->
@@ -1382,12 +1405,13 @@ get_construction_types( Count, FileGenLoc ) ->
 
 
 
-% @doc Returns the spawn expression corresponding to the execution mode (target
-% is either development or production, resulting in debug mode being activated
-% or not).
-%
-% Corresponds to Myriad's spawn_utils.hrl (the myriad_spawn* macros).
-%
+-doc """
+Returns the spawn expression corresponding to the execution mode (target is
+either development or production, resulting in debug mode being activated or
+not).
+
+Corresponds to Myriad's spawn_utils.hrl (the myriad_spawn* macros).
+""".
 -spec get_spawn_expression_for( boolean(), file_loc() ) -> form_element().
 get_spawn_expression_for( _IsDebugMode=true, FileGenLoc ) ->
 
@@ -1409,12 +1433,13 @@ get_spawn_expression_for( _IsDebugMode=false, FileGenLoc ) ->
 
 
 
-% @doc Returns the spawn_link expression corresponding to the execution mode
-% (target is either development or production, resulting in debug mode being
-% activated or not).
-%
-% Corresponds to Myriad's spawn_utils.hrl (the myriad_spawn* macros).
-%
+-doc """
+Returns the spawn_link expression corresponding to the execution mode (target is
+either development or production, resulting in debug mode being activated or
+not).
+
+Corresponds to Myriad's spawn_utils.hrl (the myriad_spawn* macros).
+""".
 -spec get_spawn_link_expression_for( boolean(), file_loc() ) -> form_element().
 get_spawn_link_expression_for( _IsDebugMode=true, FileGenLoc ) ->
 

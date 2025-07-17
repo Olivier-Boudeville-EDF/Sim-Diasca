@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,19 +25,20 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, May 2, 2018.
 
-
-% @doc This is the second most basic, terminal-based <b>textual interface</b>,
-% with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.
-%
-% See:
-% - term_ui_test.erl for the corresponding test
-% - text_ui.erl for a more basic text interface
-% - gui.erl for a graphical counterpart
-%
-% See also: trace_utils.erl for another kind of output and test-dialog.sh for an
-% autonomous, standalone test.
-%
 -module(term_ui).
+
+-moduledoc """
+This is the second most basic, terminal-based **textual interface**,
+with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.
+
+See:
+- term_ui_test.erl for the corresponding test
+- text_ui.erl for a more basic text interface
+- gui.erl for a graphical counterpart
+
+See also: trace_utils.erl for another kind of output and test-dialog.sh for an
+autonomous, standalone test.
+""".
 
 
 
@@ -278,17 +279,17 @@
 %-define( default_state_path, "/tmp/.myriad-term_ui.state" ).
 
 
+-doc "A tool offering dialogs".
 -type dialog_tool() :: 'dialog' | 'whiptail'.
 
 
+-doc """
+The locale to be used by dialogs:
+- default: the current user one
+- none: no locale (defaulting to "C")
+- a user-specified one
+""".
 -type dialog_locale() :: 'default' | 'none' | ustring().
-% The locale to be used by dialogs:
-%
-% - default: the current user one
-%
-% - none: no locale (defaulting to "C")
-%
-% - a user-specified one
 
 
 -record( term_ui_state, {
@@ -301,10 +302,11 @@
 	% Generally little use of console outputs for this backend:
 	log_console = false :: boolean(),
 
-	log_file = undefined :: maybe( file() ),
+	log_file = undefined :: option( file() ),
 	settings :: setting_table() } ).
 
 
+-doc "A term_ui state".
 -type ui_state() :: #term_ui_state{}.
 
 
@@ -322,7 +324,8 @@
 -define( state_key, term_ui_state ).
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
@@ -352,7 +355,7 @@
 
 
 
-% @doc Tells whether this user-interface backend is available.
+-doc "Tells whether this user-interface backend is available.".
 -spec is_available() -> boolean().
 is_available() ->
    % Cannot be simplified (no 'true but { T, TPath }):
@@ -360,22 +363,24 @@ is_available() ->
 
 
 
-% @doc Starts the UI with default settings.
-%
-% Stores the corresponding state in the process dictionary, yet returns as well
-% that state, for any explicit later operation.
-%
+-doc """
+Starts the UI with default settings.
+
+Stores the corresponding state in the process dictionary, yet returns as well
+that state, for any explicit later operation.
+""".
 -spec start() -> ui_state().
 start() ->
 	start( _Opts=[] ).
 
 
 
-% @doc Starts the UI with specified settings.
-%
-% Stores the corresponding state in the process dictionary, yet returns as well
-% that state, for any explicit later operation.
-%
+-doc """
+Starts the UI with specified settings.
+
+Stores the corresponding state in the process dictionary, yet returns as well
+that state, for any explicit later operation.
+""".
 -spec start( ui_options() ) -> ui_state().
 start( Options ) ->
 
@@ -442,9 +447,11 @@ start_helper( SingleElem, UIState ) ->
 
 
 
-% @doc Initialises the UI state.
-%
-% (helper)
+-doc """
+Initialises the UI state.
+
+(helper)
+""".
 -spec init_state_with_dimensions( dialog_tool(), file_path() ) -> ui_state().
 init_state_with_dimensions( Tool=dialog, DialogPath ) ->
 
@@ -464,7 +471,7 @@ init_state_with_dimensions( Tool=dialog, DialogPath ) ->
 
 			% Here, SizeString="28, 107".
 			[ HeightString, " " ++ WidthString ] =
-				text_utils:split( SizeString, [ $, ] ),
+				text_utils:split( SizeString, _Delimiter=$, ),
 
 			Height = text_utils:string_to_integer( HeightString ),
 
@@ -484,13 +491,14 @@ init_state_with_dimensions( Tool=dialog, DialogPath ) ->
 
 
 
-% @doc Sets specified UI setting.
+-doc "Sets the specified UI setting.".
 -spec set( ui_setting_key(), ui_setting_value() ) -> void().
 set( SettingKey, SettingValue ) ->
 	set( [ { SettingKey, SettingValue } ] ).
 
 
-% @doc Sets specified UI settings.
+
+-doc "Sets the specified UI settings.".
 -spec set( [ ui_setting_entry() ] ) -> void().
 set( SettingEntries ) ->
 
@@ -502,7 +510,7 @@ set( SettingEntries ) ->
 
 
 
-% @doc Unsets specified UI setting.
+-doc "Unsets the specified UI settings.".
 -spec unset( [ ui_setting_key() ] | ui_setting_key() ) -> void().
 unset( SettingKeys ) when is_list( SettingKeys ) ->
 
@@ -522,7 +530,7 @@ unset( SettingKey ) ->
 
 
 
-% @doc Displays specified text, as a normal modal message.
+-doc "Displays the specified text, as a normal modal message.".
 -spec display( text() ) -> void().
 display( Text ) ->
 
@@ -578,14 +586,16 @@ display( Text ) ->
 
 
 
-% @doc Displays specified formatted text, as a normal modal message.
+-doc "Displays the specified formatted text, as a normal modal message.".
 -spec display( format_string(), format_values() ) -> void().
 display( FormatString, Values ) ->
 	display( text_utils:format( FormatString, Values ) ).
 
 
 
-% @doc Displays in-order the items of specified list, as a normal modal message.
+-doc """
+Displays in-order the items of the specified list, as a normal modal message.
+""".
 -spec display_numbered_list( label(), [ text() ] ) -> void().
 display_numbered_list( Label, Lines ) ->
 	LineStrings = text_utils:strings_to_enumerated_string( Lines ),
@@ -593,7 +603,9 @@ display_numbered_list( Label, Lines ) ->
 
 
 
-% @doc Displays specified text, as a normal non-modal message.
+-doc """
+Displays the specified text, as a normal non-modal message.
+""".
 -spec display_instant( text() ) -> void().
 display_instant( Text ) ->
 
@@ -648,14 +660,16 @@ display_instant( Text ) ->
 
 
 
-% @doc Displays specified formatted text, as a normal non-modal message.
+-doc """
+Displays the specified formatted text, as a normal non-modal message.
+""".
 -spec display_instant( format_string(), format_values() ) -> void().
 display_instant( FormatString, Values ) ->
 	display_instant( text_utils:format( FormatString, Values ) ).
 
 
 
-% @doc Displays specified text, as a warning message.
+-doc "Displays the specified text, as a warning message.".
 -spec display_warning( text() ) -> void().
 display_warning( Text ) ->
 
@@ -713,14 +727,14 @@ display_warning( Text ) ->
 
 
 
-% @doc Displays specified formatted text, as a warning message.
+-doc "Displays the specified formatted text, as a warning message.".
 -spec display_warning( format_string(), format_values() ) -> void().
 display_warning( FormatString, Values ) ->
 	display_warning( text_utils:format( FormatString, Values ) ).
 
 
 
-% @doc Displays specified text, as an error message.
+-doc "Displays the specified text, as an error message.".
 -spec display_error( text() ) -> void().
 display_error( Text ) ->
 
@@ -778,13 +792,14 @@ display_error( Text ) ->
 
 
 
-% @doc Displays specified formatted text, as an error message.
+-doc "Displays the specified formatted text, as an error message.".
 -spec display_error( format_string(), format_values() ) -> void().
 display_error( FormatString, Values ) ->
 	display_error( text_utils:format( FormatString, Values ) ).
 
 
-% @doc Displays in-order the items of specified list, as an error message.
+
+-doc "Displays in-order the items of the specified list, as an error message.".
 -spec display_error_numbered_list( label(), [ text() ] ) -> void().
 display_error_numbered_list( Label, Lines ) ->
 	LineStrings = text_utils:strings_to_enumerated_string( Lines ),
@@ -792,10 +807,11 @@ display_error_numbered_list( Label, Lines ) ->
 
 
 
-% @doc Adds a default separation between previous and next content.
-%
-% Note: meaningless for this backend.
-%
+-doc """
+Adds a default separation between previous and next content.
+
+Note: meaningless for this backend.
+""".
 -spec add_separation() -> void().
 add_separation() ->
 	% Could be a clear.
@@ -808,20 +824,23 @@ add_separation() ->
 %  - the read_text variations will loop until a suitable text entry is entered
 
 
-% @doc Returns the user-entered text, based on an implicit state.
-%
-% (const)
-%
+-doc """
+Returns the user-entered text, based on an implicit state.
+
+(const)
+""".
 -spec get_text( prompt() ) -> text().
 get_text( Prompt ) ->
 	get_text( Prompt, _UIState=get_state() ).
 
 
-% @doc Returns the user-entered text, based on an explicit state, or throws
-% operation_cancelled if the user preferred the cancel button.
-%
-% (const)
-%
+
+-doc """
+Returns the user-entered text, based on an explicit state, or throws
+operation_cancelled if the user preferred the cancel button.
+
+(const)
+""".
 -spec get_text( prompt(), ui_state() ) -> text().
 get_text( Prompt,
 		  %_UIState ) ->
@@ -883,21 +902,24 @@ get_text( Prompt,
 
 
 
-% @doc Returns the user-entered text, once translated to an integer, based on an
-% implicit state.
-%
-% (const)
-%
+-doc """
+Returns the user-entered text, once translated to an integer, based on an
+implicit state.
+
+(const)
+""".
 -spec get_text_as_integer( prompt() ) -> integer().
 get_text_as_integer( Prompt ) ->
 	get_text_as_integer( Prompt, _UIState=get_state() ).
 
 
-% @doc Returns the user-entered text, once translated to an integer, based on an
-% explicit state.
-%
-% (const)
-%
+
+-doc """
+Returns the user-entered text, once translated to an integer, based on an
+explicit state.
+
+(const)
+""".
 -spec get_text_as_integer( prompt(), ui_state() ) -> integer().
 get_text_as_integer( Prompt, UIState ) ->
 	Text = get_text( Prompt, UIState ),
@@ -905,21 +927,24 @@ get_text_as_integer( Prompt, UIState ) ->
 
 
 
-% @doc Returns the user-entered text, once translated to an integer, based on an
-% implicit state, prompting the user until a valid input is obtained.
-%
-% (const)
-%
+-doc """
+Returns the user-entered text, once translated to an integer, based on an
+implicit state, prompting the user until a valid input is obtained.
+
+(const)
+""".
 -spec read_text_as_integer( prompt() ) -> integer().
 read_text_as_integer( Prompt ) ->
 	read_text_as_integer( Prompt, _UIState=get_state() ).
 
 
-% @doc Returns the user-entered text, once translated to an integer, based on an
-% explicit state, prompting the user until a valid input is obtained.
-%
-% (const)
-%
+
+-doc """
+Returns the user-entered text, once translated to an integer, based on an
+explicit state, prompting the user until a valid input is obtained.
+
+(const)
+""".
 -spec read_text_as_integer( prompt(), ui_state() ) -> integer().
 read_text_as_integer( Prompt, UIState ) ->
 
@@ -939,22 +964,25 @@ read_text_as_integer( Prompt, UIState ) ->
 
 
 
-% @doc Returns the user-entered text (if any) after specified prompt, once
-% translated to (possibly) an integer, based on an implicit state.
-%
-% (const)
-%
--spec get_text_as_maybe_integer( prompt() ) -> maybe( integer() ).
+-doc """
+Returns the user-entered text (if any) after specified prompt, once translated
+to (possibly) an integer, based on an implicit state.
+
+(const)
+""".
+-spec get_text_as_maybe_integer( prompt() ) -> option( integer() ).
 get_text_as_maybe_integer( Prompt ) ->
 	get_text_as_maybe_integer( Prompt, _UIState=get_state() ).
 
 
-% @doc Returns the user-entered text (if any) after specified prompt, once
-% translated to (possibly) an integer, based on an explicit state.
-%
-% (const)
-%
--spec get_text_as_maybe_integer( prompt(), ui_state() ) -> maybe( integer() ).
+
+-doc """
+Returns the user-entered text (if any) after specified prompt, once translated
+to (possibly) an integer, based on an explicit state.
+
+(const)
+""".
+-spec get_text_as_maybe_integer( prompt(), ui_state() ) -> option( integer() ).
 get_text_as_maybe_integer( Prompt, UIState ) ->
 
 	case get_text( Prompt, UIState ) of
@@ -969,26 +997,30 @@ get_text_as_maybe_integer( Prompt, UIState ) ->
 
 
 
-% @doc Returns the user-entered text after specified prompt, once translated to
-% an integer, prompting the user until a valid input is obtained: either a
-% string that resolves to an integer (then returned), or an empty string (then
-% returning 'undefined'), based on an implicit state.
-%
-% (const)
-%
--spec read_text_as_maybe_integer( prompt() ) -> maybe( integer() ).
+-doc """
+Returns the user-entered text after specified prompt, once translated to an
+integer, prompting the user until a valid input is obtained: either a string
+that resolves to an integer (then returned), or an empty string (then returning
+'undefined'), based on an implicit state.
+
+(const)
+""".
+-spec read_text_as_maybe_integer( prompt() ) -> option( integer() ).
 read_text_as_maybe_integer( Prompt ) ->
 	read_text_as_maybe_integer( Prompt, _UIState=get_state() ).
 
 
-% @doc Returns the user-entered text after specified prompt, once translated to
-% an integer, prompting the user until a valid input is obtained: either a
-% string that resolves to an integer (then returned), or an empty string (then
-% returning 'undefined'), based on an explicit state.
-%
-% (const)
-%
--spec read_text_as_maybe_integer( prompt(), ui_state() ) -> maybe( integer() ).
+
+-doc """
+Returns the user-entered text after specified prompt, once translated to an
+integer, prompting the user until a valid input is obtained: either a string
+that resolves to an integer (then returned), or an empty string (then returning
+'undefined'), based on an explicit state.
+
+(const)
+
+""".
+-spec read_text_as_maybe_integer( prompt(), ui_state() ) -> option( integer() ).
 read_text_as_maybe_integer( Prompt, UIState ) ->
 
 	case get_text( Prompt, UIState ) of
@@ -1011,18 +1043,20 @@ read_text_as_maybe_integer( Prompt, UIState ) ->
 
 
 
-% @doc Displays specified prompt, let the user choose between two options, "yes"
-% and "no" (with specified default option), and returns that choice.
-%
+-doc """
+Displays the specified prompt, lets the user choose between two options, "yes"
+and "no" (with specified default option), and returns that choice.
+""".
 -spec ask_yes_no( prompt(), binary_choice() ) -> binary_choice().
 ask_yes_no( Prompt, BinaryDefault ) ->
 	ask_yes_no( Prompt, BinaryDefault, get_state() ).
 
 
 
-% @doc Displays specified prompt, let the user choose between two options, "yes"
-% and "no" (with specified default option), and returns that choice.
-%
+-doc """
+Displays the specified prompt, lets the user choose between two options, "yes"
+and "no" (with specified default option), and returns that choice.
+""".
 -spec ask_yes_no( prompt(), binary_choice(), ui_state() ) -> binary_choice().
 ask_yes_no( Prompt, BinaryDefault, #term_ui_state{ dialog_tool_path=ToolPath,
 												   settings=SettingTable } ) ->
@@ -1073,15 +1107,16 @@ ask_yes_no( Prompt, BinaryDefault, #term_ui_state{ dialog_tool_path=ToolPath,
 
 
 
-% @doc Selects, using a default prompt, an item among the specified ones
-% (comprising, for each, a user-specified, internal, designator and a text), and
-% returns its designator.
-%
-% Note that the 'ui_cancel' designator atom can also be returned, should the
-% user prefer to cancel that operation.
-%
-% (const)
-%
+-doc """
+Selects, using a default prompt, an item among the specified ones (comprising,
+for each, a user-specified, internal, designator and a text), and returns its
+designator.
+
+Note that the 'ui_cancel' designator atom can also be returned, should the user
+prefer to cancel that operation.
+
+(const)
+""".
 -spec choose_designated_item( [ choice_element() ] ) -> choice_designator().
 choose_designated_item( Choices ) ->
 
@@ -1092,15 +1127,17 @@ choose_designated_item( Choices ) ->
 
 
 
-% @doc Selects, using specified prompt, an item among the specified ones
-% (comprising, for each, a user-specified, internal, designator and a text), and
-% returns its designator.
-%
-% Note that the 'ui_cancel' designator atom can also be returned, should the
-% user prefer to cancel that operation.
-%
-% (const)
-%
+-doc """
+Selects, using specified prompt, an item among the specified ones (comprising,
+for each, a user-specified, internal, designator and a text), and returns its
+designator.
+
+Note that the 'ui_cancel' designator atom can also be returned, should the user
+prefer to cancel that operation.
+
+(const)
+""".
+
 -spec choose_designated_item( prompt(), [ choice_element() ] ) ->
 									choice_designator().
 choose_designated_item( Prompt, Choices ) ->
@@ -1108,15 +1145,16 @@ choose_designated_item( Prompt, Choices ) ->
 
 
 
-% @doc Selects, based on an explicit state, using the specified prompt, an item
-% among the specified ones (comprising, for each, a user-specified, internal,
-% designator and a text), and returns its designator.
-%
-% Note that the 'ui_cancel' designator atom can also be returned, should the
-% user prefer to cancel that operation.
-%
-% (const)
-%
+-doc """
+Selects, based on an explicit state, using the specified prompt, an item among
+the specified ones (comprising, for each, a user-specified, internal, designator
+and a text), and returns its designator.
+
+Note that the 'ui_cancel' designator atom can also be returned, should the user
+prefer to cancel that operation.
+
+(const)
+""".
 -spec choose_designated_item( prompt(), [ choice_element() ], ui_state() ) ->
 									choice_designator().
 choose_designated_item( Prompt, Choices,
@@ -1187,16 +1225,17 @@ choose_designated_item( Prompt, Choices,
 
 
 
-% @doc Selects, based on an implicit state, using a default prompt, an item
-% among the specified ones (comprising, for each, a user-specified, internal,
-% designator and a text), with a default choix designator being specified, and
-% returns its designator.
-%
-% Note that the 'ui_cancel' designator atom can also be returned, should the
-% user prefer to cancel that operation.
-%
-% (const)
-%
+-doc """
+Selects, based on an implicit state, using a default prompt, an item among the
+specified ones (comprising, for each, a user-specified, internal, designator and
+a text), with a default choix designator being specified, and returns its
+designator.
+
+Note that the 'ui_cancel' designator atom can also be returned, should the user
+prefer to cancel that operation.
+
+(const)
+""".
 -spec choose_designated_item_with_default( [ choice_element() ],
 				choice_designator() ) -> choice_designator().
 choose_designated_item_with_default( Choices, DefaultChoiceDesignator ) ->
@@ -1209,23 +1248,21 @@ choose_designated_item_with_default( Choices, DefaultChoiceDesignator ) ->
 
 
 
-% @doc Selects, based on an implicit state, using the specified prompt, an item
-% among the specified ones (comprising, for each, a user-specified, internal,
-% designator and a text), with a default choix designator being specified, and
-% returns its designator.
-%
-% Note that:
-%
-% - this dialog is potentially a bit misleading as, if hitting the Enter key,
-% the selected item will be the starred one, not necessarily the currently
-% selected one... (yet a menu does not support the definition of a default
-% choice)
-%
-% - the 'ui_cancel' designator atom can also be returned, should the
-% user prefer to cancel that operation
-%
-% (const)
-%
+-doc """
+Selects, based on an implicit state, using the specified prompt, an item among
+the specified ones (comprising, for each, a user-specified, internal, designator
+and a text), with a default choix designator being specified, and returns its
+designator.
+
+Note that:
+- this dialog is potentially a bit misleading as, if hitting the Enter key, the
+selected item will be the starred one, not necessarily the currently selected
+one... (yet a menu does not support the definition of a default choice)
+- the 'ui_cancel' designator atom can also be returned, should the user prefer
+to cancel that operation
+
+(const)
+""".
 -spec choose_designated_item_with_default( prompt(), [ choice_element() ],
 				choice_designator() ) -> choice_designator().
 choose_designated_item_with_default( Prompt, Choices,
@@ -1235,23 +1272,21 @@ choose_designated_item_with_default( Prompt, Choices,
 
 
 
-% @doc Selects, based on an explicit state, using the specified prompt, an item
-% among the specified ones (comprising, for each, a user-specified, internal,
-% designator and a text), with a default choice designator being specified, and
-% returns its designator.
-%
-% Note that:
-%
-% - this dialog is potentially a bit misleading as, if hitting the Enter key,
-% the selected item will be the starred one, not necessarily the currently
-% selected one... (yet a menu does not support the definition of a default
-% choice)
-%
-% - the 'ui_cancel' designator atom can also be returned, should the
-% user prefer to cancel that operation
-%
-% (const)
-%
+-doc """
+Selects, based on an explicit state, using the specified prompt, an item among
+the specified ones (comprising, for each, a user-specified, internal, designator
+and a text), with a default choice designator being specified, and returns its
+designator.
+
+Note that:
+- this dialog is potentially a bit misleading as, if hitting the Enter key, the
+selected item will be the starred one, not necessarily the currently selected
+one... (yet a menu does not support the definition of a default choice)
+- the 'ui_cancel' designator atom can also be returned, should the user prefer
+to cancel that operation
+
+(const)
+""".
 -spec choose_designated_item_with_default( prompt(), [ choice_element() ],
 				choice_designator(), ui_state() ) -> choice_designator().
 choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
@@ -1347,28 +1382,31 @@ choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
 
 
 
-% @doc Selects, based on an implicit state, using a default prompt, an item
-% among the specified ones (specified as direct text, with no specific
-% designator provided), and returns its index.
-%
-% Note that index zero can also be returned, corresponding to the 'ui_cancel'
-% atom, should the user prefer to cancel that operation.
-%
+-doc """
+Selects, based on an implicit state, using a default prompt, an item among the
+specified ones (specified as direct text, with no specific designator provided),
+and returns its index.
+
+Note that index zero can also be returned, corresponding to the 'ui_cancel'
+atom, should the user prefer to cancel that operation.
+""".
 -spec choose_numbered_item( [ choice_text() ] ) -> choice_index().
 choose_numbered_item( Choices ) ->
 	choose_numbered_item( Choices, get_state() ).
 
 
-% @doc Selects, based on an explicit state, using a default prompt, an item
-% among the specified ones (specified as direct text, with no specific
-% designator provided), and returns its index.
-%
-% Selects, based on an implicit state, using the specified prompt, an item among
-% the specified ones, and returns its index.
-%
-% Note that index zero can also be returned, corresponding to the 'ui_cancel'
-% atom, should the user prefer to cancel that operation.
-%
+
+-doc """
+Selects, based on an explicit state, using a default prompt, an item among the
+specified ones (specified as direct text, with no specific designator provided),
+and returns its index.
+
+Selects, based on an implicit state, using the specified prompt, an item among
+the specified ones, and returns its index.
+
+Note that index zero can also be returned, corresponding to the 'ui_cancel'
+atom, should the user prefer to cancel that operation.
+""".
 -spec choose_numbered_item( [ choice_text() ], ui_state() ) ->
 									choice_index();
 						  ( prompt(), [ choice_element() ] ) -> choice_index().
@@ -1385,13 +1423,14 @@ choose_numbered_item( Prompt, Choices ) ->
 
 
 
-% @doc Selects, based on an explicit state, using the specified prompt, an item
-% among the specified ones (specified as direct text, with no specific
-% designator provided), and returns its index.
-%
-% Note that index zero can also be returned, corresponding to the 'ui_cancel'
-% atom, should the user prefer to cancel that operation.
-%
+-doc """
+Selects, based on an explicit state, using the specified prompt, an item among
+the specified ones (specified as direct text, with no specific designator
+provided), and returns its index.
+
+Note that index zero can also be returned, corresponding to the 'ui_cancel'
+atom, should the user prefer to cancel that operation.
+""".
 -spec choose_numbered_item( prompt(), [ choice_text() ], ui_state() ) ->
 									choice_index().
 choose_numbered_item( Prompt, Choices, UIState ) ->
@@ -1419,13 +1458,13 @@ choose_numbered_item( Prompt, Choices, UIState ) ->
 
 
 
-% @doc Selects, based on an implicit state, using a default prompt, an item
-% among the specified ones, with a default item being specified, and returns its
-% index.
-%
-% Note that index zero can also be returned, corresponding to the 'ui_cancel'
-% atom, should the user prefer to cancel that operation.
-%
+-doc """
+Selects, based on an implicit state, using a default prompt, an item among the
+specified ones, with a default item being specified, and returns its index.
+
+Note that index zero can also be returned, corresponding to the 'ui_cancel'
+atom, should the user prefer to cancel that operation.
+""".
 -spec choose_numbered_item_with_default( [ choice_text() ], choice_text() ) ->
 												choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceText ) ->
@@ -1434,16 +1473,17 @@ choose_numbered_item_with_default( Choices, DefaultChoiceText ) ->
 
 
 
-% @doc Selects, based on an explicit state, using a default prompt, an item
-% among the specified ones (specified as direct text, with no specific
-% designator provided) and returns its index.
-%
-% Selects, based on an implicit state, using the specified prompt and default
-% item, an item among the specified ones, and returns its index.
-%
-% Note that index zero can also be returned, corresponding to the 'ui_cancel'
-% atom, should the user prefer to cancel that operation.
-%
+-doc """
+Selects, based on an explicit state, using a default prompt, an item among the
+specified ones (specified as direct text, with no specific designator provided)
+and returns its index.
+
+Selects, based on an implicit state, using the specified prompt and default
+item, an item among the specified ones, and returns its index.
+
+Note that index zero can also be returned, corresponding to the 'ui_cancel'
+atom, should the user prefer to cancel that operation.
+""".
 -spec choose_numbered_item_with_default( [ choice_text() ], choice_text(),
 											ui_state() ) -> choice_index();
 									   ( prompt(), [ choice_text() ],
@@ -1463,13 +1503,14 @@ choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText ) ->
 
 
 
-% @doc Selects, based on an explicit state, using the specified prompt and
-% default item, an item among the specified ones (specified as direct text, with
-% no specific designator provided), and returns its index.
-%
-% Note that index zero can also be returned, corresponding to the 'ui_cancel'
-% atom, should the user prefer to cancel that operation.
-%
+-doc """
+Selects, based on an explicit state, using the specified prompt and default
+item, an item among the specified ones (specified as direct text, with no
+specific designator provided), and returns its index.
+
+Note that index zero can also be returned, corresponding to the 'ui_cancel'
+atom, should the user prefer to cancel that operation.
+""".
 -spec choose_numbered_item_with_default( prompt(), [ choice_text() ],
 			choice_text(), ui_state() ) -> choice_index().
 choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
@@ -1510,21 +1551,21 @@ choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
 
 
 
-
 % For traces, we attempt to do the same as text_ui, yet with a different
 % ui_state() (hence with no code reuse).
 
 
-% @doc Traces specified message, by displaying it, and possibly logging it,
-% based on an implicit state.
-%
+-doc """
+Traces specified message, by displaying it, and possibly logging it, based on an
+implicit state.
+""".
 -spec trace( message() ) -> void().
 trace( Message ) ->
 	trace( Message, get_state() ).
 
 
 
-% @doc Traces specified message, by displaying it, and possibly logging it.
+-doc "Traces specified message, by displaying it, and possibly logging it.".
 -spec trace( message(), ui_state() ) -> void();
 		   ( format_string(), [ term() ] ) -> void().
 trace( Message, UIState ) when is_record( UIState, term_ui_state ) ->
@@ -1548,13 +1589,14 @@ trace( FormatString, Values ) ->
 
 
 
-% @doc Clears the interface.
+-doc "Clears the interface.".
 -spec clear() -> void().
 clear() ->
 	clear( get_state() ).
 
 
-% @doc Clears the interface.
+
+-doc "Clears the interface.".
 -spec clear( ui_state() ) -> void().
 clear( #term_ui_state{ dialog_tool_path=ToolPath } ) ->
 
@@ -1584,14 +1626,14 @@ clear( #term_ui_state{ dialog_tool_path=ToolPath } ) ->
 
 
 
-% @doc Stops the UI.
+-doc "Stops the UI.".
 -spec stop() -> void().
 stop() ->
 	stop( get_state() ).
 
 
 
-% @doc Stops the UI.
+-doc "Stops the UI.".
 -spec stop( ui_state() ) -> void().
 stop( UIState=#term_ui_state{ log_file=undefined } ) ->
 	stop_helper( UIState );
@@ -1618,8 +1660,8 @@ stop_helper( _UIState ) ->
 % Helper section.
 
 
-% @doc Tries to find a suitable dialog tool.
--spec lookup_dialog_tool() -> maybe( { dialog_tool(), file_path() } ).
+-doc "Tries to find a suitable dialog tool.".
+-spec lookup_dialog_tool() -> option( { dialog_tool(), file_path() } ).
 lookup_dialog_tool() ->
 
 	case executable_utils:lookup_executable( "dialog" ) of
@@ -1648,10 +1690,11 @@ lookup_dialog_tool() ->
 
 
 
-% @doc Sets the current UI state.
-%
-% (helper)
-%
+-doc """
+Sets the current UI state.
+
+(helper)
+""".
 -spec set_state( ui_state() ) -> void().
 set_state( UIState ) ->
 
@@ -1662,10 +1705,11 @@ set_state( UIState ) ->
 
 
 
-% @doc Returns the current UI state.
-%
-% (helper)
-%
+-doc """
+Returns the current UI state.
+
+(helper)
+""".
 -spec get_state() -> ui_state().
 get_state() ->
 
@@ -1681,10 +1725,11 @@ get_state() ->
 
 
 
-% @doc Returns the command-line options corresponding to specified table: a
-% settings string, a suffix string (dealing with size and redirection for an
-% output returned as a return code).
-%
+-doc """
+Returns the command-line options corresponding to specified table: a settings
+string, a suffix string (dealing with size and redirection for an output
+returned as a return code).
+""".
 -spec get_dialog_settings_for_return_code( setting_table() ) ->
 												{ ustring(), ustring() }.
 get_dialog_settings_for_return_code( SettingTable ) ->
@@ -1696,10 +1741,11 @@ get_dialog_settings_for_return_code( SettingTable ) ->
 
 
 
-% @doc Returns the command-line options corresponding to specified table: a
-% settings string, a suffix string (dealing with size and redirection for an
-% output returned as a temporary file).
-%
+-doc """
+Returns the command-line options corresponding to specified table: a settings
+string, a suffix string (dealing with size and redirection for an output
+returned as a temporary file).
+""".
 -spec get_dialog_settings_for_file_return( setting_table() ) ->
 											{ ustring(), ustring() }.
 get_dialog_settings_for_file_return( SettingTable ) ->
@@ -1711,7 +1757,7 @@ get_dialog_settings_for_file_return( SettingTable ) ->
 
 
 
-% @doc Returns the base settings for dialog, expected redirection.
+-doc "Returns the base settings for dialog, expected redirection.".
 get_dialog_base_settings( SettingTable ) ->
 
 	TitleOpt = case ?ui_table:get_value_with_default( 'title',
@@ -1758,24 +1804,27 @@ get_dialog_base_settings( SettingTable ) ->
 
 
 
-% @doc Returns a string to be used for I/O redirection in an execution command
-% relying on exit statuses (hence only for a single positive integer output).
-%
+-doc """
+Returns a string to be used for I/O redirection in an execution command relying
+on exit statuses (hence only for a single positive integer output).
+""".
 -spec get_redirect_string_for_code() -> ustring().
 get_redirect_string_for_code() ->
 	% As 'nouse_stdio' will be needed:
 	"2>&4".
 
 
-% @doc Returns a string to be used for I/O redirection in an execution command
-% relying on a temporary file (hence for any kind of outputs).
-%
+
+-doc """
+Returns a string to be used for I/O redirection in an execution command relying
+on a temporary file (hence for any kind of outputs).
+""".
 get_redirect_string_for_file() ->
 	"2> " ++ ?temp_file.
 
 
 
-% @doc Returns the settings suitable for an execution of the backend.
+-doc "Returns the settings suitable for an execution of the backend.".
 -spec get_execution_settings() ->
 			{ system_utils:environment(), [ system_utils:port_option() ] }.
 get_execution_settings() ->
@@ -1792,9 +1841,9 @@ get_execution_settings() ->
 
 
 
-% @doc Sets the specified setting to specified value, in the (implicit) UI
-% state.
-%
+-doc """
+Sets the specified setting to specified value, in the (implicit) UI state.
+""".
 -spec set_setting( ui_setting_key(), ui_setting_value() ) -> void().
 set_setting( SettingKey, SettingValue ) ->
 	NewUIState = set_setting( SettingKey, SettingValue, get_state() ),
@@ -1802,7 +1851,9 @@ set_setting( SettingKey, SettingValue ) ->
 
 
 
-% @doc Sets the specified setting to specified value, in the specified UI state.
+-doc """
+Sets the specified setting to specified value, in the specified UI state.
+""".
 -spec set_setting( ui_setting_key(), ui_setting_value(), ui_state() ) ->
 							ui_state().
 set_setting( SettingKey, SettingValue,
@@ -1815,9 +1866,9 @@ set_setting( SettingKey, SettingValue,
 
 
 
-% @doc Sets the specified settings to specified values, in the (implicit) UI
-% state.
-%
+-doc """
+Sets the specified settings to specified values, in the (implicit) UI state.
+""".
 -spec set_settings( [ ui_setting_entry() ] ) -> void().
 set_settings( SettingEntries ) ->
 	NewUIState = set_settings( SettingEntries, get_state() ),
@@ -1825,9 +1876,9 @@ set_settings( SettingEntries ) ->
 
 
 
-% @doc Sets the specified settings to specified values, in the specified UI
-% state.
-%
+-doc """
+Sets the specified settings to specified values, in the specified UI state.
+""".
 -spec set_settings( [ ui_setting_entry() ], ui_state() ) -> ui_state().
 set_settings( SettingEntries,
 			  UIState=#term_ui_state{ settings=SettingTable } ) ->
@@ -1836,14 +1887,15 @@ set_settings( SettingEntries,
 
 
 
-% @doc Unsets specified setting, in the (implicit) UI state.
+-doc "Unsets specified setting, in the (implicit) UI state.".
 -spec unset_setting( ui_setting_key() ) -> void().
 unset_setting( SettingKey ) ->
 	NewUIState = unset_setting( SettingKey, get_state() ),
 	set_state( NewUIState ).
 
 
-% @doc Unsets specified settings, in the (implicit) UI state.
+
+-doc "Unsets specified settings, in the (implicit) UI state.".
 -spec unset_settings( [ ui_setting_key() ] ) -> void().
 unset_settings( SettingKeys ) ->
 	NewUIState = unset_settings( SettingKeys, get_state() ),
@@ -1851,7 +1903,7 @@ unset_settings( SettingKeys ) ->
 
 
 
-% @doc Unsets specified setting, in the specified UI state.
+-doc "Unsets specified setting, in the specified UI state.".
 -spec unset_setting( ui_setting_key(), ui_state() ) -> void().
 unset_setting( SettingKey,
 			   UIState=#term_ui_state{ settings=SettingTable } ) ->
@@ -1862,7 +1914,8 @@ unset_setting( SettingKey,
 	UIState#term_ui_state{ settings=NewSettingTable }.
 
 
-% @doc Unsets specified settings, in the specified UI state.
+
+-doc "Unsets specified settings, in the specified UI state.".
 -spec unset_settings( [ ui_setting_key() ], ui_state() ) -> void().
 unset_settings( SettingKeys,
 				UIState=#term_ui_state{ settings=SettingTable } ) ->
@@ -1874,33 +1927,36 @@ unset_settings( SettingKeys,
 
 
 
-% @doc Returns the value (if any) associated, in the (implicit) UI state, to the
-% specified setting.
-%
--spec get_setting( ui_setting_key() ) -> maybe( ui_setting_value() ).
+-doc """
+Returns the value (if any) associated, in the (implicit) UI state, to the
+specified setting.
+""".
+-spec get_setting( ui_setting_key() ) -> option( ui_setting_value() ).
 get_setting( SettingKey ) ->
 	get_setting( SettingKey, get_state() ).
 
 
-% @doc Returns the value (if any) associated, in the specified UI state, to the
-% specified setting.
-%
+
+-doc """
+Returns the value (if any) associated, in the specified UI state, to the
+specified setting.
+""".
 -spec get_setting( ui_setting_key(), ui_state() ) ->
-							maybe( ui_setting_value() ).
+							option( ui_setting_value() ).
 get_setting( SettingKey, #term_ui_state{ settings=SettingTable } ) ->
 	?ui_table:get_value_with_default( SettingKey, _Default=undefined,
 									  SettingTable ).
 
 
 
-
-% @doc Returns a textual description of the (implicit) UI state.
+-doc "Returns a textual description of the (implicit) UI state.".
 -spec to_string() -> ustring().
 to_string() ->
 	to_string( get_state() ).
 
 
-% @doc Returns a textual description of the specified UI state.
+
+-doc "Returns a textual description of the specified UI state.".
 -spec to_string( ui_state() ) -> ustring().
 to_string( #term_ui_state{ %state_filename=StateFilename,
 						   dialog_tool=DialogTool,

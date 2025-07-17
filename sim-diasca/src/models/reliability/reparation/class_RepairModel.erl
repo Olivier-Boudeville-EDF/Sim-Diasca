@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,12 +19,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class modelling the <b>reparation behaviour</b> of pieces of equipment.
 -module(class_RepairModel).
 
+-moduledoc """
+Class modelling the **reparation behaviour** of pieces of equipment.
+""".
 
-% @doc Class modelling the repair behaviour of equipments.
+
 -define( class_description,
 		 "Class modelling the reparation behaviour of equipments."
 		 "Most repair models rely on underlying random generators."
@@ -55,30 +56,31 @@
 
 
 
-% @doc Constructs a repair model:
-%
-% - ActorSettings corresponds to the engine settings for this actor, as
-% determined by the load-balancer
-%
-% - RepairModelName is its name
-%
-% - RandomProfile is a tuple describing the kind of randomness needed to compute
-% reparation times (if any)
-%
-%
-% RandomProfile can be among:
-%
-% - {uniform, N} for uniform laws (positive integer)
-%
-% - {exponential_1p, Lambda} for exponential laws (floating-point)
-%
-% - {positive_integer_exponential_1p, Lambda} for exponential laws (positive
-% integer)
-%
-% - {gaussian, Mu, Sigma} for gaussian laws
-%
-% - {positive_integer_gaussian, Mu, Sigma} for gaussian laws (positive integer)
-%
+-doc """
+Constructs a repair model:
+
+- ActorSettings corresponds to the engine settings for this actor, as
+determined by the load-balancer
+
+- RepairModelName is its name
+
+- RandomProfile is a tuple describing the kind of randomness needed to compute
+reparation times (if any)
+
+
+RandomProfile can be among:
+
+- `{uniform, N}` for uniform laws (positive integer)
+
+- `{exponential_1p, Lambda}` for exponential laws (floating-point)
+
+- `{positive_integer_exponential_1p, Lambda}` for exponential laws (positive
+integer)
+
+- `{gaussian, Mu, Sigma}` for gaussian laws
+
+- `{positive_integer_gaussian, Mu, Sigma}` for gaussian laws (positive integer)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_Equipment:random_profile() ) ->
 						wooper:state().
@@ -107,9 +109,10 @@ construct( State, ActorSettings, RepairModelName, RandomProfile ) ->
 % Management section of the actor.
 
 
-% @doc Defined simply to avoid a useless warning to be issued / an exception to
-% be thrown.
-%
+-doc """
+Defined simply to avoid a useless warning to be issued / an exception to be
+thrown.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -117,12 +120,13 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Requests this model to determine (asynchronously) the tick of next
-% reparation, that is computes the next tick at which the caller equipment will
-% be repaired (assuming it just failed).
-%
-% (actor oneway, but triggers back a oneway on the caller)
-%
+-doc """
+Requests this model to determine (asynchronously) the tick of next reparation,
+that is computes the next tick at which the caller equipment will be repaired
+(assuming it just failed).
+
+(actor oneway, but triggers back a oneway on the caller)
+""".
 -spec getNextRepair( wooper:state(), sending_actor_pid() ) -> oneway_return().
 getNextRepair( State, EquipmentPid ) ->
 

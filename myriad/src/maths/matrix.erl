@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, September 26, 2021.
 
-
-% @doc Module implementing the support for matrices of <b>arbitrary
-% dimensions</b>.
-%
-% See also:
-% - the corresponding arbitrary vectors, in vector.erl
-% - the specialised matrices, such as matrix{2,3,4}.erl
-%
 -module(matrix).
+
+-moduledoc """
+Module implementing the support for matrices of **arbitrary dimensions**.
+
+See also:
+ - the corresponding arbitrary vectors, in `vector.erl`
+ - the specialised matrices, such as `matrix{2,3,4}.erl`
+""".
+
 
 
 % For printout_*, inline_size, etc.:
@@ -67,62 +68,83 @@
 
 
 
+-doc "A matrix of user-specified elements, left to right.".
 -type user_row() :: user_vector().
-% Matrix user-specified elements, left to right.
 
+
+
+-doc "Matrix elements, left to right.".
 -type row() :: vector().
-% Matrix elements, left to right.
 
 
+
+-doc "Matrix elements, top to bottom.".
 -type column() :: vector().
-% Matrix elements, top to bottom.
 
 
+
+-doc """
+A user-specified matrix, as a list a rows comprising integer or floating-point
+coordinates.
+""".
 -type user_matrix() :: [ user_row() ].
-% A user-specified matrix, as a list a rows comprising integer or floating-point
-% coordinates.
 
 
+
+-doc """
+A matrix of arbitrary dimensions (at least one row), stored in row-major order
+(all rows shall contain the same number of elements).
+""".
 -type matrix() :: [ row() ].
-% A matrix of arbitrary dimensions (at least one row), stored in row-major
-% order (all rows shall contain the same number of elements).
 
 
+
+-doc """
+A square matrix, that is whose number of rows is equal to its number of columns.
+""".
 -type square_matrix() :: matrix().
-% A square matrix, that is whose number of rows is equal to its number of
-% columns.
 
 
+
+-doc " A matrix describing a rotation.".
 -type rot_matrix() :: square_matrix().
-% A matrix describing a rotation.
 
 
+
+-doc "Regroups all types of specialised (square) matrices.".
 -type specialised_matrix() :: matrix2:matrix2()
 							| matrix3:matrix3()
 							| matrix4:matrix4().
-% Regroups all types of specialised (square) matrices.
 
 
+
+-doc "The modules implementing specialised matrices.".
 -type specialised_module() :: 'matrix2' | 'matrix3' | 'matrix4'.
-% The modules implementing specialised matrices.
 
 
+
+-doc "A row index.".
 -type row_index() :: dimension().
-% A row index.
 
+
+
+-doc "A column index.".
 -type column_index() :: dimension().
- % A column index.
 
 
+
+-doc "A number of rows.".
 -type row_count() :: dimension().
-% A number of rows.
 
+
+
+-doc "A number of columns.".
 -type column_count() :: dimension().
- % A number of columns.
 
 
+
+-doc "Number of rows and columns of a matrix.".
 -type dimensions() :: { row_count(), column_count() }.
-% Number of rows and columns of a matrix.
 
 
 -export_type([ user_row/0, row/0, column/0,
@@ -172,13 +194,14 @@
 
 
 
-% @doc Returns an (arbitrary) matrix corresponding to the user-specified one.
-%
-% Coordinates must already be floating-point ones.
-%
-% No clause just based on a list of coordinates exists, as multiple combinations
-% of dimensions could correspond. See from_coordinates/2.
-%
+-doc """
+Returns an (arbitrary) matrix corresponding to the user-specified one.
+
+Coordinates must already be floating-point ones.
+
+No clause just based on a list of coordinates exists, as multiple combinations
+of dimensions could correspond. See from_coordinates/2.
+""".
 -spec new( matrix() ) -> matrix().
 new( UserMatrix ) ->
 
@@ -188,14 +211,14 @@ new( UserMatrix ) ->
 
 
 
-% @doc Returns a null, square (arbitrary) matrix of the specified dimension.
+-doc "Returns a null, square (arbitrary) matrix of the specified dimension.".
 -spec null( dimension() ) -> square_matrix().
 null( SquareDim ) ->
 	null( SquareDim, SquareDim ).
 
 
 
-% @doc Returns a null (arbitrary) matrix of the specified dimensions.
+-doc "Returns a null (arbitrary) matrix of the specified dimensions.".
 -spec null( dimension(), dimension() ) -> matrix().
 null( RowCount, ColumnCount ) ->
 	NullRow = lists:duplicate( ColumnCount, 0.0 ),
@@ -203,7 +226,7 @@ null( RowCount, ColumnCount ) ->
 
 
 
-% @doc Returns the identity (square) matrix of the specified dimension.
+-doc "Returns the identity (square) matrix of the specified dimension.".
 -spec identity( dimension() ) -> square_matrix().
 identity( Dim ) ->
 	[ [ case R of C -> 1.0; _ -> 0.0 end
@@ -211,16 +234,17 @@ identity( Dim ) ->
 
 
 
-% @doc Returns the matrix corresponding to a rotation of the specified angle
-% around the axis specified as a unit vector.
-%
-% In 2D, the axis has no meaning in this context and will thus be ignored; in 3D
-% the usual rotation matrix will be returned; in 4D the returned matrix will be
-% an homogeneous (compact) one. No dimension higher than 4 is supported.
-%
-% This will be a counterclockwise rotation for an observer placed so that the
-% specified axis points towards it.
-%
+-doc """
+Returns the matrix corresponding to a rotation of the specified angle around the
+axis specified as a unit vector.
+
+In 2D, the axis has no meaning in this context and will thus be ignored; in 3D
+the usual rotation matrix will be returned; in 4D the returned matrix will be an
+homogeneous (compact) one. No dimension higher than 4 is supported.
+
+This will be a counterclockwise rotation for an observer placed so that the
+specified axis points towards it.
+""".
 -spec rotation( unit_vector(), radians() ) -> matrix().
 rotation( UnitAxis, RadAngle ) ->
 	SpecialisedM = case vector:dimension( UnitAxis ) of
@@ -239,16 +263,17 @@ rotation( UnitAxis, RadAngle ) ->
 
 
 
-% @doc Returns the matrix whose columns correspond to the specified vectors.
-%
-% Returns thus:
-%  ```
-%  [ Va Vb Vc ... Vn ]
-%  [ |  |  |  ... |  ]
-%  [ |  |  |  ... |  ]
-%  [ |  |  |  ... |  ]
-%  '''
-%
+-doc """
+Returns the matrix whose columns correspond to the specified vectors.
+
+Returns thus:
+```
+[ Va Vb Vc ... Vn ]
+[ |  |  |  ... |  ]
+[ |  |  |  ... |  ]
+[ |  |  |  ... |  ]
+```
+""".
 -spec from_columns( [ vector() ] ) -> matrix().
 from_columns( Columns ) ->
 	M = transpose( Columns ),
@@ -256,28 +281,30 @@ from_columns( Columns ) ->
 
 
 
-% @doc Returns the matrix whose rows correspond to the specified vectors.
-%
-% Returns thus:
-%  ```
-% [ Va - - - ]
-% [ Vb - - - ]
-% [ Vc - - - ]
-% ...
-% [ Vn - - - ]
-% '''
-%
+-doc """
+Returns the matrix whose rows correspond to the specified vectors.
+
+Returns thus:
+```
+[ Va - - - ]
+[ Vb - - - ]
+[ Vc - - - ]
+...
+[ Vn - - - ]
+```
+""".
 -spec from_rows( [ vector() ] ) -> matrix().
 from_rows( M=_Rows ) ->
 	cond_utils:if_defined( myriad_check_linear, check( M ), M ).
 
 
 
-% @doc Returns the matrix of the specified dimensions having the specified
-% coordinates, as listed row after row.
-%
-% Row count is implicit.
-%
+-doc """
+Returns the matrix of the specified dimensions having the specified coordinates,
+as listed row after row.
+
+Row count is implicit.
+""".
 -spec from_coordinates( [ coordinate() ], dimension() ) -> matrix().
 from_coordinates( Coords, ColumnCount ) ->
 	from_coordinates( Coords, ColumnCount, _AccM=[] ).
@@ -293,47 +320,50 @@ from_coordinates( Coords, ColumnCount, AccM ) ->
 
 
 
-% @doc Returns the list of coordinates contained in the specified matrix, row
-% after row.
-%
-% Dimensions are not specifically reported.
-%
+-doc """
+Returns the list of coordinates contained in the specified matrix, row after
+row.
+
+Dimensions are not specifically reported.
+""".
 -spec to_coordinates( matrix() ) -> [ coordinate() ].
 to_coordinates( Matrix ) ->
 	list_utils:flatten_once( Matrix ).
 
 
 
-% @doc Returns the dimensions of the specified matrix.
+-doc "Returns the dimensions of the specified matrix.".
 -spec dimensions( matrix() ) -> dimensions().
 dimensions( M ) ->
 	{ length( M ), length( hd( M ) ) }.
 
 
 
-% @doc Returns the specified row of the specified matrix.
+-doc "Returns the specified row of the specified matrix.".
 -spec row( dimension(), matrix() ) -> vector().
 row( RowCount, Matrix ) ->
 	lists:nth( RowCount, Matrix ).
 
 
-% @doc Returns the specified column of the specified matrix.
+
+-doc "Returns the specified column of the specified matrix.".
 -spec column( dimension(), matrix() ) -> vector().
 column( ColCount, Matrix ) ->
 	[ lists:nth( ColCount, R ) || R <- Matrix ].
 
 
 
-% @doc Returns the element at specified row and column of the specified matrix.
+-doc "Returns the element at specified row and column of the specified matrix.".
 -spec get_element( dimension(), dimension(), matrix() ) -> coordinate().
 get_element( R, C, Matrix ) ->
 	lists:nth( C, row( R, Matrix ) ).
 
 
 
-% @doc Returns a matrix identical to the specified one except that its specified
-% element at specified location has been set to the specified value.
-%
+-doc """
+Returns a matrix identical to the specified one except that its specified
+element at specified location has been set to the specified value.
+""".
 -spec set_element( dimension(), dimension(), coordinate(), matrix() ) ->
 									matrix().
 set_element( R, C, Value, Matrix ) ->
@@ -341,12 +371,14 @@ set_element( R, C, Value, Matrix ) ->
 	list_utils:set_element_at( NewRow, Matrix, R ).
 
 
-% @doc Returns the transpose of the specified matrix.
-%
-% We proceed recursively, iterating in turn through all the elements of the
-% first row (which will end up being the first column, i.e. each being the first
-% element of the rows of the transpose matrix).
-%
+
+-doc """
+Returns the transpose of the specified matrix.
+
+We proceed recursively, iterating in turn through all the elements of the first
+row (which will end up being the first column, i.e. each being the first element
+of the rows of the transpose matrix).
+""".
 -spec transpose( matrix() ) -> matrix().
 %transpose( _M=[ _FirstRow=[ FirstElem | OtherElems ] | OtherRows ] ) ->
 %   [ [ E | || E <- FirstRow ].
@@ -388,62 +420,66 @@ extract_first_elements( _Rows=[ [ H | T ] | OtherRows ], AccElems, AccRows ) ->
 
 
 
-% @doc Scales each coordinate of the specified matrix of the specified factor.
+-doc "Scales each coordinate of the specified matrix of the specified factor.".
 -spec scale( matrix(), factor() ) -> matrix().
 scale( Matrix, Factor ) ->
 	[ vector:scale( R, Factor ) || R <- Matrix ].
 
 
 
-% @doc Returns the sum of the two specified matrices, supposedly of the same
-% dimensions.
-%
+-doc """
+Returns the sum of the two specified matrices, supposedly of the same
+dimensions: `M = Ma + Mb`..
+""".
 -spec add( matrix(), matrix() ) -> matrix().
-add( M1, M2 ) ->
-	lists:zipwith( fun( R1, R2 ) ->
-						vector:add( R1, R2 )
+add( Ma, Mb ) ->
+	lists:zipwith( fun( Ra, Rb ) ->
+						vector:add( Ra, Rb )
 				   end,
-				   M1, M2 ).
+				   Ma, Mb ).
 
 
 
-% @doc Returns the subtraction of the two specified matrices (supposedly of the
-% same dimensions: M = M1 - M2.
-%
+-doc """
+Returns the subtraction of the two specified matrices, supposedly of the same
+dimensions: `M = Ma - Mb`.
+""".
 -spec sub( matrix(), matrix() ) -> matrix().
-sub( M1, M2 ) ->
-	lists:zipwith( fun( R1, R2 ) ->
-						vector:sub( R1, R2 )
+sub( Ma, Mb ) ->
+	lists:zipwith( fun( Ra, Rb ) ->
+						vector:sub( Ra, Rb )
 				   end,
-				   M1, M2 ).
+				   Ma, Mb ).
 
 
 
-% @doc Returns the multiplication of the two specified matrices, supposedly of
-% the right dimensions (the number of rows of one being equal to the number of
-% columns of the other, and reciprocally).
-%
+-doc """
+Returns the multiplication of the two specified matrices, supposedly of the
+right dimensions (the number of rows of one being equal to the number of columns
+of the other, and reciprocally): returns `M = Ma.Mb`.
+""".
 -spec mult( matrix(), matrix() ) -> matrix().
-mult( M1, M2 ) ->
-	TranspM2 = transpose( M2 ),
-	mult( M1, TranspM2, _AccRows=[] ).
+mult( Ma, Mb ) ->
+	TranspMb = transpose( Mb ),
+	mult( Ma, TranspMb, _AccRows=[] ).
 
 
 % (helper)
-mult( _M1=[], _M2, AccRows ) ->
+mult( _Ma=[], _Mb, AccRows ) ->
 	lists:reverse( AccRows );
 
-mult( _M1=[ R1 | T1 ], TranspM2, AccRows ) ->
-	MultRow = apply_columns( R1, TranspM2, _Acc=[] ),
-	mult( T1, TranspM2, [ MultRow | AccRows ] ).
+mult( _Ma=[ Ra | Ta ], TranspMb, AccRows ) ->
+	MultRow = apply_columns( Ra, TranspMb, _Acc=[] ),
+	mult( Ta, TranspMb, [ MultRow | AccRows ] ).
 
 
 
-% @doc Applies (on the right) the specified vector V to the specified matrix M:
-% returns M.V.
-%
-% Not a clause of mult/2 for an increased clarity.
-%
+-doc """
+Applies (on the right) the specified vector V to the specified matrix M: returns
+M.V.
+
+Not a clause of mult/2 for an increased clarity.
+""".
 -spec apply( matrix(), vector() ) -> vector().
 apply( _M=Rows, V ) ->
 	[ vector:dot_product( R, V ) || R <- Rows ].
@@ -462,12 +498,13 @@ apply_columns( R, _Columns=[ Col | T ], Acc ) ->
 
 
 
-% @doc Returns the determinant of the specified (square) matrix.
-%
-% Relies on https://en.wikipedia.org/wiki/Laplace_expansion for which we choose
-% i=1 (first row) and iterate on j, so:
-%      det(M) = sum(j=1..n, (-1)^(j+1).M1j.Minor1j)
-%
+-doc """
+Returns the determinant of the specified (square) matrix.
+
+Relies on <https://en.wikipedia.org/wiki/Laplace_expansion> for which we choose
+ i=1 (first row) and iterate on j, so:
+	  `det(M) = sum(j=1..n, (-1)^(j+1).M1j.Minor1j)`
+""".
 -spec determinant( square_matrix() ) -> scalar().
 % Final base cases; shamelessly extracted from matrix{2,3,4}:
 determinant( _M=[ FirstRow | OtherRows ] ) ->
@@ -524,9 +561,10 @@ determinant( _FirstRow=[ M1J | T ], OtherRows, ColIndexJ, CurrentSign, Acc ) ->
 
 
 
-% @doc Returns the comatrix of the specified matrix (that is the matrix of its
-% cofactors).
-%
+-doc """
+Returns the comatrix of the specified matrix (that is the matrix of its
+cofactors).
+""".
 -spec comatrix( matrix() ) -> matrix().
 comatrix( M ) ->
 	comatrix( M, _Rows=M, _CurrentRowIndex=1, _InitialSign=1, _Acc=[] ).
@@ -561,15 +599,15 @@ compute_row_cofactors( M, _Row=[ _C | T ], CurrentRowIndex, CurrentColumnIndex,
 
 
 
-% @doc Returns the inverse of the specified (square) matrix, iff it is
-% invertible (that is iff its determinant is non-null), otherwise returns
-% undefined.
-%
-% Note: often the inverse can be obtained differently (e.g. by applying reverse
-% operations starting from identity) or computed differently (e.g. by Gaussian
-% elimination), or can be replaced by a mere lower–upper (LU) decomposition.
-%
--spec inverse( square_matrix() ) -> maybe( square_matrix() ).
+-doc """
+Returns the inverse of the specified (square) matrix, iff it is invertible (that
+is iff its determinant is non-null), otherwise returns undefined.
+
+Note: often the inverse can be obtained differently (e.g. by applying reverse
+operations starting from identity) or computed differently (e.g. by Gaussian
+elimination), or can be replaced by a mere lower–upper (LU) decomposition.
+""".
+-spec inverse( square_matrix() ) -> option( square_matrix() ).
 inverse( M ) ->
 	Det = determinant( M ),
 
@@ -586,9 +624,9 @@ inverse( M ) ->
 
 
 
-% @doc Returns the specified matrix once its row of specified index has been
-% removed.
-%
+-doc """
+Returns the specified matrix once its row of specified index has been removed.
+""".
 -spec remove_row( row_index(), matrix() ) -> matrix().
 remove_row( RowIndex, Matrix ) ->
 	{ _Row, OtherRows } = list_utils:extract_element_at( Matrix, RowIndex ),
@@ -596,9 +634,10 @@ remove_row( RowIndex, Matrix ) ->
 
 
 
-% @doc Returns the specified matrix once its column of specified index has been
-% removed.
-%
+-doc """
+Returns the specified matrix once its column of specified index has been
+removed.
+""".
 -spec remove_column( column_index(), matrix() ) -> matrix().
 remove_column( ColumnIndex, Matrix ) ->
 	[ begin
@@ -608,7 +647,8 @@ remove_column( ColumnIndex, Matrix ) ->
 	  end || R <- Matrix ].
 
 
-% @doc Returns true iff the two specified matrices are considered equal.
+
+-doc "Returns true iff the two specified matrices are considered equal.".
 -spec are_equal( matrix(), matrix() ) -> boolean().
 are_equal( _M1=[], _M2=[] ) ->
 	true;
@@ -626,9 +666,9 @@ are_equal( _M1=[ R1 | T1 ], _M2=[ R2 | T2 ] ) ->
 
 
 
-% @doc Returns a specialised matrix corresponding to the specified arbitrary
-% matrix.
-%
+-doc """
+Returns a specialised matrix corresponding to the specified arbitrary matrix.
+""".
 -spec specialise( matrix() ) -> specialised_matrix().
 specialise( M ) ->
 
@@ -638,9 +678,9 @@ specialise( M ) ->
 
 
 
-% @doc Returns an arbitrary matrix corresponding to the specified specialised
-% matrix.
-%
+-doc """
+Returns an arbitrary matrix corresponding to the specified specialised matrix.
+""".
 -spec unspecialise( specialised_matrix() ) -> matrix().
 %
 % Trying to test first the most likely clauses.
@@ -674,16 +714,17 @@ unspecialise( _M=identity_2 ) ->
 
 
 
-% @doc Returns the module corresponding to the specified specialised matrix.
+-doc "Returns the module corresponding to the specified specialised matrix.".
 -spec get_specialised_module_of( specialised_matrix() ) -> specialised_module().
 get_specialised_module_of( M )  ->
 	element( _RecordTagIndex=1, M ).
 
 
 
-% @doc Returns the module corresponding to the specialised matrix version that
-% would apply to specified (arbitrary) matrix.
-%
+-doc """
+Returns the module corresponding to the specialised matrix version that would
+apply to specified (arbitrary) matrix.
+""".
 -spec get_specialised_module_for( matrix() ) -> specialised_module().
 % Determines row count:
 get_specialised_module_for( M ) when length( M ) == 2 ->
@@ -700,7 +741,7 @@ get_specialised_module_for( M ) ->
 
 
 
-% @doc Checks that the specified matrix is legit, and returns it.
+-doc "Checks that the specified matrix is legit, and returns it.".
 -spec check( matrix() ) -> matrix().
 check( M=[ FirstRow | OtherRows ] ) ->
 	vector:check( FirstRow ),
@@ -713,21 +754,23 @@ check( M=[ FirstRow | OtherRows ] ) ->
 
 
 
-% @doc Returns a textual representation of the specified (arbitrary) matrix;
-% full float precision is shown.
-%
+-doc """
+Returns a textual representation of the specified (arbitrary) matrix; full float
+precision is shown.
+""".
 -spec to_string( matrix() ) -> ustring().
 to_string( Matrix ) ->
 	to_user_string( Matrix ).
 
 
-% @doc Returns a basic, not even fixed-width for floating-vector coordinates
-% (see linear.hrl for width and precision) representation of the specified
-% vector.
-%
-% Note: not a convincing representation, prefer the more expensive, truer
-% to_user_string/1.
-%
+
+-doc """
+Returns a basic, not even fixed-width for floating-vector coordinates (see
+linear.hrl for width and precision) representation of the specified vector.
+
+Note: not a convincing representation, prefer the more expensive, truer
+to_user_string/1.
+""".
 -spec to_basic_string( matrix() ) -> ustring().
 to_basic_string( Matrix ) ->
 
@@ -748,14 +791,15 @@ to_basic_string( Matrix ) ->
 
 
 
-% @doc Returns a textual, more user-friendly representation of the specified
-% (arbitrary) matrix; full float precision is shown; all coordinates occupy the
-% same space (the one with the longest representation).
-%
-% This is the recommended representation.
-%
-% Another version where minimal widths would be determined per-column.
-%
+-doc """
+Returns a textual, more user-friendly representation of the specified
+(arbitrary) matrix; full float precision is shown; all coordinates occupy the
+same space (the one with the longest representation).
+
+This is the recommended representation.
+
+Another version where minimal widths would be determined per-column.
+""".
 -spec to_user_string( matrix() ) -> ustring().
 to_user_string( Matrix ) ->
 

@@ -1,26 +1,29 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling a <b>road junction</b>, where at least two roads meet.
 -module(class_RoadJunction).
+
+-moduledoc """
+Class modelling a **road junction**, where at least two roads meet.
+""".
 
 
 -define( class_description,
@@ -46,11 +49,7 @@
 % Allows to use macros for trace sending (to be included after the WOOPER
 % header):
 %
--include("sim_diasca_for_actors.hrl").
-
-
-% location_generator_pid(), gis_pid():
--include("city_example_types.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
@@ -80,28 +79,34 @@
 
 
 
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
+-type ustring() :: text_utils:ustring().
+
+-type gis_pid() :: class_GIS:gis_pid().
+
+-type location_generator_pid() ::
+    class_LocationGenerator:location_generator_pid().
 
 
-% @doc Creates a road junction.
-%
-% Construction parameters are:
-%
-% - ActorSettings is the AAI assigned by the load-balancer to this actor
-%
-% - Name is the name of this junction (as a plain string)
-%
-% - Location: the (static) location of this junction
-%
-% - InboundCount: the number of inbound roads for this junction
-%
-% - OutboundCount: the number of inbound roads for this junction
-%
+
+-doc """
+Creates a road junction.
+
+Construction parameters are:
+
+- ActorSettings is the AAI assigned by the load-balancer to this actor
+
+- Name is the name of this junction (as a plain string)
+
+- Location: the (static) location of this junction
+
+- InboundCount: the number of inbound roads for this junction
+
+- OutboundCount: the number of inbound roads for this junction
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:static_location(),
 				 road_count(), road_count(), gis_pid() ) -> wooper:state().
@@ -124,7 +129,7 @@ construct( State, ActorSettings, Name, Location, InboundCount, OutboundCount,
 
 
 
-% @doc First scheduling on a road junction.
+-doc "First scheduling of a road junction.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -143,7 +148,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this road junction.
+-doc "The definition of the spontaneous behaviour of this road junction.".
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
@@ -154,20 +159,20 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Returns the unsatisfied connections (if any) for that junction, i.e.:
-%
-% - 'fully_connected' if that junction is full
-%
-% - or {lacking_outbounds, LackOutboundCount, OutboundPOIs} if outbound
-% connections are lacking (LackOutboundCount is their count, OutboundPOIs is the
-% list of PIDs of the already-connected outbound POIs)
-%
-% - or {lacking_inbounds, LackInboundCount, InboundPOIs} is the same for
-% inbounds
-%
-% - or {lacking_both, LackInboundCount, InboundPOIs, LackOutboundCount,
-% OutboundPOIs} if connections are lacking in both directions
-%
+-doc """
+Returns the unsatisfied connections (if any) for that junction, i.e.:
+
+ - `fully_connected` if that junction is full
+
+ - or {lacking_outbounds, LackOutboundCount, OutboundPOIs} if outbound
+ connections are lacking (LackOutboundCount is their count, OutboundPOIs is the
+ list of PIDs of the already-connected outbound POIs)
+
+ - or {lacking_inbounds, LackInboundCount, InboundPOIs} is the same for inbounds
+
+ - or {lacking_both, LackInboundCount, InboundPOIs, LackOutboundCount,
+ OutboundPOIs} if connections are lacking in both directions
+""".
 getUnsatisfiedConnections( State ) ->
 
 	{ InboundCount, OutboundCount } = ?getAttr(connectivity),
@@ -235,10 +240,7 @@ getUnsatisfiedConnections( State ) ->
 
 
 
-% @doc Returns the PID of the POI at the other end of the specified road.
-%
-% (helper)
-%
+-doc "Returns the PID of the POI at the other end of the specified road.".
 resolve_road_endpoint( RoadPid ) ->
 
 	RoadPid ! { getOtherEndpoint, [], self() },
@@ -256,9 +258,10 @@ resolve_road_endpoint( RoadPid ) ->
 % Static method section.
 
 
-% @doc Generates a list of instance definitions for the specified number of
-% initial road junctions.
-%
+-doc """
+Generates a list of instance definitions for the specified number of initial
+road junctions.
+""".
 -spec generate_definitions( count(), location_generator_pid(),
 							gis_pid() | instance_loading:id_ref() ) ->
 					static_return( [ class_Actor:instance_creation_spec() ] ).
@@ -275,7 +278,7 @@ generate_definitions( JunctionCount, LocationGeneratorPid, GISInfo ) ->
 	wooper:return_static( CreationSpecs ).
 
 
-
+% (helper)
 define_junctions( _Junctioncount=0, GISInfo, Acc ) ->
 
 	% All road junctions defined, adding locations as returned by the
@@ -308,10 +311,11 @@ define_junctions( JunctionCount, GISInfo, Acc ) ->
 
 	DrawnInboundCount = min( 5,
 		1 + class_RandomManager:get_positive_integer_gaussian_value(
-												Mean, StdDeviation ) ),
+				Mean, StdDeviation ) ),
+
 	DrawnOutboundCount = min( 1,
 		1 + class_RandomManager:get_positive_integer_gaussian_value(
-												Mean, StdDeviation ) ),
+				Mean, StdDeviation ) ),
 
 
 	% Location and GIS PID to be added later:
@@ -321,7 +325,9 @@ define_junctions( JunctionCount, GISInfo, Acc ) ->
 
 
 
-% @doc Adds the location to the road build parameters (a kind of zip operation):
+-doc """
+Adds the location to the road build parameters (a kind of zip operation).
+""".
 merge_parameters( Params, Locations, GISInfo ) ->
 	% In-order is better:
 	lists:reverse( merge_parameters( Params, Locations, _Acc=[], GISInfo ) ).
@@ -354,10 +360,7 @@ get_min_distance_between_two_road_junctions() ->
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

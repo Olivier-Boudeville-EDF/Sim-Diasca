@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,18 +25,20 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, September 11, 2022.
 
-
-% @doc Unit tests for the const-bijective table facilities, which are read-only
-% two-way associative table allowing bidirectional conversions between two sets
-% that can be done from any number (potentially extremely large) of callers very
-% efficiently.
-%
-% See the const_bijective_table.erl tested module.
-%
-% See also bijective_table.erl for the runtime versions of such tables (as
-% direct terms, not modules).
-%
 -module(const_bijective_table_test).
+
+-moduledoc """
+Unit tests for the **const-bijective table** facilities, which are read-only
+two-way associative table allowing bidirectional conversions between two sets
+that can be done from any number (potentially extremely large) of callers very
+efficiently.
+
+See the const_bijective_table.erl tested module.
+
+See also bijective_table.erl for the runtime versions of such tables (as
+direct terms, not modules).
+""".
+
 
 
 % For run/0 export and al:

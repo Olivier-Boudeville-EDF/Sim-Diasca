@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,402 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc Gathering of various <b>convenient facilities of all sorts</b>.
-%
-% See basic_utils_test.erl for the corresponding test.
-%
 -module(basic_utils).
+
+-moduledoc """
+Gathering of various **convenient facilities of all sorts**.
+
+See `basic_utils_test.erl` for the corresponding test.
+""".
+
+
+
+-doc "Allows to count elements (positive integer, possibly zero).".
+-type count() :: non_neg_integer().
+
+
+
+-doc "Allows to count elements (strictly positive integer).".
+-type non_null_count() :: pos_integer().
+
+
+
+-doc """
+Allows to count levels (e.g. indentation ones, nesting ones).
+
+Starts at `0`.
+""".
+-type level() :: zero_index().
+
+
+
+-doc "Describes an (Erlang, inter-process) messsage.".
+-type message() :: any().
+
+
+
+-doc "Describes a PID or a port.".
+-type pid_or_port() :: pid() | port().
+
+
+
+-doc "For tables.".
+-type atom_key() :: atom().
+
+
+
+
+% Error-related types.
+
+
+-doc """
+Term designating a reason (which may be any term).
+
+Note: useful to have self-describing types.
+""".
+-type reason() :: any().
+
+
+-doc "Describes the reason for a process exiting.".
+-type exit_reason() :: reason().
+
+
+-doc "Describes the reason for a process-level error.".
+-type error_reason() :: reason().
+
+
+-doc "Designates a plain string explaning an error.".
+-type error_diagnosis() :: ustring().
+
+
+-doc "Designates a binary string explaning an error.".
+-type error_bin_diagnosis() :: bin_string().
+
+
+
+-doc """
+Designates an error type (a specific, simple error reason), when we know it is
+an atom (often the first element of an error tuple), like `invalid_name`.
+""".
+-type error_type() :: atom().
+
+
+
+-doc """
+An error pseudo-tuple, that is an error tuple (e.g. `{invalid_name,1.0}`) or a
+single error term (instead of a tuple with a single element), preferably an atom
+(like `invalid_password`). Typically to be thrown.
+
+See also: `throw_diagnosed/{1,2}`.
+""".
+-type error_tuploid() :: error_tuploid( error_reason() ).
+
+
+
+-doc "To specify at least some information about the error type of a tuploid.".
+-type error_tuploid( T ) :: type_utils:tuploid( T ).
+
+
+
+-doc """
+A textual description associated to an error (typically for richer traces).
+""".
+-type error_message() :: error_diagnosis() | error_bin_diagnosis().
+
+
+
+-doc "An error with its textual diagnosis.".
+-type diagnosed_error_reason() :: { error_tuploid(), error_message() }.
+
+
+
+-doc "An error with its textual diagnosis.".
+-type diagnosed_error_reason( T ) :: { error_tuploid( T ), error_message() }.
+
+
+
+-doc "The most classical way of reporting an error.".
+-type tagged_error() :: { 'error', error_reason() }.
+
+
+
+-doc "A (possibly tagged) error term. For example `badarg`.".
+-type error_term() :: tagged_error() | error_reason().
+
+
+
+-doc "A (tagged) error term with a diagnosis.".
+-type diagnosed_error_term() :: { 'error', diagnosed_error_reason() }.
+
+
+
+-doc "A (tagged) error term with a diagnosis.".
+-type diagnosed_error_term( T ) :: { 'error', diagnosed_error_reason( T ) }.
+
+
+
+-doc """
+Tells whether an operation succeeded; if not, an error reason is specified (as a
+term).
+""".
+-type base_status() :: 'ok' | error_term().
+
+
+
+-doc """
+Tells whether an operation succeeded; if not, an error reason is specified (as a
+pair).
+""".
+-type base_outcome() :: 'ok' | error_term().
+
+
+
+-doc """
+Return type for operations that may fail (with a sufficient likelihood that no
+exception is to be raised then, thus the choice is left to the caller).
+""".
+-type fallible( T ) :: { 'ok', T } | error_term().
+
+
+
+-doc """
+Return type for operations that may fail (with a sufficient likelihood that no
+exception is to be raised then, thus the choice is left to the caller), when
+wanting to specify the error type as well.
+""".
+-type fallible( TSuccess, TFailure ) ::
+    { 'ok', TSuccess } | { 'error', TFailure }.
+
+
+
+-doc "Thus either `{ok,T}` or `{error,{ErrorTuploid,ErrorMsg}}`.".
+-type diagnosed_fallible( T ) :: fallible( T, diagnosed_error_term() ).
+
+
+
+-doc "Thus either `{ok,TSuccess}` or `{error,{TuploidTFailure,ErrorMsg}}`.".
+-type diagnosed_fallible( TSuccess, TFailure ) ::
+		fallible( TSuccess, diagnosed_error_term( TFailure ) ).
+
+
+
+-doc """
+To denote that a piece of data comes from the program boundaries (interfaces
+with the outside word, possibly in link with the user) and thus may or may not
+be of the expected type (as long as it has not been checked).
+
+(opaque, unspecified type - yet not declared as `opaque` to avoid a compilation
+warning telling it is "underspecified and therefore meaningless").
+""".
+-type external_data() :: term().
+
+
+
+-doc "Designates data whose type and value have not been checked yet.".
+-type unchecked_data() :: term().
+
+
+
+-doc "Designates user-specified data (users shall not be trusted either).".
+-type user_data() :: external_data().
+
+
+
+-doc """
+Designates an accumulator (of any type), to document typically fold-like
+operations.
+
+(useful for documentation purposes)
+""".
+-type accumulator() :: any().
+
+
+
+-doc "A component of a version.".
+-type version_number() :: non_neg_integer().
+
+
+
+-doc "By default we consider that a version is a triplet of integers.".
+-type version() :: three_digit_version().
+
+
+
+-doc "Version as a pair of integers, typically `{MajorVersion, MinorVersion}`.".
+-type two_digit_version() :: { version_number(), version_number() }.
+
+
+
+-doc """
+Version as a triplet of integers, typically `{MajorVersion, MinorVersion,
+ReleaseVersion}`, or `{MajorVersion, Enhancements, BugFixes}`, or
+`{MajorVersion, MinorVersion, Path}` (see semantic versioning,
+[https://semver.org/]).
+""".
+-type three_digit_version() ::
+	{ version_number(), version_number(), version_number() }.
+
+
+
+-doc """
+Version as a quadruplet of integers, typically `{MajorVersion, MinorVersion,
+ReleaseVersion, BuildVersion}`.
+""".
+-type four_digit_version() :: { version_number(), version_number(),
+								version_number(), version_number() }.
+
+
+-doc "Any version number.".
+-type any_version() :: two_digit_version() | three_digit_version()
+					 | four_digit_version().
+
+
+
+-doc """
+For all non-null indices (i.e. the ones that start at `1`). This is the
+convention that Myriad enforces as much as possible.
+""".
+-type positive_index() :: pos_integer().
+
+
+
+-doc """
+For the indices that may be null, typically starting at zero (e.g. in some file
+formats). Whenever possible, prefer `positive_index/0`.
+""".
+-type zero_index() :: non_neg_integer().
+
+
+
+-doc """
+To distinguish from the built-in type, which can be a parameterised module.
+""".
+-type module_name() :: atom().
+
+
+
+-doc "Name of a function.".
+-type function_name() :: atom().
+
+
+
+-doc "Argument of a function.".
+-type argument() :: any().
+
+
+-doc """
+Any kind of argument-level option.
+
+For example: `foo:create(..., [basic_utils:option()])`.
+""".
+-type any_option() :: tagged_list:tagged_element().
+
+
+
+% Shorthand for Module, Function, Arity:
+%
+% (commented-out, as mfa() is a builtin type; it cannot be redefined)
+%
+% -type mfa() :: { module_name(), function_name(), arity() }.
+
+
+
+-doc "A command (module-function-arguments).".
+-type command_spec() :: { module_name(), function_name(), [ argument() ] }.
+
+
+
+-doc """
+The name of a layer (e.g. `"Myriad"`).
+""".
+-type layer_name() :: ustring().
+
+
+
+-doc "The name of a record.".
+-type record_name() :: atom().
+
+
+
+-doc "The name of a field of a record.".
+-type field_name() :: atom().
+
+
+
+-doc "To specify whether a given feature shall be enabled or not.".
+-type activation_switch() :: 'enable' | 'disable'.
+
+
+
+-doc "Possible outcome of a partial-order comparison of two elements.".
+-type comparison_result() :: 'lower' | 'equal' | 'higher'.
+
+
+
+-doc """
+Compile-time execution target (not to be mixed up with `execution_context/0`).
+""".
+-type execution_target() :: 'development' | 'production'.
+
+
+
+-doc """
+Runtime-time execution context (not to be mixed up with `execution_target/0`,
+although gathering the same values - but conveying a different meaning).
+""".
+-type execution_context() :: 'development' | 'production'.
+
+
+
+-doc "The exception classes that can be raised.".
+-type exception_class() :: 'throw' | 'exit' | 'error'.
+
+
+
+-doc """
+Exception term corresponding to a corresponding bound pattern, as in `catch
+ExceptionClass:ExceptionPattern:StackTrace ->`.
+""".
+-type exception_term() :: term().
+
+
+
+% i.e. byte():
+-doc "The status code returned by a shell command.".
+-type status_code() :: 0..255.
+
+
+
+-doc """
+Useful as a temporary type placeholder, during development (easy to grep and
+eliminate afterwards).
+""".
+-type fixme() :: any().
+
+
+-export_type([ count/0, non_null_count/0, level/0,
+			   message/0, pid_or_port/0, atom_key/0,
+			   reason/0, exit_reason/0, error_reason/0,
+			   error_diagnosis/0, error_bin_diagnosis/0,
+			   error_type/0, error_tuploid/0, error_message/0,
+			   diagnosed_error_reason/0, tagged_error/0,
+			   error_term/0, diagnosed_error_term/0,
+			   base_status/0, base_outcome/0,
+			   fallible/1, fallible/2,
+			   diagnosed_fallible/1, diagnosed_fallible/2,
+			   external_data/0, unchecked_data/0, user_data/0,
+			   accumulator/0,
+			   version_number/0, version/0, two_digit_version/0, any_version/0,
+			   three_digit_version/0, four_digit_version/0,
+			   positive_index/0, zero_index/0,
+			   module_name/0, function_name/0, argument/0, any_option/0,
+			   command_spec/0, layer_name/0, record_name/0, field_name/0,
+			   activation_switch/0,
+			   comparison_result/0, execution_target/0, execution_context/0,
+			   exception_class/0, exception_term/0, status_code/0,
+			   fixme/0 ]).
+
+
 
 
 % Notification-related functions.
@@ -47,7 +437,6 @@
 		  wait_for_acks_nothrow/3, wait_for_acks_nothrow/4,
 
 		  wait_for_acks/4, wait_for_acks/5,
-
 		  wait_for_summable_acks/5,
 		  wait_for_many_acks/4, wait_for_many_acks/5,
 		  send_to_pid_set/2 ]).
@@ -56,7 +445,8 @@
 % Run-related functions.
 %
 % Not in code_utils, as we want them in a bootstrapped module.
--export([ run/1, run/2, run/3, exec/1, exec/2, exec/3 ]).
+-export([ run/1, run/2, run/3, exec/1, exec/2, exec/3,
+		  get_myriad_root_path/0 ]).
 
 
 % Version-related functions.
@@ -90,17 +480,19 @@
 		  create_uniform_tuple/2,
 		  stop/0, stop/1, stop_on_success/0, stop_on_failure/0,
 		  stop_on_failure/1,
-		  identity/1,
+
+		  identity/1, if_else/3, repeat/2,
+
 		  check_undefined/1, check_all_undefined/1, are_all_defined/1,
 		  check_defined/1, check_not_undefined/1, check_all_defined/1,
-		  set_maybe/2,
+		  set_option/2,
 
 		  ignore_unused/1,
 		  do_nothing/0, freeze/0, crash/0, crash/1, enter_infinite_loop/0,
 		  trigger_oom/0 ]).
 
 
--compile( { inline, [ set_maybe/2 ] } ).
+-compile( { inline, [ set_option/2 ] } ).
 
 
 
@@ -126,330 +518,6 @@
 -define( default_period_ms, 1000 ).
 
 
-
--type void() :: any() | 'void'.
-% To tell that a returned value is not of interest to the caller:
-% (could have been: "-type void() :: 'VoiD' or 'myriad_void'" for example)
-%
-% Nevertheless, should, for any reason, a value of the void/0 type have to be
-% specified, the 'void' atom shall be preferred, knowing that any value can be
-% returned and complies with this type.
-%
-% Opaque types currently not always well managed by the Erlang standard
-% toolchain:
-%
-%-opaque void() :: any() | 'void'.
-
-
--type count() :: non_neg_integer().
-% Allows to count elements (positive integer, possibly zero).
-
-
--type non_null_count() :: pos_integer().
-% Allows to count elements (strictly positive integer).
-
-
--type level() :: non_neg_integer().
-% Allows to count levels (e.g. indentation ones, nesting ones).
-
-
--type bit_mask() :: integer().
-% Describes a mask of bits.
-
-
--type message() :: any().
-% Describes an (Erlang, inter-process) messsage.
-
-
--type pid_or_port() :: pid() | port().
-% Describes a PID or a port.
-
-
--type atom_key() :: atom().
-% For tables.
-
-
-
-% Error-related types.
-
-
--type reason() :: any().
-% Term designating a reason (which may be any term).
-%
-% Note: useful to have self-describing types.
-
-
--type exit_reason() :: reason().
-
--type error_reason() :: reason().
-
--type error_diagnosis() :: ustring().
-% Designates a plain string explaning an error.
-
-
--type error_bin_diagnosis() :: bin_string().
-% Designates a binary string explaning an error.
-
-
-
--type error_type() :: atom().
-% Designates an error type (a specific, simple error reason), when we know it is
-% an atom (often the first element of an error tuple), like 'invalid_name'.
-
-
--type error_tuploid() :: error_tuploid( error_reason() ).
-% An error pseudo-tuple, that is an error tuple (e.g. {invalid_name,1.0}) or a
-% single error term (instead of a tuple with a single element), preferably an
-% atom (like 'invalid_password'). Typically to be thrown.
-%
-% See also: throw_diagnosed/{1,2}.
-
-
--type error_tuploid( T ) :: type_utils:tuploid( T ).
-% To specify at least some information about the error type of a tuploid.
-
-
--type error_message() :: error_diagnosis() | error_bin_diagnosis().
-% A textual description associated to an error (typically for richer traces).
-
-
--type diagnosed_error_reason() :: { error_tuploid(), error_message() }.
-% An error with its textual diagnosis.
-
-
--type diagnosed_error_reason( T ) :: { error_tuploid( T ), error_message() }.
-% An error with its textual diagnosis.
-
--type tagged_error() :: { 'error', error_reason() }.
-% The most classical way of reporting an error.
-
--type error_term() :: tagged_error() | error_reason().
-% A (possibly tagged) error term. For example 'badarg'.
-
-
--type diagnosed_error_term() :: { 'error', diagnosed_error_reason() }.
-% A (tagged) error term with a diagnosis.
-
-
--type diagnosed_error_term( T ) :: { 'error', diagnosed_error_reason( T ) }.
-% A (tagged) error term with a diagnosis.
-
-
--type base_status() :: 'ok' | error_term().
-% Tells whether an operation succeeded; if not, an error reason is specified (as
-% a term).
-
-
-% Tells whether an operation succeeded; if not, an error reason is specified (as
-% a pair).
-%
--type base_outcome() :: 'ok' | error_term().
-
-
--type maybe( T ) :: T | 'undefined'.
-% Denotes a value that may be set to one in T, or that may not be set at all.
-%
-% Note that the type T should not include the 'undefined' atom, otherwise one
-% cannot discriminate between a value that happens to be set to 'undefined'
-% versus a value not defined at all.
-%
-% Quite often, variables (e.g. record fields) are set to 'undefined' before
-% being set later.
-
-
--type safe_maybe( T ) :: { 'just', T } | 'nothing'.
-% Denotes a value that may be set to one of type T (with no restriction on T -
-% unlike maybe/1 where T should not include the 'undefined' value), or that may
-% not be set at all.
-%
-% A bit safer and more expensive than maybe/1.
-%
-% Obviously a nod to Haskell.
-
-
--type wildcardable( T ) :: T | 'any'.
-% To account for wildcard entries.
-
-
--type fallible( T ) :: { 'ok', T } | error_term().
-% Return type for operations that may fail (with a sufficient likelihood that no
-% exception is to be raised then, thus the choice is left to the caller).
-
-
--type fallible( TSuccess, TFailure ) ::
-		{ 'ok', TSuccess } | { 'error', TFailure }.
-% Return type for operations that may fail (with a sufficient likelihood that no
-% exception is to be raised then, thus the choice is left to the caller), when
-% wanting to specify the error type as well.
-
-
--type diagnosed_fallible( T ) :: fallible( T, diagnosed_error_term() ).
-% Thus either {ok,T} or {error,{ErrorTuploid,ErrorMsg}}.
-
-
--type diagnosed_fallible( TSuccess, TFailure ) ::
-		fallible( TSuccess, diagnosed_error_term( TFailure ) ).
-% Thus either {ok,TSuccess} or {error,{TuploidTFailure,ErrorMsg}}.
-
-
--type external_data() :: term().
-% To denote that a piece of data comes from the program boundaries (interfaces
-% with the outside word, possibly in link with the user) and thus may or may not
-% be of the expected type (as long as it has not been checked).
-%
-% (opaque, unspecified type - yet not declared as 'opaque' to avoid a
-% compilation warning telling it is "underspecified and therefore meaningless").
-
-
--type unchecked_data() :: term().
-% Designates data whose type and value have not been checked yet.
-
-
--type user_data() :: external_data().
-% Designates user-specified data (users shall not be trusted either).
-
-
--type accumulator() :: any().
-% Designates an accumulator (of any type), to document typically fold-like
-% operations.
-%
-% (useful for documentation purposes)
-
-
--type version_number() :: non_neg_integer().
-% A component of a version.
-
-
--type version() :: three_digit_version().
-% By default we consider that a version is a triplet of integers.
-
-
--type two_digit_version() :: { version_number(), version_number() }.
-% Version as a pair of integerss, typically {MajorVersion, MinorVersion}.
-
-
--type three_digit_version() ::
-		{ version_number(), version_number(), version_number() }.
-% Version as a triplet of integers, typically {MajorVersion, MinorVersion,
-% ReleaseVersion}, or {MajorVersion, Enhancements, BugFixes}, or {MajorVersion,
-% MinorVersion, Path} (see semantic versioning, https://semver.org/).
-
-
-
--type four_digit_version() :: { version_number(), version_number(),
-								version_number(), version_number() }.
-% Version as a quadruplet of integers, typically {MajorVersion, MinorVersion,
-% ReleaseVersion, BuildVersion}.
-
-
--type any_version() :: two_digit_version() | three_digit_version()
-					 | four_digit_version().
-
-
--type positive_index() :: pos_integer().
-% For all non-null indices (i.e. the ones that start at 1). This is the
-% convention that Myriad enforces as much as possible.
-
-
--type zero_index() :: non_neg_integer().
-% For the indices that may be null, typically starting at zero (e.g. in some
-% file formats). Whenever possible, prefer positive_index/0.
-
-
--type module_name() :: atom().
-% To distinguish with the built-in type, which can be a parameterised module.
-
--type function_name() :: atom().
-
--type argument() :: any().
-
-
-
-% Shorthand for Module, Function, Arity:
-%
-% (commented-out, as mfa() is a builtin type; it cannot be redefined)
-%
-%-type mfa() :: { module_name(), function_name(), arity() }.
-
-
--type command_spec() :: { module_name(), function_name(), [ argument() ] }.
-% A command (module-function-arguments).
-
-
--type layer_name() :: ustring().
-% The name of a layer (e.g. "Myriad").
-
-
--type record_name() :: atom().
-% The name of a record.
-
-
--type field_name() :: atom().
-% The name of a field of a record.
-
-
-
--type activation_switch() :: 'enable' | 'disable'.
-% To specify whether a given feature shall be enabled or not.
-
-
--type comparison_result() :: 'lower' | 'equal' | 'higher'.
-% Possible outcome of a partial-order comparison of two elements.
-
-
--type execution_target() :: 'development' | 'production'.
-% Compile-time execution target (not to be mixed up with execution_context/0).
-
-
--type execution_context() :: 'development' | 'production'.
-% Runtime-time execution context (not to be mixed up with execution_target/0,
-% although gathering the same values - but conveying a different meaning).
-
-
--type exception_class() :: 'throw' | 'exit' | 'error'.
-% The exception classes that can be raised.
-
-
--type exception_term() :: term().
-% Exception term corresponding to a corresponding bound pattern, as in:
-%    catch ExceptionClass:ExceptionPattern:StackTrace ->
-
-
-% i.e. byte():
--type status_code() :: 0..255.
-% The status code returned by a shell command.
-
-
--type fixme() :: any().
-% Useful as a temporary type placeholder, during development (easy to grep and
-% eliminate afterwards).
-
-
--export_type([ void/0, count/0, non_null_count/0, level/0,
-			   bit_mask/0, message/0, pid_or_port/0, atom_key/0,
-			   reason/0, exit_reason/0, error_reason/0,
-			   error_diagnosis/0, error_bin_diagnosis/0,
-			   error_type/0, error_tuploid/0, error_message/0,
-			   diagnosed_error_reason/0, tagged_error/0,
-			   error_term/0, diagnosed_error_term/0,
-			   base_status/0, base_outcome/0,
-			   maybe/1, safe_maybe/1,
-			   wildcardable/1,
-			   fallible/1, fallible/2,
-			   diagnosed_fallible/1, diagnosed_fallible/2,
-			   external_data/0, unchecked_data/0, user_data/0,
-			   accumulator/0,
-			   version_number/0, version/0, two_digit_version/0, any_version/0,
-			   three_digit_version/0, four_digit_version/0,
-			   positive_index/0, zero_index/0,
-			   module_name/0, function_name/0, argument/0,
-			   command_spec/0, layer_name/0, record_name/0, field_name/0,
-			   activation_switch/0,
-			   comparison_result/0, execution_target/0, execution_context/0,
-			   exception_class/0, exception_term/0, status_code/0,
-			   fixme/0 ]).
-
-
 % To define get_execution_target/0:
 -include("basic_utils.hrl").
 
@@ -464,19 +532,24 @@
 
 % Local types:
 
-% Module name as an iolist:
+-doc "Module name as an iolist".
 -type io_list_mod() :: text_utils:io_list().
 
 
-% Shorthands:
+% Type shorthands:
 
 -type set( T ) :: set_utils:set( T ).
 
 -type format_string() :: text_utils:format_string().
--type format_values() :: text_utils: format_values().
+-type format_values() :: text_utils:format_values().
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
+
+-type directory_path() :: file_utils:directory_path().
+
+-type void() :: type_utils:void().
+-type option( T ) :: type_utils:option( T ).
 
 -type atom_node_name() :: net_utils:atom_node_name().
 
@@ -495,9 +568,10 @@
 
 
 
-% @doc Creates a tuple of specified size, all elements having the same,
-% specified, value.
-%
+-doc """
+Creates a tuple of the specified size, all elements having the same, specified,
+value.
+""".
 -spec create_uniform_tuple( Size :: count(), Value :: any() ) -> tuple().
 create_uniform_tuple( Size, Value ) ->
 	List = lists:duplicate( Size, Value ),
@@ -505,21 +579,22 @@ create_uniform_tuple( Size, Value ) ->
 
 
 
-% @doc Stops smoothly the underlying VM, with a normal, success status code (0).
-%
-% Also also to potentially override Erlang standard teardown procedure.
-%
+-doc """
+Stops smoothly the underlying VM, with a normal, success status code (`0`).
+
+Also also to potentially override Erlang standard teardown procedure.
+""".
 -spec stop() -> no_return().
 stop() ->
 	stop( _Success=0 ).
 
 
 
-% @doc Stops smoothly, synchronously the underlying VM, with specified error
-% code.
-%
-% Also allows to potentially override Erlang standard teardown procedure.
-%
+-doc """
+Stops smoothly, synchronously the underlying VM, with the specified error code.
+
+Also allows to potentially override Erlang standard teardown procedure.
+""".
 -spec stop( status_code() ) -> no_return().
 stop( StatusCode ) ->
 
@@ -542,44 +617,88 @@ stop( StatusCode ) ->
 
 
 
-% @doc Stops smoothly, synchronously the underlying VM, with a normal, success
-% status code (0).
-%
+-doc """
+Stops smoothly, synchronously the underlying VM, with a normal, success status
+code (`0`).
+""".
 -spec stop_on_success() -> no_return().
 stop_on_success() ->
 	stop( _Success=0 ).
 
 
 
-% @doc Stops smoothly the underlying VM, with a default error status code (1).
+-doc """
+Stops smoothly the underlying VM, with a default error status code (`1`).
+""".
 -spec stop_on_failure() -> no_return().
 stop_on_failure() ->
 	stop_on_failure( _OurDefaultErrorCode=5 ).
 
 
-% @doc Stops smoothly the underlying VM, with a default error status code (1).
+-doc "Stops smoothly the underlying VM, with the specified error status code.".
 -spec stop_on_failure( status_code() ) -> no_return().
 stop_on_failure( StatusCode ) ->
 	stop( StatusCode ).
 
 
 
-% @doc Identity function: returns its argument as it is.
-%
-% Useful to:
-% - avoid having the compiler being too smart by notifying annoying, spurious
-% messages (e.g. no clause will ever match) in some tests
-% - to prevent manually Last-Call Optimisation by calling this function on the
-% result (last expression) of a function, in order that this last function does
-% not disappear from stacktraces
-%
+-doc """
+Identity function: returns its argument as it is.
+
+Useful to:
+
+- avoid having the compiler being too smart by notifying annoying, spurious
+messages (e.g. no clause will ever match) in some tests
+
+- to prevent manually *Last-Call Optimisation* by calling this function on the
+result (last expression) of a function, in order that this last function does
+not disappear from stacktraces
+""".
 -spec identity( term() ) -> term().
 identity( Term ) ->
 	Term.
 
 
 
-% @doc Checks that specified term is 'undefined', and returns it.
+-doc """
+Returns, if the first argument is `true`, the second argument, otherwise the
+third.
+
+Interesting as more compact that a `case` or a `if` clause.
+
+`if_else(Condition, A, B)` can be seen just as a shortcut (see its actual code),
+and a good candidate for parse-transfrom based inlining. Note that due to strict
+evaluation, both arguments will always be evaluated.
+""".
+% First argument not necessarily boolean(), just 'true' | T:
+-spec if_else( Condition :: term(),
+			   IfTrue :: term(), IfNotTrue :: term() ) -> term().
+if_else( _Condition=true, IfTrue, _IfNotTrue ) ->
+	IfTrue;
+
+if_else( _Condition, _IfTrue, IfNotTrue ) ->
+	IfNotTrue.
+
+
+-doc """
+Repeats the specified lamba function the specified number of times.
+
+Useful for example to receive a given number of test messages.
+""".
+-spec repeat( fun( () -> void() ), count() ) -> void().
+repeat( _Fun, _Count=0 ) ->
+    %trace_utils:debug( "Repeating over." ),
+    ok;
+
+repeat( Fun, Count ) ->
+    %trace_utils:debug_fmt( "Repeating #~B.", [ Count ] ),
+    Fun(),
+    repeat( Fun, Count-1 ).
+
+
+
+
+-doc "Checks that the specified term is `undefined`, and returns it.".
 -spec check_undefined( term() ) -> 'undefined'.
 check_undefined( undefined ) ->
 	undefined;
@@ -589,15 +708,17 @@ check_undefined( Term ) ->
 
 
 
-% @doc Checks that all elements of the specified list are equal to 'undefined';
-% returns that list.
-%
+-doc """
+Checks that all elements of the specified list are equal to `undefined`; returns
+that list.
+""".
 -spec check_all_undefined( term() ) -> [ term() ].
 check_all_undefined( List ) ->
 	[ check_undefined( Term ) || Term <- List ].
 
 
-% @doc Checks that specified term is not 'undefined'; returns that term.
+
+-doc "Checks that the specified term is not `undefined`; returns that term.".
 -spec check_not_undefined( term() ) -> term().
 check_not_undefined( undefined ) ->
 	throw( is_undefined );
@@ -607,26 +728,30 @@ check_not_undefined( Term ) ->
 
 
 
-% @doc Checks that specified term is "defined" (not equal to 'undefined');
-% returns that term.
-%
+-doc """
+Checks that the specified term is "defined" (that is not equal to `undefined`);
+returns that term.
+""".
 -spec check_defined( term() ) -> term().
 check_defined( Term ) ->
 	check_not_undefined( Term ).
 
 
-% @doc Checks that all elements of the specified list are "defined" (not
-% 'undefined'); returns that list.
-%
+
+-doc """
+Checks that all elements of the specified list are "defined" (that is not
+`undefined`); returns that list.
+""".
 -spec check_all_defined( [ term() ] ) -> [ term() ].
 check_all_defined( List ) ->
 	[ check_defined( Term ) || Term <- List ].
 
 
 
-% @doc Returns whether all the elements specified are defined (that is are not
-% equal to the 'undefined' atom).
-%
+-doc """
+Returns whether all the elements specified are defined (that is are not equal to
+the `undefined` atom).
+""".
 -spec are_all_defined( [ term() ] ) -> boolean().
 are_all_defined( _Elems=[] ) ->
 	true;
@@ -639,32 +764,35 @@ are_all_defined( _Elems=[ _E | T ] ) ->
 
 
 
-% @doc Returns the first term is it is not undefined, otherwise returns the
-% second, default, term.
-%
-% Allows to apply a default if a maybe-term is not defined.
-%
-% For example: `ActualX = basic_utils:set_maybe(MaybeX, DefaultX)'.
-%
-% Ideally the default term would be lazily evaluated.
-%
--spec set_maybe( maybe( term() ), term() ) -> term().
-set_maybe( _MaybeTerm=undefined, TDef ) ->
+-doc """
+Returns the first term if it is not `undefined`, otherwise returns the second,
+default, term.
+
+Allows to apply a default if a option-term is not defined.
+
+For example: `ActualX = basic_utils:set_option(OptionX, DefaultX)`.
+
+Ideally the default term would be lazily evaluated (e.g. if calling an
+initialisation function, notably for the second term).
+""".
+-spec set_option( option( term() ), term() ) -> term().
+set_option( _OptionTerm=undefined, TDef ) ->
 	TDef;
 
-set_maybe( T, _TDef ) ->
+set_option( T, _TDef ) ->
 	T.
 
 
 
-% @doc Ignores specified argument.
-%
-% Useful to define, for debugging purposes, terms that will be (temporarily)
-% unused without blocking the compilation.
-%
-% For example basic_utils:ignore_unused(A) or basic_utils:ignore_unused([A, B,
-% C]).
-%
+-doc """
+Ignores its specified argument.
+
+Useful to define, for debugging purposes, terms that will be (temporarily)
+unused without blocking the compilation.
+
+For example `basic_utils:ignore_unused(A)` or `basic_utils:ignore_unused([A, B,
+C]).`.
+""".
 -spec ignore_unused( any() ) -> void().
 ignore_unused( _Term ) ->
 	% Preferred silent:
@@ -673,22 +801,26 @@ ignore_unused( _Term ) ->
 	%   "(thanks to basic_utils:ignore_unused/1).", [ _Term ] ).
 
 
-% @doc Does nothing at all, at the expense of a remote call.
-%
-% May be useful for experiments, for example in link with LCO (Last Call
-% Optimisation).
 
+-doc """
+Does nothing at all, at the expense of a remote call.
+
+May be useful for experiments, for example in link with LCO (*Last Call
+Optimisation*).
+""".
 do_nothing() ->
 	ok.
 
 
-% @doc Freezes the current process immediately.
-%
-% Useful to block the process while for example an ongoing, asynchronous
-% termination occurs.
-%
-% See also: enter_infinite_loop/0.
-%
+
+-doc """
+Freezes the current process immediately.
+
+Useful to block the process while for example an ongoing, asynchronous
+termination occurs.
+
+See also: `enter_infinite_loop/0`.
+""".
 -spec freeze() -> no_return().
 freeze() ->
 
@@ -704,10 +836,11 @@ freeze() ->
 
 
 
-% @doc Crashes the current process immediately.
-%
-% Useful for testing reliability, for example.
-%
+-doc """
+Crashes the current process immediately.
+
+Useful for testing reliability, for example.
+""".
 -spec crash() -> void().
 crash() ->
 
@@ -723,10 +856,11 @@ crash() ->
 
 
 
-% @doc Crashes the current process immediately, displaying the specified term.
-%
-% Useful for testing reliability, for example.
-%
+-doc """
+Crashes the current process immediately, displaying the specified term.
+
+Useful for testing reliability, for example.
+""".
 -spec crash( term() ) -> any().
 crash( Term ) ->
 
@@ -742,12 +876,13 @@ crash( Term ) ->
 
 
 
-% @doc Makes the current process enter in an infinite, mostly idle loop.
-%
-% Useful for testing reliability, for example.
-%
-% See also: freeze/0.
-%
+-doc """
+Makes the current process enter in an infinite, mostly idle loop.
+
+Useful for testing reliability, for example.
+
+See also: `freeze/0`.
+""".
 enter_infinite_loop() ->
 
 	io:format( "~p in infinite loop...", [ self() ] ),
@@ -759,10 +894,11 @@ enter_infinite_loop() ->
 
 
 
-% @doc Triggers a OOM crash, that is a "Out of Memory" error.
-%
-% Useful for testing reliability, for example.
-%
+-doc """
+Triggers a OOM crash, that is a "Out of Memory" error.
+
+Useful for testing reliability, for example.
+""".
 trigger_oom() ->
 
 	io:format( "~p triggering OOM (out of memory) crash...", [ self() ] ),
@@ -781,7 +917,7 @@ trigger_oom() ->
 % Notification-related functions.
 
 
-% @doc Speaks the specified message, using espeak.
+-doc "Speaks the specified message (using currently espeak).".
 -spec speak( ustring() ) -> void().
 speak( Message ) ->
 	system_utils:run_background_command(
@@ -789,9 +925,9 @@ speak( Message ) ->
 
 
 
-% @doc Notifies the user of the specified message, with log output and synthetic
-% voice.
-%
+-doc """
+Notifies the user of the specified message, with log output and synthetic voice.
+""".
 -spec notify_user( ustring() ) -> void().
 notify_user( Message ) ->
 	io:format( Message ),
@@ -799,11 +935,12 @@ notify_user( Message ) ->
 
 
 
-% @doc Notifies the user of the specified message, with log output and synthetic
-% voice.
-%
-% Example: 'basic_utils:notify_user("Hello ~w", [ Name ]).'
-%
+-doc """
+Notifies the user of the specified message, with log output and synthetic
+voice.
+
+Example: `basic_utils:notify_user("Hello ~w", [Name]).`.
+""".
 -spec notify_user( format_string(), format_values() ) -> void().
 notify_user( Message, FormatList ) ->
 
@@ -818,7 +955,7 @@ notify_user( Message, FormatList ) ->
 % Message-related section.
 
 
-% @doc Flushes all the messages still in the mailbox of this process.
+-doc "Flushes all the messages still in the mailbox of this process.".
 -spec flush_pending_messages() -> void().
 flush_pending_messages() ->
 
@@ -834,9 +971,10 @@ flush_pending_messages() ->
 
 
 
-% @doc Flushes all the messages still in the mailbox of this process that
-% (exactly) match the specified one.
-%
+-doc """
+Flushes all the messages still in the mailbox of this process that (exactly)
+match the specified one.
+""".
 -spec flush_pending_messages( any() ) -> void().
 flush_pending_messages( Message ) ->
 
@@ -852,13 +990,14 @@ flush_pending_messages( Message ) ->
 
 
 
-% @doc Reads all pending messages in the mailbox of this process and notifies
-% about them on the console.
-%
-% Does not block.
-%
-% Useful for tests.
-%
+-doc """
+Reads all pending messages in the mailbox of this process and notifies about
+them on the console.
+
+Does not block.
+
+Useful for tests.
+""".
 -spec notify_pending_messages() -> void().
 notify_pending_messages() ->
 
@@ -877,12 +1016,13 @@ notify_pending_messages() ->
 
 
 
-% @doc Ensures that no message is pending in the mailbox of this process.
-%
-% Does not block.
-%
-% Useful for tests.
-%
+-doc """
+Ensures that no message is pending in the mailbox of this process.
+
+Does not block.
+
+Useful for tests.
+""".
 -spec check_no_pending_message() -> void().
 check_no_pending_message() ->
 
@@ -900,9 +1040,10 @@ check_no_pending_message() ->
 
 
 
-% @doc Waits (indefinitively) for the specified count of the specified message
-% to be received.
-%
+-doc """
+Waits (indefinitively) for the specified count instances of the specified
+message to be received.
+""".
 -spec wait_for( term(), count() ) -> void().
 wait_for( _Message, _Count=0 ) ->
 	ok;
@@ -923,13 +1064,14 @@ wait_for( Message, Count ) ->
 
 
 
-% @doc Waits (indefinitively) for the specified count of the specified message
-% to be received, displaying repeatedly on the console a notification should the
-% duration between two receivings exceed the specified time-out.
-%
-% Typical usage: basic_utils:wait_for( {foobar_result, done}, _Count=5,
-% _Duration=2000, "Still waiting for ~B task(s) to complete").
-%
+-doc """
+Waits (indefinitively) for the specified count of the specified message to be
+received, displaying repeatedly on the console a notification should the
+duration between two receivings exceed the specified time-out.
+
+Typical usage: `basic_utils:wait_for({foobar_result, done}, _Count=5,
+_Duration=2000, "Still waiting for ~B task(s) to complete")`.
+""".
 -spec wait_for( term(), count(), milliseconds(), format_string() ) -> void().
 wait_for( _Message, _Count=0, _TimeOutDuration, _TimeOutFormatString ) ->
 	ok;
@@ -960,16 +1102,17 @@ wait_for( Message, Count, TimeOutDuration, TimeOutFormatString ) ->
 % Wait patterns, safer and better defined once for all.
 
 
-% @doc Waits until receiving from all the expected senders the specified
-% acknowledgement message, expected to be in the form of {AckReceiveAtom,
-% WaitedSenderPid}.
-%
-% Returns a (possibly empty) list of the PIDs of the senders that failed to
-% answer within the specified time-out.
-%
-% See wait_for_many_acks/{4,5} if having a large number of senders that are
-% waited for.
-%
+-doc """
+Waits until receiving from all the expected senders the specified
+acknowledgement message, expected to be in the form of `{AckReceiveAtom,
+WaitedSenderPid}`.
+
+Returns a (possibly empty) list of the PIDs of the senders that failed to answer
+within the specified time-out.
+
+See `wait_for_many_acks/{4,5}` if having a large number of senders that are
+waited for.
+""".
 -spec wait_for_acks_nothrow( [ pid() ], finite_time_out(), atom() ) ->
 											[ pid() ].
 wait_for_acks_nothrow( WaitedSenders, MaxMsDuration, AckReceiveAtom ) ->
@@ -978,16 +1121,17 @@ wait_for_acks_nothrow( WaitedSenders, MaxMsDuration, AckReceiveAtom ) ->
 
 
 
-% @doc Waits until receiving from all the expected senders the specified
-% acknowledgement message, expected to be in the form of {AckReceiveAtom,
-% WaitedSenderPid}, ensuring a check is performed at least at specified period..
-%
-% Returns a (possibly empty) list of the PIDs of the senders that failed to
-% answer within the specified time-out.
-%
-% See wait_for_many_acks/{4,5} if having a large number of senders that are
-% waited for.
-%
+-doc """
+Waits until receiving from all the expected senders the specified
+acknowledgement message, expected to be in the form of `{AckReceiveAtom,
+WaitedSenderPid}`, ensuring a check is performed at least at specified period.
+
+Returns a (possibly empty) list of the PIDs of the senders that failed to answer
+within the specified time-out.
+
+See `wait_for_many_acks/{4,5}` if having a large number of senders that are
+waited for.
+""".
 -spec wait_for_acks_nothrow( [ pid() ], finite_time_out(), ms_period(),
 							 atom() ) -> [ pid() ].
 wait_for_acks_nothrow( WaitedSenders, MaxMsDuration, Period,
@@ -1054,16 +1198,16 @@ wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
 
 
 
-% @doc Waits until receiving from all expected senders the specified
-% acknowledgement message, expected to be in the form of {AckReceiveAtom,
-% WaitedSenderPid}.
-%
-% Throws a {ThrowAtom, StillWaitedSenders} exception on time-out (if any, as the
-% time-out can be disabled if set to 'infinity').
-%
-% See wait_for_many_acks/{4,5} if having a large number of senders that are
-% waited for.
-%
+-doc """
+Waits until receiving from all expected senders the specified acknowledgement
+message, expected to be in the form of `{AckReceiveAtom, WaitedSenderPid}`.
+
+Throws a `{ThrowAtom, StillWaitedSenders}` exception on time-out (if any, as the
+time-out can be disabled if set to `infinity`).
+
+See `wait_for_many_acks/{4,5}` if having a large number of senders that are
+waited for.
+""".
 -spec wait_for_acks( [ pid() ], time_out(), atom(), atom() ) -> void().
 wait_for_acks( WaitedSenders, MaxMsDuration, AckReceiveAtom, ThrowAtom ) ->
 	wait_for_acks( WaitedSenders, MaxMsDuration, ?default_period_ms,
@@ -1071,15 +1215,15 @@ wait_for_acks( WaitedSenders, MaxMsDuration, AckReceiveAtom, ThrowAtom ) ->
 
 
 
-% @doc Waits until receiving from all expected senders the specified
-% acknowledgement message, expected to be in the form of {AckReceiveAtom,
-% WaitedSenderPid}, ensuring that a check is performed at least at specified
-% period.
-%
-% Throws a {ThrowAtom, StillWaitedSenders} exception on time-out.
-%
-% See wait_for_many_acks/{4,5} if having a large number of senders waited for.
-%
+-doc """
+Waits until receiving from all expected senders the specified acknowledgement
+message, expected to be in the form of `{AckReceiveAtom, WaitedSenderPid}`,
+ensuring that a check is performed at least at the specified period.
+
+Throws a `{ThrowAtom, StillWaitedSenders}` exception on time-out.
+
+See `wait_for_many_acks/{4,5}` if having a large number of senders waited for.
+""".
 -spec wait_for_acks( [ pid() ], time_out(), ms_period(), atom(), atom() ) ->
 															void().
 wait_for_acks( WaitedSenders, MaxMsDuration, Period, AckReceiveAtom,
@@ -1106,16 +1250,17 @@ wait_for_acks( WaitedSenders, MaxMsDuration, Period, AckReceiveAtom,
 
 
 
-% @doc Waits until receiving from all expected senders the specified
-% acknowledgement message, expected to be in the form of: {AckReceiveAtom,
-% ToAdd, WaitedSenderPid}.
-%
-% Returns the sum of the specified initial value with all the ToAdd received
-% values.
-%
-% Throws a {ThrowAtom, StillWaitedSenders} exception on time-out (if any, as the
-% time-out can be disabled if set to 'infinity').
-%
+-doc """
+Waits until receiving from all the expected senders the specified
+acknowledgement message, expected to be in the form of: `{AckReceiveAtom, ToAdd,
+WaitedSenderPid}`.
+
+Returns the sum of the specified initial value with all the ToAdd received
+values.
+
+Throws a `{ThrowAtom, StillWaitedSenders}` exception on time-out (if any, as the
+time-out can be disabled if set to `infinity`).
+""".
 -spec wait_for_summable_acks( [ pid() ], number(), time_out(), atom(),
 							  atom() ) -> number().
 wait_for_summable_acks( WaitedSenders, InitialValue, MaxDurationInSeconds,
@@ -1126,15 +1271,14 @@ wait_for_summable_acks( WaitedSenders, InitialValue, MaxDurationInSeconds,
 
 
 
-% @doc Waits until receiving from all expected senders the specified
-% acknowledgement message, expected to be in the form of: {AckReceiveAtom,
-% ToAdd, WaitedSenderPid}.
-%
-% ensuring a check is performed at least at specified period and summing all
-% ToAdd values with the specified initial one
-%
-% Throws a {ThrowAtom, StillWaitedSenders} exception on time-out.
-%
+-doc """
+Waits until receiving from all the expected senders the specified
+acknowledgement message, expected to be in the form of: `{AckReceiveAtom, ToAdd,
+WaitedSenderPid}`, ensuring a check is performed at least at specified period
+and summing all ToAdd values with the specified initial one.
+
+Throws a `{ThrowAtom, StillWaitedSenders}` exception on time-out.
+""".
 -spec wait_for_summable_acks( [ pid() ], number(), time_out(),
 							  milliseconds(), atom(), atom() ) -> number().
 wait_for_summable_acks( WaitedSenders, CurrentValue, MaxDurationInSeconds,
@@ -1196,14 +1340,15 @@ wait_for_summable_acks_helper( WaitedSenders, CurrentValue, InitialTimestamp,
 
 
 
-% @doc Waits until receiving from all expected (numerous) senders the specified
-% acknowledgement message.
-%
-% Throws specified exception on time-out.
-%
-% Note: each sender shall be unique (as they will be gathered in a set, that
-% does not keep duplicates)
-%
+-doc """
+Waits until receiving from all expected (numerous) senders the specified
+acknowledgement message.
+
+Throws specified exception on time-out.
+
+Note: each sender shall be unique (as they will be gathered in a set, that does
+not keep duplicates).
+""".
 -spec wait_for_many_acks( set( pid() ), finite_time_out(), atom(), atom() ) ->
 											void().
 wait_for_many_acks( WaitedSenders, MaxMsDuration, AckReceiveAtom, ThrowAtom ) ->
@@ -1212,11 +1357,12 @@ wait_for_many_acks( WaitedSenders, MaxMsDuration, AckReceiveAtom, ThrowAtom ) ->
 
 
 
-% @doc Waits until receiving from all expected (numerous) senders the specified
-% acknowledgement message.
-%
-% Throws specified exception on time-out, checking at the specified period.
-%
+-doc """
+Waits until receiving from all expected (numerous) senders the specified
+acknowledgement message.
+
+Throws specified exception on time-out, checking at the specified period.
+""".
 -spec wait_for_many_acks( set( pid() ), finite_time_out(), ms_period(),
 						  atom(), atom() ) -> void().
 wait_for_many_acks( WaitedSenders, MaxMsDuration, Period, AckReceiveAtom,
@@ -1268,11 +1414,10 @@ wait_for_many_acks_helper( WaitedSenders, InitialTimestamp, MaxMsDuration,
 
 
 
-% @doc Sends the specified message to all elements (supposed to be PID) of the
-% specified set, and returns the number of sent messages.
-%
-% (helper)
-%
+-doc """
+Sends the specified message to all elements (supposed to be PID) of the
+specified set, and returns the number of sent messages.
+""".
 -spec send_to_pid_set( term(), set( pid() ) ) -> count().
 send_to_pid_set( Message, PidSet ) ->
 
@@ -1300,33 +1445,37 @@ send_to_pid_set( Message, { Pid, NewIterator }, Count ) ->
 
 
 
-% @doc Runs the run/0 function from the specified module.
-%
-% Designed as a convenient launcher used with 'erl -run', dealing notably best
-% with outputs, error management and stacktraces.
-%
+-doc """
+Runs the `run/0` function from the specified module.
+
+Designed as a convenient launcher used with `erl -run`, dealing notably best
+with outputs, error management and stacktraces.
+""".
 -spec run( io_list_mod() ) -> void().
 run( ModIOList ) ->
 	run( ModIOList, _FunctionName=run ).
 
 
 
-% @doc Runs the specified 0-arity function from the specified module.
-%
-% Designed as a convenient launcher used with 'erl -run', dealing notably best
-% with outputs, error management and stacktraces.
-%
+-doc """
+Runs the specified 0-arity function from the specified module.
+
+Designed as a convenient launcher used with `erl -run`, dealing notably best
+with outputs, error management and stacktraces.
+""".
 -spec run( io_list_mod(), function_name() ) -> void().
 run( ModIOList, FunctionName ) ->
 	run( ModIOList, FunctionName, _Args=[] ).
 
 
-% @doc Runs the specified function from the specified module, with the specified
-% arguments.
-%
-% Designed as a convenient launcher used with 'erl -run', dealing notably best
-% with outputs, error management and stacktraces.
-%
+
+-doc """
+Runs the specified function from the specified module, with the specified
+arguments.
+
+Designed as a convenient launcher used with `erl -run`, dealing notably best
+with outputs, error management and stacktraces.
+""".
 -spec run( io_list_mod(), function_name(), [ argument() ] ) -> void().
 run( ModIOList, FunctionName, Args ) ->
 
@@ -1445,53 +1594,70 @@ manage_minimised_stacktrace( RevRest, Class, Exception, ExplainStr ) ->
 
 
 
+
 % The exec/N variations for applications behave mostly like the run/N variations
 % for tests (with X_app instead of X_test).
 
 
-% @doc Executes the exec/0 function from the specified application module.
-%
-% Designed as a convenient launcher used with 'erl -run', dealing notably best
-% with outputs, error management and stacktraces.
-%
+-doc """
+Executes the `exec/0` function from the specified application module.
+
+Designed as a convenient launcher used with `erl -run`, dealing notably best
+with outputs, error management and stacktraces.
+""".
 -spec exec( io_list_mod() ) -> void().
 exec( ModIOList ) ->
 	run( ModIOList, _FunctionName=exec ).
 
 
-% @doc Executes the specified 0-arity function from the specified application
-% module.
-%
-% Designed as a convenient launcher used with 'erl -run', dealing notably best
-% with outputs, error management and stacktraces.
-%
+
+-doc """
+Executes the specified 0-arity function from the specified application module.
+
+Designed as a convenient launcher used with `erl -run`, dealing notably best
+with outputs, error management and stacktraces.
+""".
 -spec exec( io_list_mod(), function_name() ) -> void().
 exec( ModIOList, FunctionName ) ->
 	exec( ModIOList, FunctionName, _Args=[] ).
 
 
-% @doc Executes the specified function from the specified application module,
-% with the specified arguments.
-%
-% Designed as a convenient launcher used with 'erl -run', dealing notably best
-% with outputs, error management and stacktraces.
-%
+
+-doc """
+Executes the specified function from the specified application module, with the
+specified arguments.
+
+Designed as a convenient launcher used with `erl -run`, dealing notably best
+with outputs, error management and stacktraces.
+""".
 -spec exec( io_list_mod(), function_name(), [ argument() ] ) -> void().
 exec( ModIOList, FunctionName, Args ) ->
 	run( ModIOList, FunctionName, Args ).
 
 
 
+-doc """
+Returns a path to the root directory of the Ceylan-Myriad installation that is
+in use.
+""".
+-spec get_myriad_root_path() -> directory_path().
+get_myriad_root_path() ->
+	CodePath = code_utils:get_code_path(),
+	script_utils:get_myriad_path_from( CodePath ).
+
+
+
 % Version-related functions.
 
 
-% @doc Returns the version of the Myriad library being used.
+-doc "Returns the version of the Myriad library being used.".
 -spec get_myriad_version() -> three_digit_version().
 get_myriad_version() ->
 	parse_version( get_myriad_version_string() ).
 
 
-% @doc Returns the version of the Myriad library being used, as a string.
+
+-doc "Returns the version of the Myriad library being used, as a string.".
 -spec get_myriad_version_string() -> ustring().
 get_myriad_version_string() ->
 	% As defined (uniquely) in GNUmakevars.inc:
@@ -1499,10 +1665,12 @@ get_myriad_version_string() ->
 
 
 
-% @doc Parses the specified textual version.
-%
-% For example "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
-%
+-doc """
+Parses the specified textual version.
+
+For example `"4.2.1"` should become `{4,2,1}`, and `"2.3"` should become
+`{2,3}`.
+""".
 -spec parse_version( ustring() ) -> any_version().
 parse_version( VersionString ) ->
 
@@ -1514,7 +1682,7 @@ parse_version( VersionString ) ->
 
 
 
-% @doc Checks that the specified term is a three-digit version, and returns it.
+-doc "Checks that the specified term is a three-digit version, and returns it.".
 -spec check_three_digit_version( term() ) -> three_digit_version().
 check_three_digit_version( T={ A, B, C } ) when is_integer( A )
 				andalso is_integer( B ) andalso is_integer( C ) ->
@@ -1525,7 +1693,7 @@ check_three_digit_version( T ) ->
 
 
 
-% @doc Checks that the specified term is a any-version, and returns it.
+-doc "Checks that the specified term is a any-version, and returns it.".
 -spec check_any_version( term() ) -> any_version().
 check_any_version( T ) when is_tuple( T ) ->
 	case lists:all( fun( E ) -> is_integer( E ) andalso E >= 0 end,
@@ -1544,12 +1712,13 @@ check_any_version( V ) ->
 
 
 
-% @doc Compares the two specified any-versions (expected to be of the same
-% size), which describe two version numbers (e.g. {0,1,0} and {0,1,7}) and
-% returns either first_bigger, second_bigger, or equal.
-%
-% The two compared versions must have the same number of digits.
-%
+-doc """
+Compares the two specified any-versions (expected to be of the same size), which
+describe two version numbers (e.g. `{0,1,0}` and `{0,1,7}`) and returns either
+`first_bigger`, `second_bigger`, or `equal`.
+
+The two compared versions must have the same number of digits.
+""".
 -spec compare_versions( any_version(), any_version() ) ->
 								'equal' | 'first_bigger' | 'second_bigger'.
 compare_versions( A, B ) when tuple_size( A ) =:= tuple_size( B ) ->
@@ -1578,10 +1747,11 @@ compare_versions( A, B ) when tuple_size( A ) =:= tuple_size( B ) ->
 % Miscellaneous functions.
 
 
-% @doc Returns all general information regarding specified process (which is
-% local or not), provided it is still alive (otherwise returns undefined).
-%
--spec get_process_info( pid() ) -> maybe( [ process_info_result_item() ] ).
+-doc """
+Returns all general information regarding the specified process (which is local
+or not), provided that it is still alive (otherwise returns `undefined`).
+""".
+-spec get_process_info( pid() ) -> option( [ process_info_result_item() ] ).
 get_process_info( Pid ) ->
 
 	LocalNode = node(),
@@ -1596,7 +1766,7 @@ get_process_info( Pid ) ->
 
 			% The current module may not be on this node:
 			case rpc:call( OtherNode, _M=erlang, _F=process_info, _A=[ Pid ] )
-			   of
+                    of
 
 				{ badrpc, Reason } ->
 					trace_utils:error_fmt( "No information found for "
@@ -1610,17 +1780,19 @@ get_process_info( Pid ) ->
 
 			end
 
+
 	end.
 
 
 
-% @doc Returns the specified information regarding specified process (which is
-% local or not), provided it is still alive (otherwise returns undefined).
-%
+-doc """
+Returns the specified information regarding the specified process (which is
+local or not), provided that it is still alive (otherwise returns `undefined`).
+""".
 -spec get_process_info( pid(), process_info_result_item() ) ->
-								maybe( process_info_result_item() );
+								option( process_info_result_item() );
 					  ( pid(), [ process_info_result_item() ] ) ->
-								maybe( [ process_info_result_item() ] ).
+								option( [ process_info_result_item() ] ).
 get_process_info( Pid, ItemTerm ) ->
 
 	LocalNode = node(),
@@ -1653,9 +1825,9 @@ get_process_info( Pid, ItemTerm ) ->
 
 
 
-% @doc Displays information about the process(es) identified by specified
-% PID(s).
-%
+-doc """
+Displays information about the process(es) identified by specified PID(s).
+""".
 -spec display_process_info( pid() | [ pid() ] ) -> void().
 display_process_info( PidList ) when is_list( PidList ) ->
 	[ display_process_info( Pid ) || Pid <- PidList ];
@@ -1677,7 +1849,7 @@ display_process_info( Pid ) when is_pid( Pid ) ->
 
 				PropList ->
 					Strings = [ io_lib:format( "~ts: ~p", [ K, V ] )
-								|| { K, V } <- PropList ],
+                                    || { K, V } <- PropList ],
 					io:format( "PID ~w refers to a local live process, "
 						"whose information is: ~ts",
 						[ Pid, text_utils:strings_to_string( Strings ) ] )
@@ -1716,13 +1888,15 @@ display_process_info( Pid ) when is_pid( Pid ) ->
 
 
 
-% @doc Displays a numbered checkpoint.
-%
-% Useful for debugging purposes.
-%
+-doc """
+Displays a numbered checkpoint.
+
+Useful for debugging purposes.
+""".
 -spec checkpoint( integer() ) -> void().
 checkpoint( Number ) ->
 	display( "----- CHECKPOINT #~B -----", [ Number ] ).
+
 
 
 
@@ -1732,9 +1906,10 @@ checkpoint( Number ) ->
 % cond_utils:assert/*.
 
 
-% @doc Asserts that the specified (runtime) expression is true, otherwise throws
-% an exception.
-%
+-doc """
+Asserts that the specified (runtime) expression is `true`, otherwise throws an
+exception.
+""".
 -spec assert( term() ) -> void().
 assert( _Expr=true ) ->
 	ok;
@@ -1749,11 +1924,12 @@ assert( Other ) ->
 % change the depth of the stacktrace:
 
 
-% @doc Asserts that the specified (runtime) expression is true, otherwise throws
-% an exception.
-%
-% Defined for consistency with assert_false/1.
-%
+-doc """
+Asserts that the specified (runtime) expression is true, otherwise throws an
+exception.
+
+Defined for consistency with `assert_false/1`.
+""".
 -spec assert_true( term() ) -> void().
 assert_true( _Expr=true ) ->
 	ok;
@@ -1763,9 +1939,11 @@ assert_true( Other ) ->
 	throw( { assert_failed, Other } ).
 
 
-% @doc Asserts that the specified (runtime) expression is false, otherwise
-% throws an exception.
-%
+
+-doc """
+Asserts that the specified (runtime) expression is `false`, otherwise throws an
+exception.
+""".
 -spec assert_false( term() ) -> void().
 assert_false( _Expr=false ) ->
 	ok;
@@ -1775,11 +1953,13 @@ assert_false( Other ) ->
 	throw( { assert_false_failed, Other } ).
 
 
-% @doc Asserts that the specified (runtime) expressions compare equal, otherwise
-% throws an exception.
-%
-% Sometimes searched as check_equal/2.
-%
+
+-doc """
+Asserts that the specified (runtime) expressions compare equal, otherwise throws
+an exception.
+
+Sometimes searched as `check_equal/2`.
+""".
 -spec assert_equal( term(), term() ) -> void().
 assert_equal( Expr, Expr ) ->
 	ok;
@@ -1789,9 +1969,11 @@ assert_equal( Expr1, Expr2 ) ->
 	throw( { assert_equal_failed, Expr1, Expr2 } ).
 
 
-% @doc Asserts that the specified (runtime) expressions compare different,
-% otherwise throws an exception.
-%
+
+-doc """
+Asserts that the specified (runtime) expressions compare different, otherwise
+throws an exception.
+""".
 -spec assert_different( term(), term() ) -> void().
 assert_different( Expr, Expr ) ->
 	interpret_failed_assertion( "both elements are equal to '~p'", [ Expr ] ),
@@ -1818,12 +2000,12 @@ interpret_failed_assertion( Msg ) ->
 
 
 
-
-% @doc Displays the specified string on the standard output of the console,
-% ensuring as much as possible that this message is output synchronously, so
-% that it can be fully processed (typically displayed) by the console even if
-% the virtual machine is to crash just after.
-%
+-doc """
+Displays the specified string on the standard output of the console, ensuring as
+much as possible that this message is output synchronously, so that it can be
+fully processed (typically displayed) by the console even if the virtual machine
+is to crash just after.
+""".
 -spec display( ustring() ) -> void().
 display( Message ) ->
 
@@ -1848,11 +2030,12 @@ display( Message ) ->
 
 
 
-% @doc Displays the specified format string filled according to the specified
-% values on the standard output of the console, ensuring as much as possible
-% that this message is output synchronously, so that it can be output on the
-% console even if the virtual machine is to crash just after.
-%
+-doc """
+Displays the specified format string filled according to the specified values on
+the standard output of the console, ensuring as much as possible that this
+message is output synchronously, so that it can be output on the console even if
+the virtual machine is to crash just after.
+""".
 -spec display( format_string(), format_values() ) -> void().
 display( Format, Values ) ->
 
@@ -1865,11 +2048,11 @@ display( Format, Values ) ->
 
 
 
-% @doc Displays the specified string on the standard output of the console,
-% ensuring as much as possible that this message is output synchronously, so
-% that it can be output on the console even if the virtual machine is to crash
-% just after.
-%
+-doc """
+Displays the specified string on the standard output of the console, ensuring as
+much as possible that this message is output synchronously, so that it can be
+output on the console even if the virtual machine is to crash just after.
+""".
 -spec display_timed( ustring(), time_out() ) -> void().
 display_timed( Message, TimeOut ) ->
 
@@ -1887,11 +2070,12 @@ display_timed( Message, TimeOut ) ->
 
 
 
-% @doc Displays the specified format string filled according to specified values
-% on the standard output of the console, ensuring as much as possible this
-% message is output synchronously, so that it can be output on the console even
-% if the virtual machine is to crash just after.
-%
+-doc """
+Displays the specified format string filled according to specified values on the
+standard output of the console, ensuring as much as possible this message is
+output synchronously, so that it can be output on the console even if the
+virtual machine is to crash just after.
+""".
 -spec display_timed( format_string(), format_values(), time_out() ) -> void().
 display_timed( Format, Values, TimeOut ) ->
 
@@ -1904,12 +2088,11 @@ display_timed( Format, Values, TimeOut ) ->
 
 
 
-
-% @doc Displays the specified string on the standard error output of the
-% console, ensuring as much as possible this message is output synchronously, so
-% that it can be output on the console even if the virtual machine is to crash
-% just after.
-%
+-doc """
+Displays the specified string on the standard error output of the console,
+ensuring as much as possible this message is output synchronously, so that it
+can be output on the console even if the virtual machine is to crash just after.
+""".
 -spec display_error( ustring() ) -> void().
 display_error( Message ) ->
 
@@ -1927,24 +2110,26 @@ display_error( Message ) ->
 
 
 
-% @doc Triggers the specified diagnosed error: reports first its embedded
-% diagnosis, then throws this error as an exception.
-%
-% Typical use:
-%
-% case Expr of
-%
-%  { ok, X } ->
-%    [...];
-%
-%  { ok, Y } ->
-%    [...];
-%
-%  { error, DiagnosedReason } ->
-%     basic_utils:throw_diagnosed( DiagnosedReason )
-%
-% end
-%
+-doc """
+Triggers the specified diagnosed error: reports first its embedded diagnosis,
+then throws this error as an exception.
+
+Typical use:
+```
+case Expr of
+
+ { ok, X } ->
+   [...];
+
+ { ok, Y } ->
+   [...];
+
+ { error, DiagnosedReason } ->
+	basic_utils:throw_diagnosed( DiagnosedReason )
+
+end
+```
+""".
 -spec throw_diagnosed( diagnosed_error_reason() ) -> no_return().
 throw_diagnosed( _DiagnosedReason={ ErrorTuploid, ErrorMsg } ) ->
 	trace_bridge:error( ErrorMsg ),
@@ -1952,25 +2137,27 @@ throw_diagnosed( _DiagnosedReason={ ErrorTuploid, ErrorMsg } ) ->
 
 
 
-% @doc Triggers the specified diagnosed error, augmented by specified term:
-% reports first its embedded diagnosis, then throws this error, as an augmented
-% tuploid, as an exception.
-%
-% Typical use:
-%
-% case Expr of
-%
-%  { ok, X } ->
-%    [...];
-%
-%  { ok, Y } ->
-%    [...];
-%
-%  { error, DiagnosedReason } ->
-%     basic_utils:throw_diagnosed( DiagnosedReason, Z )
-%
-% end
-%
+-doc """
+Triggers the specified diagnosed error, augmented by the specified term: reports
+first its embedded diagnosis, then throws this error, as an augmented tuploid,
+as an exception.
+
+Typical use:
+```
+case Expr of
+
+ { ok, X } ->
+   [...];
+
+ { ok, Y } ->
+   [...];
+
+ { error, DiagnosedReason } ->
+	basic_utils:throw_diagnosed( DiagnosedReason, Z )
+
+end
+```
+""".
 -spec throw_diagnosed( diagnosed_error_reason(), term() ) -> no_return().
 throw_diagnosed( _DiagnosedReason={ ErrorTuploid, ErrorMsg },
 				 ExtraErrorTerm ) ->
@@ -1979,11 +2166,12 @@ throw_diagnosed( _DiagnosedReason={ ErrorTuploid, ErrorMsg },
 
 
 
-% @doc Displays the specified format string filled according to specified values
-% on the standard error output of the console, ensuring as much as possible this
-% message is output synchronously, so that it can be output on the console even
-% if the virtual machine is to crash just after.
-%
+-doc """
+Displays the specified format string filled according to specified values on the
+standard error output of the console, ensuring as much as possible this message
+is output synchronously, so that it can be output on the console even if the
+virtual machine is to crash just after.
+""".
 -spec display_error( format_string(), format_values() ) -> void().
 display_error( Format, Values ) ->
 	Message = text_utils:format( Format ++ "~n", Values ),
@@ -1991,10 +2179,11 @@ display_error( Format, Values ) ->
 
 
 
-% @doc Displays, for debugging purposes, the specified string, ensuring as much
-% as possible this message is output synchronously, so that it can be output on
-% the console even if the virtual machine is to crash just after.
-%
+-doc """
+Displays, for debugging purposes, the specified string, ensuring as much as
+possible this message is output synchronously, so that it can be output on the
+console even if the virtual machine is to crash just after.
+""".
 -spec debug( ustring() ) -> void().
 debug( Message ) ->
 	trace_utils:debug( Message ).
@@ -2003,26 +2192,27 @@ debug( Message ) ->
 
 
 
-% @doc Displays, for debugging purposes, the specified format string filled
-% according tothe specified values, ensuring as much as possible this message is
-% output synchronously, so that it can be output on the console even if the
-% virtual machine is to crash just after.
-%
+-doc """
+Displays, for debugging purposes, the specified format string filled according
+tothe specified values, ensuring as much as possible this message is output
+synchronously, so that it can be output on the console even if the virtual
+machine is to crash just after.
+""".
 -spec debug( format_string(), format_values() ) -> void().
 debug( Format, Values ) ->
 	debug( text_utils:format( Format, Values ) ).
 
 
 
+-doc """
+Returns a string that should be unique for the current UNIX process (of the VM),
+based on its operating system PID and on millisecond-precise time.
 
-% @doc Returns a string that should be unique for the current UNIX process (of
-% the VM), based on its operating system PID and on millisecond-precise time.
-%
-% Reasonably unique (add the PID of the Erlang process if concurrent creations
-% may happen), and suitable for file creation.
-%
-% For example "myriad-596330--576460741437" (negative monotonic time).
-%
+Reasonably unique (add the PID of the Erlang process if concurrent creations may
+happen), and suitable for file creation.
+
+For example `"myriad-596330--576460741437"` (negative monotonic time).
+""".
 -spec get_unix_process_specific_string() -> ustring().
 get_unix_process_specific_string() ->
 	text_utils:format( "myriad-~ts-~B",
@@ -2030,28 +2220,30 @@ get_unix_process_specific_string() ->
 
 
 
-% @doc Returns a stable, reproducible value (a strictly positive integer)
-% expected to be as much as possible specific to the current (Erlang) process.
-%
-% Refer to get_process_specific_value/1 for further details, and to
-% get_process_specific_value/1 to generate a value in a given range.
-%
+-doc """
+Returns a stable, reproducible value (a strictly positive integer) expected to
+be as much as possible specific to the current (Erlang) process.
+
+Refer to `get_process_specific_value/1` for further details, and to
+`get_process_specific_value/1` to generate a value in a given range.
+""".
 -spec get_process_specific_value() -> pos_integer().
 get_process_specific_value() ->
 	get_process_specific_value( _Pid=self() ).
 
 
 
-% @doc Returns a stable, reproducible value (a strictly positive integer)
-% expected to be as much as possible specific to the specified (Erlang) PID.
-%
-% This value is meant to be process-specific *and* reproducible, that is
-% returning always the same value for the same PID. This may be useful when
-% having to generate an integer identifier corresponding to a given process.
-%
-% We could imagine taking into account as well the current time, the process
-% reductions, etc. or generating a reference.
-%
+-doc """
+Returns a stable, reproducible value (a strictly positive integer) expected to
+be as much as possible specific to the specified (Erlang) PID.
+
+This value is meant to be process-specific *and* reproducible, that is returning
+always the same value for the same PID. This may be useful when having to
+generate an integer identifier corresponding to a given process.
+
+We could imagine taking into account as well the current time, the process
+reductions, etc. or generating a reference.
+""".
 -spec get_process_specific_value( pid() ) -> pos_integer().
 get_process_specific_value( Pid ) ->
 
@@ -2090,14 +2282,14 @@ get_process_specific_value( Pid ) ->
 
 
 
-% @doc Returns an (Erlang), non-reproducible, process-specific value in
-% [Min,Max[.
-%
-% Useful for example when a large number of similar processes try to access to
-% the same resource (e.g. a set of file descriptors) at the same time: they can
-% rely on some random waiting based on that process-specific value in order to
-% smooth the accesses over time. Reproducibility does not matter here.
-%
+-doc """
+Returns an (Erlang), non-reproducible, process-specific value in `[Min,Max[`.
+
+Useful for example when a large number of similar processes try to access to the
+same resource (e.g. a set of file descriptors) at the same time: they can rely
+on some random waiting based on that process-specific value in order to smooth
+the accesses over time. Reproducibility does not matter here.
+""".
 -spec get_process_specific_value( integer(), integer() ) -> integer().
 get_process_specific_value( Min, Max ) ->
 	Value = get_process_specific_value(),
@@ -2106,12 +2298,13 @@ get_process_specific_value( Min, Max ) ->
 
 
 
-% @doc Returns the total size in (RAM) memory used by specified (local, alive)
-% process, in bytes: this includes call stack, heap, and internal structures.
-%
-% See https://erlang.org/doc/man/erlang.html#process_info-1 for more
-% information.
-%
+-doc """
+Returns the total size in (RAM) memory used by specified (local, alive) process,
+in bytes: this includes call stack, heap, and internal structures.
+
+See [https://erlang.org/doc/man/erlang.html#process_info-1] for more
+information.
+""".
 -spec get_process_size( pid() ) -> byte_size().
 get_process_size( Pid ) ->
 
@@ -2135,15 +2328,16 @@ get_process_size( Pid ) ->
 
 
 
-% @doc Tells whether the specified process, designated by its PID, by a textual
-% representation of it (like `<9092.61.0>') or by a registered name (local
-% otherwise global) like 'foobar_service' is still existing at the moment of
-% this call.
-%
-% Note:
-% - the process may run on the local node or not
-% - generally not to be used, when relying on a good design
-%
+-doc """
+Tells whether the specified process, designated by its PID, by a textual
+representation of it (like `<9092.61.0>`) or by a registered name (local
+otherwise global) like `foobar_service` is still existing at the moment of this
+call.
+
+Note:
+ - the process may run on the local node or not
+ - generally not to be used, when relying on a good design
+""".
 -spec is_alive( pid() | ustring() | naming_utils:registration_name() ) ->
 											boolean().
 is_alive( TargetPid ) when is_pid( TargetPid ) ->
@@ -2154,33 +2348,38 @@ is_alive( TargetPidString ) when is_list( TargetPidString ) ->
 	is_alive( TargetPid, node( TargetPid ) );
 
 is_alive( TargetPidName ) when is_atom( TargetPidName ) ->
+
 	TargetPid = naming_utils:get_registered_pid_for( TargetPidName,
-						_RegistrationType=local_otherwise_global ),
+		_RegistrationType=local_otherwise_global ),
+
 	is_alive( TargetPid, node( TargetPid ) ).
 
 
 
-% @doc Tells whether the specified process (designated by its PID) supposed to
-% run on specified node (specified as an atom) was still existing at the moment
-% of this call.
-%
-% Note: generally not to be used when relying on a good design; and is_alive/1
-% should be preferred.
-%
+-doc """
+Tells whether the specified process (designated by its PID) supposed to run on
+specified node (specified as an atom) was still existing at the moment of this
+call.
+
+Note: generally not to be used when relying on a good design; and `is_alive/1`
+should be preferred.
+""".
 -spec is_alive( pid(), atom_node_name() ) -> boolean().
 is_alive( TargetPid, Node )  ->
 	is_alive( TargetPid, Node, _Verbose=true ).
 
 
-% @doc Tells whether the specified process (designated by its PID) supposed to
-% run on specified node (specified as an atom) was still existing at the moment
-% of this call.
-%
-% May emit trace warnings if told to be verbose.
-%
-% Note: generally not to be used when relying on a good design; and is_alive/1
-% should be preferred.
-%
+
+-doc """
+Tells whether the specified process (designated by its PID) supposed to run on
+specified node (specified as an atom) was still existing at the moment of this
+call.
+
+May emit trace warnings if told to be verbose.
+
+Note: generally not to be used when relying on a good design; and `is_alive/1`
+should be preferred.
+""".
 -spec is_alive( pid(), atom_node_name(), boolean() ) -> boolean().
 is_alive( TargetPid, Node, Verbose ) when is_pid( TargetPid ) ->
 	% erlang:is_process_alive/1 is more intended for debugging purposes...
@@ -2215,8 +2414,10 @@ is_alive( TargetPid, Node, Verbose ) when is_pid( TargetPid ) ->
 
 
 
-% @doc Returns whether the (Myriad-enforced) debug mode is activated for the
-% compilation of this module.
+-doc """
+Returns whether the (Myriad-enforced) debug mode is activated for the
+compilation of this module.
+""".
 
 % Dispatched in actual clauses, otherwise Dialyzer will detect an
 % underspecification:
@@ -2238,7 +2439,9 @@ is_debug_mode_enabled() ->
 -endif. % myriad_debug_mode
 
 
-% @doc Describes specified term in a controlled manner.
+-doc """
+Describes the specified term in a controlled manner (shortened if needed).
+""".
 -spec describe_term( term() ) -> ustring().
 describe_term( T ) ->
 	text_utils:ellipse_fmt( "~p", [ T ] ).

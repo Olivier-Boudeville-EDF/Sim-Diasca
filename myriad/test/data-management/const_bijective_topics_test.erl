@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,27 +25,29 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, September 14, 2022.
 
-
-% @doc Unit tests for the const-bijective topic table facilities, which are
-% per-topic read-only two-way associative tables allowing bidirectional
-% conversions between two sets that can be done from any number (potentially
-% extremely large) of callers very efficiently.
-%
-% See the const_bijective_topics.erl tested module.
-%
-% See also:
-% - const_bijective_table.erl for "single topic" const bijective tables
-% - bijective_table.erl for the runtime versions of such tables (as direct
-% terms, not modules)
-%
 -module(const_bijective_topics_test).
+
+-moduledoc """
+Unit tests for the **const-bijective topic table** facilities, which are
+per-topic read-only two-way associative tables allowing bidirectional
+conversions between two sets that can be done from any number (potentially
+extremely large) of callers very efficiently.
+
+See the const_bijective_topics.erl tested module.
+
+See also:
+- const_bijective_table.erl for "single topic" const bijective tables
+- bijective_table.erl for the runtime versions of such tables (as direct
+terms, not modules)
+""".
+
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type topic_spec() :: const_bijective_topics:topic_spec().
 
@@ -73,7 +75,7 @@ get_topic_specs() ->
 	% frobnicator:get_maybe_second_for_beta/1):
 	%
 	%BetaTopicSpec = { beta, BetaEntries, strict },
-	BetaTopicSpec = { beta, BetaEntries, maybe },
+	BetaTopicSpec = { beta, BetaEntries, 'maybe' },
 
 	[ AlphaTopicSpec, BetaTopicSpec ].
 

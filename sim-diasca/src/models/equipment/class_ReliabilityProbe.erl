@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc A simple probe to denote <b>reliability metrics</b>.
 -module(class_ReliabilityProbe).
+
+-moduledoc "A simple probe to denote **reliability metrics**.".
 
 
 -define( class_description,
@@ -56,20 +56,22 @@
 -define( failed_color, "#ec0505" ).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type plot_settings() :: plot_utils:plot_settings().
 
 
-% @doc Constructs a reliability probe.
-%
-% Parameters are:
-%
-% - Name is the name of this probe, and will be used for the generated data and
-% command files
-%
-% - Title will be the graph title
-%
+
+-doc """
+Constructs a reliability probe.
+
+Parameters are:
+
+- Name is the name of this probe, and will be used for the generated data and
+command files
+
+- Title will be the graph title
+""".
 construct( State, Name, Title ) ->
 
 	% First the direct mother classes:
@@ -105,11 +107,12 @@ construct( State, Name, Title ) ->
 
 
 
-% @doc Generates the appropriate gnuplot command file.
-%
-% Note: mostly defined to override its inherited version and branch to the
-% helper just below.
-%
+-doc """
+Generates the appropriate gnuplot command file.
+
+Note: mostly defined to override its inherited version and branch to the helper
+just below.
+""".
 -spec generateCommandFile( wooper:state() ) -> const_oneway_return().
 generateCommandFile( State ) ->
 
@@ -117,8 +120,8 @@ generateCommandFile( State ) ->
 
 	Name = class_TraceEmitter:get_plain_name( State ),
 
-	LabelDefs =
-		plot_utils:get_label_definitions( Settings#plot_settings.labels ),
+	LabelDefs = plot_utils:get_label_definitions(
+        Settings#plot_settings.labels ),
 
 	PlotCommand = get_plot_command( Name, State ),
 
@@ -212,11 +215,9 @@ generateCommandFile( State ) ->
 % Helper section.
 
 
-% @doc Returns (as a plain string) an appropriate gnuplot command for this
-% probe.
-%
-% (helper)
-%
+-doc """
+Returns (as a plain string) an appropriate gnuplot command for this probe.
+""".
 get_plot_command( Name, State ) ->
 
 	% Not wanting a full path here:
@@ -238,9 +239,10 @@ get_plot_command( Name, State ) ->
 
 
 
-% @doc Returns a plot_settings record with updated informations (expressed as
-% plain strings) and default values for the other fields.
-%
+-doc """
+Returns a plot_settings record with updated informations (expressed as plain
+strings) and default values for the other fields.
+""".
 -spec update_plot_settings( plot_settings() ) -> plot_settings().
 update_plot_settings( Settings ) ->
 

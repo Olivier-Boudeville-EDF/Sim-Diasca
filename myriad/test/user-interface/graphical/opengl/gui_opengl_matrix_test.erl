@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,16 +25,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, February 2, 2022.
 
-
-% @doc Testing of <b>matrix support</b> in relation to OpenGL, to ensure that
-% they can be handled as expected.
-%
-% This test relies on the OpenGL 1.x compatibility mode, as opposed to more
-% modern versions of OpenGL (e.g. 3.1) that rely on shaders and GLSL.
-%
-% See the gui_opengl.erl tested module.
-%
 -module(gui_opengl_matrix_test).
+
+-moduledoc """
+Testing of **matrix support** in relation to OpenGL, to ensure that they can be
+handled as expected.
+
+This test relies on the OpenGL 1.x compatibility mode, as opposed to more modern
+versions of OpenGL (e.g. 3.1) that rely on shaders and GLSL.
+
+See the gui_opengl.erl tested module.
+""".
 
 
 
@@ -67,12 +68,13 @@
 	%
 	opengl_initialised = false :: boolean() } ).
 
+
+-doc "Test-specific overall GUI state.".
 -type my_gui_state() :: #my_gui_state{}.
-% Test-specific overall GUI state.
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
 
@@ -81,29 +83,7 @@
 
 
 
-% @doc Runs the OpenGL test if possible.
--spec run_opengl_test() -> void().
-run_opengl_test() ->
-
-	test_facilities:display( "~nStarting the test of OpenGL Matrix support." ),
-
-	case gui_opengl:get_glxinfo_strings() of
-
-		undefined ->
-			test_facilities:display( "No proper OpenGL support detected on host"
-				" (no GLX visual reported), thus no test performed." );
-
-		GlxInfoStr ->
-			test_facilities:display( "Checking whether OpenGL hardware "
-				"acceleration is available: ~ts",
-				[ gui_opengl:is_hardware_accelerated( GlxInfoStr ) ] ),
-			run_actual_test()
-
-	end.
-
-
-
-% @doc Runs the actual test.
+-doc "Runs the actual test.".
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
@@ -131,12 +111,13 @@ run_actual_test() ->
 
 
 
-% @doc Creates the initial test GUI: a main frame containing an OpenGL canvas to
-% which an OpenGL context is associated.
-%
-% Once the rendering is done, the buffers are swapped, and the content is
-% displayed.
-%
+-doc """
+Creates the initial test GUI: a main frame containing an OpenGL canvas to which
+an OpenGL context is associated.
+
+Once the rendering is done, the buffers are swapped, and the content is
+displayed.
+""".
 -spec init_test_gui() -> my_gui_state().
 init_test_gui() ->
 
@@ -157,9 +138,9 @@ init_test_gui() ->
 
 
 
-% @doc The main loop of this test, driven by the receiving of MyriadGUI
-% messages.
-%
+-doc """
+The main loop of this test, driven by the receiving of MyriadGUI messages.
+""".
 -spec gui_main_loop( my_gui_state() ) -> void().
 gui_main_loop( GUIState ) ->
 
@@ -208,9 +189,10 @@ gui_main_loop( GUIState ) ->
 
 
 
-% @doc Sets up OpenGL, once for all (regardless of next resizings), once a
-% proper OpenGL context is available.
-%
+-doc """
+Sets up OpenGL, once for all (regardless of next resizings), once a proper
+OpenGL context is available.
+""".
 -spec initialise_opengl( my_gui_state() ) -> my_gui_state().
 initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 										   context=GLContext,
@@ -235,7 +217,7 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 
 
 
-% @doc Performs the actual matrix test.
+-doc "Performs the actual matrix test.".
 -spec test_matrices() -> void().
 test_matrices() ->
 
@@ -281,10 +263,11 @@ test_matrices() ->
 
 
 
-% @doc Managing a resizing of the main frame.
-%
-% OpenGL context expected here to have already been set.
-%
+-doc """
+Managing a resizing of the main frame.
+
+OpenGL context expected here to have already been set.
+""".
 -spec on_main_frame_resized( my_gui_state() ) -> my_gui_state().
 on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 
@@ -317,21 +300,13 @@ on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
 	test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
-
-		true ->
-			test_facilities:display(
-				"(not running the OpenGL test, being in batch mode)" );
-
-		false ->
-			run_opengl_test()
-
-	end,
+	gui_opengl_for_testing:can_be_run(
+		"the test of OpenGL Matrix support" ) =:= yes andalso run_actual_test(),
 
 	test_facilities:stop().

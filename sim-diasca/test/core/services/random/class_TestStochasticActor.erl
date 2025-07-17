@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,12 +19,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Test of the Stochastic Actor class, regarding <b>random management</b>.
-%
-% Note: to be used with random_laws_and_stochastic_actor_test.erl.
-%
 -module(class_TestStochasticActor).
+
+-moduledoc """
+Test of the Stochastic Actor class, regarding **random management**.
+
+Note: to be used with the `random_laws_and_stochastic_actor_test` module.
+""".
+
+
 
 -define( class_description,
 		 "Test of the Stochastic Actor class, regarding random management."
@@ -61,17 +64,18 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
+% Type shorthand:
 
 -type random_law_spec() :: random_utils:random_law_spec().
 
 
 
-% @doc Constructs a test stochastic actor.
-%
-% TerminationProbability models the probability that this actor terminates, when
-% deciding what to do next.
-%
+-doc """
+Constructs a test stochastic actor.
+
+TerminationProbability models the probability that this actor terminates, when
+deciding what to do next.
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), [ random_law_spec() ],
 				 math_utils:probability() ) -> wooper:state().
@@ -96,7 +100,7 @@ construct( State, ActorSettings, ActorName, RandomLawSpecs,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -119,7 +123,7 @@ destruct( State ) ->
 
 
 
-% @doc The core of the test stochastic actor behaviour.
+-doc "The core of the test stochastic actor behaviour.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -180,7 +184,7 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Called at first diasca only.
+-doc "Called at first diasca only.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->

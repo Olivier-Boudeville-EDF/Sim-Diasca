@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc <b>Base dataflow object</b>, defined for testing.
 -module(class_BaseTestDataflowObject).
+
+-moduledoc "**Base dataflow object**, defined for testing.".
 
 
 -define( class_description,
@@ -43,7 +44,8 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
+
 
 
 % For common information:
@@ -58,19 +60,20 @@
 % - bar, of type string
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a test dataflow object instance:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - DataflowPid is the PID of the dataflow instance
-%
+-doc """
+Constructs a test dataflow object instance:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- DataflowPid is the PID of the dataflow instance
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(), object_name(),
 				 [ integer() | ustring() ], dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, ObjectName,
@@ -90,7 +93,7 @@ construct( State, ActorSettings, ObjectName,
 % Static section.
 
 
-% @doc Allows to fully specify the dataflow attributes of this object.
+-doc "Allows to fully specify the dataflow attributes of this object.".
 -spec get_dataflow_attribute_specs() ->
 							static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
@@ -115,7 +118,7 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% @doc Returns a textual description of this household dataflow object.
+-doc "Returns a textual description of this dataflow object.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Basic test dataflow object named '~ts', having ~ts",

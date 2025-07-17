@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2011-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -23,7 +23,6 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-%
 % Creation date: Tuesday, January 11, 2011.
 
 
@@ -71,7 +70,7 @@
 
 -define( case_emergency_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( emergency,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -83,7 +82,7 @@
 
 -define( case_alert_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( alert,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -95,7 +94,7 @@
 
 -define( case_critical_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( critical,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -107,7 +106,7 @@
 
 -define( case_error_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( error,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -119,7 +118,7 @@
 
 -define( case_warning_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( warning,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -135,7 +134,7 @@
 
 -define( case_notice_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( notice,
-						text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -148,7 +147,7 @@
 
 -define( case_info_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( info,
-						text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -160,7 +159,7 @@
 
 -define( case_debug_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( debug,
-						text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 

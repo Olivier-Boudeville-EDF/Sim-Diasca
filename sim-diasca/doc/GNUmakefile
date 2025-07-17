@@ -186,6 +186,7 @@ populate-doc-dir-common: generate-doc-common create-lower-layer-referentials
 	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_MOD_GUIDE_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_MOD_GUIDE_DIR) 2>/dev/null || true); done
 	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_COUPLING_HOWTO_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_COUPLING_HOWTO_DIR) 2>/dev/null || true); done
 	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_DATAFLOW_HOWTO_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_DATAFLOW_HOWTO_DIR) 2>/dev/null || true); done
+	@find $(DOC_TARGET_DIR) -name 'mathjax' -exec /bin/rm -f '{}' 2>/dev/null ';'
 
 
 populate-doc-dir-internal: generate-doc-internal

@@ -1,4 +1,4 @@
-% Copyright (C) 2009-2024 Olivier Boudeville
+% Copyright (C) 2009-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -86,6 +86,8 @@
 % vector3:vector3()} pair.
 %
 % A shorthand for these record and corresponding type could be cpt_m4.
+%
+% A (4x4) compact matrix is a (4x4) homogeneous matrix.
 %
 -record( compact_matrix4, {
 

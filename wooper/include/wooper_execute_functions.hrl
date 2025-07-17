@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -50,21 +50,22 @@
 % Section for requests.
 
 
-% @doc Executes the specified parameter-less request of the current instance,
-% calling implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (requests, here), including from child classes.
-%
-% Example: If in some start method of an EngineVehicle class one wants to call
-% the (possibly overridden by, say, a class Car) startEngine/1 request, then
-% executeRequest/2 should be used: 'MyVehicle ! {startEngine..' would not be
-% synchronous, startEngine(State) would call EngineVehicle:startEngine/1 instead
-% of Car:startEngine/1 when called from a Car instance, and of course
-% EngineVehicle should know nothing from its Car child class.
-%
-% Returns an updated state and a result.
-%
+-doc """
+Executes the specified parameter-less request of the current instance, calling
+implicitly any overridden version of the method.
+
+Allows to call synchronously from the code of a given class its actual
+overridden methods (requests, here), including from child classes.
+
+Example: If in some start method of an EngineVehicle class one wants to call the
+(possibly overridden by, say, a class Car) `startEngine/1` request, then
+`executeRequest/2` should be used: `MyVehicle ! {startEngine, ...` would not be
+synchronous, `startEngine(State)` would call `EngineVehicle:startEngine/1`
+instead of `Car:startEngine/1` when called from a Car instance, and of course
+EngineVehicle should know nothing from its Car child class.
+
+Returns an updated state and a result.
+""".
 -spec executeRequest( wooper:state(), request_name() ) ->
 							{ wooper:state(), method_internal_result() }.
 
@@ -78,7 +79,7 @@ executeRequest( State, RequestAtom ) when is_record( State, state_holder )
 										   _ArgumentList=[] );
 
 executeRequest( State, RequestAtomError )
-						when is_record( State, state_holder ) ->
+                                        when is_record( State, state_holder ) ->
 
 	wooper:log_error( "when executing local request: '~p' is not an atom.",
 					  [ RequestAtomError ], State ),
@@ -105,16 +106,17 @@ executeRequest( StateError, RequestAtomError ) ->
 
 
 
-% @doc Executes the specified parameter-less const request of the current
-% instance, calling implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (requests, here), including from child classes.
-%
-% @see executeRequest/2
-%
-% Returns only a result.
-%
+-doc """
+Executes the specified parameter-less const request of the current instance,
+calling implicitly any overridden version of the method.
+
+Allows to call synchronously from the code of a given class its actual
+overridden methods (requests, here), including from child classes.
+
+See `executeRequest/2`.
+
+Returns only a result.
+""".
 -spec executeConstRequest( wooper:state(), request_name() ) ->
 								method_internal_result().
 executeConstRequest( State, RequestAtom ) ->
@@ -127,17 +129,17 @@ executeConstRequest( State, RequestAtom ) ->
 
 
 
+-doc """
+Executes the specified request of the current instance, calling implicitly any
+overridden version of the method.
 
-% @doc Executes the specified request of the current instance, calling
-% implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (requests, here), including from child classes.
-%
-% @see executeRequest/2
-%
-% Returns an updated state and a result.
-%
+Allows to call synchronously from the code of a given class its actual
+overridden methods (requests, here), including from child classes.
+
+See `executeRequest/2`.
+
+Returns an updated state and a result.
+""".
 -spec executeRequest( wooper:state(), request_name(), method_arguments() ) ->
 							{ wooper:state(), method_internal_result() }.
 executeRequest( State, RequestAtom, ArgumentList ) when
@@ -193,16 +195,17 @@ executeRequest( StateError, RequestAtomError, _LastArg ) ->
 
 
 
-% @doc Executes the specified const request of the current instance, calling
-% implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (const requests, here), including from child classes.
-%
-% @see executeRequest/2
-%
-% Returns only a result.
-%
+-doc """
+Executes the specified const request of the current instance, calling implicitly
+any overridden version of the method.
+
+Allows to call synchronously from the code of a given class its actual
+overridden methods (const requests, here), including from child classes.
+
+Ssee `executeRequest/2`.
+
+Returns only a result.
+""".
 -spec executeConstRequest( wooper:state(), request_name(),
 						   method_arguments() ) -> method_internal_result().
 executeConstRequest( State, RequestAtom, ArgumentList ) ->
@@ -215,17 +218,17 @@ executeConstRequest( State, RequestAtom, ArgumentList ) ->
 
 
 
+-doc """
+Executes the version of the specified parameter-less request, as it has been
+defined by the specified parent class of the current instance.
 
-% @doc Executes the version of the specified parameter-less request, as it has
-% been defined by the specified parent class of the current instance.
-%
-% Allows to call synchronously from the code of a given class a version defined
-% through its inheritance tree.
-%
-% @see executeRequest/2
-%
-% Returns an updated state and a result.
-%
+Allows to call synchronously from the code of a given class a version defined
+through its inheritance tree.
+
+See executeRequest/2.
+
+Returns an updated state and a result.
+""".
 -spec executeRequestAs( wooper:state(), classname(), request_name() ) ->
 								{ wooper:state(), method_internal_result() }.
 executeRequestAs( State, ParentClassname, RequestAtom )
@@ -261,16 +264,17 @@ executeRequestAs( _State, ParentClassnameError, RequestAtomError ) ->
 
 
 
-% @doc Executes the version of the specified parameter-less const request, as it
-% has been defined by the specified parent class of the current instance.
-%
-% Allows to call synchronously from the code of a given class a version defined
-% through its inheritance tree.
-%
-% @see executeRequest/2
-%
-% Returns only a result.
-%
+-doc """
+Executes the version of the specified parameter-less const request, as it has
+been defined by the specified parent class of the current instance.
+
+Allows to call synchronously from the code of a given class a version defined
+through its inheritance tree.
+
+See `executeRequest/2`.
+
+Returns only a result.
+""".
 -spec executeConstRequestAs( wooper:state(), classname(), request_name() ) ->
 								method_internal_result().
 executeConstRequestAs( State, ParentClassname, RequestAtom ) ->
@@ -284,16 +288,17 @@ executeConstRequestAs( State, ParentClassname, RequestAtom ) ->
 
 
 
-% @doc Executes the version of the specified request, as it has been defined by
-% the specified parent class of the current instance.
-%
-% Allows to call synchronously from the code of a given class a version defined
-% through its inheritance tree.
-%
-% @see executeRequest/2
-%
-% Returns an updated state and a result.
-%
+-doc """
+Executes the version of the specified request, as it has been defined by the
+specified parent class of the current instance.
+
+Allows to call synchronously from the code of a given class a version defined
+through its inheritance tree.
+
+See `executeRequest/2`.
+
+Returns an updated state and a result.
+""".
 -spec executeRequestAs( wooper:state(), classname(), request_name(),
 		method_arguments() ) -> { wooper:state(), method_internal_result() }.
 executeRequestAs( State, Classname, RequestAtom, ArgumentList ) when
@@ -344,16 +349,17 @@ executeRequestAs( _State, ClassnameError, RequestAtomError, _LastArg ) ->
 
 
 
-% @doc Executes the version of the specified const request, as it has been
-% defined by the specified parent class of the current instance.
-%
-% Allows to call synchronously from the code of a given class a version defined
-% through its inheritance tree.
-%
-% @see executeRequest/2
-%
-% Returns only a result.
-%
+-doc """
+Executes the version of the specified const request, as it has been defined by
+the specified parent class of the current instance.
+
+Allows to call synchronously from the code of a given class a version defined
+through its inheritance tree.
+
+See `executeRequest/2`.
+
+Returns only a result.
+""".
 -spec executeConstRequestAs( wooper:state(), classname(), request_name(),
 			method_arguments() ) -> method_internal_result().
 executeConstRequestAs( State, Classname, RequestAtom, ArgumentList ) ->
@@ -372,22 +378,22 @@ executeConstRequestAs( State, Classname, RequestAtom, ArgumentList ) ->
 % Section for oneways:
 
 
+-doc """
+Executes the specified parameter-less oneway of the current instance, calling
+implicitly any overridden version of the method.
 
-% @doc Executes the specified parameter-less oneway of the current instance,
-% calling implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (oneways, here), including from child classes.
-%
-% Example: If in some start method of an EngineVehicle class one wants to call
-% the (possibly overridden by, say, a class Car) startEngine/1 oneway, then
-% executeOneway/2 should be used: 'MyVehicle ! startEngine' would not be
-% synchronous, startEngine(State) would call EngineVehicle:startEngine/1 instead
-% of Car:startEngine/1 when called from a Car instance, and of course
-% EngineVehicle should know nothing from its Car child class.
-%
-% Returns an updated state.
-%
+Allows to call synchronously from the code of a given class its actual
+overridden methods (oneways, here), including from child classes.
+
+Example: If in some start method of an EngineVehicle class one wants to call the
+(possibly overridden by, say, a class Car) `startEngine/1` oneway, then
+`executeOneway/2` should be used: `MyVehicle ! startEngine` would not be
+synchronous, `startEngine(State)` would call `EngineVehicle:startEngine/1`
+instead of `Car:startEngine/1` when called from a Car instance, and of course
+EngineVehicle should know nothing from its Car child class.
+
+Returns an updated state.
+""".
 -spec executeOneway( wooper:state(), oneway_name() ) -> wooper:state().
 executeOneway( State, OnewayAtom ) when is_record( State, state_holder )
 										andalso is_atom( OnewayAtom ) ->
@@ -424,16 +430,17 @@ executeOneway( StateError, OnewayError ) ->
 
 
 
-% @doc Executes the specified const parameter-less oneway of the current
-% instance, calling implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (oneways, here), including from child classes.
-%
-% @see executeOneway/2
-%
-% Const oneways return nothing.
-%
+-doc """
+Executes the specified const parameter-less oneway of the current instance,
+calling implicitly any overridden version of the method.
+
+Allows to call synchronously from the code of a given class its actual
+overridden methods (oneways, here), including from child classes.
+
+See `executeOneway/2`.
+
+Const oneways return nothing.
+""".
 -spec executeConstOneway( wooper:state(), oneway_name() ) -> void().
 executeConstOneway( State, OnewayAtom ) ->
 
@@ -444,17 +451,17 @@ executeConstOneway( State, OnewayAtom ) ->
 
 
 
+-doc """
+Executes the specified oneway of the current instance, calling implicitly any
+overridden version of the method.
 
-% @doc Executes the specified oneway of the current instance, calling implicitly
-% any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (oneways, here), including from child classes.
-%
-% @see executeOneway/2
-%
-% Returns an updated state.
-%
+Allows to call synchronously from the code of a given class its actual
+overridden methods (oneways, here), including from child classes.
+
+See `executeOneway/2`.
+
+Returns an updated state.
+""".
 -spec executeOneway( wooper:state(), oneway_name(), method_arguments() ) ->
 								wooper:state().
 executeOneway( State, OnewayAtom, ArgumentList ) when
@@ -491,7 +498,7 @@ executeOneway( StateError, OnewayAtom, _LastArg ) when is_atom( OnewayAtom ) ->
 
 
 executeOneway( State, OnewayAtomError, _LastArg )
-						when is_record( State, state_holder ) ->
+		when is_record( State, state_holder ) ->
 
 	wooper:log_error( "when executing oneway: '~p' is not an atom.",
 					  [ OnewayAtomError ], State ),
@@ -508,16 +515,17 @@ executeOneway( _State, OnewayAtomError, _LastArg ) ->
 
 
 
-% @doc Executes the specified const oneway of the current instance, calling
-% implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (oneways, here), including from child classes.
-%
-% @see executeOneway/2
-%
-% Const oneways return nothing.
-%
+-doc """
+Executes the specified const oneway of the current instance, calling implicitly
+any overridden version of the method.
+
+Allows to call synchronously from the code of a given class its actual
+overridden methods (oneways, here), including from child classes.
+
+See `executeOneway/2`.
+
+Const oneways return nothing.
+""".
 -spec executeConstOneway( wooper:state(), oneway_name(), method_arguments() ) ->
 								void().
 executeConstOneway( State, OnewayAtom, ArgumentList ) ->
@@ -529,17 +537,17 @@ executeConstOneway( State, OnewayAtom, ArgumentList ) ->
 
 
 
+-doc """
+Executes the version of the specified parameter-less oneway, as it has been
+defined by the specified parent class of the current instance.
 
-% @doc Executes the version of the specified parameter-less oneway, as it has
-% been defined by the specified parent class of the current instance.
-%
-% Allows to call synchronously from the code of a given class a version defined
-% through its inheritance tree.
-%
-% @see executeOneway/2
-%
-% Returns an updated state.
-%
+Allows to call synchronously from the code of a given class a version defined
+through its inheritance tree.
+
+See `executeOneway/2`.
+
+Returns an updated state.
+""".
 -spec executeOnewayAs( wooper:state(), classname(), oneway_name() ) ->
 								wooper:state().
 executeOnewayAs( State, ParentClassname, OnewayAtom )
@@ -575,16 +583,17 @@ executeOnewayAs( _StateError, ParentClassnameError, OnewayAtomError ) ->
 
 
 
-% @doc Executes the specified const oneway of the current instance, calling
-% implicitly any overridden version of the method.
-%
-% Allows to call synchronously from the code of a given class its actual
-% overridden methods (oneways, here), including from child classes.
-%
-% @see executeOneway/2
-%
-% Const oneways return nothing.
-%
+-doc """
+Executes the specified const oneway of the current instance, calling implicitly
+any overridden version of the method.
+
+Allows to call synchronously from the code of a given class its actual
+overridden methods (oneways, here), including from child classes.
+
+See `executeOneway/2`.
+
+Const oneways return nothing.
+""".
 -spec executeConstOnewayAs( wooper:state(), classname(), oneway_name() ) ->
 								void().
 executeConstOnewayAs( State, Classname, OnewayAtom ) ->
@@ -596,16 +605,17 @@ executeConstOnewayAs( State, Classname, OnewayAtom ) ->
 
 
 
-% @doc Executes the version of the specified oneway, as it has been defined by
-% the specified parent class of the current instance.
-%
-% Allows to call synchronously from the code of a given class a version defined
-% through its inheritance tree.
-%
-% @see executeOneway/2
-%
-% Returns an updated state.
-%
+-doc """
+Executes the version of the specified oneway, as it has been defined by the
+specified parent class of the current instance.
+
+Allows to call synchronously from the code of a given class a version defined
+through its inheritance tree.
+
+See `executeOneway/2`.
+
+Returns an updated state.
+""".
 -spec executeOnewayAs( wooper:state(), classname(), oneway_name(),
 					   method_arguments() ) -> wooper:state().
 executeOnewayAs( State, Classname, OnewayAtom, ArgumentList ) when
@@ -619,7 +629,6 @@ executeOnewayAs( State, Classname, OnewayAtom, ArgumentList ) when
 
 	wooper_handle_local_oneway_execution_as( OnewayAtom, State,
 											 ArgumentList, Classname );
-
 
 
 % Here third parameter is not a list:
@@ -656,16 +665,17 @@ executeOnewayAs( _State, Classname, OnewayAtomError, _LastArg ) ->
 
 
 
-% @doc Executes the version of the specified const oneway, as it has been
-% defined by the specified parent class of the current instance.
-%
-% Allows to call synchronously from the code of a given class a version defined
-% through its inheritance tree.
-%
-% @see executeOneway/2
-%
-% Const oneways return nothing.
-%
+-doc """
+Executes the version of the specified const oneway, as it has been defined by
+the specified parent class of the current instance.
+
+Allows to call synchronously from the code of a given class a version defined
+through its inheritance tree.
+
+See `executeOneway/2`.
+
+Const oneways return nothing.
+""".
 -spec executeConstOnewayAs( wooper:state(), classname(), oneway_name(),
 							method_arguments() ) -> void().
 executeConstOnewayAs( State, Classname, OnewayAtom, ArgumentList ) ->

@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example of a district-related <b>dataflow object</b>.
 -module(class_District).
+
+-moduledoc "Example of a district-related **dataflow object**.".
 
 
 -define( class_description,
@@ -55,7 +56,7 @@
 
 
 % For types and shorthands:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For energy_demand_semantics and all:
@@ -70,28 +71,29 @@
 % multiple peer instead.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a dataflow district object instance, in charge of modelling
-% the state of a district:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - DistrictName is the name of this district
-%
-% - AdministrativeName is the administrative name of this district
-%
-% - GroundSurface is the total ground surface of this district
-%
-% - Type is the rural/urban typology of this district
-%
-% - DataflowPid is the PID of the dataflow instance
-%
+-doc """
+Constructs a dataflow district object instance, in charge of modelling the state
+of a district:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- DistrictName is the name of this district
+
+- AdministrativeName is the administrative name of this district
+
+- GroundSurface is the total ground surface of this district
+
+- Type is the rural/urban typology of this district
+
+- DataflowPid is the PID of the dataflow instance
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	class_Actor:name(), [ administrative_name() | surface() | area_type() ],
 	dataflow_pid() ) -> wooper:state().
@@ -113,7 +115,7 @@ construct( State, ActorSettings, DistrictName,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -140,13 +142,14 @@ destruct( State ) ->
 % Member methods section.
 
 
-% @doc Registers specified building to this district: the specified building is
-% located-in this district.
-%
+-doc """
+Registers specified building to this district: the specified building is
+located-in this district.
+""".
 -spec registerBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                                                actor_oneway_return().
 registerBuilding( State, BuildingPid, _SendingActorPid )
-  when is_pid( BuildingPid ) ->
+                                        when is_pid( BuildingPid ) ->
 
 	% Check that registered up to once:
 	false = lists:member( BuildingPid, ?getAttr(buildings) ),
@@ -163,7 +166,7 @@ registerBuilding( State, BuildingPid, _SendingActorPid )
 % Static section.
 
 
-% Allows to fully specify the dataflow attributes of this object.
+-doc "Allows to fully specify the dataflow attributes of this object.".
 -spec get_dataflow_attribute_specs() ->
 							static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
@@ -196,7 +199,7 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% @doc Returns a textual description of this district dataflow object.
+-doc "Returns a textual description of this district dataflow object.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Test of the <b>support of methods</b>.
 -module(class_MethodTester).
+
+-moduledoc """
+Test of the **support of methods**.
+""".
 
 
 -define( class_description,
@@ -45,10 +47,11 @@
 -include("wooper.hrl").
 
 
+% Local type:
 -type name() :: text_utils:ustring().
 
 
-% Simplest possible signature:
+-doc "Simplest possible signature.".
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
@@ -72,14 +75,15 @@ destruct( State ) ->
 % Method implementations.
 
 
-% @doc Returns the name of this instance.
+-doc "Returns the name of this instance.".
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
 	trace_utils:info( "getName/1 called." ),
 	wooper:const_return_result( ?getAttr(name) ).
 
 
-% @doc Sets the name of this instance.
+
+-doc "Sets the name of this instance.".
 -spec setName( wooper:state(), name() ) -> oneway_return().
 setName( State, Name ) ->
 	trace_utils:info( "setName/2 called." ),
@@ -87,14 +91,16 @@ setName( State, Name ) ->
 	wooper:return_state( NewState ).
 
 
-% @doc Returns a value established in a static context.
+
+-doc "Returns a value established in a static context.".
 -spec get_static_info( integer(), integer() ) -> static_return( integer() ).
 get_static_info( A, B ) ->
 	trace_utils:info( "get_static_info/2 called" ),
 	wooper:return_static( A + B + 10 ).
 
 
-% @doc Test of a static method returning nothing (void return):
+
+-doc "Test of a static method returning nothing (void return).".
 -spec test_static_void() -> static_void_return().
 test_static_void() ->
 	%trace_utils:debug( "test_static_void/0 called!" ),

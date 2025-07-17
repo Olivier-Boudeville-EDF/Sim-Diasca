@@ -94,7 +94,7 @@ Each simulation case is able to define how it is to be deployed or executed, sim
 
 Most test cases rely on default settings, which operate this way:
 
-1. if a host file - named by default ``sim-diasca-host-candidates.txt`` - is found in the current directory (the one from which a test case ``X`` is run, thanks to a ``make X_run`` for example), then the engine will read it and try to use the hosts listed there; the (ETF) syntax is simple and described in the ``sim-diasca-host-candidates-sample.txt`` example file, to be found in the ``sim-diasca/conf`` directory (it is also described `here <http://myriad.esperide.org/#etf>`_)
+1. if a host file - named by default ``sim-diasca-host-candidates.etf`` - is found in the current directory (the one from which a test case ``X`` is run, thanks to a ``make X_run`` for example), then the engine will read it and try to use the hosts listed there; the (ETF) syntax is simple and described in the ``sim-diasca-host-candidates-sample.etf`` example file, to be found in the ``sim-diasca/conf`` directory (it is also described `here <http://myriad.esperide.org/#etf>`_)
 
 2. if this host file is not found, the simulation will run only locally
 

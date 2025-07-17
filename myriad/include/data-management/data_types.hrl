@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 Olivier Boudeville
+% Copyright (C) 2011-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -98,9 +98,8 @@
 -define( list_impl_type( T ), [ T ] ).
 
 
+-doc "Any kind of lists.".
 -type any_list() :: list() | ?list_impl_type.
-% Any kind of lists.
-
 
 
 

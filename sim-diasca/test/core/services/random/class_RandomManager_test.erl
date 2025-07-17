@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,15 +19,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Overall unit tests for the <b>RandomManager class</b> implementation.
-%
-% See the class_RandomManager.erl module.
-%
-% See also the various tests for each supported distribution
-% (class_RandomManager_*_test.erl).
-%
 -module(class_RandomManager_test).
+
+-moduledoc """
+Overall unit tests for the *RandomManager class** implementation.
+
+See the `class_RandomManager` module.
+
+See also the various tests for each supported distribution
+(`class_RandomManager_*_test.erl`).
+""".
 
 
 % For facilities common to all cases:
@@ -73,8 +74,8 @@ draw_uniform_values( Count, Table, MaxValue, RandomManagerPid ) ->
 		{ wooper_result, { uniform_value, Value } } ->
 			NewCount = element( Value, Table ) + 1,
 			draw_uniform_values( Count-1,
-				setelement( Value, Table, NewCount ),
-				MaxValue, RandomManagerPid )
+				setelement( Value, Table, NewCount ), MaxValue,
+				RandomManagerPid )
 
 	end.
 
@@ -275,7 +276,7 @@ test_exponential_random( RandomManagerPid, Lambda ) ->
 	Mean = compute_mean( FourthExponentialTable ),
 
 	?test_notice_fmt( "Mean of this full actual exponential distribution "
-					  "is ~f.",	[ Mean ] ).
+					  "is ~f.", [ Mean ] ).
 
 
 test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
@@ -322,7 +323,7 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 
 
 
-% @doc Runs the tests, no prior RandomManager expected to be alive.
+-doc "Runs the tests, no prior RandomManager expected to be alive.".
 -spec run() -> no_return().
 run() ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various facilities for <b>linear-related</b> operations.
 -module(linear).
+
+-moduledoc """
+Gathering of various facilities for **linear-related** operations.
+""".
 
 
 % For printout_*, inline_size, etc.:
@@ -55,127 +57,175 @@
 % numbers.
 
 
+
+-doc "The dimension of a space (e.g. number of rows or columns for a matrix).".
 -type dimension() :: count().
-% The dimension of a space (e.g. number of rows or columns for a matrix).
 
 
+
+-doc """
+Cartesian real (actually double-precision floating-point) coordinates in a
+coordinate system.
+""".
 -type coordinate() :: float().
-% Cartesian real (actually double-precision floating-point) coordinates in a
-% referential.
 
 
+
+-doc "Cartesian integer coordinates in a coordinate system.".
 -type integer_coordinate() :: integer().
-% Cartesian integer coordinates in a referential.
 
 
+
+-doc "Cartesian coordinates in a coordinate system.".
 -type any_coordinate() :: number().
-% Cartesian coordinates in a referential.
 
 
+
+-doc "User-specified coordinates in a coordinate system.".
 -type user_coordinate() :: number().
-% User-specified coordinates in a referential.
 
 
+
+-doc """
+Distance (as floating-point) between two points (e.g. to express lengths).
+""".
 -type distance() :: float().
-% Distance (as floating-point) between two points (e.g. to express lengths).
 
 
+
+-doc "Integer distance between two points (e.g. to express lengths).".
 -type integer_distance() :: integer().
-% Integer distance between two points (e.g. to express lengths).
 
 
+
+-doc "Distance between two points (e.g. to express lengths).".
 -type any_distance() :: number().
-% Distance between two points (e.g. to express lengths).
 
 
+
+-doc "Signed distance (hence positive or negative).".
 -type signed_distance() :: float().
-% Signed distance (positive or negative).
+
 
 
 
 % Mostly for clarity:
 
+
+-doc "A radius (as floating-point).".
 -type radius() :: distance().
-% Radius (as floating-point).
 
 
+
+-doc "A radius (as integer).".
 -type integer_radius() :: integer_distance().
-% Radius (as integer).
 
 
+
+-doc "A radius".
 -type any_radius() :: any_distance().
-% Radius.
 
 
+
+-doc """
+Square of a distance between two points, as a floating-point value (cheaper to
+compute, when applying the square root operator is not needed, like when
+comparing distances).
+""".
 -type square_distance() :: float().
-% Square of a distance between two points, as a floating-point value (cheaper to
-% compute, when applying the square root operator is not needed, like when
-% comparing distances).
 
 
+
+-doc """
+Square of a distance between two points, as an integer value (cheaper to
+compute, when applying the square root operator is not needed, like when
+comparing distances).
+""".
 -type integer_square_distance() :: integer().
-% Square of a distance between two points, as an integer value (cheaper to
-% compute, when applying the square root operator is not needed, like when
-% comparing distances).
 
 
 
+-doc """
+Square of a distance between two points (cheaper to compute, when applying the
+square root operator is not needed, like when comparing distances).
+""".
 -type any_square_distance() :: number().
-% Square of a distance between two points (cheaper to compute, when applying the
-% square root operator is not needed, like when comparing distances).
 
 
 
+-doc "Area of a surface.".
 -type area() :: float().
-% Area of a surface.
 
 
+
+-doc "A scalar, that is a 1D vector / square matrix.".
 -type scalar() :: float().
-% A scalar, that is a 1-D vector / square matrix.
 
 
+
+-doc "Any kind of specialised (fixed-size - not of arbitrary dimension) point.".
 -type specialised_point() :: point2() | point3() | point4().
-% Any kind of specialised (fixed-size - not of arbitrary dimension) point.
 
+
+
+-doc "% Any kind of basic, fixed-size (not of arbitrary dimension) vector.".
 -type specialised_vector() :: vector2() | vector3() | vector4().
-% Any kind of specialised (fixed-size - not of arbitrary dimension) vector.
-% Any kind of basic, fixed-size (not of arbitrary dimension) vector.
 
+
+
+-doc """
+Any kind of specialised (fixed-size - not of arbitrary dimension) matrix.
+""".
 -type specialised_matrix() :: matrix2() | matrix3() | matrix4().
-% Any kind of specialised (fixed-size - not of arbitrary dimension) matrix.
 
 
+
+-doc """
+The well-known specialised (fixed-size) linear types that are of use when
+performing geometry.
+""".
 -type specialised_type() :: scalar() | specialised_point()
 						  | specialised_vector() | specialised_matrix().
-% The well-known specialised (fixed-size) linear types that are of use when
-% performing geometry.
 
 
+-doc """
+Any kind of specialised (fixed-size - not of arbitrary dimension) vertex.
+""".
 -type specialised_vertex() :: specialised_point().
-% Any kind of specialised (fixed-size - not of arbitrary dimension) vertex.
 
 
+
+-doc """
+Any kind of specialised (fixed-size - not of arbitrary dimension) vertex.
+""".
 -type specialised_normal() :: specialised_vector().
-% Any kind of specialised (fixed-size - not of arbitrary dimension) vertex.
 
 
+
+-doc """
+Any kind of specialised (fixed-size - not of arbitrary dimension) texture
+coordinates.
+""".
 -type specialised_texture_coordinates() :: specialised_point().
-% Any kind of specialised (fixed-size - not of arbitrary dimension) texture
-% coordinates.
 
 
+
+-doc "The indice/index of an element (e.g. of a vertex in an array thereof).".
 -type indice() :: basic_utils:positive_index().
-% The indice/index of an element (e.g. of a vertex in an array thereof).
 
 
+
+-doc """
+A definition of a triangle, based on the indices of its three vertices, in a
+vertex container (e.g. a list).
+""".
 -type indexed_triangle() :: { indice(), indice(), indice() }.
-% A definition of a triangle, based on the indices of its three vertices, in a
-% vertex container (e.g. a list).
 
 
+
+-doc "A bounding space, for a given dimensionality.".
 -type bounding_space() :: bounding_surface:bounding_surface()
 						| bounding_volume:bounding_volume().
-% A bounding space, for a given dimensionality.
 
 
 -export_type([ dimension/0,
@@ -221,9 +271,10 @@
 
 
 
-% @doc Returns the number of elements (coordinates) stored in the specified
-% specialised type.
-%
+-doc """
+Returns the number of elements (coordinates) stored in the specified specialised
+type.
+""".
 -spec get_element_count( specialised_type() ) -> count().
 get_element_count( _Type=scalar ) -> 1;
 
@@ -241,7 +292,7 @@ get_element_count( _Type=matrix4 ) -> 16.
 
 
 
-% @doc Returns a textual representation of a coordinate.
+-doc "Returns a textual representation of a coordinate.".
 -spec coord_to_string( any_coordinate() ) -> ustring().
 coord_to_string( Coord ) when is_float( Coord ) ->
 
@@ -255,9 +306,10 @@ coord_to_string( Coord ) when is_integer( Coord ) ->
 
 
 
-% @doc Returns textual representations of the specified coordinates of a common,
-% best (maximal) width; full float precision is shown in returned strings.
-%
+-doc """
+Returns textual representations of the specified coordinates of a common, best
+(maximal) width; full float precision is shown in returned strings.
+""".
 -spec coords_to_best_width_strings( [ any_coordinate() ] ) -> [ ustring() ].
 coords_to_best_width_strings( Coords ) ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 EDF R&D
+% Copyright (C) 2016-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -18,12 +18,14 @@
 %
 % Authors: Robin Huart        [robin (dot) huart (at) edf (dot) fr]
 %          Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Module storing all the helper functions dedicated to the support of the
-% <b>Python binding API</b> (relying on Erlport).
-%
 -module(python_binding_utils).
+
+-moduledoc """
+Module storing all the helper functions dedicated to the support of the **Python
+binding API** (relying on Erlport).
+""".
 
 
 % Design notes:
@@ -62,18 +64,19 @@
 -type result() :: any().
 
 
-% Shorthands:
+% Type shorthands:
 
 -type emitter_info() :: traces:emitter_info().
 
 
 
-% @doc Executes specified request specified a Python interpreter, by sending a
-% message decomposed as a title and a body.
-%
-% Note: trace messages received while this request is processed are managed as
-% well.
-%
+-doc """
+Executes specified request specified a Python interpreter, by sending a message
+decomposed as a title and a body.
+
+Note: trace messages received while this request is processed are managed as
+well.
+""".
 -spec execute_request( python_utils:interpreter_pid(), title(), body(),
 					   emitter_info() | wooper:state() ) -> result().
 execute_request( InterpreterPid, MessageTitle, MessageBody,
@@ -83,11 +86,12 @@ execute_request( InterpreterPid, MessageTitle, MessageBody,
 
 
 
-% @doc Executes specified request in any (local) available Python interpreter.
-%
-% Hence this function is only relevant for requests that do not rely on the
-% state of a particular interpreter (ex: static methods only).
-%
+-doc """
+Executes specified request in any (local) available Python interpreter.
+
+Hence this function is only relevant for requests that do not rely on the state
+of a particular interpreter (e.g. static methods only).
+""".
 -spec execute_request_locally( title(), body(),
 							   emitter_info() | wooper:state() ) -> result().
 execute_request_locally( MessageTitle, MessageBody, TraceInfoOrState ) ->
@@ -105,13 +109,14 @@ execute_request_locally( MessageTitle, MessageBody, TraceInfoOrState ) ->
 
 
 
-% @doc Recursive listener transmitting trace messages sent from Python, to be
-% used while performing a request to a Python interpreter in order to wait for
-% its corresponding answer.
-%
-% Stops as soon as the request is successfully completed, or an error message is
-% received, or an exception has been raised in the interpreter.
-%
+-doc """
+Recursive listener transmitting trace messages sent from Python, to be used
+while performing a request to a Python interpreter in order to wait for its
+corresponding answer.
+
+Stops as soon as the request is successfully completed, or an error message is
+received, or an exception has been raised in the interpreter.
+""".
 -spec handle_request_results( python_utils:interpreter_pid(), title(),
 							  emitter_info() | wooper:state() ) -> result().
 handle_request_results( InterpreterPid, MessageTitle,

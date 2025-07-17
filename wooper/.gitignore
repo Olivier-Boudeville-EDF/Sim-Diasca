@@ -31,3 +31,11 @@ src/wooper.app.src
 conf/rebar.config
 doc/Ceylan-WOOPER-Layer-technical-manual-english.html
 doc/Ceylan-WOOPER-Layer-technical-manual-english.rst
+doc/Ceylan-WOOPER-Layer-technical-manual-english.aux
+doc/Ceylan-WOOPER-Layer-technical-manual-english.maf
+doc/Ceylan-WOOPER-Layer-technical-manual-english.mtc
+doc/Ceylan-WOOPER-Layer-technical-manual-english.mtc0
+doc/Ceylan-WOOPER-Layer-technical-manual-english.pdf
+doc/Ceylan-WOOPER-Layer-technical-manual-english.stc*
+doc/Ceylan-WOOPER-Layer-technical-manual-english.tex
+doc/Ceylan-WOOPER-Layer-technical-manual-english.toc

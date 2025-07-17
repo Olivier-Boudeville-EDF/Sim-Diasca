@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,28 +25,28 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, December 19, 2014.
 
-
-% @doc Gathering of various higher-level, convenient <b>meta-related
-% facilities</b>, notably regarding metaprogramming, types and parse transforms.
-%
-% See meta_utils_test.erl for the corresponding test, and ast_info.erl for the
-% more basic services used by this module.
-%
-% Note that this module is a prerequisite of at least most of our parse
-% transforms, hence it must be bootstrapped *before* they are built, and cannot
-% use them.
-%
-% So, to compile it, just go to the root of this layer and execute for example
-% 'make all'.
-%
-% To determine the other bootstrapped modules (i.e. the subset of our modules
-% that this module can use), see the BOOTSTRAP_MODULES variable in
-% GNUmakevars.inc.
-%
-% See also: the type_utils module, about the management of datatypes themselves,
-% and the ast* modules for lower-level operations.
-%
 -module(meta_utils).
+
+-moduledoc """
+Gathering of various higher-level, convenient **meta-related facilities**,
+notably regarding metaprogramming, types and parse transforms.
+
+See meta_utils_test.erl for the corresponding test, and ast_info.erl for the
+more basic services used by this module.
+
+Note that this module is a prerequisite of at least most of our parse
+transforms, hence it must be bootstrapped *before* they are built, and cannot
+use them.
+
+So, to compile it, just go to the root of this layer and execute for example
+'make all'.
+
+To determine the other bootstrapped modules (i.e. the subset of our modules that
+this module can use), see the BOOTSTRAP_MODULES variable in GNUmakevars.inc.
+
+See also: the type_utils module, about the management of datatypes themselves,
+and the ast* modules for lower-level operations.
+""".
 
 
 
@@ -154,66 +154,81 @@
 
 
 
+-doc """
+Options specified to a parse transform at runtime, like: report_warnings, beam,
+report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P},
+debug_info, warnings_as_errors, etc.
+
+(hence not a list_table, anyway not available here)
+""".
 -type parse_transform_options() :: proplists:proplist().
-% Options specified to a parse transform at runtime, like: report_warnings,
-% beam, report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P},
-% debug_info, warnings_as_errors, etc.
-%
-% (hence not a list_table, anyway not available here)
 
 
 
 %% Module subsection.
 
+-doc "The name of a module.".
 -type module_name() :: basic_utils:module_name().
-% The name of a module.
+
 
 
 %% Function subsection.
 
+-doc "The name of a function.".
 -type function_name() :: basic_utils:function_name().
-% The name of a function.
 
 
+-doc "The arity of a function.".
 -type function_arity() :: arity().
-% The arity of a function.
 
 
+
+-doc """
+Declaration of a function based on a name with an arity (unique function
+signature within a module).
+""".
 -type function_id() :: { function_name(), function_arity() }.
-% Declaration of a function based on a name with an arity (unique function
-% signature within a module).
 
 
+-doc "The type of a function (currenty: unclear semantics).".
 -type function_type() :: any().
-% The type of a function (currenty: unclear semantics).
 
 
+
+-doc """
+The form corresponding to the definition of a clause of a function, typically
+`{clause, LINE, Rep(Ps), Rep(Gs), Rep(B)} for '( Ps ) when Gs -> B'`.
+""".
 -type clause_def() :: form().
-% The form corresponding to the definition of a clause of a function, typically
-% {clause, LINE, Rep(Ps), Rep(Gs), Rep(B)} for '( Ps ) when Gs -> B'.
 
 
+
+-doc """
+The full type specification (if any) of that function, as an abstract form;
+typically:
+
+`{attribute, L, spec, { {foobar,Arity}, [{type,L,'fun', [{type,L,...`
+""".
 -type function_spec() :: form().
-% The full type specification (if any) of that function, as an abstract form;
-% typically:
-%
-% {attribute, L, spec, { {foobar,Arity}, [{type,L,'fun', [{type,L,...
 
 
+
+-doc "The name of a variable (e.g. 'X', or '_' in some cases).".
 -type variable_name() :: atom().
-% The name of a variable (e.g. 'X', or '_' in some cases).
 
 
+
+-doc """
+Type of functions to transform terms during a recursive traversal (see
+transform_term/4).
+
+Such a transformer can operate on ASTs, but more generally on any kind of terms.
+
+Note: apparently we cannot use the 'when' notation here (InputTerm ... when
+InputTerm :: term()).
+""".
 -type term_transformer() :: fun( ( term(), user_data() ) ->
 										{ term(), user_data() } ).
-% Type of functions to transform terms during a recursive traversal (see
-% transform_term/4).
-%
-% Such a transformer can operate on ASTs, but more generally on any kind of
-% terms.
-%
-% Note: apparently we cannot use the 'when' notation here (InputTerm ... when
-% InputTerm :: term()).
 
 
 -export_type([ parse_transform_options/0,
@@ -225,11 +240,12 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type user_data() :: basic_utils:user_data().
 
 -type primitive_type_description() :: type_utils:primitive_type_description().
+-type option(T) :: type_utils:option(T).
 
 -type form() :: ast_base:form().
 
@@ -261,21 +277,25 @@
 
 
 
+
 % Function addition/removal section.
 
 
-% @doc Registers (includes exporting) the specified (spec-less) function in the
-% specified module.
-%
+-doc """
+Registers (includes exporting) the specified (spec-less) function in the
+specified module.
+""".
 -spec add_function( function_id(), [ clause_def() ], module_info() ) ->
 							module_info().
 add_function( _FunId={ FunctionName, FunctionArity }, Clauses, ModuleInfo ) ->
 	add_function( FunctionName, FunctionArity, Clauses, ModuleInfo ).
 
 
-% @doc Registers (includes exporting) the specified (spec-less) function in the
-% specified module.
-%
+
+-doc """
+Registers (includes exporting) the specified (spec-less) function in the
+specified module.
+""".
 -spec add_function( basic_utils:function_name(), meta_utils:function_arity(),
 					[ clause_def() ], module_info() ) -> module_info().
 add_function( FunctionName, FunctionArity, Clauses,
@@ -326,7 +346,7 @@ add_function( FunctionName, FunctionArity, Clauses,
 
 
 
-% @doc Unregisters the specified function from the specified module.
+-doc "Unregisters the specified function from the specified module.".
 -spec remove_function( function_info(), module_info() ) -> module_info().
 remove_function( FunInfo=#function_info{ exported=ExportLocs },
 				 ModuleInfo=#module_info{ function_exports=ExportTable,
@@ -357,7 +377,7 @@ remove_function( FunInfo=#function_info{ exported=ExportLocs },
 % Type addition/removal section.
 
 
-% @doc Registers the specified, fully-described type in the specified module.
+-doc "Registers the specified, fully-described type in the specified module.".
 -spec add_type( type_info(), module_info() ) -> module_info().
 add_type( TypeInfo=#type_info{ variables=TypeVariables,
 							   exported=ExportLocs },
@@ -395,7 +415,7 @@ add_type( TypeInfo=#type_info{ variables=TypeVariables,
 
 
 
-% @doc Unregisters specified type from specified module.
+-doc "Unregisters specified type from specified module.".
 -spec remove_type( type_info(), module_info() ) -> module_info().
 remove_type( TypeInfo=#type_info{ variables=TypeVariables,
 								  exported=ExportLocs },
@@ -426,11 +446,12 @@ remove_type( TypeInfo=#type_info{ variables=TypeVariables,
 
 
 
-% @doc Applies the specified AST transformations (mostly depth-first) to the
-% specified module information.
-%
-% (helper)
-%
+-doc """
+Applies the specified AST transformations (mostly depth-first) to the specified
+module information.
+
+(helper)
+""".
 -spec apply_ast_transforms( module_info(), ast_transforms() ) ->
 										{ module_info(), ast_transforms() }.
 apply_ast_transforms( ModuleInfo=#module_info{ types=TypeTable,
@@ -464,10 +485,10 @@ apply_ast_transforms( ModuleInfo=#module_info{ types=TypeTable,
 
 
 
-% @doc Lists (in the order of their definition) all the functions ({Name,Arity})
-% that are exported by the specified module, expected to be found in the code
-% path.
-%
+-doc """
+Lists (in the order of their definition) all the functions ({Name,Arity}) that
+are exported by the specified module, expected to be found in the code path.
+""".
 -spec list_exported_functions( module_name() ) -> [ function_id() ].
 list_exported_functions( ModuleName ) ->
 
@@ -514,9 +535,10 @@ list_exported_functions( ModuleName ) ->
 
 
 
-% @doc Returns a list of the arities for which the specified function of the
-% specified module is exported.
-%
+-doc """
+Returns a list of the arities for which the specified function of the specified
+module is exported.
+""".
 -spec get_arities_for( module_name(), function_name() ) -> [ arity() ].
 get_arities_for( ModuleName, FunctionName ) ->
 
@@ -527,9 +549,10 @@ get_arities_for( ModuleName, FunctionName ) ->
 
 
 
-% @doc Tells whether the specified function (name with arity) is exported by the
-% specified module.
-%
+-doc """
+Tells whether the specified function (name with arity) is exported by the
+specified module.
+""".
 -spec is_function_exported( module_name(), function_name(), arity() ) ->
 									boolean().
 is_function_exported( ModuleName, FunctionName, Arity ) ->
@@ -542,9 +565,10 @@ is_function_exported( ModuleName, FunctionName, Arity ) ->
 
 
 
-% @doc Checks whether a potential upcoming call to the specified MFA
-% (Module,Function,Arguments) has a chance of succeeding.
-%
+-doc """
+Checks whether a potential upcoming call to the specified MFA
+(Module,Function,Arguments) has a chance of succeeding.
+""".
 -spec check_potential_call( module_name(), function_name(),
 							[ basic_utils:argument() ] ) ->
 				'ok' | 'module_not_found' | 'function_not_exported'.
@@ -585,32 +609,34 @@ check_potential_call( ModuleName, FunctionName, Arguments ) ->
 
 
 
-% @doc Transforms "blindly" (that is with no a-priori knowledge about its
-% structure) the specified arbitrary term (possibly with nested subterms, as the
-% function recurses in lists, tuples and maps), calling specified transformer
-% function on each instance of the specified type, in order to replace that
-% instance by the result of that function.
-%
-% Note that specifying 'undefined' as type description leads to transform
-% (exactly) all non-container types.
-%
-% Returns an updated term, with these replacements made.
-%
-% For example the input term could be `T={a, ["foo", {c, [2.0, 45]}]}' and the
-% function might replace, for example, floats by `<<bar>>'; then `{a, ["foo",
-% {c, [<<bar>>, 45]}]}' would be returned.
-%
-% Note: the transformed terms are themselves recursively transformed, to ensure
-% nesting is managed. Of course this implies that the term transform should not
-% result in iterating the transformation infinitely.
-%
-% As a result it may appear that a term of the targeted type is transformed
-% almost systematically twice: it is first transformed as such, and the result
-% is transformed in turn. If the transformed term is the same as the original
-% one, then that content will be shown as analysed twice.
-%
--spec transform_term( term(), basic_utils:maybe( primitive_type_description() ),
-				term_transformer(), user_data() ) -> { term(), user_data() }.
+-doc """
+Transforms "blindly" (that is with no a-priori knowledge about its structure)
+the specified arbitrary term (possibly with nested subterms, as the function
+recurses in lists, tuples and maps), calling specified transformer function on
+each instance of the specified type, in order to replace that instance by the
+result of that function.
+
+Note that specifying 'undefined' as type description leads to transform
+(exactly) all non-container types.
+
+Returns an updated term, with these replacements made.
+
+For example the input term could be `T={a, ["foo", {c, [2.0, 45]}]}` and the
+function might replace, for example, floats by `<<bar>>`; then `{a, ["foo", {c,
+[<<bar>>, 45]}]}` would be returned.
+
+Note: the transformed terms are themselves recursively transformed, to ensure
+nesting is managed. Of course this implies that the term transform should not
+result in iterating the transformation infinitely.
+
+As a result it may appear that a term of the targeted type is transformed almost
+systematically twice: it is first transformed as such, and the result is
+transformed in turn. If the transformed term is the same as the original one,
+then that content will be shown as analysed twice.
+""".
+-spec transform_term( term(), option( primitive_type_description() ),
+					  term_transformer(), user_data() ) ->
+						{ term(), user_data() }.
 % Here the term is a list and this is the type we want to intercept:
 transform_term( TargetTerm, TypeDescription=list, TermTransformer, UserData )
 								when is_list( TargetTerm ) ->
@@ -684,7 +710,7 @@ transform_term( TargetTerm, TypeDescription, TermTransformer, UserData ) ->
 
 
 
-% @doc Transforms the elements of a list (helper).
+-doc "Transforms the elements of a list (helper).".
 transform_list( TargetList, TypeDescription, TermTransformer, UserData ) ->
 
 	{ NewList, NewUserData } = lists:foldl(
@@ -706,11 +732,12 @@ transform_list( TargetList, TypeDescription, TermTransformer, UserData ) ->
 
 
 
-% @doc Transforms the entries of a map (helper).
-%
-% The transformation is applied entry by entry and, for each of them, first on
-% the key, then on the value.
-%
+-doc """
+Transforms the entries of a map (helper).
+
+The transformation is applied entry by entry and, for each of them, first on the
+key, then on the value.
+""".
 transform_map( TargetMap, TypeDescription, TermTransformer, UserData ) ->
 
 	{ NewMap, NewUserData } = maps:fold(
@@ -737,7 +764,7 @@ transform_map( TargetMap, TypeDescription, TermTransformer, UserData ) ->
 
 
 
-% @doc Transforms the elements of a tuple (helper).
+-doc "Transforms the elements of a tuple (helper).".
 transform_tuple( TargetTuple, TypeDescription, TermTransformer, UserData ) ->
 
 	% We do exactly as with lists:
@@ -750,11 +777,12 @@ transform_tuple( TargetTuple, TypeDescription, TermTransformer, UserData ) ->
 
 
 
-% @doc Transforms any term by traversing it (helper).
-%
-% Helper to traverse a transformed term (e.g. if looking for a {user_id, String}
-% pair, we must recurse in nested tuples like: {3, {user_id, "Hello"}, 1}.
-%
+-doc """
+Transforms any term by traversing it (helper).
+
+Helper to traverse a transformed term (e.g. if looking for a {user_id, String}
+pair, we must recurse in nested tuples like: {3, {user_id, "Hello"}, 1}.
+""".
 transform_transformed_term( TargetTerm, TypeDescription, TermTransformer,
 							UserData ) ->
 
@@ -780,9 +808,10 @@ transform_transformed_term( TargetTerm, TypeDescription, TermTransformer,
 
 
 
-% @doc Returns the recommended base compilation options to be used for
-% code generation (that is the compilation of forms).
-%
+-doc """
+Returns the recommended base compilation options to be used for code generation
+(that is the compilation of forms).
+""".
 -spec get_compile_base_opts() -> [ compile:option() ].
 get_compile_base_opts() ->
 
@@ -795,7 +824,8 @@ get_compile_base_opts() ->
 		++ get_debug_info_settings().
 
 
-% @doc Returns suitable settings for the debug_info chunk in generated code.
+
+-doc "Returns suitable settings for the debug_info chunk in generated code.".
 -spec get_debug_info_settings() -> [ tuple() ].
 
 % See DEBUG_INFO_KEY in GNUmakevars.inc:

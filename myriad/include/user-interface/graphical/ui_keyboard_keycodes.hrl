@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -31,19 +31,19 @@
 % https://github.com/ninenines/esdl2/blob/master/include/sdl_keycode.hrl), which
 % are themselves deriving in turn from Sam Lantinga's libSDL2 (see [2]:
 % https://github.com/libsdl-org/SDL/blob/main/src/events/SDL_keyboard.c).
-
+%
 % Many thanks to both projects.
 %
-% However our tests showed that, for some reasons, such keycodes do not match
-% the actual ones. For example, hitting 'a' produces keycode 65, not keycode 97
-% (which is $a; note also that 0x65 is not 97 either, but 101); 'b' produces
-% keycode 66, not keycode 98, etc.
+% However our tests showed (one may use the 'Keyboard Layouts' applet to switch
+% layout) that, for some reasons, such keycodes do not match the actual
+% ones. For example, hitting 'a' produces keycode 65 (which is actually $A), not
+% keycode 97 (which is $a); 'b' produces keycode 66 ($B), not keycode 98, etc.
 
 % So finally we defined our own keycodes from experience; for example (noting
 % 'generated key: scancode/keycode'):
 %
 % Keyboard layout: \ Label of the key being pressed:
-%            A          Q         B
+%            A           Q          B
 %  US    Q: 24/81    A: 38/65   B: 56/66
 %  FR    A: 24/65    Q: 38/81   B: 56/66
 %
@@ -52,7 +52,26 @@
 %
 % Depending on the layout, some characters cannot be obtained from a single
 % keypress, and the check is made more problematic.
+%
+% Note that, when a given key is hit (e.g. the key labelled 'A' on a French
+% keyboard), the keycodes returned for (1) onKeyPressed/onKeyReleased or (2)
+% onCharEntered will differ.
+%
+% Indeed:
+% - (1) will return keycode 65 ("A"), as it depends only on the physical key
+% being pressed, independently of the state of the modifier keys
+% - whereas (2) will return 97 ("a"), that is the key that would correspond to
+% the character that would appear in e.g. a text zone if the user pressed the
+% key in it.
+%
+% Refer to https://www.erlang.org/doc/apps/wx/wxkeyevent for further details.
 
+
+% So, with onCharEntered, pressing the key labelled 'A' on a French keyboard (to
+% write a "a", not a "A") results in 24/97, whereas pressing 'Ctrl-a' results in
+% 24/1 (and suitable modifiers). 'B' is 56/98 and 'Ctrl-b' is 56/2 (and suitable
+% modifiers).
+%
 
 % Refer to the implementation notes in gui_keyboard.erl for all related
 % information, notably for the differences between scancodes and keycodes.
@@ -63,7 +82,8 @@
 % MyriadGUI); adding then 'K' for Keycode.
 
 % Note that, with SDL, 'GUI' designates the former "Windows" key, we prefer
-% naming it 'SUPER' (see https://en.wikipedia.org/wiki/Windows_key).
+% naming it 'SUPER' (see https://en.wikipedia.org/wiki/Windows_key), also rather
+% than WINDOWS, META, etc.
 
 
 % Preferably not to be included directly; include at least the more general
@@ -141,32 +161,36 @@
 -define(MYR_K_CARET, $^).        % 94
 -define(MYR_K_UNDERSCORE, $_).   % 95
 -define(MYR_K_BACKQUOTE, $`).    % 96
--define(MYR_K_a, 65). % Not 97=$a
--define(MYR_K_b, 66). % Not $b
--define(MYR_K_c, 67).
--define(MYR_K_d, 68).
--define(MYR_K_e, 69).
--define(MYR_K_f, 70).
--define(MYR_K_g, 71).
--define(MYR_K_h, 72).
--define(MYR_K_i, 73).
--define(MYR_K_j, 74).
--define(MYR_K_k, 75).
--define(MYR_K_l, 76).
--define(MYR_K_m, 77).
--define(MYR_K_n, 78).
--define(MYR_K_o, 79).
--define(MYR_K_p, 80).
--define(MYR_K_q, 81).
--define(MYR_K_r, 82).
--define(MYR_K_s, 83).
--define(MYR_K_t, 84).
--define(MYR_K_u, 85).
--define(MYR_K_v, 86).
--define(MYR_K_w, 87).
--define(MYR_K_x, 88).
--define(MYR_K_y, 89).
--define(MYR_K_z, 90).
+
+-define(MYR_K_a, 97). % For 'a': neither 65 (keycode for 'A') nor 24 (scancode
+					  % of the key labelled 'A' on a French keyboard)
+-define(MYR_K_b, 98). % Neither 66 nor 56
+-define(MYR_K_c, 54). % Not 67 nor 99.
+-define(MYR_K_d, 40). % Not 68.
+-define(MYR_K_e, 26). % Not 69.
+-define(MYR_K_f, 41). % Not 70.
+-define(MYR_K_g, 42). % Not 71.
+-define(MYR_K_h, 43). % Not 72.
+-define(MYR_K_i, 31). % Not 73.
+-define(MYR_K_j, 44). % Not 74.
+-define(MYR_K_k, 45). % Not 75.
+-define(MYR_K_l, 46). % Not 76.
+-define(MYR_K_m, 47). % Not 77.
+-define(MYR_K_n, 57). % Not 78.
+-define(MYR_K_o, 32). % Not 79.
+-define(MYR_K_p, 33). % Not 80.
+-define(MYR_K_q, 38). % Not 81.
+-define(MYR_K_r, 27). % Not 82.
+-define(MYR_K_s, 39). % Not 83.
+-define(MYR_K_t, 28). % Not 84.
+-define(MYR_K_u, 30). % Not 85.
+-define(MYR_K_v, 55). % Not 86.
+-define(MYR_K_w, 52). % Not 87.
+-define(MYR_K_x, 53). % Not 88.
+-define(MYR_K_y, 29). % Not 89.
+-define(MYR_K_z, 25). % Not 90.
+
+
 -define(MYR_K_CAPSLOCK, 66 ). % ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_CAPSLOCK)).
 -define(MYR_K_F1, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_F1)).
 -define(MYR_K_F2, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_F2)).
@@ -354,5 +378,42 @@
 -define(MYR_K_APP2, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_APP2)).
 -define(MYR_K_AUDIOREWIND, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_AUDIOREWIND)).
 -define(MYR_K_AUDIOFASTFORWARD, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_AUDIOFASTFORWARD)).
+
+
+% See the notes at the top for purposes of the next defines, to be used with the
+% onCharEntered events:
+%
+% (these are independent from keyboard layouts; for example one should find the
+% same keycode on a French keyboard, when, with the French layout, hitting the
+% key labelled 'A' or, this time with the English layout, hitting the key
+% labelled 'Q' in the same keyboard)
+%
+-define(MYR_K_CTRL_A, 1).
+-define(MYR_K_CTRL_B, 2).
+-define(MYR_K_CTRL_C, 3).
+-define(MYR_K_CTRL_D, 4).
+-define(MYR_K_CTRL_E, 5).
+-define(MYR_K_CTRL_F, 6).
+-define(MYR_K_CTRL_G, 7).
+-define(MYR_K_CTRL_H, 8).
+-define(MYR_K_CTRL_I, 9).
+-define(MYR_K_CTRL_J, 10).
+-define(MYR_K_CTRL_K, 11).
+-define(MYR_K_CTRL_L, 12).
+-define(MYR_K_CTRL_M, 13).
+-define(MYR_K_CTRL_N, 14).
+-define(MYR_K_CTRL_O, 15).
+-define(MYR_K_CTRL_P, 16).
+-define(MYR_K_CTRL_Q, 17).
+-define(MYR_K_CTRL_R, 18).
+-define(MYR_K_CTRL_S, 19).
+-define(MYR_K_CTRL_T, 20).
+-define(MYR_K_CTRL_U, 21).
+-define(MYR_K_CTRL_V, 22).
+-define(MYR_K_CTRL_W, 23).
+-define(MYR_K_CTRL_X, 24).
+-define(MYR_K_CTRL_Y, 25).
+-define(MYR_K_CTRL_Z, 26).
+
 
 -endif. % __MYRIAD_UI_KEYBOARD_KEYCODES_HRL__

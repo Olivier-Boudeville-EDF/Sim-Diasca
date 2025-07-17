@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 EDF R&D
+% Copyright (C) 2014-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2014.
 
-
-% @doc Test for the <b>loading of the initial state</b> of a soda simulation
-% from files.
-%
 -module(soda_loading_test).
+
+-moduledoc """
+Test for the **loading of the initial state** of a soda simulation from files.
+""".
 
 
 
@@ -32,7 +32,7 @@
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
@@ -71,7 +71,7 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 
 	% We loaded instances from file, but of course we can still create others

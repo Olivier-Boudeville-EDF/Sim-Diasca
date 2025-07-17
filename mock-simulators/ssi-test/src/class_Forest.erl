@@ -1,30 +1,32 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% This file is part of forest ecosystem test case, which is a Sim-Diasca
-% integration test example.
-
-
-% @doc Class modelling some kind of (very strange) forest.
 -module(class_Forest).
+
+-moduledoc """
+Class modelling some kind of (very strange) forest.
+
+This file is part of forest ecosystem test case, which is a Sim-Diasca
+integration test example.
+""".
 
 
 -define( class_description,
@@ -54,13 +56,17 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type tick_offset() :: class_TimeManager:tick_offset().
+
+-type datalogger_pid() :: class_DataLogger:datalogger_pid().
+
+-type probe_ref() :: class_Probe:probe_ref().
 
 
 
@@ -110,7 +116,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -118,14 +124,15 @@
 
 
 
-% @doc Constructs a forest, from:
-%
-% - ActorSettings is the engine settings for this actor
-% - DomainName is a plain string
-% - Longevity is expressed in ticks
-%
-% TODO: represent all ticks in seconds, for example.
-%
+-doc """
+Constructs a forest, from:
+
+- ActorSettings is the engine settings for this actor
+- DomainName is a plain string
+- Longevity is expressed in ticks
+
+TODO: represent all ticks in seconds, for example.
+""". 
 -spec construct( wooper:state(), class_Actor:actor_settings(), ustring(),
 				 tick_offset() ) -> wooper:state().
 construct( State, ActorSettings, DomainName, Longevity ) ->
@@ -200,7 +207,7 @@ construct( State, ActorSettings, DomainName, Longevity ) ->
 % Methods implementation section.
 
 
-% @doc Simply schedules this just created actor at the next tick (diasca 0).
+-doc "Simply schedules this just created actor at the next tick (diasca 0).".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -211,7 +218,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The spontaneous behaviour of a forest instance.
+-doc "The spontaneous behaviour of a forest instance.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -296,12 +303,13 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Called for creating initial Forest dwellers.
-%
-% It must be called before the simulation start
-%
+-doc """
+Called for creating initial Forest dwellers.
+
+It must be called before the simulation start.
+""".
 -spec create_initial_foresters( count(), count(), forest_pid() ) ->
-				static_void_return().
+				                static_void_return().
 create_initial_foresters( NbOak, NbSquirrel, ForestPid ) ->
 
 	% The initial oak actors are created as initial placed actors:
@@ -320,13 +328,13 @@ create_initial_foresters( NbOak, NbSquirrel, ForestPid ) ->
 
 
 
-% @doc Called to add a specified peer to known peers.
+-doc "Called to add a specified peer to known peers.".
 -spec addInPeers( wooper:state(), classname(), sending_actor_pid() ) ->
-						actor_oneway_return().
+						        actor_oneway_return().
 addInPeers( State, Classname, SenderPid ) ->
 
 	?notice_fmt( "~ts with ~w is added in forest peers.",
-			   [ Classname, SenderPid ] ),
+                 [ Classname, SenderPid ] ),
 
 	UpdatedState = case ?getAttr(termination_initiated) of
 
@@ -346,7 +354,7 @@ addInPeers( State, Classname, SenderPid ) ->
 
 
 
-% @doc Called to delete a specified peer from known target peers.
+-doc "Called to delete a specified peer from known target peers.".
 -spec deleteFromPeers( wooper:state(), sending_actor_pid() ) ->
 								actor_oneway_return().
 deleteFromPeers( State, PeerPid ) ->
@@ -370,7 +378,7 @@ deleteFromPeers( State, PeerPid ) ->
 
 
 
-% @doc Called by a squirrel in order to be allocated to a new oak.
+-doc "Called by a squirrel in order to be allocated to a new oak.".
 -spec requiredLocation( wooper:state(), sending_actor_pid() ) ->
 							  actor_oneway_return().
 requiredLocation( State, SquirrelPid ) ->
@@ -408,18 +416,18 @@ requiredLocation( State, SquirrelPid ) ->
 
 
 
-% @doc Called by a female squirrel.
-%
-% When the forest receives this message, it sends a "beInvited" message to all
-% male squirrels for launching a competition.
-%
+-doc """
+Called by a female squirrel.
+
+When the forest receives this message, it sends a `beInvited` message to all
+male squirrels for launching a competition.
+""".
 -spec beginCompetition( wooper:state(), sending_actor_pid() ) ->
 								actor_oneway_return().
 beginCompetition( State, LauncherPid ) ->
 
 	?notice_fmt( "Initiated by ~w: a competition invitation is sent to "
-		"all male squirrels, ~p.",
-		[ LauncherPid, ?getAttr(male_squirrels) ] ),
+		"all male squirrels, ~p.", [ LauncherPid, ?getAttr(male_squirrels) ] ),
 
 	MSquirrelList = ?getAttr(male_squirrels),
 
@@ -446,11 +454,12 @@ beginCompetition( State, LauncherPid ) ->
 
 
 
-% @doc Called by the competition participant (male squirrel).
-%
-% When the forest receives this message, it will compare the tail lengths and
-% update winner attribute with male squirrel PID and max tail length.
-%
+-doc """
+Called by the competition participant (male squirrel).
+
+When the forest receives this message, it will compare the tail lengths and
+update winner attribute with male squirrel PID and max tail length.
+""".
 -spec informedParticipation( wooper:state(), actor_pid(), number(),
 							 sending_actor_pid() ) -> actor_oneway_return().
 informedParticipation( State, LauncherPid, TailLength, SenderPid ) ->
@@ -500,7 +509,7 @@ informedParticipation( State, LauncherPid, TailLength, SenderPid ) ->
 % Probe-related section.
 
 
-% @doc Returns the PID of the forest probe.
+-doc "Returns the PID of the forest probe.".
 -spec getProbe( wooper:state() ) -> const_request_return( probe_ref() ).
 getProbe( State ) ->
 	wooper:const_return_result( ?getAttr(probe_ref) ).
@@ -508,14 +517,15 @@ getProbe( State ) ->
 
 
 
-% @doc Returns the PID of the forest virtual probe.
-%
-% The virtual probe is created by data logger.
-%
-% Useful for the calling test, so that it can control by itself the probe, as,
-% depending on whether it is run in batch mode or not, probe displaying is
-% wanted or not.
-%
+-doc """
+Returns the PID of the forest virtual probe.
+
+The virtual probe is created by data logger.
+
+Useful for the calling test, so that it can control by itself the probe, as,
+depending on whether it is run in batch mode or not, probe displaying is wanted
+or not.
+""".
 -spec getVirtualProbe( wooper:state() ) ->
 			const_request_return( class_DataLogger:virtual_probe_reference() ).
 getVirtualProbe( State ) ->
@@ -523,9 +533,9 @@ getVirtualProbe( State ) ->
 
 
 
-% @doc Called for returning the singleton datalogger PID.
+-doc "Called for returning the singleton datalogger PID.".
 -spec getDataLoggerPid( wooper:state() ) ->
-								const_request_return( datalogger_pid() ).
+			const_request_return( datalogger_pid() ).
 getDataLoggerPid( State ) ->
 	wooper:const_return_result( ?getAttr(datalogger_pid) ).
 
@@ -539,17 +549,18 @@ getDataLoggerPid( State ) ->
 
 
 
-% @doc Called to create synchronously a number of initial placed actors:
-%
-% - Number is the number of inhabitants to be created
-% - Classname is the class name
-% - CreatedList is the created pid list
-%
-% A CreatedPidList is returned.
-%
-% NB: in this test, all trees must be created in the qform of placed actor with
-% PlacementHint = forest pid
+-doc """
+Called to create synchronously a number of initial placed actors:
 
+- Number is the number of inhabitants to be created
+- Classname is the class name
+- CreatedList is the created pid list
+
+A CreatedPidList is returned.
+
+NB: in this test, all trees must be created in the qform of placed actor with
+PlacementHint = forest pid.
+""".
 initial_placed_inhabitant_creation( _ForestPid, 0, _Classname, CreatedList ) ->
 	CreatedList;
 
@@ -573,16 +584,17 @@ initial_placed_inhabitant_creation( ForestPid, Number, Classname,
 
 
 
-% @doc Called to create synchronously a number of initial actors.
-%
-% Parameters are:
-%
-% - Number is the number of inhabitants to be created
-% - Classname is the class name
-% - CreatedList is the created PID list
-%
-% A CreatedPidList is returned.
-%
+-doc """
+Called to create synchronously a number of initial actors.
+
+Parameters are:
+
+- Number is the number of inhabitants to be created
+- Classname is the class name
+- CreatedList is the created PID list
+
+A CreatedPidList is returned.
+""".
 initial_inhabitant_creation( _ForestPid, 0, _Classname, CreatedList ) ->
 	CreatedList;
 
@@ -608,7 +620,7 @@ initial_inhabitant_creation( ForestPid, Number, Classname, CreatedList ) ->
 % Runtime forest dweller creation section.
 
 
-% @doc Called to create an oak actor (placed actor) in simulation time.
+-doc "Called to create an oak actor (placed actor) in simulation time.".
 new_placed_oak_creation( State ) ->
 
 	OakList = ?getAttr(oaks),
@@ -627,13 +639,14 @@ new_placed_oak_creation( State ) ->
 % Spontaneous activities verification section.
 
 
-% @doc Called to verify if any simulation termination condition is satisfied.
-%
-% The normal simulation termination conditions are:
-% - the termination offset is reached
-% - there is no oak in the forest
-% - there is no squirrel in the forest
-%
+-doc """
+Called to verify if any simulation termination condition is satisfied.
+
+The normal simulation termination conditions are:
+- the termination offset is reached
+- there is no oak in the forest
+- there is no squirrel in the forest
+""".
 -spec test_trigger_termination_conditions( wooper:state() ) -> boolean().
 test_trigger_termination_conditions( State ) ->
 
@@ -677,7 +690,7 @@ test_trigger_termination_conditions( State ) ->
 
 
 
-% @doc Forest-specific periodic spontaneous behaviours.
+-doc "Forest-specific periodic spontaneous behaviours.".
 perform_spontaneous_action( State ) ->
 
 	CurrentOffset = ?getAttr(current_tick_offset),
@@ -743,10 +756,7 @@ perform_spontaneous_action( State ) ->
 % Forest spontaneous activity execution section.
 
 
-% @doc Notifies the forest dwellers that they are registered to the forest.
-%
-% (helper)
-%
+-doc "Notifies the forest dwellers that they are registered to the forest.".
 -spec notify_be_registered( wooper:state(), [ actor_pid() ] ) -> wooper:state().
 notify_be_registered( State, InHabitantList ) ->
 
@@ -762,10 +772,7 @@ notify_be_registered( State, InHabitantList ) ->
 
 
 
-% @doc Sending alert to relative forest dwellers.
-%
-% (helper)
-%
+-doc "Sending alert to relative forest dwellers.".
 notify_alert( State, Alert ) ->
 
 	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
@@ -807,10 +814,7 @@ notify_alert( State, Alert ) ->
 
 
 
-% @doc The forest informs its dwellers of its termination.
-%
-% (helper)
-%
+-doc "The forest informs its dwellers of its termination.".
 notify_termination( State ) ->
 
 	?notice( "A forest destroyed message is sent to the forest dwellers." ),
@@ -839,11 +843,7 @@ notify_termination( State ) ->
 
 
 
-
-% An updated state is returned.
-%
-% (helper)
-%
+-spec prepare_termination( wooper:state() ) -> wooper:state().
 prepare_termination( State ) ->
 
 	CurrentOffset = ?getAttr(current_tick_offset),
@@ -886,9 +886,6 @@ add_pid_in_peers( State, Classname, PeerPid ) ->
 
 
 % Called to return a updated state with the updated forest dweller list.
-%
-% (helper)
-%
 updated_peers( State, OakList, SquirrelList, MSquirrelList, FSquirrelList ) ->
 
 	UpdatedOakNumber = length( OakList ),

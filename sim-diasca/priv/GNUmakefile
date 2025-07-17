@@ -1,5 +1,5 @@
 SIM_DIASCA_TOP = ..
 
-# Just defined so that the 'priv' directory exists in GIT.
+# Just defined so that the 'priv' directory exists in Git.
 
 include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

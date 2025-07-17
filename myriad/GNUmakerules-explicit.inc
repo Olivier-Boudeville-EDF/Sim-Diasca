@@ -9,48 +9,49 @@
 
 .PHONY: .PHONY-myriad-explicit
 
-.PHONY-myriad-explicit: all all-pre-hook all-parallel-recurse all-recurse    \
-			all-parse-transforms bootstrap-modules make-all-parse-transforms \
-			build-debug rebuild                                              \
-			test test-recurse test-interactive test-interactive-recurse      \
-			doc-recurse build-tests                                          \
-			launch shell generate-tags                                       \
-			create-include-links clean-include-links copy-beams-to-ebin      \
-			install-all install-announce install-ebin install-bin            \
-			install-src install-include install-examples install-test        \
-			install-doc info-install info-install-locations                  \
-			info-install-content create-myriad-checkout create-app-file      \
-			rebar3-application rebar3-upgrade-lock                           \
-			set-rebar-conf set-rebar-conf-for-hex                            \
-			rebar3-release rebar3-development-release                        \
-			rebar3-production-release rebar3-hide-unsupported-sources        \
-			rebar3-restore-unsupported-sources                               \
-			rebar3-compile-pre-hook rebar3-compile-post-hook                 \
-			rebar3-bulletproof-compile-pre-hook                              \
-			rebar3-bulletproof-compile-post-hook                             \
-			rebar3-update rebar3-compile rebar3-create-tree                  \
-			rebar3-populate-build-tree                                       \
-			rebar3-copy-beams rebar3-clean rebar3-real-clean                 \
-			rebar3-test-clean                                                \
-			rebar3-cache-clean rebar3-info rebar3-hex-publish                \
-			rebar3-local-update                                              \
-			test-hex-package                                                 \
-			generate-protobuf                                                \
-			sync-sources-to-server sync-all-to-server                        \
-			generate-api-doc generate-api-alt-doc copy-static-content        \
-			clean-api-doc clean-api-alt-doc                                  \
-			generate-list-of-erlang-types generate-list-of-local-types       \
-			generate-local-plt self-check-against-plt write-debug-key-file   \
-			check check-hook check-with-dialyzer check-with-gradualizer      \
-			help-intro help-erl                                              \
-			clean clean-erlang clean-layer-ebin clean-python clean-protobuf  \
-			clean-database clean-recurse clean-outputs clean-ast-debug       \
-			clean-previous real-clean track                                  \
-			info-platform info-hardware info-software info-source-layout     \
-			info-erlang-target-version                                       \
-			info info-files info-meta info-erlang info-python info-java      \
-			info-protobuf                                                    \
-			info-sync info-check info-rebar3 info-compile info-options       \
+.PHONY-myriad-explicit: all all-pre-hook all-parallel-recurse all-recurse      \
+			all-parse-transforms bootstrap-modules make-all-parse-transforms   \
+			build-debug rebuild                                                \
+			test test-recurse test-interactive test-interactive-recurse        \
+			doc-recurse build-tests                                            \
+			launch shell generate-tags                                         \
+			create-include-links clean-include-links copy-beams-to-ebin        \
+			install-all install-announce install-ebin install-bin              \
+			install-src install-include install-examples install-test          \
+			install-doc info-install info-install-locations                    \
+			info-install-content create-myriad-checkout create-app-file        \
+			rebar3-application rebar3-upgrade-lock                             \
+			set-rebar-conf set-rebar-conf-for-hex                              \
+			rebar3-release rebar3-development-release                          \
+			rebar3-production-release rebar3-hide-unsupported-sources          \
+			rebar3-restore-unsupported-sources info-rebar3-unsupported-sources \
+			rebar3-compile-pre-hook rebar3-compile-post-hook                   \
+			rebar3-bulletproof-compile-pre-hook                                \
+			rebar3-bulletproof-compile-post-hook                               \
+			rebar3-update rebar3-compile rebar3-create-tree                    \
+			rebar3-populate-build-tree                                         \
+			rebar3-copy-beams rebar3-clean rebar3-real-clean                   \
+			rebar3-test-clean                                                  \
+			rebar3-cache-clean rebar3-info rebar3-hex-publish                  \
+			rebar3-local-update                                                \
+			test-hex-package                                                   \
+			generate-protobuf                                                  \
+			sync-sources-to-server sync-all-to-server                          \
+			generate-api-doc generate-api-doc-with-exdoc                       \
+			generate-api-doc-with-edoc generate-api-doc-with-erldocs           \
+			copy-static-content clean-api-doc clean-api-alt-doc                \
+			generate-list-of-erlang-types generate-list-of-local-types         \
+			generate-local-plt self-check-against-plt write-debug-key-file     \
+			check check-hook check-with-dialyzer check-with-gradualizer        \
+			help-intro help-erl                                                \
+			clean clean-erlang clean-layer-ebin clean-python clean-protobuf    \
+			clean-database clean-recurse clean-outputs clean-ast-debug         \
+			clean-previous real-clean track check-ci                           \
+			info-platform info-hardware info-software info-source-layout       \
+			info-erlang-target-version                                         \
+			info info-files info-meta info-erlang info-python info-java        \
+			info-protobuf                                                      \
+			info-sync info-check info-rebar3 info-compile info-options         \
 			info-parse-transform info-doc
 
 
@@ -351,7 +352,7 @@ generate-tags:
 #
 create-include-links:
 	@echo "  Populating the include symlinks"
-	@cd include && for d in $$(find * -type d 2>/dev/null); do for h in $$(/bin/ls $$d/*.hrl 2>/dev/null); do ln -sf $$h; done; done
+	@cd $(LAYER_TOP)/include && for d in $$(find * -type d 2>/dev/null); do for h in $$(/bin/ls $$d/*.hrl 2>/dev/null); do ln -sf $$h; done; done
 
 
 # Gets rid of include symlinks created for tools like rebar or edoc (and only
@@ -359,7 +360,7 @@ create-include-links:
 #
 clean-include-links:
 	@echo "  Cleaning the include symlinks"
-	@cd include && find . -maxdepth 1 -type l -exec /bin/rm -f '{}' ';'
+	@cd $(LAYER_TOP)/include && find . -maxdepth 1 -type l -exec /bin/rm -f '{}' ';'
 
 
 
@@ -374,7 +375,7 @@ ifeq ($(BASE_MAKEFILE),true)
 #
 copy-beams-to-ebin:
 	@echo "  Copying BEAM files to local ebin ($$(pwd)/ebin)"
-	@mkdir -p ebin; find src -name '*.beam' -exec /bin/cp -f '{}' ebin ';'
+	@cd $(LAYER_TOP) && mkdir -p ebin; find src -name '*.beam' -exec /bin/cp -f '{}' ebin ';'
 
 
 # For a layer and its (potentially multiple) direct dependencies (for Myriad:
@@ -639,7 +640,14 @@ rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf \
 	@$(MAKE) -s rebar3-restore-unsupported-sources
 
 
-# Upgrades the rebar.lock file, regarding the dependencies of the current layer.
+# Upgrades the rebar.lock file (which must be kept in source control), regarding
+# the dependencies of the current layer.
+#
+# In practice, upgrading will rely on the information in
+# conf/rebar.config.template, typically for the Git URL and branch.
+#
+# Use 'rebar3 tree' for more detailed information. Refer to
+# https://www.rebar3.org/docs/configuration/dependencies/ for documentation.
 #
 # ebin/THIS_PACKAGE.app is necessary, as otherwise: 'Cannot read app file:
 #  "[...]/src/THIS_PACKAGE.app.src"'.
@@ -673,15 +681,20 @@ remove-rebar-conf:
 	@/bin/rm -f rebar.config
 
 
+
 # Apparently no way of telling rebar to exclude some source files, so:
 rebar3-hide-unsupported-sources:
-	@echo "  Hiding unsupported sources"
-	@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hidden; done 2>/dev/null || true
+	@echo "  Hiding rebar3 unsupported sources"
+	@for f in $(REBAR3_UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hidden; done 2>/dev/null || true
 
 
 rebar3-restore-unsupported-sources:
-	@echo "  Restoring unsupported sources"
-	-@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f-hidden $$f; done 2>/dev/null || true
+	@echo "  Restoring rebar3 unsupported sources"
+	-@for f in $(REBAR3_UNSUPPORTED_SOURCES); do /bin/mv -f $$f-hidden $$f; done 2>/dev/null || true
+
+
+info-rebar3-unsupported-sources:
+	@echo "REBAR3_UNSUPPORTED_SOURCES = $(REBAR3_UNSUPPORTED_SOURCES)"
 
 
 
@@ -977,18 +990,16 @@ generate-protobuf: $(PROTOBUF_GENERATED_ERL_FILES)
 # server.
 #
 # If the source tree is built and up to date, no need to (re)build on the server
-# (if homogeneous in terms of Erlang versions).
-#
-# A rebuild is triggered just before, as the BEAM files are transferred as well:
-# at arrival timestamps may not be respected, and we want the right BEAMs to be
-# executed.
+# (if homogeneous in terms of Erlang versions): a rebuild is triggered just
+# before, as the BEAM files are transferred as well: on arrival, timestamps may
+# not be respected, and we want the right BEAMs to be executed.
 #
 # Note that, here, only the content of the 'src' and 'include' tree is
 # synchronised (e.g. not the makefiles, not the configuration files, etc. that
-# are elsewhere); see the next 'sync-all-to-server' server.
+# are elsewhere); see the next 'sync-all-to-server' target.
 #
 sync-sources-to-server: all
-	@echo " Synchronising the selected source content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
+	@echo "  Synchronising the selected source content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
 	@if [ -n "$(WEB_SRV)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) src include $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no WEB_SRV variable set." 1>&2; exit 5; fi
 	@echo "(source synchronisation to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT) done)"
 
@@ -997,41 +1008,63 @@ sync-sources-to-server: all
 # location, with no VCS commit involved.
 #
 # A rebuild is triggered just before, as the BEAM files are transferred as well:
-# at arrival timestamps may not be respected, and we want the right BEAMs to be
-# executed.
+# on arrival timestamps may not be respected, and we want the right BEAMs to be
+# executed. On the server, some log files may fail to be updated (not a real
+# problem).
 #
 sync-all-to-server: all
-	@echo " Synchronising the full content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
+	@echo "  Synchronising the full content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
 	@if [ -n "$(WEB_SRV)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) $(LAYER_TOP) $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no WEB_SRV variable set." 1>&2; exit 5; fi
 	@echo "(full synchronisation to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT) done)"
 
 
 
-# Main doc generator, directly relying on edoc:
+# Switched back to edoc, as ex_doc fails due to an "internal inconsistency":
+#generate-api-doc: generate-api-doc-with-exdoc
+generate-api-doc: generate-api-doc-with-edoc
+
+
+# Main doc generator, relying on ExDoc:
 #
-# (include symlinks needed for layers having a full include tree)
+# (simpler to look into ebin rather than forging many --paths options)
 #
-generate-api-doc: overview.edoc create-include-links
-	@echo "  Generating API documentation with edoc"
-	@$(ERLANG_INTERPRETER) -noshell -run edoc_run application "'$(PROJECT_NAME)'" '"."' $(EDOC_OPTS) && echo "  API documentation generated in file://$$(realpath $(API_DOC_ROOT)/index.html)"
+generate-api-doc-with-exdoc:
+	@cd $(LAYER_TOP) && $(MAKE) -s all copy-beams-to-ebin
+	@echo "  Generating API documentation with ExDoc"
+	@$(EXDOC) "$(PROJECT_NAME)" "$(PROJECT_VERSION)" "$(PROJECT_TOP)/ebin" $(EXDOC_OPTS) && echo "  API documentation generated in file://$$(realpath $(API_DOC_ROOT)/index.html)"
 	@$(MAKE) -s copy-static-content
 
 
-# Alternate doc generator, relying on erldocs:
-generate-api-alt-doc: overview.edoc
+# Doc generator directly relying on edoc:
+#
+# (include symlinks needed for layers having a full include tree)
+#
+# (beware, changing path logic will result in a successful generation, yet it
+# will lack CSS, images, not take into account the sources, be generated in a
+# wrong location, etc.)
+#
+generate-api-doc-with-edoc: overview.edoc create-include-links
+	@echo "  Generating API documentation with edoc"
+	@cd $(LAYER_TOP) && $(ERLANG_INTERPRETER) -noshell -run edoc_run application "'$(PROJECT_NAME)'" '"."' $(EDOC_OPTS) && echo "  API documentation generated in file://$$(realpath $(API_DOC_ROOT)/index.html)"
+	@$(MAKE) -s copy-static-content
+
+
+# Doc generator relying on erldocs:
+generate-api-doc-with-erldocs: overview.edoc
 	@echo "  Generating API documentation with erldocs"
-	@$(API_DOC_GENERATOR) -o $(API_DOC_ALT_ROOT) $(LAYER_TOP) && echo "  API alternate documentation generated in file://$$(realpath $(API_DOC_ALT_ROOT)/index.html)"
+	@cd $(LAYER_TOP) && $(API_DOC_GENERATOR) -o $(API_DOC_ALT_ROOT) $(LAYER_TOP) && echo "  API alternate documentation generated in file://$$(realpath $(API_DOC_ALT_ROOT)/index.html)"
 
 
 # For the main doc generator:
 copy-static-content:
-	@echo "  Copying static content for edoc"
+	@echo "  Copying static content for the API documentation"
 	-@/bin/cp -f $(LAYER_TOP)/doc/$(PROJECT_SHORT_NAME)-api.css $(LAYER_TOP)/doc/api-doc/stylesheet.css
 	@/bin/cp -f $(LAYER_TOP)/doc/$(PROJECT_SHORT_NAME)-small.png $(LAYER_TOP)/doc/api-doc/erlang.png
 
 
 # Generates a relevant overview page for edoc:
-overview.edoc: doc/overview.edoc.template
+# (to be run from $(LAYER_TOP)/doc)
+overview.edoc: overview.edoc.template
 	@echo "  Generating $@ from $<"
 	@cat $< | sed "s|COPYRIGHT_YEAR|$$(date '+%Y')|g" | sed "s|PROJECT_VERSION|$(PROJECT_VERSION)|g" |sed "s|GENERATION_DATE|$$(date '+%A, %B %-e, %Y')|g" > $@
 
@@ -1262,6 +1295,11 @@ track:
 	@$(DOC_TRACKER) $(OVERALL_DOCUMENT_SOURCE)
 
 
+# Of course 'yq' is required:
+check-ci:
+	@echo "Checking the correctness of the configuration for the CI (continuous integration)"
+	@if yq . "$(CI_CONF_FILE)"; then echo "YAML content of '$(CI_CONF_FILE)' validated!"; else echo "  Error, the YAML content of '$(CI_CONF_FILE)' is detected as incorrect."; fi
+
 
 # Typically useful to know the software context for continuous integration:
 info-platform: info-hardware info-software
@@ -1385,6 +1423,8 @@ info-sync:
 	@echo "SYNC_TOOL = $(SYNC_TOOL)"
 	@echo "SSH_PORT = $(SSH_PORT)"
 	@echo "SSH_OPT = $(SSH_OPT)"
+	@echo "SYNC_TARGET_GROUP= $(SYNC_TARGET_GROUP)"
+	@echo "SYNC_TARGET_GROUP_OPT= $(SYNC_TARGET_GROUP_OPT)"
 	@echo "SYNC_OPT = $(SYNC_OPT)"
 	@echo "WEB_SRV = $(WEB_SRV)"
 	@echo "CEYLAN_SYNC_TARGET_ROOT = $(CEYLAN_SYNC_TARGET_ROOT)"
@@ -1444,12 +1484,20 @@ info-options:
 	@echo "ALL_CMD_LINE_OPTIONS = $(ALL_CMD_LINE_OPTIONS)"
 
 
+# DISTRIBUTED_NODE_OPT not relevant, as generally not used:
+info-runtime:
+	@echo "ERL_PARAMETERIZED_LAUNCHER = $(ERL_PARAMETERIZED_LAUNCHER)"
+	@echo "NODE_NAMING = $(NODE_NAMING)"
+	@echo "ALL_CMD_LINE_OPTIONS = $(ALL_CMD_LINE_OPTIONS)"
+
+
 info-parse-transform:
 	@echo "BOOTSTRAP_MODULES = $(BOOTSTRAP_MODULES)"
 	@echo "ERLANG_COMPILER_OPT_FOR_PT = $(ERLANG_COMPILER_OPT_FOR_PT)"
 	@echo "ERLANG_COMPILER_PARSE_TRANSFORM_OPT = $(ERLANG_COMPILER_PARSE_TRANSFORM_OPT)"
 
 
+# Now JSON support is built-in:
 info-json:
 	@echo "USE_JSON                      = $(USE_JSON)"
 	@echo "USE_JSX                       = $(USE_JSX)"
@@ -1469,10 +1517,18 @@ info-sql:
 	@echo "POSTGRESQL_BASE = $(POSTGRESQL_BASE)"
 	@echo "SQL_OPTS        = $(SQL_OPTS)"
 
+
 info-doc:
+	@echo "PROJECT_URL = $(PROJECT_URL)"
 	@echo "API_DOC_GENERATOR = $(API_DOC_GENERATOR)"
 	@echo "API_DOC_ROOT = $(API_DOC_ROOT)"
+	@echo "EXDOC = $(EXDOC)"
+	@echo "EXDOC_OPTS = $(EXDOC_OPTS)"
 	@echo "EDOC_OPTS = $(EDOC_OPTS)"
+
+
+# Previously:
+#   @echo "EXDOC_CONFIG_FILE = $(EXDOC_CONFIG_FILE)"
 
 
 # Put here, as defining explicit targets:

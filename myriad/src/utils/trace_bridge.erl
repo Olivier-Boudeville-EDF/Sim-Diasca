@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2024 Olivier Boudeville
+% Copyright (C) 2020-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,51 +25,54 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 18, 2020.
 
-
-% @doc The <b>trace bridge</b> allows modules to depend only on the
-% Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code for
-% traces/logs (possibly the Ceylan-Traces layer, refer to
-% [http://traces.esperide.org/]) at runtime for <b>its logging</b>, so that in
-% all cases exactly one (and the most appropriate) logging system is used, even
-% when lower-level libraries are involved (designed to operate with or without
-% an advanced trace system), and with no change in the source code of these user
-% modules to be operated.
-%
-% It is useful to provide native, integrated, higher-level logging to basic
-% libraries (e.g. Ceylan-LEEC, see [http://leec.esperide.org]), should their
-% user require it - while being able to remain lean and mean if wanted (e.g
-% while keeping the dependency to Ceylan-Traces optional).
-%
-% Switching to a more advanced trace system (typically Ceylan-Traces) is just a
-% matter of having the process of interest call the register/3 function below.
-%
-% For usage examples, refer to:
-%
-%  - Ceylan-Myriad: trace_bridge_test.erl (directly tracing through basic
-%  trace_utils)
-%
-%  - Ceylan-Traces: trace_bridging_test.erl (using then our advanced trace
-%  system); for example:
-%
-%   BridgeSpec = trace_bridge:get_bridge_spec( _MyEmitterName="MyBridgeTester",
-%     _MyCateg="MyTraceCategory",
-%     _BridgePid=class_TraceAggregator:get_aggregator() ),
-%
-%   trace_bridge:register( BridgeSpec ), [...]
-%
-%  - Ceylan-LEEC: most modules, including leec.erl
-%
 -module(trace_bridge).
+
+-moduledoc """
+The **trace bridge** allows modules to depend only on the Ceylan-Myriad layer,
+yet to rely optionally on a non-Myriad code for traces/logs (possibly the
+Ceylan-Traces layer, refer to [http://traces.esperide.org/]) at runtime for
+**its logging**, so that in all cases exactly one (and the most appropriate)
+logging system is used, even when lower-level libraries are involved (they have
+to be designed to operate with or without an advanced trace system), and with no
+change in the source code of these user modules to be operated.
+
+It is useful to provide native, integrated, higher-level logging to basic
+libraries (e.g. Ceylan-LEEC, see [http://leec.esperide.org] or Ceylan-Oceanic,
+see [http://oceanic.esperide.org]), should their user require it - while being
+able to remain lean and mean if wanted (e.g while keeping the dependency to
+Ceylan-Traces optional).
+
+Switching to a more advanced trace system (typically Ceylan-Traces) is then just
+a matter of having the process of interest call the `register/3` function below.
+
+For usage examples, refer to:
+- Ceylan-Myriad: `trace_bridge_test.erl` (directly tracing through basic
+  `trace_utils`)
+- Ceylan-Traces: `trace_bridging_test.erl` (using then our advanced trace
+  system); for example:
+```
+BridgeSpec = trace_bridge:get_bridge_spec(_MyEmitterName="MyBridgeTester",
+  _MyCateg="MyTraceCategory",
+  _BridgePid=class_TraceAggregator:get_aggregator()),
+
+trace_bridge:register(BridgeSpec), [...]
+```
+- Ceylan-LEEC: most modules, including `leec`
+""".
+
 
 
 % The conventions retained here are suspiciously similar to the Ceylan-Traces
 % ones.
 
+
+
+-doc "Possibly a `class_TraceAggregator:aggregator_pid()`.".
 -type bridge_pid() :: pid().
-% Possibly a class_TraceAggregator:aggregator_pid().
 
 
-% An actual trace message:
+
+-doc "An actual trace message.".
 -type trace_message() :: ustring().
 
 -export_type([ bridge_pid/0 ]).
@@ -99,7 +102,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
@@ -123,31 +126,36 @@
 % Not special-casing the 'void' severity, as not used frequently enough.
 
 
+-doc "Bridging information typically specified by the user.".
 -type user_bridge_info() ::
 		{ TraceCategory :: any_string(), BridgePid :: bridge_pid() }.
-% Bridging information typically specified by the user.
 
 
+
+-doc """
+Typically the information transmitted by a trace emitter when creating a
+lower-level process that may or may not use advanced logging.
+
+Note that this type is opaque; use `get_bridge_spec/{2,3}` to obtain an instance
+thereof.
+""".
 -opaque bridge_spec() :: { TraceEmitterName :: bin_string(),
 						   TraceCategory :: bin_string(),
 						   BridgePid :: bridge_pid() }.
-% Typically the information transmitted by a trace emitter when creating a
-% lower-level process that may or may not use advanced logging.
-%
-% Note that this type is opaque; use get_bridge_spec/{2,3} to obtain an instance
-% thereof.
 
 
 -export_type([ user_bridge_info/0, bridge_spec/0 ]).
 
 
 
--opaque bridge_info() :: { TraceEmitterName :: bin_string(),
-						   TraceCategory :: bin_string(),
-						   Location :: bin_string(),
-						   BridgePid :: bridge_pid(),
-						   ApplicationTimestamp :: maybe( trace_timestamp() ) }.
-% A bridging information stored in a target process dictionary.
+-doc "A bridging information stored in a target process dictionary.".
+-opaque bridge_info() :: {
+	TraceEmitterName :: bin_string(),
+	TraceCategory :: bin_string(),
+	Location :: bin_string(),
+	BridgePid :: bridge_pid(),
+	ApplicationTimestamp :: option( trace_timestamp() ) }.
+
 
 
 % To silence warning:
@@ -155,20 +163,26 @@
 
 
 
-% @doc Returns the information to pass to a process so that it can register to
-% the corresponding trace bridge and use it automatically from then.
-%
+-doc """
+Returns the information to pass to a process so that it can register to the
+corresponding trace bridge and use it automatically from then.
+""".
 -spec get_bridge_spec( any_string(), user_bridge_info() ) -> bridge_spec().
 get_bridge_spec( TraceEmitterName,
 				 _UserBridgeInfo={ TraceCategory, BridgePid } ) ->
 	get_bridge_spec( TraceEmitterName, TraceCategory, BridgePid ).
 
 
-% @doc Returns the information to pass to a process so that it can register to
-% the corresponding trace bridge and use it automatically from then.
-%
-% Allows not to break the opaqueness of the bridge_spec() type.
-%
+
+-doc """
+Returns the information to pass to a process so that it can register to the
+corresponding trace bridge and use it automatically from then.
+
+With Ceylan-Traces, BridgePid is typically obtained thanks to
+`class_TraceAggregator:get_aggregator()`.
+
+Allows not to break the opaqueness of the `bridge_spec()` type.
+""".
 -spec get_bridge_spec( any_string(), any_string(), bridge_pid() ) ->
 							bridge_spec().
 get_bridge_spec( TraceEmitterName, TraceCategory, BridgePid ) ->
@@ -177,15 +191,16 @@ get_bridge_spec( TraceEmitterName, TraceCategory, BridgePid ) ->
 
 
 
-% @doc Registers the current process to the specified trace bridge (if any).
-%
-% To be called by the process wanting to use such a trace bridge.
-%
-% Throws an exception of a bridge is already set.
-%
-% See also: register_if_not_already/1.
-%
--spec register( maybe( bridge_spec() ) ) -> void().
+-doc """
+Registers the current process to the specified trace bridge (if any).
+
+To be called by the process wanting to use such a trace bridge.
+
+Throws an exception of a bridge is already set.
+
+See also: `register_if_not_already/1`.
+""".
+-spec register( option( bridge_spec() ) ) -> void().
 register( _MaybeBridgeSpec=undefined ) ->
 	ok;
 
@@ -205,7 +220,6 @@ register( BridgeSpec ) ->
 						   [ BridgeSpec ] ) );
 
 		UnexpectedInfo ->
-
 			error_fmt( "Myriad trace bridge already registered (as ~p), "
 				%"ignoring newer registration (as ~p).",
 				"whereas a newer registration (as ~p) was requested.",
@@ -218,16 +232,17 @@ register( BridgeSpec ) ->
 
 
 
-% @doc Registers the current process to the specified trace bridge (if any), and
-% provided that no bridge was already registered (otherwise maintains the
-% previous bridge and ignores silently that extraneous call).
-%
-% To be called by the process wanting to use such a trace bridge.
-%
-% Useful to have a bridge yet accept that the caller may have already set its
-% bridge.
-%
--spec register_if_not_already( maybe( bridge_spec() ) ) -> void().
+-doc """
+Registers the current process to the specified trace bridge (if any), and
+provided that no bridge was already registered (otherwise maintains the previous
+bridge and ignores silently that extraneous call).
+
+To be called by the process wanting to use such a trace bridge.
+
+Useful to have a bridge yet accept that the caller may have already set its
+bridge.
+""".
+-spec register_if_not_already( option( bridge_spec() ) ) -> void().
 register_if_not_already( _MaybeBridgeSpec=undefined ) ->
 	ok;
 
@@ -237,12 +252,10 @@ register_if_not_already( BridgeSpec ) ->
 
 	process_dictionary:get( BridgeKey ) =:= undefined andalso
 		begin
-
 			BridgeInfo = bridge_spec_to_info( BridgeSpec ),
 
 			process_dictionary:put( BridgeKey, BridgeInfo ),
 			debug_fmt( "Trace bridge registered (spec: ~p).", [ BridgeSpec ] )
-
 		end.
 
 
@@ -268,33 +281,37 @@ bridge_spec_to_info( OtherBridgeSpec ) ->
 
 
 
-% @doc Returns the bridge information of the current process.
-%
-% May be useful for example if spawning processes and wanting that they use the
-% same bridge.
-%
--spec get_bridge_info() -> maybe( bridge_info() ).
+-doc """
+Returns the bridge information of the current process.
+
+May be useful for example if spawning processes and wanting that they use the
+same bridge.
+""".
+-spec get_bridge_info() -> option( bridge_info() ).
 get_bridge_info() ->
 	process_dictionary:get( ?myriad_trace_bridge_key ).
 
 
-% @doc Sets the specified bridge information for the current process.
-%
-% May be useful for example for a spawned process to adopt the same bridge as
-% the one of its caller (obtained thanks to get_bridge_info/0).
-%
-% Any local pre-existing bridge information will be overwritten.
-%
--spec set_bridge_info( maybe( bridge_info() ) ) -> void().
+
+-doc """
+Sets the specified bridge information for the current process.
+
+May be useful for example for a spawned process to adopt the same bridge as the
+one of its caller (obtained thanks to `get_bridge_info/0`).
+
+Any local pre-existing bridge information will be overwritten.
+""".
+-spec set_bridge_info( option( bridge_info() ) ) -> void().
 set_bridge_info( MaybeBridgeInfo ) ->
 	process_dictionary:put( ?myriad_trace_bridge_key, MaybeBridgeInfo ).
 
 
 
-% @doc Sets the current application timestamp.
-%
-% Note: if no trace bridge is registered, does nothing.
-%
+-doc """
+Sets the current application timestamp.
+
+Note: if no trace bridge is registered, does nothing.
+""".
 -spec set_application_timestamp( trace_timestamp() ) -> void().
 set_application_timestamp( NewAppTimestamp ) ->
 
@@ -315,9 +332,9 @@ set_application_timestamp( NewAppTimestamp ) ->
 
 
 
-% @doc Unregisters the current process, which acted as a trace bridge; never
-% fails.
-%
+-doc """
+Unregisters the current process, which acted as a trace bridge; never fails.
+""".
 -spec unregister() -> void().
 unregister() ->
 	% No-op if not set:
@@ -328,117 +345,129 @@ unregister() ->
 % Primitives for trace emission.
 
 
-% @doc Outputs specified debug message.
+-doc "Outputs the specified debug message.".
 -spec debug( trace_message() ) -> void().
 debug( Message ) ->
 	send( debug, Message ).
 
 
-% @doc Outputs specified debug message to format.
+-doc "Outputs the specified debug message to format.".
 -spec debug_fmt( format_string(), format_values() ) -> void().
 debug_fmt( MessageFormat, MessageValues ) ->
 	send( debug, MessageFormat, MessageValues ).
 
 
 
-% @doc Outputs specified info message.
+-doc "Outputs the specified info message.".
 -spec info( trace_message() ) -> void().
 info( Message ) ->
 	send( info, Message ).
 
 
-% @doc Outputs specified info message to format.
+
+-doc "Outputs the specified info message to format.".
 -spec info_fmt( format_string(), format_values() ) -> void().
 info_fmt( MessageFormat, MessageValues ) ->
 	send( info, MessageFormat, MessageValues ).
 
 
 
-% @doc Outputs specified notice message.
+-doc "Outputs the specified notice message.".
 -spec notice( trace_message() ) -> void().
 notice( Message ) ->
 	send( notice, Message ).
 
 
-% @doc Outputs specified notice message to format.
+
+-doc "Outputs the specified notice message to format.".
 -spec notice_fmt( format_string(), format_values() ) -> void().
 notice_fmt( MessageFormat, MessageValues ) ->
 	send( notice, MessageFormat, MessageValues ).
 
 
 
-% @doc Outputs specified warning message.
+-doc "Outputs the specified warning message.".
 -spec warning( trace_message() ) -> void().
 warning( Message ) ->
 	send( warning, Message ).
 
 
-% @doc Outputs specified warning message to format.
+
+-doc "Outputs the specified warning message to format.".
 -spec warning_fmt( format_string(), format_values() ) -> void().
 warning_fmt( MessageFormat, MessageValues ) ->
 	send( warning, MessageFormat, MessageValues ).
 
 
 
-% @doc Outputs specified error message.
+-doc "Outputs the specified error message.".
 -spec error( trace_message() ) -> void().
 error( Message ) ->
 	send( error, Message ).
 
 
-% @doc Outputs specified error message to format.
+
+-doc "Outputs the specified error message to format.".
 -spec error_fmt( format_string(), format_values() ) -> void().
 error_fmt( MessageFormat, MessageValues ) ->
 	send( error, MessageFormat, MessageValues ).
 
 
 
-% @doc Outputs specified critical message.
+-doc "Outputs the specified critical message.".
 -spec critical( trace_message() ) -> void().
 critical( Message ) ->
 	send( critical, Message ).
 
 
-% @doc Outputs specified critical message to format.
+
+-doc "Outputs the specified critical message to format.".
 -spec critical_fmt( format_string(), format_values() ) -> void().
 critical_fmt( MessageFormat, MessageValues ) ->
 	send( critical, MessageFormat, MessageValues ).
 
 
 
-% @doc Outputs specified critical message.
+-doc "Outputs the specified critical message.".
 -spec alert( trace_message() ) -> void().
 alert( Message ) ->
 	send( alert, Message ).
 
 
-% @doc Outputs specified alert message to format.
+
+-doc "Outputs the specified alert message to format.".
 -spec alert_fmt( format_string(), format_values() ) -> void().
 alert_fmt( MessageFormat, MessageValues ) ->
 	send( alert, MessageFormat, MessageValues ).
 
 
 
-% @doc Outputs specified emergency message.
+-doc "Outputs the specified emergency message.".
 -spec emergency( trace_message() ) -> void().
 emergency( Message ) ->
 	send( emergency, Message ).
 
 
-% @doc Outputs specified emergency message to format.
+
+-doc "Outputs the specified emergency message to format.".
 -spec emergency_fmt( format_string(), format_values() ) -> void().
 emergency_fmt( MessageFormat, MessageValues ) ->
 	send( emergency, MessageFormat, MessageValues ).
 
 
 
-% @doc "Outputs" specified void message.
+-doc """
+"Outputs" the specified void message.
+""".
 -spec void( trace_message() ) -> void().
 void( _Message ) ->
 	ok.
 
 
-% @doc "Outputs" specified void message to format.
+
+-doc """
+"Outputs" the specified void message to format.
+""".
 -spec void_fmt( format_string(), format_values() ) -> void().
 void_fmt( _MessageFormat, _MessageValues ) ->
 	ok.
@@ -467,6 +496,9 @@ send( SeverityType, Message ) ->
 -spec send( trace_severity(), format_string(), format_values() ) -> void().
 send( SeverityType, MessageFormat, MessageValues ) ->
 
+    %io:format( "Sending ~ts message of format '~ts' and values ~p.",
+    %           [ SeverityType, MessageFormat, MessageValues ] ),
+
 	Message = text_utils:format( MessageFormat, MessageValues ),
 
 	case process_dictionary:get( ?myriad_trace_bridge_key ) of
@@ -477,6 +509,10 @@ send( SeverityType, MessageFormat, MessageValues ) ->
 
 		% A bridge is available:
 		BridgeInfo ->
+
+			% No need to add here an additional trace_utils-based sending, it
+			% will be done for error-like messages by the next call:
+			%
 			send_bridge( SeverityType, Message, BridgeInfo )
 
 	end.
@@ -532,11 +568,9 @@ send_bridge( SeverityType, Message,
 
 
 
-% @doc Waits for the bridge to report that a trace synchronisation has been
-% completed.
-%
-% (helper)
-%
+-doc """
+Waits for the bridge to report that a trace synchronisation has been completed.
+""".
 -spec wait_bridge_sync() -> void().
 wait_bridge_sync() ->
 

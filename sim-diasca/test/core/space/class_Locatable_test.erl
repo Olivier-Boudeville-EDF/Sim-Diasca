@@ -1,29 +1,31 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Unit tests for the <b>Locatable</b> class implementation.
-%
-% See the class_Locatable module.
-%
 -module(class_Locatable_test).
+
+-moduledoc """
+Unit tests for the **Locatable** class implementation.
+
+See the `class_Locatable` module.
+""".
 
 
 % For facilities common to all cases:
@@ -31,7 +33,7 @@
 
 
 
-% @doc Runs the tests.
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 

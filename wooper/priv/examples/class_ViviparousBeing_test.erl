@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,11 +7,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Unit tests for the ViviparousBeing class implementation.
-% See the class_ViviparousBeing.erl tested module.
-%
 -module(class_ViviparousBeing_test).
+
+-moduledoc """
+Unit tests for the **ViviparousBeing class** implementation.
+
+See the class_ViviparousBeing.erl tested module.
+""".
+
 
 
 -include_lib("myriad/include/test_facilities.hrl").

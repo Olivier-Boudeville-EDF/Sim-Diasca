@@ -1,26 +1,27 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling a <b>waste unloading point</b>.
 -module(class_WasteUnloadingPoint).
+
+-moduledoc "Class modelling a **waste unloading point**.".
 
 
 -define( class_description,
@@ -45,7 +46,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
@@ -58,14 +59,15 @@
 
 
 
-% @doc Creates a waste unloading point.
-%
-% Construction parameters are:
-%
-% - Location: the location of this unloading point
-%
-% - CapacityInformation describes the waste storage capacity of this point
-%
+-doc """
+Creates a waste unloading point.
+
+Construction parameters are:
+
+- Location: the location of this unloading point
+
+- CapacityInformation describes the waste storage capacity of this point
+""".
 -spec construct( wooper:state(), class_GIS:location(), waste_capacity() ) ->
 						wooper:state().
 construct( State, Location, CapacityInformation ) ->
@@ -82,17 +84,18 @@ construct( State, Location, CapacityInformation ) ->
 % Methods section.
 
 
-% @doc Tries to unload to this unloading point as much as possible of the
-% specified mass of specified waste type (possibly any) from the caller (which
-% is expected to be a waste transport requesting to empty its waste).
-%
-% The answer (the actor message sent back) will be:
-%
-% - either a notifyUnloadedWaste to acknowledge for good the waste transaction
-%
-% - or a notifyNoUnloadedWaste to report that no waste unloading will occur this
-% time (transaction failed)
-%
+-doc """
+Tries to unload to this unloading point as much as possible of the specified
+mass of specified waste type (possibly any) from the caller (which is expected
+to be a waste transport requesting to empty its waste).
+
+The answer (the actor message sent back) will be:
+
+- either a notifyUnloadedWaste to acknowledge for good the waste transaction
+
+- or a notifyNoUnloadedWaste to report that no waste unloading will occur this
+time (transaction failed)
+""".
 -spec unloadWaste( wooper:state(), waste_type(), unit_utils:tons(),
 				   sending_actor_pid() ) -> actor_oneway_return().
 unloadWaste( _State, _WasteType=none, _ProposedMass, _WasteUnloaderPid ) ->
@@ -115,7 +118,7 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
 		false ->
 			?info_fmt( "No waste could be unloaded from transport ~w.",
-						[ WasteUnloaderPid ] ),
+                       [ WasteUnloaderPid ] ),
 			class_Actor:send_actor_message( WasteUnloaderPid,
 											notifyNoUnloadedWaste, State );
 
@@ -151,23 +154,19 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
 
 % Checkings.
-%
-% (helper)
-%
 manage_capacity_information( CapacityInformation ) ->
 	[ waste_utils:check_waste_tank( Tank ) || Tank <- CapacityInformation ].
 
 
 
-% @doc Does its best to dispatch the specified quantity of waste (of a specified
-% type) into the specified waste tanks.
-%
-% Returns either 'false' if no waste at all was transferred to tanks, otherwise
-% returns a pair of updated waste tanks and the remaining mass that could not be
-% transferred (if any), and thus is remaining.
-%
-% (helper)
-%
+-doc """
+Does its best to dispatch the specified quantity of waste (of a specified type)
+into the specified waste tanks.
+
+Returns either `false` if no waste at all was transferred to tanks, otherwise
+returns a pair of updated waste tanks and the remaining mass that could not be
+transferred (if any), and thus is remaining.
+""".
 dispatch_waste_into_tanks( WasteType, ProposedMass, WasteTanks ) ->
 	dispatch_waste_into_tanks( WasteType, ProposedMass, WasteTanks, _Acc=[] ).
 
@@ -186,16 +185,16 @@ dispatch_waste_into_tanks( _WasteType, RemainingMass, _WasteTanks=[],
 
 
 dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
-	  Tank=#waste_tank{ allowed_types=AllowedTypes,
-						current_type=TankWasteType,
-						current_mass_stored=CurrentMass,
-						max_mass_stored=MaxMass } | T ], AccTank ) ->
+        Tank=#waste_tank{ allowed_types=AllowedTypes,
+                          current_type=TankWasteType,
+                          current_mass_stored=CurrentMass,
+                          max_mass_stored=MaxMass } | T ], AccTank ) ->
 
 	% To be accepted, an incoming waste must be among the allowed ones, and
 	% compatible with what is already stored (if any):
 	%
 	case lists:member( WasteType, AllowedTypes )
-		andalso waste_utils:can_be_mixed( TankWasteType, WasteType ) of
+            andalso waste_utils:can_be_mixed( TankWasteType, WasteType ) of
 
 		true ->
 
@@ -211,7 +210,7 @@ dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
 
 							% We can fill this tank, but some waste will remain:
 							UpdatedTank = waste_utils:add_waste_to_tank( Tank,
-											Margin, WasteType ) ,
+								Margin, WasteType ) ,
 
 							waste_utils:check_waste_tank( UpdatedTank ),
 
@@ -227,7 +226,7 @@ dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
 							% tank:
 							%
 							LastTank = waste_utils:add_waste_to_tank( Tank,
-									RemainingMass, WasteType ),
+								RemainingMass, WasteType ),
 
 							waste_utils:check_waste_tank( LastTank ),
 
@@ -256,11 +255,10 @@ dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
 
 
 
-% @doc Returns the duration needed, in ticks, for the unloading of specified
-% mass of specified waste type in a waste transport.
-%
-% (helper)
-%
+-doc """
+Returns the duration needed, in ticks, for the unloading of specified mass of
+specified waste type in a waste transport.
+""".
 get_unloading_duration( _WasteType, UnloadedMass, State ) ->
 
 	% A base of 2 minutes, plus 1 minute per ton:

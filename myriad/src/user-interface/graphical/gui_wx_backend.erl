@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2024 Olivier Boudeville
+% Copyright (C) 2017-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,16 +25,18 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 4, 2017.
 
-
-% @doc Gathers all elements relative to the (Erlang) <b>wx backend</b> version
-% 2.1 (itself based on [wxWidgets](https://www.wxwidgets.org/)).
-%
-% Now uses the gui_generated module, which is generated based on the
-% gui_constants one (see gui:generate_support_modules/0) in order to be able to
-% convert the identifiers / defines / constants between MyriadGUI and their
-% backend (wx) counterparts.
-%
 -module(gui_wx_backend).
+
+-moduledoc """
+Gathers all elements relative to the (Erlang) **wx backend** version
+2.1 (itself based on [wxWidgets](https://www.wxwidgets.org/)).
+
+Now uses the gui_generated module, which is generated based on the
+gui_constants one (see gui:generate_support_modules/0) in order to be able to
+convert the identifiers / defines / constants between MyriadGUI and their
+backend (wx) counterparts.
+""".
+
 
 
 % In the current module are gathered the wx-specific functions that may be
@@ -163,6 +165,8 @@
 %
 -define( wx_default_position, { -1, -1 } ).
 
+
+-doc "A backend-level position.".
 -type wx_position() :: { 'pos', gui:point() }.
 
 
@@ -171,6 +175,7 @@
 %
 -define( wx_default_size, { -1, -1 } ).
 
+-doc "A backend-level size.".
 -type wx_size() :: { 'size', gui:size() }.
 
 
@@ -178,11 +183,16 @@
 -include("gui_internal_defines.hrl").
 
 
+-doc "A backend-level direction.".
 -type wx_direction() :: ?wxVERTICAL | ?wxHORIZONTAL.
+
+
+-doc "A backend-level orientation.".
 -type wx_orientation() :: wx_direction() | ?wxBOTH.
 
 
--type wx_id() :: maybe( integer() ).
+-doc "A backend-level identifier .".
+-type wx_id() :: option( integer() ).
 % The identifier (ID) of a wx element is an integer (positive or not).
 %
 % This identifier (e.g. 63) is relative to a given type, like in:
@@ -212,51 +222,74 @@
 
 
 
+-doc """
+Native wx object types (e.g. 'wxFrame').
+
+No enumeration like 'wxWindow' | 'wxFrame' | ... found in wx.
+""".
 -type wx_native_object_type() :: atom().
-% Native wx object types (e.g. 'wxFrame').
-%
-% No enumeration like 'wxWindow' | 'wxFrame' | ... found in wx.
 
 
+
+-doc "A wx option pair, like {pos, {0,0}}.".
 -type wx_opt_pair() :: { atom(), term() }.
-% A wx option pair, like {pos, {0,0}};
 
 
+
+-doc """
+Refer to <https://erlang.org/doc/man/wxEvtHandler.html>.
+
+See the corresponding gui:event_subscription_option().
+""".
 -type wx_event_handler_option() :: { 'id', integer() }
 								 | { 'lastId', integer() }
 								 | { 'skip', boolean() }
 								 | 'callback'
 								 | { 'callback', function() }
 								 | { 'userData', term() }.
-% Refer to https://erlang.org/doc/man/wxEvtHandler.html.
-% See the corresponding gui:event_subscription_option().
 
 
-% Precisely:
-%    {id, integer()} |
-%    {position, {X :: integer(), Y :: integer()}} |
-%    {size, {W :: integer(), H :: integer()}} |
-%    {style, integer()} |
-%    {name, unicode:chardata()} |
-%    {palette, wxPalette:wxPalette()}
-%
+-doc """
+Precisely:
+ - {id, integer()} |
+ - {position, {X :: integer(), Y :: integer()}} |
+ - {size, {W :: integer(), H :: integer()}} |
+ - {style, integer()} |
+ - {name, unicode:chardata()} |
+ - {palette, wxPalette:wxPalette()}
+""".
 -type other_wx_device_context_attribute() :: atom_entry().
 
 
+
+-doc """
+Refer to wxGLCanvas: <https://www.erlang.org/doc/man/wxglcanvas#new-2>.
+""".
 -type wx_device_context_attribute() ::
 		{ 'attribList', integer() } | other_wx_device_context_attribute().
-% Refer to wxGLCanvas: https://www.erlang.org/doc/man/wxglcanvas#new-2.
 
 
+-doc "A wxWidgets enumerated value.".
 -type wx_enum() :: wx:wx_enum().
-% A wxWidgets enumerated value.
+
+
+
+-doc "A backend-level art identifier, for example `wxART_NEW`.".
+-type wx_art_id() :: unicode:chardata().
+
+
+-doc """
+Visual attributes of an OpenGL canvas (not rendering context attributes).
+""".
+-type wx_gl_attributes() :: [ integer() ].
 
 
 -export_type([ wx_native_object_type/0, wx_opt_pair/0,
 			   wx_event_handler_option/0,
 			   other_wx_device_context_attribute/0,
 			   wx_device_context_attribute/0, wx_enum/0,
-			   wx_direction/0, wx_orientation/0 ]).
+			   wx_direction/0, wx_orientation/0,
+			   wx_art_id/0, wx_gl_attributes/0 ]).
 
 
 % Preferably no '-export_type' here to avoid leakage of backend conventions.
@@ -280,7 +313,8 @@
 		  to_wx_direction/1, to_wx_orientation/1,
 		  wx_id_to_window/1, wx_id_to_string/1,
 
-		  to_wx_device_context_attributes/1 ]).
+		  to_wx_device_context_attributes/1, are_gl_attributes_supported/1,
+		  get_msaa_attributes/0 ]).
 
 % For event management:
 -export([ connect/2, connect/3, connect/4, disconnect/1, disconnect/2 ]).
@@ -294,7 +328,8 @@
 -export([ is_wx_event/1 ]).
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type maybe_list(T) :: list_utils:maybe_list( T ).
 
@@ -349,8 +384,7 @@
 
 
 
-
-% @doc Returns the build-time version of wx (wxWidgets).
+-doc "Returns the build-time version of wx (wxWidgets).".
 -spec get_wx_version() -> basic_utils:four_digit_version().
 get_wx_version() ->
 	{ ?wxMAJOR_VERSION, ?wxMINOR_VERSION, ?wxRELEASE_NUMBER,
@@ -361,23 +395,26 @@ get_wx_version() ->
 % Object type section.
 
 
-% @doc Converts a MyriadGUI type of object into a wx one.
+-doc "Converts a MyriadGUI type of object into a wx one.".
 -spec to_wx_object_type( myriad_object_type() ) -> wx_object_type().
 to_wx_object_type( MyrObjType ) ->
 	gui_generated:get_second_for_object_type( MyrObjType ).
 
 
-% @doc Converts a wx type of object into a MyriadGUI one.
+
+-doc "Converts a wx type of object into a MyriadGUI one.".
 -spec from_wx_object_type( wx_object_type() ) -> myriad_object_type().
 from_wx_object_type( WxObjectType ) ->
 	gui_generated:get_first_for_object_type( WxObjectType ).
 
 
 
-% @doc Tells whether the specified term is a wx event.
-%
-% As wxEvent() = wx:wx_object() = #wx_ref{}, for example
-% {wx_ref,131,wxPaintEvent,[]}.
+-doc """
+Tells whether the specified term is a wx event.
+
+As wxEvent() = wx:wx_object() = #wx_ref{}, for example
+{wx_ref,131,wxPaintEvent,[]}.
+""".
 %
 % Only in wxe.hrl:
 %is_wx_event( E ) when is_record( E, wx_ref ) ->
@@ -393,10 +430,11 @@ is_wx_event( _ ) ->
 % Debug section.
 
 
-% @doc Converts the debug level from MyriadGUI to the one of wx.
-%
-% (helper)
-%
+-doc """
+Converts the debug level from MyriadGUI to the one of wx.
+
+(helper)
+""".
 to_wx_debug_level( _DebugLevel=none ) ->
 	none;
 
@@ -408,12 +446,12 @@ to_wx_debug_level( _DebugLevel=life_cycle ) ->
 
 
 
-% @doc Converts the specified MyriadGUI identifier in a wx-specific widget
-% identifier.
-%
-% (helper)
-%
--spec to_wx_id( maybe( myriad_instance_id() ) ) -> wx_id().
+-doc """
+Converts the specified MyriadGUI identifier in a wx-specific widget identifier.
+
+(helper)
+""".
+-spec to_wx_id( option( myriad_instance_id() ) ) -> wx_id().
 to_wx_id( undefined ) ->
 	?gui_any_id;
 
@@ -422,12 +460,13 @@ to_wx_id( Other ) ->
 
 
 
-% @doc Converts the specified MyriadGUI identifier into a wx-specific parent
-% widget identifier.
-%
-% (helper)
-%
--spec to_wx_parent( maybe( parent() ) ) -> gui_object().
+-doc """
+Converts the specified MyriadGUI identifier into a wx-specific parent widget
+identifier.
+
+(helper)
+""".
+-spec to_wx_parent( option( parent() ) ) -> gui_object().
 to_wx_parent( undefined ) ->
 	?no_parent;
 
@@ -436,11 +475,12 @@ to_wx_parent( Other ) ->
 
 
 
-% @doc Converts the specified MyriadGUI position in a wx-specific position (with
-% defaults).
-%
-% (helper)
-%
+-doc """
+Converts the specified MyriadGUI position in a wx-specific position (with
+defaults).
+
+(helper)
+""".
 -spec to_wx_position( position() ) -> wx_position().
 to_wx_position( _Position=auto ) ->
 	{ pos, ?wx_default_position };
@@ -450,11 +490,11 @@ to_wx_position( Position ) ->
 
 
 
-% @doc Converts the specified MyriadGUI size in a wx-specific size (with
-% defaults).
-%
-% (helper)
-%
+-doc """
+Converts the specified MyriadGUI size in a wx-specific size (with defaults).
+
+(helper)
+""".
 -spec to_wx_size( sizing() ) -> wx_size().
 to_wx_size( _Size=auto ) ->
 	{ size, ?wx_default_size };
@@ -465,28 +505,31 @@ to_wx_size( Size ) ->
 
 
 
-% @doc Converts to back-end direction.
-%
-% (helper)
-%
+-doc """
+Converts to backend direction.
+
+(helper)
+""".
 -spec to_wx_direction( direction() ) -> wx_direction().
 to_wx_direction( Direction ) ->
 	gui_generated:get_second_for_direction( Direction ).
 
 
-% @doc Converts to back-end orientation.
-%
-% (helper)
-%
+
+-doc """
+Converts to backend orientation.
+
+(helper)
+""".
 -spec to_wx_orientation( orientation() ) -> wx_orientation().
 to_wx_orientation( Orientation ) ->
 	gui_generated:get_second_for_orientation( Orientation ).
 
 
 
-% @doc Converts the specified MyriadGUI device context attributes to wx
-% conventions.
-%
+-doc """
+Converts the specified MyriadGUI device context attributes to wx conventions.
+""".
 -spec to_wx_device_context_attributes( [ device_context_attribute() ] ) ->
 											[ wx_device_context_attribute() ].
 to_wx_device_context_attributes( Attrs ) ->
@@ -523,6 +566,10 @@ to_wx_device_context_attributes( _Attrs=[ { depth_buffer_size, S } | T ],
 								 Acc ) ->
 	to_wx_device_context_attributes( T, [ S, ?WX_GL_DEPTH_SIZE | Acc ] );
 
+to_wx_device_context_attributes( _Attrs=[ msaa | T ], Acc ) ->
+	% Directly as listed elements, not as a nested list:
+	to_wx_device_context_attributes( T, get_msaa_attributes() ++ Acc );
+
 to_wx_device_context_attributes( _Attrs=[ use_core_profile | T ], Acc ) ->
 	to_wx_device_context_attributes( T, [ ?WX_GL_CORE_PROFILE | Acc ] );
 
@@ -531,6 +578,48 @@ to_wx_device_context_attributes( _Attrs=[ debug_context | T ], Acc ) ->
 
 to_wx_device_context_attributes( _Attrs=[ Other | _T ], _Acc ) ->
 	throw( { unsupported_device_context_attribute, Other } ).
+
+
+
+
+
+-doc """
+Returns whether an OpenGL canvas having the specified attributes is available.
+""".
+-spec are_gl_attributes_supported( wx_gl_attributes() ) -> boolean().
+are_gl_attributes_supported( Attrs ) ->
+
+	try
+
+		wxGLCanvas:isDisplaySupported( Attrs )
+
+	catch _ExceptionType:Reason:_Stacktrace ->
+		trace_utils:error_fmt( "Could not determine whether OpenGL canvas "
+			"attributes ~w are available (reason: ~p), supposing not.",
+			[ Attrs, Reason ] ),
+		false
+
+	end.
+
+
+
+-doc """
+Returns our default attribute settings for MSAA (Multisample anti-aliasing).
+""".
+-spec get_msaa_attributes() -> wx_gl_attributes().
+get_msaa_attributes() ->
+
+	% To enable MSAA:
+	MultisamplingSupport = 1,
+
+	% For 2x2 antialiasing supersampling on most graphics cards:
+	Supersampling = 4,
+
+	% At least wxWidgets-3.0 required:
+	[ ?WX_GL_SAMPLE_BUFFERS, MultisamplingSupport,
+	  ?WX_GL_SAMPLES, Supersampling, 0 ].
+
+
 
 
 
@@ -546,18 +635,20 @@ to_wx_device_context_attributes( _Attrs=[ Other | _T ], _Acc ) ->
 %
 
 
-% @doc Returns the widget corresponding to the specified wx identifier.
-%
-% (internal use only)
-%
+-doc """
+Returns the widget corresponding to the specified wx identifier.
+
+(internal use only)
+""".
 -spec wx_id_to_window( wx_id() ) -> window().
 wx_id_to_window( Id ) ->
 	wxWindow:findWindowById( Id ).
 
 
-% @doc Returns a textual representation of the specified GUI object wx
-% identifier.
-%
+
+-doc """
+Returns a textual representation of the specified GUI object wx identifier.
+""".
 -spec wx_id_to_string( wx_id() ) -> ustring().
 wx_id_to_string( _Id=undefined ) ->
 	"no id defined";
@@ -576,12 +667,13 @@ wx_id_to_string( Id ) ->
 % Connection-related section.
 
 
-% @doc Subscribes the current process to the specified type(s) of events
-% regarding the specified object (receiving for that a message).
-%
-% Only useful for context-less calls; the versions of that function specifying a
-% "trap set" parameter shall be preferred, as they are more efficient.
-%
+-doc """
+Subscribes the current process to the specified type(s) of events regarding the
+specified object (receiving for that a message).
+
+Only useful for context-less calls; the versions of that function specifying a
+"trap set" parameter shall be preferred, as they are more efficient.
+""".
 -spec connect( event_source(), maybe_list( event_type() ) ) -> void().
 connect( EventSource, EventTypeOrTypes ) ->
 
@@ -594,20 +686,21 @@ connect( EventSource, EventTypeOrTypes ) ->
 
 
 
-% @doc Subscribes the current process to the specified type(s) of events
-% regarding the specified object (receiving for that a message).
-%
-% Said otherwise: requests the specified widget to send to the current process a
-% message-based event when the specified kind of event happens, knowing that by
-% default, depending on its type, this event may also be propagated upward in
-% the widget hierarchy, through the corresponding event handlers (the trap_event
-% option allows not to propagate this event).
-%
-% Note:
-%  - apparently registering more than once a given type has no effect (not N
-%  messages of that type sent afterwards)
-%  - only useful internally or when bypassing the default main loop
-%
+-doc """
+Subscribes the current process to the specified type(s) of events regarding the
+specified object (receiving for that a message).
+
+Said otherwise: requests the specified widget to send to the current process a
+message-based event when the specified kind of event happens, knowing that by
+default, depending on its type, this event may also be propagated upward in the
+widget hierarchy, through the corresponding event handlers (the trap_event
+option allows not to propagate this event).
+
+Note:
+ - apparently registering more than once a given type has no effect (not N
+ messages of that type sent afterwards)
+ - only useful internally or when bypassing the default main loop
+""".
 -spec connect( event_source(), maybe_list( event_type() ), trap_set() ) ->
 						void().
 connect( EventSource, EventTypeOrTypes, TrapSet ) ->
@@ -615,15 +708,16 @@ connect( EventSource, EventTypeOrTypes, TrapSet ) ->
 
 
 
-% @doc Subscribes the current process to the specified type(s) of events
-% regarding the specified object, with the specified options; this process will
-% thus receive a gui_event() message whenever a corresponding event occurs.
-%
-% The {trap,propagate}_event options (or the corresponding
-% {trap,propagate}_event/1 functions) can override these defaults.
-%
-% Refer to connect/3 for all details.
-%
+-doc """
+Subscribes the current process to the specified type(s) of events regarding the
+specified object, with the specified options; this process will thus receive a
+gui_event() message whenever a corresponding event occurs.
+
+The {trap,propagate}_event options (or the corresponding
+{trap,propagate}_event/1 functions) can override these defaults.
+
+Refer to connect/3 for all details.
+""".
 -spec connect( event_source(), maybe_list( event_type() ),
 		[ event_subscription_option() ], trap_set() ) -> void().
 % Was not used apparently:
@@ -655,11 +749,12 @@ connect( SourceGUIObject, EventType, Options, TrapSet ) ->
 
 
 
-% @doc Converts MyriadGUI connect options into wx ones.
-%
-% The corresponding event type must be specified in order to apply per-type
-% defaults.
-%
+-doc """
+Converts MyriadGUI connect options into wx ones.
+
+The corresponding event type must be specified in order to apply per-type
+defaults.
+""".
 -spec to_wx_connect_options( [ event_subscription_option() ], event_type(),
 							 trap_set() ) -> [ wx_event_handler_option() ].
 to_wx_connect_options( Opts, EventType, TrapSet ) ->
@@ -669,7 +764,7 @@ to_wx_connect_options( Opts, EventType, TrapSet ) ->
 
 % (helper)
 -spec to_wx_connect_options( [ event_subscription_option() ], event_type(),
-	trap_set(), maybe( 'propagate' | 'trap' ), event_type() ) ->
+	trap_set(), option( 'propagate' | 'trap' ), event_type() ) ->
 		[ wx_event_handler_option() ].
 % End of recursion, propagation explicitly requested by the user:
 to_wx_connect_options( _Opts=[], _EventType, _TrapSet,
@@ -744,12 +839,12 @@ to_wx_connect_options( _Opts=[ Other | _T ], _EventType, _TrapSet,
 
 
 
-% @doc Unsubscribes the current process from the specified object, for all event
-% types.
-%
-% The meaning of the returned boolean is not specified, presumably whether the
-% operation went well.
-%
+-doc """
+Unsubscribes the current process from the specified object, for all event types.
+
+The meaning of the returned boolean is not specified, presumably whether the
+operation went well.
+""".
 -spec disconnect( event_source() ) -> boolean().
 disconnect( _SourceObject=#canvas_state{ panel=Panel } ) ->
 	disconnect( Panel );
@@ -764,12 +859,13 @@ disconnect( SourceObject ) ->
 
 
 
-% @doc Unsubscribes the current process from the specified object, for the
-% specified event type(s).
-%
-% The meaning of the returned boolean is not specified, presumably whether the
-% operation went well.
-%
+-doc """
+Unsubscribes the current process from the specified object, for the specified
+event type(s).
+
+The meaning of the returned boolean is not specified, presumably whether the
+operation went well.
+""".
 -spec disconnect( event_source(), maybe_list( event_type() ) ) -> boolean().
 disconnect( SourceObject, EventTypes ) when is_list( EventTypes ) ->
 	[ disconnect( SourceObject, ET ) || ET <- EventTypes ];

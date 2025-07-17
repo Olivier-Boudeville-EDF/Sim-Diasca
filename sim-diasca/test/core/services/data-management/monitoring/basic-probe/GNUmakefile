@@ -1,11 +1,10 @@
 SIM_DIASCA_TOP = ../../../../../..
 
 
-.PHONY: test-plot-generation clean
+.PHONY: all test-plot-generation clean clean-local
 
 
-include $(SIM_DIASCA_TOP)/GNUmakesettings.inc
-
+all:
 
 Test_probe.dat:
 	@$(MAKE) -s class_Probe_run
@@ -20,3 +19,7 @@ clean: clean-local
 
 clean-local:
 	-@/bin/rm -f Basic_Test_probe.*  Zone_Test_probe.*
+
+
+
+include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

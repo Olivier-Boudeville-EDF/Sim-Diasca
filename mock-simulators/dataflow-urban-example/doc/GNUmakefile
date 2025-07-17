@@ -1,6 +1,5 @@
 MOCK_SIMULATORS_TOP = ../..
 
-
 .PHONY: all
 
 

@@ -1,26 +1,28 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling a <b>geographical container</b>.
 -module(class_GeoContainer).
+
+-moduledoc "Class modelling a **geographical container**.".
+
 
 
 -define( class_description,
@@ -52,13 +54,12 @@
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization, "City-example.GeoContainer" ).
 
-
 % For types:
 -include("city_example_types.hrl").
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
@@ -69,25 +70,28 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type geolocalized_pid() :: class_GeolocalizedElement:geolocalized_pid().
 
 
-% @doc Creates a geo-container, initially empty.
-%
-% The only parameter is the starting location, which is either:
-%
-% - ContainerPid :: container_pid() is the PID of a parent geo-container,
-% supposedly able to accept this container
-%
-% - {CoordinateType :: class_GIS:geolocation_flavour(), Location::
-% class_GIS:geolocation_coordinate()}
-%
-% - Location :: class_GIS:geolocation_coordinate(), where Location is implicitly
-% a WGS84 polar coordinate
-%
+
+-doc """
+Creates a geo-container, initially empty.
+
+The only parameter is the starting location, which is either:
+
+- ContainerPid :: container_pid() is the PID of a parent geo-container,
+supposedly able to accept this container
+
+- {CoordinateType :: class_GIS:geolocation_flavour(), Location::
+class_GIS:geolocation_coordinate()}
+
+- Location :: class_GIS:geolocation_coordinate(), where Location is implicitly
+a WGS84 polar coordinate
+""".
 -spec construct( wooper:state(), class_GIS:location() ) -> wooper:state().
 construct( State, AnyKindOfLocation ) ->
 
@@ -102,10 +106,11 @@ construct( State, AnyKindOfLocation ) ->
 % Methods section.
 
 
-% @doc Requests this container to enter.
-%
-% This default implementation always accepts this incoming geo-element.
-%
+-doc """
+Requests this container to enter.
+
+This default implementation always accepts this incoming geo-element.
+""".
 -spec requestEntry( wooper:state() ) -> request_return( entry_outcome() ).
 requestEntry( State ) ->
 
@@ -117,7 +122,7 @@ requestEntry( State ) ->
 
 
 
-% @doc Traces current state.
+-doc "Traces the current state.".
 -spec traceContent( wooper:state() ) -> const_oneway_return().
 traceContent( State ) ->
 
@@ -127,7 +132,7 @@ traceContent( State ) ->
 
 
 
-% @doc Returns a string describing the state of this instance.
+-doc "Returns a string describing the state of this geocontainer.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
@@ -153,10 +158,7 @@ request_entry( GeoRequester, State ) ->
 
 
 
-% @doc Returns a textual description of that instance.
-%
-% (helper)
-%
+-doc "Returns a textual description of that instance.".
 to_string( State ) ->
 
 	ContainedString = case ?getAttr(contained) of
@@ -171,4 +173,4 @@ to_string( State ) ->
 	end,
 
 	text_utils:format( "geocontainer named '~ts' located at ~w ~ts",
-				   [ ?getAttr(name), ?getAttr(location), ContainedString ] ).
+		[ ?getAttr(name), ?getAttr(location), ContainedString ] ).

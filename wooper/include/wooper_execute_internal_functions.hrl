@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -108,43 +108,14 @@
 % of a state and a result (possibly an error).
 
 
-
-% @doc Executes the specified method.
-%
-% If the method is not found (either in the class module or in its ancestor
-% trees), an error tuple whose first element is an atom in
-% 'wooper_{request,oneway}_not_found' is returned along with an unchanged state.
-%
-% If the method fails,
-% If it does not fail but returns an unexpected result (i.e. not a tuple
-% beginning with the atom 'return'), an error tuple beginning with the atom
-% 'wooper_method_faulty_return' is returned with an unchanged state.
-%
-% If its execution succeeds, then {wooper_result,Result} is returned (with
-% Result being the actual result of the method call) with an updated state.
-%
-% Finally, if the method does not return any result, the atom
-% 'wooper_method_returns_void' is returned, which allows a caller that sent his
-% PID (i.e. called this method as a request) to be warned it is a mistake, as no
-% answer should be expected.
-%
-% In debug mode, the error logs have been added, as debugging faulty oneways is
-% more difficult: they cannot return any error to the caller, they can just
-% crash and notify any linked or monitoring process.
-%
-% Note: atom and state checking in guards should be superfluous.
-%
+% (spec shared whether or not in debug mode)
 -spec wooper_execute_method( method_name(), method_arguments(),
 	wooper:state() ) -> { wooper:state(), method_internal_result() }.
 
 
 
-% @doc Executes the specified method, as specified class.
-%
-% Exactly as wooper_execute_method, except that the target module (class) is
-% directly specified, instead of being determined from the instance virtual
-% table.
-%
+
+% (spec shared whether or not in debug mode)
 -spec wooper_execute_method_as( classname(), method_name(),
 								method_arguments(), wooper:state() ) ->
 		{ wooper:state(), method_internal_result() }.
@@ -160,6 +131,37 @@
 -ifdef(wooper_debug_mode).
 
 
+
+-doc """
+Executes the specified method.
+
+If the method is not found (either in the class module or in its ancestor
+trees), an error tuple whose first element is an atom in
+`wooper_{request,oneway}_not_found` is returned along with an unchanged state.
+
+If the method fails, it will fail according to its nature:
+- if it is a request, a `{wooper_error, ErrorReason}` term will be sent back to
+  the caller, and the instance process will exit on error
+- if it is a oneway, the instance process will exit on error
+
+If it does not fail but returns an unexpected result (i.e. not a tuple beginning
+with the atom `return`), an error tuple beginning with the atom
+`wooper_method_faulty_return` is returned with an unchanged state.
+
+If its execution succeeds, then `{wooper_result,Result}` is returned (with
+Result being the actual result of the method call) with an updated state.
+
+Finally, if the method does not return any result, the atom
+`wooper_method_returns_void` is returned, which allows a caller that sent his
+PID (i.e. called this method as a request) to be warned it is a mistake, as no
+answer should be expected.
+
+In debug mode, the error logs have been added, as debugging faulty oneways is
+more difficult: they cannot return any error to the caller, they can just crash
+and notify any linked or monitoring process.
+
+Note: atom and state checking in guards should be superfluous.
+""".
 wooper_execute_method( MethodAtom, Parameters, State )
 			when is_atom( MethodAtom ) andalso is_list( Parameters )
 				 andalso is_record( State, state_holder ) ->
@@ -191,10 +193,9 @@ wooper_execute_method( MethodAtom, Parameters, State )
 
 				undefined ->
 
-					% This is a oneway, so log and crash:
-					% method name and arity returned as separate tuple
-					% elements, as if in a single string ("M/A"), the result
-					% is displayed as a list:
+					% This is a oneway, so log and crash: method name and arity
+					% returned as separate tuple elements, as if in a single
+					% string ("M/A"), the result is displayed as a list:
 					%
 					wooper:log_error(
 						"oneway ~ts:~ts/~B not found, parameters were:~n~p~n",
@@ -206,10 +207,11 @@ wooper_execute_method( MethodAtom, Parameters, State )
 
 				_ ->
 
-					% This is a request, returns the state and an error term,
-					% and rely on the calling function (e.g. wooper_main_loop)
-					% to crash *after* having performed any relevant action
-					% (e.g. send back a relevant answer):
+					% This is a request, returns the state and an error term;
+					% rely on the calling function (e.g. wooper_main_loop, which
+					% uses a try/catch) to crash *after* having performed any
+					% relevant action (e.g. logging and sending back a relevant
+					% answer):
 					%
 					wooper:log_error(
 						"request ~ts:~ts/~B not found, parameters were:~n~p~n",
@@ -231,7 +233,36 @@ wooper_execute_method( MethodAtom, Parameters, State )
 -else. % not in wooper_debug_mode:
 
 
+-doc """
+Executes the specified method.
 
+If the method is not found (either in the class module or in its ancestor
+trees), an error tuple whose first element is an atom in
+`wooper_{request,oneway}_not_found` is returned along with an unchanged state.
+
+If the method fails, it will fail according to its nature:
+- if it is a request, a `{wooper_error, ErrorReason}` term will be sent back to
+  the caller, and the instance process will exit on error
+- if it is a oneway, the instance process will exit on error
+
+If it does not fail but returns an unexpected result (i.e. not a tuple beginning
+with the atom `return`), an error tuple beginning with the atom
+`wooper_method_faulty_return` is returned with an unchanged state.
+
+If its execution succeeds, then `{wooper_result,Result}` is returned (with
+Result being the actual result of the method call) with an updated state.
+
+Finally, if the method does not return any result, the atom
+`wooper_method_returns_void` is returned, which allows a caller that sent his
+PID (i.e. called this method as a request) to be warned it is a mistake, as no
+answer should be expected.
+
+In debug mode, the error logs have been added, as debugging faulty oneways is
+more difficult: they cannot return any error to the caller, they can just crash
+and notify any linked or monitoring process.
+
+Note: atom and state checking in guards should be superfluous.
+""".
 wooper_execute_method( MethodAtom, Parameters, State ) ->
 
 	%trace_utils:debug_fmt( "wooper_execute_method: looking up ~ts(~w) "
@@ -298,16 +329,17 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 
 
 
-% @doc Looks-up specified method (Method/Arity, e.g. toString/1) to be found in
-% inheritance tree.
-%
-% Returns either {'value', Module} with Module corresponding to the class that
-% implements that method, or 'key_not_found'.
-%
-% Note: uses the pre-built virtual table for this class.
-%
-% (helper)
-%
+-doc """
+Looks-up specified method (Method/Arity, e.g. toString/1) to be found in
+inheritance tree.
+
+Returns either `{'value', Module}` with Module corresponding to the class that
+implements that method, or `key_not_found`.
+
+Note: uses the pre-built virtual table for this class.
+
+(helper)
+""".
 -spec wooper_lookup_method( wooper:state(), method_name(), arity() ) ->
 								{ 'value', classname() } | 'key_not_found'.
 wooper_lookup_method( State, MethodAtom, Arity ) ->
@@ -326,17 +358,14 @@ wooper_lookup_method( State, MethodAtom, Arity ) ->
 -compile( { inline, [ wooper_execute_method_as/4 ] } ).
 
 
-% @doc Looks-up the specified method (Method/Arity, e.g. toString/1) to be found
-% in the inheritance tree of the specified parent class (thus not necessarily
-% directly implemented in this parenet class).
-%
-% Returns either {'value', Module} with Module corresponding to the actual class
-% that implements that method, or 'key_not_found'.
-%
-% Note: uses the pre-built virtual table for this class.
-%
-% (helper)
-%
+-doc """
+Executes the specified method, as the specified class.
+
+Exactly as `wooper_execute_method/3`, except that the target module (class) is
+directly specified, instead of being determined from the instance virtual table.
+
+(helper)
+""".
 wooper_execute_method_as( ParentClassname, MethodAtom, Parameters, State )
 		when is_atom( ParentClassname ) andalso is_atom( MethodAtom )
 			 andalso is_list( Parameters )
@@ -406,20 +435,18 @@ wooper_execute_method_as( ParentClassname, MethodAtom, Parameters, State )
 
 
 
-
-
 % Section for wooper_effective_method_execution/4.
 
 
+-doc """
+Triggers the actual method execution.
 
-% @doc Triggers the actual method execution.
-%
-% In case of runtime error, this function can log and throw both for oneways and
-% requests, as the former have no specific action to take in that case, and the
-% latter enclose the full processing (from the message that triggered it) in a
-% try/catch clause in order to be able to nevertheless send back a wooper_error
-% to the caller before crashing, if necessary.
-%
+In case of runtime error, this function can log and throw both for oneways and
+requests, as the former have no specific action to take in that case, and the
+latter enclose the full processing (from the message that triggered it) in a
+try/catch clause in order to be able to nevertheless send back a wooper_error
+to the caller before crashing, if necessary.
+""".
 -spec wooper_effective_method_execution( module(), method_name(),
 										 wooper:state(), method_arguments() ) ->
 	{ wooper:state(), method_internal_result() }.
@@ -531,14 +558,14 @@ wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 % Section for wooper_handle_remote_request_execution/4.
 
 
+-doc """
+Executes the specified remotely-triggered request: returns an updated state and
+sends back the result to the caller.
 
-% @doc Executes the specified remotely-triggered request: returns an updated
-% state and sends back the result to the caller.
-%
-% A specific function is used for *remote* request execution, as local ones have
-% a different structure (they return the result, they do not send it; they do
-% not intercept exceptions, etc.).
-%
+A specific function is used for *remote* request execution, as local ones have a
+different structure (they return the result, they do not send it; they do not
+intercept exceptions, etc.).
+""".
 -spec wooper_handle_remote_request_execution( method_name(), wooper:state(),
 						method_arguments(), pid() ) -> wooper:state().
 
@@ -655,13 +682,14 @@ wooper_handle_remote_request_execution( RequestAtom, State, ArgumentList,
 % Section for wooper_handle_local_request_execution/3.
 
 
-% @doc Executes the specified locally-triggered request: returns an updated
-% state and the corresponding result.
-%
-% A specific function is used for *local* request executions, as they must have
-% a different structure (e.g. not sending messages back, restoring the previous
-% request_sender, not catching exceptions).
-%
+-doc """
+Executes the specified locally-triggered request: returns an updated state and
+the corresponding result.
+
+A specific function is used for *local* request executions, as they must have a
+different structure (e.g. not sending messages back, restoring the previous
+request_sender, not catching exceptions).
+""".
 -spec wooper_handle_local_request_execution( method_name(), wooper:state(),
 		method_arguments() ) -> { wooper:state(), method_internal_result() }.
 
@@ -738,13 +766,13 @@ wooper_handle_local_request_execution( RequestAtom, State, ArgumentList ) ->
 % Section for wooper_handle_local_request_execution_as/4.
 
 
+-doc """
+Executes the specified locally-triggered request, using an explicitly-specified
+parent class to select its implementation: returns an updated state and the
+corresponding result.
 
-% @doc Executes the specified locally-triggered request, using an
-% explicitly-specified parent class to select its implementation: returns an
-% updated state and the corresponding result.
-%
-% Only local calls can select their implementation class.
-%
+Only local calls can select their implementation class.
+""".
 -spec wooper_handle_local_request_execution_as( method_name(), wooper:state(),
 		method_arguments(), classname() ) ->
 								{ wooper:state(), method_internal_result() }.
@@ -830,10 +858,9 @@ wooper_handle_local_request_execution_as( RequestAtom, State, ArgumentList,
 % Section for wooper_handle_remote_oneway_execution/3.
 
 
-
-% @doc Executes the specified remotely-triggered oneway, and returns an updated
-% state.
-%
+-doc """
+Executes the specified remotely-triggered oneway, and returns an updated state.
+""".
 -spec wooper_handle_remote_oneway_execution( method_name(), wooper:state(),
 								method_arguments() ) -> wooper:state().
 
@@ -945,9 +972,10 @@ wooper_handle_remote_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 
 % Section for wooper_handle_local_oneway_execution/3.
 
-% @doc Executes the specified locally-triggered oneway, and returns an updated
-% state.
-%
+
+-doc """
+Executes the specified locally-triggered oneway, and returns an updated state.
+""".
 -spec wooper_handle_local_oneway_execution( method_name(), wooper:state(),
 								method_arguments() ) -> wooper:state().
 
@@ -1018,19 +1046,18 @@ wooper_handle_local_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 
 
 
-
 % Section for wooper_handle_local_oneway_execution_as/4.
 
 
-% @doc Executes the specified locally-triggered oneway, using an
-% explicitly-specified parent class to select its implementation, and returns an
-% updated state.
-%
-% Only local calls can select their implementation class.
-%
-% No 'when is_list(ArgumentList) -> ...', as the caller must have ensured that
-% we have already a list.
-%
+-doc """
+Executes the specified locally-triggered oneway, using an explicitly-specified
+parent class to select its implementation, and returns an updated state.
+
+Only local calls can select their implementation class.
+
+No `when is_list(ArgumentList) -> ...`, as the caller must have ensured that we
+have already a list.
+""".
 -spec wooper_handle_local_oneway_execution_as( method_name(), wooper:state(),
 					method_arguments(), classname() ) -> wooper:state().
 

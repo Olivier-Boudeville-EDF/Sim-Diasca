@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2024 Olivier Boudeville
+% Copyright (C) 2015-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,18 +25,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, July 31, 2015.
 
-
-% @doc <b>Unit tests for the HDF5 low-level support</b>, that is relying
-% directly on our erlhdf5 fork
-% (https://github.com/Olivier-Boudeville-EDF/erlhdf5) rather than on our
-% higher-level hdf5_support module.
-%
-% Note: if there was not the initialisation phase (relying here on
-% hdf5_support), this test would be directly in the erlhdf5 tree.
-%
-% This test is mimicked by higher-level hdf5_support_test.erl.
-%
 -module(raw_hdf5_test).
+
+-moduledoc """
+Unit tests for the **HDF5 low-level support**, that is relying directly on our
+erlhdf5 fork (https://github.com/Olivier-Boudeville-EDF/erlhdf5) rather than on
+our higher-level hdf5_support module.
+
+Note: if there was not the initialisation phase (relying here on
+hdf5_support), this test would be directly in the erlhdf5 tree.
+
+This test is mimicked by higher-level hdf5_support_test.erl.
+""".
+
 
 
 % For run/0 export and al:

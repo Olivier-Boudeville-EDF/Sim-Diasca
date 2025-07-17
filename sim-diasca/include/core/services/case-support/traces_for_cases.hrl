@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -208,7 +208,9 @@
 
 
 
-% @doc Handles a case failure, using specified string as advertised reason.
+-doc """
+Handles a case failure, using the specified string as advertised reason.
+""".
 -spec case_failed( text_utils:ustring() ) -> no_return().
 case_failed( Reason ) ->
 
@@ -229,10 +231,11 @@ case_failed( Reason ) ->
 
 
 
-% @doc Handles a case failure, using specified first string as an advertised
-% reason with format characters (e.g. '~w') and specified list as actual values
-% to be formatted.
-%
+-doc """
+Handles a case failure, using the specified first string as an advertised reason
+with format characters (e.g. '~w') and specified list as actual values to be
+formatted.
+""".
 -spec case_failed( text_utils:format_string(), text_utils:format_values() ) ->
 						no_return().
 case_failed( Reason, FormatValues ) ->
@@ -248,6 +251,6 @@ test_failed( Reason ) ->
 
 
 -spec test_failed( text_utils:format_string(), text_utils:format_values() ) ->
-							no_return().
+                                                    no_return().
 test_failed( Reason, FormatValues ) ->
 	case_failed( Reason, FormatValues ).

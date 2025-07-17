@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, June 25, 2019.
 
-
-% @doc Gathering of services for <b>web-related</b> uses, notably for <b>HTML
-% generation</b> or <b>HTTP/HTTPS management</b>.
-%
-% See web_utils_test.erl for the corresponding test.
-%
-% See also: rest_utils.erl.
-%
 -module(web_utils).
+
+-moduledoc """
+Gathering of services for **web-related** uses, notably for **HTML generation**
+or **HTTP/HTTPS management**.
+
+See web_utils_test.erl for the corresponding test.
+
+See also: rest_utils.erl.
+""".
+
 
 
 % Implementation notes:
@@ -47,8 +49,10 @@
 % example thereof.
 
 
+
+-doc "Tells whether the SSL support is needed (typically for https).".
 -type ssl_opt() :: 'no_ssl' | 'ssl'.
-% Tells whether the SSL support is needed (typically for https).
+
 
 
 -type uri() :: ustring().
@@ -65,48 +69,62 @@
 -type any_url() :: url() | bin_url().
 
 
+-doc """
+The possible protocols (schemes) for an URL (use uri_string:parse/1 to extract
+it).
+""".
 -type protocol_type() :: 'http' | 'https' | 'ftp'.
-% The possible protocols (schemes) for an URL (use uri_string:parse/1 to extract
-% it).
 
 
+
+-doc "Path of an URL (e.g. 'access/login').".
 -type path() :: ustring().
-% Path of an URL (e.g. 'access/login').
 
 
 % For the (deprecated) url_info record:
 -include("web_utils.hrl").
 
 
+-doc "Full information about an URL (prefer uri_string:uri_map() now).".
 -type url_info() :: #url_info{}.
-% Full information about an URL (prefer uri_string:uri_map() now).
 
 
+
+-doc """
+The body of a HTTP message. The binary form is strongly recommended (more
+compact, and, more importantly, a lot less problematic regarding encodings).
+""".
 -type body() :: string_body() | bin_body().
-% The body of a HTTP message. The binary form is strongly recommended (more
-% compact, and, more importantly, a lot less problematic regarding encodings).
 
+
+
+-doc "A body as a plain string (beware to encodings).".
 -type string_body() :: ustring().
-% A body as a plain string (beware to encodings).
 
+
+
+-doc "A body in binary form, which is the recommended one.".
 -type bin_body() :: binary().
-% A body in binary form, which is the recommended one.
 
 
+
+-doc "Encoded in JSON.".
 -type json_body() :: body().
-% Encoded in JSON.
+
 
 -type content_type() :: ustring().
 
-
 -type old_style_options() :: [ { Field :: ustring(), Value :: ustring() } ].
-
 
 -type new_style_options() :: type_utils:map( bin_string(), bin_string() ).
 
 
+
+-doc """
+Example: `{"User-Agent", "Godzilla The Mighty"}`.
+""".
 -type headers_as_list() :: old_style_options().
-% Example: {"User-Agent", "Godzilla The Mighty"}.
+
 
 
 -type headers_httpc_style() :: headers_as_list().
@@ -124,6 +142,7 @@
 -type options_for_httpc() :: [ http_option() ].
 
 -type list_options() :: [ { atom(), term() } ].
+
 -type map_options() :: % Not exported yet: maps:maps( atom(), term() ).
 					   table().
 
@@ -141,18 +160,26 @@
 -type nonce() :: bin_string().
 
 
+
+-doc """
+A media type (formerly known as "MIME type").
+%
+For example "audio/ogg".
+
+Refer to <https://en.wikipedia.org/wiki/Media_type>.
+""".
 -type media_type() :: unicode:chardata().
-% A media type (formerly known as "MIME type").
-%
-% For example "audio/ogg".
-%
-% Refer to [https://en.wikipedia.org/wiki/Media_type].
 
 
+
+-doc """
+For example "<p>Hello!</p>".
+""".
 -type html_element() :: any_string().
-% For example "<p>Hello!</p>".
 
 
+
+-doc "There are five classes defined by the standard for HTTP status codes.".
 -type http_status_class() ::
 
 	% 1xx informational response: the request was received, continuing process:
@@ -173,7 +200,7 @@
 
 	% 5xx server error: the server failed to fulfill an apparently valid request
 	| 'server_error'.
-% There are five classes defined by the standard for HTTP status codes.
+
 
 
 -type http_status_code() :: non_neg_integer().
@@ -182,44 +209,66 @@
 
 % Cloud-related section.
 
+
 -type cloud_provider() :: 'azure' | 'aws' | 'google_cloud'.
 
+
+-doc """
+The full, readily usable endpoint of a given service.
+
+For example
+`<<"https://francecentral.api.cognitive.microsoft.com/sts/v1.0/issuetoken">>`.
+""".
 -type service_endpoint() :: bin_string().
-% The full, readily usable endpoint of a given service.
-%
-% For example
-% `<<"https://francecentral.api.cognitive.microsoft.com/sts/v1.0/issuetoken">>'.
 
 
+
+-doc """
+The API endpoint (with no deployment-related prefix such as
+"https://francecentral.") of a given service.
+
+For example `<<"api.cognitive.microsoft.com/sts/v1.0/issuetoken">>`.
+""".
 -type api_endpoint() :: bin_string().
-% The API endpoint (with no deployment-related prefix such as
-% "https://francecentral.") of a given service.
-%
-% For example `<<"api.cognitive.microsoft.com/sts/v1.0/issuetoken">>'.
 
 
+
+-doc """
+The key of an instance hosted by a cloud provider.
+
+For example `<<"a59c98302e7f4a22be4b355125df8e9">>`.
+""".
 -type instance_key() :: bin_string().
-% The key of an instance hosted by a cloud provider.
-% For example `<<"a59c98302e7f4a22be4b355125df8e9">>'.
 
 
+
+-doc "Information regarding an instance hosted by a cloud provider.".
 -type cloud_instance_info() :: azure_instance_info().
-% Information regarding an instance hosted by a cloud provider.
 
 
+
+-doc """
+Information regarding an instance hosted by the Microsoft Azure cloud provider.
+""".
 -type azure_instance_info() :: #azure_instance_info{}.
-% Information regarding an instance hosted by the Microsoft Azure cloud
-% provider.
 
 
+
+-doc """
+The key of a Microsoft Azure instance.
+
+For example `<<"a59c98302e7f4a22be4b355125df8e9">>`.
+""".
 -type azure_instance_key() :: instance_key().
-% The key of a Microsoft Azure instance.
-% For example `<<"a59c98302e7f4a22be4b355125df8e9">>'.
 
 
+
+-doc """
+The location of a Microsoft Azure instance.
+
+For example `<<"francecentral">>`.
+""".
 -type azure_instance_location() :: bin_string().
-% The location of a Microsoft Azure instance.
-% For example `<<"francecentral">>'.
 
 
 
@@ -281,7 +330,7 @@
 -define( default_content_type, "text/html; charset=UTF-8" ).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type activation_switch() :: basic_utils:activation_switch().
 
@@ -315,25 +364,27 @@
 % webservers seem to insist on having the second (in which case escape/1 and
 % escape_element/1 shall be used).
 %
-% See also [http://www.javascripter.net/faq/accentedcharacters.htm].
+% See also http://www.javascripter.net/faq/accentedcharacters.htm.
 
 
 
-% @doc Encodes specified list of {Key, Value} pairs so that it can used into an
-% URL.
-%
-% Full example:
-%
-% inets:start(),
-% httpc:request(post, {"http://localhost:3000/foo", [],
-%  "application/x-www-form-urlencoded",
-%  encode_as_url([{"username", "bob"}, {"password", "123456"}])}, [], []).
-%
-% Directly inspired from:
-% http://stackoverflow.com/questions/114196/url-encode-in-erlang
-%
-% See also escape_as_url/1 for some more specific uses.
-%
+-doc """
+Encodes the specified list of {Key, Value} pairs so that it can used into an
+URL.
+
+Full example:
+```
+inets:start(),
+httpc:request(post, {"http://localhost:3000/foo", [],
+ "application/x-www-form-urlencoded",
+ encode_as_url([{"username", "bob"}, {"password", "123456"}])}, [], []).
+```
+
+Directly inspired from
+<http://stackoverflow.com/questions/114196/url-encode-in-erlang>.
+
+See also escape_as_url/1 for some more specific uses.
+""".
 -spec encode_as_url( option_list() ) -> ustring().
 encode_as_url( OptionList ) ->
 	encode_as_url( OptionList, _Acc=[] ).
@@ -351,7 +402,8 @@ encode_as_url( [ { Key, Value } | T ], Acc ) ->
 						  ++ encode_element_as_url( Value ) ).
 
 
-% @doc Encodes specified element so that it can be used in an URL.
+
+-doc "Encodes specified element so that it can be used in an URL.".
 -spec encode_element_as_url( ustring() ) -> ustring().
 encode_element_as_url( E ) ->
 	% They seem to produce quite similar results in our few test cases:
@@ -360,12 +412,12 @@ encode_element_as_url( E ) ->
 
 
 
-% @doc Escapes specified list of {Key,Value} pairs so that it can used into some
-% URL.
-%
-% Note: apparently useful only for quite specific websites; encode_as_url/1
-% should be preferred in most cases.
-%
+-doc """
+Escapes specified list of {Key,Value} pairs so that it can used into some URL.
+
+Note: apparently useful only for quite specific websites; encode_as_url/1 should
+be preferred in most cases.
+""".
 -spec escape_as_url( option_list() ) -> ustring().
 escape_as_url( OptionList ) ->
 	%trace_utils:debug_fmt( "~n~nEscaping '~p'.", [ OptionList ] ),
@@ -384,7 +436,7 @@ escape_as_url( [ { Key, Value } | T ], Acc ) ->
 
 
 
-% @doc Escapes specified element so that it can be used in some URL.
+-doc "Escapes specified element so that it can be used in some URL.".
 -spec escape_key( option_list:key() ) -> ustring().
 escape_key( Key ) when is_atom( Key ) ->
 	text_utils:atom_to_string( Key ).
@@ -398,9 +450,11 @@ escape_value( String ) ->
 
 
 
-% @doc Escapes specified character.
-%
-% Alphanumerical characters left as are:
+-doc """
+Escapes specified character.
+
+Alphanumerical characters left as are:
+""".
 escape_char( C ) when C >= 48 andalso C =< 57 ->
 	% 0..9 kept as is:
 	C;
@@ -419,12 +473,16 @@ escape_char( C ) ->
 
 
 
-% @doc Returns the last element, the final path "filename" pointed by specified
-% URL.
-%
-% For example "hello.txt" = web_utils:get_last_path_element(
-%                         "http://www.foobar.org/baz/hello.txt" )
-%
+-doc """
+Returns the last element, the final path "filename" pointed by specified URL.
+
+For example:
+```
+"hello.txt" = web_utils:get_last_path_element(
+   "http://www.foobar.org/baz/hello.txt")
+```
+""".
+
 -spec get_last_path_element( url() ) -> file_name().
 get_last_path_element( Url ) ->
 	% Hackish yet working perfectly:
@@ -432,25 +490,25 @@ get_last_path_element( Url ) ->
 
 
 
-% @doc Returns a string describing the specified URL information.
+-doc "Returns a string describing the specified URL information.".
 -spec url_info_to_string( url_info() ) -> ustring().
 url_info_to_string( #url_info{ protocol=Protocol, host_identifier=Host,
 							   port=Port, path=Path } ) ->
-
 	text_utils:format( "~ts://~ts:~B/~ts",
 		[ Protocol, net_utils:host_to_string( Host ), Port, Path ] ).
 
 
 
-% @doc Decodes specified string into an url_info record, by extracting protocol
-% (scheme), host, port and path information.
-%
-% Note that other information (fragment, query, userinfo) will be ignored and
-% lost.
-%
-% Note: using string_to_uri_map/1 might be a more complete option; the current
-% function remains mostly for backward compatibility.
-%
+-doc """
+Decodes specified string into an url_info record, by extracting protocol
+(scheme), host, port and path information.
+
+Note that other information (fragment, query, userinfo) will be ignored and
+lost.
+
+Note: using string_to_uri_map/1 might be a more complete option; the current
+function remains mostly for backward compatibility.
+""".
 -spec string_to_url_info( ustring() ) -> url_info().
 string_to_url_info( String ) ->
 
@@ -485,12 +543,12 @@ string_to_url_info( String ) ->
 
 
 
-% @doc Decodes specified string into an URI map, by extracting all relevant
-% information: protocol (scheme), user information, host, port, path and
-% fragment.
-%
-% Throws an exception on failure.
-%
+-doc """
+Decodes specified string into an URI map, by extracting all relevant
+information: protocol (scheme), user information, host, port, path and fragment.
+
+Throws an exception on failure.
+""".
 -spec string_to_uri_map( ustring() ) -> uri_string:uri_map().
 string_to_uri_map( String ) ->
 
@@ -510,9 +568,10 @@ string_to_uri_map( String ) ->
 % HTML-related section.
 
 
-% @doc Returns the HTML code of an ordered (numbered bullets) list corresponding
-% to specified list of elements.
-%
+-doc """
+Returns the HTML code of an ordered (numbered bullets) list corresponding to
+specified list of elements.
+""".
 -spec get_ordered_list( [ html_element() ] ) -> html_element().
 get_ordered_list( Elements ) ->
 
@@ -523,24 +582,25 @@ get_ordered_list( Elements ) ->
 
 
 
-% @doc Returns the HTML code of an unordered list corresponding to specified
-% list of elements.
-%
+-doc """
+Returns the HTML code of an unordered list corresponding to specified list of
+elements.
+""".
 -spec get_unordered_list( [ html_element() ] ) -> html_element().
 get_unordered_list( Elements ) ->
 
 	HTMLElems = [ text_utils:format( "    <li>~ts</li>~n", [ E ] )
-								|| E <- Elements ],
+					|| E <- Elements ],
 
 	text_utils:format( "  <ul>~n~ts  </ul>~n", [ lists:flatten( HTMLElems ) ] ).
 
 
 
-% @doc Escapes specified text, so that it can be included safely as an HTML
-% content.
-%
-% Returns an HTML element, as a plain string.
-%
+-doc """
+Escapes specified text, so that it can be included safely as an HTML content.
+
+Returns an HTML element, as a plain string.
+""".
 -spec escape_as_html_content( any_string() ) -> html_element().
 escape_as_html_content( BinString ) when is_binary( BinString ) ->
 	escape_as_html_content( text_utils:binary_to_string( BinString ) );
@@ -548,6 +608,7 @@ escape_as_html_content( BinString ) when is_binary( BinString ) ->
 escape_as_html_content( String ) ->
 	% Flatten needed if having an IO list as input:
 	escape_as_html_content( text_utils:to_unicode_list( String ), _Acc=[] ).
+
 
 
 % The escaping done is exactly sufficient for XML and correct for HTML; see
@@ -591,20 +652,22 @@ escape_as_html_content( _String=[ Other | T ], Acc ) ->
 
 
 
-
-% @doc Escapes specified term (most probably non-string), so that it can be
-% included safely as an HTML content.
-%
+-doc """
+Escapes specified term (most probably non-string), so that it can be included
+safely as an HTML content.
+""".
 -spec escape_term_as_html_content( term() ) -> html_element().
 escape_term_as_html_content( Term ) ->
 	escape_as_html_content( text_utils:term_to_string( Term ) ).
 
 
-% @doc Returns the status class (if any) corresponding to the specified HTTP
-% status code.
-%
+
+-doc """
+Returns the status class (if any) corresponding to the specified HTTP status
+code.
+""".
 -spec get_http_status_class( http_status_code() ) ->
-								maybe( http_status_class() ).
+								option( http_status_class() ).
 get_http_status_class( StatusCode )
 							when StatusCode >= 100 andalso StatusCode < 200 ->
 	informational_response;
@@ -633,8 +696,8 @@ get_http_status_class( StatusCode ) ->
 
 
 
-% @doc Returns a textual description of specified HTTP status class.
--spec http_status_class_to_string( maybe( http_status_class() ) ) -> ustring().
+-doc "Returns a textual description of specified HTTP status class.".
+-spec http_status_class_to_string( option( http_status_class() ) ) -> ustring().
 http_status_class_to_string( informational_response ) ->
 	"informational response";
 
@@ -658,10 +721,11 @@ http_status_class_to_string( Other ) ->
 
 
 
-% @doc Returns a textual description of the specified HTTP code.
-%
-% Source: [https://en.wikipedia.org/wiki/List_of_HTTP_status_codes].
-%
+-doc """
+Returns a textual description of the specified HTTP code.
+
+Source: <https://en.wikipedia.org/wiki/List_of_HTTP_status_codes>.
+""".
 -spec interpret_http_status_code( http_status_code() ) -> ustring().
 interpret_http_status_code( StatusCode ) ->
 	text_utils:format( "~ts (code ~B: ~ts)", [
@@ -880,22 +944,24 @@ interpret_http_status_code_helper( _StatusCode ) ->
 % HTTP-related operations.
 
 
-% @doc Starts the HTTP support, with default settings.
-%
-% Does not fail if already started, throws an exception in case of unrecoverable
-% error.
-%
+-doc """
+Starts the HTTP support, with default settings.
+
+Does not fail if already started, throws an exception in case of unrecoverable
+error.
+""".
 -spec start() -> void().
 start() ->
 	start( _Option=no_ssl ).
 
 
 
-% @doc Starts the HTTP support, with specified settings.
-%
-% Does not fail if already started, throws an exception in case of unrecoverable
-% error.
-%
+-doc """
+Starts the HTTP support, with specified settings.
+
+Does not fail if already started, throws an exception in case of unrecoverable
+error.
+""".
 -spec start( ssl_opt() ) -> void().
 start( Option ) ->
 
@@ -945,18 +1011,19 @@ start( Option ) ->
 
 
 
-% @doc Sends a (synchronous) HTTP/1.1 client request (GET or POST).
-%
-% The HTTP support (possibly with SSL if needed) must be started.
-%
-% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
-% web_utils:get_ssl_verify_options()} pair.
-%
-% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
-% consider relying on Gun or Shotgun.
-%
--spec request( method(), uri(), headers(), http_options(), maybe( bin_body() ),
-			   maybe( content_type() ) ) -> request_result().
+-doc """
+Sends a (synchronous) HTTP/1.1 client request (GET or POST).
+
+The HTTP support (possibly with SSL if needed) must be started.
+
+For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+web_utils:get_ssl_verify_options()} pair.
+
+For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
+consider relying on Gun or Shotgun.
+""".
+-spec request( method(), uri(), headers(), http_options(), option( bin_body() ),
+			   option( content_type() ) ) -> request_result().
 request( _Method=get, Uri, Headers, HttpOptions, _MaybeBody=undefined,
 		 _MaybeContentType=undefined ) ->
 	get( Uri, Headers, HttpOptions );
@@ -976,16 +1043,17 @@ request( Method, Uri, _Headers, _HttpOptions, _MaybeBody, _MaybeContentType ) ->
 
 
 
-% @doc Sends a (synchronous) HTTP/1.1 client GET request.
-%
-% The HTTP support (possibly with SSL if needed) must be started.
-%
-% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
-% web_utils:get_ssl_verify_options()} pair.
-%
-% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
-% consider relying on Gun or Shotgun.
-%
+-doc """
+Sends a (synchronous) HTTP/1.1 client GET request.
+
+The HTTP support (possibly with SSL if needed) must be started.
+
+For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+web_utils:get_ssl_verify_options()} pair.
+
+For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
+consider relying on Gun or Shotgun.
+""".
 -spec get( uri(), headers(), http_options() ) -> request_result().
 get( Uri, Headers, HttpOptions ) ->
 
@@ -1039,60 +1107,62 @@ get( Uri, Headers, HttpOptions ) ->
 
 
 
+-doc """
+Sends a (synchronous, body-less) HTTP/1.1 client POST request.
 
-% @doc Sends a (synchronous, body-less) HTTP/1.1 client POST request.
-%
-% The HTTP support (possibly with SSL if needed) must be started.
-%
-% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
-% web_utils:get_ssl_verify_options()} pair.
-%
-% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
-% consider relying on Gun or Shotgun.
-%
+The HTTP support (possibly with SSL if needed) must be started.
+
+For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+web_utils:get_ssl_verify_options()} pair.
+
+For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
+consider relying on Gun or Shotgun.
+""".
 -spec post( uri(), headers(), http_options() ) -> request_result().
 post( Uri, Headers, HttpOptions ) ->
 	post( Uri, Headers, HttpOptions, _MaybeBody=undefined ).
 
 
 
-% @doc Sends a (synchronous) HTTP/1.1 client POST request.
-%
-% If a body is specified yet no content-type is set, ?default_content_type will
-% be used. To avoid encoding issues, we strongly recommend to pass binary bodies
-% rather than string ones.
-%
-% The HTTP support (possibly with SSL if needed) must be started.
-%
-% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
-% web_utils:get_ssl_verify_options()} pair.
-%
-% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
-% consider relying on Gun or Shotgun.
-%
--spec post( uri(), headers(), http_options(), maybe( body() ) ) ->
+-doc """
+Sends a (synchronous) HTTP/1.1 client POST request.
+
+If a body is specified yet no content-type is set, ?default_content_type will be
+used. To avoid encoding issues, we strongly recommend to pass binary bodies
+rather than string ones.
+
+The HTTP support (possibly with SSL if needed) must be started.
+
+For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+web_utils:get_ssl_verify_options()} pair.
+
+For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
+consider relying on Gun or Shotgun.
+""".
+-spec post( uri(), headers(), http_options(), option( body() ) ) ->
 								request_result().
 post( Uri, Headers, HttpOptions, MaybeBody ) ->
 	post( Uri, Headers, HttpOptions, MaybeBody, _MaybeContentType=undefined ).
 
 
 
-% @doc Sends a (synchronous) HTTP/1.1 client POST request.
-%
-% If a body is specified yet no content-type is set, ?default_content_type will
-% be used. To avoid encoding issues, we strongly recommend to pass binary bodies
-% rather than string ones.
-%
-% The HTTP support (possibly with SSL if needed) must be started.
-%
-% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
-% web_utils:get_ssl_verify_options()} pair.
-%
-% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
-% consider relying on Gun or Shotgun.
-%
--spec post( uri(), headers(), http_options(), maybe( body() ),
-			maybe( content_type() ) ) -> request_result().
+-doc """
+Sends a (synchronous) HTTP/1.1 client POST request.
+
+If a body is specified yet no content-type is set, ?default_content_type will be
+used. To avoid encoding issues, we strongly recommend to pass binary bodies
+rather than string ones.
+
+The HTTP support (possibly with SSL if needed) must be started.
+
+For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+web_utils:get_ssl_verify_options()} pair.
+
+For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
+consider relying on Gun or Shotgun.
+""".
+-spec post( uri(), headers(), http_options(), option( body() ),
+			option( content_type() ) ) -> request_result().
 post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 
 	cond_utils:if_defined( myriad_debug_web_exchanges,
@@ -1164,7 +1234,8 @@ post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 	end.
 
 
-% @doc Converts headers into suitable ones for httpc.
+
+-doc "Converts headers into suitable ones for httpc.".
 -spec to_httpc_headers( headers() ) -> headers_httpc_style().
 to_httpc_headers( Headers ) when is_list( Headers ) ->
 	Headers;
@@ -1174,7 +1245,8 @@ to_httpc_headers( Headers ) when is_map( Headers ) ->
 			|| { K, V } <- maps:to_list( Headers ) ].
 
 
-% @doc Converts httpc headers into map-based ones.
+
+-doc "Converts httpc headers into map-based ones.".
 -spec from_httpc_headers( headers_httpc_style() ) -> headers_as_maps().
 from_httpc_headers( Headers ) ->
 	maps:from_list( [ { text_utils:string_to_binary( K ),
@@ -1183,7 +1255,7 @@ from_httpc_headers( Headers ) ->
 
 
 
-% @doc Returns http options that are suitable for httpc.
+-doc "Returns http options that are suitable for httpc.".
 -spec to_httpc_options( http_options() ) -> options_for_httpc().
 to_httpc_options( HttpOptions ) when is_list( HttpOptions ) ->
 	HttpOptions;
@@ -1203,15 +1275,19 @@ to_httpc_options( HttpOptionMap ) when is_map( HttpOptionMap ) ->
 
 
 
-% @doc Downloads the file designated by the specified URL, in the specified
-% directory (under its name in URL), with no specific HTTP options, and returns
-% the corresponding full path of that file.
-%
-% For example web_utils:download_file(_Url="https://foobar.org/baz.txt",
-%   _TargetDir="/tmp") shall result in a "/tmp/baz.txt" file.
-%
-% Starts, if needed, the HTTP and SSL supports as a side effect.
-%
+-doc """
+Downloads the file designated by the specified URL, in the specified directory
+(under its name in URL), with no specific HTTP options, and returns the
+corresponding full path of that file.
+
+For example:
+```
+web_utils:download_file(_Url="https://foobar.org/baz.txt",
+  _TargetDir="/tmp") shall result in a "/tmp/baz.txt" file.
+```
+
+Starts, if needed, the HTTP and SSL supports as a side effect.
+""".
 -spec download_file( url(), any_directory_path() ) -> file_path().
 download_file( Url, TargetDir ) ->
 	download_file( Url, TargetDir,
@@ -1219,19 +1295,23 @@ download_file( Url, TargetDir ) ->
 
 
 
-% @doc Downloads the file designated by specified URL, in the specified
-% directory (under its name in URL), with specified HTTP options, and returns
-% the corresponding full path of that file.
-%
-% Popular settings are HttpOptions = [{ssl,get_ssl_verify_options()}] to avoid
-% any Man-in-the-Middle attack about any target HTTPS server (in addition to TLS
-% protection against "casual" eavesdroppers).
-%
-% For example web_utils:download_file(_Url="https://foobar.org/baz.txt",
-%   _TargetDir="/tmp", HttpOptions  shall result in a "/tmp/baz.txt" file.
-%
-% Starts, if needed, the HTTP and SSL supports as a side effect.
-%
+-doc """
+Downloads the file designated by specified URL, in the specified directory
+(under its name in URL), with specified HTTP options, and returns the
+corresponding full path of that file.
+
+Popular settings are HttpOptions = [{ssl,get_ssl_verify_options()}] to avoid any
+Man-in-the-Middle attack about any target HTTPS server (in addition to TLS
+protection against "casual" eavesdroppers).
+
+For example:
+```
+web_utils:download_file(_Url="https://foobar.org/baz.txt",
+  _TargetDir="/tmp", HttpOptions  shall result in a "/tmp/baz.txt" file.
+```
+
+Starts, if needed, the HTTP and SSL supports as a side effect.
+""".
 -spec download_file( url(), any_directory_path(), http_options() ) ->
 													file_path().
 download_file( Url, TargetDir, HttpOptions ) ->
@@ -1292,7 +1372,7 @@ download_file( Url, TargetDir, HttpOptions ) ->
 
 
 
-% @doc Stops the HTTP support.
+-doc "Stops the HTTP support.".
 -spec stop() -> basic_utils:base_status().
 stop() ->
 
@@ -1314,32 +1394,35 @@ stop() ->
 
 
 
+
 % SSL-related operations.
 
 
-% @doc Returns default SSL options regarding the verification of remote peers
-% for HTTPS connections.
-%
-% See get_ssl_verify_options/1 for more information.
-%
+-doc """
+Returns default SSL options regarding the verification of remote peers for HTTPS
+connections.
+
+See get_ssl_verify_options/1 for more information.
+""".
 -spec get_ssl_verify_options() -> ssl_options().
 get_ssl_verify_options() ->
 	get_ssl_verify_options( enable ).
 
 
 
-% @doc Returns SSL options regarding the verification of remote peers for HTTPS
-% connections:
-%
-% - if the switch is specified to 'disable', this peer will not be verified
-% (exposing the program to a man-in-the-middle attack)
-%
-% - if the switch is specified to 'enable', the system DER-encoded certificates
-% are used (see https://erlang.org/doc/man/ssl.html#type-cert) and trusted in
-% order to check peers, so that not only the TLS protection against "casual"
-% eavesdroppers applies, but also, here, the one against any Man-in-the-Middle
-% (so we check that we indeed interact safely with the *expected* server)
-%
+-doc """
+Returns SSL options regarding the verification of remote peers for HTTPS
+connections:
+
+- if the switch is specified to 'disable', this peer will not be verified
+(exposing the program to a man-in-the-middle attack)
+
+- if the switch is specified to 'enable', the system DER-encoded certificates
+are used (see <https://erlang.org/doc/man/ssl.html#type-cert>) and trusted in
+order to check peers, so that not only the TLS protection against "casual"
+eavesdroppers applies, but also, here, the one against any Man-in-the-Middle (so
+we check that we indeed interact safely with the *expected* server)
+""".
 -spec get_ssl_verify_options( activation_switch() ) -> ssl_options().
 get_ssl_verify_options( _Switch=enable ) ->
 
@@ -1368,9 +1451,9 @@ get_ssl_verify_options( _Switch=disable ) ->
 
 
 
-% @doc Returns a Microsoft Azure instance information based on the specified
-% settings.
-%
+-doc """
+Returns a Microsoft Azure instance information based on the specified settings.
+""".
 -spec get_azure_instance_information( azure_instance_key(),
 						azure_instance_location() ) -> azure_instance_info().
 get_azure_instance_information( InstKey, InstLoc ) ->
@@ -1380,7 +1463,7 @@ get_azure_instance_information( InstKey, InstLoc ) ->
 
 
 
-% @doc Returns a textual description of the specified cloud instance.
+-doc "Returns a textual description of the specified cloud instance.".
 -spec cloud_instance_info_to_string( cloud_instance_info() ) -> ustring().
 cloud_instance_info_to_string( #azure_instance_info{
 									%instance_key=InstKey,

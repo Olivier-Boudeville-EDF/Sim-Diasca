@@ -1,28 +1,29 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% Class offering basic <b>GIS</b> (<em>Geographic Information System</em>)
-% services.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
+
 -module(class_GIS).
+
+-moduledoc """
+Class offering basic **GIS** (*Geographic Information System*) services.
+""".
 
 
 -define( class_description,
@@ -33,11 +34,6 @@
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_Actor ] ).
-
-
--type gis_pid() :: actor_pid().
-
--export_type([ gis_pid/0 ]).
 
 
 % For testing:
@@ -59,11 +55,11 @@
 % See also: http://www.ngs.noaa.gov/faq.shtml#WGS84
 
 
-% The GIS is itself an actor (a mostly idle one), as all points of interest (ex:
-% an incinerator) need to register themselves to the GIS, so they need to rely
-% on its PID - as soon as the initialisation phase. Thus the GIS is an actor, so
-% that he can have its user identifier defined, and referenced by all points of
-% interest.
+% The GIS is itself an actor (a mostly idle one), as all points of interest
+% (e.g. an incinerator) need to register themselves to the GIS, so they need to
+% rely on its PID - as soon as the initialisation phase. Thus the GIS is an
+% actor, so that he can have its user identifier defined, and referenced by all
+% points of interest.
 
 
 % In the WGS system, a three-dimensional orthogonal coordinate system is placed
@@ -94,29 +90,32 @@
 % Type section.
 
 
+-doc """
+Actual complete, approximated floating-point measurement of an angle (not a
+`{Degree, Minute}` pair for example, where a minute is 1/60 of a degree; no
+second either).
+""".
 -type degrees() :: unit_utils:degrees().
-% Actual complete, approximated floating-point measurement of an angle (not a
-% {Degree, Minute} pair for example, where a minute is 1/60 of a degree; no
-% second either).
 
 
+-doc "In degrees, North positive.".
 -type latitude() :: degrees().
-% In degrees, North positive.
 
+
+-doc "In degrees, East positive.".
 -type longitude() :: degrees().
-% In degrees, East positive:
 
 
+-doc "Above the reference ellipsoid.".
 -type elevation() :: meters().
-% Above the reference ellipsoid.
 
 
+-doc "Cartesian length.".
 -type length() :: meters().
-% Cartesian length.
 
 
+-doc "A WGS polar coordinate.".
 -type wgs84_polar_coord() :: { latitude(), longitude(), elevation() }.
-% A WGS polar coordinate.
 
 
 % A linear:coordinate() is more general:
@@ -130,56 +129,76 @@
 -type z_coord() :: cartesian_coord().
 
 
+-doc "Homomorphic to `point3:point3/0`.".
 -type wgs84_cartesian_coord() :: { x_coord(), y_coord(), z_coord() }.
-% Homomorphic to point3:point3().
 
 
+-doc "Supported geolocation systems.".
 -type geolocation_flavour() :: 'wgs84_polar'
 							 | 'wgs84_polar_without_elevation'
 							 | 'wgs84_cartesian'.
-% List of the supported geolocation systems.
 
 
 -type geolocation_coordinate() :: wgs84_polar_coord() | wgs84_cartesian_coord().
 
 
+-doc """
+The actual coordinate, which is actually used, in fine (canonical, internal
+one).
+""".
 -type raw_location() :: wgs84_cartesian_coord().
-% The actual coordinate, which is actually used, in fine (canonical, internal
-% one).
 
 
+-doc "To document that a PID belongs to a geo-container.".
 -type geocontainer_pid() :: pid().
-% To document that a PID belongs to a geo-container.
 
 
+-doc """
+Internal geographic representation, which is either direct (raw), or the PID of
+a geocontainer.
+""".
 -type geo_coordinate() :: raw_location() | geocontainer_pid().
-% Internal geographic representation, which is either direct (raw), or the PID
-% of a geocontainer.
 
 
+-doc "Describes the various data sources to initialize this GIS service.".
 -type data_source() :: 'none' | ustring().
-% Describes the various data sources to initialize this GIS service.
 
 
+-doc "The name of a location.".
 -type location_name() :: bin_string().
-% The name of a location.
 
 
+-doc """
+The specification of a location (with an implicit geolocation flavour).
+""".
 -type location_spec() :: { location_name(), geolocation_coordinate() }.
-% The specification of a location (with an implicit geolocation flavour).
 
 
 
+-doc """
+Describes a static location, that is a location that corresponds to a fixed
+position in space (everything but the PID of a geocontainer).
+""".
 -type static_location() :: raw_location()
 	| { class_GIS:geolocation_flavour(), class_GIS:geolocation_coordinate() }.
-% Describes a static location, that is a location that corresponds to a fixed
-% position in space (everything but the PID of a geocontainer).
 
 
+-doc "Describes any kind of location.".
 -type location() :: geocontainer_pid() | static_location().
-% Describes any kind of location.
 
 -type road_network_pid() :: class_Mesh:mesh_pid().
+
+
+-doc "The PID of a GIS actor.".
+-type gis_pid() :: actor_pid().
+
+
+-doc "To designate a GIS.".
+-type gis_info() :: gis_pid() | instance_loading:id_ref().
+
+
+-doc "The PID of a vehicle.".
+-type vehicle_pid() :: class_Actor:actor_pid().
 
 
 -export_type([ geolocation_flavour/0, geolocation_coordinate/0, raw_location/0,
@@ -188,17 +207,8 @@
 			   wgs84_polar_coord/0,
 			   x_coord/0, y_coord/0, z_coord/0, wgs84_cartesian_coord/0,
 			   location_name/0, static_location/0, location/0,
-			   road_network_pid/0 ] ).
-
-
-% Shorthands:
-
--type count() :: basic_utils:count().
-
--type ustring() :: text_utils:ustring().
--type bin_string() :: text_utils:bin_string().
-
--type meters() :: unit_utils:meters().
+			   road_network_pid/0, gis_pid/0, gis_info/0,
+               vehicle_pid/0 ] ).
 
 
 
@@ -228,16 +238,12 @@
 -define( trace_emitter_categorization, "City-example.GIS" ).
 
 
-% For types:
--include("city_example_types.hrl").
-
-
 % For all shared defines and types:
 -include("class_GIS.hrl").
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 -define( internal_geolocation_flavour, wgs84_cartesian ).
@@ -278,14 +284,32 @@
 
 
 
-% @doc Constructs a GIS service, from following parameters:
-%
-% - InitialDataSource is either 'none' (no initial data will then be read) or a
-% filename (as a plain string) corresponding to a location data file
-%
-% - PrepareRendering tells whether this GIS shall generate a rendering of its
-% road network (i.e. its internal mesh)
-%
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+
+-type meters() :: unit_utils:meters().
+
+-type road_pid() :: class_Road:road_pid().
+
+-type poi_pid() :: class_PointOfInterest:poi_pid().
+
+-type geolocalized_pid() :: class_GeolocalizedElement:geolocalized_pid().
+
+
+
+-doc """
+Constructs a GIS service, from following parameters:
+
+- InitialDataSource is either `none` (no initial data will then be read) or a
+filename (as a plain string) corresponding to a location data file
+
+- PrepareRendering tells whether this GIS shall generate a rendering of its road
+network (i.e. its internal mesh)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(), data_source(),
 				 boolean() ) -> wooper:state().
 construct( State, ActorSettings, 'none', PrepareRendering ) ->
@@ -293,7 +317,7 @@ construct( State, ActorSettings, 'none', PrepareRendering ) ->
 
 
 construct( State, ActorSettings, Filename, PrepareRendering )
-  when is_list( Filename ) ->
+                                        when is_list( Filename ) ->
 
 	BasicState = construct_common( ActorSettings, PrepareRendering, State ),
 
@@ -346,7 +370,9 @@ destruct( State ) ->
 % Section for member methods.
 
 
-% @doc This is a passive actor: no spontaneous action from first diasca onward.
+-doc """
+This is a passive actor: no spontaneous action from first diasca onward.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -358,7 +384,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 			% known to be ready:
 			%
 			SentState = class_Actor:send_actor_message( _Target=self(),
-								generateRendering, State ),
+				generateRendering, State ),
 
 			setAttribute( SentState, rendering_requested, false );
 
@@ -371,7 +397,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Generates a rendering of the road network.
+-doc "Generates a rendering of the road network.".
 -spec generateRendering( wooper:state(), sending_actor_pid() ) ->
 										const_actor_oneway_return().
 generateRendering( State, _SendingActorPid ) ->
@@ -383,16 +409,18 @@ generateRendering( State, _SendingActorPid ) ->
 
 		{ wooper_result, topological_view_generated } ->
 			ok
+
 	end,
 
 	actor:const_return().
 
 
 
-% @doc Records the specified locations in the GIS.
-%
-% (request, for synchronisation purposes)
-%
+-doc """
+Records the specified locations in the GIS.
+
+(request, for synchronisation purposes)
+""".
 -spec recordLocations( wooper:state(), geolocation_flavour(),
 		[ location_spec() ] ) -> request_return( 'locations_recorded' ).
 recordLocations( State, _GeolocationFlavour=?internal_geolocation_flavour,
@@ -409,19 +437,20 @@ recordLocations( State, GeolocationFlavour, LocationSpecs ) ->
 
 	ConvertedSpecs = [ { Name, convert_coordinate( Coord,
 			_From=GeolocationFlavour, _To=?internal_geolocation_flavour ) }
-							|| { Name, Coord } <- LocationSpecs ],
+                                || { Name, Coord } <- LocationSpecs ],
 
 	{ RecordState, Res } = recordLocations( State,
-								?internal_geolocation_flavour, ConvertedSpecs ),
+		?internal_geolocation_flavour, ConvertedSpecs ),
 
 	wooper:return_state_result( RecordState, Res ).
 
 
 
 
-% @doc Resolves the specified location: returns its corresponding geolocation
-% coordinates.
-%
+-doc """
+Resolves the specified location: returns its corresponding geolocation
+coordinates.
+""".
 -spec resolveLocation( wooper:state(), location_name() ) ->
 								const_request_return( geo_coordinate() ).
 resolveLocation( State, LocationName ) ->
@@ -440,10 +469,11 @@ resolveLocation( State, LocationName ) ->
 
 
 
-% @doc Records the location of the specified point of interest.
-%
-% Supersedes any previous information for that POI.
-%
+-doc """
+Records the location of the specified point of interest.
+
+Supersedes any previous information for that POI.
+""".
 -spec recordPointOfInterest( wooper:state(), poi_pid(), static_location() ) ->
 									oneway_return().
 recordPointOfInterest( State, POIPid, Location ) ->
@@ -457,7 +487,7 @@ recordPointOfInterest( State, POIPid, Location ) ->
 
 
 
-% @doc Returns the point of interest nearest to the specified one.
+-doc "Returns the point of interest nearest to the specified one.".
 -spec searchNearestPointOfInterest( wooper:state(), poi_pid() ) ->
 											request_return( poi_pid() ).
 searchNearestPointOfInterest( State, POIPid ) ->
@@ -469,9 +499,10 @@ searchNearestPointOfInterest( State, POIPid ) ->
 
 
 
-% @doc Returns the specified number of points of interest that are nearest to
-% the specified one.
-%
+-doc """
+Returns the specified number of points of interest that are nearest to the
+specified one.
+""".
 -spec searchNearestPointsOfInterest( wooper:state(), poi_pid(),
 								count() ) -> request_return( [ poi_pid() ] ).
 searchNearestPointsOfInterest( State, POIPid, Count ) ->
@@ -483,11 +514,12 @@ searchNearestPointsOfInterest( State, POIPid, Count ) ->
 
 
 
-% @doc Returns the specified number of points of interest that are nearest to
-% the specified one and are not among the specified ones to exclude.
-%
-% Returns POIs are sorted from closest to farthest.
-%
+-doc """
+Returns the specified number of points of interest that are nearest to the
+specified one and are not among the specified ones to exclude.
+
+Returns POIs are sorted from closest to farthest.
+""".
 -spec searchNearestPointsOfInterest( wooper:state(), poi_pid(), [ poi_pid() ],
 						count() ) -> const_request_return( [ poi_pid() ] ).
 searchNearestPointsOfInterest( State, POIPid, ExcludedPOIs, Count ) ->
@@ -499,10 +531,11 @@ searchNearestPointsOfInterest( State, POIPid, ExcludedPOIs, Count ) ->
 
 
 
-% @doc Declares the specified road into this GIS.
-%
-% (request, for synchronicity)
-%
+-doc """
+Declares the specified road to this GIS.
+
+(request, for synchronicity)
+""".
 -spec declareRoad( wooper:state(), road_pid(), poi_pid(), poi_pid() ) ->
 									const_request_return( 'road_declared' ).
 declareRoad( State, RoadPid, SourcePOIPid, TargetPOIPid ) ->
@@ -515,10 +548,11 @@ declareRoad( State, RoadPid, SourcePOIPid, TargetPOIPid ) ->
 
 
 
-% @doc Declares specified roads into this GIS.
-%
-% (request, for synchronicity)
-%
+-doc """
+Declares the specified roads to this GIS.
+
+(request, for synchronicity)
+""".
 -spec declareRoads( wooper:state(),
 					[ { road_pid(), poi_pid(), poi_pid() } ] ) ->
 							const_request_return( 'roads_declared' ).
@@ -536,10 +570,11 @@ declareRoads( State, RoadDeclarations ) ->
 
 
 
-% @doc Declares specified POI into this GIS.
-%
-% (request, for synchronicity)
-%
+-doc """
+Declares the specified POI to this GIS.
+
+(request, for synchronicity)
+""".
 -spec declarePOI( wooper:state(), poi_pid() ) ->
 									const_request_return( 'poi_declared' ).
 declarePOI( State, POIPid ) ->
@@ -549,11 +584,11 @@ declarePOI( State, POIPid ) ->
 	wooper:const_return_result( poi_declared ).
 
 
+-doc """
+Declares the specified POIs to this GIS.
 
-% @doc Declares specified POIs into this GIS.
-%
-% (request, for synchronicity)
-%
+(request, for synchronicity)
+""".
 -spec declarePOIs( wooper:state(), [ poi_pid() ] ) ->
 								const_request_return( 'poi_list_declared' ).
 declarePOIs( State, POIPidList ) ->
@@ -569,11 +604,12 @@ declarePOIs( State, POIPidList ) ->
 
 
 
-% @doc Renders a view of the current state of this GIS.
-%
-% (const request, for synchronicity)
-%
--spec render( wooper:state(), file_utils:directory_name() ) ->
+-doc """
+Renders a view of the current state of this GIS.
+
+(const request, for synchronicity)
+""".
+-spec render( wooper:state(), file_utils:directory_path() ) ->
 								const_request_return( 'gis_rendering_done' ).
 render( State, OutputDirectory ) ->
 
@@ -592,7 +628,7 @@ render( State, OutputDirectory ) ->
 
 
 
-% @doc Returns the PID of the road network (a mesh) owned by this GIS.
+-doc "Returns the PID of the road network (a mesh) owned by this GIS.".
 -spec getRoadNetworkPid( wooper:state() ) ->
 								const_request_return( road_network_pid() ).
 getRoadNetworkPid( State ) ->
@@ -600,7 +636,7 @@ getRoadNetworkPid( State ) ->
 
 
 
-% @doc Traces the current content of this GIS (through the trace system).
+-doc "Traces the current content of this GIS (through the trace system).".
 -spec traceContent( wooper:state() ) -> const_oneway_return().
 traceContent( State ) ->
 
@@ -612,7 +648,7 @@ traceContent( State ) ->
 
 
 
-% @doc Returns a string describing the state of this GIS instance.
+-doc "Returns a string describing the state of this GIS instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
@@ -666,7 +702,7 @@ toString( State ) ->
 % Section for static methods.
 
 
-% @doc Returns the PID of the default GIS (if any), or throws an exception.
+-doc "Returns the PID of the default GIS (if any), or throws an exception.".
 -spec get_service() -> static_return( gis_pid() ).
 get_service() ->
 	GisPid = naming_utils:get_registered_pid_for( ?gis_name, global ),
@@ -678,9 +714,10 @@ get_service() ->
 % Conversion section.
 
 
-% @doc Converts specified WGS84 geodetic latitude, longitude, elevation into
-% cartesian geocentric coordinates.
-%
+-doc """
+Converts the specified WGS84 geodetic latitude, longitude, elevation into
+cartesian geocentric coordinates.
+""".
 -spec wgs84_polar_to_cartesian( wgs84_polar_coord() ) ->
 									static_return( wgs84_cartesian_coord() ).
 wgs84_polar_to_cartesian( { Latitude, Longitude, Elevation } ) ->
@@ -711,9 +748,10 @@ wgs84_polar_to_cartesian( { Latitude, Longitude, Elevation } ) ->
 
 
 
-% @doc Converts WGS84 cartesian geocentric coordinates into geodetic latitude,
-% longitude, elevation.
-%
+-doc """
+Converts the specified WGS84 cartesian geocentric coordinates into geodetic
+latitude, longitude, elevation.
+""".
 -spec wgs84_cartesian_to_polar( wgs84_cartesian_coord() ) ->
 									static_return( wgs84_polar_coord() ).
 wgs84_cartesian_to_polar( _CartesianCoord ) ->
@@ -721,9 +759,10 @@ wgs84_cartesian_to_polar( _CartesianCoord ) ->
 
 
 
-% @doc Converts specified coordinates, expressed in the specified original
-% geolocation flavour into the target one.
-%
+-doc """
+Converts the specified coordinates, expressed in the specified original
+geolocation flavour into the target one.
+""".
 -spec convert_coordinate( geolocation_coordinate(), geolocation_flavour(),
 		geolocation_flavour() ) -> static_return( geolocation_coordinate() ).
 convert_coordinate( Coord, Flavour, Flavour ) ->
@@ -739,7 +778,7 @@ convert_coordinate( Coord, _OriginalFlavour=wgs84_cartesian,
 
 
 
-% @doc Converts a static location into a raw, canonical one.
+-doc "Converts a static location into a raw, canonical one.".
 -spec static_to_raw_location( static_location() ) ->
 									static_return( raw_location() ).
 static_to_raw_location( { wgs84_polar, Coord } ) ->
@@ -754,7 +793,7 @@ static_to_raw_location( { wgs84_cartesian, Coord } ) ->
 % Display section.
 
 
-% @doc Returns a plain string describing specified WGS84 polar coordinate.
+-doc "Returns a plain string describing the specified WGS84 polar coordinate.".
 -spec wgs84_polar_to_string( wgs84_polar_coord() ) ->
 								  static_return( ustring() ).
 wgs84_polar_to_string( { Latitude, Longitude, Elevation } ) ->
@@ -765,7 +804,9 @@ wgs84_polar_to_string( { Latitude, Longitude, Elevation } ) ->
 
 
 
-% @doc Returns a plain string describing specified WGS84 cartesian coordinate.
+-doc """
+Returns a plain string describing the specified WGS84 cartesian coordinate.
+""".
 -spec wgs84_cartesian_to_string( wgs84_cartesian_coord() ) ->
 										static_return( ustring() ).
 wgs84_cartesian_to_string( { X, Y, Z } ) ->
@@ -775,7 +816,9 @@ wgs84_cartesian_to_string( { X, Y, Z } ) ->
 
 
 
-% @doc Returns the distance between the two specified geolocalized elements.
+-doc """
+Returns the distance between the two specified geolocalized elements.
+""".
 -spec compute_distance( geolocalized_pid(), geolocalized_pid() ) ->
 												static_return( meters() ).
 compute_distance( FirstElementPid, SecondElementPid ) ->
@@ -802,7 +845,7 @@ compute_distance( FirstElementPid, SecondElementPid ) ->
 
 
 
-% @doc Renders (synchronously) a view of the specified GIS.
+-doc "Renders (synchronously) a view of the specified GIS.".
 -spec render_state( gis_pid() ) -> static_void_return().
 render_state( GISPid ) ->
 
@@ -817,7 +860,7 @@ render_state( GISPid ) ->
 
 
 
-% @doc Shutdowns the specified GIS service.
+-doc "Shutdowns the specified GIS service.".
 -spec shutdown( gis_pid() ) -> static_void_return().
 shutdown( GISPid ) ->
 	wooper:delete_synchronously_instance( GISPid ),
@@ -829,10 +872,7 @@ shutdown( GISPid ) ->
 % Helper section.
 
 
-% @doc Common part for all constructors.
-%
-% (helper)
-%
+% Common part for all constructors.
 construct_common( ActorSettings, PrepareRendering, State ) ->
 
 	% First the direct mother classes:
@@ -858,18 +898,16 @@ construct_common( ActorSettings, PrepareRendering, State ) ->
 								 { rendering_requested, PrepareRendering } ] ).
 
 
-
-% @doc Adds locations read from specified file (supposedly already existing)
-% into specified table, and returns an updated table.
-%
-% (helper)
-%
+-doc """
+Adds the locations read from the specified file (supposedly already existing)
+into the specified table, and returns an updated table.
+""".
 add_locations_from( Filename, LocationTable ) ->
 	add_locations_from( Filename, LocationTable,
 				_AssumedGeolocationFlavour=wgs84_polar_without_elevation ).
 
 
-
+% (helper)
 add_locations_from( Filename, LocationTable, InputGeolocationFlavour ) ->
 
 	% We expect a file where lines are in the form of:
@@ -913,11 +951,10 @@ filter_location_specs( [ { LocationName, _Coord={ Latitude, Longitude } } | T ],
 
 
 
-% @doc Returns the TargetCount closest POIs from TargetPOIPid found in PoiTable
-% that are not in the ExcludedPOIs list (and that are not TargetPOIPid either).
-%
-% (helper)
-%
+-doc """
+Returns the TargetCount closest POIs from TargetPOIPid found in PoiTable that
+are not in the ExcludedPOIs list (and that are not TargetPOIPid either).
+""".
 get_nearest( TargetPOIPid, ExcludedPOIs, TargetCount, PoiTable ) ->
 
 	TargetPOILoc = table:get_value( TargetPOIPid, PoiTable ),
@@ -935,10 +972,12 @@ get_nearest( TargetPOIPid, ExcludedPOIs, TargetCount, PoiTable ) ->
 				 _POICount=0, _AccPOI=[], TargetCount, PoiTable ).
 
 
+% (helper)
+%
 % Here we exhausted the POI candidates, but did not reach the specified count:
 get_nearest( _TargetPOIPid, _TargetPOILoc, _ExcludedPOIs, _PoiInputList=[],
 			 POICount, _AccPOI, TargetCount, _PoiTable )
-  when POICount < TargetCount ->
+                                        when POICount < TargetCount ->
 
 	throw( { get_nearest_failed, not_enough_poi_candidates,
 			 POICount, TargetCount } );
@@ -1037,14 +1076,12 @@ get_nearest( TargetPOIPid, TargetPOILoc, ExcludedPOIs,
 
 
 
-% @doc Inserts the specified {POIPid, SquareDistance} pair into POIList, which
-% is an ordered list of such pairs, in decreasing SquareDistance order.
-%
-% (helper)
-%
+-doc """
+Inserts the specified `{POIPid, SquareDistance}` pair into POIList, which is an
+ordered list of such pairs, in decreasing SquareDistance order.
+""".
 insert_poi_pair( Pair, POIList ) ->
 	insert_poi_pair( Pair, POIList, _Acc=[] ).
-
 
 
 % Closer than all:

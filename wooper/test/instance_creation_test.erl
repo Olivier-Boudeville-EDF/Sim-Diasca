@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,11 +25,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 31, 2018.
 
-
-%@doc This module allows to test with as few dependencies as possible the
-% <b>creation of class instances</b>, using for that the various new operators.
-%
 -module(instance_creation_test).
+
+-moduledoc """
+This module allows to test with as few dependencies as possible the **creation
+of class instances**, using for that the various new operators.
+""".
 
 
 -export([ run/0 ]).
@@ -138,7 +139,8 @@ run() ->
 
 	V7LinkName = "created with remote_synchronous_timed_new_link",
 	V7LinkPid = TestedClass:remote_synchronous_timed_new_link( TargetNode,
-														V7LinkName, male ),
+		V7LinkName, male ),
+
 	test_instance( V7LinkPid, V7LinkName ),
 
 	V8Name = "created with new_passive",

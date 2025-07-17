@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 EDF R&D
+% Copyright (C) 2014-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2014.
 
-
-% @doc <b>Manager of the Sim-Diasca plugins</b>, which allows third-party tools
-% to interface to the engine.
-%
 -module(class_PluginManager).
+
+-moduledoc """
+**Manager of the Sim-Diasca plugins**, which allows third-party tools to
+interface to the engine.
+""".
 
 
 -define( class_description,
@@ -38,7 +39,7 @@
 % The class-specific attributes of a plugin manager:
 -define( class_attributes, [
 
-	{ plugin_table, table( basic_utils:module_name(), maybe( term() ) ),
+	{ plugin_table, table( basic_utils:module_name(), option( term() ) ),
 	  "an associative table whose keys are the module name of each plugin "
 	  "(as an atom) and whose values are any state information returned by a "
 	  "given plugin" } ] ).
@@ -75,7 +76,8 @@
 -define( look_up_scope, global ).
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -89,9 +91,10 @@
 
 
 
-% @doc Constructs a plugin manager, from a list of the paths that should be
-% searched into, in order to look-up for plugins.
-%
+-doc """
+Constructs a plugin manager, from a list of the paths that should be searched
+into, in order to look-up for plugins.
+""".
 -spec construct( wooper:state(), [ directory_path() ] ) -> wooper:state().
 construct( State, PluginDirectories ) ->
 
@@ -135,7 +138,7 @@ construct( State, PluginDirectories ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -157,7 +160,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Requests all plugins to be notified of the specified standard event.
+-doc "Requests all plugins to be notified of the specified standard event.".
 -spec notifyEvent( wooper:state(), plugin_event() ) ->
 						request_return( 'event_notified' ).
 notifyEvent( State, Event ) ->
@@ -168,11 +171,12 @@ notifyEvent( State, Event ) ->
 
 
 
-% @doc Requests all plugins to be notified of the start of the simulator, and
-% gives them a chance of performing the requested configuration changes.
-%
-% (request, for synchronicity)
-%
+-doc """
+Requests all plugins to be notified of the start of the simulator, and gives
+them a chance of performing the requested configuration changes.
+
+(request, for synchronicity)
+""".
 -spec notifySimulatorStart( wooper:state() ) ->
 		request_return( configuration_changes() ).
 notifySimulatorStart( State ) ->
@@ -208,10 +212,11 @@ notifySimulatorStart( State ) ->
 
 
 
-% @doc Requests all plugins to be notified of following parametrised event.
-%
-% (request, for synchronicity)
-%
+-doc """
+Requests all plugins to be notified of following parametrised event.
+
+(request, for synchronicity)
+""".
 -spec notifyParametrisedEvent( wooper:state(), plugin_event(), event_data() ) ->
 					request_return( 'parametrised_event_notified' ).
 notifyParametrisedEvent( State, Event, Parameters ) ->
@@ -222,11 +227,12 @@ notifyParametrisedEvent( State, Event, Parameters ) ->
 
 
 
-% @doc Requests all plugins to be notified of following case-specific event,
-% with its associated parameter.
-%
-% (request, for synchronicity)
-%
+-doc """
+Requests all plugins to be notified of following case-specific event, with its
+associated parameter.
+
+(request, for synchronicity)
+""".
 -spec notifyCaseSpecificEvent( wooper:state(), case_specific_event(),
 			event_data() ) -> request_return( 'case_specific_event_notified' ).
 notifyCaseSpecificEvent( State, CaseSpecificEvent, EventParameter ) ->
@@ -242,9 +248,10 @@ notifyCaseSpecificEvent( State, CaseSpecificEvent, EventParameter ) ->
 % Helper functions.
 
 
-% @doc Returns a list of plugins found, as a list of the extension-less absolute
-% paths of the plugin modules.
-%
+-doc """
+Returns a list of plugins found, as a list of the extension-less absolute paths
+of the plugin modules.
+""".
 -spec get_plugins_from( [ directory_path() ], wooper:state() ) -> [ ustring() ].
 get_plugins_from( PluginDirectories, State ) ->
 	get_plugins_from( PluginDirectories, State, _AccPlugins=[] ).
@@ -286,11 +293,10 @@ get_plugins_from( _PluginDirectories=[ Dir | T ], State, AccPlugins ) ->
 
 
 
-% @doc Returns a list of the BEAM files (absolute paths, but with their
-% extension removed) found in the specified directory.
-%
-% (helper)
-%
+-doc """
+Returns a list of the BEAM files (absolute paths, but with their extension
+removed) found in the specified directory.
+""".
 -spec get_plugins_from_dir( directory_path() ) -> [ file_path() ].
 get_plugins_from_dir( DirectoryPath ) ->
 
@@ -311,10 +317,7 @@ get_plugins_from_dir( DirectoryPath ) ->
 
 
 
-% @doc Initialises and returns the plugin table.
-%
-% (helper)
-%
+-doc "Initialises and returns the plugin table.".
 create_initial_plugin_table( Plugins, State ) ->
 
 	case Plugins of
@@ -371,10 +374,7 @@ load_plugin( Plugin, State ) ->
 
 
 
-% @doc Notifies known plugins of specified event; returns an updated state.
-%
-% (helper)
-%
+-doc "Notifies known plugins of specified event; returns an updated state.".
 notify_event( Event, State ) ->
 
 	PluginTable = ?getAttr(plugin_table),
@@ -396,11 +396,10 @@ notify_event( Event, State ) ->
 
 
 
-% @doc Notifies known plugins of specified parametrised event; returns an
-% updated state.
-%
-% (helper)
-%
+-doc """
+Notifies known plugins of specified parametrised event; returns an updated
+state.
+""".
 notify_parametrised_event( Event, Parameters, State ) ->
 
 	PluginTable = ?getAttr(plugin_table),
@@ -423,11 +422,10 @@ notify_parametrised_event( Event, Parameters, State ) ->
 
 
 
-% @doc Notifies known plugins of specified case-specific event; returns an
-% updated state.
-%
-% (helper)
-%
+-doc """
+Notifies known plugins of specified case-specific event; returns an updated
+state.
+""".
 notify_case_specific_event( CaseSpecificEvent, EventParameter, State ) ->
 
 	PluginTable = ?getAttr(plugin_table),
@@ -455,7 +453,7 @@ notify_case_specific_event( CaseSpecificEvent, EventParameter, State ) ->
 % Static section.
 
 
-% @doc To notify from any place the plugin manager of an event.
+-doc "To notify from any place the plugin manager of an event.".
 -spec notify( plugin_event() ) -> static_void_return().
 notify( Event ) ->
 
@@ -474,9 +472,10 @@ notify( Event ) ->
 
 
 
-% @doc To notify from any place the plugin manager - provided it is registered -
-% of an event.
-%
+-doc """
+To notify from any place the plugin manager - provided it is registered - of an
+event.
+""".
 -spec notify_if_registered( plugin_event() ) -> static_void_return().
 notify_if_registered( Event ) ->
 
@@ -500,9 +499,10 @@ notify_if_registered( Event ) ->
 
 
 
-% @doc Notifies that the simulator started, in order to allow plugins to return
-% requests for configuration changes.
-%
+-doc """
+Notifies that the simulator started, in order to allow plugins to return
+requests for configuration changes.
+""".
 -spec notify_simulator_start() -> static_return( configuration_changes() ).
 notify_simulator_start() ->
 
@@ -521,7 +521,7 @@ notify_simulator_start() ->
 
 
 
-% @doc To notify from any place the plugin manager of a parametrised event.
+-doc "To notify from any place the plugin manager of a parametrised event.".
 -spec notify( plugin_event(), event_data() ) -> static_void_return().
 notify( Event, Parameters ) ->
 
@@ -540,7 +540,7 @@ notify( Event, Parameters ) ->
 
 
 
-% @doc To notify from any place the plugin manager of a case-specific event.
+-doc "To notify from any place the plugin manager of a case-specific event.".
 -spec notify_case_specific( case_specific_event(), event_data() ) ->
 										static_void_return().
 notify_case_specific( Event, EventParameter ) ->

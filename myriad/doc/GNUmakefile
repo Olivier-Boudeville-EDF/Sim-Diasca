@@ -86,6 +86,9 @@ export-doc: export-doc-to-official export-doc-to-mirror
 # not a set of files), so currently not used:
 # rsync -avze "ssh $(SP)" $(SOME_WEB_TREE) $(WEB_SRV):$(WEB_ROOT)/Myriad/
 #
+# On some servers, running 'make fix-www-metadata' and even wiping out the
+# previous website content might be needed.
+#
 export-doc-to-official: check-mathjax clean-doc create-links doc
 	@echo "   Exporting Myriad documentation to official website ($(WEB_SRV))"
 	@/bin/scp $(SP) -r $(WEB_CONTENT) $(EXTRA_CONTENT) $(WEB_SRV):$(WEB_ROOT)/Myriad/

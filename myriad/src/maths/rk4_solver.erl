@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,34 +23,35 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Monday, November 17, 2014
+% Creation date: Monday, November 17, 2014.
 
 
-
-% @doc Basic <b>numerical solver based on the classic Runge–Kutta fourth-order
-% method</b>, operating on three dimensions.
-%
-% See [http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods].
-%
-% We want to evaluate a given function f, whose spec could be: `f( time(),
-%     vector() ) -> vector()' that would comply to the following equation:
-%     `dy/dt = f(t,y)'.
-%
-% For that we compute `yn+1 = yn + h.sum(bi.ki)' with `ki=f(ti,yi)', with ti and
-% yi depending on the order, and h being the chosen timestep. ki and bi are
-% determined by the corresponding Butcher tableau.
-%
-% The implementation of `f' corresponds here to the anonymous function `F'.
-%
 -module(rk4_solver).
+
+-moduledoc """
+Basic **numerical solver based on the classic Runge–Kutta fourth-order method**,
+operating on three dimensions.
+
+See <http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods>.
+
+We want to evaluate a given function f, whose spec could be: `f(time(),
+vector()) -> vector()` that would comply to the following equation: `dy/dt =
+f(t,y)`.
+
+For that we compute `yn+1 = yn + h.sum(bi.ki)` with `ki=f(ti,yi)`, with ti and
+yi depending on the order, and h being the chosen timestep. ki and bi are
+determined by the corresponding Butcher tableau.
+
+The implementation of `f` corresponds here to the anonymous function `F`.
+""".
 
 
 
 -export([ compute_next_estimate3p/4, compute_next_estimate3v/4 ]).
 
 
+-doc "Simulation time.".
 -type time() :: float().
-% Simulation time.
 
 
 % Definition depends on the function of interest, more precisely on the
@@ -60,27 +61,43 @@
 % or scalars (no suffix).
 
 
+-doc """
+The function f in the equation that we want to solve numerically, here in a 1D
+space, based on scalars.
+""".
 -type f1() :: fun( ( time(), scalar() ) -> scalar() ).
-% The function f in the equation that we want to solve numerically, here in a 1D
-% space, based on scalars.
 
 
+
+-doc """
+The function f in the equation that we want to solve numerically, here in a 2D
+space, based on points.
+""".
 -type f2p() :: fun( ( time(), point2() ) -> point2() ).
-% The function f in the equation that we want to solve numerically, here in a 2D
-% space, based on points.
 
+
+
+-doc """
+The function f in the equation that we want to solve numerically, here in a 2D
+space, based on vectors.
+""".
 -type f2v() :: fun( ( time(), vector2() ) -> vector2() ).
-% The function f in the equation that we want to solve numerically, here in a 2D
-% space, based on vectors.
 
 
+
+-doc """
+The function f in the equation that we want to solve numerically, here in a 3D
+space, based on points.
+""".
 -type f3p() :: fun( ( time(), point3() ) -> point3() ).
-% The function f in the equation that we want to solve numerically, here in a 3D
-% space, based on points.
 
+
+
+-doc """
+The function f in the equation that we want to solve numerically, here in a 3D
+space, based on vectors.
+""".
 -type f3v() :: fun( ( time(), vector3() ) -> vector3() ).
-% The function f in the equation that we want to solve numerically, here in a 3D
-% space, based on vectors.
 
 
 -export_type([ time/0, f1/0, f2p/0, f2v/0, f3p/0, f3v/0 ]).
@@ -102,9 +119,11 @@
 -type vector3() :: vector3:vector3().
 
 
-% @doc Computes the next point (yn+1), based on the current one (yn), the
-% function (F) and the timestep (h).
-%
+
+-doc """
+Computes the next point (yn+1), based on the current one (yn), the function (F)
+and the timestep (h).
+""".
 -spec compute_next_estimate3p( f3p(), point3(), time(), time() ) -> point3().
 compute_next_estimate3p( F, Point, Time, Step ) ->
 
@@ -147,9 +166,10 @@ compute_next_estimate3p( F, Point, Time, Step ) ->
 
 
 
-% @doc Computes the next vector (yn+1), based on the current one (yn), the
-% function (F) and the timestep (h).
-%
+-doc """
+Computes the next vector (yn+1), based on the current one (yn), the function (F)
+and the timestep (h).
+""".
 -spec compute_next_estimate3v( f3v(), vector3(), time(), time() ) -> vector3().
 compute_next_estimate3v( F, Vector, Time, Step ) ->
 

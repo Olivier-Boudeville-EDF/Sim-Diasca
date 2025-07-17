@@ -1,26 +1,27 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Class modelling a <b>simple equipment</b>.
 -module(class_Equipment).
+
+-moduledoc "Class modelling a **simple equipment**.".
 
 
 -define( class_description,
@@ -62,6 +63,7 @@
 -type reliability_tick() :: class_TimeManager:tick_offset()
 						  | 'uninitialized' | 'waiting'.
 
+-type probe_ref() :: class_Probe:probe_ref().
 
 -type reliability_listener_pid() :: pid().
 
@@ -75,10 +77,10 @@
 % Tne class-specific attributes of an equipment are:
 -define( class_attributes, [
 
-	{ failure_model_pid, maybe( class_FailureModel:model_pid() ),
+	{ failure_model_pid, option( class_FailureModel:model_pid() ),
 	  "PID of the failure model in use (if any)" },
 
-	{ repair_model_pid, maybe( class_RepairModel:model_pid() ),
+	{ repair_model_pid, option( class_RepairModel:model_pid() ),
 	  "PID of the repair model in use (if any)" },
 
 	{ next_failure_tick, reliability_tick(),
@@ -90,10 +92,10 @@
 	{ current_failure_state, union( 'nominal', 'dysfunction' ),
 	  "tells about the current reliability state of this equipment" },
 
-	{ reliability_listener, maybe( reliability_listener_pid() ),
+	{ reliability_listener, option( reliability_listener_pid() ),
 	  "records the PID on the reliability listener (if any)" },
 
-	{ reliability_probe, maybe( class_Probe:probe_ref() ),
+	{ reliability_probe, option( class_Probe:probe_ref() ),
 	  "the probe monitoring reliability (if any)" } ] ).
 
 
@@ -116,7 +118,7 @@
 % An equipment could also be modelled as a standalone stochastic actor, with no
 % need for separate failure and reparation models.
 %
-% When making a reliability transition (ex: from nominal to dysfunction), we
+% When making a reliability transition (e.g. from nominal to dysfunction), we
 % send two consecutive samples to the reliability probes, otherwise, as we are
 % jumping from a transition to another, the probe would show triangles instead
 % of solid, plain rectangles, i.e. without representing clearly at each tick
@@ -124,31 +126,33 @@
 
 
 
-% @doc Constructs an equipment actor, regarding notably failure and reparation.
-%
-% Parameters are:
-%
-% - ActorSettings corresponds to the engine settings for this actor, as
-% determined by the load-balancer
-%
-% - EquipmentName is the name of this equipment (as a string)
-%
-% - FailureModelPid is the PID of the failure model to be used by this equipment
-%
-% - RepairModelPid is the PID of the repair model to be used by this equipment
-%
-% Child classes of this Equipment class only have to override if needed the
-% following two oneway methods:
-%
-% - the actNominal(State) oneway, called at each tick where the equipment is in
-% nominal conditions (including the ticks during when it has just been repaired)
-%
-% - the actInDysfunction(State) oneway, called at each tick where the equipment
-% is in dysfunction (including the ticks when a dysfunction just occurred)
-%
-% Besides, the onFailure(State) and onReparation(State) oneways will be called
-% at each transition, from nominal to dysfunction, and the other way round.
-%
+-doc """
+Constructs an equipment actor, regarding notably failure and reparation.
+
+Parameters are:
+
+- ActorSettings corresponds to the engine settings for this actor, as determined
+by the load-balancer
+
+- EquipmentName is the name of this equipment (as a string)
+
+- FailureModelPid is the PID of the failure model to be used by this equipment
+
+- RepairModelPid is the PID of the repair model to be used by this equipment
+
+Child classes of this Equipment class only have to override if needed the
+following two oneway methods:
+
+- the actNominal(State) oneway, called at each tick where the equipment is in
+nominal conditions (including the ticks during when it has just been repaired)
+
+- the actInDysfunction(State) oneway, called at each tick where the equipment is
+in dysfunction (including the ticks when a dysfunction just occurred)
+
+Besides, the onFailure(State) and onReparation(State) oneways will be called at
+each transition, from nominal to dysfunction, and the other way round.
+
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_FailureModel:model_pid(),
 				 class_RepairModel:model_pid() ) -> wooper:state().
@@ -191,10 +195,11 @@ construct( State, ActorSettings, EquipmentName, FailureModelPid,
 % Management section of the equipment.
 
 
-% @doc Called by the failure model, in answer to a getNextFailure call.
-%
-% Third parameter of the request (sender PID, the failure model) is ignored.
-%
+-doc """
+Called by the failure model, in answer to a getNextFailure call.
+
+Third parameter of the request (sender PID, the failure model) is ignored.
+""".
 -spec setNextFailure( wooper:state(), class_TimeManager:tick_offset(),
 					  sending_actor_pid() ) -> actor_oneway_return().
 setNextFailure( State, FailureTick, _SendingActorPid ) ->
@@ -226,10 +231,11 @@ setNextFailure( State, FailureTick, _SendingActorPid ) ->
 
 
 
-% @doc Called by the repair model, in answer to a getNextRepair call.
-%
-% Third parameter (sender Pid, the repair model) is ignored.
-%
+-doc """
+Called by the repair model, in answer to a getNextRepair call.
+
+Third parameter (sender Pid, the repair model) is ignored.
+""".
 -spec setNextRepair( wooper:state(), class_TimeManager:tick_offset(),
 					 sending_actor_pid() ) -> actor_oneway_return().
 setNextRepair( State, RepairTick, _SendingActorPid ) ->
@@ -265,11 +271,12 @@ setNextRepair( State, RepairTick, _SendingActorPid ) ->
 % Management section of the equipment actor.
 
 
-% @doc The core of the equipment generic behaviour.
-%
-% Manages transition between failure and repair, and triggers actions associated
-% for both of these states.
-%
+-doc """
+The core of the equipment generic behaviour.
+
+Manages transition between failure and repair, and triggers actions associated
+for both of these states.
+""".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -304,10 +311,11 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Default implementation of the actNominal oneway.
-%
-% Note: made to be overridden for actual equipments.
-%
+-doc """
+Default implementation of this oneway.
+
+Note: made to be overridden for actual equipments.
+""".
 -spec actNominal( wooper:state() ) -> const_oneway_return().
 actNominal( State ) ->
 
@@ -317,10 +325,11 @@ actNominal( State ) ->
 
 
 
-% @doc Default implementation of the actInDysfunction oneway.
-%
-% Note: made to be overridden for actual equipments.
-%
+-doc """
+Default implementation of this oneway.
+
+Note: made to be overridden for actual equipments.
+""".
 -spec actInDysfunction( wooper:state() ) -> const_oneway_return().
 actInDysfunction( State ) ->
 
@@ -330,7 +339,9 @@ actInDysfunction( State ) ->
 
 
 
-% @doc Simply schedules this just created actor at the next tick (diasca 0).
+-doc """
+Simply schedules this just created actor at the next tick (diasca 0).
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -341,10 +352,11 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Default implementation of the onFailure oneway.
-%
-% Note: made to be overridden for actual equipments.
-%
+-doc """
+Default implementation of this oneway.
+
+Note: made to be overridden for actual equipments.
+""".
 -spec onFailure( wooper:state() ) -> oneway_return().
 onFailure( State ) ->
 
@@ -354,10 +366,11 @@ onFailure( State ) ->
 
 
 
-% @doc Default implementation of the onReparation oneway.
-%
-% Note: made to be overridden for actual equipments.
-%
+-doc """
+Default implementation of this oneway.
+
+Note: made to be overridden for actual equipments.
+""".
 -spec onReparation( wooper:state() ) -> oneway_return().
 onReparation( State ) ->
 
@@ -367,9 +380,10 @@ onReparation( State ) ->
 
 
 
-% @doc Returns the current status of this equipment regarding reliability, that
-% is either nominal or dysfunction.
-%
+-doc """
+Returns the current status of this equipment regarding reliability, that is
+either nominal or dysfunction.
+""".
 -spec getReliabilityStatus( wooper:state()) ->
 								const_request_return( reliability_status() ).
 getReliabilityStatus( State ) ->
@@ -377,12 +391,13 @@ getReliabilityStatus( State ) ->
 
 
 
-% @doc Links specified reliability probe to this equipment.
-%
-% (request, for synchronisation purpose)
-%
+-doc """
+Links the specified reliability probe to this equipment.
+
+(request, for synchronisation purpose)
+""".
 -spec setReliabilityProbe( wooper:state(), probe_ref() ) ->
-								 request_return( 'probe_set' ).
+								request_return( 'probe_set' ).
 setReliabilityProbe( State, ProbePid ) ->
 
 	%?info( "setReliabilityProbe called." ),
@@ -399,12 +414,7 @@ setReliabilityProbe( State, ProbePid ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Called whenever a failure happens.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Called whenever a failure happens.".
 -spec trigger_failure( wooper:state() ) -> wooper:state().
 trigger_failure( State ) ->
 
@@ -421,12 +431,7 @@ trigger_failure( State ) ->
 
 
 
-% @doc Called whenever a repair happens.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Called whenever a repair happens.".
 -spec trigger_repair( wooper:state() ) -> wooper:state().
 trigger_repair( State ) ->
 
@@ -444,12 +449,7 @@ trigger_repair( State ) ->
 
 
 
-% @doc Helper function for the actSpontaneous/1 oneway.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Handles the nominal case for this equipment.".
 -spec handle_nominal( wooper:state() ) -> wooper:state().
 handle_nominal( State ) ->
 
@@ -520,12 +520,7 @@ handle_nominal( State ) ->
 
 
 
-% @doc Helper function for the actSpontaneous/1 oneway.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Handles the dysfunction case for this equipment.".
 -spec handle_dysfunction( wooper:state() ) -> wooper:state().
 handle_dysfunction( State ) ->
 
@@ -606,12 +601,7 @@ handle_dysfunction( State ) ->
 
 
 
-% @doc Notifies any reliability listener that this equipment failed.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Notifies any reliability listener that this equipment failed.".
 -spec notify_failure( wooper:state() ) -> wooper:state().
 notify_failure( State ) ->
 
@@ -627,12 +617,7 @@ notify_failure( State ) ->
 
 
 
-% @doc Notifies any reliability listener that this equipment was repaired.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Notifies any reliability listener that this equipment has been repaired.".
 -spec notify_reparation( wooper:state() ) -> wooper:state().
 notify_reparation( State ) ->
 
@@ -648,10 +633,7 @@ notify_reparation( State ) ->
 	end.
 
 
-% @doc Sends reliability information to the probe.
-%
-% (helper)
-%
+-doc "Sends reliability information to the probe.".
 send_probe( CurrentTickOffset, Status, State ) ->
 
 	case ?getAttr(reliability_probe) of

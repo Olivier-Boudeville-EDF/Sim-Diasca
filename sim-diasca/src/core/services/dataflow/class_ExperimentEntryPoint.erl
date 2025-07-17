@@ -1,28 +1,30 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Class implementing the <b>entry point of an experiment</b>, in charge of
-% feeding and triggering an associated dataflow.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(class_ExperimentEntryPoint).
+
+-moduledoc """
+Class implementing the **entry point of an experiment**, in charge of feeding
+and triggering an associated dataflow.
+""".
 
 
 -define( class_description,
@@ -84,24 +86,26 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
+% Type shorthand:
+
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs the experiment entry point.
-%
-% Construction parameters are:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Dataflows is a list of the dataflows that this entry point should drive
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
-% - WorldManagerPid is the PID of the world manager
-%
+-doc """
+Constructs the experiment entry point.
+
+Construction parameters are:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Dataflows is a list of the dataflows that this entry point should drive
+
+- ExperimentManagerPid is the PID of the experiment manager
+
+- WorldManagerPid is the PID of the world manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		[ dataflow_pid() ], experiment_manager_pid(), world_manager_pid() ) ->
 						wooper:state().
@@ -116,7 +120,7 @@ construct( State, ActorSettings, Dataflows, ExperimentManagerPid,
 
 	% First the direct mother class:
 	ActorState = class_Actor:construct( State, ActorSettings,
-								?trace_categorize("ExperimentEntryPoint") ),
+		?trace_categorize("ExperimentEntryPoint") ),
 
 	% Then the class-specific actions:
 	FinalState = setAttributes( ActorState, [
@@ -126,7 +130,7 @@ construct( State, ActorSettings, Dataflows, ExperimentManagerPid,
 
 	% From both registerExperimentEntryPoint requests:
 	wooper:wait_for_request_acknowledgements( _Count=2,
-				_AckAtom=experiment_entry_point_registered ),
+		_AckAtom=experiment_entry_point_registered ),
 
 	FinalState.
 
@@ -136,7 +140,9 @@ construct( State, ActorSettings, Dataflows, ExperimentManagerPid,
 
 
 
-% @doc Callback executed on the first diasca of existence of this entry point.
+-doc """
+Callback executed on the first diasca of existence of this entry point.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _CallerPid ) ->
@@ -147,12 +153,13 @@ onFirstDiasca( State, _CallerPid ) ->
 
 
 
-% @doc Starts the evaluation of the experiment for the current tick.
-%
-% Typically called by the experiment exit point.
-%
-% Mostly empty implementation, meant to be overridden.
-%
+-doc """
+Starts the evaluation of the experiment for the current tick.
+
+Typically called by the experiment exit point.
+
+Mostly empty implementation, meant to be overridden.
+""".
 -spec startExperimentTick( wooper:state(), sending_actor_pid() ) ->
 								const_actor_oneway_return().
 startExperimentTick( State, _SendingActorPid ) ->
@@ -162,7 +169,7 @@ startExperimentTick( State, _SendingActorPid ) ->
 
 	% This is an empty implementation.
 	%
-	% Actual ones may fetch information from any source (ex: thanks to a REST
+	% Actual ones may fetch information from any source (e.g. thanks to a REST
 	% call), and may update accordingly the corresponding dataflow elements
 	% (typically dataflow actors), possibly directly or through the various
 	% registered dataflows.
@@ -170,7 +177,7 @@ startExperimentTick( State, _SendingActorPid ) ->
 	% Then corresponding blocks may be activated, and the dataflow evaluated.
 
 	%SentState = class_Actor:send_actor_messages( ?getAttr(dataflows),
-	%                   { startExperimentTick, [...], State },
+	%   { startExperimentTick, [...], State },
 
 	%actor:return_state( SentState ).
 
@@ -182,7 +189,7 @@ startExperimentTick( State, _SendingActorPid ) ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this entry point.
+-doc "Returns a textual description of this entry point.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

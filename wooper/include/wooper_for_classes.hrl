@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -61,10 +61,12 @@
 -export([ wooper_get_class_specific_attributes/0 ]).
 
 
-% @doc Returns the direct mother classes of the current one.
-%
-% Note: available to the user.
-%
+
+-doc """
+Returns the direct mother classes of the current one.
+
+Note: available to the user.
+""".
 -spec get_superclasses() -> static_return( [ wooper:classname() ] ).
 
 
@@ -86,16 +88,21 @@ get_superclasses() ->
 get_superclasses() ->
 	wooper:return_static( [] ).
 
-
 -endif. % superclasses
 
 
 
-% @doc Returns the user specification of the class-specific attributes.
+% As a very special case, no such doc attribute allowed, as no corresponding
+% function would be found by the compiler afterwards, leading it to believe that
+% this attribute clashes with the next one:
+%
+%-doc """
+% Returns the user specification of the class-specific attributes.
 %
 % Note: function that will be discarded before the actual compilation, just
 % allowing to generate a proper get_class_specific_attributes/0 static method,
 % that will be thus available to the user.
+%""".
 %
 -spec wooper_get_class_specific_attributes() ->
 							[ wooper_info:attribute_spec() ].
@@ -139,14 +146,13 @@ wooper_get_class_specific_attributes() ->
 
 
 
+-doc """
+Returns the description (if any) specified for this class.
 
-% @doc Returns the description (if any) specified for this class.
-%
-% Note: available to the user.
-%
+Note: available to the user.
+""".
 -spec get_class_description() ->
-			static_return( maybe( wooper_info:class_description() ) ).
-
+			static_return( option( wooper_info:class_description() ) ).
 
 
 -ifdef(class_description).
@@ -158,7 +164,6 @@ wooper_get_class_specific_attributes() ->
 % transform.
 %
 get_class_description() ->
-
 	% Note: if your compiler points to these lines, you must have introduced a
 	% parse (syntax) error in your 'class_description' define (expected to be a
 	% string).

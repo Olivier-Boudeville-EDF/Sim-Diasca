@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc A trace emitter introduced <b>for testing</b>.
 -module(class_TestTraceEmitter).
+
+-moduledoc """
+A trace emitter introduced **for testing**.
+""".
 
 
 -define( class_description,
@@ -67,7 +69,8 @@
 % printouts.
 
 
-% @doc Constructs a test trace emitter.
+
+-doc "Constructs a test trace emitter.".
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init() ) ->
 												wooper:state().
 construct( State, TraceEmitterName ) ->
@@ -96,7 +99,7 @@ construct( State, TraceEmitterName ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -114,6 +117,11 @@ destruct( State ) ->
 	?info( "Goodbye info world!" ),
 	?debug( "Goodbye debug world!" ),
 	?void( "Goodbye void world!" ),
+
+    ?info_fmt( "This is a ~ts formatted info message.", [ correct ] ),
+
+    % Uncomment to test build-time checking:
+    %?info_fmt( "This is an ~ts formatted info message.", [ incorrect, 42 ] ),
 
 	%trace_utils:notice_fmt( "~ts Test trace emitter ~ts deleted.",
 	%                        [ ?log_prefix, ?getAttr(name) ] ),
@@ -157,7 +165,7 @@ sendAsyncTraces( State ) ->
 % Helper functions.
 
 
-% @doc We should be testing all forms of traces here.
+-doc "We should be testing all forms of traces here.".
 -spec send_traces( wooper:state() ) -> void().
 send_traces( State ) ->
 
@@ -272,9 +280,10 @@ send_traces( State ) ->
 
 
 
-% @doc To test compilation problems when only one non-maskable trace is used
-% (e.g. variable unused, or term constructed whereas not used either).
-%
+-doc """
+To test compilation problems when only one non-maskable trace is used
+(e.g. variable unused, or term constructed whereas not used either).
+""".
 -spec send_emergency_trace( wooper:state() ) -> void().
 send_emergency_trace( State ) ->
 
@@ -288,9 +297,10 @@ send_emergency_trace( State ) ->
 
 
 
-% @doc To test compilation problems when only one maskable trace is used (e.g.
-% variable unused, or term constructed whereas not used either).
-%
+-doc """
+To test compilation problems when only one maskable trace is used (e.g.
+variable unused, or term constructed whereas not used either).
+""".
 -spec send_debug_trace( wooper:state() ) -> void().
 send_debug_trace( State ) ->
 

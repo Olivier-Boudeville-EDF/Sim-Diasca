@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 4, 2018.
 
-
-% @doc Module in charge of handling <b>types, but also variables and values</b>
-% defined with an AST.
-%
-% See the "7.7 Types" section of [http://erlang.org/doc/apps/erts/absform.html]
-% for more information.
-%
 -module(ast_type).
+
+-moduledoc """
+Module in charge of handling **types, but also variables and values** defined
+with an AST.
+
+See the "7.7 Types" section of <http://erlang.org/doc/apps/erts/absform.html>
+for more information.
+""".
+
 
 
 % For the table macro:
@@ -48,11 +50,13 @@
 -include("ast_utils.hrl").
 
 
+
 % Section for types about types.
 
 
+-doc "An in-AST definition of a type.".
 -type ast_type_definition() :: ast_base:form().
-% An in-AST definition of a type.
+
 
 
 % Note: the order of the fields matters (not arbitrary, in order to correspond
@@ -71,12 +75,14 @@
 	variables = [] :: [ ast_type() ] }).
 
 
+-doc """
+Reference to a built-in type, in an AST.
+
+For example:
+- {type,45,atom,[]}                           -- for atom()
+- {type,44,list,[{type,{44,5},boolean,[]}]}   -- for [boolean()]
+""".
 -type ast_builtin_type() :: #type{}.
-% Reference to a built-in type, in an AST.
-%
-% For example:
-% - {type,45,atom,[]}                           -- for atom()
-% - {type,44,list,[{type,{44,5},boolean,[]}]}   -- for [ boolean() ]
 
 
 
@@ -95,10 +101,12 @@
 	variables = [] :: [ ast_type() ] } ).
 
 
+-doc """
+Reference to a user-defined (local) type, in an AST.
+
+For example, for `foo(atom())`: `{user_type,{45,1},foo,[{type,45,atom,[]}]}`.
+""".
 -type ast_user_type() :: #user_type{}.
-% Reference to a user-defined (local) type, in an AST.
-%
-% For example, for foo( atom() ): {user_type,{45,1},foo,[{type,45,atom,[]}]}.
 
 
 
@@ -117,37 +125,48 @@
 	spec :: [ ast_builtin_type() | [ ast_type() ] ] } ).
 
 
+-doc """
+Reference to a remote type, in an AST.
+
+Example for `type_utils:option(float())`:
+`{remote_type,43,[{atom,43,type_utils},{atom,43,option},
+   [{type,43,float,[]}]]}`.
+""".
 -type ast_remote_type() :: #remote_type{}.
-% Reference to a remote type, in an AST.
-%
-% Example for basic_utils:maybe(float()):
-% {remote_type,43,[{atom,43,basic_utils},{atom,43,maybe},[{type,43,float,[]}]]}
 
 
+
+-doc "Any kind of reference onto a type.".
 -type ast_type() :: ast_builtin_type() | ast_user_type() | ast_remote_type().
-% Any kind of reference onto a type.
 
 
--type maybe_ast_type() :: basic_utils:maybe( ast_type() ).
+-type maybe_ast_type() :: option( ast_type() ).
 
 
-% May be constrained or not (see http://erlang.org/doc/apps/erts/absform.html):
+%-doc """
+%May be constrained or not (see <http://erlang.org/doc/apps/erts/absform.html>."
+%""".
 %-type function_type().
 
 
+-doc """
+The description of a field of a record.
+
+For example:
+```
+{typed_record_field, {record_field, 76, {atom,76,my_index}},
+	{remote_type, 76, [{atom,76,linear}, {atom,76,coordinate}, []]}},
+```
+""".
 -type ast_field_description() :: tuple().
-% The description of a field of a record.
-%
-% For example: {typed_record_field, {record_field, 76, {atom,76,my_index}},
-%           {remote_type, 76, [{atom,76,linear}, {atom,76,coordinate}, []]}},
 
 
+-doc "Includes '_'.".
 -type ast_variable_name() :: atom().
-% Includes '_'.
 
 
+-doc "In-AST pattern for a variable.".
 -type ast_variable_pattern() :: { 'var', file_loc(), ast_variable_name() }.
-% Variable pattern.
 
 
 
@@ -213,10 +232,14 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type module_name() :: meta_utils:module_name().
 -type variable_name() :: meta_utils:variable_name().
+
+-type type_name() :: type_utils:type_name().
+-type type_id() :: type_utils:type_id().
+-type option( T ) :: type_utils:option( T ).
 
 -type file_loc() :: ast_base:file_loc().
 -type form_context() :: ast_base:form_context().
@@ -226,8 +249,6 @@
 
 -type type_table() :: ast_info:type_table().
 
--type type_name() :: type_utils:type_name().
--type type_id() :: type_utils:type_id().
 
 -type record_table() :: ast_info:record_table().
 
@@ -254,9 +275,10 @@
 % Transformation section.
 
 
-% @doc Transforms the types in specified type table, according to the specified
-% transforms.
-%
+-doc """
+Transforms the types in specified type table, according to the specified
+transforms.
+""".
 -spec transform_type_table( type_table(), ast_transforms() ) ->
 									{ type_table(), ast_transforms() }.
 transform_type_table( TypeTable, Transforms ) ?rec_guard ->
@@ -274,11 +296,12 @@ transform_type_table( TypeTable, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms specified function pair: {FunId, FunInfo}.
-%
-% Allows to keep around the function identifier, to recreate the function table
-% more easily.
-%
+-doc """
+Transforms specified function pair: {FunId, FunInfo}.
+
+Allows to keep around the function identifier, to recreate the function table
+more easily.
+""".
 -spec transform_type_info_pair( type_pair(), ast_transforms() ) ->
 										{ type_pair(), ast_transforms() }.
 transform_type_info_pair( { TypeId,
@@ -335,9 +358,10 @@ transform_type_info( TypeInfo=#type_info{ definition=TypeDef },
 
 
 
-% @doc Transforms the types in specified record table, according to the
-% specified transforms.
-%
+-doc """
+Transforms the types in the specified record table, according to the specified
+transforms.
+""".
 -spec transform_types_in_record_table( record_table(), ast_transforms() ) ->
 										{ record_table(), ast_transforms() }.
 transform_types_in_record_table( RecordTable, Transforms ) ?rec_guard ->
@@ -354,11 +378,11 @@ transform_types_in_record_table( RecordTable, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms the specified record pair: {RecordName, RecordDef}.
-%
-% Allows to keep around the record name, to recreate the record table more
-% easily.
-%
+-doc """
+Transforms the specified record pair: {RecordName, RecordDef}.
+
+Allows to keep around the record name, to recreate the record table more easily.
+""".
 -spec transform_record_pair( record_pair(), ast_transforms() ) ->
 										{ record_pair(), ast_transforms() }.
 transform_record_pair( { RecordName, RecordDef }, Transforms ) ?rec_guard ->
@@ -376,7 +400,7 @@ transform_record_pair( { RecordName, RecordDef }, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms the specified record definition.
+-doc "Transforms the specified record definition.".
 -spec transform_record_definition( record_definition(), ast_transforms() ) ->
 									{ record_definition(), ast_transforms() }.
 transform_record_definition( _RecordDef={ FieldTable, ASTLoc, FileLoc },
@@ -391,7 +415,7 @@ transform_record_definition( _RecordDef={ FieldTable, ASTLoc, FileLoc },
 
 
 
-% @doc Transforms the specified fields.
+-doc "Transforms the specified fields.".
 -spec transform_field_table( field_table(), ast_transforms() ) ->
 									{ field_table(), ast_transforms() }.
 transform_field_table( FieldTable, Transforms ) ?rec_guard ->
@@ -402,10 +426,11 @@ transform_field_table( FieldTable, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms the specified field pair: {FieldName, FieldInfo}.
-%
-% Allows to keep around the field name, to recreate the field table more easily.
-%
+-doc """
+Transforms the specified field pair: {FieldName, FieldInfo}.
+
+Allows to keep around the field name, to recreate the field table more easily.
+""".
 -spec transform_field_pair( field_pair(), ast_transforms() ) ->
 									{ field_pair(), ast_transforms() }.
 transform_field_pair( { FieldName, FieldDef }, Transforms ) ?rec_guard ->
@@ -416,7 +441,8 @@ transform_field_pair( { FieldName, FieldDef }, Transforms ) ?rec_guard ->
 	{ { FieldName, NewFieldDef }, NewTransforms }.
 
 
-% @doc Transforms the specified field definition.
+
+-doc "Transforms the specified field definition.".
 transform_field_definition( FieldDef={ _AstType=undefined, _AstValue=undefined,
 									   _FirstFileLoc, _SecondFileLoc },
 							Transforms ) ->
@@ -472,7 +498,7 @@ transform_field_definition(
 
 
 
-% @doc Transforms the specified list of types.
+-doc "Transforms the specified list of types.".
 -spec transform_types( [ ast_type() ], ast_transforms() ) ->
 								{ [ ast_type() ], ast_transforms() }.
 transform_types( Types, Transforms ) ->
@@ -481,37 +507,37 @@ transform_types( Types, Transforms ) ->
 
 
 
-% @doc Transforms types: traversing them recursively according to their
-% specified structure, applying on them the specified transformations.
-%
-% Currently not going for a fully specialised, strict and 'just sufficient'
-% traversal as permitted by [http://erlang.org/doc/apps/erts/absform.html]; yet
-% still getting inspiration from its section 7.7.
-%
-% We currently consider that all type definitions correspond to an
-% ast_type(), i.e. one of:
-%
-% - ast_utils:ast_builtin_type(): {type, FileLoc, TypeName, TypeVars}, where
-% TypeVars are often (not always) a list; e.g. {type, FILE_LOC, union,
-% [Rep(T_1), ..., Rep(T_k)]} or {type, FILE_LOC, map, any}; we manage
-% specifically the most common type designators, and traverse generically the
-% others
-%
-% - ast_utils:ast_remote_type(): {remote_type, FileLoc, [ModuleType, TypeName,
-% TypeVars]}
-%
-% - ast_utils:ast_user_type(): {user_type, FileLoc, TypeName, TypeVars}
-%
-%
-% Notes:
-%
-% - clauses ordered according to the first atom (all plain types, then all
-% remote types, then all user types)
-%
-% - records like #type, #user_type, could be used instead
-%
-% (helper)
-%
+-doc """
+Transforms types: traversing them recursively according to their specified
+structure, applying on them the specified transformations.
+
+Currently not going for a fully specialised, strict and 'just sufficient'
+traversal as permitted by [http://erlang.org/doc/apps/erts/absform.html]; yet
+still getting inspiration from its section 7.7.
+
+We currently consider that all type definitions correspond to an ast_type(),
+i.e. one of:
+
+- ast_utils:ast_builtin_type(): {type, FileLoc, TypeName, TypeVars}, where
+TypeVars are often (not always) a list; e.g. {type, FILE_LOC, union, [Rep(T_1),
+..., Rep(T_k)]} or {type, FILE_LOC, map, any}; we manage specifically the most
+common type designators, and traverse generically the others
+
+- ast_utils:ast_remote_type(): {remote_type, FileLoc, [ModuleType, TypeName,
+TypeVars]}
+
+- ast_utils:ast_user_type(): {user_type, FileLoc, TypeName, TypeVars}
+
+
+Notes:
+
+- clauses ordered according to the first atom (all plain types, then all remote
+types, then all user types)
+
+- records like #type, #user_type, could be used instead
+
+(helper)
+""".
 -spec transform_type( ast_type(), ast_transforms() ) ->
 							{ ast_type(), ast_transforms() }.
 
@@ -772,6 +798,21 @@ transform_type( _TypeDef={ 'type', FileLoc, TargetType='record',
 transform_type( _TypeDef={ 'type', FileLoc, TargetType='maybe_improper_list',
 						   UnifiedTypes },
 				Transforms ) ->
+
+	% Is already a list directly (no key/value pairs to preserve here):
+	{ NewUnifiedTypes, NewTransforms } = lists:mapfoldl(
+		fun transform_type/2, _Acc0=Transforms, _List=UnifiedTypes ),
+
+	NewTypeDef = { 'type', FileLoc, TargetType, NewUnifiedTypes },
+
+	{ NewTypeDef, NewTransforms };
+
+
+transform_type( _TypeDef={ 'type', FileLoc, TargetType='nonempty_list',
+						   UnifiedTypes },
+				Transforms ) ->
+
+	%ast_utils:display_debug( "Non-empty list found." ),
 
 	% Is already a list directly (no key/value pairs to preserve here):
 	{ NewUnifiedTypes, NewTransforms } = lists:mapfoldl(
@@ -1139,7 +1180,7 @@ transform_type( TypeDef, _Transforms ) ->
 
 
 
-% @doc Transforms specified local type with specified function.
+-doc "Transforms specified local type with specified function.".
 transform_local_type_with_fun( TransformFun, TypeName, TypeArity,
 		Transforms=#ast_transforms{ transformation_state=TransfoState } ) ->
 
@@ -1153,7 +1194,7 @@ transform_local_type_with_fun( TransformFun, TypeName, TypeArity,
 
 
 
-% @doc Transforms specified remote type with specified function.
+-doc "Transforms specified remote type with specified function.".
 transform_remote_type_with_fun( TransformFun, ModuleName, TypeName, TypeArity,
 		Transforms=#ast_transforms{ transformation_state=TransfoState } ) ->
 
@@ -1170,11 +1211,12 @@ transform_remote_type_with_fun( TransformFun, ModuleName, TypeName, TypeArity,
 % Transforming association types (from maps).
 
 
-% @doc Transforms specified association type.
-%
-% "If A is an association type K => V, where K and V are types, then Rep(A) =
-% {type, FILE_LOC, map_field_assoc, [Rep(K), Rep(V)]}."
-%
+-doc """
+Transforms specified association type.
+
+"If A is an association type K => V, where K and V are types, then Rep(A) =
+{type, FILE_LOC, map_field_assoc, [Rep(K), Rep(V)]}."
+""".
 -spec transform_association_type( ast_type(), ast_transforms() ) -> ast_type().
 transform_association_type( { 'type', FileLoc, 'map_field_assoc',
 							  Types=[ _K, _V ] }, Transforms ) ->
@@ -1204,11 +1246,12 @@ transform_association_type( { 'type', FileLoc, 'map_field_exact',
 
 
 
-% @doc Transforms specified field types (from records).
-%
-% "If F is a record field type Name :: Type, where Type is a type, then Rep(F) =
-% {type, FILE_LOC, field_type, [Rep(Name), Rep(Type)]}."
-%
+-doc """
+Transforms specified field types (from records).
+
+"If F is a record field type Name :: Type, where Type is a type, then Rep(F) =
+{type, FILE_LOC, field_type, [Rep(Name), Rep(Type)]}."
+""".
 transform_field_type( { 'type', FileLoc, 'field_type',
 						[ N={ atom, _FileLocN, _FieldName }, FieldType ] },
 					  Transforms ) ->
@@ -1221,7 +1264,7 @@ transform_field_type( { 'type', FileLoc, 'field_type',
 
 
 
-% @doc Transforms specified AST variable.
+-doc "Transforms specified AST variable.".
 -spec transform_type_variable( variable_name(), file_loc(),
 					ast_transforms() ) -> { ast_element(), ast_transforms() }.
 transform_type_variable( VariableName, _FileLoc, Transforms )
@@ -1235,184 +1278,203 @@ transform_type_variable( VariableName, _FileLoc, Transforms )
 % Section for type forging.
 
 
-% @doc Returns an AST-compliant type description for a boolean, defined at the
-% very start of the current source file.
-%
-% For example: forge_boolean_type() returns: {type,{0,1},boolean,[]}.
-%
+-doc """
+Returns an AST-compliant type description for a boolean, defined at the very
+start of the current source file.
+
+For example: forge_boolean_type() returns: {type,{0,1},boolean,[]}.
+""".
 -spec forge_boolean_type() -> ast_builtin_type().
 forge_boolean_type() ->
 	forge_boolean_type( _FileLoc=?default_generation_location ).
 
 
-% @doc Returns an AST-compliant type description for a boolean, defined at the
-% specified location of the current source file.
-%
-% For example: forge_boolean_type(45) returns: {type,45,boolean,[]}.
-%
+
+-doc """
+Returns an AST-compliant type description for a boolean, defined at the
+specified location of the current source file.
+
+For example: forge_boolean_type(45) returns: {type,45,boolean,[]}.
+""".
 -spec forge_boolean_type( file_loc() ) -> ast_builtin_type().
 forge_boolean_type( FileLoc ) ->
 	forge_builtin_type( _TypeName=boolean, _TypeVars=[], FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for an atom, defined at the
-% very start of the current source file.
-%
-% For example: forge_atom_type() returns: {type,{0,1},atom,[]}.
-%
+-doc """
+Returns an AST-compliant type description for an atom, defined at the very start
+of the current source file.
+
+For example: forge_atom_type() returns: {type,{0,1},atom,[]}.
+""".
 -spec forge_atom_type() -> ast_builtin_type().
 forge_atom_type() ->
 	forge_atom_type( _FileLoc=?default_generation_location ).
 
 
 
-% @doc Returns an AST-compliant type description for an atom, defined at the
-% specified location of the current source file.
-%
-% For example: forge_atom_type(45) returns: {type,45,atom,[]}.
-%
+-doc """
+Returns an AST-compliant type description for an atom, defined at the specified
+location of the current source file.
+
+For example: forge_atom_type(45) returns: {type,45,atom,[]}.
+""".
 -spec forge_atom_type( file_loc() ) -> ast_builtin_type().
 forge_atom_type( FileLoc ) ->
 	forge_builtin_type( _TypeName=atom, _TypeVars=[], FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for a PID, defined at the
-% very start of the current source file.
-%
-% For example: forge_pid_type() returns: {type,{0,1},pid,[]}.
-%
+-doc """
+Returns an AST-compliant type description for a PID, defined at the very start
+of the current source file.
+
+For example: forge_pid_type() returns: {type,{0,1},pid,[]}.
+""".
 -spec forge_pid_type() -> ast_builtin_type().
 forge_pid_type() ->
 	forge_pid_type( _FileLoc=?default_generation_location ).
 
 
 
-% @doc Returns an AST-compliant type description for a PID, defined at the
-% specified location of the current source file.
-%
-% For example: forge_pid_type(45) returns: {type,45,pid,[]}.
-%
+-doc """
+Returns an AST-compliant type description for a PID, defined at the specified
+location of the current source file.
+
+For example: forge_pid_type(45) returns: {type,45,pid,[]}.
+""".
 -spec forge_pid_type( file_loc() ) -> ast_builtin_type().
 forge_pid_type( FileLoc ) ->
 	forge_builtin_type( _TypeName=pid, _TypeVars=[], FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for an integer, defined at the
-% very start of the current source file.
-%
-% For example: forge_integer_type() returns: {type,{0,1},integer,[]}.
-%
+-doc """
+Returns an AST-compliant type description for an integer, defined at the very
+start of the current source file.
+
+For example: forge_integer_type() returns: {type,{0,1},integer,[]}.
+""".
 -spec forge_integer_type() -> ast_builtin_type().
 forge_integer_type() ->
 	forge_integer_type( _FileLoc=?default_generation_location ).
 
 
 
-% @doc Returns an AST-compliant type description for an integer, defined at the
-% specified location of the current source file.
-%
-% For example: forge_integer_type(45) returns: {type,45,integer,[]}.
-%
+-doc """
+Returns an AST-compliant type description for an integer, defined at the
+specified location of the current source file.
+
+For example: forge_integer_type(45) returns: {type,45,integer,[]}.
+""".
 -spec forge_integer_type( file_loc() ) -> ast_builtin_type().
 forge_integer_type( FileLoc ) ->
 	forge_builtin_type( _TypeName=integer, _TypeVars=[], FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for a float, defined at the
-% very start of the current source file.
-%
-% For example: forge_float_type() returns: {type,{0,1},float,[]}.
-%
+-doc """
+Returns an AST-compliant type description for a float, defined at the very start
+of the current source file.
+
+For example: forge_float_type() returns: {type,{0,1},float,[]}.
+""".
 -spec forge_float_type() -> ast_builtin_type().
 forge_float_type() ->
 	forge_float_type( _FileLoc=?default_generation_location ).
 
 
 
-% @doc Returns an AST-compliant type description for a float, defined at the
-% specified location of the current source file.
-%
-% For example: forge_float_type(45) returns: {type,45,float,[]}.
-%
+-doc """
+Returns an AST-compliant type description for a float, defined at the specified
+location of the current source file.
+
+For example: forge_float_type(45) returns: {type,45,float,[]}.
+""".
 -spec forge_float_type( file_loc() ) -> ast_builtin_type().
 forge_float_type( FileLoc ) ->
 	forge_builtin_type( _TypeName=float, _TypeVars=[], FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for a tuple, defined at the
-% very start of the current source file.
-%
+-doc """
+Returns an AST-compliant type description for a tuple, defined at the very start
+of the current source file.
+""".
 -spec forge_tuple_type( [ ast_type() ] ) -> ast_builtin_type().
 forge_tuple_type( ElementTypes ) ->
 	forge_tuple_type( ElementTypes, _FileLoc=?default_generation_location ).
 
 
-% @doc Returns an AST-compliant type description for a tuple, defined at the
-% specified location of the current source file.
-%
-% For example: to represent the following type defined at line 39: {integer(),
-% float()}, forge_tuple_type([forge_integer_type(39), forge_float_type(39)], 39)
-% returns: {type, 39, tuple, [{type,39,integer,[]}, {type,39,float,[]}]}.
-%
+
+-doc """
+Returns an AST-compliant type description for a tuple, defined at the specified
+location of the current source file.
+
+For example: to represent the following type defined at line 39: {integer(),
+float()}, forge_tuple_type([forge_integer_type(39), forge_float_type(39)], 39)
+returns: {type, 39, tuple, [{type,39,integer,[]}, {type,39,float,[]}]}.
+""".
 -spec forge_tuple_type( [ ast_type() ], file_loc() ) -> ast_builtin_type().
 forge_tuple_type( ElementTypes, FileLoc ) ->
 	forge_builtin_type( _TypeName=tuple, _TypeVars=ElementTypes, FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for a list, defined at the
-% very start of the current source file.
-%
+-doc """
+Returns an AST-compliant type description for a list, defined at the very start
+of the current source file.
+""".
 -spec forge_list_type( ast_type() ) -> ast_builtin_type().
 forge_list_type( ElementType ) ->
 	forge_list_type( ElementType, _FileLoc=?default_generation_location ).
 
 
 
-% @doc Returns an AST-compliant type description for a list, defined at the
-% specified location of the current source file.
-%
-% For example: to represent the following type defined at line 39: [integer()],
-% forge_list_type(forge_integer_type(39), 39) returns:
-% {type, 39, list, [{type,39,integer,[]}]}.
-%
+-doc """
+Returns an AST-compliant type description for a list, defined at the specified
+location of the current source file.
+
+For example: to represent the following type defined at line 39: [integer()],
+forge_list_type(forge_integer_type(39), 39) returns: {type, 39, list,
+[{type,39,integer,[]}]}.
+""".
 -spec forge_list_type( ast_type(), file_loc() ) -> ast_builtin_type().
 forge_list_type( ElementType, FileLoc ) ->
 	forge_builtin_type( _TypeName=list, _TypeVars=[ ElementType ], FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for an union, defined at the
-% very start of the current source file.
-%
+-doc """
+Returns an AST-compliant type description for an union, defined at the very
+start of the current source file.
+""".
 -spec forge_union_type( [ ast_type() ] ) -> ast_builtin_type().
 forge_union_type( UnitedTypes ) ->
 	forge_union_type( UnitedTypes, _FileLoc=?default_generation_location ).
 
 
-% @doc Returns an AST-compliant type description for an union, defined at the
-% specified location of the current source file.
-%
-% For example: to represent the following type defined at line 39: integer() |
-% float(), forge_union_type([forge_integer_type(39), forge_float_type(39)], 39)
-% returns: {type, 39, union, [{type,39,integer,[]}, {type,39,float,[]}]}.
-%
+
+-doc """
+Returns an AST-compliant type description for an union, defined at the specified
+location of the current source file.
+
+For example: to represent the following type defined at line 39: integer() |
+float(), forge_union_type([forge_integer_type(39), forge_float_type(39)], 39)
+returns: {type, 39, union, [{type,39,integer,[]}, {type,39,float,[]}]}.
+""".
 -spec forge_union_type( [ ast_type() ], file_loc() ) -> ast_builtin_type().
 forge_union_type( UnitedTypes, FileLoc ) ->
 	forge_builtin_type( _TypeName=union, _TypeVars=UnitedTypes, FileLoc ).
 
 
 
-% @doc Returns an AST-compliant type description for the specified built-in
-% type.
-%
-% For example: forge_builtin_type(atom, [], 45) returns: {type,45,atom,[]}.
-%
+-doc """
+Returns an AST-compliant type description for the specified built-in type.
+
+For example: forge_builtin_type(atom, [], 45) returns: {type,45,atom,[]}.
+""".
 -spec forge_builtin_type( type_name(), [ ast_type() ], file_loc() ) ->
 									ast_builtin_type().
 forge_builtin_type( TypeName, TypeVars, FileLoc ) ->
@@ -1420,13 +1482,13 @@ forge_builtin_type( TypeName, TypeVars, FileLoc ) ->
 
 
 
+-doc """
+Returns an AST-compliant representation of the specified local, user-defined
+type definition.
 
-% @doc Returns an AST-compliant representation of the specified local,
-% user-defined type definition.
-%
-% For example: to designate my_type() at line 40, forge_local_type(my_type, 40)
-% returns: {user_type, 40, my_type, []}.
-%
+For example: to designate my_type() at line 40, forge_local_type(my_type, 40)
+returns: {user_type, 40, my_type, []}.
+""".
 -spec forge_local_type( type_name(), [ ast_type() ], file_loc() ) ->
 								ast_user_type().
 forge_local_type( TypeName, TypeVars, FileLoc ) ->
@@ -1434,13 +1496,13 @@ forge_local_type( TypeName, TypeVars, FileLoc ) ->
 
 
 
-% @doc Returns an AST-compliant representation of the specified remote type.
-%
-% For example: to designate basic_utils:some_type(float()) at line 43, use:
-% forge_remote_type(basic_utils, some_type, [], 43), which returns:
-% {remote_type, 43, [{atom,43,basic_utils}, {atom,43,some_type},
-%   [{type,43,float,[]}]]}
-%
+-doc """
+Returns an AST-compliant representation of the specified remote type.
+
+For example: to designate basic_utils:some_type(float()) at line 43, use:
+forge_remote_type(basic_utils, some_type, [], 43), which returns: {remote_type,
+43, [{atom,43,basic_utils}, {atom,43,some_type}, [{type,43,float,[]}]]}
+""".
 -spec forge_remote_type( module_name(), type_name(), [ ast_type() ],
 						 file_loc() ) -> ast_remote_type().
 forge_remote_type( ModuleName, TypeName, TypeVars, FileLoc ) ->
@@ -1448,13 +1510,15 @@ forge_remote_type( ModuleName, TypeName, TypeVars, FileLoc ) ->
 					   FileLoc ).
 
 
-% @doc Returns an AST-compliant representation of the specified remote type.
-%
-% For example: to designate basic_utils:some_type(float()) at lines 43, 44 and
-% 45, use: forge_remote_type(basic_utils, some_type, [], {43, 44, 45}) - which
-% returns: {remote_type, 43, [{atom,44,basic_utils}, {atom,45,some_type},
-% [{type,43,float,[]}]]}.
-%
+
+-doc """
+Returns an AST-compliant representation of the specified remote type.
+
+For example: to designate basic_utils:some_type(float()) at lines 43, 44 and 45,
+use: forge_remote_type(basic_utils, some_type, [], {43, 44, 45}) - which
+returns: {remote_type, 43, [{atom,44,basic_utils}, {atom,45,some_type},
+[{type,43,float,[]}]]}.
+""".
 -spec forge_remote_type( module_name(), type_name(), [ ast_type() ],
 				file_loc(), file_loc(), file_loc() ) -> ast_remote_type().
 forge_remote_type( ModuleName, TypeName, TypeVars, FileLoc1, FileLoc2,
@@ -1466,9 +1530,10 @@ forge_remote_type( ModuleName, TypeName, TypeVars, FileLoc1, FileLoc2,
 	#remote_type{ file_location=FileLoc1, spec=Spec }.
 
 
-% @doc Returns an AST-compliant representation of the specified variable
-% pattern.
-%
+
+-doc """
+Returns an AST-compliant representation of the specified variable pattern.
+""".
 -spec forge_type_variable( variable_name(), file_loc() ) ->
 								ast_variable_pattern().
 forge_type_variable( VariableName, FileLoc ) when is_atom( VariableName ) ->
@@ -1480,13 +1545,14 @@ forge_type_variable( VariableName, FileLoc ) when is_atom( VariableName ) ->
 % Checking section.
 
 
-% @doc Checks that the specified type name is legit.
+-doc "Checks that the specified type name is legit.".
 -spec check_type_name( term() ) -> type_name().
 check_type_name( Name ) ->
 	check_type_name( Name, _Context=undefined ).
 
 
-% @doc Checks that the specified type name is legit.
+
+-doc "Checks that the specified type name is legit.".
 -spec check_type_name( term(), form_context() ) -> type_name().
 check_type_name( Name, _Context ) when is_atom( Name ) ->
 	Name;
@@ -1496,13 +1562,14 @@ check_type_name( Other, Context ) ->
 
 
 
-% @doc Checks that the specified type definition is legit.
+-doc "Checks that the specified type definition is legit.".
 -spec check_type_definition( term() ) -> ast_type_definition().
 check_type_definition( TypeDef ) ->
 	check_type_definition( TypeDef, _Context=undefined ).
 
 
-% @doc Checks that the specified type definition is legit.
+
+-doc "Checks that the specified type definition is legit.".
 -spec check_type_definition( term(), form_context() ) -> ast_type_definition().
 check_type_definition( TypeDef, _Context ) when is_tuple( TypeDef ) ->
 	TypeDef;
@@ -1512,13 +1579,14 @@ check_type_definition( Other, Context ) ->
 
 
 
-% @doc Checks that the specified record name is legit.
+-doc "Checks that the specified record name is legit.".
 -spec check_record_name( term() ) -> basic_utils:record_name().
 check_record_name( Name ) ->
 	check_record_name( Name, _Context=undefined ).
 
 
-% @doc Checks that the specified record name is legit.
+
+-doc "Checks that the specified record name is legit.".
 -spec check_record_name( term(), form_context() ) -> basic_utils:record_name().
 check_record_name( Name, _Context ) when is_atom( Name ) ->
 	Name;
@@ -1528,13 +1596,14 @@ check_record_name( Other, Context ) ->
 
 
 
-% @doc Checks that the specified type identifier is legit.
+-doc "Checks that the specified type identifier is legit.".
 -spec check_type_id( term() ) -> type_id().
 check_type_id( Id ) ->
 	check_type_id( Id, _Context=undefined ).
 
 
-% @doc Checks that the specified type identifier is legit.
+
+-doc "Checks that the specified type identifier is legit.".
 -spec check_type_id( term(), form_context() ) -> type_id().
 check_type_id( TypeId={ TypeName, TypeArity }, Context ) ->
 	check_type_name( TypeName, Context ),
@@ -1546,13 +1615,14 @@ check_type_id( Other, Context ) ->
 
 
 
-% @doc Checks that the specified type identifiers are legit.
+-doc "Checks that the specified type identifiers are legit.".
 -spec check_type_ids( term() ) -> [ type_id() ].
 check_type_ids( Ids ) ->
 	check_type_ids( Ids, _Context=undefined ).
 
 
-% @doc Checks that the specified type identifiers are legit.
+
+-doc "Checks that the specified type identifiers are legit.".
 -spec check_type_ids( term(), form_context() ) -> [ type_id() ].
 check_type_ids( List, Context ) when is_list( List ) ->
 	[ check_type_id( Id, Context ) || Id <- List ];
@@ -1562,13 +1632,14 @@ check_type_ids( Other, Context ) ->
 
 
 
-% @doc Checks that the specified variable is legit.
+-doc "Checks that the specified variable is legit.".
 -spec check_type_variable( term() ) -> ast_variable_pattern().
 check_type_variable( ASTVariable ) ->
 	check_type_variable( ASTVariable, _Context=undefined ).
 
 
-% @doc Checks that the specified variable is legit.
+
+-doc "Checks that the specified variable is legit.".
 -spec check_type_variable( term(), form_context() ) -> ast_variable_pattern().
 check_type_variable( ASTVariable={ 'var', FileLoc, VariableName }, Context )
 										when is_atom( VariableName ) ->
@@ -1580,13 +1651,14 @@ check_type_variable( Other, Context ) ->
 
 
 
-% @doc Checks that the specified variables are legit.
+-doc "Checks that the specified variables are legit.".
 -spec check_type_variables( term() ) -> [ ast_variable_pattern() ].
 check_type_variables( ASTVariables ) ->
 	check_type_variables( ASTVariables, _Context=undefined ).
 
 
-% @doc Checks that the specified variables are legit.
+
+-doc "Checks that the specified variables are legit.".
 -spec check_type_variables( term(), form_context() ) ->
 									[ ast_variable_pattern() ].
 check_type_variables( List, Context ) when is_list( List ) ->
@@ -1597,13 +1669,14 @@ check_type_variables( Other, Context ) ->
 
 
 
-% @doc Checks that the specified term is the AST version of an atom.
+-doc "Checks that the specified term is the AST version of an atom.".
 -spec check_ast_atom( term() ) -> ast_base:ast_atom().
 check_ast_atom( ASTAtom ) ->
 	check_ast_atom( ASTAtom, _Context=undefined ).
 
 
-% @doc Checks that the specified term is the AST version of an atom.
+
+-doc "Checks that the specified term is the AST version of an atom.".
 -spec check_ast_atom( term(), form_context() ) -> ast_base:ast_atom().
 check_ast_atom( ASTAtom={ atom, _FileLoc, Atom }, _Context )
 										when is_atom( Atom ) ->
@@ -1618,17 +1691,16 @@ check_ast_atom( Other, Context ) ->
 
 
 
+-doc """
+Returns a pair made of (two) lists of located forms regarding the type exports.
 
-% @doc Returns a pair made of (two) lists of located forms regarding the type
-% exports.
-%
-% They corresponding to:
-%
-% - all the type export declarations that are described in the specified type
-% export table
-%
-% - all the types definitions that are described in the specified type table
-%
+They corresponding to:
+
+- all the type export declarations that are described in the specified type
+export table
+
+- all the types definitions that are described in the specified type table
+""".
 -spec get_located_forms_for( ast_info:type_export_table(), type_table() ) ->
 									{ [ located_form() ], [ located_form() ] }.
 get_located_forms_for( TypeExportTable, TypeTable ) ->

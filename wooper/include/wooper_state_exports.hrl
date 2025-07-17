@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -107,7 +107,7 @@
 % Returns the value associated to the specified named-designated attribute, if
 % found, otherwise triggers a case clause error.
 %
-% Ex: MyCount = ?getAttr(count)
+% For example: MyCount = ?getAttr(count)
 %
 % This macro is usually more useful than the getAttribute function, as one
 % generally wants to retrieve an attribute already available in the 'State'
@@ -138,11 +138,11 @@
 % whether the attribute is associated to the 'undefined' value or not defined at
 % all. For example, instead of a maybe-type, use then a safe_maybe-type.
 %
-% Ex: MyMaybeCount = ?getAttrMaybe(count)
+% For example: MyMaybeCount = ?getAttrOption(count)
 %
 % Definitively not a legacy macro.
 %
-% Pseudo spec: getMaybeAttr(attribute_name()) -> maybe(attribute_value()).
+% Pseudo spec: getMaybeAttr(attribute_name()) -> option(attribute_value()).
 %
 -define( getMaybeAttr(AttributeName),
 	getMaybeAttribute( State, (AttributeName) )
@@ -150,11 +150,11 @@
 
 
 
-% Returns the value associated to each of the specified named-designated
+% Returns the value associated to each of the specified name-designated
 % attributes (if found, otherwise triggers a case clause error), in the order of
 % their specification.
 %
-% Ex: [MyCount, MyAge, MyIdeas] = ?getAttrList([count, age, ideas])
+% For example: [MyCount, MyAge, MyIdeas] = ?getAttrList([count, age, ideas])
 %
 % This macro is usually more useful than the getAttributes function, as one
 % generally wants to retrieve attributes already available in the 'State'

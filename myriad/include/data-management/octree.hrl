@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,38 +25,40 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, June 4, 2022.
 
+
 -record( sequential_octants, {
 
 	% Top-level, North-East octant:
-	o1 :: maybe( octree:sequential_octree() ),
+	o1 :: option( octree:sequential_octree() ),
 
 	% Top-level, South-East octant:
-	o2 :: maybe( octree:sequential_octree() ),
+	o2 :: option( octree:sequential_octree() ),
 
 	% Top-level, South-West octant:
-	o3 :: maybe( octree:sequential_octree() ),
+	o3 :: option( octree:sequential_octree() ),
 
 	% Top-level, North-West octant:
-	o4 :: maybe( octree:sequential_octree() ),
+	o4 :: option( octree:sequential_octree() ),
 
 
 	% Bottom-level, North-East octant:
-	o5 :: maybe( octree:sequential_octree() ),
+	o5 :: option( octree:sequential_octree() ),
 
 	% Bottom-level, South-East octant:
-	o6 :: maybe( octree:sequential_octree() ),
+	o6 :: option( octree:sequential_octree() ),
 
 	% Bottom-level, South-West octant:
-	o7 :: maybe( octree:sequential_octree() ),
+	o7 :: option( octree:sequential_octree() ),
 
 	% Bottom-level, North-West octant:
-	o8 :: maybe( octree:sequential_octree() ) } ).
+	o8 :: option( octree:sequential_octree() ) } ).
 % Datastructure for pure sequential octrees, that is: octrees-as-terms.
 %
 % Stores the 8 sub-octrees (children cells) that any sequential octree node may
 % reference.
 %
-% In a conventional MyriadGUI absolute referential, space is divided that way:
+% In a conventional MyriadGUI absolute coordinate system, space is divided that
+% way:
 %
 %
 %  Z
@@ -107,29 +109,29 @@
 -record( concurrent_octants, {
 
 	% Top-level, North-East octant:
-	o1 :: maybe( octree:octree_pid() ),
+	o1 :: option( octree:octree_pid() ),
 
 	% Top-level, South-East octant:
-	o2 :: maybe( octree:octree_pid() ),
+	o2 :: option( octree:octree_pid() ),
 
 	% Top-level, South-West octant:
-	o3 :: maybe( octree:octree_pid() ),
+	o3 :: option( octree:octree_pid() ),
 
 	% Top-level, North-West octant:
-	o4 :: maybe( octree:octree_pid() ),
+	o4 :: option( octree:octree_pid() ),
 
 
 	% Bottom-level, North-East octant:
-	o5 :: maybe( octree:octree_pid() ),
+	o5 :: option( octree:octree_pid() ),
 
 	% Bottom-level, South-East octant:
-	o6 :: maybe( octree:octree_pid() ),
+	o6 :: option( octree:octree_pid() ),
 
 	% Bottom-level, South-West octant:
-	o7 :: maybe( octree:octree_pid() ),
+	o7 :: option( octree:octree_pid() ),
 
 	% Bottom-level, North-West octant:
-	o8 :: maybe( octree:octree_pid() ) } ).
+	o8 :: option( octree:octree_pid() ) } ).
 % Datastructure for pure concurrent octrees, that is: octrees-as-processes.
 %
 % Stores the 8 sub-concurrent octrees (children cell processes) that any
@@ -142,29 +144,29 @@
 -record( hybrid_octants, {
 
 	% Top-level, North-East octant:
-	o1 :: maybe( octree:octree_designator() ),
+	o1 :: option( octree:octree_designator() ),
 
 	% Top-level, South-East octant:
-	o2 :: maybe( octree:octree_designator() ),
+	o2 :: option( octree:octree_designator() ),
 
 	% Top-level, South-West octant:
-	o3 :: maybe( octree:octree_designator() ),
+	o3 :: option( octree:octree_designator() ),
 
 	% Top-level, North-West octant:
-	o4 :: maybe( octree:octree_designator() ),
+	o4 :: option( octree:octree_designator() ),
 
 
 	% Bottom-level, North-East octant:
-	o5 :: maybe( octree:octree_designator() ),
+	o5 :: option( octree:octree_designator() ),
 
 	% Bottom-level, South-East octant:
-	o6 :: maybe( octree:octree_designator() ),
+	o6 :: option( octree:octree_designator() ),
 
 	% Bottom-level, South-West octant:
-	o7 :: maybe( octree:octree_designator() ),
+	o7 :: option( octree:octree_designator() ),
 
 	% Bottom-level, North-West octant:
-	o8 :: maybe( octree:octree_designator() ) } ).
+	o8 :: option( octree:octree_designator() ) } ).
 % Datastructure for hybrid octrees, that is: octrees as terms or processes.
 %
 % The 8 sub-hybrid octrees (children cell processes) that may partition any
@@ -184,7 +186,7 @@
 	short_id :: octree:octant_short_id(),
 	% The identifier of this octant, for its height in the overall octree.
 
-	parent_id :: maybe( octree:octant_short_id() ),
+	parent_id :: option( octree:octant_short_id() ),
 	% The identifier of the parent (if any) of this octant, at a decremented
 	% height in the overall octree.
 

@@ -34,7 +34,7 @@ default-sim-diasca-rule: all
 # symbolic links pointing to the same centralised file.
 #
 make-config-links:
-	@if [ ! -e "$(SIM_DIASCA_HOST_FILE)" ] ; then \
+	@if [ ! -e "$(SIM_DIASCA_HOST_FILE)" ]; then \
 	if /bin/ls *_test.erl 1>/dev/null 2>&1; then \
 	echo "  Adding link to centralised host file in $$(pwd)"; \
 	/bin/ln -sf $(SIM_DIASCA_TOP)/conf/$(SIM_DIASCA_HOST_FILE); fi; fi

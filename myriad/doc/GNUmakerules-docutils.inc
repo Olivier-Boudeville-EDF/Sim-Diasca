@@ -5,13 +5,13 @@
 
 .PHONY: doc doc-recurse info info-doc-tools info-doc-settings local full-doc   \
  create-doc create-html-doc create-pdf-doc full-html full-pdf regenerate-doc   \
- local-doc local-html local-pdf create-api-doc                                 \
+ local-doc local-html local-pdf diagrams create-api-doc                        \
  make-doc-repository create-local-referential                                  \
  create-mathjax-symlink check-mathjax                                          \
  view-doc to-print check-dot                                                   \
- info-doc info-doc-local info-doc-tools                                        \
- clean clean-doc-repository clean-generated clean-dot clean-doc-logs           \
- clean-gnuplot clean-png clean-rst
+ info-doc info-doc-local info-doc-tools info-diagrams                          \
+ clean clean-doc-repository clean-generated clean-diagrams clean-dot           \
+ clean-doc-logs clean-gnuplot clean-png clean-rst clean-mathjax-local
 
 
 # Content typically to be deployed to webservers:
@@ -20,6 +20,13 @@
 # generated, no MathJax available) does not trigger an error.
 #
 WEB_CONTENT = $$(/bin/ls -d *.html *.css *.png *.pdf api-doc mathjax 2>/dev/null)
+
+
+# To be used for homogeneous offsets ('echo "$(ECHO_PREFIX)Doing something"'):
+ECHO_OFFSET = "\ \ \ \ "
+
+# Light yellow (typically for post-it like notes):
+NOTE_COLOR := '\#ffffe0'
 
 
 
@@ -47,7 +54,7 @@ NEGATED_PNG = $(patsubst %.png,%-negated.png,$(wildcard *.png))
 
 # Channel specified so that alpha is not messed up:
 %-negated.png: %.png
-	@echo "    Generating $@ from $< with $(IMAGE_MAGICK)"
+	@echo "$(ECHO_OFFSET)Generating $@ from $< with $(IMAGE_MAGICK)"
 	@$(IMAGE_MAGICK) $< -channel RGB -negate $@
 
 
@@ -56,17 +63,29 @@ ROTATED_PNG = $(patsubst %.png,%-rotated.png,$(wildcard *.png))
 
 # '-transpose' is not what we want:
 %-rotated.png: %.png
-	@echo "    Generating $@ from $< with $(IMAGE_MAGICK)"
+	@echo "$(ECHO_OFFSET)Generating $@ from $< with $(IMAGE_MAGICK)"
 	@$(IMAGE_MAGICK) $< -rotate -90 $@
 
 
 
 BORDERED_PNG = $(patsubst %.png,%-bordered.png,$(wildcard *.png))
 
-# Adds to the image a thin black border enclosing some additional white space:
+MARGIN_COLOR = White
+
+# Padding between content and border:
+MARGIN_WIDTH = 5
+
+
+BORDER_COLOR = Black
+#BORDER_COLOR = '\#00ff00'
+
+BORDER_WIDTH = 2
+
+
+# Adds to the image a thin border enclosing some additional white space:
 %-bordered.png: %.png
-	@echo "    Generating $@ from $< with $(IMAGE_MAGICK)"
-	@$(IMAGE_MAGICK) $< -mattecolor White -frame 4x4 -mattecolor Black -frame 1x1 $@
+	@echo "$(ECHO_OFFSET)Adding border on $< to obtain $@ with $(IMAGE_MAGICK)"
+	$(IMAGE_MAGICK) $< -mattecolor $(MARGIN_COLOR) -frame $(MARGIN_WIDTH)x$(MARGIN_WIDTH) -mattecolor $(BORDER_COLOR) -frame $(BORDER_WIDTH)x$(BORDER_WIDTH) $@
 
 
 
@@ -79,7 +98,7 @@ DATA_PROCESSOR_OPTS = --silent --no-gui
 
 
 %.png: %.m
-	@echo "  Using $(DATA_PROCESSOR) to generate $@ from $<"
+	@echo "$(ECHO_OFFSET)Using $(DATA_PROCESSOR) to generate $@ from $<"
 	@$(DATA_PROCESSOR) $(DATA_PROCESSOR_OPTS) $<
 
 
@@ -93,7 +112,10 @@ DATA_PROCESSOR_OPTS = --silent --no-gui
 # DOT := $$(PATH=$(DOT_ROOT)/bin:$$PATH which dot)
 DOT := $$(which dot)
 
-DOT_OPT := -Gcharset=latin1
+
+# No more '-Gcharset=latin1'; using UTF-8 now.
+DOT_OPT :=
+
 
 # To trigger the automatic rendering of a created graph, adding 'VIEW_GRAPH=' at
 # the end of the command line (e.g. 'make MyFSM.png VIEW_GRAPH=') is sufficient.
@@ -106,7 +128,7 @@ VIEW_GRAPH := no
 # generated:
 #
 %.png: %.graph
-	@echo "     Generating $@ from graph $<"
+	@echo "$(ECHO_OFFSET)Generating $@ from graph $<"
 	@$(MAKE) -s check-dot
 	@if $(DOT) $(DOT_OPT) -o$@ -Tpng $<; then if [ "$(VIEW_GRAPH)" != "no" ]; then $(IMG_VIEWER) $@; fi; fi
 
@@ -115,13 +137,17 @@ GRAPH_SRC = $(wildcard *.graph)
 GRAPH_PNG = $(GRAPH_SRC:%.graph=%.png)
 
 
+# If Mermaid was used (we strongly prefer dot):
+%.png: %.mmd
+	@generate-mermaid-diagram.sh $<
+
 
 # Plot rendering section.
 #
 # See also our plot_utils module.
 
 %.dat: %.py
-	@echo "     Generating plot data $@ from $<"
+	@echo "$(ECHO_OFFSET)Generating plot data $@ from $<"
 	@$(PYTHON) $<
 
 # To trigger the automatic rendering of a created plot, add 'VIEW_PLOT='
@@ -132,29 +158,29 @@ VIEW_PLOT := no
 GNUPLOT := $$(which gnuplot)
 
 %.png: %.plot %.dat
-	@echo "     Generating plot $@"
+	@echo "$(ECHO_OFFSET)Generating plot $@"
 	@$(GNUPLOT) $<
 	@if [ "$(VIEW_PLOT)" != "no" ]; then $(IMG_VIEWER) $@ & fi
 
 
 # Some plots do not need data files:
 %.png: %.plot
-	@echo "     Generating plot $@"
+	@echo "$(ECHO_OFFSET)Generating plot $@"
 	@$(GNUPLOT) $<
 	@if [ "$(VIEW_PLOT)" != "no" ]; then $(IMG_VIEWER) $@ & fi
 
 
 %.png: %.py
-	@echo "     Generating image $@ from $<"
+	@echo "$(ECHO_OFFSET)Generating image $@ from $<"
 	@$(PYTHON) $<
 	@if [ "$(VIEW_PLOT)" != "no" ]; then $(IMG_VIEWER) $@ & fi
 
 
 # Probably deprecated:
 #%-generated.png: %.pdoc %.plotdoc
-#	@echo "     Generating plot $@"
-#	@$(GNUPLOT) $<
-#	@if [ "$(VIEW_PLOT)" != "no" ]; then $(IMG_VIEWER) $@ & fi
+#   @echo "$(ECHO_OFFSET)Generating plot $@"
+#   @$(GNUPLOT) $<
+#   @if [ "$(VIEW_PLOT)" != "no" ]; then $(IMG_VIEWER) $@ & fi
 
 
 
@@ -179,7 +205,7 @@ VIEW_DIAGRAM := yes
 
 # The -d / --display options could be used instead:
 %.png: %.puml
-	@echo "     Generating PlantUML diagram $@ from $<"
+	@echo "$(ECHO_OFFSET)Generating PlantUML diagram $@ from $<"
 	@if $(PLANT_UML_GENERATOR) $<; then if [ "$(VIEW_DIAGRAM)" != "no" ]; then $(IMG_VIEWER) $@; fi; fi
 
 
@@ -240,18 +266,24 @@ PDF_VIEWER := $$(which evince)
 VIEW_PDF := no
 
 
+# We noticed that running 'make clean foo.pdf' resulted in a PDF that had an
+# empty table of content, but that deleting and recreating this PDF resulted in
+# a perfect one - as if during the first creation a TOC was generated, but was
+# not used yet. So a double generation is automated (possibly that it could be
+# removed some day):
+#
 %.pdf: %.rst
-	@echo "     Generating PDF documentation $@"
-	@if $(RST_GENERATOR) $< --pdf; then if [ "$(VIEW_PDF)" != "no" ]; then $(PDF_VIEWER) $@ & fi; else exit 5; fi
+	@echo "$(ECHO_OFFSET)Generating PDF documentation $@"
+	@if $(RST_GENERATOR) $< --pdf; then /bin/rm -f $@; $(RST_GENERATOR) $< --pdf && if [ "$(VIEW_PDF)" != "no" ]; then $(PDF_VIEWER) $@ & fi; else exit 5; fi
 
 
 %.html: %.rst
-	@echo "     Generating HTML documentation $@"
+	@echo "$(ECHO_OFFSET)Generating HTML documentation $@"
 	@$(RST_GENERATOR) $< $(PROJECT_CSS) $(PROJECT_ICON_OPT)
 
 
 %.pdf: %.traces
-	@echo "     Generating PDF documentation $@ from $<"
+	@echo "$(ECHO_OFFSET)Generating PDF documentation $@ from $<"
 	@if $(RST_GENERATOR) $< --pdf; then if [ "$(VIEW_PDF)" != "no" ]; then $(PDF_VIEWER) $@ & fi; else exit 15; fi
 
 
@@ -262,7 +294,7 @@ VIEW_PDF := no
 # For instance: make ../../doc/api-doc/app_facilities.html
 #
 $(API_DOC_ROOT)/%.html: %.erl
-	@echo "    Generating edoc documentation for module '$<' in $@"
+	@echo "$(ECHO_OFFSET)Generating edoc documentation for module '$<' in $@"
 	@$(ERLANG_INTERPRETER) -noshell -run edoc_run file '"$<"' $(EDOC_OPTS)
 
 
@@ -272,39 +304,6 @@ $(API_DOC_ROOT)/%.html: %.erl
 
 
 doc: $(GRAPH_PNG) $(PNG_FROM_PYTHON) $(PNG_FROM_PYTHON_NEGATED) doc-recurse #$(PDF_GENERATED_FILES)
-
-
-clean: clean-doc
-
-clean-doc: clean-links clean-doc-repository
-	@echo "     Cleaning documentation elements in $$(basename $$(pwd))"
-	-@/bin/rm -f *.aux *.log *.maf *.mtc* *.stc* *.tex *.toc $(RST_GENERATED_FILES)
-	-@/bin/rm -rf api-doc
-
-
-clean-links:
-	-@/bin/rm -f index.html
-
-
-# Not info-doc-local, as always left blank so that it can be defined:
-info-doc: info-doc-tools info-doc-settings
-
-info-doc-tools:
-	@echo "RST_GENERATOR = $(RST_GENERATOR)"
-	@echo "DOC_TRACKER = $(DOC_TRACKER)"
-	@echo "DOT = $(DOT)"
-	@echo "GNUPLOT = $(GNUPLOT)"
-	@echo "IMG_VIEWER = $(IMG_VIEWER)"
-	@echo "IMAGE_MAGICK = $(IMAGE_MAGICK)"
-	@echo "PDF_VIEWER = $(PDF_VIEWER)"
-
-
-info-doc-settings:
-	@echo "OVERALL_DOCUMENT_SOURCE = $(OVERALL_DOCUMENT_SOURCE)"
-	@echo "OVERALL_DOCUMENT_HTML_TARGET = $(OVERALL_DOCUMENT_HTML_TARGET)"
-	@echo "OVERALL_DOCUMENT_PDF_TARGET = $(OVERALL_DOCUMENT_PDF_TARGET)"
-	@echo "PRINT_SERVER = $(PRINT_SERVER)"
-	@echo "WEB_CONTENT = $(WEB_CONTENT)"
 
 
 
@@ -321,7 +320,7 @@ full-doc: create-doc
 #
 create-doc: $(OVERALL_DOCUMENT_SOURCE) regenerate-doc clean-doc-repository \
 		make-doc-repository
-	@echo "     Generating full documentation from \
+	@echo "$(ECHO_OFFSET)Generating full documentation from \
 	$(OVERALL_DOCUMENT_SOURCE) in $(TMP_RST_REPOSITORY) \
 	(log in $(GENERATOR_LOG_FILE))"
 	@$(MAKE) -s create-html-doc create-pdf-doc
@@ -338,18 +337,21 @@ local-doc: local-html local-pdf
 
 
 local-html: $(OVERALL_DOCUMENT_SOURCE)
-	@echo "     Generating HTML documentation from $(OVERALL_DOCUMENT_SOURCE)"
+	@echo "$(ECHO_OFFSET)Generating HTML documentation from $(OVERALL_DOCUMENT_SOURCE)"
 	@$(RST_GENERATOR) $(OVERALL_DOCUMENT_SOURCE) $(PROJECT_CSS) $(PROJECT_ICON_OPT)
 
 
 local-pdf: $(OVERALL_DOCUMENT_SOURCE)
-	@echo "     Generating PDF documentation from $(OVERALL_DOCUMENT_SOURCE)"
+	@echo "$(ECHO_OFFSET)Generating PDF documentation from $(OVERALL_DOCUMENT_SOURCE)"
 	@if $(RST_GENERATOR) $(OVERALL_DOCUMENT_SOURCE) --pdf; then if [ "$(VIEW_PDF)" != "no" ]; then $(PDF_VIEWER) $(OVERALL_DOCUMENT_PDF_TARGET) & fi; else exit 15; fi
+
+
+diagrams: $(GRAPH_PNG)
 
 
 # To generate an actual API documentation tree:
 create-api-doc:
-	@cd $(LAYER_TOP) && $(MAKE) -s generate-api-doc
+	@cd $(LAYER_TOP)/doc && $(MAKE) -s generate-api-doc
 
 
 # As no Makefile in TMP_RST_REPOSITORY:
@@ -381,12 +383,12 @@ full-pdf: clean-doc-repository make-doc-repository create-pdf-doc
 
 
 regenerate-doc:
-	@echo "     Regenerating all documentation elements from $(DOCUTILS_TOP)"
+	@echo "$(ECHO_OFFSET)Regenerating all documentation elements from $(DOCUTILS_TOP)"
 	@cd $(DOCUTILS_TOP) && $(MAKE) -s doc
 
 
 make-doc-repository:
-	@echo "     Copying documentation sources to $(TMP_RST_REPOSITORY)"
+	@echo "$(ECHO_OFFSET)Copying documentation sources to $(TMP_RST_REPOSITORY)"
 	@mkdir -p $(TMP_RST_REPOSITORY)
 	@find $(DOCUTILS_TOP) -name $(TMP_RST_REPOSITORY) -prune -o \( -name '*.rst.template' -o -name '*.rst' -o -name '*.png' -o -name '*.css' \) -exec /bin/cp -f '{}' $(TMP_RST_REPOSITORY) ';'
 
@@ -407,7 +409,7 @@ endif
 # See myriad/src/scripts/generate-docutils.sh for more details.
 #
 create-mathjax-symlink:
-	@if [ -e "$(MATHJAX_ROOT)" ]; then actual_mathjax_root="$(MATHJAX_ROOT)"; elif [ -e "$(MATHJAX_ALT_ROOT)" ]; then actual_mathjax_root="$(MATHJAX_ALT_ROOT)"; else echo "  Error, no pre-existing MathJax install found (neither '$(MATHJAX_ROOT)' nor '$(MATHJAX_ALT_ROOT)' found); consider installation with 'pacman -Sy mathjax' or alike)." 1>&2; exit 7; fi; echo "Selecting MathJax installation in '$${actual_mathjax_root}'." ; ln -sf "$${actual_mathjax_root}" mathjax;
+	@if [ -e "$(MATHJAX_ROOT)" ]; then actual_mathjax_root="$(MATHJAX_ROOT)"; elif [ -e "$(MATHJAX_ALT_ROOT)" ]; then actual_mathjax_root="$(MATHJAX_ALT_ROOT)"; else echo "  Error, no pre-existing MathJax install found (neither '$(MATHJAX_ROOT)' nor '$(MATHJAX_ALT_ROOT)' found); consider installation with 'pacman -Sy mathjax' or alike)." 1>&2; exit 7; fi; echo "Selecting MathJax installation in '$${actual_mathjax_root}'."; ln -sf "$${actual_mathjax_root}" mathjax;
 
 
 check-mathjax:
@@ -416,7 +418,7 @@ check-mathjax:
 
 
 create-local-referential: clean-doc create-links doc
-	@echo "   Creating a local $(PROJECT_NAME) documentation referential in $(DOC_TARGET_DIR)"
+	@echo "$(ECHO_OFFSET)Creating a local $(PROJECT_NAME) documentation referential in $(DOC_TARGET_DIR)"
 	@if [ -z "$(DOC_TARGET_DIR)" ]; then echo "  Error, documentation target directory (DOC_TARGET_DIR) not set." 1>&2; exit 15; fi
 	@if [ ! -d "$(DOC_TARGET_DIR)" ]; then echo "  Error, documentation target directory '$(DOC_TARGET_DIR)' does not exist." 1>&2; exit 20; fi
 	@/bin/cp -rf $(WEB_CONTENT) "$(DOC_TARGET_DIR)"
@@ -430,7 +432,7 @@ view-doc:
 
 
 to-print: create-doc
-	@echo "    Transferring document $(OVERALL_DOCUMENT_PDF_TARGET) \
+	@echo "$(ECHO_OFFSET)Transferring document $(OVERALL_DOCUMENT_PDF_TARGET) \
 	to $(PRINT_SERVER)"
 	@scp $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_PDF_TARGET) $(PRINT_LOCATION)
 
@@ -439,22 +441,64 @@ check-dot:
 		@if [ ! -x "$(DOT)" ]; then echo "  Error, 'dot' tool, from graphviz, not found." 1>&2; exit 5; fi
 
 
+# Not info-doc-local, as always left blank so that it can be defined:
+info-doc: info-doc-tools info-doc-settings
+
+info-doc-tools:
+	@echo "RST_GENERATOR = $(RST_GENERATOR)"
+	@echo "DOC_TRACKER = $(DOC_TRACKER)"
+	@echo "DOT = $(DOT)"
+	@echo "GNUPLOT = $(GNUPLOT)"
+	@echo "IMG_VIEWER = $(IMG_VIEWER)"
+	@echo "IMAGE_MAGICK = $(IMAGE_MAGICK)"
+	@echo "PDF_VIEWER = $(PDF_VIEWER)"
+
+
+info-doc-settings:
+	@echo "OVERALL_DOCUMENT_SOURCE = $(OVERALL_DOCUMENT_SOURCE)"
+	@echo "OVERALL_DOCUMENT_HTML_TARGET = $(OVERALL_DOCUMENT_HTML_TARGET)"
+	@echo "OVERALL_DOCUMENT_PDF_TARGET = $(OVERALL_DOCUMENT_PDF_TARGET)"
+	@echo "PRINT_SERVER = $(PRINT_SERVER)"
+	@echo "WEB_CONTENT = $(WEB_CONTENT)"
+
+
+info-diagrams:
+	@echo "GRAPH_SRC = $(GRAPH_SRC)"
+	@echo "GRAPH_PNG = $(GRAPH_PNG)"
+
+
 clean: clean-doc-repository clean-generated clean-dot clean-doc-logs \
 	clean-gnuplot clean-png clean-rst
 
 
+clean: clean-doc
+
+clean-doc: clean-links clean-doc-repository
+	@echo "$(ECHO_OFFSET)Cleaning documentation elements in $$(basename $$(pwd))"
+	-@/bin/rm -f *.aux *.log *.maf *.mtc* *.stc* *.tex *.toc $(RST_GENERATED_FILES)
+	-@/bin/rm -rf api-doc
+
+
+clean-links:
+	-@/bin/rm -f index.html
+
 
 clean-doc-repository:
-	@#echo "     Cleaning documentation repository in $(TMP_RST_REPOSITORY)"
+	@#echo "$(ECHO_OFFSET)Cleaning documentation repository in $(TMP_RST_REPOSITORY)"
 	-@/bin/rm -rf $(TMP_RST_REPOSITORY)
 
 
 clean-generated:
-	@#echo "     Cleaning generated files"
+	@#echo "$(ECHO_OFFSET)Cleaning generated files"
 	-@/bin/rm -f $(RST_GENERATED_FILES)
 	-@for f in $$(/bin/ls *.template 2>/dev/null); do /bin/rm -f $$(echo $$f | sed 's|\.template$$||1'); done
 
 
+
+# Filtering, to still see any error:
+clean-diagrams:
+	@echo "$(ECHO_OFFSET)Cleaning generated diagrams"
+	@for f in $(GRAPH_PNG) *-bordered.png; do if [ -f "$$f" ]; then /bin/rm $$f; fi; done
 
 
 # Some .png must be kept (e.g. dia-exported ones).
@@ -481,3 +525,10 @@ clean-png:
 clean-rst:
 	-@/bin/rm -f $(RST_GENERATED_FILES)
 	@if [ -d "$(TMP_RST_REPOSITORY)" ]; then $(MAKE) -s clean-doc-repository; fi
+
+
+# Avoiding any dead symlink:
+# (or $$(basename $$(pwd)))
+clean-mathjax-local:
+	@echo "$(ECHO_OFFSET)Cleaning mathjax elements in $$(pwd)"
+	@/bin/rm -f mathjax

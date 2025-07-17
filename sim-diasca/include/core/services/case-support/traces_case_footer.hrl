@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2011-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -23,8 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-%
-% Creation date: Tuesday, January 11, 2011
+% Creation date: Tuesday, January 11, 2011.
 
 
 % Directly obtained from traces_test_footer.hrl.

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,14 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class modelling <b>failure behaviours</b>, typically of pieces of
-% equipment.
-%
 -module(class_FailureModel).
 
+-moduledoc """
+Class modelling **failure behaviours**, typically of pieces of equipment.
+""".
 
-% @doc Class modelling failure behaviours, typically of equipments.
 -define( class_description,
 		 "Class modelling failure behaviours, typically of equipments. "
 		 "Most failure models rely on underlying random generators. "
@@ -57,30 +55,31 @@
 
 
 
-% @doc Constructs a failure model:
-%
-% - ActorSettings corresponds to the engine settings for this actor, as
-% determined by the load-balancer
-%
-% - FailureModelName is its name
-%
-% - RandomProfile is a tuple describing the kind of randomness needed to compute
-% failures (if any)
-%
-%
-% RandomProfile can be among:
-%
-% - {uniform, N} for uniform laws (positive integer)
-%
-% - {exponential_1p, Lambda} for exponential laws (floating-point)
-%
-% - {positive_integer_exponential_1p, Lambda} for exponential laws (positive
-% integer)
-%
-% - {gaussian, Mu, Sigma} for gaussian laws
-%
-% - {positive_integer_gaussian, Mu, Sigma} for gaussian laws (positive integer)
-%
+-doc """
+Constructs a failure model:
+
+- ActorSettings corresponds to the engine settings for this actor, as
+determined by the load-balancer
+
+- FailureModelName is its name
+
+- RandomProfile is a tuple describing the kind of randomness needed to compute
+failures (if any)
+
+
+RandomProfile can be among:
+
+- `{uniform, N}` for uniform laws (positive integer)
+
+- `{exponential_1p, Lambda}` for exponential laws (floating-point)
+
+- `{positive_integer_exponential_1p, Lambda}` for exponential laws (positive
+integer)
+
+- `{gaussian, Mu, Sigma}` for gaussian laws
+
+- `{positive_integer_gaussian, Mu, Sigma}` for gaussian laws (positive integer)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	  class_Actor:name(), class_Equipment:random_profile() ) -> wooper:state().
 construct( State, ActorSettings, FailureModelName, RandomProfile ) ->
@@ -107,8 +106,8 @@ construct( State, ActorSettings, FailureModelName, RandomProfile ) ->
 % Management section of the actor.
 
 
-% Defined simply to avoid a useless warning to be issued / an exception to be
-% thrown.
+% Defined as mandatory: simply to avoid a useless warning to be issued / an
+% exception to be thrown.
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_oneway_return().
@@ -121,12 +120,13 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Requests this model to determine (asynchronously) the tick offset of next
-% failure, i.e. computes the next tick offset at which the caller equipment will
-% fail (assuming it is just created or repaired).
-%
-% (actor oneway, but triggers back a oneway on the caller)
-%
+-doc """
+Requests this model to determine (asynchronously) the tick offset of next
+failure, i.e. computes the next tick offset at which the caller equipment will
+fail (assuming it is just created or repaired).
+
+(actor oneway, but triggers back a oneway on the caller)
+""".
 -spec getNextFailure( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 getNextFailure( State, EquipmentPid ) ->

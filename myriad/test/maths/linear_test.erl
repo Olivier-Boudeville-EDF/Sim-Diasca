@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 3, 2021.
 
-
-% Unit tests for the <b>linear facilities</b>.
-%
-% See the linear tested module.
-%
 -module(linear_test).
+
+-moduledoc """
+Unit tests for the **linear facilities**.
+
+See the linear tested module.
+""".
+
 
 
 % For run/0 export and al:

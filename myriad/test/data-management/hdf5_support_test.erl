@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2024 Olivier Boudeville
+% Copyright (C) 2015-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, July 31, 2015
 
-
-
-% Unit tests for the HDF5 support.
-%
-% See the hdf5_support tested module.
-%
-% This test mimicks lower-level raw_hdf5_test.erl.
-%
 -module(hdf5_support_test).
+
+-moduledoc """
+Unit tests for the **HDF5** support.
+
+See the hdf5_support tested module.
+
+This test mimicks lower-level raw_hdf5_test.erl.
+""".
+
 
 
 % For run/0 export and al:
@@ -84,8 +85,8 @@ create_test_file( HDFFilename, DatasetName, Data ) ->
 	test_facilities:display( "Created a dataspace of rank ~B and "
 		"dimension extensions ~p.", [ Rank, DimExtensions ] ),
 
-	DatasetCreationList = hdf5_support:create_property_list_for(
-							dataset_creation ),
+	DatasetCreationList =
+		hdf5_support:create_property_list_for( dataset_creation ),
 
 
 	% Prior tests may have left it:

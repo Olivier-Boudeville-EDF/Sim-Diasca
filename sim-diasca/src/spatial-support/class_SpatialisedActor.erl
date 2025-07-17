@@ -1,26 +1,29 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
-
-% @doc Class modelling an actor taking part to a <b>spatial environment</b>.
 -module(class_SpatialisedActor).
+
+-moduledoc """
+Class modelling an actor taking part to a **spatial environment**.
+""".
 
 
 -define( class_description,
@@ -45,7 +48,7 @@
 	  "must always be up to date, as it might be requested directly "
 	  "(bypassing actor messages) by the environment in some cases" },
 
-	{ max_speed, maybe( max_speed() ),
+	{ max_speed, option( max_speed() ),
 	  "upper-bound (if any) of the maximum speed of this actor" },
 
 	{ environment_pid, environment_pid(),
@@ -78,13 +81,12 @@
 -include("sim_diasca_for_spatialised_actors.hrl").
 
 
-% Shorthands:
 
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 -type environment_pid() :: class_TwoDimensionalEnvironment:environment_pid().
--type position() :: class_TwoDimensionalEnvironment:position().
 
 -type border_extent() :: class_TwoDimensionalEnvironment:border_extent().
 
@@ -95,22 +97,19 @@
 
 
 
-% @doc Creates a spatialised actor, in a 2D environment.
-%
-% Construction parameters are:
-%
-% - ActorSettings is the AAI assigned by the load-balancer to this actor
-%
-% - Name is the name of this actor
-%
-% - InitialPosition is the initial position of this actor in the specified
-% environment
-%
-% - MaxSpeed is an upper-bound (if any) of the maximum speed of this actor
-% (allows for better environment-level performances)
-%
-% - EnvironmentPid is the PID of the environment this actor will live in
-%
+
+-doc """
+Creates a spatialised actor, in a 2D environment.
+
+Construction parameters are:
+ - ActorSettings is the AAI assigned by the load-balancer to this actor
+ - Name is the name of this actor
+ - InitialPosition is the initial position of this actor in the specified
+environment
+ - MaxSpeed is an upper-bound (if any) of the maximum speed of this actor
+(allows for better environment-level performances)
+ - EnvironmentPid is the PID of the environment this actor will live in
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		class_Actor:name(), position(), max_speed(), environment_pid() ) ->
 						wooper:state().
@@ -132,7 +131,7 @@ construct( State, ActorSettings, Name, InitialPosition, MaxSpeed,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -156,7 +155,7 @@ destruct( State ) ->
 
 
 
-% @doc First scheduling on this spatialised actor.
+-doc "First scheduling on this spatialised actor.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -173,8 +172,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-
-% @doc The definition of the spontaneous behaviour of this spatialised actor.
+-doc "The definition of the spontaneous behaviour of this spatialised actor.".
 -spec actSpontaneous( wooper:state() ) -> const_actor_oneway_return().
 actSpontaneous( State ) ->
 	% Nothing specific here, no futur planned spontaneous action.
@@ -182,22 +180,23 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Requests this actor to return back its current position.
-%
-% Notably called by the environment.
-%
+-doc """
+Requests this actor to return back its current position.
+
+Notably called by the environment.
+""".
 -spec getPosition( wooper:state(), sending_actor_pid() ) ->
 											actor_oneway_return().
 getPosition( State, SenderPid ) ->
 
 	SentState = class_Actor:send_actor_message( SenderPid,
-					{ notifyPosition, ?getAttr(position) }, State ),
+		{ notifyPosition, ?getAttr(position) }, State ),
 
 	actor:return_state( SentState ).
 
 
 
-% @doc Returns the settings of the current environment.
+-doc "Returns the settings of the current environment.".
 -spec notifyEnvironmentSettings( wooper:state(), border_extent(),
 			border_extent(), border_description(), sending_actor_pid() ) ->
 										actor_oneway_return().
@@ -210,17 +209,18 @@ notifyEnvironmentSettings( State, Width, Height, BorderSettings, _EnvPid ) ->
 
 
 
-% @doc Returns a textual description of this instance.
+-doc "Returns a textual description of this instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	 wooper:const_return_result( to_string( State ) ).
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc """
+Returns a textual representation of this instance.
+
+(helper)
+""".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Spatialised actor ~w whose position is ~p (max speed: "

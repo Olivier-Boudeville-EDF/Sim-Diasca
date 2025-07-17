@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 Olivier Boudeville
+% Copyright (C) 2012-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 % Creation date: January 4, 2012.
 
-
-% @doc Unit tests for the lazy hashtable implementation.
-%
-% See the lazy_hashtable.erl tested module.
-%
 -module(lazy_hashtable_test).
+
+-moduledoc """
+Unit tests for the **lazy hashtable** implementation.
+
+See the lazy_hashtable.erl tested module.
+""".
+
 
 
 % For run/0 export and al:

@@ -1,26 +1,29 @@
-% Copyright (C) 2011-2024 EDF R&D
-
+% Copyright (C) 2011-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2011.
 
-
-% @doc Test of the <b>data-exchange facilities</b>, from a simulation actor.
 -module(class_DataExchangeTestActor).
+
+-moduledoc """
+Test of the **data-exchange facilities**, from a simulation actor.
+""".
 
 
 -define( class_description,
@@ -55,7 +58,6 @@
 
 
 
-
 % Implementation notes:
 %
 % This test actor will perform data-exchanges (read/modify/write). The point is
@@ -64,18 +66,19 @@
 
 
 
-% @doc Constructs a test actor for data-exchange:
-%
-% - ActorSettings corresponds to the engine settings for this actor, as
-% determined by the load-balancer
-%
-% - ActorName the name of the actor
-%
-% - DataKey is an atom corresponding to the key of a data entry of interest for
-% that actor
-%
-% - TerminationTickOffset the duration after which this actor should terminate
-%
+-doc """
+Constructs a test actor for data-exchange:
+
+- ActorSettings corresponds to the engine settings for this actor, as
+determined by the load-balancer
+
+- ActorName the name of the actor
+
+- DataKey is an atom corresponding to the key of a data entry of interest for
+that actor
+
+- TerminationTickOffset the duration after which this actor should terminate
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				class_Actor:name(), class_DataExchanger:key(),
 				class_TimeManager:tick_offset() ) -> wooper:state().
@@ -123,7 +126,7 @@ construct( State, ActorSettings, ActorName, DataKey, TerminationTickOffset ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -145,7 +148,7 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-% @doc The core of the test actor behaviour.
+-doc "The core of the test actor behaviour.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -227,22 +230,18 @@ onFirstDiasca( State, _SendingActorPid ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Outputs specified message in console, iff talkative.
-%
-% (helper)
-%
+-doc """
+Outputs specified message in console, iff talkative.
+
+(helper)
+""".
 -spec output( text_utils:format_string(), text_utils:format_values(),
 			  wooper:state() ) -> void().
 output( MessageFormat, FormatValues, State ) ->
 
-	case ?getAttr(talkative) of
-
-		true ->
+	?getAttr(talkative) andalso
+		begin
 			TickOffset = class_Actor:get_current_tick_offset( State ),
 			trace_utils:debug_fmt( "[~ts (~w) at ~p] " ++ MessageFormat,
-				[ ?getAttr(name), self(), TickOffset ] ++ FormatValues );
-
-		false ->
-			ok
-
-	end.
+				[ ?getAttr(name), self(), TickOffset ] ++ FormatValues )
+		end.

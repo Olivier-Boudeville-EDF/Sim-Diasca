@@ -6,7 +6,7 @@
 % paths, most probably the escript support of R14B03 is buggy in this regard).
 
 
-% Copyright (C) 2011 EDF R&D
+% Copyright (C) 2011-2025 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -40,28 +40,18 @@
 % Allows to select a subset of the curves in the specifed time-series.
 main( [ SourceDataFilename | T ] ) ->
 
-	case file_utils:is_existing_file( SourceDataFilename ) of
+	file_utils:is_existing_file( SourceDataFilename ) orelse
+		throw( { non_existing_datafile, SourceDataFilename } ),
 
-		true ->
-			ok;
-
-		false ->
-			throw( { non_existing_datafile, SourceDataFilename } )
-
-	end,
-
-	case basic_utils:is_list_of_integers( T ) of
-
-		true ->
-			ok;
-
-		false ->
+	basic_utils:is_list_of_integers( T ) orelse
+        begin
 			io:format( "Error, ~p is not a list of integers.~n", [T] ),
 			display_syntax(),
 			halt( 5 )
+        end,
 
-	end,
 	run( SourceDataFilename, T );
+
 
 main( Other ) ->
 

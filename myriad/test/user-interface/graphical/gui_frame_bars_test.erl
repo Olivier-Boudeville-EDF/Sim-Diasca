@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,31 +25,35 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, April 27, 2022.
 
-
-% @doc Unit tests for the management of <b>toolbars and status bars</b> in
-% frames.
-%
 -module(gui_frame_bars_test).
+
+-moduledoc """
+Unit tests for the management of **toolbars and status bars** in frames.
+""".
+
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
 
 
-% Shorthands:
+
+-doc """
+Here the main loop just has to remember the created toolbar, and this frame
+whose closing is awaited for.
+""".
+-type my_test_state() :: { frame(), toolbar() }.
+
+
+
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
 -type toolbar() :: gui_toolbar:toolbar().
 
 
--type my_test_state() :: { frame(), toolbar() }.
-% Here the main loop just has to remember the created toolbar, and this frame
-% whose closing is awaited for.
 
-
-
-
-% @doc Executes the actual test.
+-doc "Executes the actual test.".
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
@@ -140,11 +144,11 @@ run_gui_test() ->
 
 
 
-
-% @doc A very simple main loop, whose actual state is simply the GUI object
-% corresponding to the frame that shall be closed to stop the test
-% (i.e. CloseFrame).
-%
+-doc """
+A very simple main loop, whose actual state is simply the GUI object
+corresponding to the frame that shall be closed to stop the test
+(i.e. CloseFrame).
+""".
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( State={ Frame, Toolbar } ) ->
 
@@ -171,7 +175,7 @@ test_main_loop( State={ Frame, Toolbar } ) ->
 								   [ ToolId ]  ),
 			test_main_loop( State );
 
-		{ onWindowClosed, [ Frame, _FrameId, _Context ] } ->
+		{ onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
 			trace_utils:info( "Main frame has been closed; test success." ),
 			gui_frame:destruct( Frame ),
 			gui:stop();
@@ -185,7 +189,7 @@ test_main_loop( State={ Frame, Toolbar } ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

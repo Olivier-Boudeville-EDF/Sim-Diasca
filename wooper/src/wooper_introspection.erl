@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,10 +23,13 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2019.
 
-
-% Module containing some <b>introspection-related</b> facilities.
 -module(wooper_introspection).
+
+-moduledoc """
+Module containing some **introspection-related** facilities.
+""".
 
 
 -export([ get_class_specific_attribute_names/1 ]).
@@ -35,9 +38,11 @@
 -include("wooper_info.hrl").
 
 
-% @doc Returns the list of the names of the class-specific attributes of
-% specified class, in their declaration order.
-%
+
+-doc """
+Returns the list of the names of the class-specific attributes of specified
+class, in their declaration order.
+""".
 -spec get_class_specific_attribute_names( wooper:classname() ) ->
 												[ wooper:attribute_name() ].
 get_class_specific_attribute_names( Classname ) ->

@@ -43,7 +43,7 @@ fi
 for pid in ${pids}; do
 
 	#echo "  Killing ${tool} instance of PID ${pid}"
-	kill ${pid}
+	kill ${pid} 1>/dev/null 2>&1
 
 done
 
@@ -52,8 +52,10 @@ pids=$(ps -u ${USER} -eo pid,cmd | grep logmx.jar | grep -v grep | awk '{print $
 echo "Following LogMX PID(s) survived: ${pids}, killing them forcibly."
 for pid in ${pids}; do
 
+	# Kills may still result in a printout on the console.
+
 	#echo "  Killing ${tool} instance of PID ${pid}"
-	kill -9 ${pid}
+	kill -9 ${pid} 1>/dev/null 2>&1
 
 done
 

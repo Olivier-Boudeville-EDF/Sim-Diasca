@@ -1,42 +1,43 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc <b>Benchmarking case</b> obtained from the soda deterministic example
-% case.
-%
-% See also:
-%
-% - class_SodaVendingMachine.erl
-% - class_DeterministicThirstyCustomer.erl
-% - soda_benchmarking_test for a counterpart test case, exactly the same except
-% that it creates its initial instances programmatically
-%
 -module(soda_integral_loading_test).
+
+-moduledoc """
+**Benchmarking case** obtained from the soda deterministic example case.
+
+See also:
+
+- class_SodaVendingMachine.erl
+- class_DeterministicThirstyCustomer.erl
+- soda_benchmarking_test for a counterpart test case, exactly the same except
+that it creates its initial instances programmatically
+""".
 
 
 % For facilities common to all cases:
 -include("sim_diasca_for_cases.hrl").
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,11 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc This module gathers all the code that allows to <b>lighten the trace
-% macros for (Myriad) applications</b>.
-%
 -module(traces_for_apps).
+
+-moduledoc """
+This module gathers all the code that allows to **lighten the trace macros for
+(Myriad) applications**.
+""".
+
 
 
 -export([ app_start/2, app_start/3, app_start/4,
@@ -54,7 +56,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type module_name() :: basic_utils:module_name().
 
@@ -65,44 +67,46 @@
 
 
 
-% @doc Starts the specified application.
-%
-% To be called notably from the counterpart macro.
-%
-% The trace supervisor can be requested to be initialized now or not at all, or
-% later (typically only once the desired filename for the traces file will be
-% known for good, i.e. at its first renaming).
-%
-% Here we disable explicitly the trapping of EXIT signals, as a function run
-% through "erl -eval" or through "erl -run" (like our apps) will be executed in
-% a process that will silently trap EXIT signals, which would mean that the
-% crash of any process created from the app, even thanks to spawn_link, would
-% most probably remain unnoticed (just leading to an EXIT message happily
-% sitting in the mailbox of the app process).
-%
-% The resulting trace aggregator will be registered globally (only).
-%
+-doc """
+Starts the specified application.
+
+To be called notably from the counterpart macro.
+
+The trace supervisor can be requested to be initialized now or not at all, or
+later (typically only once the desired filename for the traces file will be
+known for good, i.e. at its first renaming).
+
+Here we disable explicitly the trapping of EXIT signals, as a function run
+through "erl -eval" or through "erl -run" (like our apps) will be executed in a
+process that will silently trap EXIT signals, which would mean that the crash of
+any process created from the app, even thanks to spawn_link, would most probably
+remain unnoticed (just leading to an EXIT message happily sitting in the mailbox
+of the app process).
+
+The resulting trace aggregator will be registered globally (only).
+""".
 -spec app_start( module_name(), initialise_supervision() ) -> aggregator_pid().
 app_start( ModuleName, InitTraceSupervisor ) ->
 	app_start( ModuleName, InitTraceSupervisor, _DisableExitTrapping=true ).
 
 
 
-% @doc Starts specified (Myriad - not specifically related to OTP) application,
-% deciding whether EXIT messages shall be trapped.
-%
-% The trace supervisor can be requested to be initialized now or not at all, or
-% later (typically only once the desired filename for the traces file will be
-% known for good, i.e. at its first renaming).
-%
-% The trapping of EXIT messages may be disabled (by setting DisableExitTrapping
-% to true), typically in most tests / cases (see comments in
-% app_start/2). However it may also be left as it is, notably when this function
-% is executed from a supervisor (see traces_bridge_sup:init/1), whose trapping
-% of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).
-%
-% The resulting trace aggregator will be registered globally (only).
-%
+-doc """
+Starts specified (Myriad - not specifically related to OTP) application,
+deciding whether EXIT messages shall be trapped.
+
+The trace supervisor can be requested to be initialized now or not at all, or
+later (typically only once the desired filename for the traces file will be
+known for good, i.e. at its first renaming).
+
+The trapping of EXIT messages may be disabled (by setting DisableExitTrapping to
+true), typically in most tests / cases (see comments in app_start/2). However it
+may also be left as it is, notably when this function is executed from a
+supervisor (see traces_bridge_sup:init/1), whose trapping of EXITs shall not be
+altered (otherwise, for example, shutdowns may freeze).
+
+The resulting trace aggregator will be registered globally (only).
+""".
 -spec app_start( module_name(), initialise_supervision(), boolean() ) ->
 						aggregator_pid().
 % All values possible for InitTraceSupervisor here:
@@ -112,20 +116,21 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping ) ->
 
 
 
-% @doc Starts specified (Myriad - not specifically related to OTP) application,
-% deciding whether EXIT messages shall be trapped and the registration scope of
-% the resulting trace aggregator.
-%
-% The trace supervisor can be requested to be initialized now or not at all, or
-% later (typically only once the desired filename for the traces file will be
-% known for good, i.e. at its first renaming).
-%
-% The trapping of EXIT messages may be disabled (by setting DisableExitTrapping
-% to true), typically in most tests / cases (see comments in
-% app_start/2). However it may also be left as it is, notably when this function
-% is executed from a supervisor (see traces_bridge_sup:init/1), whose trapping
-% of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).
-%
+-doc """
+Starts specified (Myriad - not specifically related to OTP) application,
+deciding whether EXIT messages shall be trapped and the registration scope of
+the resulting trace aggregator.
+
+The trace supervisor can be requested to be initialized now or not at all, or
+later (typically only once the desired filename for the traces file will be
+known for good, i.e. at its first renaming).
+
+The trapping of EXIT messages may be disabled (by setting DisableExitTrapping to
+true), typically in most tests / cases (see comments in app_start/2). However it
+may also be left as it is, notably when this function is executed from a
+supervisor (see traces_bridge_sup:init/1), whose trapping of EXITs shall not be
+altered (otherwise, for example, shutdowns may freeze).
+""".
 -spec app_start( module_name(), initialise_supervision(), boolean(),
 				 naming_utils:registration_scope() ) -> aggregator_pid().
 % All values possible for InitTraceSupervisor here:
@@ -155,7 +160,7 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
 	AppIsBatch = executable_utils:is_batch(),
 
 	%trace_utils:debug_fmt( "At app_start/2: AppIsBatch=~ts, "
-	%	"InitTraceSupervisor=~ts.", [ AppIsBatch, InitTraceSupervisor ] ),
+	%   "InitTraceSupervisor=~ts.", [ AppIsBatch, InitTraceSupervisor ] ),
 
 	TraceFilename = traces:get_trace_filename( ModuleName ),
 
@@ -200,11 +205,12 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
 
 
 
-% @doc Stops the specified (Myriad - not specifically related to OTP)
-% application, waiting for the trace supervisor if requested.
-%
-% To be called from the counterpart macro.
-%
+-doc """
+Stops the specified (Myriad - not specifically related to OTP) application,
+waiting for the trace supervisor if requested.
+
+To be called from the counterpart macro.
+""".
 -spec app_stop( module_name(), aggregator_pid(), boolean() ) -> no_return().
 app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
@@ -222,12 +228,13 @@ app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 
 
-% @doc Stops specified (Myriad - not specifically related to OTP) application
-% immediately, not waiting for any trace supervisor, stopping the trace
-% aggregator, and finishing on the shell.
-%
-% To be called from the counterpart macro.
-%
+-doc """
+Stops specified (Myriad - not specifically related to OTP) application
+immediately, not waiting for any trace supervisor, stopping the trace
+aggregator, and finishing on the shell.
+
+To be called from the counterpart macro.
+""".
 -spec app_immediate_stop( module_name(), aggregator_pid() ) -> no_return().
 app_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
@@ -242,10 +249,12 @@ app_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 
 
-% @doc Stops specified (Myriad - not specifically related to OTP) application,
-% stopping the trace aggregator and finishing on the shell.
-%
-% To be called from the counterpart macro, directly or not.
+-doc """
+Stops specified (Myriad - not specifically related to OTP) application, stopping
+the trace aggregator and finishing on the shell.
+
+To be called from the counterpart macro, directly or not.
+""".
 -spec app_stop_on_shell( module_name(), aggregator_pid() ) -> no_return().
 app_stop_on_shell( ModuleName, TraceAggregatorPid ) ->
 

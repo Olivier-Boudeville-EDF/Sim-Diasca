@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,12 +30,6 @@
 % - module_info
 % - type_info
 % - function_info
-
-
-
--type module_entry() ::
-	basic_utils:maybe( { basic_utils:module_name(), ast_info:located_form() } ).
-% Description of a module name.
 
 
 
@@ -75,7 +69,7 @@
 	% Name (if any) of that module, together with its definition (as a located
 	% form):
 	%
-	module = undefined :: module_entry(),
+	module = undefined :: ast_info:module_entry(),
 
 
 
@@ -267,7 +261,7 @@
 	% (we keep it as a located form rather than as a simple ast_utils:file_loc()
 	% to avoid a costly addition in last position)
 	%
-	last_file_location :: basic_utils:maybe( ast_info:located_form() ),
+	last_file_location :: type_utils:option( ast_info:located_form() ),
 
 
 	% Section markers, offering reference locations to AST transformations.
@@ -306,7 +300,7 @@
 	% different meaning)
 	%
 	variables = undefined ::
-		basic_utils:maybe( [ ast_type:ast_variable_pattern() ] ),
+		type_utils:option( [ ast_type:ast_variable_pattern() ] ),
 
 
 	% Tells whether this type is defined as opaque:
@@ -316,13 +310,13 @@
 	% Corresponds to the in-AST sortable location of the full form for the
 	% definition of this type:
 	%
-	ast_location = undefined :: basic_utils:maybe( ast_info:ast_location() ),
+	ast_location = undefined :: type_utils:option( ast_info:ast_location() ),
 
 
 	% Corresponds to the in-file location (line/column) where this type is
 	% defined (in its source file):
 	%
-	file_location = undefined :: basic_utils:maybe( ast_base:file_loc() ),
+	file_location = undefined :: type_utils:option( ast_base:file_loc() ),
 
 
 	% Type actual definition, a (non-located) abstract form:
@@ -356,7 +350,7 @@
 	% definition (first clause) of this function (not of its spec, which has its
 	% specific field below):
 	%
-	ast_location = undefined :: basic_utils:maybe( ast_info:ast_location() ),
+	ast_location = undefined :: type_utils:option( ast_info:ast_location() ),
 
 
 	% Corresponds to the in-file location of the first defined clause (in its
@@ -366,7 +360,7 @@
 	% yet present in the forms, thus kept here; note that the linter will not
 	% accept an 'undefined' value)
 	%
-	file_location = undefined :: basic_utils:maybe( ast_base:file_loc() ),
+	file_location = undefined :: type_utils:option( ast_base:file_loc() ),
 
 
 	% Function actual definition, a (non-located) list of the abstract forms of
@@ -376,7 +370,7 @@
 
 
 	% The type specification (if any) of that function, as an abstract form:
-	spec = undefined :: basic_utils:maybe( ast_info:located_function_spec() ),
+	spec = undefined :: type_utils:option( ast_info:located_function_spec() ),
 
 
 	% Tells whether the function is a callback (hence declared as such with a

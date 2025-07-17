@@ -1,29 +1,32 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc A <b>test class for actors</b>.
 -module(class_TestActor).
 
+-moduledoc """
+A **test class for actors**, regarding time management, communication, actor
+creation, etc.
+""".
 
-% @doc Test of the <b>Actor</b> class.
+
 -define( class_description,
 		 "Test of the Actor class, regarding time management, communication, "
 		 "actor creation, etc." ).
@@ -51,7 +54,7 @@
 	  "describes how this actor should be scheduled" },
 
 	{ creation_policy, creation_policy(), "describes how this actor should "
-	  "create actors, ex: {_InterCount=10, {_SchedulingPolicy={periodic,4}, "
+	  "create actors, e.g. {_InterCount=10, {_SchedulingPolicy={periodic,4}, "
 	  "_CreationPolicy=no_creation}}" },
 
 	{ creation_countdown, union( 'no_creation', count() ),
@@ -188,39 +191,44 @@
 
 
 
-% Shorthands:
+% Type shorthands:
+
+-type ustring() :: text_utils:ustring().
 
 -type tick_offset() :: class_TimeManager:tick_offset().
 
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
 
 
-% @doc Constructs a test actor:
-%
-% - ActorSettings corresponds to the various information (ex: AAI, seeding,
-% ordering mode, etc.) that the load-balancer sets for each newly created actor
-%
-% - ActorName the name of the actor
-%
-% - SchedulingSettings describes how this test actor is to drive its scheduling,
-% among:
-%
-%  - {periodic, P} where P is the requested number of ticks between two
-%  spontaneous behaviours
-%
-%  - {erratic, MinRange} where MinRange allows to set up to how many ticks
-%  should elapse in general between two erratic scheduling
-%
-% - CreationSettings describes if and how this test actor is to create other
-% actors, among:
-%
-%  - no_creation: never creates an actor
-%
-%  - {InterCount, KindOfCreatedActor} where Count specifies the number of
-%  spontaneous schedulings before an actor is created, and KindOfCreatedActor,
-%  describes its policies, thanks to a {SchedulingPolicy, CreationPolicy} pair
-%
-% - TerminationTickOffset the duration after which this actor should terminate
-%
+
+-doc """
+Constructs a test actor:
+
+- ActorSettings corresponds to the various information (e.g. AAI, seeding,
+ordering mode, etc.) that the load-balancer sets for each newly created actor
+
+- ActorName the name of the actor
+
+- SchedulingSettings describes how this test actor is to drive its scheduling,
+among:
+
+ - {periodic, P} where P is the requested number of ticks between two
+ spontaneous behaviours
+
+ - {erratic, MinRange} where MinRange allows to set up to how many ticks should
+ elapse in general between two erratic scheduling
+
+- CreationSettings describes if and how this test actor is to create other
+actors, among:
+
+ - no_creation: never creates an actor
+
+ - {InterCount, KindOfCreatedActor} where Count specifies the number of
+ spontaneous schedulings before an actor is created, and KindOfCreatedActor,
+ describes its policies, thanks to a {SchedulingPolicy, CreationPolicy} pair
+
+- TerminationTickOffset the duration after which this actor should terminate
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), scheduling_policy(), creation_policy(),
 				 tick_offset() ) -> wooper:state().
@@ -370,23 +378,16 @@ get_sized_value() ->
 % Management section of the actor.
 
 
-% @doc The core of the test actor behaviour.
+-doc "The core of the test actor behaviour.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
 	%?notice_fmt( "actSpontaneous: local agenda is ~w.",
 	%             [ ?getAttr(next_planned) ] ),
 
-	case ?getAttr(trace_intensity) of
-
-		high ->
+	?getAttr(trace_intensity) =:= high andalso
 			?notice_fmt( "Test Actor acting, having for peers: ~p.",
-						 [ ?getAttr(target_peers) ] );
-
-		_ ->
-			ok
-
-	end,
+						 [ ?getAttr(target_peers) ] ),
 
 	CurrentTickOffset = ?getAttr(current_tick_offset),
 	TerminationOffset = ?getAttr(termination_tick_offset),
@@ -409,11 +410,12 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Overridden, in order to synchronise correctly the internal planning that
-% this test actor maintains, and to start its behaviour.
-%
+-doc """
+Overridden, in order to synchronise correctly the internal planning that this
+test actor maintains, and to start its behaviour.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+											actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	output( "onFirstDiasca called at diasca ~B",
@@ -435,7 +437,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 		[ TargetPeer | _T ] ->
 
 			RandomValue = 3 * ?getAttr(actor_abstract_id)
-							+ 2 * TargetOffset + ?getAttr(current_diasca),
+				+ 2 * TargetOffset + ?getAttr(current_diasca),
 
 			case RandomValue rem 2 of
 
@@ -444,7 +446,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 				1 ->
 					class_Actor:send_actor_message( TargetPeer,
-										{ hello, [ ?getAttr(name) ] }, State )
+						{ hello, [ ?getAttr(name) ] }, State )
 
 			end
 
@@ -459,13 +461,13 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
+-doc """
+Manages the planned spontaneous actions.
 
-% @doc Manages the planned spontaneous actions.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+Returns an updated state.
+
+(helper)
+""".
 -spec update_plan( tick_offset(), wooper:state() ) -> wooper:state().
 update_plan( CurrentTickOffset, State ) ->
 
@@ -483,19 +485,19 @@ update_plan( CurrentTickOffset, State ) ->
 
 
 
-% @doc Manages the termination behaviour of this actor.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Manages the termination behaviour of this actor.
+
+Returns an updated state.
+
+(helper)
+""".
 -spec terminate( tick_offset(), wooper:state() ) -> wooper:state().
 terminate( PastOffset, State ) ->
 
 	case ?getAttr(termination_initiated) of
 
 		false ->
-
 			?notice( "Test Actor preparing deferred termination." ),
 
 			% Source and target peers must be notified here, otherwise, next
@@ -509,11 +511,10 @@ terminate( PastOffset, State ) ->
 			notify_termination( State );
 
 		true ->
-
 			% We are at least at {T,D+1}.
 
-			TerminatingState = executeOneway( State,
-											  declareTermination ),
+			TerminatingState =
+				executeOneway( State, declareTermination ),
 
 			output( "terminating at #~B", [ PastOffset ], TerminatingState ),
 
@@ -523,12 +524,7 @@ terminate( PastOffset, State ) ->
 
 
 
-% @doc Manages the normal, non-termination behaviour of this actor.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Manages the normal, non-termination behaviour of this actor.".
 -spec behave_normally( tick_offset(), wooper:state() ) -> wooper:state().
 behave_normally( CurrentOffset, State ) ->
 
@@ -555,8 +551,9 @@ behave_normally( CurrentOffset, State ) ->
 		LateOffset when LateOffset >= TerminationOffset ->
 			% Here we clamp to the termination tick and prepare for the
 			% termination:
+			%
 			InternalState = appendToAttribute( CreationState,
-								next_planned, TerminationOffset ),
+				next_planned, TerminationOffset ),
 
 			executeOneway( InternalState, addSpontaneousTick,
 						   TerminationOffset );
@@ -578,14 +575,15 @@ behave_normally( CurrentOffset, State ) ->
 
 
 
-% @doc Determines the next spontaneous tick (if any), or 'undefined'.
-%
-% Returns an updated tick offset.
-%
-% (helper)
-%
+-doc """
+Determines the next spontaneous tick (if any), or 'undefined'.
+
+Returns an updated tick offset.
+
+(helper)
+""".
 -spec determine_next_spontaneous_tick( tick_offset(), wooper:state() ) ->
-												maybe( tick_offset() ).
+												option( tick_offset() ).
 determine_next_spontaneous_tick( CurrentOffset, State ) ->
 
 	TargetOffset = case ?getAttr(scheduling_policy) of
@@ -599,7 +597,7 @@ determine_next_spontaneous_tick( CurrentOffset, State ) ->
 			VariableOffset = 2 * ?getAttr(actor_abstract_id) + CurrentOffset,
 
 			CurrentOffset + 1 + VariableOffset rem
-						( MinRange + length( ?getAttr(target_peers) ) )
+				( MinRange + length( ?getAttr(target_peers) ) )
 
 	end,
 
@@ -607,14 +605,16 @@ determine_next_spontaneous_tick( CurrentOffset, State ) ->
 
 
 
-% @doc Ensures that specified tick offset is locally declared in the local
-% planning, exactly once.
-%
-% Returns an updated state.
-%
-% (helper)
-%
--spec ensure_planned( tick_offset(), wooper:state() ) -> maybe( tick_offset() ).
+-doc """
+Ensures that specified tick offset is locally declared in the local planning,
+exactly once.
+
+Returns an updated state.
+
+(helper)
+""".
+-spec ensure_planned( tick_offset(), wooper:state() ) ->
+										option( tick_offset() ).
 ensure_planned( TickOffset, State ) ->
 
 	% A given tick must not be declared more than once as a future action:
@@ -630,12 +630,13 @@ ensure_planned( TickOffset, State ) ->
 
 
 
-% Manages the actor creation.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Manages the actor creation.
+
+Returns an updated state.
+
+(helper)
+""".
 -spec manage_actor_creation( tick_offset(), wooper:state() ) -> wooper:state().
 manage_actor_creation( CurrentOffset, State ) ->
 
@@ -654,7 +655,7 @@ manage_actor_creation( CurrentOffset, State ) ->
 			NewActorCount = length( ?getAttr(created_actors) ) + 1,
 
 			NewActorName = lists:flatten( text_utils:format( "~ts-~B",
-										[ ?getAttr(name), NewActorCount ] ) ),
+				[ ?getAttr(name), NewActorCount ] ) ),
 
 
 			ActorTerminationTickOffset = CurrentOffset + 5
@@ -690,7 +691,7 @@ manage_actor_creation( CurrentOffset, State ) ->
 					Tag = text_utils:string_to_atom( TagString ),
 
 					class_Actor:create_actor( _CreatedClassname=class_TestActor,
-								ConstructionParameters, Tag, State );
+						ConstructionParameters, Tag, State );
 
 				2 ->
 					PlacementHint = ActorTerminationTickOffset,
@@ -699,8 +700,8 @@ manage_actor_creation( CurrentOffset, State ) ->
 							[ NewActorCount ], State ),
 
 					class_Actor:create_placed_actor(
-							_CreatedClassname=class_TestActor,
-					  ConstructionParameters, PlacementHint, State );
+						_CreatedClassname=class_TestActor,
+						ConstructionParameters, PlacementHint, State );
 
 				3 ->
 
@@ -715,8 +716,8 @@ manage_actor_creation( CurrentOffset, State ) ->
 							[ NewActorCount ], State ),
 
 					class_Actor:create_placed_actor(
-							_CreatedClassname=class_TestActor,
-					  ConstructionParameters, Tag, PlacementHint, State )
+						_CreatedClassname=class_TestActor,
+						ConstructionParameters, Tag, PlacementHint, State )
 
 			 end,
 
@@ -737,16 +738,17 @@ manage_actor_creation( CurrentOffset, State ) ->
 
 
 
-% @doc Lowers the trace sending intensity of this actor.
+-doc "Lowers the trace sending intensity of this actor.".
 -spec lowerTraceIntensity( wooper:state() ) -> oneway_return().
 lowerTraceIntensity( State ) ->
 	wooper:return_state( setAttribute( State, trace_intensity, low ) ).
 
 
 
-% @doc Overridden oneway, called by the load balancer whenever it performed the
-% corresponding creation request.
-%
+-doc """
+Overridden oneway, called by the load balancer whenever it performed the
+corresponding creation request.
+""".
 -spec onActorCreated( wooper:state(), actor_pid(), class_Actor:tag(),
 					  load_balancer_pid() ) -> actor_oneway_return().
 onActorCreated( State, CreatedActorPid, CreatedActorTag, _LoadBalancerPid ) ->
@@ -765,13 +767,13 @@ onActorCreated( State, CreatedActorPid, CreatedActorTag, _LoadBalancerPid ) ->
 
 
 
-% @doc Adds specified peer to known target peers, if it is not already
-% registered.
-%
-% To be called initially, from tests, before the simulation is started.
-%
-% (request, for synchronisation purpose).
-%
+-doc """
+Adds specified peer to known target peers, if it is not already registered.
+
+To be called initially, from tests, before the simulation is started.
+
+(request, for synchronisation purpose).
+""".
 -spec addInitialPeer( wooper:state(), actor_pid() ) ->
 							request_return( 'peer_added' ).
 addInitialPeer( State, PeerPid ) ->
@@ -782,24 +784,18 @@ addInitialPeer( State, PeerPid ) ->
 
 
 
-% @doc Adds specified peer to known target peers.
-%
-% To be called from an actor, while the simulation is running.
-%
+-doc """
+Adds specified peer to known target peers.
+
+To be called from an actor, while the simulation is running.
+""".
 -spec addPeer( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 addPeer( State, PeerPid ) ->
 
 	output( "peer ~w added", [ PeerPid ], State ),
 
-	case ?getAttr(trace_intensity) of
-
-		true ->
-			?notice_fmt( "Peer ~w added.", [ PeerPid ] );
-
-		_ ->
-			ok
-
-	end,
+	?getAttr(trace_intensity) =:= high andalso
+		?notice_fmt( "Peer ~w added.", [ PeerPid ] ),
 
 	case lists:member( PeerPid, ?getAttr(target_peers) ) of
 
@@ -809,17 +805,18 @@ addPeer( State, PeerPid ) ->
 
 		false ->
 			actor:return_state(
-					appendToAttribute( State, target_peers, PeerPid ) )
+				appendToAttribute( State, target_peers, PeerPid ) )
 
 	end.
 
 
 
-% @doc Actor oneway called by a peer requesting this actor not to send it
-% anymore messages, for example because this actor is terminating.
-%
+-doc """
+Actor oneway called by a peer requesting this actor not to send it anymore
+messages, for example because this actor is terminating.
+""".
 -spec removePeer( wooper:state(), sending_actor_pid() ) ->
-						actor_oneway_return().
+											actor_oneway_return().
 removePeer( State, PeerPid ) ->
 
 	% A peer is expected to be registered exactly once.
@@ -830,19 +827,19 @@ removePeer( State, PeerPid ) ->
 
 
 
-% @doc Oneway called by a peer telling this actor that it will never send hello
-% messages any more to it, and thus that the latter can forget the former.
-%
+-doc """
+Oneway called by a peer telling this actor that it will never send hello
+messages any more to it, and thus that the latter can forget the former.
+""".
 -spec forgetPeer( wooper:state(), sending_actor_pid() ) ->
-						actor_oneway_return().
+											actor_oneway_return().
 forgetPeer( State, PeerPid ) ->
 	actor:return_state(
 		deleteFromAttribute( State, source_peers, PeerPid ) ).
 
 
 
-
-% @doc Receives an 'hello' message.
+-doc "Receives an 'hello' message.".
 -spec hello( wooper:state(), class_Actor:internal_name(),
 			 sending_actor_pid() ) -> actor_oneway_return().
 hello( State, SenderName, SendingActorPid ) ->
@@ -856,16 +853,9 @@ hello( State, SenderName, SendingActorPid ) ->
 	%output( "being said hello by ~ts (i.e. ~w) at #~B",
 	%        [ SenderName, SendingActorPid, CurrentOffset ], State ),
 
-	case ?getAttr(trace_intensity) of
-
-		high ->
-			?notice_fmt( "Received an hello message from ~ts (~w).",
-						 [ SenderName, SendingActorPid ] );
-
-		_ ->
-			ok
-
-	end,
+	?getAttr(trace_intensity) =:= high andalso
+		?notice_fmt( "Received an hello message from ~ts (~w).",
+					 [ SenderName, SendingActorPid ] ),
 
 	SourceState = case lists:member( SendingActorPid,
 									 ?getAttr(source_peers) ) of
@@ -886,12 +876,12 @@ hello( State, SenderName, SendingActorPid ) ->
 % Static method section.
 
 
+-doc """
+Adds the list of the specified peers to the specified target peer,
+synchronously.
 
-% @doc Adds the list of specified peers to the specified target peer,
-% synchronously.
-%
-% Note: define for convenience, to avoid code duplication in tests.
-%
+Note: defined for convenience, to avoid code duplication in tests.
+""".
 -spec add_initial_peers( actor_pid(), [ actor_pid() ] ) -> static_void_return().
 add_initial_peers( TargetPeer, Peers ) ->
 
@@ -901,8 +891,12 @@ add_initial_peers( TargetPeer, Peers ) ->
 	[ TargetPeer ! { addInitialPeer, P, self() } || P <- Peers ],
 
 	% A nice side effect is that we can run these operations in parallel:
-	[ receive { wooper_result, peer_added } -> ok end
-				|| _X <- lists:seq( 1, length( Peers ) ) ],
+	[ receive
+
+		  { wooper_result, peer_added } ->
+			  ok
+
+	  end || _X <- lists:seq( 1, length( Peers ) ) ],
 
 	wooper:return_static_void().
 
@@ -912,13 +906,8 @@ add_initial_peers( TargetPeer, Peers ) ->
 % Section for helper functions (not methods).
 
 
-
-% @doc Adds specified target peer to actor.
-%
-% Returns a new state.
-%
-% (helper)
-%
+-doc "Registers the specified target peer to actor.".
+-spec add_peer( actor_pid(), wooper:state() ) -> wooper:state().
 add_peer( PeerPid, State ) ->
 
 	case lists:member( PeerPid, ?getAttr(target_peers) ) of
@@ -929,18 +918,10 @@ add_peer( PeerPid, State ) ->
 
 
 		false ->
-
 			output( "peer ~w added", [ PeerPid ], State ),
 
-			case ?getAttr(trace_intensity) of
-
-				true ->
-					?notice_fmt( "Peer ~w added.", [ PeerPid ] );
-
-				_ ->
-					ok
-
-			end,
+			?getAttr(trace_intensity) =:= high andalso
+				?notice_fmt( "Peer ~w added.", [ PeerPid ] ),
 
 			appendToAttribute( State, target_peers, PeerPid )
 
@@ -948,12 +929,8 @@ add_peer( PeerPid, State ) ->
 
 
 
-% @doc Says hello to all target peers.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Says hello to all target peers.".
+-spec say_hello( wooper:state() ) -> wooper:state().
 say_hello( State ) ->
 
 	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
@@ -967,33 +944,18 @@ say_hello( State ) ->
 			State;
 
 		Peers ->
-
-			case ?getAttr(talkative) of
-
-				true ->
-					?notice_fmt( "Test Actor acting spontaneously "
-						"at tick offset #~B, saying hello to ~w.",
-						[ CurrentTickOffset, Peers ] );
-
-				false ->
-					ok
-
-			end,
+			?getAttr(talkative) andalso
+				?notice_fmt( "Test Actor acting spontaneously "
+					"at tick offset #~B, saying hello to ~w.",
+					[ CurrentTickOffset, Peers ] ),
 
 			SendFun = fun( Peer, FunState ) ->
 
 				output( "saying hello to ~w at #~B",
 						[ Peer, CurrentTickOffset ], State ),
 
-				case ?getAttr(trace_intensity) of
-
-					high ->
-						?notice_fmt( "Saying hello to ~w.", [ Peer ] );
-
-					_ ->
-						ok
-
-				end,
+				?getAttr(trace_intensity) =:= high andalso
+					?notice_fmt( "Saying hello to ~w.", [ Peer ] ),
 
 				% Returns an updated state:
 				class_Actor:send_actor_message( Peer,
@@ -1008,14 +970,12 @@ say_hello( State ) ->
 
 
 
-% @doc Notifies all source peers that this actor is terminating, thus they must
-% not send any more messages to it, otherwise they will wait for ever for an
-% answer and will stall the simulation.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Notifies all source peers that this actor is terminating, thus they must not
+send any more messages to it, otherwise they will wait for ever for an answer
+and will stall the simulation.
+""".
+-spec notify_termination( wooper:state() ) -> wooper:state().
 notify_termination( State ) ->
 
 	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
@@ -1060,6 +1020,7 @@ notify_termination( State ) ->
 
 	% Second, tells the targeted actors they will not be notified by this actor
 	% anymore:
+	%
 	TargetState = case ?getAttr(target_peers) of
 
 		[] ->
@@ -1110,30 +1071,23 @@ notify_termination( State ) ->
 
 
 
-% @doc Outputs specified message in console, iff talkative.
-%
-% (helper)
-%
+-doc "Outputs the specified message in console, iff talkative.".
+-spec output( ustring(), wooper:state() ) -> void().
 output( Message, State ) ->
 
-	case ?getAttr(talkative) of
-
-		true ->
+	?getAttr(talkative) andalso
+		begin
 			TickOffset = class_Actor:get_current_tick_offset( State ),
 			trace_utils:debug_fmt( " [~ts (~w) at ~p] " ++ Message,
-								   [ ?getAttr(name), self(), TickOffset ] );
-
-		false ->
-			ok
-
-	end.
+								   [ ?getAttr(name), self(), TickOffset ] )
+		end.
 
 
 
-% @doc Outputs specified formatted message in console, iff talkative.
-%
-% (helper)
-%
+-doc """
+Outputs the specified formatted message in console, iff talkative.
+""".
+-spec output( ustring(), ustring() ) -> void().
 output( Format, Values, State ) ->
 	Message = text_utils:format( Format, Values ),
 	output( Message, State ).

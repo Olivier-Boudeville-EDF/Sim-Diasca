@@ -1,31 +1,33 @@
-% Copyright (C) 2018-2024 EDF R&D
-
+% Copyright (C) 2018-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2018.
 
-
-% @doc Overall <b>parse transform</b> for the Sim-Diasca engine.
-%
-% It is meant to be applied to ASTs describing Sim-Diasca classes (not standard
-% modules but specific WOOPER classes), targeting especially classes inheriting
-% (directly or not) from class_Actor.
-%
 -module(sim_diasca_parse_transform).
+
+-moduledoc """
+Overall **parse transform** for the Sim-Diasca engine.
+
+It is meant to be applied to ASTs describing Sim-Diasca classes (not standard
+modules, but specific WOOPER classes), targeting especially classes inheriting
+(directly or not) from class_Actor.
+""".
 
 
 
@@ -52,44 +54,20 @@
 
 % Regarding the Sim-Diasca parse transform.
 
-% All Sim-Diasca-related internal symbols (ex: atoms, functions, etc.) are to be
-% prefixed by 'sim_diasca_'. This prefix shall be considered as reserved for the
-% engine internals (hence all sim_diasca_* symbols are forbidden to the user).
+% All Sim-Diasca-related internal symbols (e.g. atoms, functions, etc.) are to
+% be prefixed by 'sim_diasca_'. This prefix shall be considered as reserved for
+% the engine internals (hence all sim_diasca_* symbols are forbidden to the
+% user).
 
 
 % To better report errors
 -define( origin_layer, "Sim-Diasca" ).
 
 
+-doc "Function natures, as known of the engine.".
 -type function_extended_nature() :: wooper_method_management:function_nature()
 								  | 'actor_oneway'.
-% Function natures, as known of the engine.
 
-
-% Local shorthands:
-
--type ustring() :: text_utils:ustring().
-
--type function_id() :: meta_utils:function_id().
-
--type ast() :: ast_base:ast().
--type file_loc() :: ast_base:file_loc().
-
-
--type function_info() :: ast_info:function_info().
--type module_info() :: ast_info:module_info().
-
--type ast_expression() :: ast_expression:ast_expression().
--type function_ref_expression() :: ast_expression:function_ref_expression().
--type params_expression() :: ast_expression:params_expression().
-
--type ast_transforms() :: ast_transform:ast_transforms().
-
--type class_info() :: wooper_info:class_info().
--type function_nature() :: wooper_method_management:function_nature().
--type method_qualifiers() :: wooper:method_qualifiers().
-
--type actor_class_info() :: actor_info:actor_class_info().
 
 
 -export([ run_standalone/1, parse_transform/2, engine_call_transformer/4,
@@ -115,15 +93,46 @@
 
 
 
-% @doc Runs the Sim-Diasca parse transform defined here in a standalone way
-% (that is without being triggered by the usual, integrated compilation
-% process).
-%
-% This allows to benefit from all compilation error and warning messages,
-% whereas they are seldom available from a code directly run as a parse
-% transform (ex: 'undefined parse transform 'foobar'' as soon as a function or a
-% module is not found).
-%
+% Type shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type function_id() :: meta_utils:function_id().
+-type parse_transform_options() :: meta_utils:parse_transform_options().
+-type clause_def() :: meta_utils:clause_def().
+
+-type ast() :: ast_base:ast().
+-type file_loc() :: ast_base:file_loc().
+
+-type function_info() :: ast_info:function_info().
+-type module_info() :: ast_info:module_info().
+
+-type ast_expression() :: ast_expression:ast_expression().
+-type function_ref_expression() :: ast_expression:function_ref_expression().
+-type params_expression() :: ast_expression:params_expression().
+
+-type ast_transforms() :: ast_transform:ast_transforms().
+
+-type function_nature() :: wooper_method_management:function_nature().
+-type method_qualifiers() :: wooper:method_qualifiers().
+-type classname() :: wooper:classname().
+-type class_info() :: wooper_info:class_info().
+
+-type actor_class_info() :: actor_info:actor_class_info().
+-type actor_oneway_info() :: actor_info:actor_oneway_info().
+
+
+
+
+-doc """
+Runs the Sim-Diasca parse transform defined here in a standalone way (that is
+without being triggered by the usual, integrated compilation process).
+
+This allows to benefit from all compilation error and warning messages, whereas
+they are seldom available from a code directly run as a parse transform
+(e.g. returning 'undefined parse transform 'foobar'' as soon as a function or a
+module is not found).
+""".
 -spec run_standalone( file_utils:file_name() ) -> { ast(), class_info() }.
 run_standalone( FileToTransform ) ->
 
@@ -134,13 +143,14 @@ run_standalone( FileToTransform ) ->
 
 
 
-% @doc The parse transform itself, transforming the specified (Sim-Diasca-based)
-% Abstract Format code first into a WOOPER-based one (which itself will be
-% translated into Myriad-based information, being itself converted in turn into
-% an AST in Erlang-compliant Abstract Format code), based on specified transform
-% options.
-%
--spec parse_transform( ast(), meta_utils:parse_transform_options() ) -> ast().
+-doc """
+This is the parse transform itself, transforming the specified
+(Sim-Diasca-based) Abstract Format code first into a WOOPER-based one (which
+itself will be translated into Myriad-based information, being itself converted
+in turn into an AST in Erlang-compliant Abstract Format code), based on
+specified transform options.
+""".
+-spec parse_transform( ast(), parse_transform_options() ) -> ast().
 parse_transform( InputAST, Options ) ->
 
 	%trace_utils:notice_fmt( "(applying parse transform '~p')", [ ?MODULE ] ),
@@ -163,11 +173,12 @@ parse_transform( InputAST, Options ) ->
 
 
 
-% @doc Transforms specified AST for Sim-Diasca, based on specified transform
-% options.
-%
--spec apply_sim_diasca_transform( ast(),
-	meta_utils:parse_transform_options() ) -> { ast(), actor_class_info() }.
+-doc """
+Transforms the specified AST for Sim-Diasca, based on the specified transform
+options.
+""".
+-spec apply_sim_diasca_transform( ast(), parse_transform_options() ) ->
+                                        { ast(), actor_class_info() }.
 apply_sim_diasca_transform( InputAST, Options ) ->
 
 	%trace_utils:debug_fmt( "  (applying parse transform '~p')", [ ?MODULE ] ),
@@ -247,18 +258,19 @@ apply_sim_diasca_transform( InputAST, Options ) ->
 	%ast_utils:write_ast_to_file( OutputAST, OutputASTFilename ),
 
 	%ast_utils:write_ast_to_file( lists:sort( OutputAST ),
-	%							 "Sim-Diasca-output-AST-sorted.txt" ),
+	%                             "Sim-Diasca-output-AST-sorted.txt" ),
 
 	{ OutputAST, ActorClassInfo }.
 
 
 
 
-% @doc Returns the "actor class"-level information that were gathered from the
-% specified module-level ones.
-%
-% (reciprocal of generate_module_info_from/1)
-%
+-doc """
+Returns the "actor class"-level information that were gathered from the
+specified module-level ones.
+
+(reciprocal of generate_module_info_from/1)
+""".
 -spec generate_actor_class_info_from( module_info() ) -> actor_class_info().
 generate_actor_class_info_from( ModuleInfo ) ->
 
@@ -271,46 +283,41 @@ generate_actor_class_info_from( ModuleInfo ) ->
 
 
 
-% @doc Ensures that the described class respects appropriate constraints for
-% Sim-Diasca (including WOOPER) generation, besides the ones checked during the
-% AST exploration and the ones that will be checked by the compiler.
-%
-% Note: the WOOPER counterpart check_class_info/1 cannot be used due to the
-% different record types.
-%
+-doc """
+Ensures that the described class respects appropriate constraints for Sim-Diasca
+(including WOOPER) generation, besides the ones checked during the AST
+exploration and the ones that will be checked by the compiler.
+
+Note: the WOOPER counterpart check_class_info/1 cannot be reused here, due to
+the different record types.
+""".
 -spec check_actor_class_info( actor_class_info() ) -> void().
 check_actor_class_info( #actor_class_info{ class={ Classname, _LocForm },
 										   constructors=Constructors } ) ->
 
-	case table:is_empty( Constructors ) of
-
-		true ->
-			wooper_internals:raise_usage_error( "no constructor defined "
-				"(expecting at least one construct/N to be defined).", [],
-				Classname );
-
-		false ->
-			ok
-
-	end.
+	table:is_empty( Constructors ) andalso
+		wooper_internals:raise_usage_error( "no constructor defined "
+			"(expecting at least one construct/N to be defined).", [],
+            Classname ).
 
 	% For each clause of each constructor, we should check that the constructors
 	% of direct superclasses have all a fair chance of being called.
 
 
 
-% @doc Recomposes Sim-Diasca actor class information from (Myriad) module-level
-% ones.
-%
-% Directly derived from wooper_parse_transform:create_class_info_from/1; it
-% cannot be reused directly because of info record mismatches, and because
-% Sim-Diasca must sort by itself the functions, knowing that WOOPER would
-% consider actor oneways as invalid (due to their unknown method terminators).
-%
-% The goal is to pick the relevant SimDiasca-level information (from the module
-% info), especially about actor oneways, and to transform them and to populate
-% the specified actor class information with thresult.
-%
+-doc """
+Recomposes the Sim-Diasca actor class information from (Myriad) module-level
+ones.
+
+Directly derived from wooper_parse_transform:create_class_info_from/1; it
+cannot be reused directly because of info record mismatches, and because
+Sim-Diasca must sort by itself the functions, knowing that WOOPER would
+consider actor oneways as invalid (due to their unknown method terminators).
+
+The goal is to pick the relevant Sim-Diasca-level information (from the module
+info), especially about actor oneways, and to transform them and to populate the
+specified actor class information with the result.
+""".
 -spec create_actor_class_info_from( module_info() ) -> actor_class_info().
 create_actor_class_info_from(
   _ModuleInfo=#module_info{ module=ModuleEntry,
@@ -334,7 +341,7 @@ create_actor_class_info_from(
 							unhandled_forms=UnhandledForms } ) ->
 
 	% We start with a (WOOPER-level) class_info that we will promote when
-	% necessary into a (SimDiasca-level) actor_class_info.
+	% necessary into a (Sim-Diasca-level) actor_class_info.
 
 	BlankClassInfo = wooper_info:init_class_info(),
 
@@ -348,51 +355,51 @@ create_actor_class_info_from(
 	% to check for completeness more easily)
 	%
 	VerbatimClassInfo = BlankClassInfo#class_info{
-					%class
-					%superclasses
-					%attributes
-					%inherited_attributes
-					compilation_options=CompileOptTable,
-					compilation_option_defs=CompileOptDefs,
-					parse_attributes=ParseAttrTable,
-					remote_spec_defs=RemoteSpecDefs,
-					includes=Includes,
-					include_defs=IncludeDefs,
-					type_exports=TypeExportTable,
-					types=TypeTable,
-					records=RecordTable,
-					function_imports=FunctionImportTable,
-					function_imports_defs=FunctionImportDefs,
-					function_exports=FunctionExportTable,
-					functions=FunctionTable,
-					%constructors
-					%destructor
-					%request_exports
-					%requests
-					%oneway_exports
-					%oneways
-					%static_exports
-					%statics
-					optional_callbacks_defs=OptCallbacksDefs,
-					last_file_location=LastFileLoc,
-					markers=MarkerTable,
-					errors=Errors,
-					unhandled_forms=UnhandledForms },
+		%class
+		%superclasses
+		%attributes
+		%inherited_attributes
+		compilation_options=CompileOptTable,
+		compilation_option_defs=CompileOptDefs,
+		parse_attributes=ParseAttrTable,
+		remote_spec_defs=RemoteSpecDefs,
+		includes=Includes,
+		include_defs=IncludeDefs,
+		type_exports=TypeExportTable,
+		types=TypeTable,
+		records=RecordTable,
+		function_imports=FunctionImportTable,
+		function_imports_defs=FunctionImportDefs,
+		function_exports=FunctionExportTable,
+		functions=FunctionTable,
+		%constructors
+		%destructor
+		%request_exports
+		%requests
+		%oneway_exports
+		%oneways
+		%static_exports
+		%statics
+		optional_callbacks_defs=OptCallbacksDefs,
+		last_file_location=LastFileLoc,
+		markers=MarkerTable,
+		errors=Errors,
+		unhandled_forms=UnhandledForms },
 
 	% Let's start as WOOPER does:
 
 	% Then taking care of the missing fields, roughly in their original order:
 
 	ClassInClassInfo = wooper_class_management:manage_classname( ModuleEntry,
-															VerbatimClassInfo ),
+		VerbatimClassInfo ),
 
 	SuperClassInfo = wooper_class_management:manage_superclasses(
-						ClassInClassInfo ),
+		ClassInClassInfo ),
 
 	AttrClassInfo = wooper_state_management:manage_attributes( SuperClassInfo ),
 
-	% We extract elements (ex: constructors) from the function table, yet we do
-	% not modify specifically the other related information (ex: exports).
+	% We extract elements (e.g. constructors) from the function table, yet we do
+	% not modify specifically the other related information (e.g. exports).
 
 	% We manage here {FunctionTable, ClassInfo} pairs, in which the first
 	% element is the reference, most up-to-date version of the function table
@@ -423,15 +430,15 @@ create_actor_class_info_from(
 
 
 
-% @doc Corresponds to a derived version of
-% wooper_method_management:manage_methods/2, whose role is to sort functions
-% according to their nature, one of them being here, in addition to the WOOPER
-% ones, "actor oneway" (not just "oneway").
-%
-% So we have to read all fields of a (WOOPER-level) class_info(), sort functions
-% accordingly, and from these elements assign all fields of a (SimDiasca-level)
-% actor_class_info():
-%
+-doc """
+Corresponds to a derived version of wooper_method_management:manage_methods/2,
+whose role is to sort functions according to their nature, one of them being
+here, in addition to the WOOPER ones, "actor oneway" (not just "oneway").
+
+So we have to read all fields of a (WOOPER-level) class_info(), sort functions
+accordingly, and from these elements assign all fields of a (Sim-Diasca-level)
+actor_class_info().
+""".
 -spec manage_methods_for_engine(
 		{ ast_info:function_table(), class_info() } ) -> actor_class_info().
 manage_methods_for_engine( { CompleteFunctionTable, #class_info{
@@ -527,14 +534,14 @@ manage_methods_for_engine( { CompleteFunctionTable, #class_info{
 
 
 
-
-% @doc Transforms and categorises each of the specified functions according to
-% its real nature (ex: a given Erlang function may actually be a WOOPER oneway,
-% or a Sim-Diasca actor oneway).
-%
+-doc """
+Transforms and categorises each of the specified functions according to its real
+nature (e.g. a given Erlang function may actually be a WOOPER oneway, or a
+Sim-Diasca actor oneway).
+""".
 sort_out_functions( _FunEntries=[], FunctionTable, RequestTable, OnewayTable,
 		ActorOnewayTable, StaticTable, _Classname, _ExportLoc,
-	   _WOOPERExportSet ) ->
+        _WOOPERExportSet ) ->
 	{ FunctionTable, RequestTable, OnewayTable, ActorOnewayTable, StaticTable };
 
 
@@ -593,19 +600,19 @@ sort_out_functions( _FunEntries=[ { FunId, FunInfo=#function_info{
 	% to check consistency with the guessed elements:
 	%
 	{ FinalExtNature, FinalQualifiers } = take_spec_into_account( Spec, FunId,
-							ExtFunNature, Qualifiers, Classname, NewFunInfo ),
+		ExtFunNature, Qualifiers, Classname, NewFunInfo ),
 
 	% Stores the result in the right category and recurses:
 	case FinalExtNature of
 
-		% Only SimDiasca-specific case:
+		% Only Sim-Diasca-specific case:
 		actor_oneway ->
 
 			wooper_method_management:check_state_argument( NewClauses, FunId,
 														   Classname ),
 
 			ExportedFunInfo = wooper_method_management:ensure_exported_at(
-								NewFunInfo, ExportLoc ),
+				NewFunInfo, ExportLoc ),
 
 			ActorOnewayInfo = function_to_actor_oneway_info( ExportedFunInfo,
 															 FinalQualifiers ),
@@ -637,10 +644,10 @@ sort_out_functions( _FunEntries=[ { FunId, FunInfo=#function_info{
 														   Classname ),
 
 			ExportedFunInfo = wooper_method_management:ensure_exported_at(
-								NewFunInfo, ExportLoc ),
+				NewFunInfo, ExportLoc ),
 
 			RequestInfo = wooper_method_management:function_to_request_info(
-							ExportedFunInfo, FinalQualifiers ),
+				ExportedFunInfo, FinalQualifiers ),
 
 			NewRequestTable = table:add_new_entry( FunId, RequestInfo,
 												   RequestTable ),
@@ -655,10 +662,10 @@ sort_out_functions( _FunEntries=[ { FunId, FunInfo=#function_info{
 														   Classname ),
 
 			ExportedFunInfo = wooper_method_management:ensure_exported_at(
-								NewFunInfo, ExportLoc ),
+				NewFunInfo, ExportLoc ),
 
 			OnewayInfo = wooper_method_management:function_to_oneway_info(
-							ExportedFunInfo, FinalQualifiers ),
+				ExportedFunInfo, FinalQualifiers ),
 
 			NewOnewayTable = table:add_new_entry( FunId, OnewayInfo,
 												  OnewayTable ),
@@ -670,10 +677,10 @@ sort_out_functions( _FunEntries=[ { FunId, FunInfo=#function_info{
 		static ->
 
 			ExportedFunInfo = wooper_method_management:ensure_exported_at(
-								NewFunInfo, ExportLoc ),
+				NewFunInfo, ExportLoc ),
 
 			StaticInfo = wooper_method_management:function_to_static_info(
-							ExportedFunInfo, FinalQualifiers ),
+				ExportedFunInfo, FinalQualifiers ),
 
 			NewStaticTable = table:add_new_entry( FunId, StaticInfo,
 												  StaticTable ),
@@ -697,17 +704,17 @@ sort_out_functions( _Functions=[ #function_info{ name=FunName,
 
 
 
+-doc """
+Checks that the method spec (if any) corresponds indeed to the right nature of
+function, that is it relies on the right method terminators with the right
+qualifiers, and returns a corresponding pair.
 
-% @doc Checks that the method spec (if any) corresponds indeed to the right
-% nature of function, that is it relies on the right method terminators with the
-% right qualifiers, and returns a corresponding pair.
-%
-% (helper)
-%
--spec take_spec_into_account( maybe( ast_info:located_form() ), function_id(),
-		function_nature(), method_qualifiers(), wooper:classname(),
-		function_info() ) -> { function_nature(), method_qualifiers() }.
-% We intercept only the SimDiasca-specific (actor) specs:
+(helper)
+""".
+-spec take_spec_into_account( option( ast_info:located_form() ), function_id(),
+		function_nature(), method_qualifiers(), classname(),
+        function_info() ) -> { function_nature(), method_qualifiers() }.
+% We intercept only the Sim-Diasca-specific (actor) specs:
 
 % Special case for a function nature detected as 'throw': any information
 % collected from its spec is accepted as is (provided there is only one spec).
@@ -736,17 +743,17 @@ take_spec_into_account( _LocSpec=undefined, FunId, _FunNature=throw,
 		"all clauses of ~ts/~B throw an exception; as a result, this "
 		"function can be of any nature. Please define a type specification for "
 		"that function in order to remove this ambiguity "
-		"(ex: use const_actor_oneway_return/0 to mark it as a (const) actor "
+		"(e.g. use const_actor_oneway_return/0 to mark it as a (const) actor "
 		"oneway).",
 		pair:to_list( FunId ), Classname, FileLoc );
 
 
 % Spec available for a non-throw actor oneway:
 take_spec_into_account( _LocSpec={ _ASTLoc,
-					   { attribute, _, spec, { FunId, ClauseSpecs } } },
+			{ attribute, _, spec, { FunId, ClauseSpecs } } },
 		_FunId, FunNature=actor_oneway, Qualifiers, Classname, _FunInfo  ) ->
 	[ check_clause_spec( C, FunNature, Qualifiers, FunId, Classname )
-			|| C <- ClauseSpecs ],
+		|| C <- ClauseSpecs ],
 	% If check not failed, approved, so:
 	{ FunNature, Qualifiers };
 
@@ -755,16 +762,15 @@ take_spec_into_account( _LocSpec={ _ASTLoc,
 % if throw with multi-clause spec, if non-throw and no spec)
 %
 take_spec_into_account( LocSpec, FunId, FunNature, Qualifiers, Classname,
-						FunInfo  ) ->
+						FunInfo ) ->
 	wooper_method_management:take_spec_into_account( LocSpec, FunId, FunNature,
-											Qualifiers, Classname, FunInfo ).
+		Qualifiers, Classname, FunInfo ).
 
 
 
-
-% @doc Returns a {FunctionNature, Qualifiers} pair deduced from specified clause
-% spec.
-%
+-doc """
+Returns a {FunctionNature, Qualifiers} pair deduced from the specified clause.
+""".
 get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 	_Seqs=[ _TypeProductForArgs,
 			_ResultType={ user_type, _, actor_oneway_return, [] } ] },
@@ -791,9 +797,9 @@ get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 
 
 get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun', _Seqs=[
-	   _TypeProductForArgs,
-	   _ResultType={ user_type, FileLoc, const_actor_oneway_return,
-					 RTypes } ] },
+        _TypeProductForArgs,
+        _ResultType={ user_type, FileLoc, const_actor_oneway_return,
+                      RTypes } ] },
 						   FunId, Classname ) ->
 	wooper_internals:raise_usage_error(
 		"wrong arity of the specified Sim-Diasca return type for the spec "
@@ -802,56 +808,42 @@ get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun', _Seqs=[
 		pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
 
 
-% For the non-SimDiasca return types, rely on WOOPER:
+% For the non-Sim-Diasca return types, rely on WOOPER:
 get_info_from_clause_spec( ClauseSpec, FunId, Classname ) ->
 	wooper_method_management:get_info_from_clause_spec( ClauseSpec, FunId,
 														Classname ).
 
 
 
-% @doc Checks the specified method clause spec.
-%
-% (helper)
+-doc """
+Checks the specified method clause spec.
 
-
+(helper)
+""".
 %% For actor oneways:
 
 % Spec implies non-const actor oneway:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 		_ResultType={ user_type, FileLoc, actor_oneway_return, [] } ] },
 		_FunNature=actor_oneway, Qualifiers, FunId, Classname ) ->
-	case lists:member( const, Qualifiers ) of
-
-		true ->
-			wooper_internals:raise_usage_error(
-				"the ~ts/~B actor oneway has been detected as const, "
-				"however its spec uses actor_oneway_return/0 instead of "
-				"const_actor_oneway_return/0.",
-				pair:to_list( FunId ), Classname, FileLoc );
-
-		false ->
-			ok
-
-	end;
+	lists:member( const, Qualifiers ) andalso
+		wooper_internals:raise_usage_error(
+			"the ~ts/~B actor oneway has been detected as const, "
+			"however its spec uses actor_oneway_return/0 instead of "
+			"const_actor_oneway_return/0.",
+			pair:to_list( FunId ), Classname, FileLoc );
 
 
 % Spec implies const actor oneway:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 		_ResultType={ user_type, FileLoc, const_actor_oneway_return, [] } ] },
 		_FunNature=actor_oneway, Qualifiers, FunId, Classname ) ->
-	case lists:member( const, Qualifiers ) of
-
-		true ->
-			ok;
-
-		false ->
-			wooper_internals:raise_usage_error(
-				"the ~ts/~B actor oneway has been detected as non-const, "
-				"however its spec uses const_actor_oneway_return/0 instead of "
-				"actor_oneway_return/0.", pair:to_list( FunId ), Classname,
-				FileLoc )
-
-	end;
+	lists:member( const, Qualifiers ) orelse
+		wooper_internals:raise_usage_error(
+			"the ~ts/~B actor oneway has been detected as non-const, "
+			"however its spec uses const_actor_oneway_return/0 instead of "
+			"actor_oneway_return/0.", pair:to_list( FunId ), Classname,
+            FileLoc );
 
 
 % Spec of this actor oneway uses thus an unexpected terminator:
@@ -879,7 +871,7 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 	end;
 
 
-% Spec implies (non-const) actor oneway whereas is not:
+% Spec implies (non-const) actor oneway, whereas is not:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 		_ResultType={ user_type, FileLoc, actor_oneway_return, [] } ] },
 		NonActFunNature, _Qualifiers, FunId, Classname ) ->
@@ -887,10 +879,10 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 		"not as a (non-const) actor oneway, however its spec uses "
 		"actor_oneway_return/0.", pair:to_list( FunId )
 			++ [ function_nature_to_string( NonActFunNature ) ],
-										Classname, FileLoc );
+		Classname, FileLoc );
 
 
-% Spec implies (const) actor oneway whereas is not:
+% Spec implies (const) actor oneway, whereas is not:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 		_ResultType={ user_type, FileLoc, const_actor_oneway_return, [] } ] },
 		NonActFunNature, _Qualifiers, FunId, Classname ) ->
@@ -912,8 +904,9 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Wrong arity for const_actor_oneway_return/0:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	  _ResultType={ user_type, FileLoc, const_actor_oneway_return, Types } ] },
-	  _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+        _ResultType={ user_type, FileLoc, const_actor_oneway_return,
+                      Types } ] },
+        _AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses "
 		"const_actor_oneway_return/~B, which does not exist; "
 		"its correct arity is 0.",
@@ -922,8 +915,9 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % *_result used instead of *_return:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	  _ResultType={ user_type, FileLoc, const_actor_oneway_result, _Types } ] },
-	  _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+        _ResultType={ user_type, FileLoc, const_actor_oneway_result,
+                      _Types } ] },
+        _AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses the (unknown) "
 		"const_actor_oneway_result type: probably that "
 		"const_actor_oneway_return/0 was meant instead.",
@@ -931,8 +925,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	  _ResultType={ user_type, FileLoc, actor_oneway_result, _Types } ] },
-	  _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+        _ResultType={ user_type, FileLoc, actor_oneway_result, _Types } ] },
+        _AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses the (unknown) "
 		"actor_oneway_result type: probably that "
 		"actor_oneway_return/0 was meant instead.",
@@ -950,8 +944,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 		Classname, FileLoc );
 
 
-check_clause_spec( { type, FileLoc, 'fun', _Seqs=[ _TypeProductForArgs,
-												   ResultType ] },
+check_clause_spec( { type, FileLoc, 'fun',
+                     _Seqs=[ _TypeProductForArgs, ResultType ] },
 				   _AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error(
 		"~ts/~B uses an unexpected result type:~n  ~p",
@@ -963,28 +957,28 @@ check_clause_spec( { type, FileLoc, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % For the rest:
 %check_clause_spec( Clause, FunNature, Qualifiers, FunId, Classname ) ->
-	% Rely on WOOPER:
-	%wooper_method_management:check_clause_spec( Clause, FunNature, Qualifiers,
-	%											 FunId, Classname ).
+    % Rely on WOOPER:
+    %wooper_method_management:check_clause_spec( Clause, FunNature, Qualifiers,
+    %                                            FunId, Classname ).
 
 
 
-% @doc Infers the nature of the corresponding function and any relevant method
-% qualifier(s), ensures that all method terminators correspond, and transforms
-% them appropriately, in one pass.
-%
-% We consider that no method is to be explicitly exported and that all actual
-% clauses of a method must explicitly terminate with a relevant method
-% terminator (the same for all clauses, except regarding constness), rather than
-% calling an helper function that would use such a terminator (otherwise the
-% nature of methods could not be auto-detected, as there would be no way to
-% determine whether said helper should be considered as a method or not).
-%
--spec manage_method_terminators( meta_utils:clause_def(),
-				meta_utils:function_id(), wooper:classname(),
+
+-doc """
+Infers the nature of the corresponding function and any relevant method
+qualifier(s), ensures that all method terminators correspond, and transforms
+them appropriately, in one pass.
+
+We consider that no method is to be explicitly exported and that all actual
+clauses of a method must explicitly terminate with a relevant method terminator
+(the same for all clauses, except regarding constness), rather than calling an
+helper function that would use such a terminator (otherwise the nature of
+methods could not be auto-detected, as there would be no way to determine
+whether said helper should be considered as a method or not).
+""".
+-spec manage_method_terminators( clause_def(), function_id(), classname(),
 				wooper:function_export_set() ) ->
-		{ meta_utils:clause_def(), function_extended_nature(),
-		  wooper:method_qualifiers() }.
+		{ clause_def(), function_extended_nature(), method_qualifiers() }.
 manage_method_terminators( _Clauses=[], FunId, Classname, _WOOPERExportSet ) ->
 	wooper_internals:raise_usage_error(
 		"the function ~ts/~B is exported yet not defined.",
@@ -992,7 +986,7 @@ manage_method_terminators( _Clauses=[], FunId, Classname, _WOOPERExportSet ) ->
 
 manage_method_terminators( Clauses, FunId, Classname, WOOPERExportSet ) ->
 
-	% SimDiasca-specific call transformer, to manage specifically types and
+	% Sim-Diasca-specific call transformer, to manage specifically types and
 	% terminators for actors, and which relies on its WOOPER counterpart for the
 	% rest:
 	%
@@ -1000,7 +994,7 @@ manage_method_terminators( Clauses, FunId, Classname, WOOPERExportSet ) ->
 
 	% We retain all WOOPER transformers except the call one, that we override:
 	TransformTable = table:update_entry( 'call', EngineCallTransformFun,
-						wooper_method_management:get_wooper_transform_table() ),
+		wooper_method_management:get_wooper_transform_table() ),
 
 	BlankTransfState =
 		wooper_method_management:get_blank_transformation_state(
@@ -1018,14 +1012,14 @@ manage_method_terminators( Clauses, FunId, Classname, WOOPERExportSet ) ->
 
 	% Unless found different, a function is a (plain) function:
 	{ FunExtNature, Qualifiers } =
-				case NewTransforms#ast_transforms.transformation_state of
+			case NewTransforms#ast_transforms.transformation_state of
 
 		{ undefined, NoQualifier=[], _WOOPERExportSet } ->
 			%trace_utils:debug_fmt( "~ts/~B detected as a plain function.",
 			%                       pair:to_list( FunId ) ),
 			{ function, NoQualifier };
 
-		% Ex: { request, [ const ], _WOOPERExportSet }
+		% e.g. {request, [const], _WOOPERExportSet}:
 		{ OtherNature, SomeQualifiers, _WOOPERExportSet } ->
 			%trace_utils:debug_fmt( "~ts/~B detected as: ~p (qualifiers: ~p)",
 			%    pair:to_list( FunId ) ++ [ OtherNature, SomeQualifiers ] ),
@@ -1037,12 +1031,12 @@ manage_method_terminators( Clauses, FunId, Classname, WOOPERExportSet ) ->
 
 
 
+-doc """
+Transformer in charge of detecting the method terminators and qualifiers, in a
+Sim-Diasca context.
 
-% @doc Transformer in charge of detecting the method terminators and qualifiers,
-% in a Sim-Diasca context.
-%
-% (anonymous mute variables correspond to file locations)
-%
+(anonymous mute variables correspond to file locations)
+""".
 -spec engine_call_transformer( file_loc(), function_ref_expression(),
 							   params_expression(), ast_transforms() ) ->
 									{ [ ast_expression() ], ast_transforms() }.
@@ -1056,7 +1050,7 @@ engine_call_transformer( _FileLocCall,
 		_FunctionRef={ remote, _, {atom,_,actor}, {atom,_,return_state} },
 		_Params=[ _StateExpr={ var, FileLoc, 'State' } ],
 		Transforms=#ast_transforms{
-						transformed_function_identifier=FunId } ) ->
+			transformed_function_identifier=FunId } ) ->
 	wooper_internals:raise_usage_error( "this const clause of actor oneway "
 		"~ts/~B shall use actor:const_return/0 "
 		"(instead of actor:return_state/1).",
@@ -1068,16 +1062,18 @@ engine_call_transformer( _FileLocCall,
 	_FunctionRef={ remote, _, {atom,_,actor}, {atom,_,return_state} },
 	_Params=[ StateExpr ],
 	Transforms=#ast_transforms{
-			%transformed_function_identifier=FunId,
-			transformation_state={ undefined, _, WOOPERExportSet } } ) ->
+		%transformed_function_identifier=FunId,
+		transformation_state={ undefined, _, WOOPERExportSet } } ) ->
 
 	%trace_utils:debug_fmt( "~ts/~B detected as a non-const actor oneway.",
-	%						pair:to_list( FunId ) ),
+	%                       pair:to_list( FunId ) ),
 
 	% So that actor:return_state(S) becomes simply S:
 	NewExpr = StateExpr,
+
 	NewTransforms = Transforms#ast_transforms{
-				transformation_state={ actor_oneway, [], WOOPERExportSet } },
+		transformation_state={ actor_oneway, [], WOOPERExportSet } },
+
 	{ [ NewExpr ], NewTransforms };
 
 
@@ -1086,7 +1082,7 @@ engine_call_transformer( _FileLocCall,
 		_FunctionRef={ remote, _, {atom,_,actor}, {atom,_,return_state} },
 		_Params=[ StateExpr ],
 		Transforms=#ast_transforms{ transformation_state={ actor_oneway,
-										Qualifiers, WOOPERExportSet } } ) ->
+			Qualifiers, WOOPERExportSet } } ) ->
 
 	% 'const' may or may not be still there, and will surely not remain:
 	NewQualifiers = lists:delete( const, Qualifiers ),
@@ -1094,7 +1090,7 @@ engine_call_transformer( _FileLocCall,
 	NewExpr = StateExpr,
 
 	NewTransforms = Transforms#ast_transforms{ transformation_state={
-						actor_oneway, NewQualifiers, WOOPERExportSet } },
+		actor_oneway, NewQualifiers, WOOPERExportSet } },
 
 	{ [ NewExpr ], NewTransforms };
 
@@ -1104,7 +1100,7 @@ engine_call_transformer( FileLocCall,
 		_FunctionRef={ remote, _, {atom,_,actor}, {atom,_,return_state} },
 		Params,
 		Transforms=#ast_transforms{ transformed_function_identifier=FunId } )
-  when length( Params ) =/= 1 ->
+                                        when length( Params ) =/= 1 ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for actor:return_state/1, when defining actor oneway ~ts/~B.",
 		[ length( Params ) | pair:to_list( FunId ) ], Transforms, FileLocCall );
@@ -1137,8 +1133,10 @@ engine_call_transformer( FileLocCall,
 
 	% So that actor:const_return() becomes simply the initial, const state:
 	NewExpr = { var, FileLocCall, 'State' },
+
 	NewTransforms = Transforms#ast_transforms{
-			transformation_state={ actor_oneway, [ const ], WOOPERExportSet } },
+		transformation_state={ actor_oneway, [ const ], WOOPERExportSet } },
+
 	{ [ NewExpr ], NewTransforms };
 
 
@@ -1149,7 +1147,7 @@ engine_call_transformer( FileLocCall,
 	_FunctionRef={ remote, _, {atom,_,actor}, {atom,_,const_return} },
 	_Params=[],
 	Transforms=#ast_transforms{ transformation_state={ actor_oneway,
-										_Qualifiers, _WOOPERExportSet } } ) ->
+		_Qualifiers, _WOOPERExportSet } } ) ->
 
 	NewExpr = { var, FileLocCall, 'State' },
 
@@ -1161,7 +1159,7 @@ engine_call_transformer( FileLocCall,
 	_FunctionRef={ remote, _, {atom,_,actor}, {atom,_,const_return} },
 	Params,
 	Transforms=#ast_transforms{ transformed_function_identifier=FunId } )
-  when Params =/= [] ->
+                                            when Params =/= [] ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for actor:const_return/0, when defining actor oneway ~ts/~B.",
 		[ length( Params ) | pair:to_list( FunId ) ], Transforms, FileLocCall );
@@ -1181,7 +1179,7 @@ engine_call_transformer( FileLocCall,
 		pair:to_list( FunId ) ++ [ OtherNature ], Transforms, FileLocCall );
 
 
-% 'actor' pseudo-module used, yet with no known terminator (ex: a faulty
+% 'actor' pseudo-module used, yet with no known terminator (e.g. a faulty
 % 'actor:return(SomeState).'):
 %
 engine_call_transformer( FileLocCall,
@@ -1203,7 +1201,7 @@ engine_call_transformer( FileLocCall, FunctionRef, Params, Transforms ) ->
 
 
 
-% @doc Returns a textual description of the specified function nature.
+-doc "Returns a textual description of the specified function nature.".
 -spec function_nature_to_string( function_extended_nature() ) -> ustring().
 function_nature_to_string( actor_oneway ) ->
 	"actor oneway";
@@ -1214,10 +1212,10 @@ function_nature_to_string( Other ) ->
 
 
 
-
-% @doc Converts (upgrades) specified (Myriad-level) function information into a
-% (SimDiasca-level) actor oneway information.
-%
+-doc """
+Converts (upgrades) the specified (Myriad-level) function information into a
+(Sim-Diasca-level) actor oneway information.
+""".
 -spec function_to_actor_oneway_info( function_info(), method_qualifiers() ) ->
 											actor_oneway_info().
 function_to_actor_oneway_info( #function_info{ name=Name,
@@ -1262,9 +1260,10 @@ function_to_actor_oneway_info( Other, _Qualifiers ) ->
 
 
 
-% @doc Converts (downgrades) specified (SimDiasca-level) actor oneway
-% information into a (WOOPER-level) oneway information.
-%
+-doc """
+Converts (downgrades) the specified (Sim-Diasca-level) actor oneway information
+into a (WOOPER-level) oneway information.
+""".
 -spec actor_oneway_to_oneway_info( actor_oneway_info() ) ->
 											wooper_info:oneway_info().
 actor_oneway_to_oneway_info( #actor_oneway_info{ name=Name,
@@ -1288,11 +1287,12 @@ actor_oneway_to_oneway_info( Other ) ->
 
 
 
-% @doc Generates back (Myriad-level) module-level information from the specified
-% actor-level information.
-%
-% (reciprocal of generate_class_info_from/1)
-%
+-doc """
+Generates back (Myriad-level) module-level information from the specified
+actor-level information.
+
+(reciprocal of generate_class_info_from/1)
+""".
 -spec generate_module_info_from( actor_class_info() ) -> module_info().
 generate_module_info_from( #actor_class_info{
 		class=ClassEntry,

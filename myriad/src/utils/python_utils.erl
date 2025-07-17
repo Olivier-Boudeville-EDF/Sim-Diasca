@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -28,15 +28,16 @@
 %          Samuel Thiriot     [samuel (dot) thiriot (at) edf (dot) fr]
 % Creation date: 2016.
 
-
-% @doc Gathering of some convenient facilities for the <b>binding to the Python
-% language</b>.
-%
-% See python_utils_test.erl for the corresponding tests.
-%
-% See also: java_utils.erl for a similar binding.
-%
 -module(python_utils).
+
+-moduledoc """
+Gathering of some convenient facilities for the **binding to the Python
+language**.
+
+See python_utils_test.erl for the corresponding tests.
+
+See also: java_utils.erl for a similar binding.
+""".
 
 
 
@@ -46,35 +47,43 @@
 		  pep8_class_to_pep8_module/1 ]).
 
 
+-doc "(Erlang) PID corresponding to a Python interpreter.".
 -type interpreter_pid() :: pid().
-% PID corresponding to a Python interpreter.
 
 
+
+-doc "The title of a request sent to Python.".
 -type title() :: atom().
-% The title of a request sent to Python.
 
 
+
+-doc "The parameters of a request sent to Python.".
 -type body() :: [ any() ].
-% The parameters of a request sent to Python.
 
 
+
+-doc "The result from a request that was sent to Python.".
 -type result() :: any().
-% The result from a request that was sent to Python.
 
 
+
+-doc "The name of a Python class, according to the PEP8.".
 -type pep8_classname() :: atom().
-% The name of a Python class, according to the PEP8.
 
 
+
+-doc "The name of a Python module, according to the PEP8.".
 -type pep8_class_module() :: atom().
-% The name of a Python module, according to the PEP8.
+
 
 
 -export_type([ interpreter_pid/0, title/0, body/0, result/0,
 			   pep8_classname/0, pep8_class_module/0 ]).
 
 
-% Shorthands:
+
+% Type shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -90,9 +99,9 @@
 
 
 
-% @doc Finds the BEAM locations of all the dependencies required for binding to
-% Python.
-%
+-doc """
+Finds the BEAM locations of all the dependencies required for binding to Python.
+""".
 -spec get_beam_directories_for_binding() -> [ file_utils:directory_name() ].
 get_beam_directories_for_binding() ->
 
@@ -110,19 +119,20 @@ get_beam_directories_for_binding() ->
 
 
 
-% @doc Requests specified interpreter to execute specified oneway.
+-doc "Requests specified interpreter to execute specified oneway.".
 -spec send_oneway( interpreter_pid(), title(), body() ) -> void().
 send_oneway( InterpreterPid, MessageTitle, MessageBody )
-  when is_atom( MessageTitle ) ->
+										when is_atom( MessageTitle ) ->
 
 	python:cast( InterpreterPid, { self(), MessageTitle, MessageBody } ).
 
 
 
-% @doc Receives a message from the Python world, usually in answer to a
-% send_oneway/3 call having used the same MessageTitle argument, and tries to
-% match it with the different accepted types of messages.
-%
+-doc """
+Receives a message from the Python world, usually in answer to a send_oneway/3
+call having used the same MessageTitle argument, and tries to match it with the
+different accepted types of messages.
+""".
 -spec wait_for_request_result( interpreter_pid(), title() ) -> result().
 wait_for_request_result( InterpreterPid, MessageTitle )
   when is_atom( MessageTitle ) ->
@@ -145,14 +155,14 @@ wait_for_request_result( InterpreterPid, MessageTitle )
 
 		% Trace emitted from Python:
 		TraceMessage = { trace_emitted, TraceType, _TraceFormattedMessage }
-		  when is_atom( TraceType ) ->
+										when is_atom( TraceType ) ->
 			TraceMessage;
 
 
 		% Exception raised from Python:
 		ExceptionMessage = { exception_raised, ExceptionType,
 							 _ExceptionFormattedMessage }
-		  when is_atom( ExceptionType ) ->
+										when is_atom( ExceptionType ) ->
 			ExceptionMessage;
 
 
@@ -168,13 +178,14 @@ wait_for_request_result( InterpreterPid, MessageTitle )
 
 
 
-% @doc Deduces the name of the Python module from the name of the Python class
-% (possibly prefixed with package names) that it implements, according notably
-% to the naming conventions adopted in PEP 8.
-%
-% Ex: 'Partner__TransportModel__MyFoobarExample' resulting in
-% 'partner.transport_model.my_foobar_example'.
-%
+-doc """
+Deduces the name of the Python module from the name of the Python class
+(possibly prefixed with package names) that it implements, according notably to
+the naming conventions adopted in PEP 8.
+
+For example: `Partner__TransportModel__MyFoobarExample` resulting in
+`partner.transport_model.my_foobar_example`.
+""".
 -spec pep8_class_to_pep8_module( pep8_classname() | ustring() ) ->
 										pep8_class_module().
 pep8_class_to_pep8_module( Classname ) when is_atom( Classname ) ->
@@ -186,21 +197,20 @@ pep8_class_to_pep8_module( ClassnameString ) ->
 	% "Partner__TransportModel__MyFoobarExample" becomes
 	% [ "Partner", "TransportModel", "MyFoobarExample" ]:
 	%
-	TokensCamel = string:split( ClassnameString, _Pattern="__",
-								_Where=all ),
+	TokensCamel = string:split( ClassnameString, _Pattern="__", _Where=all ),
 
 	% All of them will be switched from CamelCase to snake_case, so:
 	% [ "Partner", "TransportModel", "MyFoobarExample" ] becomes:
 	% [ "partner", "transport_model", "my_foobar_example" ].
 	%
 	TokensSnake = [ string:join( [ string:to_lower( CamelWord )
-				|| CamelWord <- text_utils:split_camel_case( CamelCaseToken )
-								 ], _Separator="_" )
+				|| CamelWord <- text_utils:split_camel_case( CamelCaseToken ) ],
+								 _Separator="_" )
 					|| CamelCaseToken <- TokensCamel ],
 
 	% The concatenation of those should lead to a valid package name, so that
-	% [ "partner", "transport_model", "my_foobar_example" ] becomes
-	% ultimately the 'partner.transport_model.my_foobar_example' atom:
+	% ["partner", "transport_model", "my_foobar_example"] becomes ultimately the
+	% 'partner.transport_model.my_foobar_example' atom:
 	%
 	ModuleRef = string:join( TokensSnake, "." ),
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,11 +25,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, December 24, 2014.
 
-
-% @doc Centralizes, on behalf of the WOOPER parse transform, the support for
-% <b>instance destruction</b>.
-%
 -module(wooper_instance_destruction).
+
+-moduledoc """
+Centralizes, on behalf of the WOOPER parse transform, the support for **instance
+destruction**.
+""".
 
 
 -export([ manage_destructor/1 ]).
@@ -43,7 +44,7 @@
 -include("wooper_info.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type function_info() :: ast_info:function_info().
 -type marker_table() :: ast_info:section_marker_table().
@@ -51,11 +52,12 @@
 
 
 
-% @doc Extracts any destructor found in the specified function table, interprets
-% that information to update the specified class information.
-%
-% Returns an updated pair thereof.
-%
+-doc """
+Extracts any destructor found in the specified function table, interprets that
+information to update the specified class information.
+
+Returns an updated pair thereof.
+""".
 -spec manage_destructor( compose_pair() ) -> compose_pair().
 manage_destructor( { FunctionTable, ClassInfo } ) ->
 
@@ -113,12 +115,13 @@ manage_destructor( { FunctionTable, ClassInfo } ) ->
 
 
 
+-doc """
+Checks arities and extracts any destruct/1 found, returning it and the list of
+remaining pairs, if found, otherwise undefined.
 
-% @doc Checks arities and extracts any destruct/1 found, returning it and the
-% list of remaining pairs, if found, otherwise undefined.
-%
-% (helper)
-%
+(helper)
+
+""".
 scan_for_destructors( FunIdInfos ) ->
 	scan_for_destructors( FunIdInfos, _Acc={ undefined, [] } ).
 
@@ -160,15 +163,17 @@ scan_for_destructors( _FunIdInfos=[ Other | T ],
 
 
 
-% @doc Returns a function information corresponding to the default destructor.
-%
-% This is:
-%```
-% -spec destruct( wooper:state() ) -> wooper:state().
-% destruct( State ) ->
-%	State.
-%'''
-%
+-doc """
+Returns a function information corresponding to the default destructor.
+
+ This is:
+```
+-spec destruct( wooper:state() ) -> wooper:state().
+destruct( State ) ->
+   State.
+```
+
+""".
 -spec get_default_destructor_info( marker_table() ) -> function_info().
 get_default_destructor_info( MarkerTable ) ->
 
@@ -181,10 +186,10 @@ get_default_destructor_info( MarkerTable ) ->
 	StateType = wooper_parse_utils:get_state_type(),
 
 	SpecForm = { attribute, FileLoc, spec, { {destruct,1},
-	   [ { type, FileLoc, 'fun',
-		   [ { type, FileLoc, product, _Params=[ StateType ] },
-			 _Result=StateType ]
-		 } ] } },
+		[ { type, FileLoc, 'fun',
+			[ { type, FileLoc, product, _Params=[ StateType ] },
+			  _Result=StateType ]
+		  } ] } },
 
 	% Then let's define the destructor function itself, based on:
 	%   destruct( State ) ->

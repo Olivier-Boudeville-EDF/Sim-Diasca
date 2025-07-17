@@ -5,9 +5,7 @@ MYRIAD_TOP = .
 		register-version-in-header register-myriad list-beam-dirs             \
 		add-prerequisite-plts prepare-base-plt add-erlhdf5-plt add-jsx-plt    \
 		add-sqlite3-plt link-plt clean-ast-outputs clean-local stats          \
-		info-context info-versions info-paths                                 \
-		info-settings info-json info-sql                                      \
-		info-parse-transform-local info-conditionals info-glsl
+		info-versions info-parse-transform-local info-conditionals info-glsl
 
 
 #MODULES_DIRS = contrib src doc conf
@@ -78,8 +76,8 @@ list-beam-relative-paths:
 	@cd src && echo $(MYRIAD_BEAM_DIRS)
 
 
-add-prerequisite-plts: prepare-base-plt \
-					   add-erlhdf5-plt add-jsx-plt add-sqlite3-plt link-plt
+# Not needing add-jsx-plt anymore:
+add-prerequisite-plts: prepare-base-plt add-erlhdf5-plt add-sqlite3-plt link-plt
 
 
 # So that in all cases we start by the same PLT name:
@@ -94,6 +92,7 @@ add-erlhdf5-plt:
 
 
 # From the second, operating on the current PLT:
+# (however jsx not used anymore)
 add-jsx-plt:
 	@if [ "$(USE_JSON)" = "true" ]; then echo "   Generating PLT for prerequisite jsx"; $(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(JSX_BASE)/ebin --plt $(PLT_FILE); if [ $$? -eq 1 ]; then exit 1; fi; else echo "  (no PLT determined for non-available jsx prerequisite; unknown functions in the jsx module will be found)" 1>&2; fi
 
@@ -136,8 +135,10 @@ info-versions:
 
 info-parse-transform: info-parse-transform-local
 
+
 info-parse-transform-local:
 	@echo "META_BEAM_FILES = $(META_BEAM_FILES)"
+
 
 info-conditionals:
 	@echo "MYRIAD_DEBUG_FLAGS = $(MYRIAD_DEBUG_FLAGS)"

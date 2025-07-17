@@ -1,34 +1,36 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Integration test for the 'Dataflow Urban Example' case, based on the
-% <b>management of changesets</b> like if the simulation was driven by an
-% overall platform (that is emulated here).
-%
-% The purpose of this module is to perform an overall, integrated testing of the
-% dataflow support, including with a Python-based unit.
-%
-% See also the 'Sim-Diasca Dataflow HOWTO'.
-%
 -module(dataflow_urban_example_platform_emulating_with_python_vehicle_case).
+
+-moduledoc """
+Integration test for the `Dataflow Urban Example` case, based on the
+**management of changesets** like if the simulation was driven by an overall
+platform (that is emulated here).
+
+The purpose of this module is to perform an overall, integrated testing of the
+dataflow support, including with a Python-based unit.
+
+See also the `Sim-Diasca Dataflow HOWTO`.
+""".
 
 
 
@@ -96,7 +98,7 @@
 
 
 
-% @doc Runs the case.
+-doc "Runs the case.".
 -spec run() -> no_return().
 run() ->
 
@@ -115,12 +117,12 @@ run() ->
 
 	% Just for the sake of checking it on the display:
 	ExpectedTimestepCount = round( time_utils:years_to_seconds(
-								SimulationDurationInYears ) / TickDuration ),
+		SimulationDurationInYears ) / TickDuration ),
 
 	SimulationDurationInYears = ExpectedTimestepCount,
 
 	TimestepString = time_utils:duration_to_string(
-					   _Microseconds=1000*TickDuration ),
+		_Microseconds=1000*TickDuration ),
 
 	test_facilities:display( "Running a 'Dataflow Urban Example' simulation "
 		"case with a timestep of ~ts and a duration of "

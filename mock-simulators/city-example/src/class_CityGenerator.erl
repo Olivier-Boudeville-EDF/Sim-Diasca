@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2012.
 
-
-% @doc Class modelling the <b>generation of cities</b>.
 -module(class_CityGenerator).
+
+-moduledoc "Class modelling the **generation of cities**".
 
 
 -define( class_description, "Class modelling the generation of cities, rather "
@@ -85,8 +85,8 @@
 % creation.
 
 
+-doc "Description of a city that is to be procedurally created.".
 -type city_description() :: #city_description{}.
-% Description of a city that is to be procedurally created.
 
 
 
@@ -101,10 +101,11 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -112,12 +113,16 @@
 
 -type meters() :: unit_utils:meters().
 
+-type gis_pid() :: class_GIS:gis_pid().
 
 
-% @doc Constructs a city generator, from the specified city description (refer
-% to the city_description record definition in class_CityGenerator.hrl), passing
-% also the PID of the GIS.
-%
+
+
+-doc """
+Constructs a city generator, from the specified city description (refer to the
+`city_description` record definition in `class_CityGenerator.hrl`), passing also
+the PID of the GIS.
+""".
 -spec construct( wooper:state(), city_description(), gis_pid() ) ->
 												wooper:state().
 construct( State, CityDescription=#city_description{
@@ -163,9 +168,9 @@ destruct( State ) ->
 
 
 
-% @doc Generates the initial state of a city corresponding to the stored
-% description.
-%
+-doc """
+Generates the initial state of a city corresponding to the stored description.
+""".
 -spec generateCity( wooper:state() ) -> request_return( 'city_generated' ).
 generateCity( State ) ->
 
@@ -177,9 +182,10 @@ generateCity( State ) ->
 
 
 
-% @doc Writes in specified file the initialisation data corresponding to a
-% generated city.
-%
+-doc """
+Writes in the specified file the initialisation data corresponding to a
+generated city.
+""".
 -spec writeInitialisation( wooper:state(), file_utils:file() ) ->
 							const_request_return( 'initialisation_written' ).
 writeInitialisation( State, File ) ->
@@ -245,7 +251,6 @@ writeInitialisation( State, File ) ->
 			IPids
 
 	end,
-
 
 
 	file_utils:write_ustring( File, "~n~n~n% Landfill section.~n~n", [] ),
@@ -498,7 +503,9 @@ writeInitialisation( State, File ) ->
 
 
 
-% @doc Returns a textual description of the state of this instance.
+-doc """
+Returns a textual description of the state of this generator.
+""".
 -spec to_string( wooper:state() ) -> const_request_return( ustring() ).
 to_string( State ) ->
 
@@ -515,9 +522,10 @@ to_string( State ) ->
 % Section for static methods.
 
 
-% @doc Returns the length (in meters) of the side of a square whose area is the
-% specified one, expressed in square kilometers.
-%
+-doc """
+Returns the length (in meters) of the side of a square whose area is the
+specified one, expressed in square kilometers.
+""".
 -spec area_to_side_length( linear:area() ) -> static_return( meters() ).
 area_to_side_length( Area ) ->
 	wooper:return_static( math:sqrt( Area * 1000 * 1000 ) ).
@@ -527,7 +535,7 @@ area_to_side_length( Area ) ->
 % Section for helper functions.
 
 
-% @doc Generates the full specified city.
+-doc "Generates the full specified city.".
 generate_city( #city_description{
 						name=Name,
 						dimensions={ Length, Width, _Height },
@@ -599,7 +607,7 @@ generate_city( #city_description{
 		IndustrialSourceCount, LocationGeneratorPid, GISPid ),
 
 	%trace_utils:debug_fmt( "IndustrialSourceDefs = ~p",
-	%                      [ IndustrialSourceDefs ] ),
+	%                       [ IndustrialSourceDefs ] ),
 
 	report( " - creating these ~B industrial waste sources",
 			[ IndustrialSourceCount ], State ),
@@ -622,7 +630,7 @@ generate_city( #city_description{
 	report( " - creating these ~B residential waste sources",
 			[ ResidentialSourceCount ], State ),
 
-	ResidentialSources = class_Actor:create_initial_actors(	
+	ResidentialSources = class_Actor:create_initial_actors(
 		ResidentialSourceDefs, LoadBalancerPid ),
 
 	GISPid ! { declarePOIs, [ ResidentialSources ], self() },
@@ -716,13 +724,14 @@ generate_city( #city_description{
 
 
 
-% @doc Generates a complete road network, so that notably each point of interest
-% can be reached (inbound) and go away from (outbound).
-%
-% For that, roads are to be created.
-%
-% Returns a list of the PID of the newly created roads.
-%
+-doc """
+Generates a complete road network, so that notably each point of interest can be
+reached (inbound) and go away from (outbound).
+
+For that, roads are to be created.
+
+Returns a list of the PID of the newly created roads.
+""".
 generate_road_network( Incinerators, Landfills, ResidentialSources,
 		IndustrialSources, RoadJunctions, GISPid, LoadBalancerPid, State ) ->
 
@@ -798,7 +807,7 @@ generate_road_network( Incinerators, Landfills, ResidentialSources,
 
 
 
-% @doc Completes all road junctions.
+-doc "Completes all road junctions.".
 add_roads_for( RoadJunctions, GISPid ) ->
 	add_roads_for( RoadJunctions, GISPid, _AccRoads=[] ).
 
@@ -841,13 +850,14 @@ add_roads_for( _RoadJunctions=[ J | T ], GISPid, AccRoads ) ->
 
 
 
-% @doc Creates Count outbound roads from specified junction, not duplicating any
-% pre-existing road.
-%
+-doc """
+Creates `Count` outbound roads from the specified junction, not duplicating any
+pre-existing road.
+""".
 find_and_create_outbound( Junction, Count, CurrentOutbounds, GISPid ) ->
 
 	GISPid ! { searchNearestPointsOfInterest, [ Junction,
-					_ExcludedPOIs=CurrentOutbounds, Count ], self() },
+		_ExcludedPOIs=CurrentOutbounds, Count ], self() },
 
 	receive
 
@@ -858,12 +868,13 @@ find_and_create_outbound( Junction, Count, CurrentOutbounds, GISPid ) ->
 
 
 
-% @doc Creates Count inbound roads from specified junction, not duplicating any
-% pre-existing road.
-%
+-doc """
+Creates `Count` inbound roads from the specified junction, not duplicating any
+pre-existing road.
+""".
 find_and_create_inbound( Junction, Count, CurrentInbounds, GISPid ) ->
 
-	GISPid ! { searchNearestPointsOfInterest, 
+	GISPid ! { searchNearestPointsOfInterest,
 			   [ Junction, _ExcludedPOIs=CurrentInbounds, Count ], self() },
 
 	receive
@@ -875,9 +886,10 @@ find_and_create_inbound( Junction, Count, CurrentInbounds, GISPid ) ->
 
 
 
-% @doc Returns the roads that were needed so that all specified POIs have both
-% at least one inbound and one outbound connection.
-%
+-doc """
+Returns the roads that were needed so that all specified POIs have both at least
+one inbound and one outbound connection.
+""".
 force_connectivity( POIList, GISPid ) ->
 	force_connectivity( POIList, GISPid, _AccRoads=[] ).
 
@@ -920,7 +932,9 @@ force_connectivity( _POIList=[ P | T ], GISPid, AccRoads ) ->
 
 
 
-% @doc Creates base road definitions from specified POI(s) to specified POI(s).
+-doc """
+Creates base road definitions from the specified POI(s) to the specified POI(s).
+""".
 get_road_defs( From, To ) when is_list( From ) andalso is_pid( To ) ->
 	[ { F, To } || F <- From ];
 
@@ -929,7 +943,7 @@ get_road_defs( From, To ) when is_pid( From ) andalso is_list( To ) ->
 
 
 
-% @doc Returns {CellsPerEdge, CellCount}.
+-doc "Returns `{CellsPerEdge, CellCount}`.".
 -spec get_cell_infos( meters(), meters() ) ->
 									static_return( { count(), count() } ).
 get_cell_infos( Length, Width ) ->
@@ -948,12 +962,11 @@ get_cell_infos( Length, Width ) ->
 	wooper:return_static( { CellsPerEdge, CellCount } ).
 
 
+-doc """
+Reports the specified message.
 
-
-% @doc Reports specified message.
-%
-% Centralised to be easily enabled/disabled.
-%
+Centralised to be easily enabled/disabled.
+""".
 -spec report( ustring(), wooper:state() ) -> void().
 report( Message, State ) ->
 
@@ -964,10 +977,11 @@ report( Message, State ) ->
 
 
 
-% @doc Reports the specified formatted message.
-%
-% Centralised to be easily enabled/disabled.
-%
+-doc """
+Reports the specified formatted message.
+
+Centralised to be easily enabled/disabled.
+""".
 -spec report( text_utils:format_string(), text_utils:format_values(),
 			  wooper:state() ) -> void().
 report( FormatString, Parameters, State ) ->
@@ -978,8 +992,8 @@ report( FormatString, Parameters, State ) ->
 
 
 
-% Replaces, in the last position of specified arguments, the specified PID by
-% the specified reference.
+% Replaces, in the last position of the specified arguments, the specified PID
+% by the specified reference.
 %
 % (helper)
 %

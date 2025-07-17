@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,37 +25,37 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, July 12, 2007.
 
-
-% @doc Module corresponding to the WOOPER <b>class manager singleton</b>.
-%
-% The purpose of this process is, on a per-node basis, to create and notably to
-% serve to instances the virtual table corresponding to the actual class they
-% are corresponding to.
-%
-% This way each virtual table is computed only once per node, and no significant
-% per-instance memory is used for the virtual table: all the instances of a
-% given class just refer to a common virtual table stored by this manager, and
-% each virtual table and the table of virtual tables itself are optimised, with
-% regard to their respective load factor.
-
-% Local registration only of this manager, as we want the WOOPER instances to
-% benefit from a local direct reference to the same method table
-% (theoretically), rather to waste memory with one copy of the table per
-% instance (which is now not anymore the case in practice, since using
-% persistent_term).
-%
-% In a distributed context, there should be exactly one class manager per node.
-%
-% The class manager may be launched:
-%
-% - either after an explicit, OTP-compliant initialisation phase (supervisor,
-% gen_server, init/1 callback, etc.)
-%
-% - or implicitly, as done before the OTP integration: then done on-demand (as
-% soon as a first WOOPER instance is created, hence with no a priori explicit
-% initialisation)
-%
 -module(wooper_class_manager).
+
+-moduledoc """
+Module corresponding to the WOOPER **class manager singleton**.
+
+The purpose of this process is, on a per-node basis, to create and notably to
+serve to instances the virtual table corresponding to the actual class they are
+corresponding to.
+
+This way each virtual table is computed only once per node, and no significant
+per-instance memory is used for the virtual table: all the instances of a given
+class just refer to a common virtual table stored by this manager, and each
+virtual table and the table of virtual tables itself are optimised, with regard
+to their respective load factor.
+
+Local registration only of this manager, as we want the WOOPER instances to
+benefit from a local direct reference to the same method table (theoretically),
+rather to waste memory with one copy of the table per instance (which is now not
+anymore the case in practice, since using persistent_term).
+
+In a distributed context, there should be exactly one class manager per node.
+
+The class manager may be launched:
+
+- either after an explicit, OTP-compliant initialisation phase (supervisor,
+gen_server, init/1 callback, etc.)
+
+- or implicitly, as done before the OTP integration: then done on-demand (as
+soon as a first WOOPER instance is created, hence with no a priori explicit
+initialisation)
+""".
 
 
 % See documentation at http://wooper.esperide.org.
@@ -97,9 +97,12 @@
 		  terminate/2, code_change/3 ]).
 
 
+% Local type:
+
 -type manager_pid() :: pid().
 
 -export_type([ manager_pid/0 ]).
+
 
 
 % For wooper_class_manager_name:
@@ -114,8 +117,8 @@
 -include_lib("myriad/include/spawn_utils.hrl").
 
 
+-doc "State kept by the manager (a table of per-class tables).".
 -type state() :: ?wooper_table_type:?wooper_table_type().
-% State kept by the manager (a table of per-class tables).
 
 
 
@@ -162,8 +165,13 @@
 		  display_msg/1, display_msg/2 ]).
 
 
-% Shorthands:
+
+% Type shorthands:
+
+-type module_name() :: basic_utils:module_name().
+
 -type ustring() :: text_utils:ustring().
+
 
 
 % Uncomment to activate debug mode:
@@ -208,31 +216,36 @@ display_msg( FormatString, Values ) ->
 -else. % wooper_debug_class_manager
 
 
-% @doc Displays the manager state.
+
+-doc "Displays the manager state.".
 display_state( _Tables ) ->
 	ok.
 
-% @doc Displays virtual table information.
+
+
+-doc "Displays virtual table information.".
 display_table_creation( _Module ) ->
 	ok.
 
-% @doc Displays specified log message.
+
+
+-doc "Displays the specified log message.".
 display_msg( _String ) ->
 	ok.
 
-% @doc Displays specified formatted log message.
+
+
+-doc "Displays the specified formatted log message.".
 display_msg( _FormatString, _Values ) ->
 	ok.
+
 
 -endif. % wooper_debug_class_manager
 
 
-% Shorthands:
-
--type module_name() :: basic_utils:module_name().
 
 
-% Typically returned after a launching described in wooper_sup:init/1:
+-doc "Typically returned after a launching described in wooper_sup:init/1.".
 -type start_return() :: { 'ok', Child :: manager_pid() }.
 
 
@@ -242,27 +255,31 @@ display_msg( _FormatString, _Values ) ->
 %% Explicit, OTP-based initialisation.
 
 
-% @doc Starts a new, blank, class manager, with no listening client, and returns
-% its PID.
-%
+-doc """
+Starts a new, blank, class manager, with no listening client, and returns its
+PID.
+""".
 -spec start() -> start_return().
 start() ->
 	start( _MaybeClientPid=undefined ).
 
 
-% @doc Starts and links a new, blank, class manager, with no listening client,
-% and returns its PID.
-%
+
+-doc """
+Starts and links a new, blank, class manager, with no listening client, and
+returns its PID.
+""".
 -spec start_link() -> start_return().
 start_link() ->
 	start_link( _MaybeClientPid=undefined ).
 
 
 
-% @doc Starts a new, blank, class manager, with possibly a listening client, and
-% returns its PID.
-%
--spec start( maybe( pid() ) ) -> start_return().
+-doc """
+Starts a new, blank, class manager, with possibly a listening client, and
+returns its PID.
+""".
+-spec start( option( pid() ) ) -> start_return().
 start( MaybeClientPid ) ->
 
 	% A client process might be useful for testing.
@@ -283,12 +300,13 @@ start( MaybeClientPid ) ->
 
 
 
-% @doc Starts and links a new, blank, class manager, with possibly a listening
-% client, and returns its PID.
-%
-% (same as start/1 except for the link)
-%
--spec start_link( maybe( pid() ) ) -> start_return().
+-doc """
+Starts and links a new, blank, class manager, with possibly a listening client,
+and returns its PID.
+
+(same as start/1 except for the link)
+""".
+-spec start_link( option( pid() ) ) -> start_return().
 start_link( MaybeClientPid ) ->
 
 	%trace_utils:debug( "Starting and linking the WOOPER class manager." ),
@@ -317,9 +335,10 @@ start_link( MaybeClientPid ) ->
 
 
 
-% @doc Returns (possibly after some waiting) a supposedly already-existing
-% WOOPER class manager.
-%
+-doc """
+Returns (possibly after some waiting) a supposedly already-existing WOOPER class
+manager.
+""".
 -spec get_existing_manager() -> manager_pid().
 get_existing_manager() ->
 	naming_utils:wait_for_local_registration_of( ?wooper_class_manager_name,
@@ -327,9 +346,10 @@ get_existing_manager() ->
 
 
 
-% @doc Returns the key corresponding to the virtual table associated to
-% the specified classname.
-%
+-doc """
+Returns the key corresponding to the virtual table associated to the specified
+classname.
+""".
 -spec get_table_key( wooper:classname() ) -> wooper:class_key().
 get_table_key( Classname ) ->
 
@@ -362,14 +382,15 @@ get_table_key( Classname ) ->
 
 
 
-% @doc Returns the PID of the WOOPER class manager.
-%
-% We do the same as get_manager/0 (including w.r.t. to multiple, simultaneous
-% launches), but with a gen_server-based procedure:
-%
-% (note that performing, if possible, an explicit start is better, as it
-% prevents simultaneous, clashing launches)
-%
+-doc """
+Returns the PID of the WOOPER class manager.
+
+We do the same as get_manager/0 (including w.r.t. to multiple, simultaneous
+launches), but with a gen_server-based procedure:
+
+(note that performing, if possible, an explicit start is better, as it prevents
+simultaneous, clashing launches)
+""".
 -spec get_manager_through_otp() -> manager_pid().
 get_manager_through_otp() ->
 
@@ -403,14 +424,14 @@ get_manager_through_otp() ->
 
 
 
-% @doc Displays runtime information about the class manager.
+-doc "Displays runtime information about the class manager.".
 -spec display() -> void().
 display() ->
 	gen_server:cast( ?wooper_class_manager_name, display ).
 
 
 
-% @doc Stops (the OTP-way) the class manager.
+-doc "Stops (the OTP-way) the class manager.".
 -spec stop() -> void().
 stop() ->
 	trace_utils:debug_fmt( "Stopping (OTP) the WOOPER class manager ~p.",
@@ -425,10 +446,11 @@ stop() ->
 % See loop/1 for the counterpart to gen_server callbacks.
 
 
-% @doc Inits the manager (gen_server callback).
-%
-% (also used by the non-OTP mode of operation)
-%
+-doc """
+Inits the manager (gen_server callback).
+
+(also used by the non-OTP mode of operation)
+""".
 -spec init( any() ) -> { 'ok', state() }.
 init( _Args=[] ) ->
 
@@ -450,9 +472,10 @@ init( _Args=[] ) ->
 
 
 
-% @doc Handles OTP-based call requests (gen_server callback, triggered by
-% get_table_key/1 in this module).
-%
+-doc """
+Handles OTP-based call requests (gen_server callback, triggered by
+get_table_key/1 in this module).
+""".
 handle_call( { get_table_key, Classname }, _From, _State=Tables ) ->
 
 	display_msg( "handle_call: get_table_key for ~ts.", [ Classname ] ),
@@ -464,7 +487,7 @@ handle_call( { get_table_key, Classname }, _From, _State=Tables ) ->
 
 
 
-% @doc Handles OTP-based oneways (gen_server callback).
+-doc "Handles OTP-based oneways (gen_server callback).".
 handle_cast( stop, State ) ->
 
 	display_msg( "handle_cast: stop." ),
@@ -483,7 +506,7 @@ handle_cast( display, State=Tables ) ->
 
 
 
-% @doc Handles OTP-based info requests (gen_server callback).
+-doc "Handles OTP-based info requests (gen_server callback).".
 handle_info( { get_table_key, _Classname, _FromPid }, _State=_Tables ) ->
 
 	trace_utils:error( "WOOPER class manager called according to the "
@@ -503,7 +526,9 @@ handle_info( Info, State ) ->
 
 
 
-% @doc Handles the "terminate" optional callback.
+-doc """
+Handles the "terminate" optional callback.
+""".
 terminate( Reason, _State ) ->
 
 	trace_utils:info_fmt( "WOOPER class manager terminated (reason: ~w).",
@@ -511,7 +536,9 @@ terminate( Reason, _State ) ->
 
 
 
-% @doc Handles the optional "code change" callback.
+-doc """
+Handles the optional "code change" callback.
+""".
 code_change( OldVsn, State, Extra ) ->
 
 	trace_utils:info_fmt( "Code change for the WOOPER class manager; "
@@ -530,12 +557,13 @@ code_change( OldVsn, State, Extra ) ->
 %% Implicit, non-OTP initialisation.
 
 
-% @doc Returns the PID of the WOOPER class manager.
-%
-% If it is already running, finds it and returns its PID, otherwise launches it
-% (in an ad hoc, non-OTP way), and returns the relevant PID as well (even if
-% multiple instances thereof were concurrently spawned).
-%
+-doc """
+Returns the PID of the WOOPER class manager.
+
+If it is already running, finds it and returns its PID, otherwise launches it
+(in an ad hoc, non-OTP way), and returns the relevant PID as well (even if
+multiple instances thereof were concurrently spawned).
+""".
 -spec get_manager() -> manager_pid().
 get_manager() ->
 
@@ -576,7 +604,7 @@ get_manager() ->
 
 
 
-% @doc Initializes the class manager, when launched in a non-OTP way.
+-doc "Initializes the class manager, when launched in a non-OTP way.".
 -spec init_automatic() -> no_return().
 init_automatic() ->
 
@@ -616,7 +644,7 @@ init_automatic() ->
 
 
 
-% @doc Stops the class manager, when not using the OTP way.
+-doc "Stops the class manager, when not using the OTP way.".
 -spec stop_automatic() -> void().
 stop_automatic() ->
 
@@ -633,12 +661,14 @@ stop_automatic() ->
 
 
 
+
 % Section common to all kinds of modes of operation (OTP or not).
 
 
-% @doc Returns the initial state of this manager, that is an (initially empty)
-% table of per-class tables.
-%
+-doc """
+Returns the initial state of this manager, that is an (initially empty) table of
+per-class tables.
+""".
 -spec get_initial_state() -> state().
 get_initial_state() ->
 	% Empty class table:
@@ -646,19 +676,21 @@ get_initial_state() ->
 
 
 
-% @doc Stops the class manager.
-%
-% Used by all modes of operation (OTP or not).
-%
+-doc """
+Stops the class manager.
+
+Used by all modes of operation (OTP or not).
+""".
 -spec stop_common() -> void().
 stop_common() ->
 	display_msg( "Stopping the WOOPER class manager." ).
 
 
 
-% @doc Handles the manager main loop; serves virtual tables on request (mostly
-% on instances creation).
-%
+-doc """
+Handles the manager main loop; serves virtual tables on request (mostly on
+instances creation).
+""".
 -spec loop( ?wooper_table_type:?wooper_table_type() ) -> no_return() | 'ok' .
 loop( Tables ) ->
 
@@ -691,20 +723,20 @@ loop( Tables ) ->
 
 
 
-% @doc Looks-up the specified table: secures it and returns its corresponding
-% key.
-%
-% If found, returns its key immediately, otherwise constructs it, stores the
-% result and returns its key in the persistent_term registry.
-%
-% Allows to synchronise the instances so that they can know for sure that their
-% virtual tables are available.
-%
-% Virtual tables are stored in a ?wooper_table_type.
-%
-% Returns a pair formed of the new set of virtual tables and of the requested
-% table key.
-%
+-doc """
+Looks-up the specified table: secures it and returns its corresponding key.
+
+If found, returns its key immediately, otherwise constructs it, stores the
+result and returns its key in the persistent_term registry.
+
+Allows to synchronise the instances so that they can know for sure that their
+virtual tables are available.
+
+Virtual tables are stored in a ?wooper_table_type.
+
+Returns a pair formed of the new set of virtual tables and of the requested
+table key.
+""".
 -spec get_virtual_table_key_for( module_name(),
 								 ?wooper_table_type:?wooper_table_type() ) ->
 		{ ?wooper_table_type:?wooper_table_type(), wooper:class_key() }.
@@ -777,9 +809,10 @@ get_virtual_table_key_for( Module, Tables ) ->
 
 
 
-% @doc Creates recursively (indirectly thanks to update_method_table_with/2) the
-% virtual table corresponding to specified module.
-%
+-doc """
+Creates recursively (indirectly thanks to update_method_table_with/2) the
+virtual table corresponding to specified module.
+""".
 -spec create_method_table_for( module_name() ) ->
 						?wooper_table_type:?wooper_table_type().
 create_method_table_for( TargetModule ) ->
@@ -792,13 +825,14 @@ create_method_table_for( TargetModule ) ->
 
 
 
-% @doc Updates specified virtual table with the method of specified module
-% (that is precomputes the virtual table for the related class).
-%
-% In case of key collision, the values specified in ?Wooper_Table_Type have
-% priority over the ones relative to Module. Hence methods redefined in child
-% classes are selected, rather than the ones of the mother class.
-%
+-doc """
+Updates specified virtual table with the method of specified module (that is
+precomputes the virtual table for the related class).
+
+In case of key collision, the values specified in ?Wooper_Table_Type have
+priority over the ones relative to Module. Hence methods redefined in child
+classes are selected, rather than the ones of the mother class.
+""".
 -spec update_method_table_with( module_name(),
 								?wooper_table_type:?wooper_table_type() ) ->
 									?wooper_table_type:?wooper_table_type().
@@ -807,9 +841,10 @@ update_method_table_with( Module, Hashtable ) ->
 
 
 
-% @doc Tells whether the function Name/Arity should be registered into the
-% method virtual table.
-%
+-doc """
+Tells whether the function Name/Arity should be registered into the method
+virtual table.
+""".
 select_function( _,0 )                                                -> false ;
 
 select_function( new,_ )                                              -> false ;
@@ -901,7 +936,9 @@ select_function( _, _ )                                               -> true.
 
 
 
-% @doc Returns a table appropriate for method look-up, for the specified module.
+-doc """
+Returns a table appropriate for method look-up, for the specified module.
+""".
 -spec create_local_method_table_for( module_name() ) ->
 								?wooper_table_type:?wooper_table_type().
 create_local_method_table_for( Module ) ->
@@ -921,7 +958,6 @@ create_local_method_table_for( Module ) ->
 					throw( { class_not_found, Module } )
 
 			  end,
-
 
 	% Filter-out functions that should not be callable via RMI:
 	lists:foldl(
@@ -946,11 +982,12 @@ create_local_method_table_for( Module ) ->
 
 
 
-% @doc Pings the specified WOOPER instance, designated by its PID or registered
-% name (locally, otherwise, if not found, globally).
-%
-% Returns pong if it could be successfully ping'ed, otherwise returns pang.
-%
+-doc """
+Pings the specified WOOPER instance, designated by its PID or registered name
+(locally, otherwise, if not found, globally).
+
+Returns pong if it could be successfully ping'ed, otherwise returns pang.
+""".
 -spec ping( naming_utils:registration_name() | wooper:instance_pid() ) ->
 													'pong' | 'pang'.
 ping( Target ) when is_pid( Target ) ->

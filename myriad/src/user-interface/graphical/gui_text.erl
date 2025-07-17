@@ -25,29 +25,40 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various facilities for <b>text input and display</b>.
-%
-% See also the corresponding dialogs: gui_dialog:text_entry_dialog() and
-% gui_dialog:message_dialog().
-%
 -module(gui_text).
 
+-moduledoc """
+Gathering of various facilities for **text input and display**.
 
+See also the corresponding dialogs: gui_dialog:text_entry_dialog() and
+gui_dialog:message_dialog().
+""".
+
+
+
+-doc """
+A widget displaying a text; a text display behaves like a panel dedicated to the
+rendering of a text.
+
+The current font applies to this display.
+""".
 -opaque static_text_display() :: wxStaticText:wxStaticText().
-% A widget displaying a text; a text display behaves like a panel dedicated
-% to the rendering of a text.
-%
-% The current font applies to this display.
 
 
+
+-doc "An option for the creation of a static text display.".
 -type static_display_option() ::
 	{ 'position', point() }
   | { 'size', size() }
   | { 'style', [ static_display_style() ] }.
-% An option for the creation of a static text display.
+ 
 
 
+-doc """
+A style element of a static text display.
+
+See also <http://docs.wxwidgets.org/stable/classwx_static_text.html>.
+""".
 -type static_display_style() ::
 	'align_left'   % Align the text to the left.
   | 'align_right'  % Align the text to the right.
@@ -56,21 +67,20 @@
   | 'ellipsize_begin'     % Any shrinking done from the start of the text.
   | 'ellipsize_middle'    % Any shrinking done at the middle of the text.
   | 'ellipsize_end'.      % Any shrinking done at the end of the text.
-% A style element of a static text display.
-%
-% See also [http://docs.wxwidgets.org/stable/classwx_static_text.html].
-
+ 
 
 -export_type([ static_text_display/0,
 			   static_display_option/0, static_display_style/0 ]).
 
 
+-doc "Any kind of GUI-related text.".
 -type text() :: ui:text().
-% Any kind of GUI-related text.
+ 
 
 
+-doc "A text for help information.".
 -type help_info() :: text().
-% A text for help information.
+ 
 
 
 % Other text-related types:
@@ -94,6 +104,7 @@
 -include("gui_internal_defines.hrl").
 
 
+
 % Shorthands:
 
 -type maybe_list( T ) :: list_utils:maybe_list( T ).
@@ -115,22 +126,22 @@
 % Text display section.
 
 
-% @doc Creates a static text display, based on the specified label.
+-doc "Creates a static text display, based on the specified label.".
 -spec create_static_display( label(), parent() ) -> static_text_display().
 create_static_display( Label, Parent ) ->
 	create_static_display( Label, gui_id:get_any_id(), _Opts=[], Parent ).
 
 
 
-% @doc Creates a static text display, based on the specified label and on a
-% precomputed size, determined thanks to the specified font, which is associated
-% to it. Returns the created static display, together with its precise text
-% extent.
-%
-% This function may be useful as, in some cases, even the rendering if a
-% single-line label in a panel may be wrong, being cropped for some unknown
-% reason (presumably a wxWidgets bug).
-%
+-doc """
+Creates a static text display, based on the specified label and on a precomputed
+size, determined thanks to the specified font, which is associated to
+it. Returns the created static display, together with its precise text extent.
+
+This function may be useful as, in some cases, even the rendering if a
+single-line label in a panel may be wrong, being cropped for some unknown reason
+(presumably a wxWidgets bug).
+""".
 -spec create_presized_static_display( label(), font(), parent() ) ->
 			{ static_text_display(), precise_text_extent() }.
 create_presized_static_display( Label, Font, Parent ) ->
@@ -148,27 +159,28 @@ create_presized_static_display( Label, Font, Parent ) ->
 
 
 
-% @doc Creates a static text display, based on the specified label and
-% option(s).
-%
+-doc """
+Creates a static text display, based on the specified label and option(s).
+""".
 -spec create_static_display( label(), maybe_list( static_display_option() ),
 							 parent() ) -> static_text_display().
 create_static_display( Label, Options, Parent ) ->
 	create_static_display( Label, gui_id:get_any_id(), Options, Parent ).
 
 
-% @doc Creates a static text display, based on the specified label, (non-size)
-% option(s) and its precise text extent, determined thanks to the specified
-% font, which is associated to it.
-%
-% Note that the display height may be higher than the one of the actual text,
-% due to the margin taken for letters possibly going below the baseline (like
-% 'g').
-%
-% This function may be useful as, in some cases, even the rendering if a
-% single-line label in a panel may be wrong, being cropped or extended for some
-% unknown reason (presumably a wxWidgets bug).
-%
+
+-doc """
+Creates a static text display, based on the specified label, (non-size)
+option(s) and its precise text extent, determined thanks to the specified font,
+which is associated to it.
+
+Note that the display height may be higher than the one of the actual text, due
+to the margin taken for letters possibly going below the baseline (like 'g').
+
+This function may be useful as, in some cases, even the rendering if a
+single-line label in a panel may be wrong, being cropped or extended for some
+unknown reason (presumably a wxWidgets bug).
+""".
 -spec create_presized_static_display( label(),
 			maybe_list( static_display_option() ), font(), parent() ) ->
 				{ static_text_display(), precise_text_extent() }.
@@ -205,10 +217,9 @@ create_presized_static_display( Label, Options, Font, Parent ) ->
 
 
 
-
-% @doc Creates a static text display, based on the specified label and
-% identifier.
-%
+-doc """
+Creates a static text display, based on the specified label and identifier.
+""".
 -spec create_static_display_with_id( label(), id(), parent() ) ->
 											static_text_display().
 create_static_display_with_id( Label, Id, Parent ) ->
@@ -216,9 +227,10 @@ create_static_display_with_id( Label, Id, Parent ) ->
 
 
 
-% @doc Creates a static text display, based on the specified label, identifier
-% and option(s).
-%
+-doc """
+Creates a static text display, based on the specified label, identifier and
+option(s).
+""".
 -spec create_static_display( label(), id(),
 	maybe_list( static_display_option() ), parent() ) -> static_text_display().
 create_static_display( Label, Id, Options, Parent ) ->
@@ -231,19 +243,19 @@ create_static_display( Label, Id, Options, Parent ) ->
 
 
 
-% @doc Destructs the specified static text display.
+-doc "Destructs the specified static text display.".
 -spec destruct_static_display( static_text_display() ) -> void().
 destruct_static_display( StaticTextDisplay ) ->
 	wxStaticText:destroy( StaticTextDisplay ).
 
 
 
+-doc """
+Converts the specified static text option(s) into the appropriate back-end
+specific options.
 
-% @doc Converts the specified static text option(s) into the appropriate
-% back-end specific options.
-%
-% (helper)
-%
+(helper)
+""".
 -spec to_wx_static_display_opts( maybe_list( static_display_option() ) ) ->
 											[ wx_opt_pair() ].
 to_wx_static_display_opts( Options ) when is_list( Options )->

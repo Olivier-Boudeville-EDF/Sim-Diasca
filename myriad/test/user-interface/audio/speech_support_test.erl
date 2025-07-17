@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, November 30, 2021.
 
-
-% @doc This is a test of Myriad's <b>speech support</b>, more precisely the
-% generation of Text-to-Speech (TTS) audio content.
-%
-% See the speech_support.erl tested module.
-%
 -module(speech_support_test).
+
+-moduledoc """
+This is a test of Myriad's **speech support**, more precisely the generation of
+Text-to-Speech (TTS) audio content.
+
+See the speech_support.erl tested module.
+""".
+
 
 
 % Usage notes:
@@ -56,7 +58,7 @@
 -export([ test_list_voices/1, test_record_speeches/1 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type bin_locale() :: locale_utils:bin_locale().
 
@@ -66,7 +68,7 @@
 
 
 
-% @doc The actual speech test.
+-doc "The actual speech test.".
 -spec run_speech_test() -> void().
 run_speech_test() ->
 
@@ -89,13 +91,19 @@ run_speech_test() ->
 	end.
 
 
-% @doc Returns the French locale that shall be used in this test.
+
+-doc """
+Returns the French locale that shall be used in this test.
+""".
 -spec get_french_locale() -> bin_locale().
 get_french_locale() ->
 	<<"fr-FR">>.
 
 
-% @doc Returns the English locale that shall be used in this test.
+
+-doc """
+Returns the English locale that shall be used in this test.
+""".
 -spec get_english_locale() -> bin_locale().
 get_english_locale() ->
 	% Could be also <<"en-GB">>:
@@ -103,7 +111,7 @@ get_english_locale() ->
 
 
 
-% @doc Testing the listing of voices.
+-doc "Testing the listing of voices.".
 -spec test_list_voices( speech_state() ) -> void().
 test_list_voices( SpeechState ) ->
 
@@ -134,7 +142,7 @@ test_list_voices( SpeechState ) ->
 
 
 
-% @doc Returns the French speech settings to apply for testing.
+-doc "Returns the French speech settings to apply for testing.".
 -spec get_french_test_speech_settings() -> speech_settings().
 get_french_test_speech_settings() ->
 
@@ -153,7 +161,7 @@ get_french_test_speech_settings() ->
 
 
 
-% @doc Returns the English speech settings to apply for testing.
+-doc "Returns the English speech settings to apply for testing.".
 -spec get_english_test_speech_settings() -> speech_settings().
 get_english_test_speech_settings() ->
 	% EnglishVoiceInfoId = pair:second(
@@ -171,7 +179,8 @@ get_english_test_speech_settings() ->
 					  speech_style=customer_support }.
 
 
-% @doc Testing the recording of a French speech.
+
+-doc "Testing the recording of a French speech.".
 test_record_french_speech( LogicalSpeechBaseName, MaybeOutputDir,
 		SpeechState=#speech_state { audio_settings=AudioSettings }  ) ->
 
@@ -199,7 +208,7 @@ test_record_french_speech( LogicalSpeechBaseName, MaybeOutputDir,
 
 
 
-% @doc Testing the recording of an English speech.
+-doc "Testing the recording of an English speech.".
 test_record_english_speech( LogicalSpeechBaseName, MaybeOutputDir,
 		SpeechState=#speech_state { audio_settings=AudioSettings }  ) ->
 
@@ -221,7 +230,8 @@ test_record_english_speech( LogicalSpeechBaseName, MaybeOutputDir,
 							 [ EnglishFilePath ] ).
 
 
-% @doc Testing the recording of speeches.
+
+-doc "Testing the recording of speeches.".
 -spec test_record_speeches( speech_state() ) -> void().
 test_record_speeches( SpeechState ) ->
 
@@ -242,15 +252,16 @@ test_record_speeches( SpeechState ) ->
 
 
 
-
-% @doc Tests the management of speech referentials and logical speeches.
--spec test_referential_management( speech_state() ) -> void().
-test_referential_management( SpeechState=#speech_state{
+-doc """
+Tests the management of speech repositories and logical speeches.
+""".
+-spec test_repository_management( speech_state() ) -> void().
+test_repository_management( SpeechState=#speech_state{
 											audio_settings=AudioSettings } ) ->
 
-	test_facilities:display( "Testing the management of speech referentials." ),
+	test_facilities:display( "Testing the management of speech repositories." ),
 
-	% Using the referential in the speech state to define two logical speeches,
+	% Using the repository in the speech state to define two logical speeches,
 	% each defined for the following two speech settings, which we register
 	% first:
 
@@ -346,7 +357,7 @@ test_referential_management( SpeechState=#speech_state{
 
 
 
-% @doc The actual TTS test.
+-doc "The actual TTS test.".
 -spec run_test_tts( speech_state() ) -> void().
 run_test_tts( SpeechState ) ->
 
@@ -356,11 +367,11 @@ run_test_tts( SpeechState ) ->
 
 	%test_record_speeches( SpeechState ),
 
-	test_referential_management( SpeechState ).
+	test_repository_management( SpeechState ).
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

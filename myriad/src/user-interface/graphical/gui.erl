@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,23 +25,24 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Main module of MyriadGUI, a gathering of various <b>facilities for
-% Graphical User Interfaces</b> (GUI).
-%
-% We name this library MyriadGUI (shortened here, whenever it is not ambiguous,
-% in 'gui'), a part of Ceylan-Myriad.
-%
-% The purpose of MyriadGUI is to wrap, complement and improve what we consider
-% the best set of gui backends available (previously: gs alone; now: wx, with
-% OpenGL), for classical applications and interactive multimedia ones
-% (e.g. video games).
-%
-% wx is the standard Erlang binding to WxWidgets (https://www.wxwidgets.org/).
-%
-% See `gui_test.erl' for the corresponding test.
-%
 -module(gui).
+
+-moduledoc """
+Main module of MyriadGUI, a gathering of various **facilities for Graphical User
+Interfaces** (GUI).
+
+We name this library MyriadGUI (shortened here, whenever it is not ambiguous, in
+'gui'), a part of Ceylan-Myriad.
+
+The purpose of MyriadGUI is to wrap, complement and improve what we consider the
+best set of gui backends available (previously: gs alone; now: wx, with OpenGL),
+for classical applications and interactive multimedia ones (e.g. video games).
+
+wx is the standard Erlang binding to WxWidgets (<https://www.wxwidgets.org/>).
+
+See `gui_test.erl` for the corresponding test.
+""".
+
 
 
 % For the canvas_state record:
@@ -220,81 +221,99 @@
 
 % Type declarations:
 
+-doc "A length, as an integer number of pixels.".
 -type length() :: integer_distance().
-% A length, as an integer number of pixels.
 
+
+-doc "A width, as an integer number of pixels.".
 -type width() :: length().
-% A width, as an integer number of pixels.
 
+
+-doc "An height, as an integer number of pixels.".
 -type height() :: length().
-% An height, as an integer number of pixels.
 
 
+-doc "An aspect ratio, typically of a screen, equal to Width/Height.".
 -type aspect_ratio() :: ratio().
-% An aspect ratio, typically of a screen, equal to Width/Height.
 
 
+-doc "A length, as a number (integer or floating-point) of pixels.".
 -type any_length() :: any_distance().
-% A length, as a number (integer or floating-point) of pixels.
 
+
+-doc "A width, as a number (integer or floating-point) of pixels.".
 -type any_width() :: any_length().
-% A width, as a number (integer or floating-point) of pixels.
 
+
+-doc "An height, as a number (integer or floating-point) of pixels.".
 -type any_height() :: any_length().
-% An height, as a number (integer or floating-point) of pixels.
 
 
+-doc "Here, for a GUI, coordinates are an integer number of pixels.".
 -type coordinate() :: linear:integer_coordinate().
-% Here, for a GUI, coordinates are an integer number of pixels.
 
 
+-doc """
+A pixel-wise (tuple-based) GUI point (as point2:point2() would allow for
+floating-point coordinates).
+""".
 -type point() :: point2:integer_point2().
-% A pixel-wise (tuple-based) GUI point (as point2:point2() would allow for
-% floating-point coordinates).
 
+
+-doc "Position, in pixel coordinates, typically of a widget.".
 -type position() :: point() | 'auto'.
-% Position, in pixel coordinates, typically of a widget.
 
 
+-doc """
+Dimensions in pixels, as {IntegerWidth,IntegerHeight}.
+
+Note that in general size() shall be preferred to this type, notably to
+designate an attribute of a graphical element - except for example for textures
+or to express dimensions in general.
+""".
 -type dimensions() :: linear_2D:integer_rect_dimensions().
-% Dimensions in pixels, as {IntegerWidth,IntegerHeight}.
-%
-% Note that in general size() shall be preferred to this type, notably to
-% designate an attribute of a graphical element - except for example for
-% textures or to express dimensions in general.
 
 
+-doc "Size, typically of a widget.".
 -type size() :: dimensions().
-% Size, typically of a widget.
 
+
+-doc "Sizing information, typically of a widget.".
 -type sizing() :: size() | 'auto'.
-% Sizing information, typically of a widget.
 
 
+-doc """
+A vertical orientation means piling elements top to bottom for example, while an
+horizontal one means left to right, for example.
+""".
 -type orientation() :: 'vertical' | 'horizontal'.
-% A vertical orientation means piling elements top to bottom for example, while
-% an horizontal one means left to right, for example.
 
 
+
+-doc "A direction, for example to maximise a widget in a container.".
 -type direction() :: orientation() | 'both'.
-% A direction, for example to maximise a widget in a container.
 
+
+-doc "A number of rows.".
 -type row_count() :: count().
-% A number of rows.
 
+
+-doc "A number of columns.".
 -type column_count() :: count().
-% A number of columns.
 
 
 
+
+-doc """
+A number of frames per second.
+
+The old Charlie Chaplin movies were shot at 16 frames per second and are
+noticeably jerky.
+
+60 frames per second is smoother than 30, and 120 is marginally better than 60;
+beyond 120 fps has no real interest, as it exceeds eye perception.
+""".
 -type fps() :: count().
-% A number of frames per second.
-%
-% The old Charlie Chaplin movies were shot at 16 frames per second and are
-% noticeably jerky.
-%
-% 60 frames per second is smoother than 30, and 120 is marginally better than
-% 60; beyond 120 fps has no real interest, as it exceeds eye perception.
 
 
 
@@ -307,29 +326,41 @@
 % further information.
 
 
+-doc """
+The PID of a process whose role is to be a Model in the sense of the MVC
+pattern.
+""".
 -type model_pid() :: pid().
-% The PID of a process whose role is to be a Model in the sense of the MVC
-% pattern.
 
 
+
+-doc """
+The PID of a process whose role is to be a View in the sense of the MVC pattern.
+""".
 -type view_pid() :: pid().
-% The PID of a process whose role is to be a View in the sense of the MVC
-% pattern.
 
 
+
+-doc """
+The PID of a process whose role is to be a Controller in the sense of the MVC
+pattern.
+""".
 -type controller_pid() :: pid().
-% The PID of a process whose role is to be a Controller in the sense of the MVC
-% pattern.
+
 
 
 
 % Widget types.
 
 
+-doc "Internal, overall types for all GUI objects.".
 -type object_type() :: wx_object_type() | myriad_object_type().
-% Internal, overall types for all GUI objects.
 
 
+-doc """
+MyriadGUI-translated version of a native wx type, that is of the
+wx_native_object_type(); for example 'window', instead of 'wxWindow'.
+""".
 -type wx_object_type() :: 'object'
 						| 'event_handler'
 						| 'window'
@@ -348,60 +379,98 @@
 						| 'menu'
 						| 'toolbar'
 						| 'memory_device_context'.
-% MyriadGUI-translated version of a native wx type, that is of the
-% wx_native_object_type(); for example 'window', instead of 'wxWindow'.
 
 
+-doc "The additional widget types introduced by Myriad.".
 -type myriad_object_type() :: 'myr_canvas'.
-% The additional widget types introduced by Myriad.
+
 
 
 % Also: | all other *_state() that may be introduced in the future.
+-doc "Records the actual state of a MyriadGUI object.".
 -type myriad_object_state() :: gui_canvas:canvas_state().
-% Records the actual state of a MyriadGUI object.
 
 
+
+-doc "The construction parameters of a MyriadGUI object.".
 -type construction_parameters() :: [ term() ].
-% The construction parameters of a MyriadGUI object.
 
 
+
+-doc """
+Reference to a GUI object (often designated as "widget" here), somewhat akin to
+a PID (e.g. ``{wx_ref, 35, wxFrame, []}`` or ``{myriad_object_ref, myr_canvas,
+12}``).
+""".
 -type gui_object() :: wx_object() | myriad_object_ref().
-% Reference to a GUI object (often designated as "widget" here), somewhat akin
-% to a PID (e.g. {wx_ref, 35, wxFrame, []} or {myriad_object_ref, myr_canvas,
-% 12}).
 
 
+
+-doc "Alias to designate more clearly the wx server.".
 -type wx_server() :: gui_object().
-% Alias to designate more clearly the wx server.
+
 
 
 
 % Defining the actual widget types corresponding to wx_object_type():
 
 
+-doc "The parent (widget) of a widget, as they tend to form a hierarchy.".
 -type parent() :: widget().
-% The parent (widget) of a widget, as they tend to form a hierarchy.
 
 
+
+-doc """
+A label, typically of a widget.
+
+Control characters can be used (e.g. `"\n"`, `"\t"`), and shortcuts/accelerators
+(with a `"&"` prefix): all `"&"` characters in the label are special and
+indicate that the following character is a mnemonic for this control and can be
+used to activate it from the keyboard (typically by using Alt key in combination
+with it). To insert a literal ampersand character, you need to double it,
+i.e. to use `"&&"`.
+""".
 -type label() :: ui:label().
-% A label, typically of a widget.
-%
-% Control characters can be used (e.g. `"\n"', `"\t"'), and
-% shortcuts/accelerators (with a `"&"' prefix): all `"&"' characters in the
-% label are special and indicate that the following character is a mnemonic for
-% this control and can be used to activate it from the keyboard (typically by
-% using Alt key in combination with it). To insert a literal ampersand
-% character, you need to double it, i.e. to use `"&&"'.
 
 
+-doc "Shorthand type.".
 -type event_callback() :: gui_event:event_callback().
-% Shorthand type.
 
+
+-doc "User data, as specified in an event subscription/callback.".
 -type user_data() :: any().
-% User data, as specified in an event subscription/callback.
 
 
 
+
+-doc """
+Options for the subscription to events.
+
+Note that, with MyriadGUI, by default most types of events are propagated to
+parent handlers; it allows notably the GUI backend to update the state of the
+widget hierarchy accordingly (otherwise for example the user code subscribing to
+onResized events would prevent the corresponding resizes to be properly taken
+into account by the backend).
+
+However it may result in race conditions for example when shutting the
+application after the receiving of a onWindowClosed message, as the backend
+would be destroying the application GUI resources concurrently to any
+corresponding user-defined event handler; this is why the subscription to some
+event types implies that by default their events are trapped.
+
+Use the 'trap_event' option or the trap_event/1 function to prevent any default
+event propagation to happen, so that the user code is the sole manager of such
+events (e.g. of the application termination). Once finished it may propagate the
+event, to force its sequential processing.
+
+Conversely, use the 'propagate_event' option or the propagate_event/1 function
+to force event propagation despite an event type implying that by default these
+events are trapped.
+
+See
+<https://docs.wxwidgets.org/stable/overview_events.html#overview_events_propagation>
+for further information regarding event propagation.
+""".
 -type event_subscription_opt() ::
 
 	{ 'id', id() }
@@ -433,51 +502,33 @@
 
   | { 'callback', event_callback() }
   | { 'user_data', user_data() }.
-% Options for the subscription to events.
-%
-% Note that, with MyriadGUI, by default most types of events are propagated to
-% parent handlers; it allows notably the GUI backend to update the state of the
-% widget hierarchy accordingly (otherwise for example the user code subscribing
-% to onResized events would prevent the corresponding resizes to be properly
-% taken into account by the backend).
-%
-% However it may result in race conditions for example when shutting the
-% application after the receiving of a onWindowClosed message, as the backend
-% would be destroying the application GUI resources concurrently to any
-% corresponding user-defined event handler; this is why the subscription to some
-% event types implies that by default their events are trapped.
-%
-% Use the 'trap_event' option or the trap_event/1 function to prevent any
-% default event propagation to happen, so that the user code is the sole manager
-% of such events (e.g. of the application termination). Once finished it may
-% propagate the event, to force its sequential processing.
-%
-% Conversely, use the 'propagate_event' option or the propagate_event/1 function
-% to force event propagation despite an event type implying that by default
-% these events are trapped.
-%
-% See
-% https://docs.wxwidgets.org/stable/overview_events.html#overview_events_propagation
-% for further information regarding event propagation.
 
 
--type event_subscription_options() ::
-		event_subscription_opt() | [ event_subscription_opt() ].
+
+-doc "At least one event subscription option.".
+-type event_subscription_options() :: maybe_list( event_subscription_opt() ).
 
 
+-doc """
+Mapped internally to 'none', 'verbose', 'trace', etc.
+
+See convert_debug_level/1.
+""".
 -type debug_level_opt() :: 'none' | 'calls' | 'life_cycle'.
-% Mapped internally to 'none', 'verbose', 'trace', etc.
-%
-% See convert_debug_level/1.
 
 
 
+-doc "At least one debug level option.".
 -type debug_level() :: debug_level_opt() | [ debug_level_opt() ].
 
+
+-doc "Any kind of error message".
 -type error_message() :: term().
 
+
+-doc "MyriadGUI-level type for a wx_object(), that is a #wx_ref record.".
 -opaque wx_object() :: wx:wx_object().
-% MyriadGUI-level type for a wx_object(), that is a #wx_ref record.
+
 
 
 -export_type([ service/0,
@@ -539,7 +590,7 @@
 	{ 'id_allocator_pid', id_allocator_pid() },
 
 	% The main, top-level window (if any; generally a frame) of the application:
-	{ 'top_level_window', maybe( top_level_window() ) },
+	{ 'top_level_window', option( top_level_window() ) },
 
 	% PID of the MyriadGUI main event loop:
 	{ 'loop_pid', loop_pid() },
@@ -557,10 +608,10 @@
 	% OpenGL-related entries:
 
 	% The current OpenGL canvas (if any):
-	{ 'gl_canvas', maybe( gl_canvas() ) },
+	{ 'gl_canvas', option( gl_canvas() ) },
 
 	% The current OpenGL context (if any):
-	{ 'gl_context', maybe( gl_context() ) },
+	{ 'gl_context', option( gl_context() ) },
 
 
 	% Mouse-related entries:
@@ -569,7 +620,7 @@
 	{ 'cursor_table', gui_mouse:cursor_table() },
 
 	% The current type of cursor (if any):
-	{ 'current_cursor_type', maybe( gui_mouse:cursor_type() ) },
+	{ 'current_cursor_type', option( gui_mouse:cursor_type() ) },
 
 	% The stack (as a list) of the windows that grabbed the mouse cursor:
 	{ 'grab_stack', [ window() ] },
@@ -578,7 +629,7 @@
 	{ 'key_released', boolean() },
 
 	% The coordinates (if any) at which the mouse cursor shall warp:
-	{ 'warp_coordinates', maybe( point() ) },
+	{ 'warp_coordinates', option( point() ) },
 
 
 	% Window manager related entries:
@@ -586,12 +637,12 @@
 	% The currently active window (if any), i.e. the one handling current
 	% events:
 	%
-	{ 'active_window', maybe( window_name() ) },
+	{ 'active_window', option( window_name() ) },
 
 	% The window (if any) currently having the focus (implicitly or because
 	% having grabbed the mouse):
 	%
-	{ 'focused_window', maybe( window_name() ) } ] ).
+	{ 'focused_window', option( window_name() ) } ] ).
 % These keys, associated to values of the associated types, are used (and
 % reserved) by MyriadGUI in order to record application-level information, made
 % available to its processes through its environment server.
@@ -610,39 +661,43 @@
 % [GLCanvas, Context] = environment:get([gl_canvas, gl_context], GUIEnvPid), ...
 
 
+-doc "The various MyriadGUI services that may or may not be enabled.".
 -type service() :: 'mouse'.
-% The various MyriadGUI services that may or may not be enabled.
 
 
+
+-doc "Identifier of a graphical backend.".
 -type backend_identifier() :: 'gs' % Now obsolete
 							| 'wx' % Based on WxWidgets
 							| atom().
-% Identifier of a graphical backend.
 
 
+
+-doc "Information regarding a graphical backend.".
 -type backend_information() ::
 	{ backend_identifier(), basic_utils:any_version() }.
-% Information regarding a graphical backend.
 
 
 % Current backend is wx (based on WxWidgets).
 %
 % (useful to avoid including the header of wx in our own public ones)
 %
+-doc "A (supposedly opaque) backend GUI event.".
 -type backend_event() :: gui_event:wx_event().
-% A (supposedly opaque) backend GUI event.
 
 
+
+-doc "An (opaque) environment used by a GUI backend.".
 -opaque backend_environment() :: wx_environment().
-% An (opaque) environment used by a GUI backend.
 
 
+-doc "An (opaque) wx process environment.".
 -type wx_environment() :: term().
-% An (opaque) wx process environment.
 
 
+
+-doc "The PID of the MyriadGUI main loop.".
 -type loop_pid() :: pid().
-% The PID of the MyriadGUI main loop.
 
 
 
@@ -652,7 +707,7 @@
 
 
 % Extra overall operations.
--export([ batch/1, get_environment_server/0 ]).
+-export([ batch/1, get_environment_server/0, get_base_path/0 ]).
 
 
 % Event-related operations.
@@ -792,6 +847,7 @@
 
 -type ustring() :: text_utils:ustring().
 
+-type directory_path() :: file_utils:directory_path().
 
 -type ratio() :: math_utils:ratio().
 
@@ -823,42 +879,46 @@
 
 
 
+
 % Section for basic GUI overall operations.
 
 
-% @doc Tells whether this user-interface backend is available.
+-doc "Tells whether this user-interface backend is available.".
 -spec is_available() -> boolean().
 is_available() ->
 	% As simple as:
 	system_utils:has_graphical_output().
 
 
-% @doc Returns information regarding the graphical backend in use.
+
+-doc "Returns information regarding the graphical backend in use.".
 -spec get_backend_information() -> backend_information().
 get_backend_information() ->
 	{ wx, gui_wx_backend:get_wx_version() }.
 
 
 
-% @doc Starts the MyriadGUI subsystem, with all optional services; returns the
-% information regarding its environment.
-%
-% Note that OpenGL-related options are to be specified if wanting to create a GL
-% canvas afterwards (see gui_opengl:create_canvas{1,2}).
-%
+-doc """
+Starts the MyriadGUI subsystem, with all optional services; returns the
+information regarding its environment.
+
+Note that OpenGL-related options are to be specified if wanting to create a GL
+canvas afterwards (see gui_opengl:create_canvas{1,2}).
+""".
 -spec start() -> gui_env_info().
 start() ->
 	start( [ mouse ] ).
 
 
 
-% @doc Starts the MyriadGUI subsystem, with the specified services, or with all
-% services while setting specified debug level; returns the information
-% regarding its environment.
-%
-% Note that OpenGL-related options are to be specified if wanting to create a GL
-% canvas afterwards (see gui_opengl:create_canvas{1,2}).
-%
+-doc """
+Starts the MyriadGUI subsystem, with the specified services, or with all
+services while setting specified debug level; returns the information regarding
+its environment.
+
+Note that OpenGL-related options are to be specified if wanting to create a GL
+canvas afterwards (see gui_opengl:create_canvas{1,2}).
+""".
 -spec start( [ service() ] | debug_level() ) -> gui_env_info().
 start( Services ) when is_list( Services ) ->
 
@@ -882,13 +942,13 @@ start( DebugLevel ) ->
 
 
 
+-doc """
+Creates and initialises the MyriadGUI environment server; returns the
+information of the just created MyriadGUI environment.
 
-% @doc Creates and initialises the MyriadGUI environment server; returns the
-% information of the just created MyriadGUI environment.
-%
-% Some services must be specifically declared here, as they require
-% initialisation (e.g. for the loading of mouse cursors).
-%
+Some services must be specifically declared here, as they require initialisation
+(e.g. for the loading of mouse cursors).
+""".
 -spec create_gui_environment( [ service() ] ) -> gui_env_info().
 create_gui_environment( Services ) ->
 	% Now, at least currently, the MyriadGUI main loop process directly hosts
@@ -899,13 +959,14 @@ create_gui_environment( Services ) ->
 
 
 
-% @doc Creates and initialises the MyriadGUI environment server; returns the
-% information of the just created MyriadGUI environment.
-%
-% Some services must be specifically declared here, as they require
-% initialisation (e.g. for the loading of mouse cursors).
-%
--spec create_gui_environment( [ service() ], maybe( id_allocator_pid() ) ) ->
+-doc """
+Creates and initialises the MyriadGUI environment server; returns the
+information of the just created MyriadGUI environment.
+
+Some services must be specifically declared here, as they require initialisation
+(e.g. for the loading of mouse cursors).
+""".
+-spec create_gui_environment( [ service() ], option( id_allocator_pid() ) ) ->
 											gui_env_info().
 create_gui_environment( Services, MaybeIdAllocPid ) ->
 
@@ -924,7 +985,6 @@ create_gui_environment( Services, MaybeIdAllocPid ) ->
 	% doesn't match state 128 set via gtk_style_context_set_state ()" (possibly
 	% a wx bug; most probably harmless; seen only if the lower log levels
 	% are enabled)
-	%
 
 	WxServer = wx:new(),
 	%WxServer = wx:new( [ { debug, [ verbose, trace ] } ] ),
@@ -1003,13 +1063,14 @@ create_gui_environment( Services, MaybeIdAllocPid ) ->
 
 
 
-% @doc Destructs the MyriadGUI environment server.
+-doc "Destructs the MyriadGUI environment server.".
 -spec destruct_gui_environment() -> void().
 destruct_gui_environment() ->
 	destruct_gui_environment( get_environment_server() ).
 
 
-% @doc Destructs the specified environment server.
+
+-doc "Destructs the specified environment server.".
 -spec destruct_gui_environment( gui_env_pid() ) -> void().
 destruct_gui_environment( GUIEnvPid ) ->
 	LoopPid = environment:get( loop_pid, GUIEnvPid ),
@@ -1021,17 +1082,25 @@ destruct_gui_environment( GUIEnvPid ) ->
 	ok = wx:destroy().
 
 
-% @doc Returns the PID of the supposedly already-running MyriadGUI environment
-% server.
-%
+
+-doc """
+Returns the PID of the supposedly already-running MyriadGUI environment server.
+""".
 -spec get_environment_server() -> gui_env_pid().
 get_environment_server() ->
 	environment:get_server( ?gui_env_reg_name ).
 
 
 
+-doc "Returns the root path of the MyriadGUI sources.".
+-spec get_base_path() -> directory_path().
+get_base_path() ->
+	file_utils:join( [ basic_utils:get_myriad_root_path(), "src",
+					   "user-interface", "graphical" ] ).
 
-% @doc Sets the debug level(s) of the GUI.
+
+
+-doc "Sets the debug level(s) of the GUI.".
 -spec set_debug_level( debug_level() ) -> void().
 set_debug_level( DebugLevels ) when is_list( DebugLevels ) ->
 	wx:debug( [ gui_wx_backend:to_wx_debug_level( L ) || L <- DebugLevels ] );
@@ -1041,64 +1110,71 @@ set_debug_level( DebugLevel ) ->
 
 
 
-% @doc Subscribes the current, calling process to the specified kind of events,
-% resulting in corresponding MyriadGUI callback messages being received whenever
-% such events occur, typically like:
-%    {onWindowClosed, [WindowGUIObject, WindowId, EventContext]}
-%
-% The MyriadGUI general convention is to send to the subscribers a message as a
-% tuple whose:
-%
-% - first element corresponds to the type of event having happened, as an atom
-% (e.g. 'onWindowClosed', 'onResized', 'onShown', etc.; refer to
-% gui_event:event_type())
-%
-% - second is a list whose elements depend on the type of this event
-%
-% In any case, this list respects the following structure:
-% [EmitterGUIObject, EmitterId, ..., EventContext]; indeed it begins with:
-%   - first the reference onto the actual event emitter, as a gui_object()
-%   - second its identifier (any user-specified name, otherwise the lower-level
-% backend one), as a gui_id:id()
-%   - ends with an event context record (see gui_event:event_context())
-% concentrating all available information, should it be needed
-%
-% In-between, there may be additional key information for that type of event
-% that are inserted (like the new dimensions for a onResized event, to have it
-% readily available instead of having to peek in the associated event context).
-%
-% So typical messages may be:
-%  - {onWindowClosed, [WindowGUIObject, WindowId, EventContext]}
-%  - {onResized, [WidgetGUIObject, WidgetId, NewSize, EventContext]}
-%
-% By default (especially for non-command events), subscribing to an event type
-% implies that the corresponding events will still be transmitted upward in the
-% widget hierarchy, so that other event handlers can apply; if wanting to
-% disable this propagation - so that this event is considered to be processed
-% for good by the current handler - either specify here the 'trap_event'
-% subscription option or, later, in the corresponding event handler, call the
-% trap_event/1 function.
-%
-% Note that trapping non-command events may prevent GUI updates that are to be
-% done by the backend.
-%
-% Note also that, at least when creating the main frame, if having subscribed to
-% onShown and onResized, on creation first a onResized event will be received by
-% the subscriber (typically for a 20x20 size), then a onShown event.
-%
+-doc """
+Subscribes the current, calling process to the specified kind(s) of events,
+resulting in corresponding MyriadGUI callback messages being received by this
+caller whenever such events occur, typically like ``{onWindowClosed,
+[WindowGUIObject, WindowId, EventContext]}``.
+
+The MyriadGUI convention is to send to the subscribers a message as a
+pair, whose:
+
+- first element corresponds to the type of event having happened, as an atom
+(e.g. 'onWindowClosed', 'onResized', 'onShown', etc.; refer to
+gui_event:event_type())
+- second element is a list whose elements depend on the type of this event
+
+In any case, this list respects the following structure:
+[EmitterGUIObject, EmitterId, ..., EventContext]; indeed it begins with:
+- first the reference onto the actual event emitter, as a gui_object()
+- second the identifier of that emitter (any user-specified name, otherwise the
+lower-level backend one), as a gui_id:id()
+- ends with an event context record (see gui_event:event_context())
+concentrating all available information (in a backkend-specific way), should it
+be needed
+
+In-between, there may be additional key information for that type of event that
+are inserted (like the new dimensions for a onResized event, in order to have it
+readily available instead of having to peek in the associated backend event
+context).
+
+So typical messages may be:
+- {onWindowClosed, [WindowGUIObject, WindowId, EventContext]}
+- {onResized, [WidgetGUIObject, WidgetId, NewSize, EventContext]}
+
+Refer to the documentation of the gui_event:gui_event/0 type for further
+details.
+
+By default (especially for non-command events), subscribing to an event type
+implies that the corresponding events will still be transmitted upward in the
+widget hierarchy, so that other event handlers can apply; if wanting to disable
+this propagation - so that this event is considered to be processed for good by
+the current handler - either specify here the 'trap_event' subscription option
+or, later, in the corresponding event handler, call the trap_event/1 function.
+
+Note that trapping non-command events may prevent GUI updates that are to be
+done by the backend.
+
+For unsubscribing, refer to unsubscribe_from_events/1.
+
+Note also that, at least when creating the main frame, if having subscribed to
+onShown and onResized, on its creation first a onResized event will be received
+by the subscriber (typically for a 20x20 size), then a onShown event.
+""".
 -spec subscribe_to_events( event_subscription_spec() ) -> void().
 subscribe_to_events( SubscribedEvents ) ->
 	subscribe_to_events( SubscribedEvents, _SubscriberDesignator=self() ).
 
 
 
-% @doc Subscribes the specified process to the specified kind of events,
-% resulting in corresponding MyriadGUI callback messages being received whenever
-% such events occur, like:
-% {onWindowClosed, [WindowGUIObject, WindowId, EventContext]}
-%
-% Refer to subscribe_to_events/1 for further information.
-%
+-doc """
+Subscribes the specified process to the specified kind of events, resulting in
+corresponding MyriadGUI callback messages being received whenever such events
+occur, like:
+   {onWindowClosed, [WindowGUIObject, WindowId, EventContext]}
+
+Refer to subscribe_to_events/1 for further information.
+""".
 -spec subscribe_to_events( event_subscription_spec(), event_subscriber() ) ->
 											void().
 subscribe_to_events( SubscribedEvents, SubscriberDesignator )
@@ -1137,17 +1213,20 @@ subscribe_to_events( SubscribedEvent, SubscriberDesignator )
 
 
 
-% @doc Unsubscribes the current, calling process from the specified kind of
-% events (event type and emitter), like {onWindowClosed, MyFrame}.
-%
+-doc """
+Unsubscribes the current, calling process from the specified kind of events
+(event type and emitter), like {onWindowClosed, MyFrame}.
+""".
 -spec unsubscribe_from_events( event_unsubscription_spec() ) -> void().
 unsubscribe_from_events( UnsubscribedEvents ) ->
 	unsubscribe_from_events( UnsubscribedEvents, _SubscriberDesignator=self() ).
 
 
-% @doc Subscribes the specified process from the specified kind of events (event
-% type and emitter), like {onWindowClosed, MyFrame}.
-%
+
+-doc """
+Subscribes the specified process from the specified kind of events (event type
+and emitter), like {onWindowClosed, MyFrame}.
+""".
 -spec unsubscribe_from_events( event_unsubscription_spec(),
 							   event_subscriber() ) -> void().
 unsubscribe_from_events( UnsubscribedEvents, SubscribedDesignator )
@@ -1182,11 +1261,11 @@ unsubscribe_from_events( UnsubscribedEvents, SubscribedDesignator )
 
 
 
-% @doc Registers the specified event callback, so that, when the specified event
-% type(s) are generated by the specified (source) object, a transient process is
-% spawned and executes the specified event callback function, before
-% terminating.
-%
+-doc """
+Registers the specified event callback, so that, when the specified event
+type(s) are generated by the specified (source) object, a transient process is
+spawned and executes the specified event callback function, before terminating.
+""".
 -spec register_event_callback( gui_object(), maybe_list( event_type() ),
 							   event_callback() ) -> void().
 register_event_callback( SourceGUIObject, MaybeListEventType,
@@ -1196,13 +1275,13 @@ register_event_callback( SourceGUIObject, MaybeListEventType,
 
 
 
-% @doc Registers the specified event callback, so that, when the specified event
-% type(s) are generated by the specified (source) object, a transient process is
-% spawned and executes the specified event callback function, before
-% terminating.
-%
+-doc """
+Registers the specified event callback, so that, when the specified event
+type(s) are generated by the specified (source) object, a transient process is
+spawned and executes the specified event callback function, before terminating.
+""".
 -spec register_event_callback( gui_object(), maybe_list( event_type() ),
-					event_callback(), maybe( user_data() ) ) -> void().
+					event_callback(), option( user_data() ) ) -> void().
 register_event_callback( SourceGUIObject, EventType, EventCallbackFun,
 						 MaybeUserData ) when is_atom( EventType ) ->
 	register_event_callback( SourceGUIObject, [ EventType ], EventCallbackFun,
@@ -1271,83 +1350,84 @@ event_interception_callback( WxEventRecord=#wx{
 
 
 
-% @doc Traps the specified event: does not propagate it upward in the widget
-% hierarchy, thus considering that it has been processed once for all by the
-% current handler.
-%
-% Events are handled in order, from bottom to top in the widget hierarchy, by
-% the last subscribed handler first. Most of the events have default event
-% handler(s) set.
-%
-% As a result, calling this function results in having the corresponding event
-% not be handled by the other handler(s) afterwards.
-%
-% In general, it is recommended to let all non-command events propagate, in
-% order to allow the default handling of the backend GUI to take place. The
-% command events are, however, normally not propagated, as usually a single
-% command such as a button click or menu item selection must only be processed
-% by one handler; this trap_event/1 function may then be useful, if the
-% corresponding event type does not already imply trapping and if the
-% 'trap_event' option was not already specified when subscribing to this event
-% type. See also https://howtos.esperide.org/Erlang.html#using-wx for more
-% clarifications about when trapping events is of use.
-%
-% Note: to be called from an event handler, i.e. at least from a process that
-% set the wx environment.
-%
-% See propagate_event/1 for the opposite operation (forcing the propagation of
-% an event).
-%
+-doc """
+Traps the specified event: does not propagate it upward in the widget hierarchy,
+thus considering that it has been processed once for all by the current handler.
+
+Events are handled in order, from bottom to top in the widget hierarchy, by the
+last subscribed handler first. Most of the events have default event handler(s)
+set.
+
+As a result, calling this function results in having the corresponding event not
+be handled by the other handler(s) afterwards.
+
+In general, it is recommended to let all non-command events propagate, in order
+to allow the default handling of the backend GUI to take place. The command
+events are, however, normally not propagated, as usually a single command such
+as a button click or menu item selection must only be processed by one handler;
+this trap_event/1 function may then be useful, if the corresponding event type
+does not already imply trapping and if the 'trap_event' option was not already
+specified when subscribing to this event type. See also
+https://howtos.esperide.org/Erlang.html#using-wx for more clarifications about
+when trapping events is of use.
+
+Note: to be called from an event handler, i.e. at least from a process that set
+the wx environment.
+
+See propagate_event/1 for the opposite operation (forcing the propagation of an
+event).
+""".
 -spec trap_event( gui_event_object() ) -> void().
 trap_event( GUIEventObject ) ->
 	gui_event:trap_event( GUIEventObject ).
 
 
 
-% @doc Propagates the specified event upward in the widget hierarchy, so that it
-% can be processed by parent handlers knowing that, for some event types, by
-% default no event propagation is enabled.
-%
-% Calling this function (from a user event handler) may be a way to trigger the
-% backend built-in operations for this event only when prerequisite operations
-% have been done (thus sequentially).
-%
-% Otherwise, if the propagation is simply enabled once for all at subscription
-% time, then the user code is triggered asynchronously (through the receiving of
-% a message), resulting in the built-in handlers to operate in parallel to this
-% user handler. This may be a problem for example when terminating, as the
-% onWindowClosed event would be propagated in the backend, leading to resources
-% being deallocated, whereas the user handler is still performing its tasks -
-% that may rely on these resources. A better option is to have the user handler
-% perform its shutdown operations, then unblock the closing mechanisms by
-% propagating it in the backend thanks to this function.
-%
-% Refer to trap_event/1, the opposite operation, for more propagation-related
-% information.
-%
+-doc """
+Propagates the specified event upward in the widget hierarchy, so that it can be
+processed by parent handlers knowing that, for some event types, by default no
+event propagation is enabled.
+
+Calling this function (from a user event handler) may be a way to trigger the
+backend built-in operations for this event only when prerequisite operations
+have been done (thus sequentially).
+
+Otherwise, if the propagation is simply enabled once for all at subscription
+time, then the user code is triggered asynchronously (through the receiving of a
+message), resulting in the built-in handlers to operate in parallel to this user
+handler. This may be a problem for example when terminating, as the
+onWindowClosed event would be propagated in the backend, leading to resources
+being deallocated, whereas the user handler is still performing its tasks - that
+may rely on these resources. A better option is to have the user handler perform
+its shutdown operations, then unblock the closing mechanisms by propagating it
+in the backend thanks to this function.
+
+Refer to trap_event/1, the opposite operation, for more propagation-related
+information.
+""".
 -spec propagate_event( gui_event_object() ) -> void().
 propagate_event( GUIEventObject ) ->
 	gui_event:propagate_event( GUIEventObject ).
 
 
 
-% @doc Stops the GUI subsystem.
+-doc "Stops the GUI subsystem.".
 -spec stop() -> void().
 stop() ->
 	destruct_gui_environment().
 
 
 
+-doc """
+Batches the sequence of GUI operations encasulated by the specified function,
+and returns the value this function returned.
 
-% @doc Batches the sequence of GUI operations encasulated by the specified
-% function, and returns the value this function returned.
-%
-% May improve performance of the command processing, by grabbing the backend
-% thread so that no event processing will be done before the complete batch of
-% commands is invoked.
-%
-% Example: Result = gui:batch(fun() -> do_init(Config) end).
-%
+May improve performance of the command processing, by grabbing the backend
+thread so that no event processing will be done before the complete batch of
+commands is invoked.
+
+Example: Result = gui:batch(fun() -> do_init(Config) end).
+""".
 -spec batch( function() ) -> term().
 batch( GUIFun ) ->
 	wx:batch( GUIFun ).
@@ -1358,9 +1438,10 @@ batch( GUIFun ) ->
 % Section regarding MyriadGUI own conventions.
 
 
-% @doc Checks the specified orientation, returns it if it is a legit one,
-% otherwise throws an exception.
-%
+-doc """
+Checks the specified orientation, returns it if it is a legit one, otherwise
+throws an exception.
+""".
 -spec check_orientation( term() ) -> orientation().
 check_orientation( vertical ) ->
 	vertical;
@@ -1380,9 +1461,10 @@ check_orientation( Other ) ->
 % General MyriadGUI helpers.
 
 
-% @doc Requests the creation of the specified instance (that will be done from
-% the MyriadGUI main loop), and returns the corresponding GUI object reference.
-%
+-doc """
+Requests the creation of the specified instance (that will be done from the
+MyriadGUI main loop), and returns the corresponding GUI object reference.
+""".
 -spec execute_instance_creation( myriad_object_type(),
 		construction_parameters() ) -> myriad_object_ref().
 execute_instance_creation( ObjectType, ConstructionParams ) ->
@@ -1404,8 +1486,8 @@ execute_instance_creation( ObjectType, ConstructionParams ) ->
 
 			cond_utils:if_defined( myriad_debug_gui_instances,
 				trace_utils:debug_fmt(
-				   "'~ts' instance created, now referenced as ~w.",
-				   [ ObjectType, ObjectRef ] ) ),
+					"'~ts' instance created, now referenced as ~w.",
+					[ ObjectType, ObjectRef ] ) ),
 
 			ObjectRef
 
@@ -1413,11 +1495,12 @@ execute_instance_creation( ObjectType, ConstructionParams ) ->
 
 
 
-% @doc Requests the destruction of the specified instance (that will be done
-% from the MyriadGUI main loop).
-%
-% At least currently, does not return anything and remains asynchronous.
-%
+-doc """
+Requests the destruction of the specified instance (that will be done from the
+MyriadGUI main loop).
+
+At least currently, does not return anything and remains asynchronous.
+""".
 -spec execute_instance_destruction( myriad_object_type(),
 									myriad_instance_id() ) -> void().
 execute_instance_destruction( ObjectType, InstanceId ) ->
@@ -1430,20 +1513,31 @@ execute_instance_destruction( ObjectType, InstanceId ) ->
 
 
 
+
 % Section related to GUI objects in general.
 
 
-% @doc Sets the current process as the controller of the specified GUI object
-% handle.
-%
+-doc """
+Sets the current process as the controller of the specified GUI object handle.
+
+Useful when "subclassing" a type of GUI object with application-level
+behaviours, so that its instances are user-defined gen_server ones; refer to the
+(wx-specified) `wx_object` module).
+""".
 -spec set_as_controller( gui_object() ) -> gui_object().
 set_as_controller( Object ) ->
 	set_controller( Object, _ControllerPid=self() ).
 
 
-% @doc Sets the process of specified PID as the controller of the specified GUI
-% object handle.
-%
+
+-doc """
+Sets the process of specified PID as the controller of the specified GUI object
+handle.
+
+Useful when "subclassing" a type of GUI object with application-level
+behaviours, so that its instances are user-defined gen_server ones; refer to the
+(wx-specified) `wx_object` module).
+""".
 -spec set_controller( gui_object(), pid() ) -> gui_object().
 set_controller( Object, ControllerPid ) ->
 
@@ -1454,7 +1548,7 @@ set_controller( Object, ControllerPid ) ->
 
 
 
-% @doc Returns a textual representation of the specified GUI object.
+-doc "Returns a textual representation of the specified GUI object.".
 -spec object_to_string( gui_object() ) -> ustring().
 object_to_string( #myriad_object_ref{ object_type=ObjectType,
 									  myriad_instance_id=InstanceId } ) ->
@@ -1472,7 +1566,7 @@ object_to_string( { wx_ref, InstanceRef, WxObjectType, State } ) ->
 
 
 
-% @doc Returns a textual representation of the specified GUI object key.
+-doc "Returns a textual representation of the specified GUI object key.".
 -spec object_key_to_string( gui_object_key() ) -> ustring().
 object_key_to_string( { AnyObjectType, AnyInstanceId } ) ->
 	text_utils:format( "~ts-~B", [ AnyObjectType, AnyInstanceId ] ).
@@ -1483,10 +1577,10 @@ object_key_to_string( { AnyObjectType, AnyInstanceId } ) ->
 % Miscellaneous section.
 
 
-% @doc Gets the backend environment currently used by the calling process,
-% typically to transmit it to any other process in order to enable it to use
-% that backend.
-%
+-doc """
+Gets the backend environment currently used by the calling process, typically to
+transmit it to any other process in order to enable it to use that backend.
+""".
 -spec get_backend_environment() -> backend_environment().
 get_backend_environment() ->
 
@@ -1507,12 +1601,13 @@ get_backend_environment() ->
 	WxEnv.
 
 
-% @doc Sets the specified backend environment for the calling process, so that
-% it can make use of the corresponding backend.
-%
-% Typically obtained from get_backend_environment/0 once called from a main
-% process.
-%
+-doc """
+Sets the specified backend environment for the calling process, so that it can
+make use of the corresponding backend.
+
+Typically obtained from get_backend_environment/0 once called from a main
+process.
+""".
 -spec set_backend_environment( backend_environment() ) -> void().
 set_backend_environment( WxEnv ) ->
 	cond_utils:if_defined( myriad_debug_gui_environments,
@@ -1522,50 +1617,56 @@ set_backend_environment( WxEnv ) ->
 
 
 
-% @doc Fetches (from the MyriadGUI environment) the PID of the process in charge
-% of running the main MyriadGUI loop.
-%
-% Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas).
-%
+-doc """
+Fetches (from the MyriadGUI environment) the PID of the process in charge of
+running the main MyriadGUI loop.
+
+Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas).
+""".
 -spec get_main_loop_pid() -> loop_pid().
 get_main_loop_pid() ->
 	environment:get( loop_pid, ?gui_env_reg_name ).
 
 
-% @doc Fetches from the specified environment the PID of the process in charge
-% of running the main MyriadGUI loop.
-%
-% Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas).
-%
+
+-doc """
+Fetches from the specified environment the PID of the process in charge of
+running the main MyriadGUI loop.
+
+Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas).
+""".
 -spec get_main_loop_pid( gui_env_designator() ) -> loop_pid().
 get_main_loop_pid( GUIEnvDesignator ) ->
 	environment:get( loop_pid, GUIEnvDesignator ).
 
 
 
-% @doc Fetches (from the MyriadGUI environment) the PID of the process in charge
-% of running the MyriadGUI identifier allocation process.
-%
-% Allows, as much as possible, to resolve this PID locally, without any message
-% sending.
-%
-% Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas,
-% gui_id).
-%
+-doc """
+Fetches (from the MyriadGUI environment) the PID of the process in charge of
+running the MyriadGUI identifier allocation process.
+
+Allows, as much as possible, to resolve this PID locally, without any message
+sending.
+
+Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas,
+gui_id).
+""".
 -spec get_id_allocator_pid() -> id_allocator_pid().
 get_id_allocator_pid() ->
 	environment:get( id_allocator_pid, ?gui_env_reg_name ).
 
 
-% @doc Fetches from the specified environment the PID of the process in charge
-% of running the MyriadGUI identifier allocation process.
-%
-% Allows, as much as possible, to resolve this PID locally, without any message
-% sending.
-%
-% Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas,
-% gui_id).
-%
+
+-doc """
+Fetches from the specified environment the PID of the process in charge of
+running the MyriadGUI identifier allocation process.
+
+Allows, as much as possible, to resolve this PID locally, without any message
+sending.
+
+Note that it is sometimes inlined in other gui_* modules (e.g. gui_canvas,
+gui_id).
+""".
 -spec get_id_allocator_pid( gui_env_designator() ) -> id_allocator_pid().
 get_id_allocator_pid( GUIEnvDesignator ) ->
 	environment:get( id_allocator_pid, GUIEnvDesignator ).
@@ -1574,13 +1675,13 @@ get_id_allocator_pid( GUIEnvDesignator ) ->
 
 
 
-
 % Section for the build-time generation of support modules.
 
 
-% @doc To be called by the 'gui_generated.beam' automatic make target in order
-% to generate, here, a (single) module to share the MyriadGUI base constants.
-%
+-doc """
+To be called by the 'gui_generated.beam' automatic make target in order to
+generate, here, a (single) module to share the MyriadGUI base constants.
+""".
 -spec generate_support_modules() -> no_return().
 generate_support_modules() ->
 

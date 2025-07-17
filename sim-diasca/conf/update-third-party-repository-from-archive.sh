@@ -1,9 +1,8 @@
 #!/bin/sh
 
+# Note: mostly deprecated (operates from archives rather than from clones).
 
-USAGE="
-
- Usage: $(basename $0) SIM_DIASCA_ARCHIVE THIRD_PARTY_REPOSITORY_ROOT
+usage="Usage: $(basename $0) SIM_DIASCA_ARCHIVE THIRD_PARTY_REPOSITORY_ROOT
 
  Updates an external, third-party SVN repository from the archive of a Sim-Diasca release.
 
@@ -15,7 +14,7 @@ USAGE="
 
 if [ ! $# -eq 2 ] ; then
 
-	echo "Error, exactly two parameters are required.$USAGE" 1>&2
+	echo "Error, exactly two parameters are required. ${usage}" 1>&2
 	exit 10
 
 fi

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 10, 2021.
 
-
-% @doc Unit tests for the <b>3D vector</b> facilities.
-%
-% See the vector3 tested module.
-%
 -module(vector3_test).
+
+-moduledoc """
+Unit tests for the **3D vector** facilities.
+
+See the vector3 tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -127,5 +129,9 @@ run() ->
 	DP = vector:dot_product( V1, V2 ),
 	test_facilities:display( "V1.V2 = ~w", [ DP ] ),
 	DP = 39.0,
+
+	VBase = vector3:normalise( V2 ),
+	UnitOrth = vector3:get_unit_orthogonal( V1, VBase ),
+	vector3:check_orthogonal( UnitOrth, V2 ),
 
 	test_facilities:stop().

@@ -1,30 +1,31 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Overall unit test of the Sim-Diasca actor creation, dealing with more
-% complex runtime actor creation: multiple initial actors, creating recursively
-% other actors, etc.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
+
 -module(runtime_actor_complex_creation_case).
 
+-moduledoc """
+Overall unit test of the Sim-Diasca actor creation, dealing with more complex
+runtime actor creation: **multiple initial actors, creating recursively other
+actors**, etc.
+""".
 
 
 % For facilities common to all cases:
@@ -32,7 +33,7 @@
 
 
 
-% @doc Runs the local test simulation.
+-doc "Runs the local test simulation.".
 -spec run() -> no_return().
 run() ->
 
@@ -52,8 +53,8 @@ run() ->
 	%
 	DeploymentSettings = #deployment_settings{
 
-		computing_hosts =
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" }
+		computing_hosts=
+			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
 
 	},
 
@@ -62,14 +63,14 @@ run() ->
 	LoadBalancingSettings = #load_balancing_settings{},
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p.",
+	?test_notice_fmt( "This test will deploy a distributed simulation "
+		"based on computing hosts specified as ~p.",
 		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 	?test_info( "Deployment manager created." ),
 
@@ -94,7 +95,7 @@ run() ->
 	FirstCreatedSchedulingPolicy = { periodic, 27 },
 
 	FirstKindOfCreatedActor =
-		{ FirstCreatedSchedulingPolicy,	InnerCreationPolicy },
+		{ FirstCreatedSchedulingPolicy, InnerCreationPolicy },
 
 	FirstCreationPolicy = { FirstInterCount, FirstKindOfCreatedActor },
 
@@ -120,7 +121,7 @@ run() ->
 		  _SecondTerminationTickOffset=280 ] ),
 
 	LoadBalancerPid ! { traceState,
-					[ "after the second (programmatic) initial creation" ] },
+		[ "after the second (programmatic) initial creation" ] },
 
 	% Not supported, as an actor must be synchronised beforehand:
 	%ThirdCreationPolicy = creation_from_constructor,

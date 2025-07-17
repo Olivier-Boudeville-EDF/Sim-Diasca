@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,41 +25,42 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, April 30, 2018.
 
-
-% @doc Support for the <b>process dictionary</b>.
-%
-% While using the process dictionary is usually regarded with contempt for good
-% reasons (impure, prone to unwanted side-effects, etc.), there are a few
-% specific cases where it might be nevertheless useful/relevant (e.g. to make
-% the state of a user interfaces implicit, rather than adding a parameter to
-% virtually all functions of views, in the sense of the MVC pattern).
-%
-% We provide a basic encapsulation for the ways of interacting with the process
-% dictionary, notably so that it is easier to locate (e.g. thanks to 'grep') the
-% places where the process dictionary is used.
-%
-% This module could have been named 'impure_table' as well, and could have
-% obeyed a table-like API applying only to a singleton.
-%
-% Note: associating to a key the 'undefined' value is, here, semantically the
-% same as not defining at all such an entry.
-%
 -module(process_dictionary).
 
+-moduledoc """
+Support for the **process dictionary**.
 
+While using the process dictionary is usually regarded with contempt for good
+reasons (impure, prone to unwanted side-effects, etc.), there are a few specific
+cases where it might be nevertheless useful/relevant (e.g. to make the state of
+a user interfaces implicit, rather than adding a parameter to virtually all
+functions of views, in the sense of the MVC pattern).
+
+We provide a basic encapsulation for the ways of interacting with the process
+dictionary, notably so that it is easier to locate (e.g. thanks to 'grep') the
+places where the process dictionary is used.
+
+This module could have been named 'impure_table' as well, and could have obeyed
+a table-like API applying only to a singleton.
+
+Note: associating to a key the 'undefined' value is, here, semantically the same
+as not defining at all such an entry.
+""".
+
+
+-doc "Explicit form thereof, as a term.".
 -type process_dictionary() :: list_table:list_table().
-% Explicit form thereof, as a term.
 
 
 -export_type([ key/0, value/0, entry/0, entries/0, entry_count/0,
 			   process_dictionary/0 ]).
 
 
-
 -export([ put/2, put_as_new/2, get/1, get_existing/1,
 		  remove/1, remove_existing/1,
 		  get_dictionary/0, get_keys/0, get_keys_for/1,
 		  blank/0, to_string/0, to_short_string/0 ]).
+
 
 
 % Shorthands:
@@ -80,18 +81,20 @@
 
 
 
-% @doc Puts the specified entry in the process dictionary; returns any value
-% that was previously associated to that key.
-%
--spec put( key(), value() ) -> maybe( value() ).
+-doc """
+Puts the specified entry in the process dictionary; returns any value that was
+previously associated to that key.
+""".
+-spec put( key(), value() ) -> option( value() ).
 put( Key, Value ) ->
 	erlang:put( Key, Value ).
 
 
 
-% @doc Puts the specified entry in the process dictionary; raises an exception
-% if ever the specified key was already registered in the process dictionary.
-%
+-doc """
+Puts the specified entry in the process dictionary; raises an exception if ever
+the specified key was already registered in the process dictionary.
+""".
 -spec put_as_new( key(), value() ) -> void().
 put_as_new( Key, Value ) ->
 
@@ -107,19 +110,21 @@ put_as_new( Key, Value ) ->
 
 
 
-% @doc Returns the value (if any) associated to the specified key in the process
-% dictionary, otherwise the 'undefined' atom.
-%
--spec get( key() ) -> maybe( value() ).
+-doc """
+Returns the value (if any) associated to the specified key in the process
+dictionary, otherwise the 'undefined' atom.
+""".
+-spec get( key() ) -> option( value() ).
 get( Key ) ->
 	%trace_utils:debug_fmt( "Getting key '~ts' (as ~p).", [ Key, self() ] ),
 	erlang:get( Key ).
 
 
 
-% @doc Returns the value expected to be associated to the specified key in the
-% process dictionary, otherwise throws an exception.
-%
+-doc """
+Returns the value expected to be associated to the specified key in the process
+dictionary, otherwise throws an exception.
+""".
 -spec get_existing( key() ) -> value().
 get_existing( Key ) ->
 
@@ -135,19 +140,21 @@ get_existing( Key ) ->
 
 
 
-% @doc Removes any entry in the process dictionary corresponding to the
-% specified key, returning any value that was associated to it.
-%
--spec remove( key() ) -> maybe( value() ).
+-doc """
+Removes any entry in the process dictionary corresponding to the specified key,
+returning any value that was associated to it.
+""".
+-spec remove( key() ) -> option( value() ).
 remove( Key ) ->
 	erlang:erase( Key ).
 
 
 
-% @doc Removes the entry in the process dictionary expected to correspond to the
-% specified key and returns, otherwise throws an exception, should no value be
-% associated to specified key.
-%
+-doc """
+Removes the entry in the process dictionary expected to correspond to the
+specified key and returns, otherwise throws an exception, should no value be
+associated to specified key.
+""".
 -spec remove_existing( key() ) -> value().
 remove_existing( Key ) ->
 
@@ -163,50 +170,54 @@ remove_existing( Key ) ->
 
 
 
-% @doc Returns the full process dictionary, as a list of {Key,Value} pairs.
+-doc "Returns the full process dictionary, as a list of {Key,Value} pairs.".
 -spec get_dictionary() -> process_dictionary().
 get_dictionary() ->
 	erlang:get().
 
 
 
-% @doc Returns a list of all keys present in the process dictionary.
+-doc "Returns a list of all keys present in the process dictionary.".
 -spec get_keys() -> [ key() ].
 get_keys() ->
 	erlang:get_keys().
 
 
 
-% @doc Returns a list of keys that are associated to the specified value in the
-% process dictionary.
-%
+-doc """
+Returns a list of keys that are associated to the specified value in the process
+dictionary.
+""".
 -spec get_keys_for( value() ) -> [ key() ].
 get_keys_for( Value ) ->
 	erlang:get_keys( Value ).
 
 
 
-% @doc Blanks the process dictionary (erases all entries), and returns its past
-% content (as a term).
-%
+-doc """
+Blanks the process dictionary (erases all entries), and returns its past content
+(as a term).
+""".
 -spec blank() -> process_dictionary().
 blank() ->
 	erlang:erase().
 
 
 
-% @doc Returns a textual description of the current state of the process
-% dictionary.
-%
+-doc """
+Returns a textual description of the current state of the process dictionary.
+""".
 -spec to_string() -> ustring().
 to_string() ->
 	text_utils:format( "the process dictionary of ~p ~ts",
 					   [ self(), to_short_string() ] ).
 
 
-% @doc Returns a short textual description of the current state of the process
-% dictionary.
-%
+
+-doc """
+Returns a short textual description of the current state of the process
+dictionary.
+""".
 -spec to_short_string() -> ustring().
 to_short_string() ->
 

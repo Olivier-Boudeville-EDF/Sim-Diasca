@@ -234,7 +234,7 @@ Most significant changes were:
 
    - default size of the probe reports (canvas) increased significantly (from 640x480 to 1024x768); this size can be set at will now, for each probe; available both for the classical probes and the virtual ones (which had some bugs fixed), see ``class_Probe:setCanvasSize/3`` and ``class_DataLogger:setCanvasSize/4``
 
-   - the newer defaults in terms of ``deployment_settings`` are, for ``computing_hosts``: ``{use_host_file_otherwise_local,"sim-diasca-host-candidates.txt"}`` instead of ``localhost_only`` (most cases will be fine with these defaults)
+   - the newer defaults in terms of ``deployment_settings`` are, for ``computing_hosts``: ``{use_host_file_otherwise_local,"sim-diasca-host-candidates.etf"}`` instead of ``localhost_only`` (most cases will be fine with these defaults)
 
    - SSI-test updated and fixed
 
@@ -292,7 +292,7 @@ Most significant changes were:
 
   - names have been homogenised, notably ``testFailed/1`` became ``test_failed/1``, ``testFinished/0`` became ``test_finished/0``, etc., and most macros for test or simulation cases are now better named and implemented as functions, whenever possible
 
-  - the host configuration file (e.g. ``sim-diasca-host-candidates.txt``) can now support the specification of a per-host user name, notably to support cases where the login of a simulation user depends on the host
+  - the host configuration file (e.g. ``sim-diasca-host-candidates.etf``) can now support the specification of a per-host user name, notably to support cases where the login of a simulation user depends on the host
 
   - all computing nodes are now fully set-up and deployed in parallel, rather than one after the other; this is especially useful if having numerous nodes, as detecting them, network-wise, and having them process a deployment archive can last for some time, for each of these nodes; this induced major changes (see newly introduced class_ComputingHostManager); the issue of lingering nodes blocking sometimes some hosts has been fixed as well
 

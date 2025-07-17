@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,11 +26,14 @@
 % Creation date: Sunday, November 17, 2019.
 
 
-% Unit tests for the type_utils services.
-%
-% See the type_utils.erl tested module.
-%
 -module(type_utils_test).
+
+-moduledoc """
+Unit tests for the `type_utils` services.
+
+See the type_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -48,7 +51,7 @@ run() ->
 	FirstTerm = "Hello",
 
 	test_facilities:display( "Interpreting '~ts': ~ts",
-				[ FirstTerm, type_utils:interpret_type_of( FirstTerm ) ] ),
+		[ FirstTerm, type_utils:interpret_type_of( FirstTerm ) ] ),
 
 	SecondTerm = [ my_atom, 4,
 		{ a_tag, 2.0, maps:from_list( [ { self(), [ FirstTerm ] } ] ) } ],

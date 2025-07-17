@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2016.
 
-
-% @doc Unit tests for the <b>ui (user-interface) toolbox</b>.
-%
-% See the ui.erl tested module.
-%
 -module(ui_test).
+
+-moduledoc """
+Unit tests for the **ui (user-interface) toolbox**.
+
+See the ui.erl tested module.
+""".
+
 
 
 % For run/0 export and al:

@@ -39,7 +39,7 @@ out vec4 my_output_color;
  * application may, prior to binding any texture of interest, activate
  * a given texture unit (e.g. GL_TEXTURE5); then it may associate, based
  * on the uniform support, this sampler to the corresponding texture
- * location (i.e. 5).
+ * location (i.e. ?my_target_texture_unit).
  *
  */
 uniform sampler2D my_texture_sampler;

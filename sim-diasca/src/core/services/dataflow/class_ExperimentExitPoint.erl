@@ -1,28 +1,30 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Class implementing the <b>exit point of an experiment</b>, which collects
-% the final values produces by the associated dataflow.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(class_ExperimentExitPoint).
+
+-moduledoc """
+Class implementing the **exit point of an experiment**, which collects the final
+values produces by the associated dataflow.
+""".
 
 
 -define( class_description,
@@ -91,27 +93,28 @@
 % the simulation, it is up to its child classes to define at least one.
 
 
-% Shorthands:
+% Type shorthand:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs the experiment exit point.
-%
-% Parameters are:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Dataflows is a list of the dataflows that this exit point should drive
-%
-% - ExperimentEntryPointPid is the PID of the entry point of the experiment
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
-% - WorldManagerPid is the PID of the world manager
-%
+-doc """
+Constructs the experiment exit point.
+
+Parameters are:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Dataflows is a list of the dataflows that this exit point should drive
+
+- ExperimentEntryPointPid is the PID of the entry point of the experiment
+
+- ExperimentManagerPid is the PID of the experiment manager
+
+- WorldManagerPid is the PID of the world manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		[ dataflow_pid() ], experiment_entry_point_pid(),
 		experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
@@ -126,21 +129,21 @@ construct( State, ActorSettings, Dataflows, ExperimentEntryPointPid,
 
 	% First the direct mother class:
 	ActorState = class_Actor:construct( State, ActorSettings,
-								?trace_categorize("ExperimentExitPoint") ),
+		?trace_categorize("ExperimentExitPoint") ),
 
 	% Then the class-specific actions:
 	FinalState = setAttributes( ActorState, [
-				{ entry_point_pid, ExperimentEntryPointPid },
-				{ experiment_manager_pid, ExperimentManagerPid },
-				{ world_manager_pid, WorldManagerPid },
-				{ dataflows, Dataflows },
-				{ phase, initialisation } ] ),
+		{ entry_point_pid, ExperimentEntryPointPid },
+		{ experiment_manager_pid, ExperimentManagerPid },
+		{ world_manager_pid, WorldManagerPid },
+		{ dataflows, Dataflows },
+		{ phase, initialisation } ] ),
 
 	%?send_info( FinalState, "Registering now." ),
 
 	% From both registerExperimentExitPoint requests:
 	wooper:wait_for_request_acknowledgements( _Count=2,
-				_AckAtom=experiment_exit_point_registered ),
+		_AckAtom=experiment_exit_point_registered ),
 
 	%?send_info( FinalState, "Registered, and initialised." ),
 
@@ -151,7 +154,9 @@ construct( State, ActorSettings, Dataflows, ExperimentEntryPointPid,
 % Methods section.
 
 
-% @doc Callback executed on the first diasca of existence of this exit point.
+-doc """
+Callback executed on the first diasca of existence of this exit point.
+""".
 -spec onFirstDiasca( wooper:state(), pid() ) -> actor_oneway_return().
 onFirstDiasca( State, _CallerPid ) ->
 
@@ -188,15 +193,16 @@ onFirstDiasca( State, _CallerPid ) ->
 	% point:
 	%
 	AutoSentState = class_Actor:send_actor_message( self(),
-										initiateDataflowEvaluation, State ),
+		initiateDataflowEvaluation, State ),
 
 	actor:return_state( AutoSentState ).
 
 
 
-% @doc Initiates the evaluation of the known dataflows, supposing all initial
-% blocks have already registered themselves to their respective dataflows.
-%
+-doc """
+Initiates the evaluation of the known dataflows, supposing all initial blocks
+have already registered themselves to their respective dataflows.
+""".
 -spec initiateDataflowEvaluation( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 initiateDataflowEvaluation( State, _SendingActorPid ) ->
@@ -216,7 +222,7 @@ initiateDataflowEvaluation( State, _SendingActorPid ) ->
 
 
 
-% @doc The core of the behaviour of this exit point.
+-doc "The core of the behaviour of this exit point.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -234,7 +240,7 @@ actSpontaneous( State ) ->
 						 "of entry point ~p.", [ EntryPointPid ] ),
 
 			SentState = class_Actor:send_actor_message( EntryPointPid,
-								startExperimentTick, State ),
+				startExperimentTick, State ),
 
 			NextState = executeOneway( SentState,
 									   scheduleNextSpontaneousTick ),
@@ -248,7 +254,7 @@ actSpontaneous( State ) ->
 			%            [ EntryPointPid ] ),
 
 			SentState = class_Actor:send_actor_message( EntryPointPid,
-									startExperimentTick, State ),
+				startExperimentTick, State ),
 
 			executeOneway( SentState, scheduleNextSpontaneousTick );
 
@@ -264,10 +270,11 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Declares the termination of the experiment.
-%
-% Note: usually this is determined internally.
-%
+-doc """
+Declares the termination of the experiment.
+
+Note: usually this is determined internally.
+""".
 -spec declareExperimentTermination( wooper:state() ) -> oneway_return().
 declareExperimentTermination( State ) ->
 
@@ -291,7 +298,7 @@ declareExperimentTermination( State ) ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this exit point.
+-doc "Returns a textual description of this exit point.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

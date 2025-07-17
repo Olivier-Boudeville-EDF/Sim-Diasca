@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example <b>dataflow object</b>.
 -module(class_Household).
+
+-moduledoc "Example **dataflow object**.".
 
 
 -define( class_description,
@@ -35,7 +36,7 @@
 % The plain (standard) attributes specific to a household object are:
 -define( class_attributes, [
 
-	{ building_pid, maybe( building_pid() ), "the PID of the parent building "
+	{ building_pid, option( building_pid() ), "the PID of the parent building "
 	  "hosting that household (i.e. comprising its dwelling)" } ] ).
 
 
@@ -49,7 +50,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For energy_demand_semantics and all:
@@ -70,35 +71,36 @@
 % unique peer instead.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a dataflow household object instance, in charge of modelling
-% the state of a household:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - HouseholdName is the name of this household
-%
-% - FamilyName is the name of the family corresponding to this household
-%
-% - AdultCount is the number of adults in this household
-%
-% - ChildCount is the number of children in this household
-%
-% - DisposableIncome is the disponible income of this household
-%
-% - MeanDistanceCovered is the mean distance covered by the members of this
-% household
-%
-% - BuildingPid is the PID of the building that hosts this household
-%
-% - DataflowPid is the PID of the dataflow instance
-%
+-doc """
+Constructs a dataflow household object instance, in charge of modelling the
+state of a household:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- HouseholdName is the name of this household
+
+- FamilyName is the name of the family corresponding to this household
+
+- AdultCount is the number of adults in this household
+
+- ChildCount is the number of children in this household
+
+- DisposableIncome is the disponible income of this household
+
+- MeanDistanceCovered is the mean distance covered by the members of this
+household
+
+- BuildingPid is the PID of the building that hosts this household
+
+- DataflowPid is the PID of the dataflow instance
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	household_name(),
 	[ family_name() | adult_count() | child_count() | income()
@@ -124,7 +126,7 @@ construct( State, ActorSettings, HouseholdName,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -150,11 +152,12 @@ destruct( State ) ->
 % Member methods section.
 
 
-% @doc Sets the parent building of this household: this household will live-in
-% this building.
-%
+-doc """
+Sets the parent building of this household: this household will live-in this
+building.
+""".
 -spec setBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
-						 actor_oneway_return().
+                                            actor_oneway_return().
 setBuilding( State, BuildingPid, _SendingActorPid )
 						when is_pid( BuildingPid ) ->
 
@@ -169,13 +172,14 @@ setBuilding( State, BuildingPid, _SendingActorPid )
 
 
 
-% @doc Unsets the parent building of this household: this household will no more
-% live-in in this building.
-%
+-doc """
+Unsets the parent building of this household: this household will no more
+live-in in this building.
+""".
 -spec unsetBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
 							actor_oneway_return().
 unsetBuilding( State, BuildingPid, _SendingActorPid )
-  when is_pid( BuildingPid ) ->
+                                        when is_pid( BuildingPid ) ->
 
 	% Check:
 	BuildingPid = ?getAttr(building_pid),
@@ -191,9 +195,9 @@ unsetBuilding( State, BuildingPid, _SendingActorPid )
 % Static section.
 
 
-% @doc Allows to fully specify the dataflow attributes of this object.
+-doc "Allows to fully specify the dataflow attributes of this object.".
 -spec get_dataflow_attribute_specs() ->
-						  static_return( [ dataflow_attribute_spec() ] ).
+                            static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
 
 	wooper:return_static( [
@@ -236,7 +240,7 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% @doc Returns the (indirect) parent district of this household.
+-doc "Returns the (indirect) parent district of this household.".
 -spec getParentDistrict( wooper:state() ) ->
 				const_request_return( { 'parent_district', district_pid() } ).
 getParentDistrict( State ) ->
@@ -256,9 +260,9 @@ getParentDistrict( State ) ->
 
 
 
-% @doc Returns the (direct) parent building of this household.
+-doc "Returns the (direct) parent building of this household.".
 -spec getParentBuilding( wooper:state() ) ->
-		const_request_return( { 'parent_building', maybe( building_pid() ) } ).
+		const_request_return( { 'parent_building', option( building_pid() ) } ).
 getParentBuilding( State ) ->
 
 	% Possibly 'undefined':
@@ -268,7 +272,7 @@ getParentBuilding( State ) ->
 
 
 
-% @doc Returns a textual description of this household dataflow object.
+-doc "Returns a textual description of this household dataflow object.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,17 +19,17 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc <b>Benchmarking case</b> obtained from the soda deterministic example
-% case.
-%
-% See also:
-% - class_SodaVendingMachine.erl
-% - class_DeterministicThirstyCustomer.erl
-% - soda_full_loading_test.erl for the same simulated case using instance
-% loading from file instead of instances created programmatically
-%
 -module(soda_benchmarking_test).
+
+-moduledoc """
+**Benchmarking case** obtained from the soda deterministic example case.
+
+See also:
+- `class_SodaVendingMachine.erl`
+- `class_DeterministicThirstyCustomer.erl`
+- `soda_full_loading_test.erl` for the same simulated case using instance
+loading from file instead of instances created programmatically
+""".
 
 
 % To silence a Dialyzer warning:
@@ -40,7 +40,8 @@
 -include("sim_diasca_for_cases.hrl").
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -49,7 +50,7 @@
 
 
 
-% @doc Returns the main settings to choose the size of this test.
+-doc "Returns the main settings to select the size of this test.".
 -spec get_benchmark_settings( 'minimal' | 'normal' ) ->
 								{ count(), count(), tick_offset() }.
 get_benchmark_settings( minimal ) ->
@@ -86,9 +87,10 @@ get_benchmark_settings( normal ) ->
 
 
 
-% @doc Creates the specified number of soda vending machines, and returns a list
-% of their PID.
-%
+-doc """
+Creates the specified number of soda vending machines, and returns a list of
+their PID.
+""".
 -spec create_vending_machines( count() ) -> [ actor_pid() ].
 create_vending_machines( Count ) ->
 	create_vending_machines( Count, _Acc=[] ).
@@ -119,10 +121,11 @@ create_vending_machines( Count, Acc ) ->
 
 
 
-% @doc Creates the specified number of thirsty customers, knowing each one soda
-% vending machine among the specified ones, and returns a list of the PID of
-% these customers.
-%
+-doc """
+Creates the specified number of thirsty customers, knowing each one soda vending
+machine among the specified ones, and returns a list of the PID of these
+customers.
+""".
 -spec create_thirsty_customers( count(), [ actor_pid() ] ) -> [ actor_pid() ].
 create_thirsty_customers( CustomerCount, VendingMachines ) ->
 	create_thirsty_customers( CustomerCount, VendingMachines, _Acc=[] ).
@@ -149,9 +152,10 @@ create_thirsty_customers( CustomerCount, VendingMachines, Acc ) ->
 
 
 
-% @doc Creates a deterministic thirsty customer, knowing one of the specified
-% vending machines.
-%
+-doc """
+Creates a deterministic thirsty customer, knowing one of the specified vending
+machines.
+""".
 -spec create_deterministic_customer( count(), [ actor_pid() ] ) -> actor_pid().
 create_deterministic_customer( CustomerCount, VendingMachines ) ->
 
@@ -161,10 +165,10 @@ create_deterministic_customer( CustomerCount, VendingMachines ) ->
 	ElectedMachineIndex =
 		class_RandomManager:get_uniform_value( length( VendingMachines ) ),
 
-	ElectedMachine = 
+	ElectedMachine =
 		list_utils:get_element_at( VendingMachines, ElectedMachineIndex ),
 
-	RepletionDuration = 250 + 
+	RepletionDuration = 250 +
 		round( class_RandomManager:get_exponential_1p_value( _Lamba=0.05 ) ),
 
 	InitialBudget = 15.0 + class_RandomManager:get_uniform_value( 200 ),
@@ -175,9 +179,10 @@ create_deterministic_customer( CustomerCount, VendingMachines ) ->
 
 
 
-% @doc Creates a stochastic thirsty customer, knowing one of the specified
-% vending machines.
-%
+-doc """
+Creates a stochastic thirsty customer, knowing one of the specified vending
+machines.
+""".
 -spec create_stochastic_customer( count(), [ actor_pid() ] ) -> actor_pid().
 create_stochastic_customer( CustomerCount, VendingMachines ) ->
 
@@ -203,7 +208,7 @@ create_stochastic_customer( CustomerCount, VendingMachines ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 	run( _Settings=minimal ).

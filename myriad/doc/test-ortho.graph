@@ -1,0 +1,81 @@
+digraph simpsons {
+
+  graph [splines=ortho, nodesep=1]
+
+  subgraph Generation0 {
+	rank = same
+	Abraham [shape = box, color = blue]
+	Mona [shape = box, color = pink]
+	AbrahamAndMona [shape = point]
+	Abraham -> AbrahamAndMona [dir = none]
+	AbrahamAndMona -> Mona [dir = none]
+
+	Clancy [shape = box, color = blue]
+	Jackeline [shape = box, color = pink]
+	ClancyAndJackeline [shape = point]
+	Clancy -> ClancyAndJackeline [dir = none]
+	ClancyAndJackeline -> Jackeline [dir = none]
+  }
+
+  subgraph Generation0Sons {
+	rank = same
+	AbrahamAndMonaSons [shape = point]
+	HerbSon [shape = point]
+	HomerSon [shape = point]
+	HerbSon -> AbrahamAndMonaSons [dir = none]
+	HomerSon -> AbrahamAndMonaSons [dir = none]
+
+	MargeSon [shape = point]
+	PattySon [shape = point]
+	SelmaSon [shape = point]
+	MargeSon -> PattySon [dir = none]
+	PattySon -> SelmaSon [dir = none]
+  }
+
+  AbrahamAndMona -> AbrahamAndMonaSons [dir = none]
+  ClancyAndJackeline -> PattySon [dir = none]
+
+  subgraph Generation1 {
+	rank  =  same
+	Herb [shape = box, color = blue]
+	Homer [shape = box, color = blue]
+	Marge [shape = box, color = pink]
+	Patty [shape = box, color = pink]
+	Selma [shape = box, color = pink]
+
+	HomerAndMarge [shape = point]
+	Homer -> HomerAndMarge [dir = none]
+	Marge -> HomerAndMarge [dir = none]
+  }
+
+  HerbSon -> Herb [dir = none]
+  HomerSon -> Homer [dir = none]
+  MargeSon -> Marge [dir = none]
+  PattySon -> Patty [dir = none]
+  SelmaSon -> Selma [dir = none]
+
+  subgraph Generation1Sons {
+	rank  =  same
+	BartSon [shape = point]
+	LisaSon [shape = point]
+	MaggieSon [shape = point]
+
+	BartSon -> LisaSon [dir = none]
+	LisaSon -> MaggieSon [dir = none]
+  }
+
+  HomerAndMarge -> LisaSon [dir = none]
+
+  subgraph Generation2 {
+	rank  =  same
+	Bart [shape = box, color = blue]
+	Lisa [shape = box, color = pink]
+	Maggie [shape = box, color = pink]
+	Ling [shape = box, color = blue]
+  }
+
+  Selma -> Ling [dir = none]
+  BartSon -> Bart [dir = none]
+  LisaSon -> Lisa [dir = none]
+  MaggieSon -> Maggie [dir = none]
+}

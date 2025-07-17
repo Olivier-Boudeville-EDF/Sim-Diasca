@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,15 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Monday, April 30, 2018
+% Creation date: Monday, April 30, 2018.
 
-
-
-% Testing of the support of the process dictionary.
-%
-% See process_dictionary tested module.
-%
 -module(process_dictionary_test).
+
+-moduledoc """
+Testing of the support of the **process dictionary**.
+
+See process_dictionary tested module.
+""".
+
 
 % For run/0 export and al:
 -include("test_facilities.hrl").

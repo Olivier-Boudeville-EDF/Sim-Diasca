@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -21,11 +21,13 @@
 %
 % Creation date: 2008.
 
-
-% @doc Agent in charge of <b>tracking the overall runtime resource
-% consumption<b> of the simulation.
-%
 -module(class_PerformanceTracker).
+
+-moduledoc """
+Agent in charge of **tracking the overall runtime resource consumption** of the
+simulation.
+""".
+
 
 
 -define( class_description,
@@ -95,12 +97,13 @@
 
 
 
-% To keep track of per-node resources:
-%
-% (probes track resources respectively over ticks and wallclock time)
-%
+-doc """
+Keeps track of per-node resources.
+
+(probes track resources respectively over ticks and wallclock time)
+""".
 -type node_entry() ::
-		{ atom_node_name(), node_static_info(),	probe_pid(), probe_pid() }.
+		{ atom_node_name(), node_static_info(), probe_pid(), probe_pid() }.
 
 
 -type tracker_pid() :: agent_pid().
@@ -121,14 +124,14 @@
 	{ tracker_result_dir, directory_path(),
 	  "where performance results will be written" },
 
-	{ root_time_manager_pid, maybe( time_manager_pid() ),
+	{ root_time_manager_pid, option( time_manager_pid() ),
 	  "PID of the root time manager" },
 
 	{ current_tick_offset, tick_offset(),
 	  "allows this tracker to keep track of simulation ticks, as a "
 	  "listener of the root time manager" },
 
-	{ load_balancer_pid, maybe( load_balancer_pid() ),
+	{ load_balancer_pid, option( load_balancer_pid() ),
 	  "PID of the load balancer" },
 
 	{ instance_trackers, [ instance_tracker_pid() ],
@@ -211,7 +214,7 @@
 -define( general_timeout_duration, 8000 ).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type directory_path() :: file_utils:directory_path().
 
@@ -223,23 +226,32 @@
 
 -type user_data() :: basic_utils:user_data().
 
+-type agent_pid() :: sim_diasca:agent_pid().
+
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+-type time_manager_pid() :: class_TimeManager:time_manager_pid().
 -type tick_offset() :: class_TimeManager:tick_offset().
 -type diasca() :: class_TimeManager:diasca().
 
+-type instance_tracker_pid() :: class_InstanceTracker:instance_tracker_pid().
 -type node_static_info() :: class_InstanceTracker:node_static_info().
 
+-type probe_pid() :: class_Probe:probe_pid().
 
 
-% @doc Constructs a performance tracker, from the following parameters:
-%
-% - PerformanceTrackerName is the atom under which this instance will be
-% registered
-%
-% - RegistrationScope describes what kind of registration is requested
-%
-% - ResultDirInfo allows to set in with directory results should be created, and
-% whether this directory shall be created
-%
+
+-doc """
+Constructs a performance tracker, from the following parameters:
+
+- PerformanceTrackerName is the atom under which this instance will be
+registered
+
+- RegistrationScope describes what kind of registration is requested
+
+- ResultDirInfo allows to set in with directory results should be created, and
+whether this directory shall be created
+""".
 -spec construct( wooper:state(), naming_utils:registration_name(),
 		naming_utils:registration_scope(),
 		directory_path() | { directory_path(), 'do_not_create' } ) ->
@@ -257,7 +269,7 @@ construct( State, PerformanceTrackerName, RegistrationScope, ResultDirInfo ) ->
 	EmitterName = atom_to_list( PerformanceTrackerName ),
 
 	TraceState = class_EngineBaseObject:construct( State,
-											?trace_categorize(EmitterName) ),
+		?trace_categorize(EmitterName) ),
 
 	RegistrationName = get_registration_name( PerformanceTrackerName ),
 
@@ -328,7 +340,7 @@ construct( State, PerformanceTrackerName, RegistrationScope, ResultDirInfo ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -372,16 +384,16 @@ destruct( State ) ->
 % Method method section.
 
 
-% @doc Starts the performance tracker:
-%
-% - RootTimeManagerPid is the PID of the root time manager, needed to monitor
-% the main simulation events
-%
-% - Nodes is a list of atom node names, starting with the user node
-%
-% - {LoadBalancerPid, LoadBalancerNode} allows to interact with the load
-% balancer
-%
+-doc """
+Starts the performance tracker:
+
+- RootTimeManagerPid is the PID of the root time manager, needed to monitor the
+main simulation events
+
+- Nodes is a list of atom node names, starting with the user node
+
+- {LoadBalancerPid, LoadBalancerNode} allows to interact with the load balancer
+""".
 -spec start( wooper:state(), time_manager_pid(), [ atom_node_name() ],
 		[ instance_tracker_pid() ], load_balancer_pid() ) -> oneway_return().
 start( State, RootTimeManagerPid, Nodes=[ UserNode | ComputingNodes ],
@@ -447,9 +459,10 @@ start( State, RootTimeManagerPid, Nodes=[ UserNode | ComputingNodes ],
 
 
 
-% @doc Waits for the static node information to be received, and updates
-% accordingly the node entries (with static information to probes).
-%
+-doc """
+Waits for the static node information to be received, and updates accordingly
+the node entries (with static information to probes).
+""".
 wait_static_node_info( ResourcesPerNodeEntries, _InstanceTrackers=[],
 					   _UserNode, _TrackerDir ) ->
 	ResourcesPerNodeEntries;
@@ -484,9 +497,10 @@ wait_static_node_info( ResourcesPerNodeEntries, InstanceTrackers, UserNode,
 
 
 
-% @doc To be called directly to stop the performance tracker, supposedly already
-% started.
-%
+-doc """
+To be called directly to stop the performance tracker, supposedly already
+started.
+""".
 -spec stop( wooper:state() ) -> oneway_return().
 stop( State ) ->
 
@@ -508,10 +522,11 @@ stop( State ) ->
 
 
 
-% @doc Called to stop (synchronously) the tracker sending of data to its probes.
-%
-% (helper)
-%
+-doc """
+Called to stop (synchronously) the tracker sending of data to its probes.
+
+(helper)
+""".
 -spec stop_ticker( wooper:state() ) -> wooper:state().
 stop_ticker( State ) ->
 
@@ -549,12 +564,13 @@ stop_ticker( State ) ->
 
 
 
-% @doc Sets the ticker period, in milliseconds.
-%
-% The performance tracker will send data to its probes at this pace.
-%
-% Default period is 1s (1000 milliseconds).
-%
+-doc """
+Sets the ticker period, in milliseconds.
+
+The performance tracker will send data to its probes at this pace.
+
+Default period is 1s (1000 milliseconds).
+""".
 -spec setTickerPeriod( wooper:state(), milliseconds() ) -> oneway_return().
 setTickerPeriod( State, TickerPeriod ) ->
 
@@ -567,9 +583,9 @@ setTickerPeriod( State, TickerPeriod ) ->
 
 
 
-% @doc Notifies this tracker (as a time listener) that a new tick is being
-% scheduled.
-%
+-doc """
+Notifies this tracker (as a time listener) that a new tick is being scheduled.
+""".
 -spec onNewTick( wooper:state(), tick_offset() ) -> oneway_return().
 onNewTick( State, NewTickOffset ) ->
 	wooper:return_state(
@@ -577,18 +593,18 @@ onNewTick( State, NewTickOffset ) ->
 
 
 
-% @doc Notifies this tracker (as a time listener) that a new diasca is being
-% scheduled.
-%
+-doc """
+Notifies this tracker (as a time listener) that a new diasca is being scheduled.
+""".
 -spec onNewDiasca( wooper:state(), tick_offset(), diasca() ) ->
-							const_oneway_return().
+							                const_oneway_return().
 onNewDiasca( State, _TickOffset, _NewDiasca ) ->
 	% No-op, the performance tracker does not track diascas currently:
 	wooper:const_return().
 
 
 
-% @doc Called to generate all performance monitoring reports.
+-doc "Called to generate all performance monitoring reports.".
 -spec generateMonitoringReports( wooper:state() ) ->
 										request_return( 'report_generated' ).
 generateMonitoringReports( State ) ->
@@ -629,7 +645,7 @@ generateMonitoringReports( State ) ->
 % Section for static methods.
 
 
-% @doc Returns the PID of the performance tracker (if any).
+-doc "Returns the PID of the performance tracker (if any).".
 -spec get_tracker() -> static_return( tracker_pid() | 'not_registered' ).
 get_tracker() ->
 
@@ -642,7 +658,7 @@ get_tracker() ->
 % Helper functions.
 
 
-% @doc Creates the probes to monitor per-node resources.
+-doc "Creates the probes to monitor per-node resources.".
 -spec create_node_resource_probes( atom_node_name(),
 		system_utils:host_static_info(), atom_node_name(), directory_path() ) ->
 											{ probe_pid(), probe_pid() }.
@@ -754,15 +770,16 @@ create_node_resource_probes( NodeName, NodeStaticInfo, UserNode,
 
 
 
-% @doc Creates the two probes used to monitor per-node process and instance
-% creations, over simulation ticks and over wallclock time.
-%
-% Each of these two probes will monitor all nodes at once (in a single plot),
-% regarding instance count.
-%
-% Once the computing nodes will be known, the corresponding curves will be added
-% to these probes.
-%
+-doc """
+Creates the two probes used to monitor per-node process and instance creations,
+over simulation ticks and over wallclock time.
+
+Each of these two probes will monitor all nodes at once (in a single plot),
+regarding instance count.
+
+Once the computing nodes will be known, the corresponding curves will be added
+to these probes.
+""".
 -spec create_node_probes( directory_path() ) -> { probe_pid(), probe_pid() }.
 create_node_probes( TrackerResultDir ) ->
 
@@ -795,9 +812,10 @@ create_node_probes( TrackerResultDir ) ->
 
 
 
-% @doc Creates the two probes used to monitor per-class instance creations over
-% simulation ticks and over wallclock time.
-%
+-doc """
+Creates the two probes used to monitor per-class instance creations over
+simulation ticks and over wallclock time.
+""".
 -spec create_class_probes( directory_path() ) -> { probe_pid(), probe_pid() }.
 create_class_probes( TrackerResultDir ) ->
 
@@ -832,7 +850,7 @@ create_class_probes( TrackerResultDir ) ->
 
 
 
-% @doc Main loop of the ticker process.
+-doc "Main loop of the ticker process.".
 ticker_main_loop( PerformanceTrackerPid, TickerPeriod ) ->
 
 	receive
@@ -857,7 +875,7 @@ ticker_main_loop( PerformanceTrackerPid, TickerPeriod ) ->
 
 
 
-% @doc Returns the registering name of the performance tracker.
+-doc "Returns the registering name of the performance tracker.".
 get_registration_name( PerformanceName ) when is_atom( PerformanceName ) ->
 	PerformanceName.
 
@@ -869,7 +887,7 @@ get_registration_name( PerformanceName ) when is_atom( PerformanceName ) ->
 
 
 
-% @doc Called to send updated data to performance probes.
+-doc "Called to send updated data to performance probes.".
 -spec record_new_sample( wooper:state() ) -> oneway_return().
 record_new_sample( State ) ->
 
@@ -964,10 +982,11 @@ record_new_sample( State ) ->
 % Helper functions in charge of recording new samples:
 
 
-% @doc Manages the per-class instance monitoring.
-%
-% Returns an updated state and the total instance count.
-%
+-doc """
+Manages the per-class instance monitoring.
+
+Returns an updated state and the total instance count.
+""".
 manage_class_monitoring( CurrentTickOffset, CurrentWallclockTime,
 						 InstancesPerClass, State ) ->
 
@@ -1023,13 +1042,14 @@ manage_class_monitoring( CurrentTickOffset, CurrentWallclockTime,
 
 
 
-% @doc Sorts InstancesPerClass in the order in OrderedClasses, and determines
-% the list of classes that were not known.
-%
-% Returns {TotalCount, SortedExistingClasses, NewClasses}, an overall instance
-% count and the two lists (one ordered, one listing the new classes), each made
-% of {Classname,InstanceCount} entries.
-%
+-doc """
+Sorts InstancesPerClass in the order in OrderedClasses, and determines the list
+of classes that were not known.
+
+Returns `{TotalCount, SortedExistingClasses, NewClasses}`, an overall instance
+count and the two lists (one ordered, one listing the new classes), each made of
+`{Classname,InstanceCount}` entries.
+""".
 sort_classes( InstancesPerClass, OrderedClasses ) ->
 
 	% First, computes the current instance count for each class, and sums it
@@ -1056,7 +1076,7 @@ sort_classes( InstancesPerClass, OrderedClasses ) ->
 
 
 
-% @doc We iterate here over the ordered classes, moving the found classes from
+% We iterate here over the ordered classes, moving the found classes from
 % InstancesPerClass to ExistingAcc; the remaining ones are by design the new
 % ones.
 %
@@ -1087,9 +1107,10 @@ reorder_classes( InstancesPerClass, _OrderedClasses=[ Class | T ],
 
 
 
-% @doc Waits for all instance trackers to answer, returns the list of
-% corresponding node information records.
-%
+-doc """
+Waits for all instance trackers to answer, returns the list of corresponding
+node information records.
+""".
 -spec wait_dynamic_info_from_trackers( [ instance_tracker_pid() ],
 		wooper:state(), [ host_dynamic_info() ] ) -> [ host_dynamic_info() ].
 wait_dynamic_info_from_trackers( _InstanceTrackers=[], _State, Acc ) ->
@@ -1118,10 +1139,11 @@ wait_dynamic_info_from_trackers( InstanceTrackers, State, Acc ) ->
 
 
 
-% @doc Manages the per-node instance monitoring.
-%
-% Returns an updated state and the total instance count.
-%
+-doc """
+Manages the per-node instance monitoring.
+
+Returns an updated state and the total instance count.
+""".
 manage_node_monitoring( CurrentTickOffset, CurrentWallclockTime,
 						InstancesPerNode, State ) ->
 
@@ -1157,7 +1179,7 @@ manage_node_monitoring( CurrentTickOffset, CurrentWallclockTime,
 
 
 
-% @doc We iterate here over the ordered nodes, moving the found nodes from
+% We iterate here over the ordered nodes, moving the found nodes from
 % InstancesPerNode to ExistingAcc.
 %
 % Here we exhausted the known nodes:
@@ -1184,10 +1206,11 @@ reorder_nodes( InstancesPerNode,
 
 
 
-% @doc Manages the per-node resource monitoring (RAM and swap).
-%
-% Returns an updated state.
-%
+-doc """
+Manages the per-node resource monitoring (RAM and swap).
+
+Returns an updated state.
+""".
 manage_node_dynamic_info( CurrentTickOffset, CurrentWallclockTime,
 						  NodeDynInfos, State ) ->
 
@@ -1205,7 +1228,7 @@ manage_node_dynamic_info( CurrentTickOffset, CurrentWallclockTime,
 	State.
 
 
-% @doc We iterate on the records as we want to use 'keytake' for the node list:
+% We iterate on the records as we want to use 'keytake' for the node list:
 manage_dyn_nodes( _NodeEntries=[], _NodeDynInfos=[], _CurrentTickOffset,
 				  _CurrentWallclockTime ) ->
 	ok;
@@ -1250,11 +1273,12 @@ manage_dyn_nodes( NodeEntries, NodeDynInfos, CurrentTickOffset,
 
 
 
-% @doc Sends the specified message to all probes used by this tracker, returns
-% the list of their PIDs.
-%
-% (helper)
-%
+-doc """
+Sends the specified message to all probes used by this tracker, returns a list
+of their PIDs.
+
+(helper)
+""".
 -spec send_to_all_probes( any(), wooper:state() ) -> [ probe_pid() ].
 send_to_all_probes( Message, State ) ->
 
@@ -1274,12 +1298,13 @@ send_to_all_probes( Message, State ) ->
 
 
 
-% @doc Launches the ticker process.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Launches the ticker process.
+
+Returns an updated state.
+
+(helper)
+""".
 launch_ticker( TickerPeriod, State ) ->
 
 	% Allows to track the wall-clock time:
@@ -1292,9 +1317,10 @@ launch_ticker( TickerPeriod, State ) ->
 	TrackerPid = self(),
 
 	% Creating a ticker process, to trigger regular data updates:
-	TickerPid = ?myriad_spawn_link( fun() ->
-								ticker_main_loop( TrackerPid, TickerPeriod )
-									end ),
+	TickerPid = ?myriad_spawn_link( 
+        fun() ->
+			ticker_main_loop( TrackerPid, TickerPeriod )
+        end ),
 
 	setAttributes( State, [ { ticker_pid, TickerPid },
 							{ ticker_period, TickerPeriod } ] ).
@@ -1341,7 +1367,7 @@ simulation_stopped( State ) ->
 
 
 
-% @doc Returns a list of the PIDs of all probes.
+-doc "Returns a list of the PIDs of all probes.".
 -spec get_all_probes( wooper:state() ) -> [ probe_pid() ].
 get_all_probes( State ) ->
 	[ ?getAttr(nodes_in_tick_probe), ?getAttr(nodes_in_time_probe),
@@ -1357,12 +1383,13 @@ get_all_probes( State ) ->
 
 
 
-% @doc Triggered just before serialisation.
-%
-% The state explicitly returned here is dedicated to serialisation (generally
-% the actual instance state is not impacted by serialisation and thus this
-% request is often const).
-%
+-doc """
+Triggered just before serialisation.
+
+The state explicitly returned here is dedicated to serialisation (generally the
+actual instance state is not impacted by serialisation and thus this request is
+often const).
+""".
 -spec onPreSerialisation( wooper:state(), user_data() ) ->
 				const_request_return( { wooper:state(), user_data() } ).
 onPreSerialisation( State, UserData ) ->
@@ -1374,13 +1401,13 @@ onPreSerialisation( State, UserData ) ->
 	% markers:
 	%
 	NoTransientState = wooper_serialisation:handle_private_processes(
-							PrivateProcesses, State ),
+		PrivateProcesses, State ),
 
 	wooper:const_return_result( { NoTransientState, UserData } ).
 
 
 
-% @doc Triggered just after deserialisation.
+-doc "Triggered just after deserialisation.".
 -spec onPostDeserialisation( wooper:state(), user_data() ) ->
 										request_return( user_data() ).
 onPostDeserialisation( State, UserData ) ->

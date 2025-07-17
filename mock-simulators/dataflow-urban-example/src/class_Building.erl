@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example of a <b>dataflow object</b>.
 -module(class_Building).
+
+-moduledoc "Example of a **dataflow object**.".
 
 
 -define( class_description,
@@ -36,7 +37,7 @@
 % Plain (standard) attributes specific to a building object are:
 -define( class_attributes, [
 
-	{ district_pid, maybe( district_pid() ), "the PID of the parent  district "
+	{ district_pid, option( district_pid() ), "the PID of the parent district "
 	  "of this building (may not be set initially)" },
 
 	{ households, [ household_pid() ],
@@ -55,7 +56,7 @@
 
 
 % For types and shorthands:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For energy_demand_semantics and all:
@@ -76,26 +77,27 @@
 % been defined as, respectively, unique and multiple peers instead.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a dataflow building object instance, in charge of modelling
-% the state of a building:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - BuildingName is the name of this building
-%
-% - PostalAddress is the postal address of this building
-%
-% - DistrictPid is the PID of the parent distruct of this building
-%
-% - DataflowPid is the PID of the dataflow instance
-%
+-doc """
+Constructs a dataflow building object instance, in charge of modelling the state
+of a building:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- BuildingName is the name of this building
+
+- PostalAddress is the postal address of this building
+
+- DistrictPid is the PID of the parent distruct of this building
+
+- DataflowPid is the PID of the dataflow instance
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 building_name(), [ postal_address() | district_pid() ],
 				 dataflow_pid() ) -> wooper:state().
@@ -121,7 +123,7 @@ construct( State, ActorSettings, BuildingName,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -148,7 +150,7 @@ destruct( State ) ->
 		Households ->
 			% Normal if no disassociation event was specified:
 			?info_fmt( "Destructed, yet still referencing ~B households: ~w.",
-						[ length( Households ), Households ] )
+                       [ length( Households ), Households ] )
 
 	end,
 
@@ -161,13 +163,14 @@ destruct( State ) ->
 % Member methods section.
 
 
-% @doc Sets the parent district of this building: this building will be
-% located-in the specified district.
-%
+-doc """
+Sets the parent district of this building: this building will be located-in the
+specified district.
+""".
 -spec setDistrict( wooper:state(), district_pid(), sending_actor_pid() ) ->
 							actor_oneway_return().
 setDistrict( State, DistrictPid, _SendingActorPid )
-								when is_pid( DistrictPid ) ->
+                                    when is_pid( DistrictPid ) ->
 
 	% No reassignment permitted:
 	undefined = ?getAttr(district_pid),
@@ -180,13 +183,14 @@ setDistrict( State, DistrictPid, _SendingActorPid )
 
 
 
-% @doc Registers specified household to this building: the specified household
-% will live-in this building.
-%
+-doc """
+Registers specified household to this building: the specified household will
+live-in this building.
+""".
 -spec registerHousehold( wooper:state(), household_pid(),
 						 sending_actor_pid() ) -> actor_oneway_return().
 registerHousehold( State, HouseholdPid, _SendingActorPid )
-  when is_pid( HouseholdPid ) ->
+                                    when is_pid( HouseholdPid ) ->
 
 	% Check that registered up to once:
 	false = lists:member( HouseholdPid, ?getAttr(households) ),
@@ -199,13 +203,14 @@ registerHousehold( State, HouseholdPid, _SendingActorPid )
 
 
 
-% @doc Unregisters specified household from this building: the specified
-% household will no longer live-in this building.
-%
+-doc """
+Unregisters specified household from this building: the specified household will
+no longer live-in this building.
+""".
 -spec unregisterHousehold( wooper:state(), household_pid(),
 						   sending_actor_pid() ) -> actor_oneway_return().
 unregisterHousehold( State, HouseholdPid, _SendingActorPid )
-  when is_pid( HouseholdPid ) ->
+                                    when is_pid( HouseholdPid ) ->
 
 	?info_fmt( "Unregistering household ~p.", [ HouseholdPid ] ),
 
@@ -218,7 +223,7 @@ unregisterHousehold( State, HouseholdPid, _SendingActorPid )
 
 
 
-% @doc Returns the (indirect) parent district of this building.
+-doc "Returns the (indirect) parent district of this building.".
 -spec getParentDistrict( wooper:state() ) ->
 				const_request_return( { 'parent_district', district_pid() } ).
 getParentDistrict( State ) ->
@@ -231,7 +236,7 @@ getParentDistrict( State ) ->
 % Static section.
 
 
-% @doc Allows to fully specify the dataflow attributes of this object.
+-doc "Allows to fully specify the dataflow attributes of this object.".
 -spec get_dataflow_attribute_specs() ->
 								static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
@@ -280,7 +285,7 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% @doc Returns a textual description of this building dataflow object.
+-doc "Returns a textual description of this building dataflow object.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class modelling the reparation behaviour of pieces of equipment according
-% to a uniform law.
-%
 -module(class_UniformRepairModel).
+
+-moduledoc """
+Class modelling the reparation behaviour of pieces of equipment according to a
+uniform law.
+""".
 
 
 -define( class_description,
@@ -48,21 +49,21 @@
 
 
 
-% @doc Constructs a uniform repair model actor.
-%
-% - ActorSettings corresponds to the engine settings for this actor, as
-% determined by the load-balancer
-%
-% - MTTR is Mean Time To Repair, the mean (average) time that a device will take
-% to recover from a non-terminal failure
-%
-% The MaxTTR could be taken here as a workload: with one resource set to repair
-% the equipment, it evaluates the time to repair.
-%
-% Affecting more resources leads to decreased repair durations. So it is a
-% measure of the failure gravity in itself, not depending on the repair
-% resources.
-%
+-doc """
+Constructs a uniform repair model actor.
+
+- ActorSettings corresponds to the engine settings for this actor, as determined
+by the load-balancer
+
+- MTTR is Mean Time To Repair, the mean (average) time that a device will take
+to recover from a non-terminal failure
+
+The MaxTTR could be taken here as a workload: with one resource set to repair
+the equipment, it evaluates the time to repair.
+
+Affecting more resources leads to decreased repair durations. So it is a measure
+of the failure gravity in itself, not depending on the repair resources.
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_RepairModel:mttr() ) -> wooper:state().
 construct( State, ActorSettings,

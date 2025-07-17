@@ -71,16 +71,16 @@ rebar3-local-sibling-update-for-traces:
 # The -L option allows 'find' to recurse through symlinked directories as well:
 
 list-trace-files-in-tree:
-	@echo "  Listing all *.traces files from $$(pwd), most recent ones first..."
-	@find -L . -type f -a -name '*.traces' -printf "%TY-%Tm-%Td %TT %p\n" | sort -nr
+	@echo "  Listing all *.traces and *.traces.previous files from $$(pwd), most recent ones first..."
+	@find -L . -type f -a \( -name '*.traces' -o -name '*.traces.previous' \) -printf "%TY-%Tm-%Td %TT %p\n" | sort -nr
 
 remove-trace-files-in-tree:
-	@echo "  Removing all *.traces files from $$(pwd)..."
-	@find -L . -name '*.traces' -o -name '*.traces.previous' -exec /bin/rm -f '{}' ';' 2>/dev/null
+	@echo "  Removing all *.traces and *.traces.previous files from $$(pwd)..."
+	@find -L . -type f -a \( -name '*.traces' -o -name '*.traces.previous' \) -exec /bin/rm -f '{}' ';' 2>/dev/null
 
 
 # Not wanting to define a default rule:
 clean: clean-traces
 
 clean-traces:
-	-@/bin/rm -f $(TRACES_FILES)
+	-@/bin/rm -f $(TRACES_FILES) $(TRACES_PREVIOUS_FILES)

@@ -24,7 +24,7 @@ export ERL_EPMD_PORT=4506
 
 scheduler_count="$1"
 
-if [ -n "${scheduler_count}" ] ; then
+if [ -n "${scheduler_count}" ]; then
 
 	scheduler_opt="+S $scheduler_count"
 

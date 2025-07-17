@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, October 8, 2021.
 
-
-% @doc Module implementing the support for <b>3x3 matrices</b>.
-%
-% See also:
-% - the corresponding (3D) vectors, in vector3.erl
-% - the (unspecialised) matrices of arbitrary dimensions, in matrix.erl
-%
 -module(matrix3).
+
+-moduledoc """
+Module implementing the support for **3x3 matrices**.
+
+See also:
+ - the corresponding (3D) vectors, in `vector3.erl`
+ - the (unspecialised) matrices of arbitrary dimensions, in `matrix.erl`
+""".
+
 
 
 
@@ -62,29 +64,40 @@
 -include("matrix3.hrl").
 
 
+-doc """
+A matrix3 can be specified as a list of same-size rows (akin to a user arbitrary
+matrix) containing any kind of numerical coordinates.
+""".
 -type user_matrix3() :: user_matrix().
-% A matrix3 can be specified as a list of same-size rows (akin to a user
-% arbitrary matrix) containing any kind of numerical coordinates.
 
 
+-doc "Any 3x3 matrix.".
 -type matrix3() :: 'identity_3' | canonical_matrix3() | compact_matrix3().
 
 
+
 % Alias for 3x3 canonical matrices:
+-doc "A 3x3 canonical matrix.".
 -type canonical_matrix3() :: #matrix3{}.
 
 
+
 % Aliases for 3x3 compact matrices:
+-doc "A 3x3 compact matrix.".
 -type compact_matrix3() :: #compact_matrix3{}.
 
 
--type rot_matrix3() :: canonical_matrix3().
-% A matrix describing a 3D rotation.
 
+-doc "A matrix describing a 3D rotation.".
+-type rot_matrix3() :: canonical_matrix3().
+
+
+
+-doc "A tuple of 6 or 9 coordinates.".
 -type tuple_matrix3() :: % Not exported yet: gl:m9() | gl:m6().
 						 type_utils:tuple( coordinate(), 9 )
 					   | type_utils:tuple( coordinate(), 6 ).
-% A tuple of 6 or 9 coordinates.
+
 
 
 -export_type([ user_matrix3/0, matrix3/0, canonical_matrix3/0,
@@ -148,9 +161,9 @@
 
 
 
-% @doc Returns a 3D (canonical) matrix corresponding to the user-specified
-% matrix.
-%
+-doc """
+Returns a 3D (canonical) matrix corresponding to the user-specified matrix.
+""".
 -spec new( user_matrix3() ) -> canonical_matrix3().
 new( UserMatrix ) ->
 
@@ -162,9 +175,9 @@ new( UserMatrix ) ->
 
 
 
-% @doc Returns a 3D compact matrix corresponding to the user-specified
-% row vectors.
-%
+-doc """
+Returns a 3D compact matrix corresponding to the user-specified row vectors.
+""".
 -spec new( user_vector3(), user_vector3() ) -> compact_matrix3().
 new( UserVecRow1, UserVecRow2 ) ->
 
@@ -177,7 +190,7 @@ new( UserVecRow1, UserVecRow2 ) ->
 
 
 
-% @doc Returns the null (3x3) matrix.
+-doc "Returns the null (3x3) matrix.".
 -spec null() -> canonical_matrix3().
 null() ->
 	Zero = 0.0,
@@ -186,16 +199,17 @@ null() ->
 
 
 
-% @doc Returns the identity (3x3) matrix.
+-doc "Returns the identity (3x3) matrix.".
 -spec identity() -> matrix3().
 identity() ->
 	identity_3.
 
 
 
-% @doc Returns the (3x3) homogeneous (thus compact) matrix corresponding to a
-% translation of the specified vector.
-%
+-doc """
+Returns the (3x3) homogeneous (thus compact) matrix corresponding to a
+translation of the specified vector.
+""".
 -spec translation( vector2() ) -> compact_matrix3().
 translation( _VT=[ Tx, Ty ] ) ->
 	Zero = 0.0,
@@ -205,9 +219,10 @@ translation( _VT=[ Tx, Ty ] ) ->
 
 
 
-% @doc Returns the (3x3) homogeneous (thus compact) matrix corresponding to the
-% scaling of the specified factors.
-%
+-doc """
+Returns the (3x3) homogeneous (thus compact) matrix corresponding to the scaling
+of the specified factors.
+""".
 -spec scaling( { factor(), factor() } ) -> compact_matrix3().
 scaling( { Sx, Sy } ) ->
 	Zero = 0.0,
@@ -216,20 +231,21 @@ scaling( { Sx, Sy } ) ->
 
 
 
-% @doc Returns the (3x3) matrix corresponding to a rotation of the specified
-% angle around the axis specified as a unit vector.
-%
-% This will be a counterclockwise rotation for an observer placed so that the
-% specified axis points towards it.
-%
-% A rotation matrix is orthogonal, its inverse is its transpose, and its
-% determinant is 1.0.
-%
-% These 3D rotation matrices form a group known as the special orthogonal group
-% SO(3).
-%
-% See also: quaternion:rotation/2.
-%
+-doc """
+Returns the (3x3) matrix corresponding to a rotation of the specified angle
+around the axis specified as a unit vector.
+
+This will be a counterclockwise rotation for an observer placed so that the
+specified axis points towards it.
+
+A rotation matrix is orthogonal, its inverse is its transpose, and its
+determinant is 1.0.
+
+These 3D rotation matrices form a group known as the special orthogonal group
+SO(3).
+
+See also: quaternion:rotation/2 and quaternion:to_rot_matrix3/{1,2}.
+""".
 -spec rotation( unit_vector3(), radians() ) -> rot_matrix3().
 rotation( UnitAxis=[ Ux, Uy, Uz ], RadAngle ) ->
 
@@ -270,16 +286,17 @@ rotation( UnitAxis=[ Ux, Uy, Uz ], RadAngle ) ->
 			  m31=M31, m32=M32, m33=M33 }.
 
 
-% @doc Returns the 3x3 matrix whose columns correspond to the specified 3 3D
-% vectors.
-%
-% Returns thus:
-%  ```
-%  [ Va Vb Vc ]
-%  [ |  |  |  ]
-%  [ |  |  |  ]
-%  '''
-%
+-doc """
+Returns the 3x3 matrix whose columns correspond to the three specified 3D
+vectors.
+
+Returns thus:
+```
+[ Va Vb Vc ]
+[ |  |  |  ]
+[ |  |  |  ]
+```
+""".
 -spec from_columns( vector3(), vector3(), vector3() ) -> canonical_matrix3().
 from_columns( _Va=[Xa,Ya,Za], _Vb=[Xb,Yb,Zb], _Vc=[Xc,Yc,Zc] ) ->
 	#matrix3{ m11=Xa, m12=Xb, m13=Xc,
@@ -288,16 +305,16 @@ from_columns( _Va=[Xa,Ya,Za], _Vb=[Xb,Yb,Zb], _Vc=[Xc,Yc,Zc] ) ->
 
 
 
-% @doc Returns the 3x3 matrix whose rows correspond to the specified 3 3D
-% vectors.
-%
-% Returns thus:
-%  ```
-% [ Va - - - ]
-% [ Vb - - - ]
-% [ Vc - - - ]
-%  '''
-%
+-doc """
+Returns the 3x3 matrix whose rows correspond to the three specified 3D vectors.
+
+Returns thus:
+```
+[ Va - - - ]
+[ Vb - - - ]
+[ Vc - - - ]
+```
+""".
 -spec from_rows( vector3(), vector3(), vector3() ) -> canonical_matrix3().
 from_rows( _Va=[Xa,Ya,Za], _Vb=[Xb,Yb,Zb], _Vc=[Xc,Yc,Zc] ) ->
 	#matrix3{ m11=Xa, m12=Ya, m13=Za,
@@ -306,9 +323,10 @@ from_rows( _Va=[Xa,Ya,Za], _Vb=[Xb,Yb,Zb], _Vc=[Xc,Yc,Zc] ) ->
 
 
 
-% @doc Returns the (3x3, canonical) matrix whose (9) coordinates are the
-% specified ones, as listed row after row.
-%
+-doc """
+Returns the (3x3, canonical) matrix whose (9) coordinates are the specified
+ones, as listed row after row.
+""".
 -spec from_coordinates( coordinate(), coordinate(), coordinate(),
 						coordinate(), coordinate(), coordinate(),
 						coordinate(), coordinate(), coordinate() ) ->
@@ -322,9 +340,10 @@ from_coordinates( M11, M12, M13,
 
 
 
-% @doc Returns the "3x3" (actually 2x3) compact matrix whose 6 actual
-% coordinates are the specified ones, as listed row after row.
-%
+-doc """
+Returns the "3x3" (actually 2x3) compact matrix whose 6 actual coordinates are
+the specified ones, as listed row after row.
+""".
 -spec from_compact_coordinates(
 					coordinate(), coordinate(), coordinate(),
 					coordinate(), coordinate(), coordinate() ) ->
@@ -336,17 +355,20 @@ from_compact_coordinates( M11, M12, Tx,
 
 
 
-% @doc Returns the 3x3 matrix corresponding to the specified
-% arbitrary-dimensioned matrix.
-%
+-doc """
+Returns the 3x3 matrix corresponding to the specified arbitrary-dimensioned
+matrix.
+""".
 -spec from_arbitrary( matrix() ) -> matrix3().
 from_arbitrary( Matrix ) ->
 	erlang:apply( fun from_rows/?dim, Matrix ).
 
 
-% @doc Returns the arbitrary-dimensioned matrix corresponding to the specified
-% 3x3 matrix.
-%
+
+-doc """
+Returns the arbitrary-dimensioned matrix corresponding to the specified 3x3
+matrix.
+""".
 -spec to_arbitrary( matrix3() ) -> matrix().
 to_arbitrary( Matrix3 ) ->
 	M = to_canonical( Matrix3 ),
@@ -355,9 +377,10 @@ to_arbitrary( Matrix3 ) ->
 
 
 
-% @doc Returns the 3x3 compact matrix obtained from specified 2x2 matrix and
-% 2D (translation) vector.
-%
+-doc """
+Returns the 3x3 compact matrix obtained from the specified 2x2 matrix and 2D
+(translation) vector.
+""".
 -spec from_2D( matrix2(), vector2() ) -> compact_matrix3().
 from_2D( #matrix2{ m11=M11, m12=M12,
 				   m21=M21, m22=M22 },
@@ -371,27 +394,29 @@ from_2D( OtherMatrix2, Vec2 ) ->
 
 
 
-% @doc Returns the dimension of these matrices.
-%
-% Not useless, when using polymorphism based on module name.
-%
+-doc """
+Returns the dimension of these matrices.
+
+Not useless, when using polymorphism based on module name.
+""".
 -spec dimension() -> dimension().
 dimension() ->
 	?dim.
 
 
 
-% @doc Returns the dimensions of these matrices.
-%
-% Not useless, when using polymorphism based on module name.
-%
+-doc """
+Returns the dimensions of these matrices.
+
+Not useless, when using polymorphism based on module name.
+""".
 -spec dimensions() -> dimensions().
 dimensions() ->
 	{ ?dim, ?dim }.
 
 
 
-% @doc Returns the specified row of the specified matrix.
+-doc "Returns the specified row of the specified matrix.".
 -spec row( dimension(), matrix3() ) -> vector3().
 row( _RowCount=1, #matrix3{ m11=M11, m12=M12, m13=M13 } ) ->
 	[ M11, M12, M13 ];
@@ -407,7 +432,7 @@ row( RowCount, OtherMatrix ) ->
 
 
 
-% @doc Returns the specified column of the specified matrix.
+-doc "Returns the specified column of the specified matrix.".
 -spec column( dimension(), matrix3() ) -> vector3().
 column( _ColumnCount=1, #matrix3{ m11=M11, m21=M21, m31=M31 } ) ->
 	[ M11, M21, M31 ];
@@ -423,7 +448,7 @@ column( ColCount, OtherMatrix ) ->
 
 
 
-% @doc Returns the element at specified row and column of the specified matrix.
+-doc "Returns the element at specified row and column of the specified matrix.".
 -spec get_element( dimension(), dimension(), matrix3() ) -> coordinate().
 get_element( _R=1, _C=1, #matrix3{ m11=M11 } ) ->
 	M11;
@@ -460,9 +485,10 @@ get_element( R, C, OtherMatrix ) ->
 
 
 
-% @doc Returns a matrix identical to the specified one except that its specified
-% element at specified location has been set to the specified value.
-%
+-doc """
+Returns a matrix identical to the specified one except that its specified
+element at specified location has been set to the specified value.
+""".
 -spec set_element( dimension(), dimension(), coordinate(), matrix3() ) ->
 									matrix3().
 set_element( _R=1, _C=1, Value, Matrix=#matrix3{} ) ->
@@ -500,7 +526,7 @@ set_element( R, C, Value, OtherMatrix ) ->
 
 
 
-% @doc Returns the transpose of the specified matrix.
+-doc "Returns the transpose of the specified matrix.".
 -spec transpose( matrix3() ) -> matrix3().
 % Diagonal untouched:
 transpose( M=#matrix3{ m12=M12, m13=M13,
@@ -519,7 +545,7 @@ transpose( CompactMatrix ) ->
 
 
 
-% @doc Scales specified (3D) matrix of the specified factor.
+-doc "Scales the specified (3D) matrix of the specified factor.".
 -spec scale( matrix3(), factor() ) -> matrix3().
 scale( #compact_matrix3{ m11=M11, m12=M12, tx=Tx,
 						 m21=M21, m22=M22, ty=Ty }, Factor ) ->
@@ -543,7 +569,7 @@ scale( M=identity_3, Factor ) ->
 
 
 
-% @doc Returns the sum of the two specified matrices: M = Ma + Mb.
+-doc "Returns the sum of the two specified matrices: `M = Ma + Mb`.".
 -spec add( matrix3(), matrix3() ) -> matrix3().
 add( _Ma=#matrix3{ m11=A11, m12=A12, m13=A13,
 				   m21=A21, m22=A22, m23=A23,
@@ -585,7 +611,7 @@ add( Ma, Mb ) ->
 
 
 
-% @doc Returns the subtraction of the two specified matrices: M = Ma - Mb.
+-doc "Returns the subtraction of the two specified matrices: `M = Ma - Mb`.".
 -spec sub( matrix3(), matrix3() ) -> matrix3().
 %sub( Ma, Mb ) ->
 	%MinusMb = scale( Mb, -1.0 ),
@@ -638,7 +664,7 @@ sub( Ma, Mb ) ->
 
 
 
-% @doc Multiplies the first matrix by the second one: returns Mc = Ma.Mb.
+-doc "Multiplies the first matrix by the second one: returns `M = Ma.Mb`.".
 -spec mult( Ma:: matrix3(), Mb :: matrix3() ) -> matrix3().
 mult( _Ma=identity_3, Mb ) ->
 	Mb;
@@ -733,10 +759,11 @@ mult( _Ma=#compact_matrix3{ m11=A11, m12=A12, tx=Ax,
 
 
 
-% @doc Multiplies (in-order) the specified matrices.
-%
-% Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
-%
+-doc """
+Multiplies (in-order) all specified matrices.
+
+For example: `mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc`.
+""".
 -spec mult( [ matrix3() ] ) -> matrix3().
 mult( [ Ma, Mb | T ] ) ->
 	mult( [ mult( Ma, Mb ) | T ] );
@@ -746,17 +773,18 @@ mult( [ M ] ) ->
 
 
 
-% @doc Applies (on the right) the specified 2D or 3D vector V or point P to the
-% specified matrix M: returns M.V.
-%
-% If the specified vector is a 2D one (i.e. not a 3D one), we assume that its
-% third (Vz) coordinate is 0.0, whereas if the specified point is a 2D one
-% (i.e. not a 3D one), we assume that its third (Pz) coordinate is 1.0, and
-% returns a 2D point whose coordinates have been normalised regarding the Z
-% coordinate resulting from the application of that extended point.
-%
-% Not a clause of mult/2 for an increased clarity.
-%
+-doc """
+Applies (on the right) the specified 2D or 3D vector V or point P to the
+specified matrix M: returns M.V.
+
+If the specified vector is a 2D one (i.e. not a 3D one), we assume that its
+third (Vz) coordinate is 0.0, whereas if the specified point is a 2D one
+(i.e. not a 3D one), we assume that its third (Pz) coordinate is 1.0, and
+returns a 2D point whose coordinates have been normalised regarding the Z
+coordinate resulting from the application of that extended point.
+
+Not a clause of mult/2 for an increased clarity.
+""".
 -spec apply( matrix3(), vector2() ) -> vector2();
 		   ( matrix3(), vector3() ) -> vector3();
 		   ( matrix3(), point2() ) -> point2();
@@ -875,7 +903,7 @@ apply( _M=#compact_matrix3{ m11=M11, m12=M12, tx=Tx,
 
 
 
-% @doc Tells whether the two specified (3x3) matrices are equal.
+-doc "Tells whether the two specified (3x3) matrices are equal.".
 -spec are_equal( matrix3(), matrix3() ) -> boolean().
 are_equal( _Ma=#matrix3{ m11=A11, m12=A12, m13=A13,
 						 m21=A21, m22=A22, m23=A23,
@@ -923,7 +951,7 @@ are_equal( Ma=identity_3, Mb ) ->
 
 
 
-% @doc Returns the determinant of the specified matrix.
+-doc "Returns the determinant of the specified matrix.".
 -spec determinant( matrix3() ) -> scalar().
 determinant( _M=#matrix3{ m11=M11, m12=M12, m13=M13,
 						  m21=M21, m22=M22, m23=M23,
@@ -941,9 +969,10 @@ determinant( _M=identity_3 ) ->
 
 
 
-% @doc Returns the comatrix of the specified matrix (that is the matrix of its
-% cofactors).
-%
+-doc """
+Returns the comatrix of the specified matrix (that is the matrix of its
+cofactors).
+""".
 -spec comatrix( matrix3() ) -> matrix3().
 comatrix( identity_3 ) ->
 	identity_3;
@@ -1009,10 +1038,11 @@ comatrix( _M=#compact_matrix3{ m11=M11, m12=M12, tx=Tx,
 
 
 
-% @doc Returns the inverse of the specified matrix, if it is invertible (that is
-% iff its determinant is non-null), otherwise returns undefined.
-%
--spec inverse( matrix3() ) -> maybe( matrix3() ).
+-doc """
+Returns the inverse of the specified matrix, if it is invertible (that is iff
+its determinant is non-null), otherwise returns undefined.
+""".
+-spec inverse( matrix3() ) -> option( matrix3() ).
 inverse( M ) when is_record( M, matrix3 ) ->
 	Det = determinant( M ),
 	case math_utils:is_null( Det ) of
@@ -1049,7 +1079,7 @@ inverse( M ) when is_record( M, compact_matrix3 ) ->
 
 
 
-% @doc Returns the canonical form of the specified 3x3 matrix.
+-doc "Returns the canonical form of the specified 3x3 matrix.".
 -spec to_canonical( matrix3() ) -> canonical_matrix3().
 to_canonical( #compact_matrix3{ m11=M11, m12=M12, tx=Tx,
 								m21=M21, m22=M22, ty=Ty } ) ->
@@ -1070,11 +1100,12 @@ to_canonical( M ) when is_record( M, matrix3 ) ->
 
 
 
-% @doc Returns the compact form of specified (3x3) matrix.
-%
-% Throws an exception if the specified matrix cannot be expressed as a compact
-% one.
-%
+-doc """
+Returns the compact form of specified (3x3) matrix.
+
+Throws an exception if the specified matrix cannot be expressed as a compact
+one.
+""".
 -spec to_compact( matrix3() ) -> compact_matrix3().
 to_compact( M=#matrix3{ m11=M11, m12=M12, m13=M13,
 						m21=M21, m22=M22, m23=M23,
@@ -1105,7 +1136,7 @@ to_compact( CM ) when is_record( CM, compact_matrix3 ) ->
 
 
 
-% @doc Checks that the specified matrix is legit, and returns it.
+-doc "Checks that the specified matrix is legit, and returns it.".
 -spec check( matrix3() ) -> matrix3().
 check( M=identity_3 ) ->
 	M;
@@ -1127,7 +1158,7 @@ check( M ) ->
 
 
 
-% @doc Returns a textual representation of the specified (3x3) matrix.
+-doc "Returns a textual representation of the specified (3x3) matrix.".
 -spec to_string( matrix3() ) -> ustring().
 to_string( _Matrix=identity_3 ) ->
 	"3x3 identity";

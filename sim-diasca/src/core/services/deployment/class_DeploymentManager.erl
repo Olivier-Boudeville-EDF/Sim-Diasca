@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -18,9 +18,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class implementing the <b>deployment manager</b> of the simulation.
 -module(class_DeploymentManager).
+
+-moduledoc "Class implementing the **deployment manager** of the simulation.".
 
 
 -define( class_description,
@@ -77,10 +77,10 @@
 	{ host_infos, [ computing_host_info() ], "records information about the "
 	  "computing hosts involved in the simulation" },
 
-	{ compute_scheduler_count, maybe( count() ), "tells if a "
+	{ compute_scheduler_count, option( count() ), "tells if a "
 	  "specific number of sequencers shall be created on each computing node" },
 
-	{ epmd_port, maybe( tcp_port() ), "stores any non-default TCP "
+	{ epmd_port, option( tcp_port() ), "stores any non-default TCP "
 	  "port to be used for the EPMD daemon" },
 
 	{ tcp_port_range, tcp_port_restriction(), "records any "
@@ -120,13 +120,13 @@
 	{ result_manager_pid, result_manager_pid(),
 	  "the PID of the result manager" },
 
-	{ graph_info, maybe( graph_info() ),
+	{ graph_info, option( graph_info() ),
 	  "information regarding the graph stream service (if any)" },
 
-	{ web_manager_pid, maybe( web_manager_pid() ),
+	{ web_manager_pid, option( web_manager_pid() ),
 	  "the PID of the web manager (if any)" },
 
-	{ root_data_exchanger_pid, maybe( data_exchanger_pid() ),
+	{ root_data_exchanger_pid, option( data_exchanger_pid() ),
 	  "PID of the root data exchanger (if any)" },
 
 	{ root_instance_tracker_pid, instance_tracker_pid(),
@@ -137,13 +137,13 @@
 
 	{ plugin_manager_pid, plugin_manager_pid(), "PID of the plugin manager" },
 
-	{ performance_tracker_pid, maybe( performance_tracker_pid() ),
+	{ performance_tracker_pid, option( performance_tracker_pid() ),
 	  "PID of the performance tracker (if any)" },
 
 	{ resilience_manager_pid, resilience_manager_pid(),
 	  "PID of the resilience manager" },
 
-	{ resilience_manager_ref, maybe( reference() ),
+	{ resilience_manager_ref, option( reference() ),
 	  "a monitor reference onto the resilience manager (if any)" },
 
 	{ case_pid, pid(), "the PID of the simulation case process" } ] ).
@@ -172,12 +172,12 @@
 -type manager_pid() :: sim_diasca:agent_pid().
 
 
+-doc "The various types of nodes involved.".
 -type node_type() :: 'computing_node'    % [0..N] of them.
 				   | 'user_node'.        % Always exactly one.
-% The various types of nodes involved.
 
 
-% Specification of the context of a simulation:
+-doc "Specification of the context of a simulation.".
 -type simulation_context() :: 'deploy_from_scratch' | tuple().
 
 
@@ -186,58 +186,61 @@
 % Types used by the deployment_settings record:
 
 
+-doc "A list of hostnames, possibly with their associated local user name.".
 -type host_list() :: atom_host_name()
 				   | [ { atom_host_name(), atom_user_name() } ].
-% A list of hostnames, possibly with their associated local user name.
 
 
+-doc """
+All element paths shall be defined either absolutely or relatively to the engine
+root directory.
+""".
 -type element_path() :: path().
-% All element paths shall be defined either absolutely or relatively to the
-% engine root directory.
 
 
+-doc """
+Designates the type of elements to deploy, either data used by models, or code
+(native, or used through bindings - hence typically Erlang, or Python, Java,
+etc.)
+""".
 -type element_type() :: 'data' | 'code'.
-% Designates the type of elements to deploy, either data used by models, or code
-% (native, or used through bindings - hence typically Erlang, or Python, Java,
-% etc.)
 
 
-
+-doc "Options regarding elements to deploy.".
 -type element_option() :: { 'exclude_directories', [ directory_path() ] }
 						| { 'exclude_suffixes', [ ustring() ] }
 						| { 'keep_only_suffixes', [ ustring() ] }
 						| 'rebuild'
 						| 'no_rebuild'.
-% Options regarding elements to deploy.
 
 
+-doc "Describes filesystem elements of interest.".
 -type element_spec() :: { element_path(), element_type(), [ element_option() ] }
 					  | { element_path(), element_type(), element_option() }
 					  | { element_path(), element_type() }.
-% Describes filesystem elements of interest.
 
 
+-doc "Specifies elements in the filesystem that shall be deployed.".
 -type elements_to_deploy() :: [ element_spec() ].
-% Specifies elements in the filesystem that shall be deployed.
 
 
+-doc "The firewall-related network options to account for.".
 -type firewall_options() ::
-		{ 'tcp_restricted_range', net_utils:tcp_port_range() }
-	  | { 'epmd_port', net_utils:tcp_port() }.
-% The firewall-related network options to account for.
+	{ 'tcp_restricted_range', net_utils:tcp_port_range() }
+  | { 'epmd_port', net_utils:tcp_port() }.
 
 
+-doc "The information regarding the configuration of a language binding.".
 -type language_binding_information() :: language()
 									  | { language(), code_utils:code_path() }.
-% The information regarding the configuration of a language binding.
 
 
+-doc "A list of the classnames of web probes.".
 -type web_probe_classnames() :: [ wooper:classname() ].
-% A list of the classnames of web probes.
 
 
+-doc "Records the known information about a computing host.".
 -type computing_host_info() :: #computing_host_info{}.
-% Records the known information about a computing host.
 
 
 -export_type([ deployment_settings/0, manager_pid/0, node_type/0,
@@ -312,10 +315,11 @@
 
 
 
-% For services based on singletons:
+-doc "For services based on singletons.".
 -type centralised_placement() :: atom_node_name().
 
-% For services with one manager and multiple (distributed) agents:
+
+-doc "For services with one manager and multiple (distributed) agents.".
 -type distributed_placement() :: { atom_node_name(), [ atom_node_name() ] }.
 
 
@@ -353,6 +357,10 @@
 	bindings_management :: distributed_placement() } ).
 
 
+-doc """
+Describes a dispatching of the agents of the simulation services onto a set of
+nodes.
+""".
 -type service_placement() :: #service_placement{}.
 
 
@@ -370,42 +378,6 @@
 % Milliseconds before a looked up remote Gephi server is considered not found:
 -define( remote_gephi_server_timeout, 1000 ).
 
-
-% Shorthands:
-
--type user_name() :: system_utils:user_name().
--type atom_user_name() :: system_utils:atom_user_name().
-
--type ustring() :: text_utils:ustring().
--type bin_string() :: text_utils:bin_string().
-
--type seconds() :: unit_utils:seconds().
-
--type path() :: file_utils:path().
--type file_path() :: file_utils:file_path().
--type file_name() :: file_utils:file_name().
-
--type directory_path() :: file_utils:directory_path().
--type directory_name() :: file_utils:directory_name().
--type bin_directory_name() :: file_utils:bin_directory_name().
-
--type string_host_name() :: net_utils:string_host_name().
--type atom_host_name() :: net_utils:atom_host_name().
--type string_node_name() :: net_utils:string_node_name().
--type atom_node_name() :: net_utils:atom_node_name().
-
--type node_naming_mode() :: net_utils:node_naming_mode().
--type possibly_local_hostname() :: net_utils:possibly_local_hostname().
--type tcp_port() :: net_utils:tcp_port().
--type tcp_port_restriction() :: net_utils:tcp_port_restriction().
-
--type project_path() :: class_GraphStreamProbe:project_path().
--type workspace_name() :: class_GraphStreamProbe:workspace_name().
--type graph_info() :: class_GraphStreamProbe:graph_info().
-
--type host_manager_pid() :: class_ComputingHostManager:host_manager_pid().
-
--type sii() :: sim_diasca:sii().
 
 
 
@@ -438,27 +410,84 @@
 
 
 
+% Type shorthands:
 
-% @doc Constructs a deployment manager, from following parameters:
-%
-% - SimulationSettings: see the simulation_settings record defined in
-% class_TimeManager.hrl
-%
-% - DeploymentSettings: see the deployment_settings record defined in
-% class_DeploymentManager.hrl
-%
-% - LoadBalancingSettings: see the load_balancing_settings record defined in
-% class_LoadBalancer.hrl
-%
-% - Context: tells whether it is a deployment from scratch (with no prior
-% deployment), or a redeployment (with a pre-existing context, that must be
-% specified)
-%
-% - CallerPid: the PID of the caller (typically sim_diasca:init/3) to notify it
-% that the deployment has been done
-%
-% See class_TimeManager and class_LoadBalancer for further details.
-%
+-type user_name() :: system_utils:user_name().
+-type atom_user_name() :: system_utils:atom_user_name().
+
+-type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+
+-type seconds() :: unit_utils:seconds().
+
+-type path() :: file_utils:path().
+-type file_path() :: file_utils:file_path().
+-type file_name() :: file_utils:file_name().
+
+-type directory_path() :: file_utils:directory_path().
+-type directory_name() :: file_utils:directory_name().
+-type bin_directory_name() :: file_utils:bin_directory_name().
+
+-type string_host_name() :: net_utils:string_host_name().
+-type atom_host_name() :: net_utils:atom_host_name().
+-type string_node_name() :: net_utils:string_node_name().
+-type atom_node_name() :: net_utils:atom_node_name().
+
+-type node_naming_mode() :: net_utils:node_naming_mode().
+-type possibly_local_hostname() :: net_utils:possibly_local_hostname().
+-type tcp_port() :: net_utils:tcp_port().
+-type tcp_port_restriction() :: net_utils:tcp_port_restriction().
+
+-type language() :: language_utils:language().
+
+-type project_path() :: class_GraphStreamProbe:project_path().
+-type workspace_name() :: class_GraphStreamProbe:workspace_name().
+-type graph_info() :: class_GraphStreamProbe:graph_info().
+
+-type host_manager_pid() :: class_ComputingHostManager:manager_pid().
+
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+-type load_balancing_settings() :: class_LoadBalancer:load_balancing_settings().
+
+-type binding_managers() :: binding_utils:binding_managers().
+
+-type time_manager_pid() :: class_TimeManager:time_manager_pid().
+
+-type data_exchanger_pid() :: class_DataExchanger:data_exchanger_pid().
+
+-type result_manager_pid() :: class_ResultManager:manager_pid().
+
+-type web_manager_pid() :: class_WebManager:manager_pid().
+
+%-type resilience_manager_pid() :: class_ResilienceManager:manager_pid().
+-type resilience_agent_pid() :: class_ResilienceAgent:agent_pid().
+
+
+-type sii() :: sim_diasca:sii().
+
+
+
+-doc """
+Constructs a deployment manager, from following parameters:
+
+- SimulationSettings: see the simulation_settings record defined in
+class_TimeManager.hrl
+
+- DeploymentSettings: see the deployment_settings record defined in
+class_DeploymentManager.hrl
+
+- LoadBalancingSettings: see the load_balancing_settings record defined in
+class_LoadBalancer.hrl
+
+- Context: tells whether it is a deployment from scratch (with no prior
+deployment), or a redeployment (with a pre-existing context, that must be
+specified)
+
+- CallerPid: the PID of the caller (typically sim_diasca:init/3) to notify it
+that the deployment has been done
+
+See class_TimeManager and class_LoadBalancer for further details.
+""".
 -spec construct( wooper:state(), simulation_settings(), deployment_settings(),
 		load_balancing_settings(), sim_diasca:simulation_identifiers(),
 		simulation_context(), pid() ) -> wooper:state().
@@ -759,8 +788,8 @@ construct( State,
 	%
 	%receive
 	%
-	%	instances_created_from_files ->
-	%		ok
+	%   instances_created_from_files ->
+	%       ok
 	%
 	%end,
 
@@ -881,12 +910,10 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 
 
 
-
-% @doc Returns a textual description of the network settings on the current
-% (user) host.
-%
-% (helper)
-%
+-doc """
+Returns a textual description of the network settings on the current (user)
+host.
+""".
 -spec get_network_description() -> ustring().
 get_network_description() ->
 
@@ -930,10 +957,9 @@ get_network_description() ->
 
 
 
-% @doc Returns a list of the (absolute, normalised) additional BEAM directories.
-%
-% (helper)
-%
+-doc """
+Returns a list of the (absolute, normalised) additional BEAM directories.
+""".
 -spec get_additional_beam_dirs( deployment_settings() ) -> [ directory_name() ].
 get_additional_beam_dirs( #deployment_settings{
 							additional_beam_directories=InitialBEAMDirs,
@@ -956,8 +982,8 @@ get_additional_beam_dirs( #deployment_settings{
 	%
 	Dirs = [ file_utils:resolve_any_path( D )
 				|| D <- InitialBEAMDirs
-					   ++ language_utils:get_additional_beam_directories_for(
-							LanguagesWithoutCodePaths ) ],
+                        ++ language_utils:get_additional_beam_directories_for(
+                                LanguagesWithoutCodePaths ) ],
 
 	%trace_utils:debug_fmt( "All dirs: ~p", [ Dirs ] ),
 
@@ -983,7 +1009,7 @@ get_additional_beam_dirs( #deployment_settings{
 		end,
 		_Acc0=[],
 		% To preserve final order:
-				  _List=lists:reverse( Dirs ) ),
+		_List=lists:reverse( Dirs ) ),
 
 	%trace_utils:debug_fmt( "Final dirs: ~p", [ FinalDirs ] ),
 
@@ -991,13 +1017,14 @@ get_additional_beam_dirs( #deployment_settings{
 
 
 
-% @doc Checks asynchronously that, in the specified list of file paths, no two
-% of them designate the same filename, and that no filename is the sign of a
-% problem (typically due to standard Erlang/OTP local modules being erroneously
-% selected for deployment, because the Erlang installation was done and left in
-% the Sim-Diasca tree, whereas each computing host must already have its Erlang
-% environment installed)
-%
+-doc """
+Checks asynchronously that, in the specified list of file paths, no two of them
+designate the same filename, and that no filename is the sign of a problem
+(typically due to standard Erlang/OTP local modules being erroneously selected
+for deployment, because the Erlang installation was done and left in the
+Sim-Diasca tree, whereas each computing host must already have its Erlang
+environment installed)
+""".
 -spec inspect_archive_content( [ file_path() ] ) -> void().
 inspect_archive_content( ArchiveSelectedFiles ) ->
 
@@ -1008,10 +1035,11 @@ inspect_archive_content( ArchiveSelectedFiles ) ->
 
 
 
-% @doc Checks that, in the specified list of file paths, no two of them
-% designate the same filename, and that no filename is the sign of a problem
-% (typically that Erlang/OTP modules might be erroneously selected).
-%
+-doc """
+Checks that, in the specified list of file paths, no two of them designate the
+same filename, and that no filename is the sign of a problem (typically that
+Erlang/OTP modules might be erroneously selected).
+""".
 -spec inspect_archive( [ file_path() ], pid() ) -> no_return().
 inspect_archive( ArchiveSelectedFiles, TargetPid ) ->
 
@@ -1086,9 +1114,10 @@ inspect_archive( ArchiveSelectedFiles, TargetPid ) ->
 
 
 
-% @doc Blocks until the message sent from inspect_archive_content/1 is received,
-% and examines the corresponding outcome.
-%
+-doc """
+Blocks until the message sent from inspect_archive_content/1 is received, and
+examines the corresponding outcome.
+""".
 -spec interpret_archive_inspection( wooper:state() ) -> void().
 interpret_archive_inspection( State ) ->
 
@@ -1161,11 +1190,10 @@ interpret_archive_inspection( State ) ->
 
 
 
-% @doc Sets up all simulation services one by one, and in-order, and returns an
-% updated state referencing them.
-%
-% (helper)
-%
+-doc """
+Sets up all simulation services one by one, and in-order, and returns an updated
+state referencing them.
+""".
 set_up_simulation_services(
 
 		_UserSettings={ SimulationName, SimInteractivityMode,
@@ -1287,7 +1315,7 @@ set_up_simulation_services(
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -1306,7 +1334,7 @@ destruct( State ) ->
 
 
 
-% @doc Performs a global teardown of the simulation services: orderly shutdown.
+-doc "Performs a global teardown of the simulation services: orderly shutdown.".
 -spec shutdown_services( wooper:state() ) -> wooper:state().
 shutdown_services( State ) ->
 
@@ -1386,25 +1414,24 @@ shutdown_services( State ) ->
 
 
 
-% @doc Now we try to collect the setup outcome for each and every host manager:
-% some may succeed (then they anticipate on the next phase and are sent their
-% simulation package), some may fail, some may never answer or answer too late.
-%
-% This allows also to desynchronise the sendings of the simulation archive.
-%
-% Returns {AvailableHosts, FailedHosts, NewState}, where:
-%
-% - AvailableHosts is a list of computing_host_info records that correspond to
-% hosts on which the deployment succeeded
-%
-% - FailedHosts is a list of {FailComputingHostPid, FailReason} pairs, where
-% FailComputingHostPid is the PID of the computing host which corresponds to a
-% failed host, and FailReason is an atom describing the failure reason
-%
-% - NewState is an updated state
-%
-% (helper)
-%
+-doc """
+Now we try to collect the setup outcome for each and every host manager: some
+may succeed (then they anticipate on the next phase and are sent their
+simulation package), some may fail, some may never answer or answer too late.
+
+This allows also to desynchronise the sendings of the simulation archive.
+
+Returns {AvailableHosts, FailedHosts, NewState}, where:
+
+- AvailableHosts is a list of computing_host_info records that correspond to
+hosts on which the deployment succeeded
+
+- FailedHosts is a list of {FailComputingHostPid, FailReason} pairs, where
+FailComputingHostPid is the PID of the computing host which corresponds to a
+failed host, and FailReason is an atom describing the failure reason
+
+- NewState is an updated state
+""".
 -spec process_setup_outcome( file_name(), wooper:state() ) ->
 	{ [ computing_host_info() ],
 	  [ { host_manager_pid(), basic_utils:error_type() } ], wooper:state() }.
@@ -1436,10 +1463,11 @@ process_setup_outcome( SimulationPackageFilename, State ) ->
 
 
 
-% @doc We maintain lists of the PID of the computing host managers that are
-% initially waited, then over time their status is migrated to available or
-% failed, explicitly or implicitly (on time-out).
-%
+-doc """
+We maintain lists of the PID of the computing host managers that are initially
+waited, then over time their status is migrated to available or failed,
+explicitly or implicitly (on time-out).
+""".
 wait_setup_outcome( _Waited=[], Available, Failed, _CollectTimeOut,
 					_BinPackageFilename, State ) ->
 	% All answered, or time-out was triggered:
@@ -1468,7 +1496,7 @@ wait_setup_outcome( Waited, Available, Failed, CollectTimeOut,
 			InitialComputingHostInfo = get_host_info( HostManagerPid, State ),
 
 			NewComputingHostInfo = InitialComputingHostInfo#computing_host_info{
-										host_infos=HostInfos },
+				host_infos=HostInfos },
 
 			?info_fmt( "Received notification of set-up success from "
 				"manager ~w: deployment on host '~ts' starts now, "
@@ -1554,9 +1582,10 @@ wait_setup_outcome( Waited, Available, Failed, CollectTimeOut,
 % Member methods section.
 
 
-% @doc Called by the load-balancer when it has finished creating the initial
-% instances (e.g. loaded from files).
-%
+-doc """
+Called by the load-balancer when it has finished creating the initial instances
+(e.g. loaded from files).
+""".
 -spec onInitialInstancesCreatedFromFiles( wooper:state() ) ->
 											const_oneway_return().
 onInitialInstancesCreatedFromFiles( State ) ->
@@ -1568,12 +1597,13 @@ onInitialInstancesCreatedFromFiles( State ) ->
 
 
 
-% @doc A computing host manager that has been removed because of a time-out may
-% send a onHostDeploymentFailure message too late to be intercepted by the loop
-% above, which will trigger a method call (thus this void body has to defined).
-%
-% (const pseudo oneway)
-%
+-doc """
+A computing host manager that has been removed because of a time-out may send a
+onHostDeploymentFailure message too late to be intercepted by the loop above,
+which will trigger a method call (thus this void body has to defined).
+
+(const pseudo oneway)
+""".
 -spec onHostDeploymentFailure( wooper:state(), host_manager_pid(), term() ) ->
 									const_oneway_return().
 onHostDeploymentFailure ( State, _HostManagerPid, _Reason ) ->
@@ -1582,7 +1612,7 @@ onHostDeploymentFailure ( State, _HostManagerPid, _Reason ) ->
 
 
 
-% @doc Returns the PID of the load balancer.
+-doc "Returns the PID of the load balancer.".
 -spec getLoadBalancer( wooper:state() ) ->
 								const_request_return( load_balancer_pid() ).
 getLoadBalancer( State ) ->
@@ -1590,7 +1620,7 @@ getLoadBalancer( State ) ->
 
 
 
-% @doc Returns the PIDs of the binding managers, through an appropriate record.
+-doc "Returns the PIDs of the binding managers, through an appropriate record.".
 -spec getBindingManagers( wooper:state() ) ->
 								const_request_return( binding_managers() ).
 getBindingManagers( State ) ->
@@ -1598,7 +1628,7 @@ getBindingManagers( State ) ->
 
 
 
-% @doc Returns the PID of the root time manager.
+-doc "Returns the PID of the root time manager.".
 -spec getRootTimeManager( wooper:state() ) ->
 								const_request_return( time_manager_pid() ).
 getRootTimeManager( State ) ->
@@ -1606,7 +1636,7 @@ getRootTimeManager( State ) ->
 
 
 
-% @doc Returns the PID of the result manager.
+-doc "Returns the PID of the result manager.".
 -spec getResultManager( wooper:state() ) ->
 							const_request_return( result_manager_pid() ).
 getResultManager( State ) ->
@@ -1614,7 +1644,7 @@ getResultManager( State ) ->
 
 
 
-% @doc Returns the PID of the web manager.
+-doc "Returns the PID of the web manager.".
 -spec getWebManager( wooper:state() ) ->
 							const_request_return( web_manager_pid() ).
 getWebManager( State ) ->
@@ -1622,13 +1652,13 @@ getWebManager( State ) ->
 
 
 
-% @doc Returns the key information about the graph stream tool being used (if
-% any).
-%
-% This is typically useful for the creation of graph stream probes.
-%
+-doc """
+Returns the key information about the graph stream tool being used (if any).
+
+This is typically useful for the creation of graph stream probes.
+""".
 -spec getGraphStreamInformation( wooper:state() ) ->
-					const_request_return( maybe( graph_info() ) ).
+					const_request_return( option( graph_info() ) ).
 getGraphStreamInformation( State ) ->
 
 	% Already in a relevant form:
@@ -1638,9 +1668,10 @@ getGraphStreamInformation( State ) ->
 
 
 
-% @doc Oneway triggered by the nodeup messages enabled by (option-less) node
-% monitoring.
-%
+-doc """
+Oneway triggered by the nodeup messages enabled by (option-less) node
+monitoring.
+""".
 -spec nodeup( wooper:state(), atom_node_name() ) -> const_oneway_return().
 nodeup( State, NewlyConnectedNodeName ) ->
 
@@ -1651,9 +1682,10 @@ nodeup( State, NewlyConnectedNodeName ) ->
 
 
 
-% @doc Oneway triggered by the nodeup messages enabled by (option-less) node
-% monitoring.
-%
+-doc """
+Oneway triggered by the nodeup messages enabled by (option-less) node
+monitoring.
+""".
 -spec nodedown( wooper:state(), atom_node_name() ) -> oneway_return().
 nodedown( State, DisconnectedNodeName ) ->
 
@@ -1673,9 +1705,10 @@ nodedown( State, DisconnectedNodeName ) ->
 
 
 
-% @doc Callback triggered whenever a new node connected to this one (should node
-% monitoring with options be enabled).
-%
+-doc """
+Callback triggered whenever a new node connected to this one (should node
+monitoring with options be enabled).
+""".
 -spec onWOOPERNodeConnection( wooper:state(), atom_node_name(),
 			monitor_utils:monitor_info() ) -> const_oneway_return().
 onWOOPERNodeConnection( State, NewlyConnectedNodeName, MonitorNodeInfo ) ->
@@ -1690,9 +1723,10 @@ onWOOPERNodeConnection( State, NewlyConnectedNodeName, MonitorNodeInfo ) ->
 
 
 
-% @doc Callback triggered whenever a node disconnected from this one (should
-% node monitoring with options be enabled).
-%
+-doc """
+Callback triggered whenever a node disconnected from this one (should node
+monitoring with options be enabled).
+""".
 -spec onWOOPERNodeDisconnection( wooper:state(), atom_node_name(),
 				monitor_utils:monitor_info() ) -> oneway_return().
 onWOOPERNodeDisconnection( State, DisconnectedNodeName, MonitorNodeInfo ) ->
@@ -1716,9 +1750,10 @@ onWOOPERNodeDisconnection( State, DisconnectedNodeName, MonitorNodeInfo ) ->
 
 
 
-% @doc Called whenever a linked process exits (e.g. a time manager on a
-% computing node exiting because one of its local actors itself exited).
-%
+-doc """
+Called whenever a linked process exits (e.g. a time manager on a computing node
+exiting because one of its local actors itself exited).
+""".
 -spec onWOOPERExitReceived( wooper:state(), pid() | port(), term() ) ->
 									const_oneway_return().
 onWOOPERExitReceived( State, _PidOrPort, _ExitType=normal ) ->
@@ -1859,10 +1894,7 @@ stop_ui( StatusCode ) ->
 	end.
 
 
-% @doc Triggers an (asynchronous) emergency shutdown.
-%
-% (helper)
-%
+-doc "Triggers an (asynchronous) emergency shutdown.".
 -spec trigger_emergency_shutdown( system_utils:return_code(),
 								  wooper:state() ) -> wooper:state().
 trigger_emergency_shutdown( ExitCode, State ) ->
@@ -1882,7 +1914,7 @@ trigger_emergency_shutdown( ExitCode, State ) ->
 
 
 
-% @doc Returns a list of the names of all the selected computing nodes.
+-doc "Returns a list of the names of all the selected computing nodes.".
 -spec getComputingNodes( wooper:state() ) ->
 								const_request_return( [ atom_node_name() ] ).
 getComputingNodes( State ) ->
@@ -1890,11 +1922,12 @@ getComputingNodes( State ) ->
 
 
 
-% @doc Activates the support of the Mnesia database on all known nodes.
-%
-% This is a request (not a oneway) to force synchronisation, not to collect a
-% particular result.
-%
+-doc """
+Activates the support of the Mnesia database on all known nodes.
+
+This is a request (not a oneway) to force synchronisation, not to collect a
+particular result.
+""".
 -spec activateDatabase( wooper:state() ) ->
 		request_return( 'database_already_running' | 'database_started' ).
 activateDatabase( State ) ->
@@ -1981,7 +2014,7 @@ activateDatabase( State ) ->
 
 			% Oneway:
 			[ HostManagerPid ! { startDatabase, self() }
-					|| HostManagerPid <- DatabaseAgents ],
+				|| HostManagerPid <- DatabaseAgents ],
 
 			% Allows to use the database directly from this user node as well
 			% (e.g. for a test case which would need a virtual probe)
@@ -2001,11 +2034,11 @@ activateDatabase( State ) ->
 
 
 
-% @doc Deactivates the support of the Mnesia database on all known nodes.
-%
-% This is a request to force synchronisation, not to collect a particular
-% result.
-%
+-doc """
+Deactivates the support of the Mnesia database on all known nodes.
+
+This is a request to force synchronisation, not to collect a particular result.
+""".
 -spec deactivateDatabase( wooper:state() ) ->
 			request_return( 'database_stopped' | 'database_was_not_running' ).
 deactivateDatabase( State ) ->
@@ -2022,7 +2055,7 @@ deactivateDatabase( State ) ->
 
 			% Oneway:
 			[ HostManagerPid ! { stopDatabase, self() }
-					|| HostManagerPid <- DatabaseAgents ],
+				|| HostManagerPid <- DatabaseAgents ],
 
 			wait_for_database_event( DatabaseAgents, onDatabaseStopped ),
 
@@ -2034,12 +2067,13 @@ deactivateDatabase( State ) ->
 
 
 
-% @doc Notification (expected to be sent by the resilience manager) of the PID
-% of all resilience agents.
-%
-% Note: cannot be done the other way round (with getAllResilienceAgents/1), as
-% it would create a deadlock.
-%
+-doc """
+Notification (expected to be sent by the resilience manager) of the PID of all
+resilience agents.
+
+Note: cannot be done the other way round (with getAllResilienceAgents/1), as it
+would create a deadlock.
+""".
 -spec notifyResilienceAgents( wooper:state(), [ resilience_agent_pid() ] ) ->
 									const_oneway_return().
 notifyResilienceAgents( State, ResilienceAgentPidList ) ->
@@ -2060,11 +2094,12 @@ notifyResilienceAgents( State, ResilienceAgentPidList ) ->
 % Static methods section.
 
 
-% @doc Returns the atom corresponding to the name the load balancer should be
-% registered as.
-%
-% Note: executed on the caller node.
-%
+-doc """
+Returns the atom corresponding to the name the load balancer should be
+registered as.
+
+Note: executed on the caller node.
+""".
 -spec get_registration_name() ->
 							static_return( naming_utils:registration_name() ).
 get_registration_name() ->
@@ -2073,10 +2108,10 @@ get_registration_name() ->
 
 
 
-% @doc Returns the string prefix to be used in order to name the Erlang nodes
-% that correspond to the specified simulation name and SII, with the current
-% user.
-%
+-doc """
+Returns the string prefix to be used in order to name the Erlang nodes that
+correspond to the specified simulation name and SII, with the current user.
+""".
 -spec get_node_name_prefix_from( simulation_name(), sii() ) ->
 										static_return( string_node_name() ).
 get_node_name_prefix_from( SimulationName, SII ) ->
@@ -2093,9 +2128,10 @@ get_node_name_prefix_from( SimulationName, SII ) ->
 
 
 
-% @doc Returns the name (as an atom) of the user node corresponding to the
-% specified simulation name and SII, with the current user.
-%
+-doc """
+Returns the name (as an atom) of the user node corresponding to the specified
+simulation name and SII, with the current user.
+""".
 -spec get_user_node_name_from( simulation_name(), sii() ) ->
 										static_return( atom_node_name() ).
 get_user_node_name_from( SimulationName, SII ) ->
@@ -2106,9 +2142,10 @@ get_user_node_name_from( SimulationName, SII ) ->
 
 
 
-% @doc Returns the name (as a string) of any computing node corresponding to the
-% specified simulation name and SII, with the current user.
-%
+-doc """
+Returns the name (as a string) of any computing node corresponding to the
+specified simulation name and SII, with the current user.
+""".
 -spec get_computing_node_prefix_from( simulation_name(), sii() ) ->
 										static_return( string_node_name() ).
 get_computing_node_prefix_from( SimulationName, SII ) ->
@@ -2120,7 +2157,7 @@ get_computing_node_prefix_from( SimulationName, SII ) ->
 
 
 
-% @doc Returns the PID of the (unique) deployment manager.
+-doc "Returns the PID of the (unique) deployment manager.".
 -spec get_deployment_manager() -> static_return( manager_pid() ).
 get_deployment_manager() ->
 
@@ -2132,9 +2169,10 @@ get_deployment_manager() ->
 
 
 
-% @doc Shutdowns a full deployment, hence the whole simulation, based on the
-% specified PID of the deployment manager.
-%
+-doc """
+Shutdowns a full deployment, hence the whole simulation, based on the specified
+PID of the deployment manager.
+""".
 -spec shutdown( manager_pid() ) -> static_void_return().
 shutdown( DeploymentManagerPid ) ->
 
@@ -2177,7 +2215,7 @@ shutdown( DeploymentManagerPid ) ->
 
 
 
-% @doc Determines and checks the temporary directory that should be used here.
+-doc "Determines and checks the temporary directory that should be used here.".
 -spec determine_temporary_directory( deployment_settings() ) ->
 										static_return( directory_name() ).
 determine_temporary_directory( DeploymentSettings ) ->
@@ -2203,9 +2241,10 @@ determine_temporary_directory( DeploymentSettings ) ->
 
 
 
-% @doc Returns the base deployment directory, corresponding to the specified
-% simulation name.
-%
+-doc """
+Returns the base deployment directory, corresponding to the specified simulation
+name.
+""".
 -spec get_deployment_base_directory_for( simulation_name(),
 		directory_name(), time_utils:timestamp(), sii() ) ->
 			static_return( directory_path() ).
@@ -2228,9 +2267,9 @@ get_deployment_base_directory_for( SimulationName, TmpDir, Timestamp, SII ) ->
 
 
 
-% @doc Returns a textual description of the specified deployment settings
-% record.
-%
+-doc """
+Returns a textual description of the specified deployment settings record.
+""".
 -spec settings_to_string( deployment_settings() ) -> static_return( ustring() ).
 settings_to_string( _DeploymentSettings=#deployment_settings{
 						computing_hosts=Hosts,
@@ -2485,9 +2524,10 @@ settings_to_string( _DeploymentSettings=#deployment_settings{
 
 
 
-% @doc Determines from the command-line parameters where is the root directory
-% of the sources of the simulation engine (useful to locate specific files).
-%
+-doc """
+Determines from the command-line parameters where is the root directory of the
+sources of the simulation engine (useful to locate specific files).
+""".
 -spec determine_root_directory() -> static_return( directory_path() ).
 determine_root_directory() ->
 
@@ -2496,7 +2536,7 @@ determine_root_directory() ->
 	CmdLineRootOpt = ?engine_arg_root_key,
 
 	RelativeRootDir = case
-			shell_utils:get_command_arguments_for_option( CmdLineRootOpt ) of
+			cmd_line_utils:get_command_arguments_for_option( CmdLineRootOpt ) of
 
 		[ [ D ] ] ->
 			D;
@@ -2504,9 +2544,10 @@ determine_root_directory() ->
 		Other ->
 			trace_utils:error_fmt( "Unable to retrieve engine root directory "
 				"from the command line: the '~ts' option is associated to ~p; "
-				"had ~ts", [ CmdLineRootOpt, Other,
-							 shell_utils:argument_table_to_string(
-								shell_utils:get_argument_table() ) ] ),
+				"had ~ts",
+                [ CmdLineRootOpt, Other,
+                  cmd_line_utils:argument_table_to_string(
+                    cmd_line_utils:get_argument_table() ) ] ),
 
 			throw( { lacking_command_line_option, CmdLineRootOpt, Other } )
 
@@ -2522,9 +2563,10 @@ determine_root_directory() ->
 
 
 
-% @doc Returns the most usual file suffixes that are generally to exclude when
-% creating a deployment archive.
-%
+-doc """
+Returns the most usual file suffixes that are generally to exclude when creating
+a deployment archive.
+""".
 -spec get_basic_blacklisted_suffixes() -> static_return( [ ustring() ] ).
 get_basic_blacklisted_suffixes() ->
 
@@ -2542,10 +2584,7 @@ get_basic_blacklisted_suffixes() ->
 % Helper functions section.
 
 
-% @doc Returns the version string for the layers used here.
-%
-% (helper)
-%
+-doc "Returns the version string for the layers used here.".
 -spec get_version_string() -> { ustring(), ustring(), ustring(), ustring() }.
 get_version_string() ->
 
@@ -2559,10 +2598,7 @@ get_version_string() ->
 
 
 
-% @doc Returns adequate meta-data for result producers.
-%
-% (helper)
-%
+-doc "Returns adequate meta-data for result producers.".
 get_result_metadata( _VersionStrings={ MyriadVersionString, WOOPERVersionString,
 							TracesVersionString, SimDiascaVersionString },
 					 SimulationName, TickDuration ) ->
@@ -2595,11 +2631,10 @@ get_result_metadata( _VersionStrings={ MyriadVersionString, WOOPERVersionString,
 
 
 
-% @doc Creates the root data exchanger, returns its PID, and creates and links
-% as well all the local exchangers.
-%
-% (helper)
-%
+-doc """
+Creates the root data exchanger, returns its PID, and creates and links as well
+all the local exchangers.
+""".
 -spec create_data_exchangers( atom_node_name(), [ file_utils:path() ],
 			time_manager_pid(), [ atom_node_name() ], string_node_name() ) ->
 						data_exchanger_pid().
@@ -2799,10 +2834,7 @@ create_data_exchangers( RootDataExchangerNode, ConfigurationFileList,
 -dialyzer( { no_match, check_configuration_file_list/1 } ).
 
 
-% @doc Ensures that all configuration files are specified as strings.
-%
-% (helper)
-%
+-doc "Ensures that all configuration files are specified as strings.".
 check_configuration_file_list( _FileList=[] ) ->
 	ok;
 
@@ -2829,11 +2861,10 @@ check_configuration_file_list( _FileList=[ Elem | _T ] ) ->
 
 
 
-% @doc Returns the hostname (as a plain string) which corresponds to the
-% specified node (as an atom).
-%
-% (helper)
-%
+-doc """
+Returns the hostname (as a plain string) that corresponds to the specified node
+(as an atom).
+""".
 -spec node_to_host( atom_node_name() ) -> net_utils:string_host_name().
 node_to_host( NodeName ) ->
 
@@ -2846,13 +2877,12 @@ node_to_host( NodeName ) ->
 
 
 
-% Returns all the information recorded for specified computing host manager.
-%
-% Returns {Hostname, Username, Nodename}, i.e. all fields of the computing_host
-% record except the first), on success.
-%
-% (helper)
-%
+-doc """
+Returns all the information recorded for specified computing host manager.
+
+Returns `{Hostname, Username, Nodename}`, i.e. all fields of the computing_host
+record except the first), on success.
+""".
 -spec get_host_info( host_manager_pid(), wooper:state() ) ->
 												computing_host_info().
 get_host_info( ComputingHostManagerPid, State ) ->
@@ -2874,11 +2904,10 @@ get_host_info( ComputingHostManagerPid, State ) ->
 
 
 
-% @doc Returns the host name, as a binary, which corresponds to specified
-% computing host manager.
-%
-% (helper)
-%
+-doc """
+Returns the host name, as a binary, which corresponds to specified computing
+host manager.
+""".
 -spec get_hostname_for( host_manager_pid(), wooper:state() ) -> bin_string().
 get_hostname_for( ComputingHostManagerPid, State ) ->
 	HostInfo = get_host_info( ComputingHostManagerPid, State ),
@@ -2886,11 +2915,10 @@ get_hostname_for( ComputingHostManagerPid, State ) ->
 
 
 
-% @doc Returns the user name, as a binary, which corresponds to specified
-% computing host manager.
-%
-% (helper)
-%
+-doc """
+Returns the user name, as a binary, which corresponds to specified computing
+host manager.
+""".
 -spec get_username_for( host_manager_pid(), wooper:state() ) -> bin_string().
 get_username_for( ComputingHostManagerPid, State ) ->
 
@@ -2900,29 +2928,27 @@ get_username_for( ComputingHostManagerPid, State ) ->
 
 
 
-% @doc Returns a list of all the (fully qualified) node names (as atoms)
-% corresponding to the known computing nodes.
-%
-% (helper)
-%
+-doc """
+Returns a list of all the (fully qualified) node names (as atoms) corresponding
+to the known computing nodes.
+""".
 get_computing_nodes( State ) ->
 	[ H#computing_host_info.node_name || H <- ?getAttr(host_infos) ].
 
 
 
-% @doc Returns a {HostCoreList, UserNodeInfo} pair, where:
-%
-% - HostCoreList is a list of { HostName, NodeName, CoreCount } where CoreCount
-% is the number of cores of specified host HostName, and NodeName is the name of
-% the computing node on that host (both are atoms); we ensure that even if the
-% host on which the user node runs is not running a computing node, it is still
-% listed (once), so that a result queue can be created as well for it
-%
-% - UserNodeInfo={UserNodeName, UserHostName} , i.e. a pair made of the names of
-% the user node and host (both as atoms)
-%
-% (helper)
-%
+-doc """
+Returns a `{HostCoreList, UserNodeInfo}` pair, where:
+
+- HostCoreList is a list of `{HostName, NodeName, CoreCount}` where CoreCount is
+the number of cores of specified host HostName, and NodeName is the name of the
+computing node on that host (both are atoms); we ensure that even if the host on
+which the user node runs is not running a computing node, it is still listed
+(once), so that a result queue can be created as well for it
+
+- `UserNodeInfo={UserNodeName, UserHostName}`, i.e. a pair made of the names of
+the user node and host (both as atoms)
+""".
 get_host_information( HostInfos ) ->
 
 	% Unable to make it compile:
@@ -2984,10 +3010,7 @@ generate_host_core_list( _HostInfos=[ H | T ], Acc ) ->
 
 
 
-% @doc Returns a list of the PID of all known host managers.
-%
-% (helper)
-%
+-doc "Returns a list of the PID of all known host managers.".
 -spec get_host_managers( wooper:state() ) -> [ host_manager_pid() ].
 get_host_managers( State ) ->
 	[ H#computing_host_info.host_manager_pid || H <- ?getAttr(host_infos) ].
@@ -2995,23 +3018,21 @@ get_host_managers( State ) ->
 
 
 
-% @doc Returns a list of node names (as atoms) corresponding to specified
-% computing host manager entries.
-%
-% (helper)
-%
+-doc """
+Returns a list of node names (as atoms) corresponding to the specified computing
+host manager entries.
+""".
 -spec get_node_names( [ computing_host_info() ] ) -> [ atom_node_name() ].
 get_node_names( HostManagerEntryList ) ->
 	[ H#computing_host_info.node_name || H <- HostManagerEntryList ].
 
 
 
-% @doc Returns whether an initial clean-up of any previously existing node with
-% that name is wanted: it is either false, or the full path of the clean-up
-% script to be used, as a binary.
-%
-% (helper)
-%
+-doc """
+Returns whether an initial clean-up of any previously existing node with that
+name is wanted: it is either false, or the full path of the clean-up script to
+be used, as a binary.
+""".
 get_clean_up_settings( DeploySettings, RootDir, State ) ->
 
 	case DeploySettings#deployment_settings.perform_initial_node_cleanup of
@@ -3049,11 +3070,9 @@ get_clean_up_settings( DeploySettings, RootDir, State ) ->
 -dialyzer( { no_match, get_deploy_time_out/2 } ).
 
 
-% @doc Returns the number of milliseconds that should be used as deployment
-% time-out.
-%
-% (helper)
-%
+-doc """
+Returns the number of milliseconds that should be used as deployment time-out.
+""".
 get_deploy_time_out( DeploymentSettings, State ) ->
 
 	% In milliseconds:
@@ -3100,10 +3119,7 @@ get_deploy_time_out( DeploymentSettings, State ) ->
 
 
 
-% @doc Applies the specified configuration changes.
-%
-% (helper)
-%
+-doc "Applies the specified configuration changes.".
 apply_configuration_changes( _ConfChanges=#configuration_changes{
 				compute_scheduler_count=ComputeSchedulerCount }, State ) ->
 
@@ -3123,11 +3139,10 @@ apply_configuration_changes( _ConfChanges=#configuration_changes{
 
 
 
-% @doc Interprets the outcome of the set-up phase, as returned by the host
-% managers, and on success returns a list of selected node names (as atoms).
-%
-% (helper)
-%
+-doc """
+Interprets the outcome of the set-up phase, as returned by the host managers,
+and on success returns a list of selected node names (as atoms).
+""".
 interpret_setup_outcome( _Available=[], _Failed=[], _NodeAvailabilityTolerance,
 						 State ) ->
 
@@ -3143,7 +3158,6 @@ interpret_setup_outcome( _Available=[], Failed, _NodeAvailabilityTolerance,
 						 State ) ->
 
 	% None available here.
-
 
 	Message = case Failed of
 
@@ -3257,9 +3271,9 @@ interpret_setup_outcome( Available, Failed, NodeAvailabilityTolerance,
 
 
 
-% @doc Returns runtime, contextual information that may help any
-% troubleshooting.
-%
+-doc """
+Returns runtime, contextual information that may help any troubleshooting.
+""".
 -spec get_context_information( tcp_port() ) -> ustring().
 get_context_information( EpmdPort ) ->
 
@@ -3290,7 +3304,7 @@ get_context_information( EpmdPort ) ->
 
 
 
-% @doc Returns any diagnosis obtained thanks to EPMD.
+-doc "Returns any diagnosis obtained thanks to EPMD.".
 -spec get_epmd_diagnosis( tcp_port() ) -> ustring().
 get_epmd_diagnosis( EpmdPort ) ->
 
@@ -3319,9 +3333,9 @@ get_epmd_diagnosis( EpmdPort ) ->
 
 
 
-% @doc Returns any local diagnosis obtained thanks to the look-up of EPMD
-% processes.
-%
+-doc """
+Returns any local diagnosis obtained thanks to the look-up of EPMD processes.
+""".
 -spec get_epmd_local_diagnosis() -> ustring().
 get_epmd_local_diagnosis() ->
 
@@ -3334,24 +3348,24 @@ get_epmd_local_diagnosis() ->
 
 
 
-% @doc Returns any local diagnosis obtained thanks to the look-up of BEAM-based
-% processes.
-%
+-doc """
+Returns any local diagnosis obtained thanks to the look-up of BEAM-based
+processes.
+""".
 -spec get_beam_local_diagnosis() -> ustring().
 get_beam_local_diagnosis() ->
 
 	ShellOutput = system_utils:evaluate_shell_expression(
-					"ps -eF | grep beam.smp | grep -v grep" ),
+		"ps -eF | grep beam.smp | grep -v grep" ),
 
 	text_utils:format( "local BEAM processes found:~n~ts", [ ShellOutput ] ).
 
 
 
-% @doc Returns a notification message (plain string) corresponding to the
-% specified failed nodes.
-%
-% (helper)
-%
+-doc """
+Returns a notification message (plain string) corresponding to the specified
+failed nodes.
+""".
 notify_failed_node( [ { UniqueFailed, Reason } ], State ) ->
 
 	UniqueFailedName = get_hostname_for( UniqueFailed, State ),
@@ -3363,7 +3377,6 @@ notify_failed_node( [ { UniqueFailed, Reason } ], State ) ->
 
 
 notify_failed_node( FailedList, State ) when length( FailedList ) > 1 ->
-
 	text_utils:format( "Following ~B host candidates were specified "
 		"but no computing node could be created on them: ~ts~n~ts",
 		[ length( FailedList ),
@@ -3372,18 +3385,17 @@ notify_failed_node( FailedList, State ) when length( FailedList ) > 1 ->
 
 
 
-% @doc Returns a list of {Hostname, Username} pairs (a list of pair of plain
-% strings) corresponding to the deployment information entered in the
-% computing_hosts field.
-%
-% UserName corresponds to the user login name on the user host, specified as a
-% a plain string.
-%
-% Note that if the current host is to be included automatically, it will be in
-% the first position.
-%
-% (helper)
-%
+-doc """
+Returns a list of {Hostname, Username} pairs (a list of pair of plain strings)
+corresponding to the deployment information entered in the computing_hosts
+field.
+
+UserName corresponds to the user login name on the user host, specified as a a
+plain string.
+
+Note that if the current host is to be included automatically, it will be in the
+first position.
+""".
 determine_host_list_from( { use_host_file, HostFile }, UserName, State ) ->
 	determine_host_list_from( { use_host_file, HostFile, include_localhost },
 							  UserName, State );
@@ -3459,11 +3471,10 @@ determine_host_list_from( UnexpectedHostInfo, _UserName, State ) ->
 
 
 
-% @doc Ensures that the local host is listed once, and only once.  Hence it will
-% be added (in first position) iff it was lacking.
-%
-% (helper)
-%
+-doc """
+Ensures that the local host is listed once, and only once.  Hence it will be
+added (in first position) iff it was lacking.
+""".
 ensure_localhost_included( HostList, UserName ) ->
 
 	% Username must match too:
@@ -3484,17 +3495,16 @@ ensure_localhost_included( HostList, UserName ) ->
 
 
 
-% @doc Performs two actions: validates and converts entries, and adds default
-% username if none was specified.
-%
-% (helper)
-%
+-doc """
+Performs two actions: validates and converts entries, and adds default username
+if none was specified.
+""".
 ensure_username_specified( _HostList=[], _DefaultUserName, Acc ) ->
 	Acc;
 
 ensure_username_specified( _HostList=[ { Host, UserName } | T ],
 						   DefaultUserName, Acc )
-				when is_atom( Host ) andalso is_atom( UserName ) ->
+                    when is_atom( Host ) andalso is_atom( UserName ) ->
 
 	Entry = { atom_to_list( Host ), atom_to_list( UserName ) },
 	ensure_username_specified( T, DefaultUserName, [ Entry | Acc ] );
@@ -3527,11 +3537,9 @@ ensure_username_specified( [ H | _T ], _DefaultUserName, _Acc ) ->
 
 
 
-% @doc Returns the list of {Hostnames,Username} pairs, as specified in the host
-% file.
-%
-% (helper)
-%
+-doc """
+Returns the list of {Hostnames,Username} pairs, as specified in the host file.
+""".
 get_hosts_from_file( HostFile, DefaultUsername ) ->
 
 	% As we may need to adapt hostnames:
@@ -3583,10 +3591,7 @@ get_hosts_from_file( HostFile, DefaultUsername ) ->
 
 
 
-% @doc Filters the content of a host candidate file.
-%
-% (helper)
-%
+-doc "Filters the content of a host candidate file.".
 filter_line_elements( [], _DefaultUsername, _NodeNamingMode, Acc ) ->
 	Acc;
 
@@ -3603,7 +3608,7 @@ filter_line_elements( [ { Hostname, Login, Comment } | T ], DefaultUsername,
 
 filter_line_elements( [ { Hostname, Comment } | T ], DefaultUsername,
 					  NodeNamingMode, Acc )
-			when is_atom( Hostname ) andalso is_list( Comment ) ->
+                when is_atom( Hostname ) andalso is_list( Comment ) ->
 
 	% Comments are just dropped; using default username:
 	HostPair = { get_legit_hostname( Hostname, NodeNamingMode ),
@@ -3627,10 +3632,9 @@ filter_line_elements( [ H |_T ], _DefaultUsername, _NodeNamingMode, _Acc ) ->
 
 
 
-% Returns an hostname that corresponds to the specified node naming mode.
-%
-% (helper)
-%
+-doc """
+Returns an hostname that corresponds to the specified node naming mode.
+""".
 -spec get_legit_hostname( atom_host_name(), node_naming_mode() ) ->
 								string_host_name().
 get_legit_hostname( AtomHostName, NodeNamingMode ) ->
@@ -3639,22 +3643,21 @@ get_legit_hostname( AtomHostName, NodeNamingMode ) ->
 
 
 
-% @doc Triggers the setting-up of each computing host, so that we end up with an
-% appropriate Erlang node on each of the valid hosts.
-%
-% - BaseNodeName is a plain string describing the prefix common to all names of
-% computing nodes
-%
-% - HostUserList is a list of target {Hostname, Username}, as plain strings
-%
-% This operation is now performed in parallel across all registered computing
-% nodes, as, if having hundreds nodes, taking care of one after the other would
-% be uselessly long.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Triggers the setting-up of each computing host, so that we end up with an
+appropriate Erlang node on each of the valid hosts.
+
+- BaseNodeName is a plain string describing the prefix common to all names of
+computing nodes
+
+- HostUserList is a list of target {Hostname, Username}, as plain strings
+
+This operation is now performed in parallel across all registered computing
+nodes, as, if having hundreds nodes, taking care of one after the other would be
+uselessly long.
+
+Returns an updated state.
+""".
 -spec set_up_computing_nodes( string_node_name(), host_user_list(),
 		seconds(), [ bin_directory_name() ], wooper:state() ) -> wooper:state().
 set_up_computing_nodes( BaseNodeName, HostUserList, InterNodeSeconds,
@@ -3727,69 +3730,67 @@ set_up_computing_nodes( BaseNodeName, HostUserList, InterNodeSeconds,
 
 
 
-% @doc Selects the most appropriate nodes on which the deployment manager, the
-% data-logger, the root time manager and all local (i.e. non-root) time
-% managers, the root data-exchanger and all local (i.e. non-root)
-% data-exchangers should run.
-%
-% Placement constraints are:
-%
-% - C1: the deployment manager must be on the user node (as will deploy all
-% other nodes from there)
-%
-% - C2: the root time manager and root data-exchanger must be on the same
-% (computing) node (to minimise the inter-tick latency they induce)
-%
-% - C3: the user host must be further loaded as little as possible (as, if it is
-% included in the simulation, it will include the user node *and* a computing
-% node, and possibly the trace supervisor and other user applications; it may
-% also be less powerful than the computing hosts, e.g. it could be the laptop of
-% the user)
-%
-% - C4: the rest of the agents should be spread as evenly as possible on all
-% other hosts
-%
-% Note that a simulation case (e.g. a test case) may need as well to interact
-% directly with the data-exchanger service. Instead of replicating a possibly
-% already-existing data-exchanger local to the user node (if that node was
-% requested to be included), we will use that host-local data-exchanger if
-% available, otherwise we will create a local exchanger just for the user node.
-%
-% Returns { LoadBalancerNode, { RootTimeManagerNode, LocalTimeManagerNodes },
-%  DataLoggerNode, { RootDataExchangerNode, LocalDataExchangerNodes },
-%  { RootInstanceTrackerNode, LocalInstanceTrackerNodes },
-%  PerformanceTrackerNode }, where:
-%
-%  - LoadBalancerNode is the node where the load balancer should be spawned
-%
-%  - RootTimeManagerNode is the node where the root time manager should be
-%  spawned
-%
-%  - LocalTimeManagerNodes corresponds to the list of all nodes except
-%  RootTimeManagerNode
-%
-%  - DataLoggerNode is the node where the data-logger should be spawned
-%
-%  - RootDataExchangerNode is the node where the root data-exchanger should be
-%  spawned
-%
-%  - LocalDataExchangerNodes corresponds to the list of all nodes except
-% RootDataExchangerNode
-%
-%  - RootInstanceTrackerNode is the node where the root instance tracker should
-%  be spawned
-%
-%  - LocalInstanceTrackerNodes corresponds to the list of all nodes except
-%  RootInstanceTrackerNode
-%
-%  - PerformanceTrackerNode is the node where the performance tracker should be
-%  spawned (if any)
-%
-% (all nodes are specified as atoms, 'undefined' is used if the corresponding
-% service is disabled)
-%
-% (helper)
-%
+-doc """
+Selects the most appropriate nodes on which the deployment manager, the
+data-logger, the root time manager and all local (i.e. non-root) time managers,
+the root data-exchanger and all local (i.e. non-root) data-exchangers should
+run.
+
+Placement constraints are:
+
+- C1: the deployment manager must be on the user node (as will deploy all other
+nodes from there)
+
+- C2: the root time manager and root data-exchanger must be on the same
+(computing) node (to minimise the inter-tick latency they induce)
+
+- C3: the user host must be further loaded as little as possible (as, if it is
+included in the simulation, it will include the user node *and* a computing
+node, and possibly the trace supervisor and other user applications; it may also
+be less powerful than the computing hosts, e.g. it could be the laptop of the
+user)
+
+- C4: the rest of the agents should be spread as evenly as possible on all other
+hosts
+
+Note that a simulation case (e.g. a test case) may need as well to interact
+directly with the data-exchanger service. Instead of replicating a possibly
+already-existing data-exchanger local to the user node (if that node was
+requested to be included), we will use that host-local data-exchanger if
+available, otherwise we will create a local exchanger just for the user node.
+
+Returns {LoadBalancerNode, {RootTimeManagerNode, LocalTimeManagerNodes},
+ DataLoggerNode, {RootDataExchangerNode, LocalDataExchangerNodes},
+ {RootInstanceTrackerNode, LocalInstanceTrackerNodes}, PerformanceTrackerNode},
+ where:
+
+ - LoadBalancerNode is the node where the load balancer should be spawned
+
+ - RootTimeManagerNode is the node where the root time manager should be spawned
+
+ - LocalTimeManagerNodes corresponds to the list of all nodes except
+ RootTimeManagerNode
+
+ - DataLoggerNode is the node where the data-logger should be spawned
+
+ - RootDataExchangerNode is the node where the root data-exchanger should be
+ spawned
+
+ - LocalDataExchangerNodes corresponds to the list of all nodes except
+RootDataExchangerNode
+
+ - RootInstanceTrackerNode is the node where the root instance tracker should be
+ spawned
+
+ - LocalInstanceTrackerNodes corresponds to the list of all nodes except
+ RootInstanceTrackerNode
+
+ - PerformanceTrackerNode is the node where the performance tracker should be
+ spawned (if any)
+
+(all nodes are specified as atoms, 'undefined' is used if the corresponding
+service is disabled)
+""".
 -spec dispatch_agents( [ atom_node_name() ], net_utils:node_naming_mode() ) ->
 								service_placement().
 dispatch_agents( NodeList, NodeNamingMode ) ->
@@ -3932,10 +3933,7 @@ dispatch_agents( NodeList, NodeNamingMode ) ->
 
 
 
-% @doc Determines and checks the parameters that the user specified.
-%
-% (helper)
-%
+-doc "Determines and checks the parameters that the user specified.".
 determine_user_settings( SimulationSettings, DeploymentSettings,
 						 LoadBalancingSettings ) ->
 
@@ -4003,10 +4001,7 @@ determine_user_settings( SimulationSettings, DeploymentSettings,
 -dialyzer( { no_match, check_tick_duration/1 } ).
 
 
-% @doc Early check of user-specified tick duration, which is returned.
-%
-% (helper)
-%
+-doc "Early check of the user-specified tick duration, which is returned.".
 check_tick_duration( #simulation_settings{ tick_duration=T } )
 												when is_float( T ) ->
 	T;
@@ -4026,16 +4021,13 @@ check_tick_duration( #simulation_settings{ tick_duration=Other } ) ->
 -dialyzer( { no_match, check_evaluation_mode/1 } ).
 
 
-% @doc Early check of user-specified evaluation mode, which is returned.
-%
-% (helper)
-%
+-doc "Early check of the user-specified evaluation mode, which is returned.".
 check_evaluation_mode( #simulation_settings{ evaluation_mode=M } )
 		when M =:= fastest orelse M =:= reproducible orelse M =:= ergodic ->
 	M;
 
 check_evaluation_mode( #simulation_settings{
-				evaluation_mode= E = { reproducible, Seed } } ) ->
+		evaluation_mode= E = { reproducible, Seed } } ) ->
 	random_utils:check_random_seed( Seed ),
 	E;
 
@@ -4050,10 +4042,7 @@ check_evaluation_mode( #simulation_settings{ evaluation_mode=Other } ) ->
 -dialyzer( { no_match, check_troubleshooting_mode/1 } ).
 
 
-% Early check the user-specified troubleshooting mode.
-%
-% (helper)
-%
+-doc "Early check the user-specified troubleshooting mode.".
 check_troubleshooting_mode( #simulation_settings{
 										troubleshooting_mode=enabled } ) ->
 	true;
@@ -4075,11 +4064,10 @@ check_troubleshooting_mode( #simulation_settings{
 -dialyzer( { no_match, check_node_availability_tolerance/1 } ).
 
 
-% @doc Early check of user-specified tolerance with regard to unavailable nodes,
-% which is returned.
-%
-% (helper)
-%
+-doc """
+Early check of the user-specified tolerance with regard to unavailable nodes,
+which is returned.
+""".
 check_node_availability_tolerance( #deployment_settings{
 			node_availability_tolerance=T } )
 		when T =:= allow_unavailable_nodes
@@ -4097,10 +4085,7 @@ check_node_availability_tolerance( Other ) ->
 -dialyzer( { no_match, check_data_logger_wanted/1 } ).
 
 
-% @doc Early check of the user-specified datalogger options.
-%
-% (helper)
-%
+-doc "Early check of the user-specified datalogger options".
 check_data_logger_wanted( #deployment_settings{ enable_data_logger=true } ) ->
 	true;
 
@@ -4119,13 +4104,12 @@ check_data_logger_wanted( #deployment_settings{ enable_data_logger=Other } ) ->
 -dialyzer( { no_match, check_webmanager_wanted/1 } ).
 
 
-% @doc Early check of the user-specified webmanager-related options (detailed
-% checking done later).
-%
-% Returns a more canonical form as these settings.
-%
-% (helper)
-%
+-doc """
+Early check of the user-specified webmanager-related options (detailed checking
+done later).
+
+Returns a more canonical form as these settings.
+""".
 check_webmanager_wanted( #deployment_settings{ enable_webmanager=false } ) ->
 	false;
 
@@ -4157,15 +4141,14 @@ check_webmanager_wanted( #deployment_settings{ enable_webmanager=Other } ) ->
 -dialyzer( { no_match, check_graph_streaming_wanted/1 } ).
 
 
-% @doc Early check of the user-specified graph streaming-related options
-% (detailed checking done later).
-%
-% Returns a more canonical form of these settings, yet still type-correct.
-%
-% (helper)
-%
+-doc """
+Early check of the user-specified graph streaming-related options (detailed
+checking done later).
+
+Returns a more canonical form of these settings, yet still type-correct.
+""".
 -spec check_graph_streaming_wanted( deployment_settings() ) ->
-	'false' | { 'true', { maybe( project_path() ), workspace_name(),
+	'false' | { 'true', { option( project_path() ), workspace_name(),
 							   possibly_local_hostname(), tcp_port() } }.
 check_graph_streaming_wanted(
 		#deployment_settings{ enable_graph_streaming=false } ) ->
@@ -4213,10 +4196,7 @@ check_graph_streaming_wanted( #deployment_settings{
 -dialyzer( { no_match, check_data_exchanger_settings/1 } ).
 
 
-% @doc Early check of user-specified data-exchanger options.
-%
-% (helper)
-%
+-doc "Early check of the user-specified data-exchanger options.".
 check_data_exchanger_settings( S=#deployment_settings{
 			enable_data_exchanger=true } ) ->
 	S;
@@ -4244,10 +4224,7 @@ check_data_exchanger_settings( #deployment_settings{
 -dialyzer( { no_match, check_language_bindings_settings/1 } ).
 
 
-% @doc Early check of user-specified language binding options.
-%
-% (helper)
-%
+-doc "Early check of the user-specified language binding options.".
 check_language_bindings_settings( #deployment_settings{
 			enable_language_bindings=[] } ) ->
 	[];
@@ -4263,7 +4240,7 @@ check_language_bindings_settings( #deployment_settings{
 
 	% Checks that each member of the list is a supported language indeed:
 	[ check_language_binding_setting( L, SupportedLanguages )
-						|| L <- ActualLanguages ],
+		|| L <- ActualLanguages ],
 
 	% Uniquifies the list of requested language bindings:
 	list_utils:uniquify( ActualLanguages );
@@ -4302,10 +4279,7 @@ check_language_binding_setting( InvalidLanguageSpec, _SupportedLanguages ) ->
 -dialyzer( { no_match, check_placement_policy/1 } ).
 
 
-% @doc Early check of user-specified placement policy for load-balancing.
-%
-% (helper)
-%
+-doc "Early check of the user-specified placement policy for load-balancing.".
 check_placement_policy( #load_balancing_settings{
 							placement_policy=round_robin } ) ->
 	round_robin;
@@ -4323,10 +4297,7 @@ check_placement_policy( #load_balancing_settings{
 -dialyzer( { no_match, check_initialisation_files/1 } ).
 
 
-% @doc Early check of user-specified placement policy for load-balancing.
-%
-% (helper)
-%
+-doc "Early check of the user-specified placement policy for load-balancing.".
 check_initialisation_files( #simulation_settings{
 						initialisation_files=InitialisationFiles } )
 								when is_list( InitialisationFiles ) ->
@@ -4338,10 +4309,7 @@ check_initialisation_files( #simulation_settings{
 
 
 
-% @doc Early check of user-specified interactivity mode, which is returned.
-%
-% (helper)
-%
+-doc "Early check of the user-specified interactivity mode, which is returned.".
 check_result_specification( #simulation_settings{
 								result_specification=ResultSpecification } ) ->
 	% Checked later, when creating the result manager:
@@ -4355,10 +4323,7 @@ check_result_specification( #simulation_settings{
 -dialyzer( { no_match, check_resilience_level/2 } ).
 
 
-% @doc Early check of the user-specified resilience level, which is returned.
-%
-% (helper)
-%
+-doc "Early check of the user-specified resilience level, which is returned.".
 check_resilience_level( #deployment_settings{ crash_resilience=none },
 						_InteractivityMode ) ->
 	0;
@@ -4386,7 +4351,7 @@ check_resilience_level( #deployment_settings{ crash_resilience=Other },
 -dialyzer( { no_match, check_stochastic_resilience/0 } ).
 
 
-% @doc Early check for compatibility between user-specified settings.
+-doc "Early check for compatibility between user-specified settings.".
 -spec check_stochastic_resilience() -> void().
 check_stochastic_resilience() ->
 
@@ -4406,11 +4371,10 @@ check_stochastic_resilience() ->
 
 
 
-% @doc Returns a list of {Hostname, Username} string pairs corresponding to the
-% potential computing hosts the simulation might use.
-%
-% (helper)
-%
+-doc """
+Returns a list of {Hostname, Username} string pairs corresponding to the
+potential computing hosts the simulation might use.
+""".
 -spec get_host_user_list( deployment_settings(), wooper:state() ) ->
 								host_user_list().
 get_host_user_list( #deployment_settings{ computing_hosts=ComputingHosts },
@@ -4422,7 +4386,7 @@ get_host_user_list( #deployment_settings{ computing_hosts=ComputingHosts },
 	% not overridden on the command-line:
 	%
 	HostInformation =
-			case shell_utils:get_command_arguments_for_option( HostOpt ) of
+			case cmd_line_utils:get_command_arguments_for_option( HostOpt ) of
 
 		undefined ->
 			% Just read the settings defined in the simulation case:
@@ -4469,13 +4433,10 @@ get_host_user_list( #deployment_settings{ computing_hosts=ComputingHosts },
 
 
 
-% @doc Sets up the instance tracking service.
-%
-% (helper)
-%
+-doc "Sets up the instance tracking service.".
 set_up_instance_tracking( TroubleShootingMode, #service_placement{
-  instance_tracking={ RootInstanceTrackerNode, LocalInstanceTrackerNodes } }
-						 ) ->
+        instance_tracking={ RootInstanceTrackerNode,
+                            LocalInstanceTrackerNodes } } ) ->
 
 	% Instance trackers must be created before the load balancer and the time
 	% manager, so that they can know them (hence the instance tracking service
@@ -4533,10 +4494,7 @@ set_up_instance_tracking( TroubleShootingMode, #service_placement{
 
 
 
-% @doc Sets up the plugin management service.
-%
-% (helper)
-%
+-doc "Sets up the plugin management service.".
 set_up_plugin_management(
 		#deployment_settings{ plugin_directories=PluginDirs } ) ->
 
@@ -4547,10 +4505,7 @@ set_up_plugin_management(
 
 
 
-% @doc Sets up the time management service.
-%
-% (helper)
-%
+-doc "Sets up the time management service.".
 set_up_time_management( TroubleShootingMode, InteractivityMode, TickDuration,
 		RootInstanceTrackerPid, #service_placement{
   time_management={ RootTimeManagerNode, LocalTimeManagerNodes } }, Context ) ->
@@ -4618,10 +4573,7 @@ set_up_time_management( TroubleShootingMode, InteractivityMode, TickDuration,
 
 
 
-% @doc Sets up the result management service, and the data-logging one.
-%
-% (helper)
-%
+-doc "Sets up the result management service, and the data-logging one.".
 set_up_result_management_and_datalogging( SimulationName, StartTimestamp, SII,
 	RootDir, VersionStrings, TickDuration, ResultSpecification, AvailableHosts,
 	RootTimeManagerPid, DataLoggerWanted,
@@ -4634,6 +4586,7 @@ set_up_result_management_and_datalogging( SimulationName, StartTimestamp, SII,
 	RunDir = file_utils:get_current_directory(),
 
 	ResultDir = file_utils:join( RunDir, ResultDirName ),
+
 	case Context of
 
 		deploy_from_scratch ->
@@ -4701,13 +4654,11 @@ set_up_result_management_and_datalogging( SimulationName, StartTimestamp, SII,
 
 
 
-% @doc Sets up the web management service.
-%
-% (helper)
-%
+-doc "Sets up the web management service.".
 set_up_web_management( SII, EngineRootDir, InteractivityMode, ResultManagerPid,
-	 ResultDir, _WebManagerInfo={ true, _WebProbeClassnames, MaybeTCPPort,
-								   MaybeWebserverInstallRoot } ) ->
+                       ResultDir,
+                       _WebManagerInfo={ true, _WebProbeClassnames,
+                            MaybeTCPPort, MaybeWebserverInstallRoot } ) ->
 
 	% Already partly in a canonical form; only created on the user node (as
 	% deemed in this case able to launch a local webserver); linked, timed and
@@ -4733,14 +4684,12 @@ set_up_web_management( _SII, _EngineRootDir, _InteractivityMode,
 
 
 
-% @doc Sets up the graph streaming service, based on
-% check_graph_streaming_wanted/1.
-%
-% It is based on a Gephi server, which may be already launched, or shall be
-% launched.
-%
-% (helper)
-%
+-doc """
+Sets up the graph streaming service, based on `check_graph_streaming_wanted/1`.
+
+It is based on a Gephi server, which may be already launched, or shall be
+launched.
+""".
 % No service wanted here:
 set_up_graph_streaming( _MaybeGraphStreamQuadruplet=false, State ) ->
 	?debug( "No graph streaming enabled." ),
@@ -4761,7 +4710,7 @@ set_up_graph_streaming( { true, _Quad={ MaybeProjectPath=undefined,
 	gephi_support:wait_server( SrvInfo, ?local_gephi_server_timeout ) orelse
 		begin
 			?error_fmt( "No local graph stream server found running "
-						"at port #B.", [ TCPPort ] ),
+						"at port #~B.", [ TCPPort ] ),
 
 			throw( { no_local_graph_stream_server, { port, TCPPort } } )
 		end,
@@ -4816,7 +4765,7 @@ set_up_graph_streaming( { true, _Quad={ MaybeProjectPath, WorkspaceName,
 	gephi_support:wait_server( SrvInfo, ?remote_gephi_server_timeout ) orelse
 		begin
 			?error_fmt( "No graph stream server found running on host '~ts' "
-						"at port #B.", [ Hostname, TCPPort ] ),
+						"at port #~B.", [ Hostname, TCPPort ] ),
 
 			throw( { graph_stream_server_not_found, { host, Hostname },
 					 { port, TCPPort } } )
@@ -4831,10 +4780,7 @@ set_up_graph_streaming( Unexpected, State ) ->
 
 
 
-% @doc Sets up the load-balancing service.
-%
-% (helper)
-%
+-doc "Sets up the load-balancing service.".
 set_up_load_balancing( PlacementPolicy, SelectedNodes,
 		NodeAvailabilityTolerance, EvaluationMode, TroubleShootingMode,
 		RootTimeManagerPid, AllInstanceTrackers, RootDirectory,
@@ -4894,10 +4840,7 @@ set_up_load_balancing( PlacementPolicy, SelectedNodes,
 
 
 
-% @doc Sets up the language binding support services.
-%
-% (helper)
-%
+-doc "Sets up the language binding support services.".
 set_up_binding_managers( LanguageBindings, RootDir, EpmdPort,
 		#service_placement{ bindings_management={ BindingManagersNode,
 												  BindingResourcesNodes } },
@@ -4965,13 +4908,12 @@ wait_for_binding_managers( LangManagers ) ->
 
 
 
-% @doc Sets up the data-exchanging service.
-%
-% Creates a data-exchanger, if needed: as this service is optional, returns
-% RootDataExchangerPid or undefined.
-%
-% (helper)
-%
+-doc """
+Sets up the data-exchanging service.
+
+Creates a data-exchanger, if needed: as this service is optional, returns
+RootDataExchangerPid or undefined.
+""".
 set_up_data_exchanging(
 		#deployment_settings{ enable_data_exchanger=true },
 		RootTimeManagerPid,
@@ -5010,10 +4952,7 @@ set_up_data_exchanging( #deployment_settings{ enable_data_exchanger=false },
 
 
 
-% @doc Sets up the resilience management service.
-%
-% (helper)
-%
+-doc "Sets up the resilience management service.".
 set_up_resilience_management( FullSettings, RootTimeManagerPid,
 		ResultManagerPid, StartTimestamp, SII, RootDir, AvailableHosts,
 		#service_placement{ resilience_management={
@@ -5041,12 +4980,11 @@ set_up_resilience_management( FullSettings, RootTimeManagerPid,
 
 
 
-% @doc Sets up the performance tracking service.
-%
-% Creates a performance tracker, if needed.
-%
-% (helper)
-%
+-doc """
+Sets up the performance tracking service.
+
+Creates a performance tracker, if needed.
+""".
 set_up_performance_tracking(
 		#deployment_settings{ enable_performance_tracker=true }, ResultDir,
 		RootTimeManagerPid, SelectedNodes, AllInstanceTrackers,
@@ -5083,9 +5021,10 @@ set_up_performance_tracking(
 
 
 
-% @doc Returns the actual, overall simulation interactivity setting, as set in
-% the simulation settings.
-%
+-doc """
+Returns the actual, overall simulation interactivity setting, as set in the
+simulation settings.
+""".
 -spec interpret_simulation_interactivity_mode( simulation_settings() ) ->
 							class_TimeManager:simulation_interactivity_mode().
 interpret_simulation_interactivity_mode(
@@ -5102,9 +5041,10 @@ interpret_simulation_interactivity_mode(
 
 
 
-% @doc Returns the actual, overall user-interface interactivity setting, as
-% possibly set by the command-line options.
-%
+-doc """
+Returns the actual, overall user-interface interactivity setting, as possibly
+set by the command-line options.
+""".
 -spec interpret_user_interface_interactivity_mode() -> ui:interactivity_mode().
 interpret_user_interface_interactivity_mode() ->
 
@@ -5123,18 +5063,19 @@ interpret_user_interface_interactivity_mode() ->
 
 
 
-% @doc Returns the firewall-related options, as determined from the deployment
-% settings.
-%
+-doc """
+Returns the firewall-related options, as determined from the deployment
+settings.
+""".
 -spec interpret_firewall_options( deployment_settings() ) ->
-			static_return( { maybe( tcp_port() ), tcp_port_restriction() } ).
+			static_return( { option( tcp_port() ), tcp_port_restriction() } ).
 interpret_firewall_options( DeploymentSettings ) ->
 
 	Options = DeploymentSettings#deployment_settings.firewall_restrictions,
 
 	% Returns {EpmdPortOption, TcpRangeOption}:
 	FinalOptions = interpret_firewall_options( Options,
-							_Defaults={ undefined, no_restriction } ),
+		_Defaults={ undefined, no_restriction } ),
 
 	wooper:return_static( FinalOptions ).
 
@@ -5188,7 +5129,7 @@ interpret_firewall_options( _Opts=[ Other | _T ], _Acc ) ->
 
 
 
-% @doc Interpret the 'ping_available' field of the deployment settings.
+-doc "Interpret the 'ping_available' field of the deployment settings.".
 -spec interpret_ping_option( deployment_settings() ) -> boolean().
 interpret_ping_option( #deployment_settings{ ping_available=true } ) ->
 	true;
@@ -5201,12 +5142,10 @@ interpret_ping_option( #deployment_settings{ ping_available=Other } ) ->
 
 
 
-
-% @doc Returns a string describing the specified list of failed hosts and the
-% reason for their unavailability.
-%
-% (helper)
-%
+-doc """
+Returns a string describing the specified list of failed hosts and the reason
+for their unavailability.
+""".
 interpret_failed_hosts( _Failed=[], _State ) ->
 	"no failed host";
 
@@ -5230,7 +5169,7 @@ interpret_failed_hosts( [ { FailedHost, Reason } | H ], Acc, State ) ->
 
 
 
-% @doc Interprets the reason for an host failure.
+-doc "Interprets the reason for an host failure.".
 -spec interpret_host_failure( class_ComputingHostManager:host_failure_reason() )
 												-> static_return( ustring() ).
 interpret_host_failure( host_not_available ) ->
@@ -5274,15 +5213,14 @@ interpret_host_failure( vm_remote_detection_failed ) ->
 
 
 
-% @doc Takes care of the simulation package: ensures that it is available as a
-% file, which is to be sent to all computing nodes that are to take part to the
-% simulation.
-%
-% Returns the corresponding filename, as a string, and a list of the
-% corresponding selected files for the archive, so that they can be checked.
-%
-% (helper)
-%
+-doc """
+Takes care of the simulation package: ensures that it is available as a file,
+which is to be sent to all computing nodes that are to take part to the
+simulation.
+
+Returns the corresponding filename, as a string, and a list of the corresponding
+selected files for the archive, so that they can be checked.
+""".
 -spec manage_simulation_package( wooper:state() ) ->
 											{ file_path(), [ file_path() ] }.
 manage_simulation_package( State ) ->
@@ -5323,10 +5261,7 @@ manage_simulation_package( State ) ->
 
 
 
-% @doc Saves the specified (binary) simulation package, in the specified file.
-%
-% (helper)
-%
+-doc "Saves the specified (binary) simulation package, in the specified file.".
 save_simulation_package( BinaryPackage, TargetFilename, State ) ->
 
 	file_utils:is_existing_file_or_link( TargetFilename ) andalso
@@ -5350,10 +5285,7 @@ save_simulation_package( BinaryPackage, TargetFilename, State ) ->
 
 
 
-% @doc Builds the simulation package, and returns it as a binary.
-%
-% (helper)
-%
+-doc "Builds the simulation package, and returns it as a binary.".
 -spec build_simulation_package( wooper:state() ) ->
 										{ binary(), [ file_name() ] }.
 build_simulation_package( State ) ->
@@ -5541,10 +5473,10 @@ build_simulation_package( State ) ->
 
 
 
-% @doc Returns the specified paths (see element_spec()) transformed so that
-% relative ones are defined relatively to RootDir (some checks already
-% performed).
-%
+-doc """
+Returns the specified paths (see element_spec()) transformed so that relative
+ones are defined relatively to RootDir (some checks already performed).
+""".
 make_paths_root_relative( Elems, RootDir, CurrentDir ) ->
 
 	%trace_utils:debug_fmt( "Elems = ~p", [ Elems ] ),
@@ -5595,9 +5527,10 @@ check_elem_type( Other ) ->
 
 
 
-% @doc Translates specified full path so that it becomes relative to the engine
-% root directory, rather than to the current directory.
-%
+-doc """
+Translates the specified full path so that it becomes relative to the engine
+root directory, rather than to the current directory.
+""".
 translate_path( Path, RootDir, CurrentDir ) ->
 	translate_path( Path, RootDir, length( RootDir ), CurrentDir ).
 
@@ -5644,11 +5577,10 @@ translate_path( Path, _RootDir, _RootDirLen, _CurrentDir ) ->
 
 
 
-% @doc Returns the settings appropriate to the deployment of the Sim-Diasca
-% engine itself.
-%
-% (helper)
-%
+-doc """
+Returns the settings appropriate to the deployment of the Sim-Diasca engine
+itself.
+""".
 get_engine_deployment_settings( MustRebuild ) ->
 
 	RebuildOpt = case MustRebuild of
@@ -5711,11 +5643,10 @@ get_engine_deployment_settings( MustRebuild ) ->
 
 
 
-% @doc Ensures that all deploy options are known, and that if multiple lists are
-% specified, they are correctly merged.
-%
-% (helper)
-%
+-doc """
+Ensures that all deploy options are known, and that if multiple lists are
+specified, they are correctly merged.
+""".
 standardise_deploy_element( { ElementPath, ElementType } ) ->
 	standardise_deploy_element( { ElementPath, ElementType, _Option=[] } );
 
@@ -5782,18 +5713,16 @@ standardise_deploy_options( [ OtherOpt | T ],
 
 
 
+-doc """
+Determines what are the element paths that should be selected. The ones that are
+to be rebuilt are rebuilt.
 
-% @doc Determines what are the element paths that should be selected. The ones
-% that are to be rebuilt are rebuilt.
-%
-% Returns the list of selected (and possibly rebuilt) files.
-%
-% We suppose we are already in the root directory, so that both absolute and
-% relative paths can be managed the same. Next operations are not supposed then
-% to change the current directory.
-%
-% (helper)
-%
+Returns the list of selected (and possibly rebuilt) files.
+
+We suppose we are already in the root directory, so that both absolute and
+relative paths can be managed the same. Next operations are not supposed then to
+change the current directory.
+""".
 manage_rebuild_and_select( Additions, State ) ->
 	% One-level flatten:
 	list_utils:uniquify( lists:append(
@@ -5805,12 +5734,6 @@ manage_rebuild_and_select( Additions, State ) ->
 % Processing of the path elements.
 
 
-% Encloses any standalone option into a list:
-%
-% (helper)
-
-
-
 % To avoid "The pattern <AnyElement, State> can never match since previous
 % clauses completely covered the type", should the user enter an incorrect
 % element type:
@@ -5818,8 +5741,7 @@ manage_rebuild_and_select( Additions, State ) ->
 -dialyzer( { no_match, process_element/2 }).
 
 
-% @doc Processes specified element.
-%
+-doc "Processes the specified filesystem element.".
 % ElementOptions is necessarily already a list:
 %process_element( { ElementPath, ElementType, ElementOptions }, State ) when
 %                     not is_list( ElementOptions ) ->
@@ -5925,11 +5847,9 @@ process_element( AnyElement, State ) ->
 
 
 
-% @doc Just ensures there exists a filesystem element corresponding to that
-% path.
-%
-% (helper)
-%
+-doc """
+Just ensures that there exists a filesystem element corresponding to that path.
+""".
 -spec check_element_path_exists( path(), wooper:state() ) -> void().
 check_element_path_exists( ElementPath, State ) ->
 
@@ -5948,10 +5868,7 @@ check_element_path_exists( ElementPath, State ) ->
 
 
 
-% @doc Selects content from directory with options.
-%
-% (helper)
-%
+-doc "Selects content from the specified directory with options.".
 select_content_from( Directory, Options ) ->
 
 	%trace_utils:debug_fmt( "Selecting content from directory '~ts', "
@@ -5997,7 +5914,7 @@ select_content_from( Directory, Options ) ->
 				ExcludedSuffixes ->
 					% Just suffix exclusion:
 					file_utils:find_files_with_excluded_suffixes( Directory,
-														ExcludedSuffixes )
+						ExcludedSuffixes )
 
 			end;
 
@@ -6026,7 +5943,7 @@ select_content_from( Directory, Options ) ->
 				undefined ->
 					% Just dir exclusion:
 					file_utils:find_files_with_excluded_dirs( Directory,
-													ExcludedDirectories );
+						ExcludedDirectories );
 
 				ExcludedSuffixes ->
 					% Both dir and suffix exclusion:
@@ -6057,13 +5974,12 @@ select_content_from( Directory, Options ) ->
 
 
 
-% @doc Rebuilds the specified directory, supposedly known to be existing and to
-% be a directory: runs 'make all' from it, throws an exception on failure.
-%
-% Does not change the current directory, supposed to be the root one.
-%
-% (helper)
-%
+-doc """
+Rebuilds the specified directory, supposedly known to be existing and to be a
+directory: runs 'make all' from it, throws an exception on failure.
+
+Does not change the current directory, supposed to be the root one.
+""".
 rebuild_directory( Directory, State ) ->
 
 	%trace_utils:debug_fmt( "Rebuilding all in directory '~ts'.",
@@ -6130,14 +6046,13 @@ rebuild_directory( Directory, State ) ->
 
 
 
-% @doc Rebuilds the specified file FILE, supposedly known to be existing and to
-% be a file: runs 'make FILE' from its parent directory, throws an exception on
-% failure.
-%
-% Does not change the current directory, supposed to be the root one.
-%
-% (helper)
-%
+-doc """
+Rebuilds the specified file FILE, supposedly known to be existing and to be a
+file: runs 'make FILE' from its parent directory, throws an exception on
+failure.
+
+Does not change the current directory, supposed to be the root one.
+""".
 rebuild_file( Filename, State ) ->
 
 	ParentDir = filename:dirname( Filename ),
@@ -6176,12 +6091,10 @@ rebuild_file( Filename, State ) ->
 
 
 
-% @doc Waits for the database event (e.g. onDatabaseStarted) to be reported by
-% all specified processes (generally deployment agents). No time-out managed
-% here.
-%
-% (helper)
-%
+-doc """
+Waits for the database event (e.g. onDatabaseStarted) to be reported by all
+specified processes (generally deployment agents). No time-out managed here.
+""".
 wait_for_database_event( _Agents=[], _Event ) ->
 	ok;
 
@@ -6201,12 +6114,11 @@ wait_for_database_event( Agents, Event ) ->
 
 
 
-% @doc Reorders specified list of {Node@Host, HostString} pairs so that all
-% pairs whose HostString matches LastHost are put at the end of the returned
-% list (i.e. at the last position).
-%
-% (helper)
-%
+-doc """
+Reorders specified list of `{Node@Host, HostString}` pairs so that all pairs
+whose `HostString` matches `LastHost` are put at the end of the returned list
+(i.e. at the last position).
+""".
 reorder_nodes( NodeList, LastHost ) ->
 	reorder_nodes( NodeList, LastHost, _Acc=[] ).
 
@@ -6224,23 +6136,26 @@ reorder_nodes( _NodeList=[ E | T ], LastHost, Acc ) ->
 
 
 
-% @doc Returns the inter-node time-out, depending on the execution target: the
-% number of seconds for the Erlang kernel tick time, so that Erlang nodes can
-% monitor others.
-%
+-doc """
+Returns the inter-node time-out, depending on the execution target: the number
+of seconds for the Erlang kernel tick time, so that Erlang nodes can monitor
+others.
+""".
 -spec get_inter_node_tick_time_out() -> static_return( seconds() ).
+
 
 
 -ifdef(exec_target_is_production).
 
 
-
-% @doc In production mode, we want to overcome situations where a few nodes
-% might be especially unresponsive (yes, this happens).
+% In production mode, we want to overcome situations where a few nodes might be
+% especially unresponsive (yes, this happens).
 %
 % The default, 60s, is too small for some HPC clusters, we want to avoid:
+% ```
 % ** Node XXX not responding **
 % ** Removing (timedout) connection **
+% ```
 %
 % Note that all connected nodes must rely on the same duration.
 %
@@ -6278,7 +6193,7 @@ get_inter_node_tick_time_out() ->
 
 
 
-% @doc Returns the default filename of the deployment package archive.
+-doc "Returns the default filename of the deployment package archive.".
 -spec get_default_deployment_package_name() -> static_return( file_name() ).
 get_default_deployment_package_name() ->
 	wooper:return_static( "Sim-Diasca-deployment-archive.sdar" ).
@@ -6286,9 +6201,9 @@ get_default_deployment_package_name() ->
 
 
 
-% @doc Returns the name of the result directory that should be used.
+-doc "Returns the name of the result directory that should be used.".
 -spec get_result_directory_name( simulation_name(), time_utils:timestamp(),
-		sii() ) -> static_return( directory_name() ).
+                                 sii() ) -> static_return( directory_name() ).
 get_result_directory_name( SimulationName, StartTimestamp, SII ) ->
 
 	% We add the SII (formerly was a part of the cookie that is an UUID) to
@@ -6303,10 +6218,7 @@ get_result_directory_name( SimulationName, StartTimestamp, SII ) ->
 
 
 
-% @doc Returns a textual description of specified service placement record.
-%
-% (helper)
-%
+-doc "Returns a textual description of specified service placement record.".
 -spec service_placement_to_string( service_placement() ) -> ustring().
 service_placement_to_string( #service_placement{
 	load_balancing=LoadBalancing,
@@ -6342,13 +6254,13 @@ placement_description( ServiceName, SingletonNode ) ->
 	text_utils:format( "~ts: ~ts", [ ServiceName, SingletonNode ] ).
 
 
-% @doc Halts on error, rather than throwing an uncaught exception that will
-% trigger the display of a stacktrace and all.
-%
-% Here we just want to (cleanly) halt.
-%
-% (helper)
-%
+
+-doc """
+Halts on error, rather than throwing an uncaught exception that will trigger the
+display of a stacktrace and all.
+
+Here we just want to (cleanly) halt.
+""".
 -spec halt_on_error( ustring() ) -> no_return().
 halt_on_error( Message ) ->
 	halt_on_error( Message, _ErrorCode=1 ).

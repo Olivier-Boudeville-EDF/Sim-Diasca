@@ -1,34 +1,34 @@
-% Copyright (C) 2011-2024 EDF R&D
-
+% Copyright (C) 2011-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2011.
 
-
-% Analyzer tool for time series, as produced by probes, either basic or virtual.
-
-
-% @doc The role of this analyzer is to <b>provide metrics and means of
-% performing post-processing operations</b> on time-series produced by a
-% simulation.
-%
-% See also class_TimeSeriesAnalyzer_test.erl.
-%
 -module(class_TimeSeriesAnalyzer).
+
+-moduledoc """
+Analyzer tool for time series, as produced by probes, either basic or virtual.
+
+The role of this analyzer is to **provide metrics and means of performing
+post-processing operations** on time-series produced by a simulation.
+
+See also `class_TimeSeriesAnalyzer_test.erl`.
+""".
 
 
 -type curve_value() :: float().
@@ -36,13 +36,14 @@
 -type filter_pid() :: pid().
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
 
 -type file_path() :: file_utils:file_path().
+-type file() :: file_utils:file().
 
 -type tick() :: class_TimeManager:tick().
 -type tick_offset() :: class_TimeManager:tick_offset().
@@ -84,6 +85,10 @@
 	filters = [] :: [ filter_pid() ] } ).
 
 
+-doc "Allows to record some information about a curve in a time series.".
+-type curve_metadata() :: #curve_metadata{}.
+
+
 
 % Allows to record some information about a time series (a set of curves).
 -record( series_metadata, {
@@ -93,7 +98,7 @@
 	%
 	name :: ustring(),
 
-	% The title of the time series (ex: associated probe title), as a plain
+	% The title of the time series (e.g. associated probe title), as a plain
 	% string:
 	%
 	title :: ustring(),
@@ -113,12 +118,16 @@
 	tick_count :: tick_offset(),
 
 	% The list of curve meta-data (curve_metadata records):
-	curves = [] :: [ #curve_metadata{} ],
+	curves = [] :: [ curve_metadata() ],
 
 	% A list of the PID of any optional series filter processes to send each
 	% {Tick,Values} samples to:
 	%
 	filters = [] :: [ filter_pid() ] } ).
+
+
+-doc "Allows to record some information about a time series (a set of curves).".
+-type series_metadata() :: #series_metadata{}.
 
 
 
@@ -226,11 +235,6 @@
 
 
 
-% A filter specification (FilterSpec) is a {FilterName,FilterParameters} pair,
-% with FilterName being the name of the module implementing that filter (ex:
-% 'curve_selector_series_filter') and FilterParameters is either a single
-% parameter or a list of parameters, to be used for the creation of that filter.
-%
 -type filter_name() :: atom().
 
 % To be defined:
@@ -238,38 +242,46 @@
 
 -type filter_parameters() :: filter_parameter() | [ filter_parameter() ].
 
+
+-doc """
+A filter specification (FilterSpec) is a `{FilterName, FilterParameters}` pair,
+with FilterName being the name of the module implementing that filter (e.g.
+`curve_selector_series_filter`) and FilterParameters is either a single
+parameter or a list of parameters, to be used for the creation of that filter.
+""".
 -type filter_spec() :: { filter_name(),filter_parameters() }.
 
 
 
 
-% @doc Constructs a time-series analyzer, from following parameters:
-%
-% - TimeSeriesFilename is the name of the time-series data file (generally
-% *.dat), as a plain string (ex: "time_series_test.dat")
-%
-% - SeriesFilters is a list of FilterSpecs, to create filters that will be
-% associated to the time series as a whole, thus operating on each full data
-% tuple of each defined tick
-%
-% - CommonCurveFilters is a list of FilterSpec, to create filters that will be
-% associated to each of the curves in that time series (each curve will rely on
-% a filter instance per filter defined in the list)
-%
-% - CurveSpecificFilters is a list of {CurveName,FilterSpecList}, where
-% FilterSpecList is a list of the FilterSpecs that correspond to the specific
-% filters to be created for that corresponding curve
-%
+-doc """
+Constructs a time-series analyzer, from following parameters:
+
+- TimeSeriesFilename is the name of the time-series data file (generally *.dat),
+as a plain string (e.g. `"time_series_test.dat"`)
+
+- SeriesFilters is a list of FilterSpecs, to create filters that will be
+associated to the time series as a whole, thus operating on each full data tuple
+of each defined tick
+
+- CommonCurveFilters is a list of FilterSpec, to create filters that will be
+associated to each of the curves in that time series (each curve will rely on a
+filter instance per filter defined in the list)
+
+- CurveSpecificFilters is a list of {CurveName,FilterSpecList}, where
+FilterSpecList is a list of the FilterSpecs that correspond to the specific
+filters to be created for that corresponding curve
+""".
 -spec construct( wooper:state(), file_path(), [ filter_spec() ],
-				[ filter_spec() ], [ filter_spec() ] ) -> wooper:state().
-construct( State, TimeSeriesFilename,
-		   SeriesFilters, CommonCurveFilters, CurveSpecificFilters ) ->
+                 [ filter_spec() ], [ filter_spec() ] ) -> wooper:state().
+construct( State, TimeSeriesFilename, SeriesFilters, CommonCurveFilters,
+           CurveSpecificFilters ) ->
 
 	%trace_utils:debug_fmt( "Analyzing the time series in the '~ts' data file.",
 	%                       [ TimeSeriesFilename ] ),
 
 	BaseState = class_EngineBaseObject:construct( State,
-						?trace_categorize("Time Series Analyzer") ),
+		?trace_categorize("Time Series Analyzer") ),
 
 	DataFile = open_data_file( TimeSeriesFilename, BaseState ),
 
@@ -284,7 +296,7 @@ construct( State, TimeSeriesFilename,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state() .
 destruct( State ) ->
 
@@ -314,21 +326,15 @@ destruct( State ) ->
 % Helper section.
 
 
-% @doc Opens specified data file and prepares it for analysis.  Returns a file
-% handle.
-%
+-doc "Opens the specified data file and prepares it for analysis.".
+-spec open_data_file( file_path(), wooper:state() ) -> file().
 open_data_file( TimeSeriesFilename, State ) ->
 
-	?notice_fmt( "Opening data file '~ts'.", [ TimeSeriesFilename ] ),
+	?notice_fmt( "Opening data file '~ts' (from '~ts').",
+                 [ TimeSeriesFilename, file_utils:get_current_directory() ] ),
 
-	case file_utils:is_existing_file( TimeSeriesFilename ) of
-
-		false ->
-			throw( { data_file_not_found, TimeSeriesFilename } );
-
-		_ ->
-			ok
-	end,
+	file_utils:is_existing_file( TimeSeriesFilename ) orelse
+		throw( { data_file_not_found, TimeSeriesFilename } ),
 
 	% Large data may have to be read (chunks of 512 kB):
 	ReadOptions = [ read, raw, { read_ahead, _Size=512*1024 } ],
@@ -336,15 +342,17 @@ open_data_file( TimeSeriesFilename, State ) ->
 	file_utils:open( TimeSeriesFilename, ReadOptions ).
 
 
-% @doc Closes the specified data file.
+
+-doc "Closes the specified data file.".
+-spec close_data_file( file() ) -> void().
 close_data_file( File ) ->
 	file_utils:close( File ).
 
 
 
-% @doc Parses the specified data file.
+-doc "Parses the specified data file.".
 parse_data_file( File,
-			{ SeriesFilters, CommonCurveFilters, CurveSpecificFilters } ) ->
+		{ SeriesFilters, CommonCurveFilters, CurveSpecificFilters } ) ->
 
 	VanillaSeriesMetadata = parse_header( File ),
 
@@ -352,7 +360,7 @@ parse_data_file( File,
 	%                       [ series_to_string( VanillaSeriesMetadata ) ] ),
 
 	SeriesFilterMetadata = add_series_filters( SeriesFilters,
-											  VanillaSeriesMetadata ),
+                                               VanillaSeriesMetadata ),
 
 	CommonSeriesMetadata = add_common_curve_filters( CommonCurveFilters,
 													 SeriesFilterMetadata ),
@@ -372,7 +380,8 @@ parse_data_file( File,
 
 
 
-% @doc Parses the header of the data file, and returns a series metadata record.
+-doc "Parses the header of the data file.".
+-spec parse_header( file() ) -> series_metadata().
 parse_header( File ) ->
 
 	Header = read_header( File ),
@@ -403,7 +412,8 @@ parse_header( File ) ->
 
 
 
-% @doc Parses header of specified file and returns a series_metadata record.
+-doc "Reads the header of the specified file.".
+-spec read_header( file() ) -> [ ustring() ].
 read_header( File ) ->
 	{ ok, ReadLine } = file:read_line( File ),
 	read_header( File, ReadLine, _Acc=[] ).
@@ -420,10 +430,13 @@ read_header( File, ReadLine, Acc ) ->
 
 
 
-% @doc Jumps over that warning:
-% # Warning: using immediate writes here, thus...
-% # should subsequent curve reordering or addition...
-%
+-doc """
+Jumps over this warning:
+```
+# Warning: using immediate writes here, thus...
+# should subsequent curve reordering or addition...
+```
+""".
 jump_warning( [ "# Warning: using immediate writes here" ++ _ | T ] ) ->
 	jump_warning( T );
 
@@ -435,10 +448,11 @@ jump_warning( Any ) ->
 
 
 
-% @doc Extracts time and data of writing from header.
-%
-% Returns {{Year,Month,Day}, {Hour,Minute,Second}, RemainingLines}.
-%
+-doc """
+Extracts time and data of writing from the specified header.
+
+Returns {{Year,Month,Day}, {Hour,Minute,Second}, RemainingLines}.
+""".
 extract_write_timing( [ "# This time series data file has been written on "
 						++ TimeText | T ] ) ->
 
@@ -449,21 +463,26 @@ extract_write_timing( [ "# This time series data file has been written on "
 	% string:tokens(L, " ") returns: ["14/4/2011,","at","18:48:51.\n"]
 	%
 	SplitTimestamp = lists:flatten( text_utils:format( "~ts",
-								[ re:replace( TimeText, ", at ", " " ) ] ) ),
+		[ re:replace( TimeText, ", at ", " " ) ] ) ),
 
 	CanonicalTimestamp = text_utils:remove_last_characters( SplitTimestamp,
 															_Count=2 ),
 
 	Timestamp = time_utils:string_to_timestamp( CanonicalTimestamp ),
 
-	{ Timestamp, _RemainingLines=T }.
+	{ Timestamp, _RemainingLines=T };
+
+extract_write_timing( [ Unexpected | _T ] ) ->
+    throw( { unexpected_write_timing, Unexpected } ).
 
 
 
-% @doc Extracts probe name and title, and advances until curve list.
-%
-% Returns { ProbeName, ProbeTitle, NextLines }.
-%
+
+-doc """
+Extracts probe name and title, and advances until curve list.
+
+Returns `{ProbeName, ProbeTitle, NextLines}`.
+""".
 extract_probe_info( [ "# Probe name: "  ++ Name,
 					  "# Probe title: " ++ Title,
 					  "# First column " ++ _,
@@ -477,9 +496,10 @@ extract_probe_info( [ "# Probe name: "  ++ Name,
 
 
 
-% @doc Extracts the information for all curves, returns a {CurveMetadataList,
-% NextLines} pair where CurveMetadataList is a list of curve_metadata records.
-%
+-doc """
+Extracts the information for all curves, returns a `{CurveMetadataList,
+NextLines}` pair where CurveMetadataList is a list of curve_metadata records.
+""".
 extract_curves_info( Lines ) ->
 	extract_curves_info( Lines, _Acc=[] ).
 
@@ -488,10 +508,10 @@ extract_curves_info( [ "# - curve #" ++ CurveInfoString | T ], Acc ) ->
 	SepIndex = string:chr( CurveInfoString, $: ),
 
 	CurveCount = text_utils:string_to_integer(
-							string:substr( CurveInfoString, 1, SepIndex-1 ) ),
+		string:substr( CurveInfoString, 1, SepIndex-1 ) ),
 
 	CurveName = text_utils:remove_ending_carriage_return(
-						string:substr( CurveInfoString, SepIndex + 2 ) ),
+		string:substr( CurveInfoString, SepIndex + 2 ) ),
 
 	NewCurveMetadata = #curve_metadata{ name=CurveName,
 										index=CurveCount },
@@ -504,9 +524,11 @@ extract_curves_info( NextLines, Acc ) ->
 
 
 
-% @doc Returns a textual representation of the specified time-series metadata.
+-doc """
+Returns a textual representation of the specified time-series metadata.
+""".
 -spec series_to_string( #series_metadata{} ) -> ustring().
-series_to_string( #series_metadata{	name=Name,
+series_to_string( #series_metadata{ name=Name,
 									title=Title,
 									creation_timestamp=Timestamp,
 									starting_tick=StartTick,
@@ -541,7 +563,9 @@ series_to_string( #series_metadata{	name=Name,
 
 
 
-% @doc Returns a textual representation of the specified curve metadata.
+-doc """
+Returns a textual representation of the specified curve metadata.
+""".
 -spec curve_to_string( #curve_metadata{} ) -> ustring().
 curve_to_string( #curve_metadata{ name=Name,
 								  index=Index,
@@ -595,9 +619,10 @@ curve_to_string( #curve_metadata{ name=Name,
 
 
 
-% @doc Reads all samples from specified file, and updates accordingly the
-% metadata of the series.
-%
+-doc """
+Reads all samples from the specified file, and updates accordingly the metadata
+of the series.
+""".
 read_samples( File, SeriesMetadata ) ->
 
 	case file:read_line( File ) of
@@ -643,7 +668,9 @@ read_samples( File, SeriesMetadata ) ->
 
 
 
-% @doc Updates the series with the information read from this new line.
+-doc """
+Updates the series with the information read from this new line.
+""".
 update_series( SeriesMetadata, { Tick, Values } ) ->
 
 	%trace_utils:debug_fmt( "update_series for ~p", [ SeriesMetadata ] ),
@@ -651,8 +678,8 @@ update_series( SeriesMetadata, { Tick, Values } ) ->
 	% Parallelizing for the overall series, hopefully with no mailbox explosion
 	% of the filters:
 	%
-	[ SeriesF ! { setSample, [ Tick, Values ] } ||
-					SeriesF <- SeriesMetadata#series_metadata.filters ],
+	[ SeriesF ! { setSample, [ Tick, Values ] }
+        || SeriesF <- SeriesMetadata#series_metadata.filters ],
 
 	% Parallelizing for each curve, hopefully with no mailbox explosion of the
 	% filters:
@@ -710,9 +737,10 @@ update_series( SeriesMetadata, { Tick, Values } ) ->
 
 
 
-% @doc Parses a sample line, ex: "6 0 7 0 1.0 0 0", and returns a
-% {Tick, FloatList} pair.
-%
+-doc """
+Parses a sample line, e.g. `"6 0 7 0 1.0 0 0"`, and returns a `{Tick,
+FloatList}` pair.
+""".
 parse_line( Line ) ->
 
 	CleanedLine = text_utils:remove_ending_carriage_return(Line),
@@ -723,11 +751,11 @@ parse_line( Line ) ->
 	ParseFun = fun( V ) ->
 		case V of
 
-			   "undefined" ->
-				   undefined;
+			"undefined" ->
+                undefined;
 
-			   _ ->
-				   text_utils:string_to_float( V )
+			_ ->
+				text_utils:string_to_float( V )
 
 		end
 	end,
@@ -740,7 +768,9 @@ parse_line( Line ) ->
 
 
 
-% @doc Updates the curve metadata according to specified values.
+-doc """
+Updates the curve metadata according to the specified values.
+""".
 update_curves( CurvesMetadata, Values, Tick ) ->
 
 	%trace_utils:debug_fmt( "Updating curves ~p at tick #~B with values ~p.",
@@ -774,7 +804,6 @@ update_curves( _CurvesMetadata=[ C=#curve_metadata{
 	%
 	% (note that if a filter happens to be slower than this reader process -
 	% which should be unlikely, its mailbox may explode over time)
-
 
 	NewStartTick = case StartTick of
 
@@ -851,9 +880,9 @@ update_curves( _CurvesMetadata=[ C=#curve_metadata{
 
 
 
-% @doc Returns the list of the PID of all curve filters involved in the time
-% series.
-%
+-doc """
+Returns the list of the PID of all curve filters involved in the time series.
+""".
 get_all_curve_filters( SeriesMetadata ) ->
 	CurvesMetadata = SeriesMetadata#series_metadata.curves,
 	get_all_curve_filters( CurvesMetadata, _Acc=[] ).
@@ -868,17 +897,18 @@ get_all_curve_filters( _CurvesMetadata=[ C | T ], Acc ) ->
 
 
 
-% @doc Returns the list of all curve names for that series.
+-doc "Returns the list of all curve names for that series.".
 get_all_curve_names( SeriesMetadata ) ->
 	Curves = SeriesMetadata#series_metadata.curves,
 	[ C#curve_metadata.name || C <- Curves ].
 
 
 
-% @doc Waits for filters to finish their task.
-%
-% Use basic_utils:wait_for_acks/4 instead.
-%
+-doc """
+Waits for filters to finish their task.
+
+Use `basic_utils:wait_for_acks/4` instead.
+""".
 -spec wait_for_filters( [ pid() ] ) -> void().
 wait_for_filters( _Filters=[] ) ->
 	ok;
@@ -895,7 +925,7 @@ wait_for_filters( Filters ) ->
 
 
 
-% @doc Adds specified series filters to the series metadata.
+-doc "Adds the specified series filters to the series metadata.".
 add_series_filters( FilterSpecs, SeriesMetadata ) ->
 
 	CurveNameList = get_all_curve_names( SeriesMetadata ),
@@ -910,20 +940,21 @@ add_series_filters( FilterSpecs, SeriesMetadata ) ->
 
 
 
-% @doc Adds specified common curve filters to the series metadata.
-%
-% Registers an instance of each filter described in FilterSpecs (a list of
-% {FilterName, FilterParameters} elements) in each curve metadata, and returns
-% the overall series metadata.
-%
+-doc """
+Adds the specified common curve filters to the series metadata.
+
+Registers an instance of each filter described in FilterSpecs (a list of
+`{FilterName, FilterParameters}` elements) in each curve metadata, and returns
+the overall series metadata.
+""".
 add_common_curve_filters( FilterSpecs, SeriesMetadata ) ->
 
 	NewCurveMetadataList = add_common_curve_filters( FilterSpecs,
-					SeriesMetadata#series_metadata.curves, _Acc=[] ),
+		SeriesMetadata#series_metadata.curves, _Acc=[] ),
 
 	SeriesMetadata#series_metadata{
-						% Preserve law and order:
-						curves=lists:reverse( NewCurveMetadataList ) }.
+		% Preserve law and order:
+		curves=lists:reverse( NewCurveMetadataList ) }.
 
 
 add_common_curve_filters( _FilterSpecs, _CurveMetadataList=[], Acc ) ->
@@ -936,15 +967,16 @@ add_common_curve_filters( FilterSpecs, _CurveMetadataList=[ C | T ], Acc ) ->
 			|| FSpec <- FilterSpecs ],
 
 	add_common_curve_filters( FilterSpecs, T,
-					[ C#curve_metadata{ filters=NewFilters } | Acc ] ).
+		[ C#curve_metadata{ filters=NewFilters } | Acc ] ).
 
 
 
-% @doc Adds specified curve-specific filters to the series metadata.
-%
-% Registers for all each specified curve name the associated list of filters,
-% nased on their FilterSpecs, and returns the overall series metadata.
-%
+-doc """
+Adds the specified curve-specific filters to the series metadata.
+
+Registers for all each specified curve name the associated list of filters,
+based on their FilterSpecs, and returns the overall series metadata.
+""".
 add_specific_curve_filters( _CurveSpecificFilters=[], SeriesMetadata ) ->
 	SeriesMetadata;
 
@@ -956,9 +988,10 @@ add_specific_curve_filters(
 
 
 
-% @doc Returns the PID of a new instance of a series filter, created according
-% specified parameters.
-%
+-doc """
+Returns the PID of a new instance of a series filter, created according to the
+specified parameters.
+""".
 create_series_filter( _FilterSpec={FilterName,FilterParameters}, CurveNameList,
 					  SeriesName ) ->
 
@@ -968,9 +1001,10 @@ create_series_filter( _FilterSpec={FilterName,FilterParameters}, CurveNameList,
 
 
 
-% @doc Returns the PID of a new instance of a curve filter, created according
-% specified parameters.
-%
+-doc """
+Returns the PID of a new instance of a curve filter, created according to the
+specified parameters.
+""".
 create_curve_filter( _FilterSpec={ FilterName, FilterParameters },
 					 CurveName ) ->
 
@@ -979,7 +1013,7 @@ create_curve_filter( _FilterSpec={ FilterName, FilterParameters },
 
 
 
-% @doc Ensures specified parameter is returned as a list.
+-doc "Ensures that the specified parameter is returned as a list.".
 ensure_list( L ) when is_list( L ) ->
 	L;
 
@@ -988,7 +1022,7 @@ ensure_list( Other ) ->
 
 
 
-% @doc Sends, if appropriate, a new value to each filter of each curve.
+-doc "Sends, if appropriate, a new value to each filter of each curve.".
 send_to_curve_filters( _Tick, _Values=[], _CurveMetadataList=[] ) ->
 	ok;
 

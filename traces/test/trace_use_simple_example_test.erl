@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2024 Olivier Boudeville
+% Copyright (C) 2020-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,13 +25,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, May 8, 2020.
 
-
-% @doc This is just a simple example to showcase the use of Traces at the level
-% of a test case: 'make trace_use_simple_example_run' shall display the
-% (graphical) trace supervisor, as opposed to: 'make
-% trace_use_simple_example_run CMD_LINE_OPT="--batch"'.
-%
 -module(trace_use_simple_example_test).
+
+-moduledoc """
+This is just a simple example to showcase the use of Traces at the level of a
+test case: `make trace_use_simple_example_run` shall display the (graphical)
+trace supervisor, as opposed to: `make trace_use_simple_example_run
+CMD_LINE_OPT="--batch"`.
+""".
+
 
 
 % Test target:

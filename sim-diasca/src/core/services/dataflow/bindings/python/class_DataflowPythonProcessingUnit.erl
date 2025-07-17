@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
+% Creation: 2016.
 
-
-% @doc Base class for all the <b>Python-based processing units</b>.
 -module(class_DataflowPythonProcessingUnit).
+
+-moduledoc "Base class for all the **Python-based processing units**.".
 
 
 -define( class_description,
@@ -34,9 +35,11 @@
 -define( superclasses, [ class_DataflowProcessingUnit ] ).
 
 
+-doc """
+Designates the Python reference corresponding to a processing unit instance
+(relatively to its interpreter).
+""".
 -type python_ref() :: basic_utils:count().
-% Designates the Python reference corresponding to a processing unit instance
-% (relatively to its interpreter).
 
 
 -export_type([ python_ref/0 ]).
@@ -93,10 +96,11 @@
 -include("class_DataflowBlock_defines.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type python_binding_manager_pid() :: class_PythonBindingManager:manager_pid().
 
 
 % Design notes:
@@ -117,27 +121,28 @@
 
 
 
-% @doc Constructs a dataflow Python processing unit.
-%
-% Parameters:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - UnitClassname is the (WOOPER) classname of this unit (its Python counterpart
-% must be available); ex: 'class_TransportationDemandUnit'
-%
-% - PythonConstructionParameters is the list of the construction parameters that
-% will be used to instantiate the corresponding Python processing unit instance
-% in its interpreter; the first argument must be the name of this unit, which is
-% also stored in the (Erlang) actor state
-%
-% - DataflowPid is the PID identifying the dataflow to which this processing
-% unit belongs
-%
-% - PythonBindingManagerPid is the PID of the Python runtime manager in charge
-% of that actor
-%
+-doc """
+Constructs a dataflow Python processing unit.
+
+Parameters:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- UnitClassname is the (WOOPER) classname of this unit (its Python counterpart
+must be available); e.g. `class_TransportationDemandUnit`
+
+- PythonConstructionParameters is the list of the construction parameters that
+will be used to instantiate the corresponding Python processing unit instance in
+its interpreter; the first argument must be the name of this unit, which is also
+stored in the (Erlang) actor state
+
+- DataflowPid is the PID identifying the dataflow to which this processing unit
+belongs
+
+- PythonBindingManagerPid is the PID of the Python runtime manager in charge of
+that actor
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		dataflow_unit_type(), construction_parameters(),
 		dataflow_pid(), python_binding_manager_pid() ) -> wooper:state().
@@ -226,11 +231,11 @@ construct( State, ActorSettings, UnitClassname,
 % Methods section.
 
 
-% @doc Callback executed automatically whenever the processing unit is
-% activated.
-%
-% Meant to be overridden.
-%
+-doc """
+Callback executed automatically whenever the processing unit is activated.
+
+Meant to be overridden.
+""".
 -spec activate( wooper:state() ) -> oneway_return().
 activate( State ) ->
 
@@ -275,7 +280,7 @@ activate( State ) ->
 	%
 	OutputPortIterationPieces =
 		class_LanguageBindingManager:get_encoded_output_port_iterations_data(
-		  State ),
+		    State ),
 
 	% Gathers all relevant input data, calls the activate/1 method of the
 	% associated Python processing unit and gets back its computation results:
@@ -287,7 +292,7 @@ activate( State ) ->
 							 OutputPortIterationPieces ],
 
 	ActivationResults = python_binding_utils:execute_request( InterpreterPid,
-							activate_unit, PythonActivationData, State ),
+		activate_unit, PythonActivationData, State ),
 
 	?debug_fmt( "Just after activation, following ~B output ports are "
 		"to be set: ~ts",
@@ -295,14 +300,14 @@ activate( State ) ->
 		  text_utils:strings_to_sorted_string(
 			[ text_utils:format( "'~ts' set to: ~p", [ OPName,
 					%class_DataflowBlock:value_to_string( ChValue ) ] )
-													   ChValue ] )
+					ChValue ] )
 				|| { OPName, ChValue } <- ActivationResults ] ) ] ),
 
 	% Interprets then ActivationResults as a list of tasks to achieve on the
 	% output ports, then performs them:
 	%
 	FinalState = class_LanguageBindingManager:apply_activation_results(
-					ActivationResults, State ),
+		ActivationResults, State ),
 
 	wooper:return_state( FinalState ).
 
@@ -313,11 +318,12 @@ activate( State ) ->
 
 
 
-% @doc Returns the Python module and class that correspond to the specified
-% (Erlang) unit type, that is a WOOPER classname, like
-% 'class_BigPackage__MyPackage__MyExample', resulting in:
-% {'big_package.my_package.my_example', 'MyExample'}.
-%
+-doc """
+Returns the Python module and class that correspond to the specified (Erlang)
+unit type, that is a WOOPER classname, like
+'class_BigPackage__MyPackage__MyExample', resulting in:
+{'big_package.my_package.my_example', 'MyExample'}.
+""".
 -spec get_python_module_and_class_for( dataflow_unit_type() ) ->
 		{ python_utils:pep8_class_module(), python_utils:pep8_classname() }.
 get_python_module_and_class_for( UnitType ) ->
@@ -349,7 +355,7 @@ get_python_module_and_class_for( UnitType ) ->
 % Textual helpers section.
 
 
-% @doc Returns a textual description of this processing unit.
+-doc "Returns a textual description of this processing unit.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

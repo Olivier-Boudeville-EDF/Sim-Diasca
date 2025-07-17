@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Unit tests for the <b>random-related</b> toolbox.
-%
-% See the random_utils.erl tested module.
-%
 -module(random_utils_test).
+
+-moduledoc """
+Unit tests for the **random-related** toolbox.
+
+See the random_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -71,7 +73,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -332,7 +334,9 @@ test_custom_pdf() ->
 
 
 
-% @doc Tests the specified random law, based on its specification.
+-doc """
+Tests the specified random law, based on its specification.
+""".
 -spec test_law( random_law_spec() ) -> void().
 test_law( LawSpec ) ->
 
@@ -352,7 +356,7 @@ test_law( LawSpec ) ->
 
 
 
-% @doc Graphs the specified random law.
+-doc "Graphs the specified random law.".
 -spec graph_law( random_law_spec(), random_law_data() ) -> void().
 graph_law( LawSpec, LawData ) ->
 
@@ -494,12 +498,13 @@ graph_law( LawSpec, LawData ) ->
 
 
 
-% @doc Gathers the specified samples in evenly-spaced buckets: aggregates them
-% in coarser "counter" slots.
-%
-% Otherwise each individual sample would be produced once, resulting in a
-% falsely-uniform probability density function.
-%
+-doc """
+Gathers the specified samples in evenly-spaced buckets: aggregates them in
+coarser "counter" slots.
+
+Otherwise each individual sample would be produced once, resulting in a
+falsely-uniform probability density function.
+""".
 -spec gather_samples_in_buckets( [ sample() ], count() ) ->
 			[ { sample(), count() } ].
 gather_samples_in_buckets( Samples, BucketCount ) ->

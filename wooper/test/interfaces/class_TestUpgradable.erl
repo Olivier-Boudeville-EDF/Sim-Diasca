@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,15 +25,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, August 16, 2022.
 
-
-% @doc Test class for the implementation of the Upgradable trait.
-%
-% It does not include a version in itself: it is defined through the
-% command-line, as with this single test source it can be either 1.2.3 or 1.2.4,
-% depending on whether enable_upgraded_test_class has been defined (then 1.2.4)
-% or not (1.2.3).
-%
 -module(class_TestUpgradable).
+
+-moduledoc """
+Test class for the implementation of the **Upgradable** trait.
+
+It does not include a version in itself: it is defined through the command-line,
+as with this single test source it can be either 1.2.3 or 1.2.4, depending on
+whether enable_upgraded_test_class has been defined (then 1.2.4) or not (1.2.3).
+""".
 
 
 -define( class_description,
@@ -59,11 +59,8 @@
 -define( this_class_version, { 1, 2, 3 } ).
 
 -define( class_attributes, [
-
 	{ name, ustring(), "name of this test instance" },
-	{ height, float(), "height of this test instance" }
-
-						   ] ).
+	{ height, float(), "height of this test instance" } ] ).
 
 
 -else.
@@ -74,11 +71,8 @@
 -define( this_class_version, { 1, 2, 4 } ).
 
 -define( class_attributes, [
-
 	{ name, ustring(), "name of this test instance" },
-	{ age, integer(), "age of this test instance" }
-
-						   ] ).
+	{ age, integer(), "age of this test instance" } ] ).
 
 -endif.
 
@@ -90,8 +84,7 @@
 
 
 
-
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -102,10 +95,11 @@
 
 
 
-% @doc Constructs a test upgradable instance.
-%
-% The corresponding version is determined statically.
+-doc """
+Constructs a test upgradable instance.
 
+The corresponding version is determined statically.
+""".
 -ifndef(enable_upgraded_test_class).
 
 % Version 1.2.3:
@@ -141,14 +135,16 @@ construct( State, Name, Age ) ->
 
 
 
+
 % Methods section.
 
 
-% @doc Upgrades this instance (thus to a more recent version) both in terms of
-% code and state, taking into account any specified extra data.
-%
+-doc """
+Upgrades this instance (thus to a more recent version) both in terms of code and
+state, taking into account any specified extra data.
+""".
 -spec upgradeVersion( wooper:state(), any_version(), any_version(),
-			maybe( extra_data() ) ) -> request_return( base_outcome() ).
+			option( extra_data() ) ) -> request_return( base_outcome() ).
 % Only these very specific settings are supported:
 upgradeVersion( State, OriginalVersion={1,2,3}, TargetVersion={1,2,4},
 				ExtraData=upgradable_test ) ->
@@ -194,11 +190,12 @@ upgradeVersion( State, OriginalVersion={1,2,3}, TargetVersion={1,2,4},
 
 
 
-% @doc Downgrades this instance (thus to a less recent version) both in terms of
-% code and state, taking into account any specified extra data.
-%
+-doc """
+Downgrades this instance (thus to a less recent version) both in terms of code
+and state, taking into account any specified extra data.
+""".
 -spec downgradeVersion( wooper:state(), any_version(), any_version(),
-			maybe( extra_data() ) ) -> request_return( base_outcome() ).
+			option( extra_data() ) ) -> request_return( base_outcome() ).
 downgradeVersion( State, OriginalVersion={1,2,4}, TargetVersion={1,2,3},
 				  ExtraData=upgradable_test ) ->
 
@@ -246,10 +243,11 @@ downgradeVersion( State, OriginalVersion={1,2,4}, TargetVersion={1,2,3},
 % Static section.
 
 
-% @doc Returns the version of that class (that corresponds to this module).
-%
-% Each version of a class should define its own version of this static method.
-%
+-doc """
+Returns the version of that class (that corresponds to this module).
+
+Each version of a class should define its own version of this static method.
+""".
 -spec get_version() -> static_return( any_version() ).
 get_version() ->
 	% Each concrete Upgradable class is typically to return its own define:
@@ -258,14 +256,14 @@ get_version() ->
 
 
 
-% @doc Returns a textual description of this instance.
+-doc "Returns a textual description of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 
 -ifndef(enable_upgraded_test_class).
 
 to_string( State ) ->
-	text_utils:format( "test upgradable instance ~w of class ~ts version ~ts,"
-		" of name '~ts' and height ~p m",
+	text_utils:format( "test upgradable instance ~w of class ~ts version ~ts, "
+		"of name '~ts' and height ~p m",
 		[ self(), State#state_holder.actual_class,
 		  text_utils:version_to_string( ?this_class_version ),
 		  ?getAttr(name), ?getAttr(height) ] ).
@@ -273,8 +271,8 @@ to_string( State ) ->
 -else.
 
 to_string( State ) ->
-	text_utils:format( "test upgradable instance ~w of class ~ts version ~ts,"
-		" of name '~ts' and age ~p years",
+	text_utils:format( "test upgradable instance ~w of class ~ts version ~ts, "
+		"of name '~ts' and age ~p years",
 		[ self(), State#state_holder.actual_class,
 		  text_utils:version_to_string( ?this_class_version ),
 		  ?getAttr(name), ?getAttr(age) ] ).

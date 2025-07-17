@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 13, 2021.
 
-
-% @doc Unit tests for the <b>specialised 4x4 matrix</b> facilities.
-%
-% See the matrix4 tested module.
-%
 -module(matrix4_test).
+
+-moduledoc """
+Unit tests for the **specialised 4x4 matrix**> facilities.
+
+See the matrix4 tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -186,9 +188,9 @@ run() ->
 	% FirstCompactMatrix = [ 30, 12, 15, 55; 62, 42, 50, 11;
 	%                        11, 39, 21, 19; 0, 0, 0, 1 ]
 	FirstCompactMatrix = matrix4:from_compact_coordinates(
-							30.0, 12.0, 15.0, 55.0,
-							62.0, 42.0, 50.0, 11.0,
-							11.0, 39.0, 21.0, 19.0 ),
+		30.0, 12.0, 15.0, 55.0,
+		62.0, 42.0, 50.0, 11.0,
+		11.0, 39.0, 21.0, 19.0 ),
 
 	%test_facilities:display( "FirstCompactMatrix = ~ts",
 	%                         [ matrix4:to_string( FirstCompactMatrix ) ] ),
@@ -196,14 +198,14 @@ run() ->
 	% Octave: SecondCompactMatrix = [ 59, 44, 24, 12; 97, 4, 56, 1;
 	%                                 110, -4, 23, 9; 0, 0, 0, 1 ]
 	SecondCompactMatrix = matrix4:from_compact_coordinates(
-							59.0,  44.0, 24.0, 12.0,
-							97.0,   4.0, 56.0,  1.0,
-							110.0, -4.0, 23.0,  9.0 ),
+		59.0,  44.0, 24.0, 12.0,
+		97.0,   4.0, 56.0,  1.0,
+		110.0, -4.0, 23.0,  9.0 ),
 
 	MultCptCptMatrix = matrix4:from_compact_coordinates(
-							4584.0,  1308.0, 1737.0,  562.0,
-						   13232.0,  2696.0, 4990.0, 1247.0,
-							6742.0,   556.0, 2931.0,  379.0 ),
+		4584.0,  1308.0, 1737.0,  562.0,
+	   13232.0,  2696.0, 4990.0, 1247.0,
+		6742.0,   556.0, 2931.0,  379.0 ),
 
 	true = matrix4:are_equal( MultCptCptMatrix,
 					matrix4:mult( FirstCompactMatrix, SecondCompactMatrix ) ),
@@ -212,10 +214,10 @@ run() ->
 	% MultCptCanMatrix = [ 1880, 2104, 2328, 2552; 1730, 2060, 2390, 2720;
 	%                      1284, 1464, 1644, 1824; 26, 28, 30, 32 ]
 	MultCptCanMatrix = matrix4:from_coordinates(
-							1880.0, 2104.0, 2328.0, 2552.0,
-							1730.0, 2060.0, 2390.0, 2720.0,
-							1284.0, 1464.0, 1644.0, 1824.0,
-							  26.0,   28.0,   30.0,   32.0 ),
+		1880.0, 2104.0, 2328.0, 2552.0,
+		1730.0, 2060.0, 2390.0, 2720.0,
+		1284.0, 1464.0, 1644.0, 1824.0,
+		  26.0,   28.0,   30.0,   32.0 ),
 
 	%test_facilities:display( "ScaledMatrix = ~ts",
 	%						  [ matrix4:to_string( ScaledMatrix ) ] ),
@@ -232,10 +234,10 @@ run() ->
 	% MultCanCptMatrix = [ 374, 426, 356, 276; 1198, 1170, 1044, 964;
 	%                      2022, 1914, 1732, 1652; 2846, 2658, 2420, 2340 ]
 	MultCanCptMatrix = matrix4:from_coordinates(
-							 374.0,  426.0,  356.0,  276.0,
-							1198.0, 1170.0, 1044.0,  964.0,
-							2022.0, 1914.0, 1732.0, 1652.0,
-							2846.0, 2658.0, 2420.0, 2340.0 ),
+		 374.0,  426.0,  356.0,  276.0,
+		1198.0, 1170.0, 1044.0,  964.0,
+		2022.0, 1914.0, 1732.0, 1652.0,
+		2846.0, 2658.0, 2420.0, 2340.0 ),
 
 	SecondMult = matrix4:mult( ScaledMatrix, FirstCompactMatrix ),
 
@@ -270,14 +272,14 @@ run() ->
 
 	% From octave: inv(InvertibleCanMatrix4)
 	InversedCanMatrix4Octave = matrix4:new( [
-						   [ -0.5066354410616709, 0.2322404371584700,
-							 1.176814988290398,  -1.075722092115535 ],
-						   [ -0.4223263075722095, 0.2814207650273225,
-							 0.5772833723653399, -0.5253708040593289 ],
-						   [ 0.6213895394223266, -0.2486338797814208,
-							 -0.8817330210772836, 0.7970335675253709 ],
-						   [ -0.01405152224824354, -0.008196721311475415,
-							 -0.06674473067915693, 0.07494145199063233 ] ] ),
+		[ -0.5066354410616709, 0.2322404371584700,
+		  1.176814988290398,  -1.075722092115535 ],
+		[ -0.4223263075722095, 0.2814207650273225,
+		  0.5772833723653399, -0.5253708040593289 ],
+		[ 0.6213895394223266, -0.2486338797814208,
+		  -0.8817330210772836, 0.7970335675253709 ],
+		[ -0.01405152224824354, -0.008196721311475415,
+		  -0.06674473067915693, 0.07494145199063233 ] ] ),
 
 	true = matrix4:are_equal( InversedCanMatrix4, InversedCanMatrix4Octave ),
 
@@ -286,9 +288,9 @@ run() ->
 	% InvertibleCptMatrix4 = [ 7, 11, 13, 17; 25, 2, 0, 27;
 	%                         -7, 4, 0, -3; 0, 0, 0, 1 ]
 	InvertibleCptMatrix4 = matrix4:from_compact_coordinates(
-								 7.0, 11.0, 13.0, 17.0,
-								25.0,  2.0,  0.0, 27.0,
-								-7.0,  4.0,  0.0, -3.0 ),
+		 7.0, 11.0, 13.0, 17.0,
+		25.0,  2.0,  0.0, 27.0,
+		-7.0,  4.0,  0.0, -3.0 ),
 
 	1482.0 = matrix4:determinant( InvertibleCptMatrix4 ),
 

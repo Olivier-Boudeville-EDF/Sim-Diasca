@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc A joint <b>test unit manager</b>.
 -module(class_UrbanWithVehicleUnitManager).
+
+-moduledoc "A joint **test unit manager**.".
 
 
 -define( class_description,
@@ -34,7 +35,6 @@
 
 % Attributes that are specific to this unit manager singleton are:
 -define( class_attributes, [
-
 
 	{ transport_table, table( household_pid(), transportation_unit_pid() ),
 	  "table telling, for an household PID, the PID of its associated "
@@ -71,28 +71,33 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+-type binding_managers() :: binding_utils:binding_managers().
 
 
-% @doc Constructs an urban unit manager, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - ExperimentManagerPid, the PID of the (parent) experiment manager
-%
-% - LoadBalancerPid, the PID of the load balancer that may be used by this unit
-% manager
-%
-% - IdentificationServerPid, the PID of the identification server (if any)
-%
+
+-doc """
+Constructs an urban unit manager, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- ExperimentManagerPid, the PID of the (parent) experiment manager
+
+- LoadBalancerPid, the PID of the load balancer that may be used by this unit
+manager
+
+- IdentificationServerPid, the PID of the identification server (if any)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 experiment_manager_pid(), binding_managers(),
 				 load_balancer_pid(),
-				 maybe( identification_server_pid() ) ) -> wooper:state().
+				 option( identification_server_pid() ) ) -> wooper:state().
 construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 		   LoadBalancerPid, IdentificationServerPid ) ->
 
@@ -121,9 +126,10 @@ construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 % Methods section.
 
 
-% @doc Returns the synchronization event matches that this unit manager is
-% interested in.
-%
+-doc """
+Returns the synchronization event matches that this unit manager is interested
+in.
+""".
 -spec get_listened_event_matches() -> static_return( [ event_match() ] ).
 get_listened_event_matches() ->
 
@@ -162,19 +168,20 @@ get_listened_event_matches() ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a building or a household has just been created.
-%
-% As a result, if the created dataflow object is:
-%
-% - a building, then ultimately (over diascas) a EnergyDemandUnit is created and
-% connected appropriately
-%
-% - a household, then ultimately (over diascas) a TransportationDemandUnit is
-% created and connected appropriately
-%
-% (overridden oneway)
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a building or a household has just been created.
+
+As a result, if the created dataflow object is:
+
+- a building, then ultimately (over diascas) a EnergyDemandUnit is created and
+connected appropriately
+
+- a household, then ultimately (over diascas) a TransportationDemandUnit is
+created and connected appropriately
+
+(overridden oneway)
+""".
 -spec onCreationEventMatched( wooper:state(), creation_event() ) ->
 									oneway_return().
 onCreationEventMatched( State, #creation_event{
@@ -201,8 +208,8 @@ onCreationEventMatched( State, #creation_event{
 
 	% Will trigger back a call to onUnitCreated/6:
 	CreatedState = executeOneway( State, createUnit,
-			[ { class_VehicleTypeUnit, python }, UnitConstructParams, EventId,
-			  _Context=undefined ] ),
+		[ { class_VehicleTypeUnit, python }, UnitConstructParams, EventId,
+          _Context=undefined ] ),
 
 	wooper:return_state( CreatedState );
 
@@ -234,8 +241,8 @@ onCreationEventMatched( State, #creation_event{
 
 	% Will trigger back a call to onUnitCreated/6:
 	CreatedState = executeOneway( State, createUnit,
-			[ class_TransportationDemandUnit, UnitConstructParams, EventId,
-			  _Context=HouseholdPid ] ),
+		[ class_TransportationDemandUnit, UnitConstructParams, EventId,
+          _Context=HouseholdPid ] ),
 
 	% The household -> transportation unit association will be recorded in that
 	% callback, as we need the PID of that unit.
@@ -244,12 +251,13 @@ onCreationEventMatched( State, #creation_event{
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a binary association event has been received and
-% successfully matched against a clause specified by this unit manager.
-%
-% (overridden oneway)
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a binary association event has been received and successfully
+matched against a clause specified by this unit manager.
+
+(overridden oneway)
+""".
 -spec onBinaryAssociationEventMatched( wooper:state(),
 					binary_association_event() ) -> const_oneway_return().
 onBinaryAssociationEventMatched( State,
@@ -287,16 +295,17 @@ onBinaryAssociationEventMatched( State,
 
 	?debug_fmt( "Reacting to the association of an household (event #~B): ~ts",
 		[ EventId, dataflow_support:world_event_to_string(
-						BinAssociationEvent ) ] ),
+			BinAssociationEvent ) ] ),
 
 	wooper:const_return().
 
 
 
-% @doc Notifies this unit manager how a dataflow-level event shall be handled,
-% not relying on the changeset system for that (just useful in the context of a
-% programmatic case).
-%
+-doc """
+Notifies this unit manager how a dataflow-level event shall be handled, not
+relying on the changeset system for that (just useful in the context of a
+programmatic case).
+""".
 -spec notifyEvent( wooper:state(), urban_dataflow_event(), event_data(),
 				   sending_actor_pid() ) -> actor_oneway_return().
 notifyEvent( State, _Event=new_energy_demand_unit_needed, UnitName,
@@ -313,22 +322,23 @@ notifyEvent( State, _Event=new_energy_demand_unit_needed, UnitName,
 
 
 
-% @doc Called whenever a unit has been created, so that channels between this
-% new unit and the rest of the dataflow can be created.
-%
-% Parameters are:
-%
-% - CreatedUnitType is the type of the just created unit
-%
-% - CreatedUnitConstructionParameters is the construction parameters
-% corresponding to this new creation
-%
-% - CreatedUnitPid the PID of the just created unit
-%
-% - EventId is the identifier of the corresponding overall world event
-%
-% - CreationContext is the context of this creation
-%
+-doc """
+Called whenever a unit has been created, so that channels between this new unit
+and the rest of the dataflow can be created.
+
+Parameters are:
+
+- CreatedUnitType is the type of the just created unit
+
+- CreatedUnitConstructionParameters is the construction parameters corresponding
+to this new creation
+
+- CreatedUnitPid the PID of the just created unit
+
+- EventId is the identifier of the corresponding overall world event
+
+- CreationContext is the context of this creation
+""".
 -spec onUnitCreated( wooper:state(), dataflow_unit_type(),
 					 wooper:construction_parameters(), unit_pid(),
 					 event_id(), building_pid() ) -> oneway_return().
@@ -386,7 +396,7 @@ onUnitCreated( State, CreatedUnitType, CreatedUnitConstructParams,
 
 
 
-% @doc Returns a textual description of this unit manager
+-doc "Returns a textual description of this unit manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

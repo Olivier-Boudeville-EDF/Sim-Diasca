@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 Olivier Boudeville
+% Copyright (C) 2011-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,11 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, January 11, 2011.
 
-
-% @doc This is a <b>most simple application</b>, to ensure that defines, build
-% targets and all support them correctly.
-%
 -module(most_basic_example_app).
+
+-moduledoc """
+This is a **most simple application**, to ensure that defines, build targets and
+all support them correctly.
+""".
+
 
 
 -export([ exec/0 ]).

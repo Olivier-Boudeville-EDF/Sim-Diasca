@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -59,7 +59,7 @@
 
 
 
-% @doc Waits for the incoming method calls, and serves them.
+-doc "Waits for the incoming method calls, and serves them.".
 -spec wooper_main_loop( wooper:state() ) -> 'deleted'. % no_return().
 wooper_main_loop( State ) ->
 
@@ -93,7 +93,6 @@ wooper_main_loop( State ) ->
 			%?wooper_log( "Main loop (case A) ended.~n" ),
 
 			wooper_main_loop( NewState );
-
 
 
 		% Auto-wrapping single arguments implies putting lists between
@@ -152,7 +151,6 @@ wooper_main_loop( State ) ->
 			% (do nothing, loop ends here).
 
 
-
 		% ping is always available and cannot be overridden:
 		{ ping, CallerPid } ->
 
@@ -163,7 +161,6 @@ wooper_main_loop( State ) ->
 
 			%?wooper_log( "Main loop (case D) ended.~n" ),
 			wooper_main_loop( State );
-
 
 
 		% Oneway with parameters:
@@ -369,7 +366,6 @@ wooper_main_loop( State ) ->
 					wooper_main_loop( NewState )
 
 			end;
-
 
 
 		% We intentionally deviate here from the standard form for requests, as

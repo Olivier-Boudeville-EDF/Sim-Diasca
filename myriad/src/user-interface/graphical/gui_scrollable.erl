@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Thursday, December 21, 2023.
 
-
-% @doc Gathering of various facilities for <b>scrollable widgets</b>, like
-% panels that can be scrolled horizontally and/or vertically.
-%
-% Note that using the with_vertical_scrollbar / with_horizontal_scrollbar window
-% styles is generally not a viable solution (refer to their specification for
-% more details).
-%
 -module(gui_scrollable).
+
+-moduledoc """
+Gathering of various facilities for **scrollable widgets**, like panels that can
+be scrolled horizontally and/or vertically.
+
+Note that using the with_vertical_scrollbar / with_horizontal_scrollbar window
+styles is generally not a viable solution (refer to their specification for more
+details).
+""".
 
 
 
@@ -43,15 +44,22 @@
 % set for it.
 
 
+-doc """
+A scrollable is a widget that can be scrolled horizontally and/or vertically.
+""".
 -opaque scrollable() :: wxScrolledWindow:wxScrolledWindow().
-% A scrollable is a widget that can be scrolled horizontally and/or vertically.
 
 
+
+-doc "A number of scroll steps.".
 -type step_count() :: integer().
-% A number of scroll steps.
 
+
+
+-doc """
+A number of pixels per scroll step (a.k.a. a scroll increment).
+""".
 -type pixels_per_scroll_step() :: integer().
-% A number of pixels per scroll step (a.k.a. a scroll increment).
 
 
 -export_type([ scrollable/0, step_count/0, pixels_per_scroll_step/0 ]).
@@ -71,21 +79,23 @@
 
 
 
-% @doc Creates a scrollable, with the specified parent and the default number of
-% pixels per scroll step.
-%
--spec create( maybe( parent() ) ) -> scrollable().
+-doc """
+Creates a scrollable, with the specified parent and the default number of pixels
+per scroll step.
+""".
+-spec create( option( parent() ) ) -> scrollable().
 create( MaybeParent ) ->
 	create( _Inc=?default_scroll_increment, MaybeParent ).
 
 
 
-% @doc Creates a scrollable, with the specified scroll increment (both for
-% horizontal and vertical orientations) and the specified parent.
-%
+-doc """
+Creates a scrollable, with the specified scroll increment (both for horizontal
+and vertical orientations) and the specified parent.
+""".
 -spec create( pixels_per_scroll_step()
 			| { pixels_per_scroll_step(), pixels_per_scroll_step() },
-			  maybe( parent() ) ) -> scrollable().
+			  option( parent() ) ) -> scrollable().
 create( { HPixPerStep, VPixPerStep }, MaybeParent ) ->
 	Scrollable = wxScrolledWindow:new( MaybeParent ),
 
@@ -99,7 +109,7 @@ create( PixPerStep, MaybeParent ) ->
 
 
 
-% @doc Destructs the specified scrollable.
+-doc "Destructs the specified scrollable.".
 -spec destruct( scrollable() ) -> void().
 destruct( Scrollable  ) ->
 	wxScrolledWindow:destroy( Scrollable ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -17,9 +17,11 @@
 % If not, see <http://www.gnu.org/licenses/>.
 %
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
-
+% Creation date: 2008.
 
 -module(class_PerformanceTracker_TestActor).
+
+-moduledoc "Test actor for the **performance tracker**.".
 
 
 -define( class_description,
@@ -64,29 +66,32 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 -type tick_offset() :: class_TimeManager:tick_offset().
 
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
 
 
-% @doc Constructs a test actor for the performance tracker:
-%
-% - ActorSettings is the AAI assigned to this actor by the load
-% balancer
-%
-% - ActorName the name of the actor
-%
-% - TerminationTickOffset the duration after which this actor should terminate
-%
-% The Performance Tracker test actor spontaneous behaviours is the following:
-% after each elapsed period (according to the predefined 'periodic' attribute),
-% every existing test actor creates a performance tracker actor.
-%
-% The memory_load_loop/1 function can be activated for an increasing memory
-% consumption.
-%
+
+-doc """
+Constructs a test actor for the performance tracker:
+
+- ActorSettings is the AAI assigned to this actor by the load
+balancer
+
+- ActorName the name of the actor
+
+- TerminationTickOffset the duration after which this actor should terminate
+
+The Performance Tracker test actor spontaneous behaviours is the following:
+after each elapsed period (according to the predefined 'periodic' attribute),
+every existing test actor creates a performance tracker actor.
+
+The `memory_load_loop/1` function can be activated for an increasing memory
+consumption.
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), tick_offset() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, TerminationTickOffset ) ->
@@ -112,7 +117,7 @@ construct( State, ActorSettings, ActorName, TerminationTickOffset ) ->
 % Methods section.
 
 
-% The core of the performance tracker test actor behaviour.
+-doc "The core of the performance tracker test actor behaviour.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -166,9 +171,9 @@ actSpontaneous( State ) ->
 
 
 
-% Simply schedules this just created actor at the next tick (diasca 0).
+-doc "Simply schedules this just created actor at the next tick (diasca 0).".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+											actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
@@ -177,7 +182,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Called once a test actor has been created.
+-doc "Called once a test actor has been created.".
 -spec onActorCreated( wooper:state(), created_actor_pid(), class_Actor:tag(),
 					  load_balancer_pid() ) -> const_actor_oneway_return().
 onActorCreated( State, CreatedActorPid, _CreatedActorTag, _LoadBalancerPid ) ->

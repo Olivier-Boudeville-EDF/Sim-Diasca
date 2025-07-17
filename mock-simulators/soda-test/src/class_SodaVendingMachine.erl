@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class modelling a <b>soda vending machine</b>.
 -module(class_SodaVendingMachine).
+
+-moduledoc "Class modelling a **soda vending machine**.".
 
 
 -define( class_description, "Class modelling a soda vending machine." ).
@@ -31,14 +31,17 @@
 -define( superclasses, [ class_Actor ] ).
 
 
-% For common types defined in this Soda-Test example:
--include("soda_test_types.hrl").
+-doc "Amount of money (e.g. euros).".
+-type amount() :: float().
 
+-doc "A count of cans.".
+-type can_count() :: basic_utils:count().
 
 -type machine_pid() :: actor_pid().
 
 
--export_type([ machine_pid/0 ]).
+-export_type([ amount/0, can_count/0, machine_pid/0 ]).
+
 
 
 % Must be included before class_TraceEmitter header:
@@ -46,7 +49,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 
@@ -64,8 +67,7 @@
 
 
 
-
-% @doc Creates a soda vending machine.
+-doc "Creates a soda vending machine.".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), can_count(), amount() ) -> wooper:state().
 construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
@@ -101,7 +103,7 @@ construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -124,9 +126,10 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-% @doc We want to synchronise here our probes starting from the very first
-% diasca of the simulation.
-%
+-doc """
+We want to synchronise here our probes starting from the very first diasca of
+the simulation.
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -146,7 +149,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Called by a customer wanting to know the cost of a can for this machine.
+-doc "Called by a customer wanting to know the cost of a can for this machine.".
 -spec getCanCost( wooper:state(), sending_actor_pid() ) ->
 												actor_oneway_return().
 getCanCost( State, CustomerPid ) ->
@@ -160,7 +163,7 @@ getCanCost( State, CustomerPid ) ->
 
 
 
-% @doc Called by a customer wanting to purchase a can.
+-doc "Called by a customer wanting to purchase a can.".
 -spec orderSoda( wooper:state(), amount(), sending_actor_pid() ) ->
 												actor_oneway_return().
 orderSoda( State, CustomerBudget, CustomerPid ) ->

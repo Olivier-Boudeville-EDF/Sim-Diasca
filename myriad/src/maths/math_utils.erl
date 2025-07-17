@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various <b>general-purpose basic math</b> facilities.
-%
-% See `math_utils_test.erl' for the corresponding test.
-%
-% See `random_utils' for random-related operations.
-%
 -module(math_utils).
+
+-moduledoc """
+Gathering of various **general-purpose basic math** facilities.
+
+See `math_utils_test.erl` for the corresponding test.
+
+See `random_utils` for random-related operations.
+""".
+
 
 
 % General operations:
@@ -61,6 +63,10 @@
 					 are_relatively_close/2, are_relatively_close/3,
 					 get_relative_difference/2, is_null/1,
 					 is_greater/2, is_lower/2, is_greater/3, is_lower/3 ] }).
+
+
+% Constants:
+-export([ pi/0 ]).
 
 
 % Operations on number():
@@ -116,158 +122,223 @@
 -define( coarse_increment, 0.1 ).
 
 
+
 % Type declarations:
 
+
+-doc "An integer that is not null.".
 -type non_zero_integer() :: pos_integer() | neg_integer().
 
 
+
+-doc """
+An (unbounded) number that may be considered as equal to a (positive or
+negative) infinite value.
+""".
 -type infinite_number() :: '-infinity' | number() | 'infinity'.
-% An (unbounded) number that may be considered as equal to a (positive or
-% negative) infinite value.
 
 
+
+-doc " A (possibly infinite) range.".
 -type infinite_range() ::
 		{ Min :: infinite_number(), Max :: infinite_number() }.
-% A possibly infinite range.
 
 
+
+-doc """
+A floating-point factor, typically in [0.0, 1.0], that is a multiplier involved
+in an equation.
+""".
 -type factor() :: dimensionless().
-% A floating-point factor, typically in [0.0, 1.0], that is a multiplier
-% involved in an equation.
 
 
+
+-doc """
+An integer factor, typically in [0.0, 1.0], that is a multiplier involved in an
+equation.
+""".
 -type integer_factor() :: integer().
-% An integer factor, typically in [0.0, 1.0], that is a multiplier involved in
-% an equation.
 
+
+
+-doc """
+A factor, typically in [0.0, 1.0], that is a multiplier involved in an equation.
+""".
 -type any_factor() :: number().
-% A factor, typically in [0.0, 1.0], that is a multiplier involved in an
-% equation.
 
 
+
+-doc "A factor expected to be strictly positive.".
 -type positive_factor() :: factor().
-% A factor expected to be strictly positive.
 
 
+
+-doc "A factor expected to be positive or null.".
 -type non_negative_factor() :: factor().
-% A factor expected to be positive or null.
 
 
+
+-doc "A factor of scale.".
 -type scale_factor() :: any_factor().
-% A factor of scale.
 
 
+
+-doc "Standard deviation, for example used to specify a Gaussian curve.".
 -type standard_deviation() :: float().
-% Standard deviation, as used to describe a Gaussian curve.
 
 
+
+-doc "Variance, the square of a standard deviation.".
 -type variance() :: float().
-% Variance, the square of a standard deviation.
 
 
+
+-doc "A ratio between two values.".
 -type ratio() :: dimensionless().
-% A ratio between two values.
 
 
+
+-doc """
+For percentages (1.0 corresponding to 100%).
+
+See also: text_utils:percent_to_string/{1,2}.
+""".
 -type percent() :: ratio().
-% For percentages (1.0 corresponding to 100%).
-%
-% See also: text_utils:percent_to_string/{1,2}.
 
 
+
+-doc "For integer percentages (in [0..100] generally).".
 -type integer_percent() :: integer().
-% For integer percentages (in [0..100] generally).
+
 
 
 
 % See also the random_utils module for:
 
+
+-doc "For probabilities, typically ranging in [0.0, 1.0].".
 -type probability() :: float().
-% For probabilities, typically ranging in [0.0, 1.0].
 
 
+
+-doc """
+A non-negative number (an integer or floating-point) that can be translated to a
+normalised probability by scaling it to [0.0, 1.0].
+
+For example if considering two exclusive events whose respective likeliness is
+quantified as 20 and 30, then these probability-like elements can be translated
+to actual (normalised) probabilities of 20/(20+30)=0.4 and 0.6.
+""".
 -type probability_like() :: number().
-% A non-negative number (an integer or floating-point) that can be translated to
-% a normalised probability by scaling it to [0.0, 1.0].
-%
-% For example if considering two exclusive events whose
-% respective likeliness is quantified as 20 and 30, then these probability-like
-% elements can be translated to actual (normalised) probabilities of
-% 20/(20+30)=0.4 and 0.6.
 
 
 
+-doc """
+Describes a desired conversion, which is either exact or approximate, based on
+an absolute or relative comparison, with a default epsilon threshold or a
+user-defined one.
+""".
 -type conversion_type() :: 'exact' | 'absolute' | { 'absolute', float() }
 						 | 'relative' | { 'relative', float() }.
-% Describes a desired conversion, which is either exact or approximate, based on
-% an absolute or relative comparison, with a default epsilon threshold or a
-% user-defined one.
 
 
 
+-doc "A (float) bound".
 -type bound() :: float().
+
+
+
+-doc "An integer bound".
 -type integer_bound() :: integer().
 
+
+
+-doc """
+An interval, based on upper and lower (floating-point) bounds, typically of a
+compact support.
+""".
 -type bounds() :: { MinBound :: bound(), MaxBound :: bound() }.
-% An interval, based on upper and lower (floating-point) bounds, typically of a
-% compact support.
 
 
+
+-doc """
+An interval, based on upper and lower integer bounds, typically of a compact
+support.
+""".
 -type integer_bounds() ::
 		{ MinBound :: integer_bound(), MaxBound :: integer_bound() }.
-% An interval, based on upper and lower integer bounds, typically of a compact
-% support.
 
 
+-doc "A basic, unitary sample.".
 -type sample() :: any().
-% A basic, unitary sample.
 
+
+
+-doc "A basic, unitary float sample.".
 -type float_sample() :: float().
-% A basic, unitary float sample.
 
 
+
+-doc """
+A tuple of data (numbers) to be sent as samples for a plot.
+
+This may or may not comprise the common abscissa (e.g. tick) that could be
+common to these samples.
+""".
 -type sample_data() :: type_utils:tuple( sample() ).
-% A tuple of data (numbers) to be sent as samples for a plot.
-%
-% This may or may not comprise the common abscissa (e.g. tick) that could be
-% common to these samples.
 
 
+
+-doc "A strictly positive number of samples.".
 -type sample_count() :: pos_integer().
-% A strictly positive number of samples.
 
 
+
+-doc "A (float) abscissa.".
 -type abscissa() :: float().
 
+
+
+-doc "An integer abscissa.".
 -type integer_abscissa() :: integer().
 
+
+-doc "Any abscissa.".
 -type any_abscissa() :: abscissa() | integer_abscissa().
 
 
+-doc "A function returning an integer from an integer.".
 -type integer_to_integer_fun() :: fun( ( integer() ) -> integer() ).
-% A function returning an integer from an integer.
 
+
+
+-doc "A function returning an integer from a float.".
 -type float_to_integer_fun() :: fun( ( float() ) -> integer() ).
-% A function returning an integer from a float.
 
 
+
+-doc "A function returning an integer from a number (typically a float).".
 -type number_to_integer_fun() :: fun( ( number() ) -> integer() ).
-% A function returning an integer from a number (typically a float).
 
+
+
+-doc "A function returning a float from a number (typically a float).".
 -type number_to_float_fun() :: fun( ( number() ) -> float() ).
-% A function returning a float from a number (typically a float).
 
 
+
+-doc "A function returning a float from an integer.".
 -type integer_to_float_fun() :: fun( ( integer() ) -> float() ).
-% A function returning a float from an integer.
 
+
+
+-doc "A function returning a float from an integer.".
 -type float_to_float_fun() :: fun( ( float() ) -> float() ).
-% A function returning a float from an integer.
 
 
+
+-doc "A floating-point value obtained when evaluating a function.".
 -type float_result_value() :: float().
-% A floating-point value obtained when evaluating a function.
-
 
 
 -export_type([ factor/0, integer_factor/0, any_factor/0,
@@ -290,14 +361,20 @@
 
 % Local types:
 
+-doc "A (float) increment.".
 -type increment() :: float().
+
+
+-doc "An integer increment.".
 -type integer_increment() :: integer().
 
+
+-doc "A smaller, positive floating-point value.".
 -type epsilon() :: float().
-% A smaller, positive floating-point value.
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type positive_index() :: basic_utils:positive_index().
 -type count() :: basic_utils:count().
@@ -345,12 +422,13 @@
 % General section.
 
 
-% @doc Rounds down the specified floating-point value: returns the biggest
-% integer smaller than the specified floating-point value.
-%
-% Note: used to be deprecated in favor of math:floor/1, yet we prefer the
-% version here, which returns an integer rather than a float.
-%
+-doc """
+Rounds down the specified floating-point value: returns the biggest integer
+smaller than the specified floating-point value.
+
+Note: used to be deprecated in favor of math:floor/1, yet we prefer the version
+here, which returns an integer rather than a float.
+""".
 -spec floor( number() ) -> integer().
 floor( X ) ->
 
@@ -376,12 +454,13 @@ floor( X ) ->
 
 
 
-% @doc Rounds up the specified floating-point value: returns the smallest
-% integer bigger than the specified floating-point value.
-%
-% Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
-% here, which returns an integer rather than a float.
-%
+-doc """
+Rounds up the specified floating-point value: returns the smallest integer
+bigger than the specified floating-point value.
+
+Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
+here, which returns an integer rather than a float.
+""".
 -spec ceiling( number() ) -> integer().
 ceiling( X ) ->
 
@@ -402,15 +481,16 @@ ceiling( X ) ->
 
 
 
-% @doc Rounds the specified floating-point number at the specified offset after
-% the decimal point.
-%
-% For example round_after(12.3456, _DigitCount3) = 12.346.
-%
-% For a standard round operation, simply use the (Erlang-native) round(float())
-% -> integer() function directly. For example: 1 = round(1.1), 2 = round(
-% 1.9) and -2 = round( -1.9).
-%
+-doc """
+Rounds the specified floating-point number at the specified offset after the
+decimal point.
+
+For example round_after(12.3456, _DigitCount3) = 12.346.
+
+For a standard round operation, simply use the (Erlang-native) round(float()) ->
+integer() function directly. For example: 1 = round(1.1), 2 = round( 1.9) and -2
+= round( -1.9).
+""".
 -spec round_after( float(), count() ) -> float().
 round_after( F, DigitCount ) ->
 
@@ -421,24 +501,24 @@ round_after( F, DigitCount ) ->
 
 
 
+-doc """
+Converts the specified float to integer.
 
+The float must exactly match the integer value.
 
-% @doc Converts the specified float to integer.
-%
-% The float must exactly match the integer value.
-%
-% For example float_to_integer(5.0) = 5, while float_to_integer(5.0000001) will
-% crash.
-%
+For example float_to_integer(5.0) = 5, while float_to_integer(5.0000001) will
+crash.
+""".
 -spec float_to_integer( float() ) -> integer().
 float_to_integer( F ) ->
 	float_to_integer( F, exact ).
 
 
 
-% @doc Converts the specified float to integer, using the specified conversion
-% tolerance.
-%
+-doc """
+Converts the specified float to integer, using the specified conversion
+tolerance.
+""".
 -spec float_to_integer( float(), conversion_type() ) -> integer().
 float_to_integer( F, _ConversionType=exact ) ->
 
@@ -493,11 +573,12 @@ float_to_integer( F, _ConversionType={ relative, Epsilon } ) ->
 
 
 
-% @doc Returns the positive remainder of the division of X by Y, in [0;Y[.
-%
-% In Erlang, -5 rem 3 is -2, whereas this function will return 1,
-% since -5 = -2 * 3 + 1.
-%
+-doc """
+Returns the positive remainder of the division of X by Y, in [0;Y[.
+
+In Erlang, -5 rem 3 is -2, whereas this function will return 1, since -5 = -2 *
+3 + 1.
+""".
 -spec modulo( integer(), non_zero_integer() ) -> non_neg_integer().
 modulo( X, Y ) when X > 0 ->
 	X rem Y;
@@ -517,11 +598,12 @@ modulo( 0, _Y ) ->
 
 
 
-% @doc Clamps the specified value between specified bounds: the returned value
-% is in [Min, Max].
-%
-% We expect that `Min <= Max'.
-%
+-doc """
+Clamps the specified value between specified bounds: the returned value is in
+[Min, Max].
+
+We expect that `Min <= Max`.
+""".
 -spec clamp( number(), number(), number() ) -> number().
 clamp( Min, _Max, Value ) when Value < Min ->
 	Min;
@@ -534,9 +616,10 @@ clamp( _Min, _Max, Value ) ->
 
 
 
-% @doc Clamps the specified possibly-infinite number within the specified
-% possibly-infinite range.
-%
+-doc """
+Clamps the specified possibly-infinite number within the specified
+possibly-infinite range.
+""".
 -spec clamp( infinite_number(), infinite_range() ) -> infinite_number().
 clamp( Number, _R={ '-infinity', 'infinity' } ) ->
 	Number;
@@ -559,16 +642,18 @@ clamp( Number, _R={ Min, Max } ) when  Min < Max ->
 
 
 
-% @doc Returns the square, augmented of a little margin, of the specified
-% element.
-%
+-doc """
+Returns the square, augmented of a little margin, of the specified element.
+""".
 squarify( L ) ->
 	% "Taylor series", square(epsilon) is negligible here:
 	L * ( L + ?epsilon ).
 
 
 
-% @doc Returns the sign of the specified value, either as 1 or -1.
+-doc """
+Returns the sign of the specified value, as either 1 or -1.
+""".
 -spec sign( number() ) -> 1 | -1.
 sign( N ) when N >= 0 ->
 	1;
@@ -578,11 +663,11 @@ sign( _N ) ->
 
 
 
-% @doc Returns a float with the magnitude (absolute value) of X but the sign of
-% Y.
-%
-% For example -2.0 = copy_sign( 2.0, -0.0) returns -2.0.
-%
+-doc """
+Returns a float with the magnitude (absolute value) of X but the sign of Y.
+
+For example -2.0 = copy_sign( 2.0, -0.0) returns -2.0.
+""".
 -spec copy_sign( float(), float() ) -> float().
 copy_sign( X, Y ) when is_float( Y ) andalso Y >= 0.0 ->
 	abs( X );
@@ -593,25 +678,28 @@ copy_sign( X, Y ) when is_float( Y ) ->
 
 
 
-% @doc Returns the square of the specified number.
-%
-% Always useful.
-%
+-doc """
+Returns the square of the specified number.
+
+Always useful.
+""".
 -spec square( number() ) -> number().
 square( N ) ->
 	% No math:sqr/1; presumably better than math:pow(N,2):
 	N*N.
 
 
-% @doc Returns the power of the specified number X to the specified positive
-% integer N: X^N.
-%
-% Designed for integer exponents, as opposed to math:pow/1.
-%
-% Refer to
-% https://stackoverflow.com/questions/38533797/how-to-calculate-5262144-in-erlang/38534076#38534076
-% for a presumably faster version.
-%
+
+-doc """
+Returns the power of the specified number X to the specified positive integer N:
+X^N.
+
+Designed for integer exponents, as opposed to math:pow/1.
+
+Refer to
+<https://stackoverflow.com/questions/38533797/how-to-calculate-5262144-in-erlang/38534076#38534076>
+for a presumably faster version.
+""".
 -spec int_pow( number(), non_neg_integer() ) -> number().
 int_pow( _X, _N=0 ) ->
 	1;
@@ -624,11 +712,12 @@ int_pow( X, N ) when is_integer( N ) ->
 
 
 
-% @doc Returns the smallest power of two that is greater or equal to the
-% specified integer.
-%
-% For example math_utils:get_next_power_of_two(5) = 8.
-%
+-doc """
+Returns the smallest power of two that is greater or equal to the specified
+integer.
+
+For example math_utils:get_next_power_of_two(5) = 8.
+""".
 -spec get_next_power_of_two( non_neg_integer() ) -> pos_integer().
 get_next_power_of_two( I ) ->
 	get_next_power_of_two( I, _MinCandidate=1 ).
@@ -643,96 +732,105 @@ get_next_power_of_two( I, Candidate ) ->
 
 
 
-% @doc Returns the natural logarithm (that is the log in base e) of the
-% specified number.
-%
-% The natural logarithm n of x>0 is the power to which e would have to be raised
-% to equal x: n = ln(x) or e^n = x.
-%
-% Logarithms in other bases (here: than e) differ only by a constant multiplier
-% from the natural logarithm, and can be defined in terms of the latter: for a
-% base 'b', logb(x) = ln(x)/ln(b) = ln(x)*logb(e).
-%
-% Note that math:log/1 is x -> ln(x), whereas math:log10/1 is the standard base
-% 10 log.
-%
+-doc """
+Returns the natural logarithm (that is the log in base e) of the specified
+number.
+
+The natural logarithm n of x>0 is the power to which e would have to be raised
+to equal x: n = ln(x) or e^n = x.
+
+Logarithms in other bases (here: than e) differ only by a constant multiplier
+from the natural logarithm, and can be defined in terms of the latter: for a
+base 'b', logb(x) = ln(x)/ln(b) = ln(x)*logb(e).
+
+Note that math:log/1 is x -> ln(x), whereas math:log10/1 is the standard base 10
+log.
+""".
 -spec ln( number() ) -> float().
 ln( X ) ->
 	math:log( X ).
 
 
 
+
 % Floating-point section.
 
 
+-doc """
+Returns true iff the two specified floating-point numbers are deemed close
+enough to be equal, based on default epsilon threshold.
 
-% @doc Returns true iff the two specified floating-point numbers are deemed
-% close enough to be equal, based on default epsilon threshold.
-%
-% Note that such absolute tolerance comparison fails when X and Y become large,
-% so generally are_relatively_close/2 shall be preferred.
-%
+Note that such absolute tolerance comparison fails when X and Y become large, so
+generally are_relatively_close/2 shall be preferred.
+""".
 -spec are_close( number(), number() ) -> boolean().
 are_close( X, Y ) ->
 	erlang:abs( X - Y ) < ?epsilon.
 
 
-% @doc Returns true iff the two specified floating-point numbers are deemed
-% close enough to be equal, based on specified epsilon threshold.
-%
-% Note that such absolute tolerance comparison fails when X and Y become large,
-% so generally are_relatively_close/2 shall be preferred.
-%
+
+-doc """
+Returns true iff the two specified floating-point numbers are deemed close
+enough to be equal, based on specified epsilon threshold.
+
+Note that such absolute tolerance comparison fails when X and Y become large, so
+generally are_relatively_close/2 shall be preferred.
+""".
 -spec are_close( number(), number(), epsilon() ) -> boolean().
 are_close( X, Y, Epsilon ) ->
 	erlang:abs( X - Y ) < Epsilon.
 
 
 
-% @doc Returns true iff the two specified floating-point numbers are deemed
-% close enough to be equal, based on default epsilon threshold.
-%
-% Note: alias of are_close/2, defined for consistency.
-%
+-doc """
+Returns true iff the two specified floating-point numbers are deemed close
+enough to be equal, based on default epsilon threshold.
+
+Note: alias of are_close/2, defined for consistency.
+""".
 -spec are_equal( number(), number() ) -> boolean().
 are_equal( X, Y ) ->
 	erlang:abs( X - Y ) < ?epsilon.
 
 
-% @doc Returns true iff the two specified floating-point numbers are deemed
-% close enough to be equal, based on specified epsilon threshold.
-%
-% Note: alias of are_close/3, defined for consistency.
-%
+
+-doc """
+Returns true iff the two specified floating-point numbers are deemed close
+enough to be equal, based on specified epsilon threshold.
+
+Note: alias of are_close/3, defined for consistency.
+""".
 -spec are_equal( number(), number(), epsilon() ) -> boolean().
 are_equal( X, Y, Epsilon ) ->
 	erlang:abs( X - Y ) < Epsilon.
 
 
 
-% @doc Returns true iff the two specified floating-point numbers are deemed
-% close enough, relatively, to be equal.
-%
-% The difference between these numbers, divided by their average (a.k.a. the
-% relative error), must be smaller than the default epsilon threshold, ie the
-% maximum tolerance.
-%
+-doc """
+Returns true iff the two specified floating-point numbers are deemed close
+enough, relatively, to be equal.
+
+The difference between these numbers, divided by their average (a.k.a. the
+relative error), must be smaller than the default epsilon threshold, ie the
+maximum tolerance.
+""".
 -spec are_relatively_close( number(), number() ) -> boolean().
 are_relatively_close( X, Y ) ->
 	are_relatively_close( X, Y, ?epsilon ).
 
 
 
-% @doc Returns true iff the two specified (usually floating-point) numbers are
-% deemed close enough, relatively, to be equal.
-%
-% The difference between these numbers, divided by their average (a.k.a. the
-% relative error), must be smaller than the specified epsilon threshold,
-% that is the maximum tolerance.
-%
-% For example to know whether X and Y are equal with a 5% tolerance, use:
-% math_utils:are_relatively_close(X, Y, _Tolerance=0.05).
-%
+-doc """
+Returns true iff the two specified (usually floating-point) numbers are deemed
+close enough, relatively, to be equal.
+
+The difference between these numbers, divided by their average (a.k.a. the
+relative error), must be smaller than the specified epsilon threshold, that is
+the maximum tolerance.
+
+For example to know whether X and Y are equal with a 5% tolerance, use:
+`math_utils:are_relatively_close(X, Y, _Tolerance=0.05)`.
+""".
 -spec are_relatively_close( number(), number(), epsilon() ) -> boolean().
 are_relatively_close( X, Y, Epsilon ) ->
 
@@ -780,11 +878,12 @@ are_relatively_close( X, Y, Epsilon ) ->
 
 
 
-% @doc Returns the relative difference between the two specified numbers.
-%
-% We consider that if both number are null, then their relative difference is
-% also null.
-%
+-doc """
+Returns the relative difference between the two specified numbers.
+
+We consider that if both number are null, then their relative difference is also
+null.
+""".
 -spec get_relative_difference( number(), number() ) ->
 								float(). % | 'difference_not_computable'.
 get_relative_difference( X, Y ) ->
@@ -830,26 +929,40 @@ get_relative_difference( X, Y ) ->
 
 
 
-% @doc Returns true iff the specified number (floating-point or even integer) is
-% deemed close enough to zero to be null.
-%
+% Section for constants.
+
+
+-doc "The Pi constant.".
+-spec pi() -> float().
+pi() ->
+	% Mostly as a reminder:
+	math:pi().
+
+
+
+-doc """
+Returns true iff the specified number (floating-point or even integer) is deemed
+close enough to zero to be null.
+""".
 -spec is_null( number() ) -> boolean().
 is_null( X ) ->
 	erlang:abs( X ) < ?epsilon.
 
 
-% @doc Returns true iff the specified number (floating-point or even integer) is
-% deemed close enough (based on specified epsilon) to zero to be null.
-%
+
+-doc """
+Returns true iff the specified number (floating-point or even integer) is deemed
+close enough (based on specified epsilon) to zero to be null.
+""".
 -spec is_null( number(), epsilon() ) -> boolean().
 is_null( X, Epsilon ) ->
 	erlang:abs( X ) < Epsilon.
 
 
 
-% @doc Returns true iff the specified number is deemed close enough to zero to
-% be null.
-%
+-doc """
+Returns true iff the specified number is deemed close enough to zero to be null.
+""".
 -spec is_null_number( number() ) -> boolean().
 is_null_number( 0 ) ->
 	true;
@@ -863,11 +976,12 @@ is_null_number( F ) ->
 
 
 
-% @doc Returns whether X is greater than Y (with a small margin), both being
-% expected to be floats.
-%
-% No is_greater_or_equal/2 makes sense with floats.
-%
+-doc """
+Returns whether X is greater than Y (with a small margin), both being expected
+to be floats.
+
+No is_greater_or_equal/2 makes sense with floats.
+""".
 -spec is_greater( float(), float() ) -> boolean().
 is_greater( X, Y ) ->
 	% Could make sense, yet we do not want, for any (X,Y), is_greater(X,Y) and
@@ -876,11 +990,13 @@ is_greater( X, Y ) ->
 	X > Y + ?epsilon.
 
 
-% @doc Returns whether X is greater than Y, with the specified margin, both
-% being expected to be floats.
-%
-% No is_greater_or_equal/3 makes sense with floats.
-%
+
+-doc """
+Returns whether X is greater than Y, with the specified margin, both being
+expected to be floats.
+
+No is_greater_or_equal/3 makes sense with floats.
+""".
 -spec is_greater( float(), float(), epsilon() ) -> boolean().
 is_greater( X, Y, Epsilon ) ->
 	% Refer to is_greater/2 for further details:
@@ -888,11 +1004,12 @@ is_greater( X, Y, Epsilon ) ->
 
 
 
-% @doc Returns whether X is lower than Y (with a small margin), both being
-% expected to be floats.
-%
-% No is_lower_or_equal/2 makes sense with floats.
-%
+-doc """
+Returns whether X is lower than Y (with a small margin), both being expected to
+be floats.
+
+No is_lower_or_equal/2 makes sense with floats.
+""".
 -spec is_lower( float(), float() ) -> boolean().
 is_lower( X, Y ) ->
 	% Could make sense, yet we do not want, for any (X,Y), is_lower(X,Y) and
@@ -901,14 +1018,17 @@ is_lower( X, Y ) ->
 	X < Y - ?epsilon.
 
 
-% @doc Returns whether X is lower than Y (with a small margin), both being
-% expected to be floats.
-%
-% No is_lower_or_equal/3 makes sense with floats.
-%
+
+-doc """
+Returns whether X is lower than Y (with a small margin), both being expected to
+be floats.
+
+No is_lower_or_equal/3 makes sense with floats.
+""".
 -spec is_lower( float(), float(), epsilon() ) -> boolean().
 is_lower( X, Y, Epsilon ) ->
 	X < Y - Epsilon.
+
 
 
 
@@ -921,15 +1041,16 @@ is_lower( X, Y, Epsilon ) ->
 % positive integers.
 
 
-% @doc Converts the specified angle in radians into the same angle expressed in
-% degrees.
-%
+-doc """
+Converts the specified angle in radians into the same angle expressed in
+degrees.
+""".
 -spec radians_to_degrees( radians() ) -> degrees().
 radians_to_degrees( AngleInRadians ) ->
 	AngleInRadians * 180 / math:pi().
 
 
-% at-doc Converts the specified angle in radians into the same angle expressed
+% Converts the specified angle in radians into the same angle expressed
 % in degrees.
 %
 % The plural form radians_to_degrees/1 is now to be preferred.
@@ -940,15 +1061,16 @@ radians_to_degrees( AngleInRadians ) ->
 
 
 
-% @doc Converts the specified angle in degrees into the same angle expressed in
-% radians.
-%
+-doc """
+Converts the specified angle in degrees into the same angle expressed in
+radians.
+""".
 -spec degrees_to_radians( any_degrees() ) -> radians().
 degrees_to_radians( AngleInDegrees ) ->
 	AngleInDegrees * math:pi() / 180.
 
 
-% at-doc Converts the specified angle in degrees into the same angle expressed
+% Converts the specified angle in degrees into the same angle expressed
 % in radians.
 %
 % The plural form degrees_to_radians/1 is now to be preferred.
@@ -959,9 +1081,10 @@ degrees_to_radians( AngleInDegrees ) ->
 
 
 
-% @doc Canonifies the specified angle in degrees, ie ensures the returned value
-% that corresponds to the specified angle is in the [0;360[ interval.
-%
+-doc """
+Canonifies the specified angle in degrees, ie ensures the returned value that
+corresponds to the specified angle is in the [0;360[ interval.
+""".
 -spec canonify( number() ) -> int_degrees().
 canonify( AngleInDegrees ) when is_integer( AngleInDegrees ) ->
 	modulo( AngleInDegrees, 360 );
@@ -972,13 +1095,14 @@ canonify( AngleInDegrees ) ->
 
 
 
-% @doc Evaluates the specified function at the specified abscissa, and returns
-% the corresponding value if it could be computed, otherwise returns 'undefined'
-% (this happens when typically 'badarith' is thrown due to an operation failing,
-% like for math:pow(1000,1000) or math:pow(0.0,-0.89)).
-%
+-doc """
+Evaluates the specified function at the specified abscissa, and returns the
+corresponding value if it could be computed, otherwise returns 'undefined' (this
+happens when typically 'badarith' is thrown due to an operation failing, like
+for math:pow(1000,1000) or math:pow(0.0,-0.89)).
+""".
 -spec evaluate( float_to_float_fun(), abscissa() ) ->
-											maybe( float_result_value() ).
+											option( float_result_value() ).
 evaluate( Fun, Abs ) ->
 	try
 
@@ -995,21 +1119,23 @@ evaluate( Fun, Abs ) ->
 
 
 
-% @doc Samples the specified function taking a single numerical argument, by
-% evaluating it on every point in turn from Start until up to Stop, with
-% specified increment: returns the ordered list of the corresponding values that
-% it took.
-%
+-doc """
+Samples the specified function taking a single numerical argument, by evaluating
+it on every point in turn from Start until up to Stop, with specified increment:
+returns the ordered list of the corresponding values that it took.
+""".
 -spec sample( fun( ( number() ) -> T ), number(), number(), number() ) -> [ T ].
 sample( Fun, StartPoint, StopPoint, Increment ) ->
 	sample( Fun, _Current=StartPoint, StopPoint, Increment, _Acc=[] ).
 
 
-% @doc Samples the specified function taking a single numerical argument, by
-% evaluating it on every point in turn from Start until up to Stop, for the
-% specified number of (evenly-spaced) samples: returns the ordered list of the
-% corresponding values that it took.
-%
+
+-doc """
+Samples the specified function taking a single numerical argument, by evaluating
+it on every point in turn from Start until up to Stop, for the specified number
+of (evenly-spaced) samples: returns the ordered list of the corresponding values
+that it took.
+""".
 -spec sample_for( fun( ( number() ) -> T ), number(), number(),
 				  sample_count() ) -> [ T ].
 sample_for( Fun, StartPoint, StopPoint, SampleCount )
@@ -1020,8 +1146,6 @@ sample_for( Fun, StartPoint, StopPoint, SampleCount )
 	cond_utils:assert( myriad_debug_math, SampleCount =:= length( Samples ) ),
 
 	Samples.
-
-
 
 
 % (helper)
@@ -1037,23 +1161,26 @@ sample( Fun, CurrentPoint, StopPoint, Increment, Acc ) ->
 
 
 
-% @doc Samples uniformly the specified function taking a single numerical
-% argument, by evaluating it on every point in turn from Start until up to Stop,
-% with specified increment: returns the ordered list of the corresponding
-% {X,f(X)} pairs that it took.
-%
--spec sample_as_pairs( fun( ( number() ) -> T ), bounds(),
-					   number() ) -> [ { number(), T } ].
+-doc """
+Samples uniformly the specified function taking a single numerical argument, by
+evaluating it on every point in turn from Start until up to Stop, with specified
+increment: returns the ordered list of the corresponding {X,f(X)} pairs that it
+took.
+""".
+-spec sample_as_pairs( fun( ( number() ) -> T ), bounds(), number() ) ->
+											[ { number(), T } ].
 sample_as_pairs( Fun, Bounds, Increment ) ->
 	{ StartPoint, StopPoint } = canonicalise_bounds( Bounds ),
 	sample_as_pairs( Fun, StartPoint, StopPoint, Increment ).
 
 
-% @doc Samples uniformly the specified function taking a single numerical
-% argument, by evaluating it on every point in turn from Start until up to Stop,
-% with specified increment: returns the ordered list of the corresponding
-% {X,f(X)} pairs that it took.
-%
+
+-doc """
+Samples uniformly the specified function taking a single numerical argument, by
+evaluating it on every point in turn from Start until up to Stop, with specified
+increment: returns the ordered list of the corresponding {X,f(X)} pairs that it
+took.
+""".
 -spec sample_as_pairs( fun( ( number() ) -> T ), number(), number(),
 					   number() ) -> [ { number(), T } ].
 sample_as_pairs( Fun, StartPoint, StopPoint, Increment ) ->
@@ -1061,11 +1188,13 @@ sample_as_pairs( Fun, StartPoint, StopPoint, Increment ) ->
 					 _Acc=[] ).
 
 
-% @doc Samples uniformly the specified function taking a single numerical
-% argument, by evaluating it on every point in turn within the specified
-% bounds', for the specified number of (evenly-spaced) samples: returns the
-% ordered list of the corresponding {X,f(X)} pairs that it took.
-%
+
+-doc """
+Samples uniformly the specified function taking a single numerical argument, by
+evaluating it on every point in turn within the specified bounds', for the
+specified number of (evenly-spaced) samples: returns the ordered list of the
+corresponding {X,f(X)} pairs that it took.
+""".
 -spec sample_as_pairs_for( fun( ( number() ) -> T ), bounds(),
 						   sample_count() ) -> [ { number(), T } ].
 sample_as_pairs_for( Fun, Bounds, SampleCount ) ->
@@ -1073,11 +1202,13 @@ sample_as_pairs_for( Fun, Bounds, SampleCount ) ->
 	sample_as_pairs_for( Fun, StartPoint, StopPoint, SampleCount ).
 
 
-% @doc Samples uniformly the specified function taking a single numerical
-% argument, by evaluating it on every point in turn from Start until up to Stop,
-% for the specified number of (evenly-spaced) samples: returns the ordered list
-% of the corresponding {X,f(X)} pairs that it took.
-%
+
+-doc """
+Samples uniformly the specified function taking a single numerical argument, by
+evaluating it on every point in turn from Start until up to Stop, for the
+specified number of (evenly-spaced) samples: returns the ordered list of the
+corresponding {X,f(X)} pairs that it took.
+""".
 -spec sample_as_pairs_for( fun( ( number() ) -> T ), number(), number(),
 						   sample_count() ) -> [ { number(), T } ].
 sample_as_pairs_for( Fun, StartPoint, StopPoint, SampleCount )
@@ -1116,16 +1247,19 @@ sample_as_pairs( Fun, CurrentPoint, StopPoint, Increment, Acc ) ->
 
 
 
+-doc """
+Normalises, in the specified list of tuples (possibly just pairs), the elements
+at the specified index (expected to be numbers, whose sum is non-null), so that
+their sum becomes equal to 1.0.
 
-% @doc Normalises, in the specified list of tuples (possibly just pairs), the
-% elements at the specified index (expected to be numbers, whose sum is
-% non-null), so that their sum becomes equal to 1.0.
-%
-% Typically useful for probabilities.
-%
-% For example normalise([{a,3}, {"hello",5}, {1,2}], _Index=2)
-%                 = [{a,0.3}, {"hello",0.5}, {1,0.2}]
-%
+Typically useful for probabilities.
+
+For example:
+```
+normalise([{a,3}, {"hello",5}, {1,2}], _Index=2)
+				 = [{a,0.3}, {"hello",0.5}, {1,0.2}]
+```
+""".
 -spec normalise( [ tuple() ], positive_index() ) -> [ tuple() ].
 normalise( _DataTuples=[], _Index ) ->
 	throw( no_data_tuple );
@@ -1159,37 +1293,39 @@ scale( Tuple, Index, Sum ) ->
 
 
 
-% @doc Returns an evaluation of the (supposedly finite, compact, to some extent
-% centered around zero) support of the specified function, taking one
-% floating-point value and returning one, as an interval with no bound
-% restriction.
-%
-% This simple heuristics assumes that this function vanishes at infinity; starts
-% looking around zero, based on a default epsilon.
-%
-% Typically useful to properly discretise probability density functions (with
-% floating-point samples).
-%
+-doc """
+Returns an evaluation of the (supposedly finite, compact, to some extent
+centered around zero) support of the specified function, taking one
+floating-point value and returning one, as an interval with no bound
+restriction.
+
+This simple heuristics assumes that this function vanishes at infinity; starts
+looking around zero, based on a default epsilon.
+
+Typically useful to properly discretise probability density functions (with
+floating-point samples).
+""".
 -spec compute_support( float_to_float_fun() ) -> bounds().
 compute_support( Fun ) ->
 	compute_support( Fun, _MaybeMin=undefined, _MaybeMax=undefined ).
 
 
 
-% @doc Returns an evaluation of the (supposedly finite, compact, to some extent
-% centered around zero) support of the specified function, taking one
-% floating-point value and returning one, as an interval complying to the
-% specified bound restriction (to limit it in a given interval, possibly because
-% this function is not defined out of it).
-%
-% This simple heuristics assumes that this function vanishes at infinity; starts
-% looking around zero, based on a default epsilon.
-%
-% Typically useful to properly discretise probability density functions (with
-% floating-point samples).
-%
+-doc """
+Returns an evaluation of the (supposedly finite, compact, to some extent
+centered around zero) support of the specified function, taking one
+floating-point value and returning one, as an interval complying to the
+specified bound restriction (to limit it in a given interval, possibly because
+this function is not defined out of it).
+
+This simple heuristics assumes that this function vanishes at infinity; starts
+looking around zero, based on a default epsilon.
+
+Typically useful to properly discretise probability density functions (with
+floating-point samples).
+""".
 -spec compute_support( float_to_float_fun(),
-					   maybe( bound() ), maybe( bound() ) ) -> bounds().
+					   option( bound() ), option( bound() ) ) -> bounds().
 compute_support( Fun, MaybeMin=undefined, MaybeMax=undefined ) ->
 	compute_support( Fun, _Origin=0.0, MaybeMin, MaybeMax );
 
@@ -1207,20 +1343,21 @@ compute_support( Fun, Min, Max ) ->
 
 
 
-% @doc Returns an evaluation of the (supposedly finite, compact, to some extent
-% centered around the specified origin) support of the specified function,
-% taking one floating-point value and returning one, as an interval complying to
-% the specified bound restriction (to limit it in a given interval, possibly
-% because this function is not defined out of it).
-%
-% This simple heuristics assumes that this function vanishes at infinity; starts
-% looking around zero, based on a default epsilon.
-%
-% Typically useful to properly discretise probability density functions (with
-% floating-point samples).
-%
+-doc """
+Returns an evaluation of the (supposedly finite, compact, to some extent
+centered around the specified origin) support of the specified function, taking
+one floating-point value and returning one, as an interval complying to the
+specified bound restriction (to limit it in a given interval, possibly because
+this function is not defined out of it).
+
+This simple heuristics assumes that this function vanishes at infinity; starts
+looking around zero, based on a default epsilon.
+
+Typically useful to properly discretise probability density functions (with
+floating-point samples).
+""".
 -spec compute_support( float_to_float_fun(), abscissa(),
-					   maybe( bound() ), maybe( bound() ) ) -> bounds().
+					   option( bound() ), option( bound() ) ) -> bounds().
 compute_support( Fun, Origin, MaybeMin, MaybeMax ) ->
 
 	% Tests are limited, should for example x -> sin(x) be specified:
@@ -1239,8 +1376,8 @@ compute_support( Fun, Origin, MaybeMin, MaybeMax ) ->
 %
 % (helper)
 %
--spec compute_support( float_to_float_fun(), abscissa(), maybe( bound() ),
-			maybe( bound() ), increment(), count(), epsilon() ) -> bounds().
+-spec compute_support( float_to_float_fun(), abscissa(), option( bound() ),
+			option( bound() ), increment(), count(), epsilon() ) -> bounds().
 compute_support( Fun, Origin, MaybeMin, MaybeMax, Inc, RemainingTests,
 				 Epsilon ) ->
 
@@ -1315,9 +1452,9 @@ compute_support( Fun, Origin, MaybeMin, MaybeMax, Inc, RemainingTests,
 % looking for any non-null value.
 %
 % (helper)
--spec search_non_null( float_to_float_fun(), abscissa(), maybe( bound() ),
-					   maybe( bound() ), increment(), count(), epsilon() ) ->
-							maybe( abscissa() ).
+-spec search_non_null( float_to_float_fun(), abscissa(), option( bound() ),
+					   option( bound() ), increment(), count(), epsilon() ) ->
+							option( abscissa() ).
 % Search failed:
 search_non_null( Fun, Origin, MaybeMin, MaybeMax, Inc,
 				 _RemainingTests=0, _Epsilon ) ->
@@ -1382,7 +1519,7 @@ search_non_null( Fun, Origin, MaybeMin, MaybeMax, Inc, RemainingTests,
 % null, found from the specified origin (whose value is expected to be
 % non-null).
 %
--spec search_first_null( float_to_float_fun(), abscissa(), maybe( bound() ),
+-spec search_first_null( float_to_float_fun(), abscissa(), option( bound() ),
 						 increment(), count(), epsilon() ) -> abscissa().
 search_first_null( Fun, Pivot, MaybeMax, Inc, _RemainingTests=0, _Epsilon ) ->
 
@@ -1488,10 +1625,11 @@ search_first_null( Fun, Pivot, MaybeMax, Inc, RemainingTests, Epsilon ) ->
 
 
 
-% @doc Tells whether the specified value lies within the specified maybe-bounds
-% (included).
-%
--spec is_within( float(), maybe( bound() ), maybe( bound() ) ) -> boolean().
+-doc """
+Tells whether the specified value lies within the specified maybe-bounds
+(included).
+""".
+-spec is_within( float(), option( bound() ), option( bound() ) ) -> boolean().
 is_within( _V, _MaybeMin=undefined, _MaybeMax=undefined ) ->
 	true;
 
@@ -1509,10 +1647,11 @@ is_within( _V, _Min, _Max ) ->
 
 
 
-% @doc Tells whether the specified value lies "before" (closer to the opposite
-% end, based on the sign of the increment) the specified maybe-maximum.
-%
--spec is_before( float(), maybe( bound() ), increment() ) -> boolean().
+-doc """
+Tells whether the specified value lies "before" (closer to the opposite end,
+based on the sign of the increment) the specified maybe-maximum.
+""".
+-spec is_before( float(), option( bound() ), increment() ) -> boolean().
 is_before( _V, _MaybeMax=undefined, _Inc ) ->
 	true;
 
@@ -1542,7 +1681,7 @@ is_before( _V, _Max, _Inc ) ->
 % No bounds checked, as expected to remain within an already validated interval.
 %
 -spec minimise_zero( float_to_float_fun(), abscissa(), abscissa(),
-			maybe( bound() ), maybe( bound() ), epsilon() ) -> abscissa().
+			option( bound() ), option( bound() ), epsilon() ) -> abscissa().
 minimise_zero( Fun, Pivot, FartherZero, MaybeMin, MaybeMax, Epsilon ) ->
 	case are_close( Pivot, FartherZero, Epsilon ) of
 
@@ -1635,12 +1774,13 @@ minimise_zero( Fun, Pivot, FartherZero, MaybeMin, MaybeMax, Epsilon ) ->
 
 
 
-% @doc Searches a non-zero function value in a single direction (as opposed to
-% search_non_null/5), determined by the sign of the increment.
-%
+-doc """
+Searches a non-zero function value in a single direction (as opposed to
+search_non_null/5), determined by the sign of the increment.
+""".
 -spec search_non_null_one_direction( float_to_float_fun(), abscissa(),
-		maybe( bound() ), maybe( bound() ), increment(), count(), epsilon() ) ->
-								maybe( abscissa() ).
+		option( bound() ), option( bound() ), increment(), count(),
+		epsilon() ) -> option( abscissa() ).
 search_non_null_one_direction( _Fun, Origin, MaybeMin, MaybeMax, Inc,
 							   _RemainingTests=0, _Epsilon ) ->
 
@@ -1696,35 +1836,35 @@ search_non_null_one_direction( Fun, Origin, MaybeMin, MaybeMax, Inc,
 
 
 
+-doc """
+Returns an evaluation of the (supposedly finite, compact, to some extent
+centered around zero) support of the specified function, taking one integer and
+returning a floating-point value, as an interval with no bound restriction.
 
+This simple heuristics assumes that this function vanishes at infinity, and
+starts looking around zero.
 
-% @doc Returns an evaluation of the (supposedly finite, compact, to some extent
-% centered around zero) support of the specified function, taking one integer
-% and returning a floating-point value, as an interval with no bound
-% restriction.
-%
-% This simple heuristics assumes that this function vanishes at infinity, and
-% starts looking around zero.
-%
-% Typically useful to properly discretise probability density functions.
-%
+Typically useful to properly discretise probability density functions.
+""".
 -spec compute_integer_support( integer_to_float_fun() ) -> integer_bounds().
 compute_integer_support( Fun ) ->
 	compute_integer_support( Fun, _MaybeMin=undefined, _MaybeMax=undefined ).
 
 
-% @doc Returns an evaluation of the (supposedly finite, compact, to some extent
-% centered around zero) support of the specified integer-returning function, as
-% an interval complying to the specified bound restriction (to limit it in a
-% given interval, possibly because this function is not defined out of it).
-%
-% This simple heuristics assumes that this function vanishes at infinity, and
-% starts looking around zero.
-%%
-% Typically useful to properly discretise probability density functions.
-%
--spec compute_integer_support( integer_to_float_fun(), maybe( integer_bound() ),
-							   maybe( integer_bound() ) ) -> integer_bounds().
+
+-doc """
+Returns an evaluation of the (supposedly finite, compact, to some extent
+centered around zero) support of the specified integer-returning function, as an
+interval complying to the specified bound restriction (to limit it in a given
+interval, possibly because this function is not defined out of it).
+
+This simple heuristics assumes that this function vanishes at infinity, and
+starts looking around zero.
+
+Typically useful to properly discretise probability density functions.
+""".
+-spec compute_integer_support( integer_to_float_fun(),
+	option( integer_bound() ), option( integer_bound() ) ) -> integer_bounds().
 compute_integer_support( Fun, MaybeMin=undefined, MaybeMax=undefined ) ->
 	compute_integer_support( Fun, _Origin=0, MaybeMin, MaybeMax );
 
@@ -1743,19 +1883,20 @@ compute_integer_support( Fun, Min, Max ) ->
 
 
 
-% @doc Returns an evaluation of the (supposedly finite, compact, to some extent
-% centered around the specified origin) support of the specified
-% integer-returning function, as an interval complying to the specified bound
-% restriction (to limit it in a given interval, possibly because this function
-% is not defined out of it).
-%
-% This simple heuristics assumes that this function vanishes at infinity, and
-% starts looking around zero.
-%%
-% Typically useful to properly discretise probability density functions.
-%
+-doc """
+Returns an evaluation of the (supposedly finite, compact, to some extent
+centered around the specified origin) support of the specified integer-returning
+function, as an interval complying to the specified bound restriction (to limit
+it in a given interval, possibly because this function is not defined out of
+it).
+
+This simple heuristics assumes that this function vanishes at infinity, and
+starts looking around zero.
+
+Typically useful to properly discretise probability density functions.
+""".
 -spec compute_integer_support( integer_to_float_fun(), any_abscissa(),
-	maybe( integer_bound() ), maybe( integer_bound() ) ) -> integer_bounds().
+	option( integer_bound() ), option( integer_bound() ) ) -> integer_bounds().
 compute_integer_support( Fun, AnyOrigin, MaybeMin, MaybeMax ) ->
 
 	% Integer wanted in all cases:
@@ -1781,8 +1922,8 @@ compute_integer_support( Fun, AnyOrigin, MaybeMin, MaybeMax ) ->
 % (helper)
 %
 -spec compute_integer_support( integer_to_float_fun(), integer_abscissa(),
-		maybe( integer_bound() ), maybe( integer_bound() ), integer_increment(),
-		count(), epsilon() ) -> bounds().
+		option( integer_bound() ), option( integer_bound() ),
+		integer_increment(), count(), epsilon() ) -> bounds().
 compute_integer_support( Fun, Origin, MaybeMin, MaybeMax, Inc, RemainingTests,
 						 Epsilon ) ->
 
@@ -1853,13 +1994,15 @@ compute_integer_support( Fun, Origin, MaybeMin, MaybeMax, Inc, RemainingTests,
 
 
 
-% Explores exponentially both sides alternatively of the specified origin,
-% looking for any non-null value.
-%
-% (helper)
+-doc """
+Explores exponentially both sides alternatively of the specified origin, looking
+for any non-null value.
+
+(helper)
+""".
 -spec search_integer_non_null( integer_to_float_fun(), integer_abscissa(),
-		maybe( bound() ), maybe( bound() ), integer_increment(), count(),
-		epsilon() ) -> maybe( integer_abscissa() ).
+		option( bound() ), option( bound() ), integer_increment(), count(),
+		epsilon() ) -> option( integer_abscissa() ).
 % Search failed:
 search_integer_non_null( Fun, Origin, MaybeMin, MaybeMax, Inc,
 						 _RemainingTests=0, _Epsilon ) ->
@@ -1928,13 +2071,13 @@ search_integer_non_null( Fun, Origin, MaybeMin, MaybeMax, Inc, RemainingTests,
 
 
 
-% Searches by dichotomy in one direction (defined by the sign of the increment)
-% the first null point, for which the next ones being are supposed to be all
-% null, found from the specified origin (whose value is expected to be
-% non-null).
-%
+-doc """
+Searches by dichotomy in one direction (defined by the sign of the increment)
+the first null point, for which the next ones being are supposed to be all null,
+found from the specified origin (whose value is expected to be non-null).
+""".
 -spec search_integer_first_null( integer_to_float_fun(), integer_abscissa(),
-			maybe( bound() ), integer_increment(), count(), epsilon() ) ->
+			option( bound() ), integer_increment(), count(), epsilon() ) ->
 				integer_abscissa().
 search_integer_first_null( Fun, Pivot, MaybeMax, Inc, _RemainingTests=0,
 						   _Epsilon ) ->
@@ -2026,13 +2169,14 @@ search_integer_first_null( Fun, Pivot, MaybeMax, Inc, RemainingTests,
 
 
 
-% @doc Searches a non-zero function value in a single direction (as opposed to
-% search_non_null/5), determined by the sign of the increment.
-%
+-doc """
+Searches a non-zero function value in a single direction (as opposed to
+search_non_null/5), determined by the sign of the increment.
+""".
 -spec search_integer_non_null_one_direction( integer_to_float_fun(),
-		integer_abscissa(), maybe( bound() ), maybe( bound() ),
+		integer_abscissa(), option( bound() ), option( bound() ),
 		integer_increment(), count(), epsilon() ) ->
-			maybe( integer_abscissa() ).
+			option( integer_abscissa() ).
 search_integer_non_null_one_direction( _Fun, Origin, MaybeMin, MaybeMax, Inc,
 									   _RemainingTests=0, _Epsilon ) ->
 
@@ -2086,20 +2230,21 @@ search_integer_non_null_one_direction( Fun, Origin, MaybeMin, MaybeMax, Inc,
 
 
 
-% Tries to find, starting from the (non-zero) pivot, a zero closer (to the
-% pivot) than the specified one.
-%
-% Proceeds by dichotomy: starting from the pivot and a farther zero, tests the
-% midpoint: if it seems to be a "permanent zero", then recurses with it as new
-% farther zero; otherwise, use it as a new pivot. Each iteration will halve the
-% search range, until it gets negligible.
-%
-% Note that FartherZero is not necessarily on the right of the pivot.
-%
-% No bounds checked, as expected to remain within an already validated interval.
-%
+-doc """
+Tries to find, starting from the (non-zero) pivot, a zero closer (to the pivot)
+than the specified one.
+
+Proceeds by dichotomy: starting from the pivot and a farther zero, tests the
+midpoint: if it seems to be a "permanent zero", then recurses with it as new
+farther zero; otherwise, use it as a new pivot. Each iteration will halve the
+search range, until it gets negligible.
+
+Note that FartherZero is not necessarily on the right of the pivot.
+
+No bounds checked, as expected to remain within an already validated interval.
+""".
 -spec minimise_integer_zero( integer_to_float_fun(), integer_abscissa(),
-		integer_abscissa(), maybe( bound() ), maybe( bound() ), epsilon() ) ->
+		integer_abscissa(), option( bound() ), option( bound() ), epsilon() ) ->
 			integer_abscissa().
 % Finished, this is the ending criterion, the search range is now mostly empty:
 minimise_integer_zero( Fun, Pivot, FartherZero, MaybeMin, MaybeMax,
@@ -2192,9 +2337,10 @@ minimise_integer_zero( Fun, Pivot, FartherZero, MaybeMin, MaybeMax, Epsilon ) ->
 
 
 
-% @doc Checks that the specified term corresponds to correct (floating-point)
-% bounds, and returns it once canonicalised.
-%
+-doc """
+Checks that the specified term corresponds to correct (floating-point) bounds,
+and returns it once canonicalised.
+""".
 -spec canonicalise_bounds( term() ) -> bounds().
 canonicalise_bounds( B={ MinBound, MaxBound } ) ->
 	MinBoundf = float( MinBound ),
@@ -2211,9 +2357,10 @@ canonicalise_bounds( B={ MinBound, MaxBound } ) ->
 
 
 
-% @doc Checks that the specified term corresponds to correct bounds, and returns
-% it once canonicalised.
-%
+-doc """
+Checks that the specified term corresponds to correct bounds, and returns it
+once canonicalised.
+""".
 -spec canonicalise_integer_bounds( term() ) -> integer_bounds().
 canonicalise_integer_bounds( B={ MinBound, MaxBound } )
 		when is_integer( MinBound ) andalso is_integer( MaxBound )
@@ -2225,10 +2372,11 @@ canonicalise_integer_bounds( B ) ->
 
 
 
-% @doc Tells whether the specified number is within (is included in;
-% non-strictlyy, that is this number being allowed to be equal to one bound) the
-% specified bounds.
-%
+-doc """
+Tells whether the specified number is within (is included in; non-strictlyy,
+that is this number being allowed to be equal to one bound) the specified
+bounds.
+""".
 -spec is_within_bounds( number(), bounds() ) -> boolean().
 is_within_bounds( Number, _Bounds={ Min, Max } )
 		when Number >= Min andalso Number =< Max ->
@@ -2238,11 +2386,13 @@ is_within_bounds( _Number, _Bounds ) ->
 	false.
 
 
-% @doc Tells whether the specified candidate bounds are within (are included in;
-% non-strictly, that is bounds being allowed to be equal) the full ones.
-%
-% Note: one should ensure that well-typed bounds are indeed specified.
-%
+
+-doc """
+Tells whether the specified candidate bounds are within (are included in;
+non-strictly, that is bounds being allowed to be equal) the full ones.
+
+Note: one should ensure that well-typed bounds are indeed specified.
+""".
 -spec are_within_bounds( bounds(), bounds() ) -> boolean().
 are_within_bounds( _CandidateBounds={ CMin, CMax },
 				   _FullBounds={ FMin, FMax } ) when CMin >= FMin andalso
@@ -2254,13 +2404,15 @@ are_within_bounds( _CandidateBounds, _FullBounds ) ->
 
 
 
-% @doc Returns a textual description of the specified bounds.
+
+-doc "Returns a textual description of the specified bounds.".
 -spec bounds_to_string( bounds() ) -> ustring().
 bounds_to_string( _Bounds={ Min, Max } ) ->
 	text_utils:format( "[~f, ~f]", [ Min, Max ] ).
 
 
-% @doc Returns a textual description of the specified integer bounds.
+
+-doc "Returns a textual description of the specified integer bounds.".
 -spec integer_bounds_to_string( bounds() ) -> ustring().
 integer_bounds_to_string( _Bounds={ Min, Max } ) ->
 	text_utils:format( "[~B, ~B]", [ Min, Max ] ).
@@ -2268,7 +2420,7 @@ integer_bounds_to_string( _Bounds={ Min, Max } ) ->
 
 
 
-% @doc Returns a textual description of the specified probability.
+-doc "Returns a textual description of the specified probability.".
 -spec probability_to_string( probability() ) -> ustring().
 probability_to_string( Probability ) ->
 	% Only one significant number after the comma for readibility:
@@ -2276,7 +2428,7 @@ probability_to_string( Probability ) ->
 
 
 
-% @doc Returns a textual description of the specified probability.
+-doc "Returns a textual description of the specified probability.".
 -spec probability_like_to_string( probability_like() ) -> ustring().
 probability_like_to_string( ProbLike ) when is_float( ProbLike )
 		andalso ProbLike >= 0.0 andalso ProbLike =< 1.0 ->
@@ -2287,10 +2439,12 @@ probability_like_to_string( ProbLike ) ->
 	text_utils:format( "non-normalised probability of ~w", [ ProbLike ] ).
 
 
-% @doc Checks that the specified percentage is in the usual [0.0, 1.0] range.
-%
-% Returns that percentage.
-%
+
+-doc """
+Checks that the specified percentage is in the usual [0.0, 1.0] range.
+
+Returns that percentage.
+""".
 -spec check_percent_basic_range( percent() ) -> percent().
 check_percent_basic_range( P ) when P >= 0.0 andalso P =< 1.0 ->
 	P;
@@ -2304,7 +2458,7 @@ check_percent_basic_range( P ) ->
 % Section for special functions.
 
 
-% @doc Returns the factorial of the argument N, that is: N!.
+-doc "Returns the factorial of the argument N, that is: N!.".
 -spec factorial( non_neg_integer() ) -> pos_integer().
 factorial( _N=0 ) ->
 	1;
@@ -2314,27 +2468,29 @@ factorial( N ) when N > 0 ->
 
 
 
-% @doc Evaluates the well-known Gamma function for the specified value (integer
-% or floating-point - no need felt for one operating on complex numbers).
-%
-%              +infinity
-%             /
-% gamma (z) = | t^(z-1).exp (-t).dt
-%            /
-%         t=0
-%
-% Exact results are returned for integer values, approximated ones for
-% floating-point ones.
-%
-% Note that this function returns very quickly extremely large values, soon
-% exceeding, for floating-point values, the range of float() (hence C doubles) -
-% whereas remaining able to be evaluated for integer values (e.g. gamma(650) can
-% be evaluated whereas gamma(650.0) cannot, due to an exception when evaluating
-% an arithmetic expression, related to math:pow/2). One may rely on lgamma/1
-% instead.
-%
-% Refer to https://en.wikipedia.org/wiki/Gamma_function for more information.
-%
+-doc """
+Evaluates the well-known Gamma function for the specified value (integer or
+floating-point - no need felt for one operating on complex numbers).
+
+```
+			 +infinity
+			/
+gamma (z) = | t^(z-1).exp (-t).dt
+		   /
+		t=0
+```
+
+Exact results are returned for integer values, approximated ones for
+floating-point ones.
+
+Note that this function returns very quickly extremely large values, soon
+exceeding, for floating-point values, the range of float() (hence C doubles) -
+whereas remaining able to be evaluated for integer values (e.g. gamma(650) can
+be evaluated whereas gamma(650.0) cannot, due to an exception when evaluating an
+arithmetic expression, related to math:pow/2). One may rely on lgamma/1 instead.
+
+Refer to <https://en.wikipedia.org/wiki/Gamma_function for more information>.
+""".
 -spec gamma( pos_integer() ) -> pos_integer();
 		   ( float() ) -> float().
 gamma( I ) when is_integer( I ) andalso I > 0 ->
@@ -2396,13 +2552,14 @@ add_gamma( _P=[ H | T ], OffsetF, Inc, AccV ) ->
 
 
 
-% @doc Evaluates the natural logarithm of the absolute value of the well-known
-% Gamma function for the specified (integer or floating-point) value.
-%
-% Refer to https://en.wikipedia.org/wiki/Gamma_function for more information.
-%
-% See also gamma/1.
-%
+-doc """
+Evaluates the natural logarithm of the absolute value of the well-known Gamma
+function for the specified (integer or floating-point) value.
+
+Refer to <https://en.wikipedia.org/wiki/Gamma_function> for more information.
+
+See also gamma/1.
+""".
 -spec lgamma( pos_integer() ) -> pos_integer();
 			( float() ) -> float().
 lgamma( _I=1 ) ->
@@ -2500,10 +2657,6 @@ div_lanczos_coeffs( N, D, F, _Ns=[ Num | TN ], _Ds=[ Den | TD ] ) ->
 	NewN = N / F + Num,
 	NewD = D / F + Den,
 	div_lanczos_coeffs( NewN, NewD, F, TN, TD ).
-
-
-
-
 
 
 sin_pi( F ) ->

@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2024 Olivier Boudeville
+% Copyright (C) 2020-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,6 +26,9 @@
 % Creation date: Sunday, May 24, 2020.
 
 
+% Note: only meant to be included by basic_utils.erl.
+
+
 % Currently, by default we are in development mode, and we want as much
 % information as possible, even at the expense of some performances, whereas in
 % production mode the reciprocal is true.
@@ -43,10 +46,10 @@
 
 
 
-% @doc Returns the execution target this module (hence, probably, that layer as
-% a whole) was compiled with, that is either the atom 'development' or
-% 'production'.
-%
+-doc """
+Returns the execution target this module (hence, probably, that layer as a
+whole) was compiled with, that is either the atom 'development' or 'production'.
+""".
 % Dispatched in actual clauses, otherwise Dialyzer will detect an
 % underspecification:
 %

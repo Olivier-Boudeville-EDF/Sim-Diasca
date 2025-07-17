@@ -1,26 +1,29 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Class in charge of representing a <b>full, overall dataflow</b>.
 -module(class_Dataflow).
+
+-moduledoc """
+Class in charge of representing a **full, overall dataflow**.
+""".
 
 
 -define( class_description,
@@ -50,7 +53,7 @@
 	  "be resumed in the future); this is a set and not a list, as a given "
 	  "block shall better be resumed (and suspended) only once" },
 
-	{ suspension_tick, maybe( tick_offset() ), "records at which tick the "
+	{ suspension_tick, optional( tick_offset() ), "records at which tick the "
 	  "currently tracked blocks have been suspended (as a suspension "
 	  "timestamp); allows to catch suspended blocks that are not resumed "
 	  "appropriately (on time)" },
@@ -64,8 +67,8 @@
 % Dataflow instances shall be created before the simulation is started.
 
 
+-doc "Name of a dataflow.".
 -type dataflow_name() :: ustring().
-% Name of a dataflow.
 
 
 
@@ -77,7 +80,7 @@
 -define( trace_emitter_categorization, "Core.Dataflow.Dataflow-instance" ).
 
 
-% For dataflow-related types and names:
+% For dataflow-related defines:
 -include("dataflow_defines.hrl").
 
 
@@ -86,7 +89,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type tick_offset() :: class_TimeManager:tick_offset().
 -type ustring() :: text_utils:ustring().
@@ -103,19 +106,20 @@
 
 
 
-% @doc Constructs a dataflow instace, to account for an actual dataflow.
-%
-% Parameters are:
-%
-% - ActorSettings describes actor-specific elements assigned by the load
-% balancer, including the actor abstract identifier (AAI) and the seed of this
-% actor
-%
-% - DataflowName is a human-readable name for that dataflow (as a plain,
-% non-empty string)
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
+-doc """
+Constructs a dataflow instance, to account for an actual dataflow.
+
+Parameters are:
+
+- ActorSettings describes actor-specific elements assigned by the load
+balancer, including the actor abstract identifier (AAI) and the seed of this
+actor
+
+- DataflowName is a human-readable name for that dataflow (as a plain,
+non-empty string)
+
+- ExperimentManagerPid is the PID of the experiment manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 dataflow_name(), experiment_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, DataflowName, ExperimentManagerPid ) ->
@@ -127,6 +131,8 @@ construct( State, ActorSettings, DataflowName, ExperimentManagerPid ) ->
 	ActorState = class_Actor:construct( State, ActorSettings,
 										?trace_categorize(DataflowName) ),
 
+	EmptyTable = table:new(),
+
 	% End of interleaving:
 	receive
 
@@ -135,7 +141,6 @@ construct( State, ActorSettings, DataflowName, ExperimentManagerPid ) ->
 
 	end,
 
-	EmptyTable = table:new(),
 
 	% Then the class-specific actions:
 	setAttributes( ActorState, [
@@ -147,7 +152,7 @@ construct( State, ActorSettings, DataflowName, ExperimentManagerPid ) ->
 
 
 
-% @doc Overidden destructor.
+-doc "Overridden destructor".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -166,7 +171,7 @@ destruct( State ) ->
 
 	end,
 
-	?info_fmt( "Being deleted, its ~B dataflow objects and ~B dataflow units "
+	?info_fmt( "Being deleted; its ~B dataflow objects and ~B dataflow units "
 		"will be automatically deleted as well.",
 		[ length( Objects ), length( Units ) ] ),
 
@@ -187,9 +192,9 @@ destruct( State ) ->
 % Actor oneways.
 
 
-% @doc Callback executed on the first diasca of existence of this dataflow.
+-doc "Callback executed on the first diasca of existence of this dataflow.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							const_actor_oneway_return().
+                                            const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
@@ -198,7 +203,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Declares a list of suspended blocks, so that they can be resumed later.
+-doc "Declares a list of suspended blocks, so that they can be resumed later.".
 -spec declareSuspendedBlocks( wooper:state(), [ block_pid() ],
 							  sending_actor_pid() ) -> actor_oneway_return().
 declareSuspendedBlocks( State, SuspendedBlocks, _SendingActorPid ) ->
@@ -210,17 +215,17 @@ declareSuspendedBlocks( State, SuspendedBlocks, _SendingActorPid ) ->
 	NewSuspensionTick = ensure_tick_consistency( State ),
 
 	NewSuspendedBlocks = set_utils:add_element_list( SuspendedBlocks,
-											?getAttr(suspended_blocks) ),
+		?getAttr(suspended_blocks) ),
 
 	SuspendedState = setAttributes( State, [
-							{ suspended_blocks, NewSuspendedBlocks },
-							{ suspension_tick, NewSuspensionTick } ] ),
+		{ suspended_blocks, NewSuspendedBlocks },
+		{ suspension_tick, NewSuspensionTick } ] ),
 
 	actor:return_state( SuspendedState ).
 
 
 
-% @doc Resumes the blocks of this dataflow that were suspended.
+-doc "Resumes the blocks of this dataflow that were suspended.".
 -spec resumeSuspendedBlocks( wooper:state(), sending_actor_pid() ) ->
 									actor_oneway_return().
 resumeSuspendedBlocks( State, _SendingActorPid ) ->
@@ -257,10 +262,11 @@ resumeSuspendedBlocks( State, _SendingActorPid ) ->
 
 
 
-% @doc Registers the specified dataflow object.
-%
-% A newly registered dataflow object starts implicitly in the suspended state.
-%
+-doc """
+Registers the specified dataflow object.
+
+A newly registered dataflow object starts implicitly in the suspended state.
+""".
 -spec registerDataflowObject( wooper:state(), wooper:classname(),
 							  object_pid() ) -> actor_oneway_return().
 registerDataflowObject( State, Classname, RegisteredObjectPid ) ->
@@ -278,15 +284,15 @@ registerDataflowObject( State, Classname, RegisteredObjectPid ) ->
 										?getAttr(suspended_blocks) ),
 
 	NewState = setAttributes( State, [
-					{ object_table, NewObjectTable },
-					{ suspended_blocks, NewSuspendedBlocks },
-					{ suspension_tick, NewSuspensionTick } ] ),
+		{ object_table, NewObjectTable },
+		{ suspended_blocks, NewSuspendedBlocks },
+		{ suspension_tick, NewSuspensionTick } ] ),
 
 	actor:return_state( NewState ).
 
 
 
-% @doc Unregisters the specified dataflow object.
+-doc "Unregisters the specified dataflow object.".
 -spec unregisterDataflowObject( wooper:state(), wooper:classname(),
 								object_pid() ) -> actor_oneway_return().
 unregisterDataflowObject( State, Classname, UnregisteredObjectPid ) ->
@@ -303,14 +309,14 @@ unregisterDataflowObject( State, Classname, UnregisteredObjectPid ) ->
 										   ?getAttr(suspended_blocks) ),
 
 	NewState = setAttributes( State, [
-					{ object_table, NewObjectTable },
-					{ suspended_blocks, NewSuspendedBlocks } ] ),
+		{ object_table, NewObjectTable },
+		{ suspended_blocks, NewSuspendedBlocks } ] ),
 
 	actor:return_state( NewState ).
 
 
 
-% @doc Registers the specified dataflow processing unit.
+-doc "Registers the specified dataflow processing unit.".
 -spec registerDataflowUnit( wooper:state(), wooper:classname(), unit_pid() ) ->
 									actor_oneway_return().
 registerDataflowUnit( State, Classname, RegisteredUnitPid ) ->
@@ -330,7 +336,7 @@ registerDataflowUnit( State, Classname, RegisteredUnitPid ) ->
 
 
 
-% @doc Unregisters the specified dataflow unit.
+-doc "Unregisters the specified dataflow unit.".
 -spec unregisterDataflowUnit( wooper:state(), wooper:classname(),
 							  unit_pid() ) -> actor_oneway_return().
 unregisterDataflowUnit( State, Classname, UnregisteredUnitPid ) ->
@@ -340,15 +346,15 @@ unregisterDataflowUnit( State, Classname, UnregisteredUnitPid ) ->
 
 	% May leave an empty entry:
 	NewUnitTable = table:delete_from_entry( Classname, UnregisteredUnitPid,
-										  ?getAttr(unit_table) ),
+                                            ?getAttr(unit_table) ),
 
 	% May or may not be there:
 	NewSuspendedBlocks = set_utils:delete( UnregisteredUnitPid,
 										   ?getAttr(suspended_blocks ) ),
 
 	NewState = setAttributes( State, [
-					{ unit_table, NewUnitTable },
-					{ suspended_blocks, NewSuspendedBlocks } ] ),
+		{ unit_table, NewUnitTable },
+		{ suspended_blocks, NewSuspendedBlocks } ] ),
 
 	actor:return_state( NewState ).
 
@@ -359,9 +365,10 @@ unregisterDataflowUnit( State, Classname, UnregisteredUnitPid ) ->
 % Static section.
 
 
-% @doc Creates a dataflow value, based on the specified direct value. No
-% metadata is specifically set (hence the returned channel value is incomplete).
-%
+-doc """
+Creates a dataflow value, based on the specified direct value. No metadata is
+specifically set (hence the returned channel value is incomplete).
+""".
 -spec create_channel_value( actual_value() ) ->
 									static_return( channel_value() ).
 create_channel_value( ActualValue ) ->
@@ -369,23 +376,24 @@ create_channel_value( ActualValue ) ->
 
 
 
-% @doc Creates a dataflow value that can be conveyed over a channel, either from
-% user-supplied information or from internal ones (typically obtained then from
-% class_DataflowBlock:get_output_port_metadata/2).
-%
-% The semantics are either ones (then a list of strings) or an internal one
-% (then a set of binaries).
-%
-% The value unit may be either specified as a (binary) string or as an already
-% interpreted pair.
-%
-% The type is a string description thereof.
-%
+-doc """
+Creates a dataflow value that can be conveyed over a channel, either from
+user-supplied information or from internal ones (typically obtained then from
+class_DataflowBlock:get_output_port_metadata/2).
+
+The semantics are either ones (then a list of strings) or an internal one (then
+a set of binaries).
+
+The value unit may be either specified as a (binary) string or as an already
+interpreted pair.
+
+The type is a string description thereof.
+""".
 -spec create_channel_value( actual_value(), user_value_semantics(),
 	unit_utils:unit_bin_string() | value_unit(), value_type_description() ) ->
 									static_return( channel_value() ).
 create_channel_value( ActualValue, UserSemantics, Unit, TypeDescription )
-  when is_list( UserSemantics ) ->
+                                        when is_list( UserSemantics ) ->
 
 	% From list of strings to set of binaries:
 	Semantics = class_SemanticServer:transform_as_internal( UserSemantics ),
@@ -398,7 +406,7 @@ create_channel_value( ActualValue, UserSemantics, Unit, TypeDescription )
 
 % Here the unit is specified only as a string:
 create_channel_value( ActualValue, UserSemantics, UnitString, Type )
-  when is_list( UnitString ) ->
+                                        when is_list( UnitString ) ->
 
 	% Expanding here the user-specified unit, once for all:
 	UnitBinString = text_utils:string_to_binary( UnitString ),
@@ -435,20 +443,21 @@ create_channel_value( _ActualValue, UserSemantics, Unit, _Type ) ->
 
 
 
-% @doc Creates a dataflow value that can be conveyed over a channel, using a
-% pre-processed semantics (set of binaries), unit (a pair) and type
-% (type-as-term, rather than a type-as-a-string) for that (ex: the one already
-% associated to a given port).
-%
-% Note: low-level direct assignment, minimum checking, for internal use only.
-%
+-doc """
+Creates a dataflow value that can be conveyed over a channel, using a
+pre-processed semantics (set of binaries), unit (a pair) and type (type-as-term,
+rather than a type-as-a-string) for that (e.g. the one already associated to a
+given port).
+
+Note: low-level direct assignment, minimum checking, for internal use only.
+""".
 -spec create_direct_channel_value( actual_value(), value_semantics(),
 			value_unit(), value_type() ) -> static_return( channel_value() ).
 create_direct_channel_value( ActualValue, Semantics,
 		Unit={ _UnitBinString, _CanonicalUnit }, ActualType ) ->
 
 	ChannelValue = #channel_value{ actual_value=ActualValue,
-						semantics=Semantics, unit=Unit, type=ActualType },
+		semantics=Semantics, unit=Unit, type=ActualType },
 
 	wooper:return_static( ChannelValue ).
 
@@ -458,10 +467,11 @@ create_direct_channel_value( ActualValue, Semantics,
 % Helper section.
 
 
-% @doc Ensures that operations make sense, time-wise.
-%
-% Returns the current, new suspension tick, once checked.
-%
+-doc """
+Ensures that operations make sense, time-wise.
+
+Returns the current, new suspension tick, once checked.
+""".
 -spec ensure_tick_consistency( wooper:state() ) -> tick_offset().
 ensure_tick_consistency( State ) ->
 
@@ -505,7 +515,7 @@ ensure_tick_consistency( State ) ->
 
 
 
-% @doc Returns a textual description of this dataflow.
+-doc "Returns a textual description of this dataflow.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

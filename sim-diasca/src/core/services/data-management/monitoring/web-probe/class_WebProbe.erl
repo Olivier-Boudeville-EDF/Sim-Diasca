@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 EDF R&D
+% Copyright (C) 2019-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: Friday, June 14, 2019.
 
-
-% @doc Abstract <b>web-based probe class</b>, in charge of generating results to
-% be displayed in a (web) browser-module.
-%
 -module(class_WebProbe).
+
+-moduledoc """
+Abstract **web-based probe class**, in charge of generating results to be
+displayed in a (web) browser-module.
+""".
 
 -define( class_description,
 		 "Abstract web-based probe class, in charge of generating results "
@@ -94,7 +95,7 @@
 	%{ engine_root_dir, bin_directory_path(),
 	%  "the root directory of the engine" }
 
-	{ resource_dir, maybe( bin_directory_path() ),
+	{ resource_dir, option( bin_directory_path() ),
 	  "the (preferably absolute) path to the root directory of the static "
 	  "resources to be used by that probe" } ] ).
 
@@ -113,7 +114,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type probe_name() :: class_ResultProducer:producer_name().
 
@@ -145,6 +146,10 @@
 -include("class_WebProbe.hrl").
 
 
+-doc "Describes options that apply to web probes.".
+-type web_probe_options() :: #web_probe_options{}.
+
+
 % For getAttr/1, etc.:
 -include_lib("wooper/include/wooper.hrl").
 
@@ -156,15 +161,16 @@
 
 
 
-% @doc Constructs a web probe, from:
-%
-% - NameInit tells about the name (and possibly categorization) of this probe
-%
-% - ProbeOptions, if available, specifies the options that shall apply
-%
-% - MetaData is an option list that corresponds to extra, contextual information
-% that can be taken into account in the probe-generated data files
-%
+-doc """
+Constructs a web probe, from:
+
+- NameInit tells about the name (and possibly categorization) of this probe
+
+- ProbeOptions, if available, specifies the options that shall apply
+
+- MetaData is an option list that corresponds to extra, contextual information
+that can be taken into account in the probe-generated data files
+""".
 -spec construct( wooper:state(),
 		probe_name_init() | { probe_name_init(), web_probe_options() },
 		meta_data() ) -> wooper:state().
@@ -286,7 +292,7 @@ interpret_options( #web_probe_options{
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -305,7 +311,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Sets the content of the main file of this web probe.
+-doc "Sets the content of the main file of this web probe.".
 -spec setMainContent( wooper:state(), any_string() ) ->
 								request_return( 'content_set' ).
 setMainContent( State, ContentString ) when is_list( ContentString ) ->
@@ -333,11 +339,12 @@ setMainContent( State, BinContent ) when is_binary( BinContent ) ->
 
 
 
-% @doc Sends the specified type of (tracked) results to the caller (generally
-% the result manager).
-%
-% (request, notably for synchronous operations)
-%
+-doc """
+Sends the specified type of (tracked) results to the caller (generally the
+result manager).
+
+(request, notably for synchronous operations)
+""".
 -spec sendResults( wooper:state(), class_ResultProducer:producer_options() ) ->
 			request_return( class_ResultProducer:producer_result() ).
 sendResults( State, _ProducerOptions ) ->
@@ -411,7 +418,7 @@ sendResults( State, _ProducerOptions ) ->
 
 
 
-% @doc Empty oneway callback, meant to be overridden if needed.
+-doc "Empty oneway callback, meant to be overridden if needed.".
 -spec onFinalizationTime( wooper:state() ) -> const_oneway_return().
 onFinalizationTime( State ) ->
 
@@ -424,16 +431,17 @@ onFinalizationTime( State ) ->
 % Static methods.
 
 
-% @doc Creates a facility probe, that is a lingering probe, to be created
-% (unilaterally) from a test case, and that will not to considered as a result.
-%
-% NameOptions is either:
-%
-% - Name :: ustring(), i.e. directly the name of this probe (specified as a
-% plain string), which will be used for the generated data and command files
-%
-% - or {Name :: ustring(), ProbeOptions :: web_probe_options()}
-%
+-doc """
+Creates a facility probe, that is a lingering probe, to be created
+(unilaterally) from a test case, and that will not to considered as a result.
+
+NameOptions is either:
+
+- Name :: ustring(), i.e. directly the name of this probe (specified as a plain
+string), which will be used for the generated data and command files
+
+- or {Name :: ustring(), ProbeOptions :: web_probe_options()}
+""".
 -spec create_facility_probe( name_options() ) -> static_return( probe_ref() ).
 create_facility_probe( NameOptions ) ->
 
@@ -445,16 +453,17 @@ create_facility_probe( NameOptions ) ->
 
 
 
-% @doc Creates a facility probe, that is a lingering probe, to be created
-% (unilaterally) from a test case, and that will not to considered as a result.
-%
-% The first parameter is either:
-%
-% - Name :: ustring(), i.e. directly the name of this probe (specified as a
-% plain string), which will be used for the generated data and command files
-%
-% - or {Name :: ustring(), ProbeOptions :: web_probe_options() }
-%
+-doc """
+Creates a facility probe, that is a lingering probe, to be created
+(unilaterally) from a test case, and that will not to considered as a result.
+
+The first parameter is either:
+
+- Name :: ustring(), i.e. directly the name of this probe (specified as a plain
+string), which will be used for the generated data and command files
+
+- or {Name :: ustring(), ProbeOptions :: web_probe_options() }
+""".
 -spec create_facility_probe( name_options(), directory_path() ) ->
 									static_return( probe_ref() ).
 create_facility_probe( { Name, Options }, ProbeDirectory ) ->
@@ -482,20 +491,22 @@ create_facility_probe( Name, ProbeDirectory ) ->
 
 
 
-% @doc Declares (synchronously) a new (web) probe, to be seen as a result
-% producer, and be created either from an actor or from a test case.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(), i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions :: web_probe_options()}
-%
-% Returns either the PID of this newly created probe (if the name of that probe
-% is acknowledged as a wanted result by the result manager), or the
-% 'non_wanted_probe' atom.
-%
+-doc """
+Declares (synchronously) a new (web) probe, to be seen as a result producer, and
+be created either from an actor or from a test case.
+
+- NameOptions is either:
+
+ - Name :: ustring(), i.e. directly the name of this probe (specified as a plain
+ string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions :: web_probe_options()}
+
+Returns either the PID of this newly created probe (if the name of that probe is
+acknowledged as a wanted result by the result manager), or the
+'non_wanted_probe' atom.
+
+""".
 -spec declare_result_probe( name_options() ) -> static_return( probe_ref() ).
 declare_result_probe( NameOptions ) ->
 
@@ -513,10 +524,11 @@ declare_result_probe( NameOptions ) ->
 
 
 
-% @doc Tells whether the specified web probe is wanted.
-%
-% (useful factored code for child classes)
-%
+-doc """
+Tells whether the specified web probe is wanted.
+
+(useful factored code for child classes)
+""".
 -spec is_wanted( name_options() ) ->
 				static_return( 'false' | class_ResultManager:meta_data() ).
 is_wanted( NameOptions ) ->
@@ -553,10 +565,11 @@ is_wanted( NameOptions ) ->
 
 
 
-% @doc Deletes specified facility (web) probe (knowing that the other kinds of
-% probes are results, and thus their life cycles are managed by the result
-% manager).
-%
+-doc """
+Deletes the specified facility (web) probe (knowing that the other kinds of
+probes are results, and thus their life cycles are managed by the result
+manager).
+""".
 -spec delete_facility_probe( probe_ref() ) -> static_void_return().
 delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
 
@@ -574,9 +587,10 @@ delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
 
 
 
-% @doc Returns the filename (not a full path) of the main HTML page
-% corresponding to the specified probe.
-%
+-doc """
+Returns the filename (not a full path) of the main HTML page corresponding to
+the specified probe.
+""".
 -spec get_filename_for( probe_name() ) -> static_return( bin_file_name() ).
 get_filename_for( WebProbeName ) ->
 
@@ -593,13 +607,14 @@ get_filename_for( WebProbeName ) ->
 % Helpers.
 
 
-% Declares the specified content file among the results of that probe.
-%
-% Implies that this web probe will be considered as having produced a result.
-%
-% Note that only a filename is to be specified (relative to web_dir), not a
-% full, absolute path.
-%
+-doc """
+Declares the specified content file among the results of that probe.
+
+Implies that this web probe will be considered as having produced a result.
+
+Note that only a filename is to be specified (relative to web_dir), not a full,
+absolute path.
+""".
 -spec declare_content_file( bin_file_name(), wooper:state() ) -> wooper:state().
 declare_content_file( BinFilename, State ) ->
 
@@ -621,7 +636,7 @@ declare_content_file( BinFilename, State ) ->
 
 
 
-% @doc Returns a textual description of this web probe.
+-doc "Returns a textual description of this web probe.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

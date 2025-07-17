@@ -1,29 +1,31 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc Unit tests for the <b>core_utils</b> module.
-%
-% See core_utils.erl module.
-%
 -module(core_utils_test).
+
+-moduledoc """
+Unit tests for the **core_utils** module.
+
+See core_utils.erl module.
+""".
 
 
 % For facilities common to all cases:
@@ -35,7 +37,7 @@
 
 
 
-% @doc Runs the tests.
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 
@@ -47,7 +49,7 @@ run() ->
 	class_RandomManager:create(),
 
 	RandomManagerPid = naming_utils:wait_for_global_registration_of(
-							?random_manager_name ),
+		?random_manager_name ),
 
 	?test_info( "Testing the random drawing of items in lists." ),
 
@@ -82,7 +84,7 @@ run() ->
 	ThirdItemCount = length( DrawableList ) + 1,
 
 	too_many_drawn_items = core_utils:draw_items_from( DrawableList,
-											ThirdItemCount, RandomManagerPid ),
+		ThirdItemCount, RandomManagerPid ),
 
 	?test_info( "Extracting too many items from a list is correctly detected."),
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,27 +25,31 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, December 19, 2014.
 
-
-
-% @doc Example of parse transform.
-%
-% See meta_utils.erl and meta_utils_test.erl.
-%
-% @hidden
-%
 -module(example_parse_transform).
 
+-moduledoc """
+Example of parse transform.
 
-
-% Implementation notes:
+See meta_utils.erl and meta_utils_test.erl.
+""".
 
 
 -export([ parse_transform/2 ]).
 
 
-% The parse transform itself, transforming the specified Abstract Format code
-% into another one.
-%
+% Shorthands:
+
+-type ast() :: ast_base:ast().
+
+-type parse_transform_options() :: meta_utils:parse_transform_options().
+
+
+
+-doc """
+The parse transform itself, transforming the specified Abstract Format code into
+another one.
+""".
+-spec parse_transform( ast(), parse_transform_options() ) -> ast().
 parse_transform( AST, _Options ) ->
 
 	% Less verbose:

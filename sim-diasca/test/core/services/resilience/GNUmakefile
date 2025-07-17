@@ -1,6 +1,7 @@
 SIM_DIASCA_TOP = ../../../..
 
-.PHONY: clean-local
+.PHONY: clean clean-local
+
 
 clean: clean-local
 

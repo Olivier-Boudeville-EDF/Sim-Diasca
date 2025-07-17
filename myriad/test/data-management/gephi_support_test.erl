@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, December 20, 2023.
 
-
-% @doc Unit tests for the gephi_support toolbox.
-%
-% See the gephi_support tested module.
-%
 -module(gephi_support_test).
+
+-moduledoc """
+Unit tests for the **gephi_support** toolbox.
+
+See the gephi_support tested module.
+""".
+
 
 
 % For run/0 export and al:

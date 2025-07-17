@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 10, 2021.
 
-
-
-% @doc Unit tests for the <b>3D points</b>.
-%
-% See the point3 tested module.
-%
 -module(point3_test).
+
+-moduledoc """
+Unit tests for the **3D points**.
+
+See the point3 tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -75,5 +76,14 @@ run() ->
 
 	test_facilities:display( "User-friendly representation for ~w: ~ts",
 							 [ P3, point3:to_user_string( P3 ) ] ),
+
+
+	UV = point3:unit_vectorize( P2, P3 ),
+
+	test_facilities:display( "Unit vector from ~ts to ~ts is: ~ts",
+		[ point3:to_compact_string( P2 ), point3:to_compact_string( P3 ),
+		  vector3:to_string( UV ) ] ),
+
+	true = vector3:is_unitary( UV ),
 
 	test_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,22 +25,28 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, January 9, 2022.
 
-
-% @doc Minimal testing of the <b>OpenGL GLSL support</b>: displays, based on
-% shaders, a Myriad-blue polygon (actually a triangle and a rectangle that
-% intersect each other) on a white background.
-%
-% It is therefore a non-interactive, passive test (no spontaneous/scheduled
-% behaviour) whose main interest is to show a simple yet generic, appropriate
-% structure in order to properly initialise the GUI and OpenGL, handle
-% rendering, resizing and closing.
-%
-% This test relies on shaders and thus on modern versions of OpenGL (e.g. 3.3),
-% as opposed to the compatibility mode for OpenGL 1.x.
-%
-% See the gui_opengl tested module.
-%
 -module(gui_opengl_minimal_shader_test).
+
+-moduledoc """
+Minimal testing of the **OpenGL GLSL support**: displays, based on ad-hoc
+shaders (not the MyriadGUI base ones), a Myriad-blue polygon (actually a
+triangle and a rectangle that intersect each other) on a white background.
+
+Only normalized device coordinates are used (no projection).
+
+It is therefore a non-interactive, passive test (no spontaneous/scheduled
+behaviour) whose main interest is to show a simple yet generic, appropriate
+structure in order to properly initialise the GUI and OpenGL, handle rendering,
+resizing and closing.
+
+This test relies on shaders and thus on modern versions of OpenGL (e.g. 3.3), as
+opposed to the compatibility mode for OpenGL 1.x.
+
+Direct (for the triangle) and indexed (for the square) coordinates are used.
+
+See the gui_opengl tested module.
+""".
+
 
 
 % Implementation notes:
@@ -77,10 +83,11 @@
 	context :: gl_context(),
 
 	% In more complex cases, would store the loaded textures, etc.
-	opengl_state :: maybe( my_opengl_state() ) } ).
+	opengl_state :: option( my_opengl_state() ) } ).
 
+
+-doc "Test-specific overall GUI state.".
 -type my_gui_state() :: #my_gui_state{}.
-% Test-specific overall GUI state.
 
 
 
@@ -106,13 +113,21 @@
 	square_vbo_id :: vbo_id(),
 	square_ebo_id :: ebo_id() } ).
 
+
+-doc "Test-specific overall OpenGL state.".
 -type my_opengl_state() :: #my_opengl_state{}.
-% Test-specific overall OpenGL state.
 
 
 
+% First and only attribute in the vertex stream that will be passed to our
+% shader: the vertices; attribute 0 was chosen, yet no particular reason for
+% this index, it just must match the layout (cf. 'location = 0') in the shader.
+%
+-define( my_vertex_attribute_index, 0 ).
 
-% Shorthands:
+
+
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
 
@@ -128,38 +143,9 @@
 -type ebo_id() :: gui_shader:ebo_id().
 
 
-% First and only attribute in the vertex stream that will be passed to the our
-% shader: the vertices; attribute 0 was chosen, yet no particular reason for
-% this index, it just must match the layout (cf. 'location = 0') in the shader.
-%
--define( my_vertex_attribute_index, 0 ).
 
 
-
-% @doc Runs the OpenGL test if possible.
--spec run_opengl_test() -> void().
-run_opengl_test() ->
-
-	test_facilities:display(
-		"~nStarting the minimal test of OpenGL shader support." ),
-
-	case gui_opengl:get_glxinfo_strings() of
-
-		undefined ->
-			test_facilities:display( "No proper OpenGL support detected on host"
-				" (no GLX visual reported), thus no test performed." );
-
-		GlxInfoStr ->
-			test_facilities:display( "Checking whether OpenGL hardware "
-				"acceleration is available: ~ts.",
-				[ gui_opengl:is_hardware_accelerated( GlxInfoStr ) ] ),
-			run_actual_test()
-
-	end.
-
-
-
-% @doc Runs the actual test.
+-doc "Runs the actual test.".
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
@@ -182,12 +168,13 @@ run_actual_test() ->
 
 
 
-% @doc Creates the initial test GUI: a main frame containing an OpenGL canvas to
-% which an OpenGL context is associated.
-%
-% Once the rendering is done, the buffers are swapped, and the content is
-% displayed.
-%
+-doc """
+Creates the initial test GUI: a main frame containing an OpenGL canvas to which
+an OpenGL context is associated.
+
+Once the rendering is done, the buffers are swapped, and the content is
+displayed.
+""".
 -spec init_test_gui() -> my_gui_state().
 init_test_gui() ->
 
@@ -201,16 +188,17 @@ init_test_gui() ->
 	GLCanvas = gui_opengl:create_canvas(
 		_CanvasOpts=[ { gl_attributes, GLCanvasAttrs } ], _Parent=MainFrame ),
 
+	% Needed, otherwise if that frame is moved out of the screen or if another
+	% windows overlaps, the OpenGL canvas gets garbled and thus must be redrawn:
+	%
+	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
+
 	% Created, yet not bound yet (must wait for the main frame to be shown):
 	GLContext = gui_opengl:create_context( GLCanvas ),
 
 	gui:subscribe_to_events( { [ onResized, onShown, onWindowClosed ],
 							   MainFrame } ),
 
-	% Needed, otherwise if that frame is moved out of the screen or if another
-	% windows overlaps, the OpenGL canvas gets garbled and thus must be redrawn:
-	%
-	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
 
 	% No OpenGL state yet (GL context cannot be set as current yet), actual
 	% OpenGL initialisation to happen when available, i.e. when the main frame
@@ -220,9 +208,9 @@ init_test_gui() ->
 
 
 
-% @doc The main loop of this test, driven by the receiving of MyriadGUI
-% messages.
-%
+-doc """
+The main loop of this test, driven by the receiving of MyriadGUI messages.
+""".
 -spec gui_main_loop( my_gui_state() ) -> void().
 gui_main_loop( GUIState ) ->
 
@@ -236,27 +224,28 @@ gui_main_loop( GUIState ) ->
 			%trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
 			%                       [ GLCanvas ] ),
 
-			RepaintedGUIState = case GUIState#my_gui_state.opengl_state of
+			case GUIState#my_gui_state.opengl_state of
 
 				% Not ready yet:
 				undefined ->
 					trace_utils:debug(
-						"To be repainted, yet no OpenGL state yet." ),
-					GUIState;
+						"To be repainted, yet no OpenGL state yet." );
 
 				GLState ->
-					gui_widget:enable_repaint( GLCanvas ),
+					% Not relevant: gui_widget:enable_repaint( GLCanvas ),
 
 					% Simpler than storing these at each resize:
 					{ CanvasWidth, CanvasHeight } =
 						gui_widget:get_size( GLCanvas ),
 
 					render( CanvasWidth, CanvasHeight, GLState ),
-					gui_opengl:swap_buffers( GLCanvas ),
-					GUIState
+
+					gui_opengl:swap_buffers( GLCanvas )
 
 			end,
-			gui_main_loop( RepaintedGUIState );
+
+			% No state change:
+			gui_main_loop( GUIState );
 
 
 		% For a window, the first resizing event happens immediately before its
@@ -328,9 +317,10 @@ gui_main_loop( GUIState ) ->
 
 
 
-% @doc Sets up OpenGL, once for all (regardless of next resizings), once a
-% proper OpenGL context is available.
-%
+-doc """
+Sets up OpenGL, once for all (regardless of next resizings), once a proper
+OpenGL context is available.
+""".
 -spec initialise_opengl( my_gui_state() ) -> my_gui_state().
 initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 										   context=GLContext,
@@ -384,7 +374,9 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 	%
 	ProgramId = gui_shader:generate_program_from(
 		"gui_opengl_minimal_shader.vertex.glsl",
-		"gui_opengl_minimal_shader.fragment.glsl", UserVertexAttrs ),
+		"gui_opengl_minimal_shader.fragment.glsl", UserVertexAttrs,
+		% Locally defined:
+		_GLSLSearchPaths=[ "." ] ),
 
 	SomeVectorUnifName = "some_vector",
 
@@ -415,16 +407,17 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 	% Rely on our shaders:
 	gui_shader:install_program( ProgramId ),
 
-	gui_shader:set_uniform_vector3( SomeColorUnifId,
-									gui_opengl_minimal_test:get_myriad_blue() ),
+	% As RGBA quadruplet:
+	gui_shader:set_uniform_point4( SomeColorUnifId,
+		gui_opengl_for_testing:get_myriad_blue_render() ),
 
 
 	% Uncomment to switch to wireframe and see how the square decomposes in two
 	% triangles:
 	%
-	% (?GL_FRONT_AND_BACK not needed as our vertices are in CCW order)
+	% (front_and_back_facing not needed, as our vertices are in CCW order)
 	%
-	%gui_opengl:set_polygon_raster_mode( ?GL_FRONT, ?GL_LINE ),
+	%gui_opengl:set_polygon_raster_mode( front_facing, raster_as_lines ),
 
 
 	% First, a triangle, whose vertices are specified directly:
@@ -435,7 +428,7 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 
 	% Triangle defined as [vertex3()], directly in normalized device coordinates
 	% here; CCW order (T0 bottom left, T1 bottom right, T2 top, knowing that the
-	% texture referential has its Y ordinate axis up, see
+	% texture coordinate system has its Y ordinate axis up, see
 	% https://learnopengl.com/Getting-started/Hello-Triangle):
 	%
 	%               T2
@@ -518,7 +511,7 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 
 
 
-% @doc Cleans up OpenGL.
+-doc "Cleans up OpenGL.".
 -spec cleanup_opengl( my_gui_state() ) -> void().
 cleanup_opengl( #my_gui_state{ opengl_state=undefined } ) ->
 	ok;
@@ -544,10 +537,11 @@ cleanup_opengl( #my_gui_state{ opengl_state=#my_opengl_state{
 
 
 
-% @doc Managing a resizing of the main frame.
-%
-% OpenGL context expected here to have already been set.
-%
+-doc """
+Managing a resizing of the main frame.
+
+OpenGL context expected here to have already been set.
+""".
 -spec on_main_frame_resized( my_gui_state() ) -> my_gui_state().
 on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas,
 											   opengl_state=GLState } ) ->
@@ -592,7 +586,11 @@ on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas,
 
 
 
-% @doc Performs a (pure OpenGL) rendering.
+-doc """
+Performs a (pure OpenGL) rendering.
+
+As a consequence, no OpenGL buffer swapping is done here.
+""".
 -spec render( width(), height(), my_opengl_state()  ) -> void().
 render( _Width, _Height, #my_opengl_state{ triangle_vao_id=TriangleVAOId,
 										   triangle_vbo_id=_TriangleVBOId,
@@ -619,9 +617,9 @@ render( _Width, _Height, #my_opengl_state{ triangle_vao_id=TriangleVAOId,
 	%gui_shader:set_current_vbo_from_id( TriangleVBOId ),
 	%gui_shader:enable_vertex_attribute( ?my_vertex_attribute_index ),
 
-	% Draws our splendid triangle (from 3 slots, starting at index 0), using the
-	% currently active shaders, vertex attribute configuration and with the
-	% VBO's vertex data (indirectly bound via the VAO):
+	% Draws our splendid triangle (from 3 vertex elements, starting at index 0),
+	% using the currently active shaders, vertex attribute configuration and
+	% with the VBO's vertex data (indirectly bound via the VAO):
 	%
 	gui_shader:render_from_enabled_vbos( PrimType, _VCount=3 ),
 
@@ -655,21 +653,14 @@ render( _Width, _Height, #my_opengl_state{ triangle_vao_id=TriangleVAOId,
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
 	test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
-
-		true ->
-			test_facilities:display(
-				"(not running this OpenGL test, being in batch mode)" );
-
-		false ->
-			run_opengl_test()
-
-	end,
+	gui_opengl_for_testing:can_be_run(
+			"the minimal test of OpenGL shader support" ) =:= yes
+		andalso run_actual_test(),
 
 	test_facilities:stop().

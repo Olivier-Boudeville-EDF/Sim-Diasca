@@ -1,23 +1,18 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
-%
-% Module defined in order to be able to test the merge services outside of an
-% escript context.
-%
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % Released as LGPL software.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2016.
 
-
-% @doc Module in charge of the actual <b>launch of the Myriad merge tool</b>.
-%
-% Transferred from `merge-tree.escript' in order to benefit from a more
-% user-friendly debugging.
-%
-% @hidden (not an API).
-%
 -module(merge_app).
 
+-moduledoc """
+Module in charge of the actual **launch of the Myriad merge tool**.
+
+Transferred from `merge-tree.escript` in order to benefit from a more
+user-friendly debugging.
+""".
 
 -export([ exec/0 ]).
 
@@ -27,7 +22,7 @@
 
 
 
-% @doc Runs the merge service, directly from a module.
+-doc "Runs the merge service, directly from a module.".
 -spec exec() -> void().
 exec() ->
 
@@ -35,11 +30,11 @@ exec() ->
 	update_code_path_for_myriad_from_module(),
 
 	% To force options for testing:
-	%ArgTable = shell_utils:generate_argument_table( "--help" ),
+	%ArgTable = cmd_line_utils:generate_argument_table( "--help" ),
 
-	ArgTable = shell_utils:get_argument_table(),
+	ArgTable = cmd_line_utils:get_argument_table(),
 
 	%trace_utils:debug_fmt( "Run as application: ~ts",
-	%   [ shell_utils:argument_table_to_string( ArgTable ) ] ),
+	%   [ cmd_line_utils:argument_table_to_string( ArgTable ) ] ),
 
 	merge_utils:main( ArgTable ).

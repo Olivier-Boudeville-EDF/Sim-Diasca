@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,11 +25,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, December 25, 2018.
 
-
-% @doc Management of <b>conditional compilation</b> - like generalised,
-% limitation-less macros.
-%
 -module(cond_utils).
+
+-moduledoc """
+Management of **conditional compilation** - like generalised, limitation-less
+macros.
+""".
 
 
 
@@ -69,6 +70,9 @@
 %    OR
 % -compile({nowarn_unused_function, [{my_func,3}, {my_other_func,0}]}).
 
+
+% These if_defined* compile-time constructs shall not be mixed up with the
+% (runtime) basic_utils:set_option/2 simple shortcut function.
 
 
 % About tokens:
@@ -140,53 +144,69 @@
 
 
 
+-doc """
+A token (defined through the command-line), whose definition enables the
+conditional execution of associated code.
+
+For example a 'debug_gui' token would enable, if defined, associated code, like
+in: `cond_utils:if_defined(debug_gui, [f(), A=B, g(C)])`.
+""".
 -type token() :: atom().
-% A token (defined through the command-line), whose definition enables the
-% conditional execution of associated code.
-%
-% For example a 'debug_gui' token would enable, if defined, associated code,
-% like in: cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).
 
 
+
+-doc """
+An (immediate) value associated to a token can actually of various types
+(e.g. atom, integer; as a form of course), as translated by the compiler.
+""".
 -type value() :: term().
-% An (immediate) value associated to a token can actually of various types
-% (e.g. atom, integer; as a form of course), as translated by the compiler.
 
 
+
+-doc """
+An expression (possibly a body) that is conditionally enabled.
+
+Note that, if wanting to enable conditionally not a single expression but a body
+(i.e. a sequence of expressions), a begin/end block must be specified (*not* a
+list of expressions, which evaluates to the list itself, not to the value of the
+last expression).
+""".
 -type expression() :: any().
-% An expression (possibly a body) that is conditionally enabled.
-%
-% Note that, if wanting to enable conditionally not a single expression but a
-% body (i.e. a sequence of expressions), a begin/end block must be specified
-% (*not* a list of expressions, which evaluates to the list itself, not to the
-% value of the last expression).
 
 
+
+-doc """
+A non-empty sequence (not a list) of expressions, expressed as a begin/end block
+expression.
+""".
 -type body() :: any().
-% A non-empty sequence (not a list) of expressions, expressed as a begin/end
-% block expression.
 
 
+
+-doc "A table used to associate an expression to a token value.".
 -type token_expr_table() :: [ { token(), expression() } ].
-% A table used to associate an expression to a token value.
 
 
--type token_table() :: ?table:?table( token(), basic_utils:maybe( term() ) ).
-% Table to establish easily whether a token has been defined and, if yes, a
-% value (if any; otherwise it is set to 'undefined') that has been associated to
-% it.
+
+-doc """
+Table to establish easily whether a token has been defined and, if yes, a value
+(if any; otherwise it is set to 'undefined') that has been associated to it.
+""".
+-type token_table() :: ?table:?table( token(), option( term() ) ).
 
 
 -export_type([ token/0, expression/0, body/0, token_expr_table/0,
 			   token_table/0 ]).
 
 
-% Shorthand:
--type void() :: basic_utils:void().
+% Type shorthands:
+
+-type void() :: type_utils:void().
+-type option( T ) :: type_utils:option( T ).
 
 
 
-% @doc Returns the tokens declared among the compile options.
+-doc "Returns the tokens declared among the compile options.".
 -spec get_token_table_from( ast_info:compile_option_table() ) ->
 									token_table().
 get_token_table_from( OptionTable ) ->
@@ -269,10 +289,11 @@ register_tokens( _L=[ Token | T ], TokenTable ) when is_atom( Token ) ->
 
 
 
-% @doc Includes conditionally the specified expression (possibly a body), which
-% is enabled iff the debug mode has been set (that is iff the
-% 'myriad_debug_mode' token has been defined through the command-line).
-%
+-doc """
+Includes conditionally the specified expression (possibly a body), which is
+enabled iff the debug mode has been set (that is iff the 'myriad_debug_mode'
+token has been defined through the command-line).
+""".
 -spec if_debug( expression() ) -> void().
 if_debug( _ExpressionIfDebug ) ->
 
@@ -285,30 +306,31 @@ if_debug( _ExpressionIfDebug ) ->
 
 
 
-% @doc Includes conditionally the specified expression (possibly a body) iff the
-% specified token has been specified.
-%
-% It is enabled iff its token has been defined through the command-line, in
-% which case the specified expression is injected (otherwise it is simply
-% dismissed as a whole).
-%
-% Note: the first parameter, Token, must be an immediate value, an atom (not
-% even a variable whose value happens to be an atom).
-%
-% So 'cond_utils:if_defined(hello, [...])' will be accepted, while even
-% 'A=hello, cond_utils:if_defined(A, [...])' will be rejected.
-%
-% As for the second parameter, it shall be *directly* either a single expression
-% or a body thereof; for example 'cond_utils:if_defined(myriad_debug_mode,
-% _MyExpr=[...])' would be rejected.
-%
-% Finally, should the relevant token not be defined, the corresponding
-% expression is dismissed as a whole, which may lead variables only mentioned in
-% said expression to be reported as unused.
-%
-% For example: 'A=1, cond_utils:if_defined(non_defined_token, [A=1,...])' will
-% report that variable 'A' is unused.
-%
+-doc """
+Includes conditionally the specified expression (possibly a body) iff the
+specified token has been specified.
+
+It is enabled iff its token has been defined through the command-line, in which
+case the specified expression is injected (otherwise it is simply dismissed as a
+whole).
+
+Note: the first parameter, Token, must be an immediate value, an atom (not even
+a variable whose value happens to be an atom).
+
+So 'cond_utils:if_defined(hello, [...])' will be accepted, while even 'A=hello,
+cond_utils:if_defined(A, [...])' will be rejected.
+
+As for the second parameter, it shall be *directly* either a single expression
+or a body thereof; for example 'cond_utils:if_defined(myriad_debug_mode,
+_MyExpr=[...])' would be rejected.
+
+Finally, should the relevant token not be defined, the corresponding expression
+is dismissed as a whole, which may lead variables only mentioned in said
+expression to be reported as unused.
+
+For example: 'A=1, cond_utils:if_defined(non_defined_token, [A=1,...])' will
+report that variable 'A' is unused.
+""".
 -spec if_defined( token(), expression() ) -> void().
 if_defined( Token, _ExpressionIfDefined ) ->
 
@@ -323,15 +345,16 @@ if_defined( Token, _ExpressionIfDefined ) ->
 
 
 
-% @doc Includes conditionally one of the specified expressions (possibly
-% bodies), depending on whether the specified token has been defined through the
-% command-line.
-%
-% If the token has been defined, the expression is injected, otherwise the
-% second is.
-%
-% See if_defined/2 for use and caveats.
-%
+-doc """
+Includes conditionally one of the specified expressions (possibly bodies),
+depending on whether the specified token has been defined through the
+command-line.
+
+If the token has been defined, the expression is injected, otherwise the second
+is.
+
+See if_defined/2 for use and caveats.
+""".
 -spec if_defined( token(), expression(), expression() ) -> void().
 if_defined( Token, _ExpressionIfDefined, _ExpressionIfNotDefined ) ->
 
@@ -342,15 +365,16 @@ if_defined( Token, _ExpressionIfDefined, _ExpressionIfNotDefined ) ->
 
 
 
-% @doc Includes conditionally one of the specified expressions (possibly
-% bodies), depending on whether the specified token has been defined through the
-% command-line *and* has been set to the specified (immediate) value.
-%
-% The specified expression is injected iff the token has been defined and set to
-% the specified value.
-%
-% See if_defined/2 for use and caveats.
-%
+-doc """
+Includes conditionally one of the specified expressions (possibly bodies),
+depending on whether the specified token has been defined through the
+command-line *and* has been set to the specified (immediate) value.
+
+The specified expression is injected iff the token has been defined and set to
+the specified value.
+
+See if_defined/2 for use and caveats.
+""".
 -spec if_set_to( token(), value(), expression() ) -> void().
 if_set_to( Token, _Value, _ExpressionIfSetTo ) ->
 
@@ -361,16 +385,17 @@ if_set_to( Token, _Value, _ExpressionIfSetTo ) ->
 
 
 
-% @doc Includes conditionally one of the specified expressions (possibly
-% bodies), depending on whether the specified token has been defined through the
-% command-line *and* has been set to the specified (immediate) value.
-%
-% If the token has been defined and set to the specified value, the first
-% expression is injected, otherwise (different value or not defined) the second
-% is.
-%
-% See if_defined/2 for use and caveats.
-%
+-doc """
+Includes conditionally one of the specified expressions (possibly bodies),
+depending on whether the specified token has been defined through the
+command-line *and* has been set to the specified (immediate) value.
+
+If the token has been defined and set to the specified value, the first
+expression is injected, otherwise (different value or not defined) the second
+is.
+
+See if_defined/2 for use and caveats.
+""".
 -spec if_set_to( token(), value(), expression(), expression() ) -> void().
 if_set_to( Token, _Value, _ExpressionIfMatching, _ExpressionOtherwise ) ->
 
@@ -381,16 +406,16 @@ if_set_to( Token, _Value, _ExpressionIfMatching, _ExpressionOtherwise ) ->
 
 
 
-% @doc Includes conditionally either of the specified expressions (possibly
-% bodies), depending on whether the execution target has been defined through
-% the command-line:
-%
-% - if the actual execution target is development
-% (i.e. exec_target_is_production is not defined), then the first specified
-% expression will be inserted
-%
-% - otherwise the second specified expression will be inserted
-%
+-doc """
+Includes conditionally either of the specified expressions (possibly bodies),
+depending on whether the execution target has been defined through the
+command-line:
+
+- if the actual execution target is development (i.e. exec_target_is_production
+is not defined), then the first specified expression will be inserted
+
+- otherwise the second specified expression will be inserted
+""".
 -spec switch_execution_target( expression(), expression() ) -> void().
 switch_execution_target( _ExprIfInDevMode, _ExprIfProdMode ) ->
 
@@ -404,19 +429,20 @@ switch_execution_target( _ExprIfInDevMode, _ExprIfProdMode ) ->
 
 
 
-% @doc Includes conditionally one of the specified expressions (possibly bodies)
-% listed in the token-expression table, depending on whether the specified token
-% has been defined through the command-line *and* has been set to one of the
-% specified (immediate) values.
-%
-% If the token has been defined and set to one the values specified in the
-% table, the expression associated to this value is injected.
-%
-% Otherwise (token not set, or set to a value that is not listed), a
-% compilation-time error is raised.
-%
-% See if_defined/2 for use and caveats.
-%
+-doc """
+Includes conditionally one of the specified expressions (possibly bodies) listed
+in the token-expression table, depending on whether the specified token has been
+defined through the command-line *and* has been set to one of the specified
+(immediate) values.
+
+If the token has been defined and set to one the values specified in the table,
+the expression associated to this value is injected.
+
+Otherwise (token not set, or set to a value that is not listed), a
+compilation-time error is raised.
+
+See if_defined/2 for use and caveats.
+""".
 -spec switch_set_to( token(), token_expr_table() ) -> void().
 switch_set_to( Token, _TokenExprTable ) ->
 
@@ -427,19 +453,20 @@ switch_set_to( Token, _TokenExprTable ) ->
 
 
 
-% @doc Includes conditionally one of the specified expressions (possibly bodies)
-% listed in the token-expression table, depending on whether the specified token
-% has been defined through the command-line *and* has been set to one of the
-% specified (immediate) values.
-%
-% If the token has been defined and set to one the values specified in the
-% table, the expression associated to this value is injected.
-%
-% Otherwise (token not set, or set to a value not listed), the specified default
-% token value (expected to be referenced in the table) applies.
-%
-% See if_defined/2 for use and caveats.
-%
+-doc """
+Includes conditionally one of the specified expressions (possibly bodies) listed
+in the token-expression table, depending on whether the specified token has been
+defined through the command-line *and* has been set to one of the specified
+(immediate) values.
+
+If the token has been defined and set to one the values specified in the table,
+the expression associated to this value is injected.
+
+Otherwise (token not set, or set to a value not listed), the specified default
+token value (expected to be referenced in the table) applies.
+
+See if_defined/2 for use and caveats.
+""".
 -spec switch_set_to( token(), token_expr_table(), value() ) -> void().
 switch_set_to( Token, _TokenExprTable, _DefaultTokenValue ) ->
 
@@ -450,15 +477,16 @@ switch_set_to( Token, _TokenExprTable, _DefaultTokenValue ) ->
 
 
 
-% @doc If in debug mode, asserts that the specified expression is true,
-% that is evaluates it at runtime and matches it with the atom 'true'.
-%
-% In debug mode (i.e. when the 'myriad_debug_mode' token has been defined), and
-% only in that mode, the check will be done (at runtime), and possibly will fail
-% by throwing a {assertion_failed, Other} exception, where Other is the actual
-% (non-true) value breaking that assertion (of course the usual stacktrace with
-% in-source locations will be available).
-%
+-doc """
+If in debug mode, asserts that the specified expression is true, that is
+evaluates it at runtime and matches it with the atom 'true'.
+
+In debug mode (i.e. when the 'myriad_debug_mode' token has been defined), and
+only in that mode, the check will be done (at runtime), and possibly will fail
+by throwing a {assertion_failed, Other} exception, where Other is the actual
+(non-true) value breaking that assertion (of course the usual stacktrace with
+in-source locations will be available).
+""".
 -spec assert( expression() ) -> void().
 assert( _Expression ) ->
 	%assert( _Token=myriad_debug_mode, Expression ).
@@ -470,12 +498,13 @@ assert( _Expression ) ->
 
 
 
-% @doc If the specified token has been defined through the command-line, asserts
-% that the specified expression is true, ithat is evaluates it at runtime and
-% matches it with the atom 'true'.
-%
-% See assert/1 for use and caveats.
-%
+-doc """
+If the specified token has been defined through the command-line, asserts that
+the specified expression is true, that is evaluates it at runtime and matches it
+with the atom 'true'.
+
+See assert/1 for use and caveats.
+""".
 -spec assert( token(), expression() ) -> void().
 assert( Token, _Expression ) ->
 
@@ -486,12 +515,19 @@ assert( Token, _Expression ) ->
 
 
 
-% @doc If the specified token has been defined through the command-line and set
-% to the specified value, asserts that the specified expression is true, that is
-% evaluates it at runtime and matches it with the atom 'true'.
-%
-% See assert/1 for use and caveats.
-%
+-doc """
+If the specified token has been defined through the command-line and set to the
+specified value, asserts that the specified expression is true, that is
+evaluates it at runtime and matches it with the atom 'true'.
+
+Note that this compile-time function compares for equality any value associated
+to the token and the specified value: it does *not* compare at runtime this
+value with the one of the specified expression; use basic_utils:assert_equal/2
+for that (possibly wrapped thanks to a token-based cond_utils:if_defined
+assertion).
+
+See assert/1 for use and caveats.
+""".
 -spec assert( token(), value(), expression() ) -> void().
 assert( Token, _Value, _Expression ) ->
 

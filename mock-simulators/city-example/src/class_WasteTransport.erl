@@ -1,26 +1,27 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling an <b>abstract waste transport</b>.
 -module(class_WasteTransport).
+
+-moduledoc "Class modelling an **abstract waste transport**.".
 
 
 -define( class_description, "Class modelling an abstract waste transport." ).
@@ -58,9 +59,11 @@
 % Type section.
 
 
+-doc """
+Describes the state (e.g. liquid, solid, etc.) of the wastes that can be
+transported.
+""".
 -type supported_waste_state() :: physical_state().
-% Describes the state (ex: liquid, solid, etc.) of the wastes that can be
-% transported.
 
 
 -export_type([ supported_waste_state/0 ]).
@@ -72,30 +75,31 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a waste transport, from following parameters:
-%
-% - InitialLocation is the (initial) location of this waste transport (generally
-% a point of interest)
-%
-% - MaxTransportedMass :: unit_utils:tons() is the maximum transported mass
-%
-% - MaxTransportedVolume :: unit_utils:cubic_meters() is the maximum
-% transported volume
-%
-% - SupportedWasteStates :: [ supported_waste_state() ] is the list of the waste
-% states this transport can support
-%
-% A waste transport is created empty.
-%
+-doc """
+Constructs a waste transport, from following parameters:
+
+- InitialLocation is the (initial) location of this waste transport (generally a
+point of interest)
+
+- MaxTransportedMass :: unit_utils:tons() is the maximum transported mass
+
+- MaxTransportedVolume :: unit_utils:cubic_meters() is the maximum transported
+volume
+
+- SupportedWasteStates :: [ supported_waste_state() ] is the list of the waste
+states this transport can support
+
+A waste transport is created empty.
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:location(),
 				 unit_utils:cubic_meters(), unit_utils:tons(),
@@ -148,7 +152,7 @@ construct( State, ActorSettings, TransportName, InitialLocation,
 % Section for member methods.
 
 
-% @doc Sends an update to the associated probe.
+-doc "Sends an update to the associated probe.".
 -spec updateProbe( wooper:state() ) -> const_oneway_return().
 updateProbe( State ) ->
 
@@ -167,13 +171,13 @@ updateProbe( State ) ->
 % Section for plain methods.
 
 
-% @doc Returns a string describing the state of this instance.
+-doc "Returns a string describing the state of this instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
 	Tank = ?getAttr(tank),
 
 	FinalString = text_utils:format( "Waste transport containing ~ts",
-					[ waste_utils:waste_tank_to_string( Tank ) ] ),
+		[ waste_utils:waste_tank_to_string( Tank ) ] ),
 
 	wooper:const_return_result( FinalString ).

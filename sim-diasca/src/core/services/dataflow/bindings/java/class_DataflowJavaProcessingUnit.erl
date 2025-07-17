@@ -1,26 +1,28 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Base class for all the <b>Java-based processing units</b>.
 -module(class_DataflowJavaProcessingUnit).
+
+-moduledoc "Base class for all the **Java-based processing units**.".
+
 
 
 -define( class_description,
@@ -33,11 +35,11 @@
 -define( superclasses, [ class_DataflowProcessingUnit ] ).
 
 
-
+-doc """
+Designates the Java reference corresponding to a processing unit instance
+(relatively to its worker thread).
+""".
 -type java_ref() :: count().
-% Designates the Java reference corresponding to a processing unit instance
-% (relatively to its worker thread).
-
 
 -export_type([ java_ref/0 ]).
 
@@ -85,13 +87,6 @@
 -include("class_DataflowBlock_defines.hrl").
 
 
-% Shorthands:
-
--type count() :: basic_utils:count().
-
--type ustring() :: text_utils:ustring().
-
-
 
 % Design notes:
 %
@@ -110,30 +105,39 @@
 % unit counterpart.
 
 
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+-type java_binding_manager_pid() :: class_JavaBindingManager:manager_pid().
 
 
-% @doc Constructs a dataflow Java processing unit.
-%
-% Parameters:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - UnitClassname is the (WOOPER) classname of this unit (of course its Java
-% counterpart must have been defined and be available); ex:
-% 'class_TransportationDemandUnit'
-%
-% - JavaConstructionParameters is the list of the construction parameters that
-% will be used to instantiate the corresponding Java processing unit instance
-% in its interpreter; the first argument must be the name of this unit, which is
-% also stored in the (Erlang) actor state
-%
-% - DataflowPid is the PID identifying the dataflow to which this processing
-% unit belongs
-%
-% - JavaBindingManagerPid is the PID of the Java binding manager in charge of
-% that actor
-%
+
+-doc """
+Constructs a dataflow Java processing unit.
+
+Parameters:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- UnitClassname is the (WOOPER) classname of this unit (of course its Java
+counterpart must have been defined and be available); e.g.
+`class_TransportationDemandUnit`
+
+- JavaConstructionParameters is the list of the construction parameters that
+will be used to instantiate the corresponding Java processing unit instance in
+its interpreter; the first argument must be the name of this unit, which is also
+stored in the (Erlang) actor state
+
+- DataflowPid is the PID identifying the dataflow to which this processing unit
+belongs
+
+- JavaBindingManagerPid is the PID of the Java binding manager in charge of that
+actor
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 dataflow_unit_type(), construction_parameters(),
 				 dataflow_pid(), java_binding_manager_pid() ) -> wooper:state().
@@ -169,7 +173,7 @@ construct( State, ActorSettings, UnitClassname,
 	% afterwards for all Java-side processings for this instance:
 	%
 	Res = java_binding_utils:execute_request_locally( instantiate_unit,
-					JavaInitialData, JavaBindingManagerPid, TraceEmitterInfo ),
+		JavaInitialData, JavaBindingManagerPid, TraceEmitterInfo ),
 
 	?debug_fmt( "Received from Java:~n~p", [ Res ] ),
 
@@ -229,11 +233,11 @@ construct( State, ActorSettings, UnitClassname,
 % Methods section.
 
 
-% @doc Callback executed automatically whenever the processing unit is
-% activated.
-%
-% Meant to be overridden.
-%
+-doc """
+Callback executed automatically whenever the processing unit is activated.
+
+Meant to be overridden.
+""".
 -spec activate( wooper:state() ) -> oneway_return().
 activate( State ) ->
 
@@ -303,7 +307,7 @@ activate( State ) ->
 	% output ports, then performs them:
 	%
 	FinalState = class_LanguageBindingManager:apply_activation_results(
-					ActivationResults, State ),
+		ActivationResults, State ),
 
 	wooper:return_state( FinalState ).
 
@@ -313,9 +317,10 @@ activate( State ) ->
 % Static section.
 
 
-% @doc To denote traces (typically error ones) that are sent from a Java unit
-% yet in a static context (hence with no sensible trace emitter name).
-%
+-doc """
+To denote traces (typically error ones) that are sent from a Java unit yet in a
+static context (hence with no sensible trace emitter name).
+""".
 -spec get_static_trace_info( dataflow_unit_type() ) ->
 									static_return( traces:emitter_info() ).
 get_static_trace_info( UnitType ) ->
@@ -328,9 +333,10 @@ get_static_trace_info( UnitType ) ->
 
 
 
-% @doc Returns the specifications for the input and output ports of that
-% dataflow processing unit.
-%
+-doc """
+Returns the specifications for the input and output ports of that dataflow
+processing unit.
+""".
 -spec get_port_specifications( dataflow_unit_type() ) ->
 	static_return( { [ input_port_spec() ], [ output_port_spec() ] }
 				 | 'no_port_specifications_declared' ).
@@ -388,14 +394,15 @@ get_port_specifications( UnitType ) ->
 
 
 
-% @doc Returns the semantics statically declared by this unit.
-%
-% Defining this method allows to ensure that all the ports ever created by this
-% unit will use semantics among this explicitly stated list.
-%
-% Otherwise the list would be deduced from the initial port specifications, with
-% no specific control.
-%
+-doc """
+Returns the semantics statically declared by this unit.
+
+Defining this method allows to ensure that all the ports ever created by this
+unit will use semantics among this explicitly stated list.
+
+Otherwise the list would be deduced from the initial port specifications, with
+no specific control.
+""".
 -spec get_declared_semantics( dataflow_unit_type() ) -> static_return(
 		class_SemanticServer:vocabulary() | 'no_semantics_declared' ).
 get_declared_semantics( UnitType ) ->
@@ -447,7 +454,7 @@ get_declared_semantics( UnitType ) ->
 
 
 
-% @doc Returns the types statically declared by this unit.
+-doc "Returns the types statically declared by this unit.".
 -spec get_declared_types( dataflow_unit_type() ) -> static_return(
 		'no_types_declared' | class_TypeServer:type_entries() ).
 get_declared_types( UnitType ) ->
@@ -503,7 +510,7 @@ get_declared_types( UnitType ) ->
 % Textual helpers section.
 
 
-% @doc Returns a textual description of this processing unit.
+-doc "Returns a textual description of this processing unit.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

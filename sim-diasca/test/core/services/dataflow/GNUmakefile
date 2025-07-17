@@ -1,11 +1,14 @@
 SIM_DIASCA_TOP = ../../../..
 
-.PHONY: stats
+.PHONY: all stats
 
 MODULES_DIRS = mockup-support
 
-include $(SIM_DIASCA_TOP)/GNUmakesettings.inc
 
+all:
 
 stats:
 	@$(MAKE_CODE_STATS) $(PWD)
+
+
+include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, October 8, 2021.
 
-
-% @doc Unit tests for the <b>quaternion</b> facilities.
-%
-% See the quaternion tested module.
-%
 -module(quaternion_test).
+
+-moduledoc """
+Unit tests for the **quaternion** facilities.
+
+See the quaternion tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -82,5 +84,8 @@ run() ->
 	Rot3FromQ = quaternion:to_rot_matrix3( UnitQ ),
 
 	true = matrix3:are_equal( DirectRot3, Rot3FromQ ),
+
+	true = matrix3:are_equal( DirectRot3,
+							  quaternion:to_rot_matrix3( UnitAxis, RadAngle ) ),
 
 	test_facilities:stop().

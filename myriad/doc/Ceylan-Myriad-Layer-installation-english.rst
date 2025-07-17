@@ -35,16 +35,16 @@ People reported uses of Myriad on ``macOS``, yet no extensive testing has been d
 Software Prerequisites
 ----------------------
 
-The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``24.0`` version [#]_ or more recent.
+The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``28.0`` version [#]_ or more recent.
 
-.. [#] Most probably that older versions of Erlang would be more than sufficient in order to build Myriad (possibly at the expense of minor changes in a few calls to standard modules having been deprecated since then). It is just that in general we prefer to stick to the latest stable versions of software such as Erlang, and advise you to do so.
+.. [#] Most probably that older versions of Erlang would be more than sufficient in order to build Myriad (possibly at the expense of minor changes in a few calls to standard modules having been deprecated since then). It is just that in general we prefer sticking to the latest stable versions of software such as Erlang, and advise you to do so.
 
-	   To determine programmatically the recommended version of Myriad-based code, just execute our `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script with its ``--version`` option (this is the sole source of reference, and is used in our full software stack).
+	   To determine programmatically the recommended version of Myriad-based code, just execute our `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script with its ``--version`` option (this is the sole source of reference, and it is used in our full software stack).
 
 
 There are various ways of obtaining it (from your distribution [#]_, from prebuilt packages, directly from the sources), one of which being the `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script that we devised.
 
-.. [#] For example, as root: ``apt-get install erlang`` on Debian, ``pacman -Sy erlang`` in Arch Linux, etc.; just ensure that its version is not outdated then. Refer to our `Erlang HOWTO <http://howtos.esperide.org/Erlang.html#installation>`_ for further details.
+.. [#] For example, as root: ``apt-get install erlang`` on Debian, ``pacman -Sy erlang`` on Arch Linux, etc.; just ensure that its version is not outdated then. Refer to `this section <http://howtos.esperide.org/Erlang.html#installation>`_ of our Erlang HOWTO for further details.
 
 
 A simple use of it is:
@@ -58,6 +58,8 @@ As using a Just-In-Time compiler increases the performances significantly, we ch
 
 One may execute ``./install-erlang.sh --help`` for more guidance about how to configure it, notably in order to enable all modules of interest (``crypto``, ``wx``, etc.). See also the `Base GUI Backend`_ section to secure any related prerequisite.
 
+By default, such an installation is done so that it requires no specific permissions, and will be available only from the account of the current user. For all uses requiring a system-wide availability of that version, root-like permissions will be needed at some point; this script shall then be run with sudo, like in: ``sudo install-erlang.sh [...]``, and for example the interpreter will be available as ``/usr/local/bin/erl``.
+
 
 
 Getting Myriad's Sources
@@ -69,7 +71,7 @@ This is pretty straightforward, based on the `project repository <https://github
 
  $ git clone https://github.com/Olivier-Boudeville/Ceylan-Myriad.git myriad
 
-This should download in your current directory the full Myriad repository. For OTP compliance, using for such a clone its short name (``myriad``) rather than its long one (``Ceylan-Myriad``) is recommended.
+This should download in your current directory the full Myriad repository. For OTP compliance, using for such a clone its short name (``myriad``) rather than its long one (``Ceylan-Myriad``) is recommended (otherwise a ``myriad`` symbolic link pointing to a Ceylan-Myriad clone of any name is sufficient).
 
 The Myriad ``master`` branch is meant to stick to the latest stable version: we try to ensure that this main line always stays functional (sorry for the pun). Evolutions are to take place in feature branches and to be merged only when ready.
 
@@ -193,6 +195,10 @@ Its content could then be for example:
 
 where the specified reference is nothing more than the corresponding Git commit that will be used in order to build that dependency (Myriad here).
 
+Myriad-based projects should better execute their (inherited, more robust/integrated) ``rebar3-upgrade-lock`` make target instead.
+
+See also our (Ceylan) `Release Conventions`_.
+
 
 :raw-html:`<a name="otp"></a>`
 
@@ -268,7 +274,7 @@ Myriad is not an *active* OTP application, and as such does not rely on, or prov
 Getting rebar3
 ..............
 
-There are `various ways <https://www.rebar3.org/docs/getting-started>`_  for obtaining ``rebar3``; we prefer:
+There are `various ways <https://www.rebar3.org/docs/getting-started>`_  of obtaining ``rebar3``; we prefer:
 
 .. code:: bash
 

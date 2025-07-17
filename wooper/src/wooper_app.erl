@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,19 +25,21 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Thursday, July 11, 2019.
 
-
-% @doc Module implementing the <b>WOOPER (active) OTP application</b> behaviour.
-%
-% Note that, thanks to the automatic creation of the class manager, WOOPER will
-% still work flawlessly even if not specifically started (typically out of any
-% OTP context).
-%
 -module(wooper_app).
+
+-moduledoc """
+Module implementing the **WOOPER (active) OTP application** behaviour.
+
+Note that, thanks to the automatic creation of the class manager, WOOPER will
+still work flawlessly even if not specifically started (typically out of any OTP
+context).
+""".
+
 
 
 % Implementing the (active, OTP) application behaviour:
 %
-% See [https://erlang.org/doc/design_principles/applications.html].
+% See <https://erlang.org/doc/design_principles/applications.html>.
 %
 -behaviour(application).
 
@@ -47,10 +49,11 @@
 
 
 
-% @doc Starts the WOOPER services.
-%
-% Note: RestartType and StartArgs at least currently ignored.
-%
+-doc """
+Starts the WOOPER services.
+
+Note: RestartType and StartArgs at least currently ignored.
+""".
 -spec start( application:start_type(), StartArgs :: term() ) -> { 'ok', pid() }
 		| { 'ok', pid(), State :: term() } | { 'error', Reason :: term() }.
 start( RestartType, StartArgs ) ->
@@ -75,7 +78,7 @@ start( RestartType, StartArgs ) ->
 
 
 
-% @doc Stops the WOOPER services.
+-doc "Stops the WOOPER services.".
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 

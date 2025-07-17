@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,23 +25,25 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2010.
 
-
-% @doc Module to create <b>WOOPER instance proxies</b>.
-%
-% The purpose of a proxy P is to be a process that acts as a man-in-the-middle
-% for a WOOPER target instance T: all processes interacting with P will actually
-% interact transparently with T.
-%
-% This can be useful when, for example, a local process (P) is needed (ex: must
-% be locally registered), whereas the actual service is implemented by a remote
-% instance (T).
-%
-% Note that this proxy is only as transparent as reasonably achievable and,
-% that, anyway, proxies are seldom satisfactory solutions.
-%
 -module(wooper_instance_proxy).
 
+-moduledoc """
+Module to create **WOOPER instance proxies**.
 
+The purpose of a proxy P is to be a process that acts as a man-in-the-middle for
+a WOOPER target instance T: all processes interacting with P will actually
+interact transparently with T.
+
+This can be useful when, for example, a local process (P) is needed (e.g. must
+be locally registered), whereas the actual service is implemented by a remote
+instance (T).
+
+Note that this proxy is only as transparent as reasonably achievable and, that,
+anyway, proxies are seldom satisfactory solutions.
+""".
+
+
+-doc "PID of a WOOPER instance proxy.".
 -type proxy_pid() :: pid().
 
 -export_type([ proxy_pid/0 ]).
@@ -50,17 +52,21 @@
 -export([ start/1, start_link/1 ]).
 
 
-% Shorthand:
+% Type shorthand:
+
 -type instance_pid() :: wooper:instance_pid().
+
 
 
 % For myriad_spawn*:
 -include_lib("myriad/include/spawn_utils.hrl").
 
 
-% @doc Starts a proxy for the specified WOOPER instance, designated by the
-% specified PID.
-%
+
+-doc """
+Starts a proxy for the specified WOOPER instance, designated by the specified
+PID.
+""".
 -spec start( instance_pid() ) -> proxy_pid().
 start( TargetInstancePid ) ->
 
@@ -73,9 +79,10 @@ start( TargetInstancePid ) ->
 
 
 
-% @doc Starts and links a proxy for the specified WOOPER instance, designated by
-% the specified PID.
-%
+-doc """
+Starts and links a proxy for the specified WOOPER instance, designated by the
+specified PID.
+""".
 -spec start_link( instance_pid() ) -> proxy_pid().
 start_link( TargetInstancePid ) ->
 
@@ -88,14 +95,13 @@ start_link( TargetInstancePid ) ->
 
 
 
-% @doc Main loop of the proxy.
+-doc "Main loop of the proxy.".
 -spec proxy_main_loop( instance_pid() ) -> no_return().
 proxy_main_loop( TargetInstancePid ) ->
 
 	trace_utils:debug_fmt(
 		"Proxy ~w waiting for a call to WOOPER target instance ~w.",
 		[ self(), TargetInstancePid ] ),
-
 
 	% This proxy is expected to receive (only) either requests or oneways:
 	receive
@@ -154,7 +160,7 @@ proxy_main_loop( TargetInstancePid ) ->
 			trace_utils:debug_fmt(
 				"Warning: WOOPER instance proxy (~w) for ~w ignored "
 				"following message: ~p.",
-			  [ self(), TargetInstancePid, Other ] ),
+			    [ self(), TargetInstancePid, Other ] ),
 
 			proxy_main_loop( TargetInstancePid )
 

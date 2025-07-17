@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,21 +25,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, June 8, 2016.
 
-
-% @doc Gathering of various facilities regarding the management of <b>SQL
-% databases</b>.
-%
-% The current implementation is mostly geared towards the use of:
-%
-% - `SQLite3' (an optional dependency), through the <a
-% href="https://github.com/alexeyr/erlang-sqlite3">erlang-sqlite3</a> binding
-%
-% - `PostgreSQL', through either its command-line client (psql; the least
-% recommended approach) or the epgsql [https://github.com/epgsql/epgsql] binding
-%
-% See `sql_support_test.erl' for the corresponding test.
-%
 -module(sql_support).
+
+-moduledoc """
+Gathering of various facilities regarding the management of **SQL databases**.
+
+The current implementation is mostly geared towards the use of:
+- `SQLite3` (an optional dependency), through the
+  [erlang-sqlite3](https://github.com/alexeyr/erlang-sqlite3) binding
+- `PostgreSQL`, through either its command-line client (psql; the least
+recommended approach) or the [epgsql](https://github.com/epgsql/epgsql) binding
+
+See `sql_support_test.erl` for the corresponding test.
+""".
 
 
 
@@ -108,175 +106,268 @@
 
 
 
+-doc """
+Designates the hostname on which a target database server instance is running.
+
+For example "baz.foobar.org."
+""".
 -type database_host_name() :: net_utils:string_host_name().
-% Designates the hostname on which a target database server instance is running.
-% For example "baz.foobar.org."
 
 
+
+-doc """
+The (TCP) port at which the target database server instance is running.
+
+For example 5432.
+""".
 -type database_port() :: net_utils:tcp_port().
-% The (TCP) port at which the target database server instance is running.
-% For example 5432.
 
 
 % No database_server() of use.
 
 
+
+-doc """
+The name of the target database instance. For example "acme_stock_db".
+
+A database instance is also designated as a catalog.
+""".
 -type database_name() :: ustring().
-% The name of the target database instance. For example "acme_stock_db".
-% A database instance is also designated as a catalog.
 
 
+
+-doc """
+The name of the target database instance. For example `<<"acme_stock_db">>`.
+
+A database instance is also designated as a catalog.
+""".
 -type bin_database_name() :: bin_string().
-% The name of the target database instance. For example `<<"acme_stock_db">>'.
-% A database instance is also designated as a catalog.
 
 
+
+-doc "Any name for a database instance.".
 -type any_database_name() :: database_name() | bin_database_name().
 
 
 
+-doc """
+A schema describes the organisation of the tables of a database. It defines a
+namespace of tables, and security boundaries.
+
+For example "customer_schema".
+""".
 -type schema_name() :: ustring().
-% A schema describes the organisation of the tables of a database. It defines a
-% namespace of tables, and security boundaries.
-% For example "customer_schema".
 
 
+
+-doc """
+A schema describes the organisation of the tables of a database. It defines a
+namespace of tables, and security boundaries.
+
+For example `<<"customer_schema">>`.
+""".
 -type bin_schema_name() :: bin_string().
-% A schema describes the organisation of the tables of a database. It defines a
-% namespace of tables, and security boundaries.
-% For example `<<"customer_schema">>'.
 
+
+-doc "Any schema name for a database.".
 -type any_schema_name() :: schema_name() | bin_schema_name().
 
 
 
+-doc """
+A table of a database contains records comprising the same number of fields.
+""".
 -type table_name() :: ustring().
-% A table of a database contains records comprising the same number of fields.
 
 
+
+-doc """
+A table of a database contains records comprising the same number of fields.
+""".
 -type bin_table_name() :: bin_string().
-% A table of a database contains records comprising the same number of fields.
 
+
+
+-doc "Any table name.".
 -type any_table_name() :: table_name() | bin_table_name().
 
 
 
-% Meaningless: -type record_name() :: ustring().
-% A record (also called a 'row' or a 'tuple') represents a single, implicitly
-% structured data item in a table.
+% Mostly meaningless:
+-doc """
+A record (also called a 'row' or a 'tuple') represents a single, implicitly
+structured data item in a table.
+""".
+-type record_name() :: ustring().
 
 
+
+-doc """
+A field (also designated as 'column' or 'attribute') represents a set of data
+values of a particular type, one value for each record of the table.
+""".
 -type field_name() :: ustring().
-% A field (also designated as 'column' or 'attribute') represents a set of data
-% values of a particular type, one value for each record of the table.
 
+
+
+-doc """
+A field (also designated as 'column' or 'attribute') represents a set of data
+values of a particular type, one value for each record of the table.
+""".
 -type bin_field_name() :: ustring().
-% A field (also designated as 'column' or 'attribute') represents a set of data
-% values of a particular type, one value for each record of the table.
 
+
+
+-doc """
+A field (also designated as 'column' or 'attribute') represents a set of data
+values of a particular type, one value for each record of the table.
+""".
 -type any_field_name() :: field_name() | bin_field_name().
-% A field (also designated as 'column' or 'attribute') represents a set of data
-% values of a particular type, one value for each record of the table.
 
 
 
-
+-doc "The settings needed to designate a database server.".
 -type database_connection_settings() :: #database_connection_settings{}.
-% The settings needed to designate a database server.
 
 
 
+-doc """
+The name of a user of a database server. For example "john_smith".
+""".
 -type database_user_name() :: ustring().
-% The name of a user of a database server. For example "john_smith".
 
+
+
+-doc "The password of a user of a database server.".
 -type database_user_password() :: ustring().
-% The password of a user of a database server.
 
+
+
+-doc "The settings corresponding to a given user of a database server.".
 -type database_user_settings() :: #database_user_settings{}.
-% The settings corresponding to a given user of a database server.
 
 
+
+-doc "All settings necessary to access a database server.".
 -type database_access_settings() ::
 		{ database_connection_settings(), database_user_settings() }.
-% All settings necessary to access a database server.
 
 
+
+-doc "The supported SQL backends (as atom names).".
 -type backend_name() :: 'sqlite3' | 'postgresql'.
-% The supported SQL backends (as atom names).
 
 
-% A PID for epgsql:
-% Not accepted: -opaque connection() :: any().
+
+% '-opaque' not accepted:
+-doc """
+Designates an (opaque, and backend-dependent) database connection handle.
+
+A PID for epgsql.
+""".
 -type connection() :: any().
-% Designates an (opaque, and backend-dependent) connection handle.
 
 
+-doc """
+A SQL query, as a string.
+
+For example `"select * from customers"`.
+""".
 -type query_string() :: ustring().
-% A SQL query, as a string.
-% For example "select * from customers".
 
 
+
+-doc "The format string to compose a query.".
 -type query_format() :: text_utils:format_string().
-% The format string to compose a query.
 
+
+
+-doc "The format values to compose a query.".
 -type query_values() :: text_utils:format_values().
-% The format values to compose a query.
 
 
 
+-doc """
+A number of database operations, typically performed in the context of a query.
+""".
 -type operation_count() :: count().
-% A number of database operations, typically performed in the context of a
-% query.
 
 
+
+-doc "The description of a field (a column).".
 -type field_description() :: #field_description{}.
-% The description of a field (a column).
 
 
 
-
+-doc "An actual record (a row).".
 -type record() :: type_utils:tuple( field_value() ).
-% An actual record (a row).
 
 
+
+-doc """
+Data as directly read, as a (prefixed) binary string containing hexadecimal
+values.
+""".
 -type read_binary() :: binary().
-% Data as directly read, as a (prefixed) binary string containing hexadecimal
-% values.
 
 
--type field_value() :: maybe( read_binary() ).
-% The value of a field in a returned record, that may be 'null', that is
-% translated here as 'undefined' (hence the maybe).
+
+-doc """
+The value of a field in a returned record, that may be 'null', that is
+translated here as 'undefined' (hence the maybe).
+""".
+-type field_value() :: option( read_binary() ).
 
 
+
+-doc "Any notion of user identifier.".
 -type user_name() :: ustring().
-% Any notion of user identifier.
 
+
+
+-doc "Any notion of user identifier.".
 -type user_id() :: count().
-% Any notion of user identifier.
 
 
 
+-doc """
+A database timestamp.
+
+For example "2021-11-08 13:33:52.895374".
+""".
 -type timestamp() :: ustring().
-% A database timestamp.
-% For example "2021-11-08 13:33:52.895374".
 
 
+
+-doc "The result of the execution of a query.".
 -type query_result() :: select_result() | update_result() | insert_result()
 					  | delete_result().
-% The result of the execution of a query.
 
+
+
+-doc "The result of a select operation.".
 -type select_result() :: { [ field_description() ], [ record() ] }.
-% The result of a select operation.
 
+
+
+-doc """
+The result of an update operation, that is the number of operations performed.
+""".
 -type update_result() :: operation_count().
-% The result of an update operation, that is the number of operations performed.
 
+
+
+-doc """
+The result of an insert operation, that is the number of operations performed.
+""".
 -type insert_result() :: operation_count().
-% The result of an insert operation, that is the number of operations performed.
 
+
+
+-doc """
+The result of a delete operation, that is the number of operations performed.
+""".
 -type delete_result() :: operation_count().
-% The result of a delete operation, that is the number of operations performed.
 
 
 
@@ -285,6 +376,7 @@
 			   schema_name/0, bin_schema_name/0, any_schema_name/0,
 			   table_name/0, bin_table_name/0, any_table_name/0,
 
+			   record_name/0,
 			   field_name/0, bin_field_name/0, any_field_name/0,
 
 			   database_connection_settings/0,
@@ -335,22 +427,24 @@
 
 
 
+
 % General support section, regarding the SQL service itself.
 
 
-
-% @doc Returns the various known SQL backend names (in general; not telling
-% whether they are available locally or not).
-%
+-doc """
+Returns the various known SQL backend names (in general; not telling whether
+they are available locally or not).
+""".
 -spec list_possible_backend_names() -> [ backend_name() ].
 list_possible_backend_names() ->
 	[ sqlite3, postgresql ].
 
 
 
-% @doc Tells whether, from the point of view of Myriad, the specified SQL
-% backend is available (that is currently and locally, at runtime).
-%
+-doc """
+Tells whether, from the point of view of Myriad, the specified SQL backend is
+available (that is currently and locally, at runtime).
+""".
 -spec has_backend( backend_name() ) -> boolean().
 has_backend( BackendName ) ->
 
@@ -385,8 +479,10 @@ has_backend( BackendName ) ->
 
 
 
-% @doc Returns the type of the currently used (build-time) SQL backend (if any).
--spec get_backend_name() -> maybe( backend_name() ).
+-doc """
+Returns the type of the currently used (build-time) SQL backend (if any).
+""".
+-spec get_backend_name() -> option( backend_name() ).
 get_backend_name() ->
 	cond_utils:switch_set_to( myriad_sql_backend, [
 
@@ -401,7 +497,7 @@ get_backend_name() ->
 
 
 
-% @doc Starts (checks and inits) the SQL service support.
+-doc "Starts (checks and inits) the SQL service support.".
 -spec start() -> void().
 start() ->
 	cond_utils:switch_set_to( myriad_sql_backend, [
@@ -427,14 +523,15 @@ start() ->
 
 
 
-% @doc Connects to the specified database, with a default time-out.
+-doc "Connects to the specified database, with a default time-out.".
 -spec connect( database_connection_settings(), database_user_settings() ) ->
 							fallible( connection() ).
 connect( ConnSettings, UserSettings ) ->
 	connect( ConnSettings, UserSettings, _TimeOutMs=5000 ).
 
 
-% @doc Connects to the specified database, with specified time-out.
+
+-doc "Connects to the specified database, with the specified time-out.".
 -spec connect( database_connection_settings(), database_user_settings(),
 			   time_out() ) -> fallible( connection() ).
 connect( ConnSettings=#database_connection_settings{ host_name=HostnameStr,
@@ -497,7 +594,7 @@ connect( ConnSettings=#database_connection_settings{ host_name=HostnameStr,
 
 
 
-% @doc Executes the specified SQL query based on the specified connection.
+-doc "Executes the specified SQL query based on the specified connection.".
 -spec execute_query( connection(), query_string() ) ->
 											fallible( query_result() ).
 execute_query( Conn, Query ) ->
@@ -554,9 +651,9 @@ execute_query( Conn, Query ) ->
 
 
 
-% @doc Executes the specified SQL query to formant, based on the specified
-% connection.
-%
+-doc """
+Executes the specified SQL query to formant, based on the specified connection.
+""".
 -spec execute_query( connection(), query_format(), query_values() ) ->
 											fallible( query_result() ).
 execute_query( Conn, QueryFormat, QueryValues ) ->
@@ -564,9 +661,10 @@ execute_query( Conn, QueryFormat, QueryValues ) ->
 
 
 
-% @doc Returns a list of all the database instances hosted by the database
-% server designated by the specified connection.
-%
+-doc """
+Returns a list of all the database instances hosted by the database server
+designated by the specified connection.
+""".
 -spec list_database_names( connection() ) ->
 											fallible( [ bin_database_name() ] ).
 list_database_names( Conn ) ->
@@ -606,11 +704,12 @@ list_database_names( Conn ) ->
 
 
 
-% @doc Returns a list of the names of all the existing schemas in the database
-% instance of the database server designated by the specified connection.
-%
-% For example `[<<"pg_catalog">>, <<"information_schema">>, <<"public">>]'.
-%
+-doc """
+Returns a list of the names of all the existing schemas in the database instance
+of the database server designated by the specified connection.
+
+For example `[<<"pg_catalog">>, <<"information_schema">>, <<"public">>]`.
+""".
 -spec list_schema_names( connection(), any_database_name() ) ->
 											fallible( [ bin_schema_name() ] ).
 list_schema_names( Conn, DbInstanceName ) ->
@@ -656,10 +755,11 @@ list_schema_names( Conn, DbInstanceName ) ->
 
 
 
-% @doc Returns a list of the names of all the existing tables in the specified
-% schema of the specified database instance of the database server designated by
-% the specified connection.
-%
+-doc """
+Returns a list of the names of all the existing tables in the specified schema
+of the specified database instance of the database server designated by the
+specified connection.
+""".
 -spec list_table_names( connection(), bin_database_name(),
 						bin_schema_name() ) -> fallible( [ bin_table_name() ] ).
 list_table_names( Conn, DbInstanceName, SchemaName ) ->
@@ -712,11 +812,12 @@ list_table_names( Conn, DbInstanceName, SchemaName ) ->
 
 
 
-% @doc Returns the actual binary that is stored in a database data field, from
-% the one directly read (with is prefixed and in hexadecimal character).
-%
-% Refer to the 'Binary extraction' section above for further details.
-%
+-doc """
+Returns the actual binary that is stored in a database data field, from the one
+directly read (with is prefixed and in hexadecimal character).
+
+Refer to the 'Binary extraction' section above for further details.
+""".
 -spec get_data( read_binary() ) -> binary().
 get_data( ReadBinString ) ->
 
@@ -731,7 +832,7 @@ get_data( ReadBinString ) ->
 
 
 
-% @doc Closes the specified database connection.
+-doc "Closes the specified database connection.".
 -spec close( connection() ) -> base_status().
 close( Conn ) ->
 
@@ -759,7 +860,7 @@ close( Conn ) ->
 
 
 
-% @doc Stops the SQL support.
+-doc "Stops the SQL support.".
 -spec stop() -> void().
 stop() ->
 	cond_utils:if_defined( myriad_debug_sql_support,
@@ -768,9 +869,9 @@ stop() ->
 
 
 
-% @doc Returns a textual description of the specified database connection
-% settings.
-%
+-doc """
+Returns a textual description of the specified database connection settings.
+""".
 -spec connection_settings_to_string( database_connection_settings() ) ->
 											ustring().
 connection_settings_to_string( #database_connection_settings{
@@ -793,7 +894,7 @@ connection_settings_to_string( #database_connection_settings{
 
 
 
-% @doc Returns a textual description of the specified database user settings.
+-doc "Returns a textual description of the specified database user settings.".
 -spec user_settings_to_string( database_user_settings() ) -> ustring().
 user_settings_to_string( #database_user_settings{
 							user_name=UserName,

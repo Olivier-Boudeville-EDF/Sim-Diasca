@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Provides a <b>probe infrastructure relying on a database</b>.
 -module(class_DataLogger).
+
+-moduledoc "Provides a **probe infrastructure relying on a database**.".
 
 
 -define( class_description,
@@ -119,7 +119,7 @@
 	{ probe_table, dict:dict(), "a table that associates, to a virtual "
 	  "probe id, the corresponding virtual probe record" },
 
-	{ maybe_tick_duration, maybe( virtual_seconds() ),
+	{ maybe_tick_duration, option( virtual_seconds() ),
 	  "the actual duration, in floating-point seconds (in virtual time), "
 	  "between two simulation ticks (allows to better label the abscissa "
 	  "axis with actual timestamps rather than mere ticks)" },
@@ -151,11 +151,11 @@
 % TO-DO: replace 'dict' with 'table'.
 
 
-% Unsigned integer, used as an incrementing counter:
+-doc "Unsigned integer, used as an incrementing counter.".
 -type virtual_probe_id() :: count().
 
 
-% Returned when requesting the creation of a virtual probe:
+-doc "Returned when requesting the creation of a virtual probe.".
 -type virtual_probe_reference() :: 'non_wanted_virtual_probe'
 								 | { datalogger_pid(), virtual_probe_id() }.
 
@@ -224,12 +224,14 @@
 	render_settings :: probe_settings() } ).
 
 
+-doc """
+Data structure maintained by the datalogger to record information about probe
+counterparts: not real, basic probes, but emulation thereof, called virtual
+probes.
+
+The probe owner (PID) is not recorded here.
+""".
 -type virtual_probe() :: #virtual_probe{}.
-% Data structure maintained by the datalogger to record information about probe
-% counterparts: not real, basic probes, but emulation thereof, called virtual
-% probes.
-%
-% The probe owner (PID) is not recorded here.
 
 
 
@@ -243,8 +245,8 @@
 	sample_data :: sample_data() } ).
 
 
+-doc "Describes an entry of the table created for a virtual probe.".
 -type probe_sample() :: #probe_sample{}.
-% Describes an entry of the table created for a virtual probe.
 
 
 -export_type([ datalogger_pid/0, virtual_probe_reference/0, probe_sample/0 ]).
@@ -366,12 +368,12 @@
 % selected results.
 
 
+-doc "How a datalogger can be registered.".
 -type registration_options() :: registration_name()
 	| { registration_name(), naming_utils:registration_scope() }.
-% How a datalogger can be registered.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
@@ -399,18 +401,19 @@
 -type probe_tick() :: class_Probe:probe_tick().
 -type sample_data() :: class_Probe:sample_data().
 
-%class_Probe:zone_entries()
 
-% @doc Constructs a datalogger.
-%
-% RegistrationOptions is:
-%
-% - either Name, corresponding to the name of this datalogger (specified as an
-% atom), under which it will register (globally) to
-%
-% - or {Name, RegistrationPolicy}, with RegistrationPolicy being in
-% 'local_only', 'global_only', 'local_and_global', or 'none'
-%
+
+-doc """
+Constructs a datalogger.
+
+RegistrationOptions is:
+
+- either Name, corresponding to the name of this datalogger (specified as an
+atom), under which it will register (globally) to
+
+- or {Name, RegistrationPolicy}, with RegistrationPolicy being in 'local_only',
+'global_only', 'local_and_global', or 'none'
+""".
 -spec construct( wooper:state(), registration_options(), meta_data() ) ->
 										wooper:state().
 construct( State, _RegistrationOptions={ Name, RegistrationType }, MetaData ) ->
@@ -465,7 +468,7 @@ construct( State, _RegistrationOptions=Name, MetaData ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -507,19 +510,19 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Creates a virtual probe, with specified name (specified as a binary),
-% from specified node.
-%
-% Usually the node of the probe owner is specified, so that the sending of
-% samples remains local, node-wise.
-%
-% Returns the ID of this new virtual probe, or the 'non_wanted_virtual_probe'
-% atom should the result manager determine this probe will not be an awaited
-% result.
-%
-% See the create_virtual_probe/6 static method, preferably to one to be
-% called from the user code.
-%
+-doc """
+Creates a virtual probe, with the specified name (specified as a binary), from
+specified node.
+
+Usually the node of the probe owner is specified, so that the sending of samples
+remains local, node-wise.
+
+Returns the ID of this new virtual probe, or the 'non_wanted_virtual_probe' atom
+should the result manager determine this probe will not be an awaited result.
+
+See the create_virtual_probe/6 static method, preferably to one to be called
+from the user code.
+""".
 -spec createVirtualProbe( wooper:state(), bin_string(), atom_node_name(),
 		[ declared_curve_name() ], [ class_Probe:declared_zone() ],
 		title(), label(), label() ) ->
@@ -642,22 +645,23 @@ createVirtualProbe( State, BinProbeName, Node, CurveNames, Zones, Title,
 
 
 
-% @doc Registers specified data sample for specified tick.
-%
-% This is an asynchronous (non-blocking) call, therefore it does not incur the
-% overhead of the sending back of a synchronisation acknowledgement when the
-% operation is over. On the other hand, no flow control can exist and too many
-% simultaneous writers may outpace the database. See setDataSynchronous/4 for
-% the synchronous (blocking) version of that operation.
-%
-% The specified sample will overwrite any previously defined entry for that
-% tick. See mergeData/4 if not wanting this.
-%
-% The operation should preferably be done directly by the process that feeds the
-% virtual probe, to avoid that the datalogger becomes a bottleneck and also to
-% avoid that useless messages are sent over the network (knowing that usually
-% the feeder process and the probe table are by design on the same node).
-%
+-doc """
+Registers the specified data sample for the specified tick.
+
+This is an asynchronous (non-blocking) call, therefore it does not incur the
+overhead of the sending back of a synchronisation acknowledgement when the
+operation is over. On the other hand, no flow control can exist and too many
+simultaneous writers may outpace the database. See setDataSynchronous/4 for the
+synchronous (blocking) version of that operation.
+
+The specified sample will overwrite any previously defined entry for that
+tick. See mergeData/4 if not wanting this.
+
+The operation should preferably be done directly by the process that feeds the
+virtual probe, to avoid that the datalogger becomes a bottleneck and also to
+avoid that useless messages are sent over the network (knowing that usually the
+feeder process and the probe table are by design on the same node).
+""".
 -spec setData( wooper:state(), virtual_probe_id(), probe_tick(),
 			   sample_data() ) -> const_oneway_return().
 setData( State, ProbeID, Tick, Sample ) ->
@@ -678,23 +682,24 @@ setData( State, ProbeID, Tick, Sample ) ->
 
 
 
-% @doc Registers specified data sample for specified tick.
-%
-% This is a synchronous (blocking) call, therefore it incurs the overhead of the
-% sending back of a synchronisation acknowledgement when the operation is
-% over. On the other hand, this allows to perform a form of flow control, so
-% that too many simultaneous writers would have to wait for the database to
-% finish, avoid then a possible failure. See setData/4 for the asynchronous
-% (non-blocking) version of that operation.
-%
-% The specified sample will overwrite any previously defined entry for that
-% tick. See mergeData/4 if not wanting this.
-%
-% The operation should preferably be done directly by the process that feeds the
-% virtual probe, to avoid that the datalogger becomes a bottleneck and also to
-% avoid that useless messages are sent over the network (knowing that usually
-% the feeder process and the probe table are by design on the same node).
-%
+-doc """
+Registers the specified data sample for the specified tick.
+
+This is a synchronous (blocking) call, therefore it incurs the overhead of the
+sending back of a synchronisation acknowledgement when the operation is over. On
+the other hand, this allows to perform a form of flow control, so that too many
+simultaneous writers would have to wait for the database to finish, avoid then a
+possible failure. See setData/4 for the asynchronous (non-blocking) version of
+that operation.
+
+The specified sample will overwrite any previously defined entry for that
+tick. See mergeData/4 if not wanting this.
+
+The operation should preferably be done directly by the process that feeds the
+virtual probe, to avoid that the datalogger becomes a bottleneck and also to
+avoid that useless messages are sent over the network (knowing that usually the
+feeder process and the probe table are by design on the same node).
+""".
 -spec setDataSynchronous( wooper:state(), virtual_probe_id(),
 						  probe_tick(), sample_data() ) ->
 					const_request_return( 'datalogging_set_done' ).
@@ -717,23 +722,23 @@ setDataSynchronous( State, ProbeID, Tick, Sample ) ->
 
 
 
-% @doc Merges specified data sample for specified tick.
-%
-% This is an asynchronous (non-blocking) call, therefore it does not incur the
-% overhead of the sending back of a synchronisation acknowledgement when the
-% operation is over. On the other hand, no flow control can exist and too many
-% simultaneous writers may outpace the database. See mergeDataSynchronous/4 for
-% the synchronous (blocking) version of that operation.
-%
-% Any sample element not set to 'undefined' in the specified sample will fill
-% any sample element set to 'undefined' at the same index on the already
-% existing sample entry (if any). If the pre-existing value is not 'undefined',
-% then an exception is thrown (even if we try to replace that value with the
-% same value).
-%
-% Note: merging samples involves a read-modify-write operation, thus a
-% transaction, thus it is far more expensive than setData/4.
-%
+-doc """
+Merges the specified data sample for the specified tick.
+
+This is an asynchronous (non-blocking) call, therefore it does not incur the
+overhead of the sending back of a synchronisation acknowledgement when the
+operation is over. On the other hand, no flow control can exist and too many
+simultaneous writers may outpace the database. See mergeDataSynchronous/4 for
+the synchronous (blocking) version of that operation.
+
+Any sample element not set to 'undefined' in the specified sample will fill any
+sample element set to 'undefined' at the same index on the already existing
+sample entry (if any). If the pre-existing value is not 'undefined', then an
+exception is thrown (even if we try to replace that value with the same value).
+
+Note: merging samples involves a read-modify-write operation, thus a
+transaction, thus it is far more expensive than setData/4.
+""".
 -spec mergeData( wooper:state(), virtual_probe_id(), probe_tick(),
 				 sample_data() ) -> const_oneway_return().
 mergeData( State, ProbeID, Tick, Sample ) ->
@@ -757,24 +762,23 @@ mergeData( State, ProbeID, Tick, Sample ) ->
 
 
 
-% @doc Merges specified data sample for specified tick.
-%
-% This is a synchronous (blocking) call, therefore it incurs the overhead of the
-% sending back of a synchronisation acknowledgement when the operation is
-% over. On the other hand, this allows to perform a form of flow control, so
-% that too many simultaneous writers will have to wait for the database to
-% finish. See mergeData/4 for the asynchronous (non-blocking) version of that
-% operation.
-%
-% Any sample element not set to 'undefined' in the specified sample will fill
-% any sample element set to 'undefined' at the same index on the already
-% existing sample entry (if any). If the pre-existing value is not 'undefined',
-% then an exception is thrown (even if we try to replace that value with the
-% same value).
-%
-% Note: merging samples involves a read-modify-write operation, thus a
-% transaction, thus it is far more expensive than setData.
-%
+-doc """
+Merges the specified data sample for the specified tick.
+
+This is a synchronous (blocking) call, therefore it incurs the overhead of the
+sending back of a synchronisation acknowledgement when the operation is over. On
+the other hand, this allows to perform a form of flow control, so that too many
+simultaneous writers will have to wait for the database to finish. See
+mergeData/4 for the asynchronous (non-blocking) version of that operation.
+
+Any sample element not set to 'undefined' in the specified sample will fill any
+sample element set to 'undefined' at the same index on the already existing
+sample entry (if any). If the pre-existing value is not 'undefined', then an
+exception is thrown (even if we try to replace that value with the same value).
+
+Note: merging samples involves a read-modify-write operation, thus a
+transaction, thus it is far more expensive than setData.
+""".
 -spec mergeDataSynchronous( wooper:state(), virtual_probe_id(),
 							probe_tick(), sample_data() ) ->
 					const_request_return( 'datalogging_merge_done' ).
@@ -801,17 +805,17 @@ mergeDataSynchronous( State, ProbeID, Tick, Sample ) ->
 
 
 
-% @doc Declares an additional curve, whose name is specified, to the specified
-% virtual probe.
-%
-% By default it will be rendered after the already declared curves.
-%
-% Note: all samples received afterwards are then expected to take it into
-% account (i.e. sending one more value, or the atom 'undefined', for that
-% curve).
-%
-% Probe options will not be modified.
-%
+-doc """
+Declares an additional curve, whose name is specified, to the specified virtual
+probe.
+
+By default it will be rendered after the already declared curves.
+
+Note: all samples received afterwards are then expected to take it into account
+(i.e. sending one more value, or the atom 'undefined', for that curve).
+
+Probe options will not be modified.
+""".
 -spec addCurve( wooper:state(), virtual_probe_id(),
 				declared_curve_name() ) -> oneway_return().
 addCurve( State, ProbeID, CurveName ) ->
@@ -837,12 +841,13 @@ addCurve( State, ProbeID, CurveName ) ->
 
 
 
-% @doc Returns the list of curve names, as plain strings, sorted according to
-% current rendering order, for the specified virtual probe.
-%
-% Useful then to reorder them and then to set them back thanks to
-% setCurveRenderOrder/3.
-%
+-doc """
+Returns the list of curve names, as plain strings, sorted according to current
+rendering order, for the specified virtual probe.
+
+Useful then to reorder them and then to set them back thanks to
+setCurveRenderOrder/3.
+""".
 -spec getCurveRenderOrder( wooper:state(), virtual_probe_id() ) ->
 				const_request_return( [ string_curve_name() ] ).
 getCurveRenderOrder( State, ProbeID ) ->
@@ -852,18 +857,19 @@ getCurveRenderOrder( State, ProbeID ) ->
 
 	% Get rid of the curve index, order preserved:
 	PlainNames = [ text_utils:binary_to_string( element( 2, CurveEntry ) )
-					|| CurveEntry <- CurveEntries ],
+					    || CurveEntry <- CurveEntries ],
 
 	wooper:const_return_result( PlainNames ).
 
 
 
-% @doc Sets the list of curve names, sorted according to the desired rendering
-% order, for the specified virtual probe.
-%
-% Names is a list of plain strings that must correspond to a permutation of the
-% list that would be returned by getCurveNames/2.
-%
+-doc """
+Sets the list of curve names, sorted according to the desired rendering order,
+for the specified virtual probe.
+
+Names is a list of plain strings that must correspond to a permutation of the
+list that would be returned by getCurveNames/2.
+""".
 -spec setCurveRenderOrder( wooper:state(), virtual_probe_id(),
 						   [ string_curve_name() ] ) -> oneway_return().
 setCurveRenderOrder( State, ProbeID, Names ) ->
@@ -895,13 +901,13 @@ setCurveRenderOrder( State, ProbeID, Names ) ->
 
 
 
-% @doc Returns the table name corresponding to the specified virtual probe
-% identifier.
-%
-% Useful to use as a synchronizer: can be performed afterwards direct (thus
-% efficient) operations on the table, see the send_data/3,
-% set_data_synchronous/3 and merge_data_synchronous/3 static methods.
-%
+-doc """
+Returns the table name corresponding to the specified virtual probe identifier.
+
+Useful to use as a synchronizer: can be performed afterwards direct (thus
+efficient) operations on the table, see the send_data/3, set_data_synchronous/3
+and merge_data_synchronous/3 static methods.
+""".
 -spec getProbeTable( wooper:state(), virtual_probe_id() ) ->
 							const_request_return( table_name() ).
 getProbeTable( State, ProbeID ) ->
@@ -912,9 +918,10 @@ getProbeTable( State, ProbeID ) ->
 
 
 
-% @doc Sets the plot settings to the ones specified as a plain string (e.g.
-% "histograms") for the specified virtual probe.
-%
+-doc """
+Sets the plot settings to the ones specified as a plain string
+(e.g. "histograms") for the specified virtual probe.
+""".
 -spec setPlotStyle( wooper:state(), virtual_probe_id(), ustring() ) ->
 							oneway_return().
 setPlotStyle( State, ProbeID, NewPlotStyle ) ->
@@ -934,9 +941,10 @@ setPlotStyle( State, ProbeID, NewPlotStyle ) ->
 
 
 
-% @doc Sets the fill settings, specified as a plain string (e.g. "solid 1.0
-% border -1") for the specified virtual probe.
-%
+-doc """
+Sets the fill settings, specified as a plain string (e.g. "solid 1.0 border -1")
+for the specified virtual probe.
+""".
 -spec setFillStyle( wooper:state(), virtual_probe_id(), ustring() ) ->
 											oneway_return().
 setFillStyle( State, ProbeID, NewFillStyle ) ->
@@ -956,7 +964,7 @@ setFillStyle( State, ProbeID, NewFillStyle ) ->
 
 
 
-% @doc Sets the size of the probe reports (canvas), in pixels.
+-doc "Sets the size of the probe reports (canvas), in pixels.".
 -spec setCanvasSize( wooper:state(), virtual_probe_id(), length(), length() ) ->
 											oneway_return().
 setCanvasSize( State, ProbeID, NewWidth, NewHeight ) ->
@@ -968,7 +976,7 @@ setCanvasSize( State, ProbeID, NewWidth, NewHeight ) ->
 	Settings = ProbeRecord#virtual_probe.render_settings,
 
 	NewSettings = Settings#plot_settings{ canvas_width=NewWidth,
-										   canvas_height=NewHeight },
+                                          canvas_height=NewHeight },
 
 	NewProbeRecord = ProbeRecord#virtual_probe{ render_settings=NewSettings },
 
@@ -978,9 +986,10 @@ setCanvasSize( State, ProbeID, NewWidth, NewHeight ) ->
 
 
 
-% @doc Sets the key (legend) settings, specified as a plain string (e.g. "inside
-% left") for the specified virtual probe.
-%
+-doc """
+Sets the key (legend) settings, specified as a plain string (e.g. "inside left")
+for the specified virtual probe.
+""".
 -spec setKeyOptions( wooper:state(), virtual_probe_id(), ustring() ) ->
 							oneway_return().
 setKeyOptions( State, ProbeID, NewOptions ) ->
@@ -1000,14 +1009,15 @@ setKeyOptions( State, ProbeID, NewOptions ) ->
 
 
 
-% @doc Sends the specified results to the caller (generally the result manager);
-% implies generating the results of all virtual probes.
-%
-% Specified options are ignored, as each virtual probe is already associated to
-% relevant ones.
-%
-% (request, for synchronous yet concurrent operations)
-%
+-doc """
+Sends the specified results to the caller (generally the result manager);
+implies generating the results of all virtual probes.
+
+Specified options are ignored, as each virtual probe is already associated to
+relevant ones.
+
+(request, for synchronous yet concurrent operations)
+""".
 -spec sendResults( wooper:state(), list() ) ->
 	request_return( { pid(), 'no_result' } | { pid(), 'archive', binary() } ).
 sendResults( State, _Options ) ->
@@ -1059,12 +1069,13 @@ sendResults( State, _Options ) ->
 
 
 
-% @doc Manages the result from the specified probe, with the specified options.
-%
-% Returns a list of corresponding files, to be retrieved to the user node.
-%
-% (const helper function)
-%
+-doc """
+Manages the result from the specified probe, with the specified options.
+
+Returns a list of corresponding files, to be retrieved to the user node.
+
+(const helper function)
+""".
 manage_probe_result( ProbeRecord, [ rendering_only ], State ) ->
 
 	% Generates everything, but select just the report for sending:
@@ -1115,9 +1126,10 @@ manage_probe_result( ProbeRecord, [ data_and_rendering ], State ) ->
 
 
 
-% @doc Generates a report corresponding to the current state of the specified
-% virtual probe, and displays the result (the image) to the user.
-%
+-doc """
+Generates a report corresponding to the current state of the specified virtual
+probe, and displays the result (the image) to the user.
+""".
 -spec generateReport( wooper:state(), virtual_probe_id() ) ->
 			request_return( 'probe_report_generated' ).
 generateReport( State, ProbeID ) ->
@@ -1127,13 +1139,14 @@ generateReport( State, ProbeID ) ->
 
 
 
-% @doc Generates a report corresponding to the current state of this probe.
-%
-% DisplayWanted is a boolean telling whether the generated report will be
-% displayed to the user (if true).
-%
-% Returns the 'probe_report_generated' atom, merely for synchronisation purpose.
-%
+-doc """
+Generates a report corresponding to the current state of this probe.
+
+DisplayWanted is a boolean telling whether the generated report will be
+displayed to the user (if true).
+
+Returns the 'probe_report_generated' atom, merely for synchronisation purpose.
+""".
 -spec generateReport( wooper:state(), virtual_probe_id(), boolean() ) ->
 			const_request_return( 'probe_report_generated' ).
 generateReport( State, ProbeID, DisplayWanted ) ->
@@ -1153,11 +1166,12 @@ generateReport( State, ProbeID, DisplayWanted ) ->
 % Static methods:
 
 
-% @doc Creates the main (default) datalogger on the specified node, specified as
-% an atom.
-%
-% Note: the created instance is linked to the caller process.
-%
+-doc """
+Creates the main (default) datalogger on the specified node, specified as an
+atom.
+
+Note: the created instance is linked to the caller process.
+""".
 -spec create_main_datalogger( atom_node_name(), meta_data() ) ->
 										static_return( datalogger_pid() ).
 create_main_datalogger( Node, MetaData ) ->
@@ -1169,9 +1183,10 @@ create_main_datalogger( Node, MetaData ) ->
 
 
 
-% @doc Returns the PID of the main datalogger, which is to be created by default
-% at deployment time.
-%
+-doc """
+Returns the PID of the main datalogger, which is to be created by default at
+deployment time.
+""".
 -spec get_main_datalogger() -> static_return( datalogger_pid() ).
 get_main_datalogger() ->
 
@@ -1200,15 +1215,15 @@ get_main_datalogger() ->
 
 
 
-% @doc Returns the inter-node time-out, depending on the execution target: the
-% number of seconds for the Erlang kernel tick time, so that Erlang nodes can
-% monitor others.
-%
-% We selected on purpose durations lower than the ones for the actor creation
-% time-outs (which are ultimately the WOOPER synchronous_time_out define), so
-% that we can display a more relevant error message (i.e. no datalogger
-% enabled).
-%
+-doc """
+Returns the inter-node time-out, depending on the execution target: the number
+of seconds for the Erlang kernel tick time, so that Erlang nodes can monitor
+others.
+
+We selected on purpose durations lower than the ones for the actor creation
+time-outs (which are ultimately the WOOPER synchronous_time_out define), so that
+we can display a more relevant error message (i.e. no datalogger enabled).
+""".
 -spec get_data_logger_look_up_time_out() ->
 								static_return( unit_utils:seconds() ).
 
@@ -1226,48 +1241,48 @@ get_data_logger_look_up_time_out() ->
 
 
 
-% @doc Creates (synchronously) a (virtual) probe, using the (default) main data
-% logger:
-%
-% - ProbeName is the name, as a plain string, of that virtual probe (useful to
-% match against the result specification)
-%
-% - CurveNames is a list containing the ordered names (as plain strings) of each
-% curve to be drawn (hence the probe will expect receiving data in the form
-% {Tick, {V1,V2,..} }); e.g. ["First curve", "Second curve"]
-%
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName, {
-% ExtendedCurveNameOne, ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
+-doc """
+Creates (synchronously) a (virtual) probe, using the (default) main data logger:
 
-% - Title will be the graph title
-%
-% - XLabel will be the label of the abscissa axis
-%
-% - YLabel will be the label of the ordinate axis
-%
-% Returns either:
-%
-% - if the name of that virtual probe is acknowledged as a wanted result by the
-% result manager, a {DataLoggerPid, VirtualProbeID} pair, where DataLoggerPid is
-% the PID of the main datalogger and VirtualProbeID is the virtual probe
-% identifier, both of which are needed to send samples afterwards
-%
-% - if the result manager determined that this virtual probe is of no use in
-% terms of results, the atom 'non_wanted_virtual_probe' is returned
-%
-% Throws an exception on failure.
-%
-% This is the recommended function to call from the user code, possibly as a
-% replacement to the creation of a class_Probe instance.
-%
+- ProbeName is the name, as a plain string, of that virtual probe (useful to
+match against the result specification)
+
+- CurveNames is a list containing the ordered names (as plain strings) of each
+curve to be drawn (hence the probe will expect receiving data in the form {Tick,
+{V1,V2,..} }); e.g. ["First curve", "Second curve"]
+
+- Zones, which correspond to specific areas between two curves being defined,
+are specified as a (potentially empty) list of {ZoneName, {
+ExtendedCurveNameOne, ExtendedCurveNameTwo}} entries, where ZoneName is the name
+of this zone (as a plain string), and ExtendedCurveNameOne and
+ExtendedCurveNameTwo are each either a plain string designating a curve (e.g.
+"Second curve") already defined in CurveNames, or a special atom designating the
+plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For example
+{"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named "My Zone"
+and delimited by the curve named "First curve" and the abscissa axis (note: the
+order between the two elements defining a zone does not matter)
+
+- Title will be the graph title
+
+- XLabel will be the label of the abscissa axis
+
+- YLabel will be the label of the ordinate axis
+
+Returns either:
+
+- if the name of that virtual probe is acknowledged as a wanted result by the
+result manager, a {DataLoggerPid, VirtualProbeID} pair, where DataLoggerPid is
+the PID of the main datalogger and VirtualProbeID is the virtual probe
+identifier, both of which are needed to send samples afterwards
+
+- if the result manager determined that this virtual probe is of no use in terms
+of results, the atom 'non_wanted_virtual_probe' is returned
+
+Throws an exception on failure.
+
+This is the recommended function to call from the user code, possibly as a
+replacement to the creation of a class_Probe instance.
+""".
 -spec create_virtual_probe( probe_name(), [ declared_curve_name() ],
 		class_Probe:zone_entries(), title(), label(), label() ) ->
 									static_return( virtual_probe_reference() ).
@@ -1302,13 +1317,14 @@ create_virtual_probe( ProbeName, CurveEntries, ZoneEntries, Title, XLabel,
 
 
 
-% @doc Sends the specified sample data for the specified tick to the targeted
-% probe, based on the specified probe reference (first parameter), which is the
-% value returned by the result manager in answer to the initial creation request
-% for that probe (this reference is either an actual PID - then data will be
-% sent by this method, or the 'non_wanted_probe' atom - in which case nothing
-% will be done), or directly the name of a table.
-%
+-doc """
+Sends the specified sample data for the specified tick to the targeted probe,
+based on the specified probe reference (first parameter), which is the value
+returned by the result manager in answer to the initial creation request for
+that probe (this reference is either an actual PID - then data will be sent by
+this method, or the 'non_wanted_probe' atom - in which case nothing will be
+done), or directly the name of a table.
+""".
 -spec send_data( virtual_probe_reference() | table_name(),
 				 probe_tick(), sample_data() ) -> static_void_return().
 
@@ -1337,18 +1353,19 @@ send_data( ProbeTable, Tick, Samples ) when is_atom( ProbeTable ) ->
 
 
 
-% @doc Registers specified data sample for specified tick.
-%
-% This is a synchronous (blocking) call, as it is evaluated directly in - and
-% from - the calling process.
-%
-% The specified sample will overwrite any previously defined entry for that
-% tick. See merge_data_synchronous/3 if not wanting this.
-%
-% The operation should preferably be done directly from the same node as the one
-% from which the corresponding virtual probe was created, since then the sample
-% table will be local.
-%
+-doc """
+Registers specified data sample for the specified tick.
+
+This is a synchronous (blocking) call, as it is evaluated directly in - and from
+- the calling process.
+
+The specified sample will overwrite any previously defined entry for that
+tick. See merge_data_synchronous/3 if not wanting this.
+
+The operation should preferably be done directly from the same node as the one
+from which the corresponding virtual probe was created, since then the sample
+table will be local.
+""".
 -spec set_data_synchronous( table_name(), probe_tick(), sample_data() ) ->
 									static_void_return().
 set_data_synchronous( ProbeTable, Tick, Sample ) ->
@@ -1357,25 +1374,26 @@ set_data_synchronous( ProbeTable, Tick, Sample ) ->
 
 
 
-% @doc Merges specified data sample for specified tick.
-%
-% This is a synchronous (blocking) call, as it is evaluated directly in - and
-% from - the calling process.
-%
-% Any sample element not set to 'undefined' in the specified sample will fill
-% any sample element set to 'undefined' at the same index on the already
-% existing sample entry (if any). If the pre-existing value is not 'undefined',
-% then an exception is thrown (even if we try to replace that value with the
-% same value). See set_data_synchronous/3 if knowing that no prior entry can
-% exist, or if not wanting to merge but to replace past sample entry.
-%
-% The operation should preferably be done directly from the same node as the one
-% from which the corresponding virtual probe was created, since then the sample
-% table will be local.
-%
-% Note: merging samples involves a read-modify-write operation, thus a
-% transaction, thus it is far more expensive than just setting data.
-%
+-doc """
+Merges specified data sample for the specified tick.
+
+This is a synchronous (blocking) call, as it is evaluated directly in - and from
+- the calling process.
+
+Any sample element not set to 'undefined' in the specified sample will fill any
+sample element set to 'undefined' at the same index on the already existing
+sample entry (if any). If the pre-existing value is not 'undefined', then an
+exception is thrown (even if we try to replace that value with the same
+value). See set_data_synchronous/3 if knowing that no prior entry can exist, or
+if not wanting to merge but to replace past sample entry.
+
+The operation should preferably be done directly from the same node as the one
+from which the corresponding virtual probe was created, since then the sample
+table will be local.
+
+Note: merging samples involves a read-modify-write operation, thus a
+transaction, thus it is far more expensive than just setting data.
+""".
 -spec merge_data_synchronous( table_name(), probe_tick(), sample_data() ) ->
 									static_void_return().
 merge_data_synchronous( ProbeTable, Tick, Sample ) ->
@@ -1388,10 +1406,11 @@ merge_data_synchronous( ProbeTable, Tick, Sample ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Ensures that the Mnesia database is activated. Returns an updated state.
-%
-% (helper function)
-%
+-doc """
+Ensures that the Mnesia database is activated. Returns an updated state.
+
+(helper function)
+""".
 -spec ensure_database_activated( wooper:state() ) -> wooper:state().
 ensure_database_activated( State ) ->
 
@@ -1433,22 +1452,24 @@ ensure_database_activated( State ) ->
 
 
 
-% @doc Returns the Mnesia name (as an atom) for the table corresponding to
-% specified probe ID.
-%
-% (helper function)
-%
+-doc """
+Returns the Mnesia name (as an atom) for the table corresponding to specified
+probe ID.
+
+(helper function)
+""".
 -spec get_table_name_for( virtual_probe_id() ) -> table_name().
 get_table_name_for( Id ) ->
 	text_utils:atom_format( "virtual_probe_~B", [ Id ] ).
 
 
 
-% @doc Returns a reference to the virtual probe (i.e. the virtual probe record)
-% whose identifier is Id.
-%
-% (helper function)
-%
+-doc """
+Returns a reference to the virtual probe (i.e. the virtual probe record) whose
+identifier is Id.
+
+(helper function)
+""".
 -spec get_virtual_probe( virtual_probe_id(), wooper:state() ) ->
 										virtual_probe().
 get_virtual_probe( Id, State ) ->
@@ -1465,11 +1486,12 @@ get_virtual_probe( Id, State ) ->
 
 
 
-% @doc Returns a reference to the virtual probe (i.e. the virtual probe record)
-% whose identifier is Id, and the associated options.
-%
-% (helper function)
-%
+-doc """
+Returns a reference to the virtual probe (i.e. the virtual probe record) whose
+identifier is Id, and the associated options.
+
+(helper function)
+""".
 -spec get_virtual_probe_and_options( virtual_probe_id(), wooper:state() ) ->
 										{ virtual_probe(), probe_options() }.
 get_virtual_probe_and_options( ID, State ) ->
@@ -1487,11 +1509,12 @@ get_virtual_probe_and_options( ID, State ) ->
 
 
 
-% @doc Returns an updated state, in which the specified probe ID is now
-% associated to the specified probe (record and options).
-%
-% (helper function)
-%
+-doc """
+Returns an updated state, in which the specified probe ID is now associated to
+the specified probe (record and options).
+
+(helper function)
+""".
 -spec set_virtual_probe( virtual_probe_id(),
 	{ virtual_probe(), probe_options() }, wooper:state() ) -> wooper:state().
 set_virtual_probe( ProbeID, NewProbePair, State ) ->
@@ -1506,12 +1529,13 @@ set_virtual_probe( ProbeID, NewProbePair, State ) ->
 
 
 
-% @doc Generates the appropriate file containing the data of specified probe.
-%
-% Returns the path, as a plain string, of the data file.
-%
-% (helper function)
-%
+-doc """
+Generates the appropriate file containing the data of specified probe.
+
+Returns the path, as a plain string, of the data file.
+
+(helper function)
+""".
 -spec generate_data_file( virtual_probe(), meta_data() ) -> file_path().
 generate_data_file( ProbeRecord, MetaData ) ->
 
@@ -1565,11 +1589,12 @@ generate_data_file( ProbeRecord, MetaData ) ->
 
 
 
-% @doc Extracts and sorts chronologically the table entries, and returns an
-% ordered list.
-%
-% (helper function)
-%
+-doc """
+Extracts and sorts chronologically the table entries, and returns an ordered
+list.
+
+(helper function)
+""".
 get_ordered_samples( _Table, '$end_of_table', Tree ) ->
 	gb_trees:to_list( Tree );
 
@@ -1586,10 +1611,11 @@ get_ordered_samples( Table, Key, Tree ) ->
 
 
 
-% @doc Writes the probe data, row by row.
-%
-% (helper function)
-%
+-doc """
+Writes the probe data, row by row.
+
+(helper function)
+""".
 write_data( _File, _SortedPairs=[], _CurveCount, _RowFormatString ) ->
 	ok;
 
@@ -1607,10 +1633,11 @@ write_data( File, _SortedPairs=[ { Tick, Sample } | T ], CurveCount,
 
 
 
-% @doc Merges newer sample into the older one, and returns the merged sample.
-%
-% (helper function)
-%
+-doc """
+Merges newer sample into the older one, and returns the merged sample.
+
+(helper function)
+""".
 merge_samples( NewSample, OldSample ) ->
 	merge_samples( tuple_to_list( NewSample ),
 				   tuple_to_list( OldSample ), _Acc=[] ).
@@ -1640,17 +1667,16 @@ merge_samples( New, Old, Acc ) ->
 
 
 
-% @doc Registers directly the specified data sample for specified tick.
-%
-% The operation will not go through the datalogger (thus avoiding this possible
-% bottleneck) and should be purely local to the node of the caller (provided
-% indeed it is the process that declared this virtual probe, as the table
-% corresponding to a virtual probe is created in the node of its owner).
-%
-% Does not return anything useful.
-%
-% (helper function)
-%
+-doc """
+Registers directly the specified data sample for the specified tick.
+
+The operation will not go through the datalogger (thus avoiding this possible
+bottleneck) and should be purely local to the node of the caller (provided
+indeed it is the process that declared this virtual probe, as the table
+corresponding to a virtual probe is created in the node of its owner).
+
+(helper function)
+""".
 -spec set_data_helper( table_name(), probe_tick(), sample_data() ) -> void().
 set_data_helper( ProbeTable, Tick, Sample ) ->
 
@@ -1663,17 +1689,18 @@ set_data_helper( ProbeTable, Tick, Sample ) ->
 
 
 
-% @doc Merges directly the specified data sample for specified tick.
-%
-% The operation will not go through the datalogger (thus avoiding this possible
-% bottleneck) and should be purely local to the node of the caller (provided
-% indeed it is the process that declared this virtual probe, as the table
-% corresponding to a virtual probe is created in the node of its owner).
-%
-% Does not return anything useful.
-%
-% (helper function)
-%
+-doc """
+Merges directly the specified data sample for the specified tick.
+
+The operation will not go through the datalogger (thus avoiding this possible
+bottleneck) and should be purely local to the node of the caller (provided
+indeed it is the process that declared this virtual probe, as the table
+corresponding to a virtual probe is created in the node of its owner).
+
+Does not return anything useful.
+
+(helper function)
+""".
 -spec merge_data( table_name(), probe_tick(), sample_data() ) -> void().
 merge_data( ProbeTable, Tick, Sample ) ->
 
@@ -1719,12 +1746,13 @@ merge_data( ProbeTable, Tick, Sample ) ->
 
 
 
-% @doc Generates the report for the specified virtual probe.
-%
-% Returns a {DataFilename, CommandFilename, ReportFilename} triplet.
-%
-% (helper function)
-%
+-doc """
+Generates the report for the specified virtual probe.
+
+Returns a {DataFilename, CommandFilename, ReportFilename} triplet.
+
+(helper function)
+""".
 -spec generate_report_from_id( virtual_probe_id(), wooper:state() ) ->
 	{ file_path(), file_path(), file_path() | 'generation_failed' }.
 generate_report_from_id( ProbeID, State ) ->
@@ -1733,12 +1761,13 @@ generate_report_from_id( ProbeID, State ) ->
 
 
 
-% @doc Actual generation of the report for the specified virtual probe.
-%
-% Returns a {DataFilename, CommandFilename, ReportFilename} triplet.
-%
-% (helper)
-%
+-doc """
+Actual generation of the report for the specified virtual probe.
+
+Returns a {DataFilename, CommandFilename, ReportFilename} triplet.
+
+(helper)
+""".
 -spec generate_report( virtual_probe(), wooper:state() ) ->
    { file_path(), file_path(), file_path() | 'generation_failed' }.
 generate_report( ProbeRecord, State ) ->

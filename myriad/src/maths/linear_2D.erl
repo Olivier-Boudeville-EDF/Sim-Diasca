@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various <b>two-dimensional "linear"</b> facilities.
-%
-% See `linear_2D_test.erl' for the corresponding test.
-%
 -module(linear_2D).
+
+-moduledoc """
+Gathering of various **two-dimensional "linear"** facilities.
+
+See `linear_2D_test.erl` for the corresponding test.
+""".
 
 
 % For printout_*, inline_size, etc.:
@@ -65,6 +66,46 @@
 -include("math_utils.hrl").
 
 
+
+-doc "Dimensions of a rectangular area, as floating-point coordinates.".
+-type rect_dimensions() :: { Width :: distance(), Height :: distance() }.
+ 
+
+
+-doc "Dimensions of a rectangular area, as integer distances.".
+-type integer_rect_dimensions() :: { Width  :: integer_distance(),
+									 Height :: integer_distance() }.
+
+
+ 
+-doc "Shorter form of integer_rect_dimensions/0.".
+-type dimensions() :: integer_rect_dimensions().
+ 
+
+
+-doc """
+A 2D line, whose equation A.x + B.y + C =0, can be defined by its three factors
+{A,B,C}.
+""".
+-type line2() :: { A :: factor(), B :: factor(), C :: factor() }.
+
+
+
+-doc "A collection of 2D shapes.".
+-type shape() :: 'circle' | 'rectangle' | 'square' | 'triangle' | 'polygon'.
+ 
+
+
+-doc "A 2D topology type, typically of a primitive to render.".
+-type topology_type() :: 'points' | 'lines' | 'line_loop' | 'line_strip'
+					   | 'triangles' | 'triangle_strip' | 'triangle_fan'.
+
+
+
+-export_type([ rect_dimensions/0, integer_rect_dimensions/0, dimensions/0,
+			   line2/0, shape/0, topology_type/0 ]).
+
+
 % Shorthands:
 
 -type count() :: basic_utils:count().
@@ -88,35 +129,6 @@
 -type vector2() :: vector2:vector2().
 
 
--type rect_dimensions() :: { Width :: distance(), Height :: distance() }.
-% Dimensions of a rectangular area, as floating-point coordinates.
-
--type integer_rect_dimensions() :: { Width  :: integer_distance(),
-									 Height :: integer_distance() }.
-% Dimensions of a rectangular area, as integer distances.
-
--type dimensions() :: integer_rect_dimensions().
-% Shorter form of integer_rect_dimensions/0.
-
-
--type line2() :: { A :: factor(), B :: factor(), C :: factor() }.
-% A 2D line, whose equation A.x + B.y + C =0, can be defined by its three
-% factors {A,B,C}.
-
-
--type shape() :: 'circle' | 'rectangle' | 'square' | 'triangle' | 'polygon'.
-% A collection of 2D shapes.
-
-
--type topology_type() :: 'points' | 'lines' | 'line_loop' | 'line_strip'
-					   | 'triangles' | 'triangle_strip' | 'triangle_fan'.
-% A 2D topology type, typically of a primitive to render.
-
-
--export_type([ rect_dimensions/0, integer_rect_dimensions/0, dimensions/0,
-			   line2/0, shape/0, topology_type/0 ]).
-
-
 
 % Section for sets of points.
 %
@@ -124,12 +136,11 @@
 % and/or floating-point ones.
 
 
+-doc """
+Computes the smallest rectangle that encloses the specified list of points.
 
-% @doc Computes the smallest rectangle that encloses the specified list of
-% points.
-%
-% Returns {TopLeft, BottomRight}.
-%
+Returns {TopLeft, BottomRight}.
+""".
 -spec compute_smallest_enclosing_rectangle( [ any_point2() ] ) ->
 											{ any_point2(), any_point2() }.
 compute_smallest_enclosing_rectangle( Points ) ->
@@ -160,18 +171,17 @@ compute_smallest_enclosing_rectangle( [ _Points={ X, Y } | Others ], { Xt, Yt },
 
 
 
-% @doc Computes the maximum distance between two points in the specified list of
-% points.
-%
-% Returns {P1,P2,square_distance(P1,P2)} so that this (square) distance is
-% maximal among points.
-%
-% We ensure that each internal edge is examined only once: when the distances
-% between a given vertex V and all other vertices have been computed, V is
-% removed from the list and a new maximum is searched within this subset.
-%
-% @end
-%
+-doc """
+Computes the maximum distance between two points in the specified list of
+points.
+
+Returns {P1,P2,square_distance(P1,P2)} so that this (square) distance is maximal
+among points.
+
+We ensure that each internal edge is examined only once: when the distances
+between a given vertex V and all other vertices have been computed, V is removed
+from the list and a new maximum is searched within this subset.
+""".
 -spec compute_max_overall_distance( [ any_point2() ] ) ->
 							{ any_point2(), any_point2(), square_distance() }.
 compute_max_overall_distance( Points ) when length( Points ) < 2 ->
@@ -212,16 +222,16 @@ compute_max_overall_distance( _Points=[ P | Others ],
 
 
 
-% @doc Computes the maximum distance between a point (P) and a list of other
-% points.
-%
-% Returns {P, Pmax, LongestSquareDistance} with LongestSquareDistance being the
-% distance between P and Pmax, Pmax being chosen so that LongestSquareDistance
-% is maximal.
-%
-% As there must have been at least one point in the list, Pmax exists here
-% (never undefined).
-%
+-doc """
+Computes the maximum distance between a point (P) and a list of other points.
+
+Returns {P, Pmax, LongestSquareDistance} with LongestSquareDistance being the
+distance between P and Pmax, Pmax being chosen so that LongestSquareDistance is
+maximal.
+
+As there must have been at least one point in the list, Pmax exists here (never
+undefined).
+""".
 -spec compute_max_distance_between( any_point2(), [ any_point2() ] )->
 							{ any_point2(), any_point2(), square_distance() }.
 compute_max_distance_between( _P, _Points=[] ) ->
@@ -264,13 +274,14 @@ compute_max_distance_between( P, _Points=[ Pnew | OtherPoints ],
 % Sorting by angle section.
 
 
-% @doc Finds the pivot, that is the leftmost point with the highest ordinate.
-%
-% The point list is supposed not having duplicates.
-%
-% Returns {Pivot, PivotLessList} where PivotLessList is the (unordered) input
-% list, without the Pivot.
-%
+-doc """
+Finds the pivot, that is the leftmost point with the highest ordinate.
+
+The point list is supposed not having duplicates.
+
+Returns {Pivot, PivotLessList} where PivotLessList is the (unordered) input
+list, without the Pivot.
+""".
 -spec find_pivot( [ any_point2() ] ) -> { any_point2(), [ any_point2() ] }.
 find_pivot( _PointList=[ FirstPivot | Others ] ) ->
 	% First found is the first pivot:
@@ -292,7 +303,7 @@ find_pivot( [ Point={_X,Y} | Others ], PreviousPivot={ _Xp, Yp }, PList )
 
 % Same level as the pivot, but at its right, thus not wanted:
 find_pivot( [ Point={X,_Yp} | Others ], Pivot={ Xp, _UselessMatchYp }, PList )
-        when X > Xp ->
+		when X > Xp ->
 	find_pivot( Others, Pivot, [ Point | PList ] );
 
 % Same level as the pivot, but at its left, thus wanted:
@@ -306,14 +317,13 @@ find_pivot( [ Pivot | _Others ], Pivot, _PList ) ->
 
 
 
+-doc """
+Returns a list containing the points sorted according to an increasing angle
+between the abscissa axis and the vector from the pivot to each of these points.
 
-% @doc Returns a list containing the points sorted according to an increasing
-% angle between the abscissa axis and the vector from the pivot to each of these
-% points.
-%
-% Note: all points having the same abscissa as the pivot, except the highest
-% one, will be removed from the returned list.
-%
+Note: all points having the same abscissa as the pivot, except the highest one,
+will be removed from the returned list.
+""".
 -spec sort_by_angle( integer_point2(), [ integer_point2() ] ) ->
 												[ integer_point2() ].
 sort_by_angle( Pivot, Points ) ->
@@ -329,7 +339,7 @@ sort_by_angle( Pivot, Points ) ->
 % (helper)
 %
 -spec sort_by_angle( integer_point2(), [ integer_point2() ], [ angle_pair() ],
-		maybe( integer_point2() ), [ angle_pair() ] ) ->  [ integer_point2() ].
+		option( integer_point2() ), [ angle_pair() ] ) ->  [ integer_point2() ].
 sort_by_angle( _Pivot, _Points=[], LeftPairs, _MaybeP=undefined, RightPairs ) ->
 
 	cond_utils:if_defined( bounding_spaces, trace_utils:debug(
@@ -405,8 +415,8 @@ sort_by_angle( Pivot={Xp,Yp}, [ Point={X,Y} | T ], LeftPairs, MiddlePoint,
 		NegativeDeltaX ->
 			% This is a point on the left of the pivot:
 			sort_by_angle( Pivot, T,
-						   [ { (Y-Yp) / NegativeDeltaX, Point } | LeftPairs ],
-						   MiddlePoint, RightPairs )
+				[ { (Y-Yp) / NegativeDeltaX, Point } | LeftPairs ],
+				 MiddlePoint, RightPairs )
 
 	end.
 
@@ -425,9 +435,10 @@ reverse_and_drop_angle( [ _AnglePairs={ _Tangent, Point } | T ], Acc ) ->
 % Line section.
 
 
-% @doc Returns the three coefficients {A,B,C} for the line passing by point P
-% and being perpendicular to vector V, whose equation is A.x + B.y + C = 0.
-%
+-doc """
+Returns the three coefficients {A,B,C} for the line passing by point P and being
+perpendicular to vector V, whose equation is A.x + B.y + C = 0.
+""".
 -spec get_line( point2(), vector2() ) -> line2().
 get_line( _P={Xp,Yp}, _V=[Vx,Vy] ) ->
 
@@ -447,12 +458,13 @@ get_line( _P={Xp,Yp}, _V=[Vx,Vy] ) ->
 
 
 
-% @doc Returns the intersection of the two specified lines, if it is a point,
-% otherwise the 'no_point' atom (the intersection can be void, if the lines are
-% parallel but different, or a full line, if they are the same line).
-%
-% First line has for equation A.x+B.y+C=0, second has for equation U.x+V.y+W=0.
-%
+-doc """
+Returns the intersection of the two specified lines, if it is a point, otherwise
+the 'no_point' atom (the intersection can be void, if the lines are parallel but
+different, or a full line, if they are the same line).
+
+First line has for equation A.x+B.y+C=0, second has for equation U.x+V.y+W=0.
+""".
 -spec intersect( line2(), line2() ) -> 'no_point' | point2().
 intersect( _L1={A,B,C}, _L2={U,V,W} ) ->
 
@@ -533,11 +545,12 @@ intersect( _L1={A,B,C}, _L2={U,V,W} ) ->
 
 
 
-% @doc Returns the abscissa of a point on line L having Y for ordinate.
-%
-% Line L must not have for equation Y=constant (i.e. its A parameter must not be
-% null).
-%
+-doc """
+Returns the abscissa of a point on line L having Y for ordinate.
+
+Line L must not have for equation Y=constant (i.e. its A parameter must not be
+null).
+""".
 -spec get_abscissa_for_ordinate( line2(), any_coordinate() ) -> coordinate().
 get_abscissa_for_ordinate( _L={A,B,C}, Y ) ->
 	% For y=K, x=-(C+BK)/A
@@ -549,9 +562,10 @@ get_abscissa_for_ordinate( _L={A,B,C}, Y ) ->
 % Angle section.
 
 
-% @doc Returns true iff P is strictly on the right of the oriented segment going
-% from P1 to P2.
-%
+-doc """
+Returns true iff P is strictly on the right of the oriented segment going from
+P1 to P2.
+""".
 -spec is_strictly_on_the_right( point2(), point2(), point2() ) -> boolean();
 							  ( integer_point2(), integer_point2(),
 								integer_point2() ) -> boolean().
@@ -569,20 +583,21 @@ is_strictly_on_the_right( P, P1, P2 ) ->
 
 
 
-% @doc Returns whether specified angle (in degrees, canonical form) is obtuse.
+-doc "Returns whether specified angle (in degrees, canonical form) is obtuse.".
 -spec is_obtuse( int_degrees() ) -> boolean().
 is_obtuse( AngleInDegrees ) ->
 	AngleInDegrees > 90 andalso AngleInDegrees < 180.
 
 
 
-% @doc Returns the angle, in radians in the range [0, Pi], between the vector AB
-% and AC.
-%
-% Note: with this function we cannot tell whether one vector is ahead of the
-% other, ie if we should use the returned angle or its opposite to go from AB
-% to AC.
-%
+-doc """
+Returns the angle, in radians in the range [0, Pi], between the vector AB and
+AC.
+
+Note: with this function we cannot tell whether one vector is ahead of the
+other, ie if we should use the returned angle or its opposite to go from AB to
+AC.
+""".
 -spec abs_angle_rad( point2(), point2(), point2() ) -> radians();
 				   ( integer_point2(), integer_point2(), integer_point2() ) ->
 										radians().
@@ -607,12 +622,12 @@ abs_angle_rad( A, B, C ) ->
 
 
 
-% @doc Returns the signed (oriented) angle, in radians, between the vector AB
-% and AC.
-%
-% Note: with this function we can tell that we must rotate counter-clockwise of
-% the returned angle to go from AB to AC.
-%
+-doc """
+Returns the signed (oriented) angle, in radians, between the vector AB and AC.
+
+Note: with this function we can tell that we must rotate counter-clockwise of
+the returned angle to go from AB to AC.
+""".
 -spec angle_rad( point2(), point2(), point2() ) -> radians();
 			   ( integer_point2(), integer_point2(), integer_point2() ) ->
 										radians().
@@ -626,12 +641,13 @@ angle_rad( A, B, C ) ->
 
 
 
-% @doc Returns the angle, in canonical degrees, between the vector AB and AC.
-%
-% Note: with this function we cannot tell whether one vector is ahead of the
-% other, that is if we should use the returned angle or its opposite to go from
-% AB to AC.
-%
+-doc """
+Returns the angle, in canonical degrees, between the vector AB and AC.
+
+Note: with this function we cannot tell whether one vector is ahead of the
+other, that is if we should use the returned angle or its opposite to go from AB
+to AC.
+""".
 -spec abs_angle_deg( point2(), point2(), point2() ) -> int_degrees();
 				   ( integer_point2(), integer_point2(), integer_point2() ) ->
 										int_degrees().
@@ -641,12 +657,13 @@ abs_angle_deg( A, B, C ) ->
 
 
 
-% @doc Returns the signed (oriented) angle, in canonical degrees, between the
-% vector AB and AC.
-%
-% Note: with this function we can tell that we must rotate counter-clockwise of
-% the returned angle to go from AB to AC.
-%
+-doc """
+Returns the signed (oriented) angle, in canonical degrees, between the vector AB
+and AC.
+
+Note: with this function we can tell that we must rotate counter-clockwise of
+the returned angle to go from AB to AC.
+""".
 -spec angle_deg( any_point2(), any_point2(), any_point2() ) -> int_degrees().
 angle_deg( A, B, C ) ->
 	math_utils:canonify(
@@ -659,10 +676,11 @@ angle_deg( A, B, C ) ->
 % Convex hull section.
 
 
-% @doc Computes the convex hull corresponding to the specified list of points.
-%
-% Returns a list of the points that define the hull.
-%
+-doc """
+Computes the convex hull corresponding to the specified list of points.
+
+Returns a list of the points that define the hull.
+""".
 -spec compute_convex_hull( [ any_point2() ] ) -> [ any_point2() ].
 compute_convex_hull( Points ) ->
 
@@ -692,15 +710,16 @@ compute_convex_hull( Points ) ->
 
 
 
-% @doc Computes the Graham scan for the specified list of points, expected to be
-% already sorted by increasing angle between the abscissa axis and the vector
-% from the pivot to each of these points (that is in increasing order of the
-% angle they and the point P make with the x-axis, in counter-clockwise order).
-%
-% See [http://en.wikipedia.org/wiki/Graham_scan].
-%
-% Returns the corresponding convex hull, in clockwise order.
-%
+-doc """
+Computes the Graham scan for the specified list of points, expected to be
+already sorted by increasing angle between the abscissa axis and the vector from
+the pivot to each of these points (that is in increasing order of the angle they
+and the point P make with the x-axis, in counter-clockwise order).
+
+See <http://en.wikipedia.org/wiki/Graham_scan>.
+
+Returns the corresponding convex hull, in clockwise order.
+""".
 -spec compute_graham_scan_hull( [ any_point2() ], any_point2(),
 								[ any_point2() ] ) -> [ any_point2() ].
 compute_graham_scan_hull( ToValidate, _Pivot, _NextPoints=[] ) ->
@@ -775,18 +794,21 @@ compute_graham_scan_hull( L, NewPoint, [ Next | OtherNext ] ) ->
 
 
 
-% @doc Returns a list of points forming the nth roots of unity, in the unit
-% circle centered on the origin, the first one being in the X axis.
-%
+-doc """
+Returns a list of points forming the nth roots of unity, in the unit circle
+centered on the origin, the first one being in the X axis.
+""".
 -spec get_roots_of_unit( count() ) -> [ point2() ].
 get_roots_of_unit( N ) ->
 	get_roots_of_unit( N, _StartingAngle=0.0 ).
 
 
-% @doc Returns a list of points forming the nth roots of unity, in the unit
-% circle centered on the origin, the first one making the specified angle with
-% the X axis.
-%
+
+-doc """
+Returns a list of points forming the nth roots of unity, in the unit circle
+centered on the origin, the first one making the specified angle with the X
+axis.
+""".
 -spec get_roots_of_unit( count(), radians() ) -> [ point2() ].
 get_roots_of_unit( N, StartingAngle ) ->
 	AngleIncRad = 2 * math:pi() / N,

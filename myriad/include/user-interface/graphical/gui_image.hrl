@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,6 +26,11 @@
 % Creation date: Thursday, April 7, 2022.
 
 
+% As, sometimes, defines in header files make sense:
+-ifndef(myriad_gui_image_hrl_guard).
+-define(myriad_gui_image_hrl_guard,).
+
+
 % A record describing a raw, ready-to-use, bitmap, as a term, possibly loaded
 % from file, or generated, etc., as opposed to an image (which respects a format
 % like PNG or JPEG, has metadata, etc.).
@@ -41,9 +46,4 @@
 } ).
 
 
-
-% A gui_color:alpha_coordinate() designating a fully-transparent pixel:
--define( myriad_transparent, 0 ).
-
-% A gui_color:alpha_coordinate() designating a fully-opaque pixel:
--define( myriad_opaque, 255 ).
+-endif. % myriad_gui_image_hrl_guard

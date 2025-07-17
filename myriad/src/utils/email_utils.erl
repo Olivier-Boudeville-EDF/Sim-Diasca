@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,29 +25,32 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, August 8, 2021.
 
-
-% @doc Gathering of various convenient <b>email-related</b> facilities.
 -module(email_utils).
 
-
-
-% Implementation notes.
-%
+-moduledoc """
+Gathering of various convenient **email-related** facilities.
+""".
 
 
 
 % Type declarations.
 
 
+-doc """
+Electronic address for email (e.g. `"john@hello.org"`).
+""".
 -type email_address() :: ustring().
-% Electronic address for email (e.g. "john@hello.org").
 
 
+
+-doc """
+Binary email address (e.g. `<<"john@hello.org">>`).
+""".
 -type bin_email_address() :: bin_string().
-% Binary email address (e.g. `<<"john@hello.org">>').
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().

@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Base experiment entry point, defined for testing.
 -module(class_BaseTestEntryPoint).
+
+-moduledoc "Base experiment entry point, defined for testing.".
 
 
 -define( class_description,
@@ -43,7 +44,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 -include("dataflow_unit_test_defines.hrl").
@@ -70,7 +71,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -78,21 +79,22 @@
 
 
 
-% @doc Constructs the base experiment entry point for testing, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Dataflows is a list of the dataflows that this entry point should drive
-%
-% - ExperimentStepStart is the step at which the experiment shall start
-%
-% - ExperimentStepStop is the step at which the experiment shall stop
-%
-% - ExperimentManagerPid is the PID of the experiment manager
-%
-% - WorldManagerPid is the PID of the world manager
-%
+-doc """
+Constructs the base experiment entry point for testing, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Dataflows is a list of the dataflows that this entry point should drive
+
+- ExperimentStepStart is the step at which the experiment shall start
+
+- ExperimentStepStop is the step at which the experiment shall stop
+
+- ExperimentManagerPid is the PID of the experiment manager
+
+- WorldManagerPid is the PID of the world manager
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 	[ dataflow_pid() ], step_count(), step_count(),
 	experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
@@ -101,7 +103,7 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 	% First the direct mother class:
 	EntryState = class_ExperimentEntryPoint:construct( State, ActorSettings,
-						Dataflows, ExperimentManagerPid, WorldManagerPid ),
+		Dataflows, ExperimentManagerPid, WorldManagerPid ),
 
 	% Then the class-specific actions:
 	setAttributes( EntryState, [
@@ -113,9 +115,10 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 
 
-% @doc Registers specified test dataflow objects to this entry point, so that it
-% is able to act upon them (ex: attribute update).
-%
+-doc """
+Registers specified test dataflow objects to this entry point, so that it is
+able to act upon them (e.g. attribute update).
+""". 
 -spec registerTestDataflowObjects( wooper:state(),
 								   [ test_dataflow_object_pid() ] ) ->
 				request_return( 'test_dataflow_objects_registered' ).
@@ -131,9 +134,10 @@ registerTestDataflowObjects( State, TestDataflowObjects ) ->
 
 
 
-% @doc Registers specified test processing units to this entry point, so that it
-% is able to act upon them.
-%
+-doc """
+Registers specified test processing units to this entry point, so that it is
+able to act upon them.
+""". 
 -spec registerTestProcessingUnits( wooper:state(),
 								   [ test_processing_unit_pid() ] ) ->
 				request_return( 'test_dataflow_units_registered' ).
@@ -153,10 +157,11 @@ registerTestProcessingUnits( State, TestProcessingUnits ) ->
 % Section for actor oneways.
 
 
-% @doc Starts the evaluation of the urban experiment for the current tick.
-%
-% Typically called by the experiment exit point, for synchronisation reasons.
-%
+-doc """
+Starts the evaluation of the urban experiment for the current tick.
+
+Typically called by the experiment exit point, for synchronisation reasons.
+""".
 -spec startExperimentTick( wooper:state(), sending_actor_pid() ) ->
 									actor_oneway_return().
 startExperimentTick( State, _SenderActorPid ) ->
@@ -188,10 +193,10 @@ startExperimentTick( State, _SenderActorPid ) ->
 			WorldManagerPid = ?getAttr(world_manager_pid),
 
 			SentState = class_Actor:send_actor_message( WorldManagerPid,
-							{ injectChangeset, [ Changeset ] }, State ),
+				{ injectChangeset, [ Changeset ] }, State ),
 
 			class_Actor:send_actor_message( WorldManagerPid,
-							notifyAllChangesetsInjected, SentState );
+				notifyAllChangesetsInjected, SentState );
 
 
 		10 ->
@@ -215,10 +220,10 @@ startExperimentTick( State, _SenderActorPid ) ->
 			WorldManagerPid = ?getAttr(world_manager_pid),
 
 			SentState = class_Actor:send_actor_message( WorldManagerPid,
-							{ injectChangeset, [ Changeset ] }, State ),
+				{ injectChangeset, [ Changeset ] }, State ),
 
 			class_Actor:send_actor_message( WorldManagerPid,
-							notifyAllChangesetsInjected, SentState );
+				notifyAllChangesetsInjected, SentState );
 
 		_ ->
 			State
@@ -232,13 +237,14 @@ startExperimentTick( State, _SenderActorPid ) ->
 
 
 
-% Section for plain methods (ex: not actor oneways).
+% Section for plain methods (e.g. not actor oneways).
 
 
-% @doc Declares the specified unit managers to this entry point.
-%
-% (request, for synchronicity)
-%
+-doc """
+Declares the specified unit managers to this entry point.
+
+(request, for synchronicity)
+""".
 -spec addUnitManagers( wooper:state(), [ unit_manager_pid() ] ) ->
 								request_return( 'unit_managers_registered' ).
 addUnitManagers( State, UnitManagers ) ->
@@ -257,10 +263,7 @@ addUnitManagers( State, UnitManagers ) ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this entry point.
-%
-% (helper)
-%
+-doc "Returns a textual description of this entry point.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -300,5 +303,5 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Test programmatic ~ts, ~ts, ~ts, ~ts",
+	text_utils:format( "test programmatic ~ts, ~ts, ~ts, ~ts",
 		[ EntryString, ObjectString, UnitString, UnitManagerString ] ).

@@ -1,38 +1,38 @@
-% Copyright (C) 2014-2024 EDF R&D
-
+% Copyright (C) 2014-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
-
-% @doc The purpose of this module is to generate the full description of the
-% initial state of a city and store it in file, in the prospect of running a
-% simulation of it afterwards (see city_benchmarking_loading_test.erl).
-%
-% This is useful for larger cases like this one, as the procedural generation
-% might be very long: better generate the initial state once for all, and re-use
-% at will in various simulation instances.
-%
-% Example of intended use:
-%
-% make city_benchmarking_generation_run CMD_LINE_OPT="--batch --duration long
-% --scale huge"
-%
 -module(city_benchmarking_generation_test).
+
+-moduledoc """
+The purpose of this module is to generate the full description of the initial
+state of a city and store it in file, in the prospect of running a simulation of
+it afterwards (see `city_benchmarking_loading_test.erl`).
+
+This is useful for larger cases like this one, as the procedural generation
+might be very long: better generate the initial state once for all, and re-use
+at will in various simulation instances.
+
+Example of intended use: `make city_benchmarking_generation_run
+CMD_LINE_OPT="--batch --duration long --scale huge"`.
+""".
 
 
 % Launchers specific to this case, for a run made from the shell:
@@ -70,7 +70,7 @@
 % huge" EXECUTION_TARGET=production'
 
 
-% Shorthands:
+% Type shorthands:
 
 -type benchmarking_scale() :: city_benchmarking:benchmarking_scale().
 
@@ -78,9 +78,10 @@
 
 
 
-% @doc Runs the test, determining the settings from the command-line, otherwise
-% using defaults.
-%
+-doc """
+Runs the test, determining the settings from the command-line, otherwise using
+defaults.
+""".
 -spec run() -> no_return().
 run() ->
 
@@ -90,7 +91,7 @@ run() ->
 
 
 
-% @doc Runs the test with specified settings.
+-doc "Runs the test with the specified settings.".
 -spec run( benchmarking_scale(), benchmarking_duration() ) -> no_return().
 run( ScaleSetting, DurationSetting ) ->
 
@@ -102,7 +103,7 @@ run( ScaleSetting, DurationSetting ) ->
 
 % Helper, common to all specifications.
 -spec run_common( benchmarking_scale(), benchmarking_duration(), boolean() ) ->
-						no_return() | void().
+                                            no_return() | void().
 run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 	?case_start,
@@ -117,10 +118,8 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 				"city-example-instances-version-~ts-scale-~ts.init",
 				[ VersionString, ScaleSetting ] ),
 
-	case file_utils:is_existing_file( Filename ) of
-
-		true ->
-
+	file_utils:is_existing_file( Filename ) andalso
+        begin
 			BackupFilename = Filename ++ "-"
 				++ time_utils:get_textual_timestamp_for_path(),
 
@@ -128,12 +127,9 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 				"existing, it has been moved to backup file '~ts'.",
 				[ Filename, BackupFilename ] ),
 
-			file_utils:move_file( Filename, BackupFilename );
+			file_utils:move_file( Filename, BackupFilename )
 
-		false ->
-			ok
-
-	end,
+        end,
 
 	{ CityDescription, _EndTimestamp, TimestepDuration } =
 	  city_benchmarking:get_benchmark_settings( ScaleSetting, DurationSetting ),
@@ -179,11 +175,11 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	GISPid = class_Actor:create_initial_actor( class_GIS,
-							[ _DataSource=none, _PrepareRendering=false ] ),
+		[ _DataSource=none, _PrepareRendering=false ] ),
 
 
 	CityGeneratorPid = class_CityGenerator:synchronous_new_link(
-												CityDescription, GISPid ),
+		CityDescription, GISPid ),
 
 	CityGeneratorPid ! { writeInitialisation, [ InitFile ], self() },
 
@@ -203,7 +199,8 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	file_utils:close( InitFile ),
 
 	Message = text_utils:format(
-	  "~nInitialisation file '~ts' successfully generated.~n~n", [ Filename ] ),
+        "~nInitialisation file '~ts' successfully generated.~n~n",
+        [ Filename ] ),
 
 	?notify_info( Message ),
 	io:format( Message ),

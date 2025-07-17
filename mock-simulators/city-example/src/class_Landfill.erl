@@ -1,26 +1,27 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc Class modelling a <b>landfill</b>.
 -module(class_Landfill).
+
+-moduledoc "Class modelling a **landfill**.".
 
 
 -define( class_description, "Class modelling a landfill." ).
@@ -53,7 +54,7 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For waste_tank() and al:
@@ -68,26 +69,36 @@
 % generally huge.
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
 
+-type gis_pid() :: class_GIS:gis_pid().
+
+-type location_generator_pid() ::
+    class_LocationGenerator:location_generator_pid().
+
+-type gis_info() :: class_GIS:gis_info().
 
 
-% @doc Creates a landfill.
-%
-% Construction parameters are:
-%
-% - ActorSettings is the AAI assigned by the load-balancer to this actor
-%
-% - Name is the name of this landfill (as a plain string)
-%
-% - Location: the (static) location of this landfill
-%
-% - CapacityInformation describes the waste storage capacity of this landfill
-%
+
+
+-doc """
+Creates a landfill.
+
+Construction parameters are:
+
+- ActorSettings is the AAI assigned by the load-balancer to this actor
+
+- Name is the name of this landfill (as a plain string)
+
+- Location: the (static) location of this landfill
+
+- CapacityInformation describes the waste storage capacity of this landfill
+""".
+
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:static_location(), gis_pid() ) ->
 						wooper:state().
@@ -127,7 +138,7 @@ construct( State, ActorSettings, Name, Location, GISPid ) ->
 
 
 
-% @doc First scheduling of a landfill.
+-doc "First scheduling of a landfill.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -153,7 +164,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The definition of the spontaneous behaviour of this landfill.
+-doc "The definition of the spontaneous behaviour of this landfill.".
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
@@ -166,24 +177,26 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Tries to unload to this landfill as much as possible of the specified
-% mass of specified waste type (possibly any) from the caller (which is expected
-% to be a waste transport requesting to empty its waste).
-%
-% The answer (the actor message sent back) will be:
-%
-% - either a notifyUnloadedWaste to acknowledge for good the waste transaction
-%
-% - or a notifyNoUnloadedWaste to report that no waste unloading will occur this
-% time (transaction failed)
-%
+-doc """
+Tries to unload to this landfill as much as possible of the specified mass of
+specified waste type (possibly any) from the caller (which is expected to be a
+waste transport requesting to empty its waste).
+
+The answer (the actor message sent back) will be:
+
+- either a notifyUnloadedWaste to acknowledge for good the waste transaction
+
+- or a notifyNoUnloadedWaste to report that no waste unloading will occur this
+time (transaction failed)
+
+""".
 -spec unloadWaste( wooper:state(), waste_type(), unit_utils:tons(),
 				   sending_actor_pid() ) -> actor_oneway_return().
 unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
 	% First call the parent base implementation:
 	ParentState = executeOnewayAs( State, class_WasteUnloadingPoint,
-			unloadWaste, [ WasteType, ProposedMass, WasteUnloaderPid ] ),
+		unloadWaste, [ WasteType, ProposedMass, WasteUnloaderPid ] ),
 
 	% Then update the probe:
 	send_data_to_probe( ParentState ),
@@ -196,9 +209,10 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 % Static methods section.
 
 
-% @doc Generates a list of instance definitions for the specified number of
-% initial landfills.
-%
+-doc """
+Generates a list of instance definitions for the specified number of initial
+landfills.
+""".
 -spec generate_definitions( count(), location_generator_pid(), gis_info() ) ->
 		 static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( LandfillCount, LocationGeneratorPid, GISInfo ) ->
@@ -242,9 +256,9 @@ define_landfills( LandfillCount, GISInfo, Acc ) ->
 
 
 
-% @doc Adds the location to the landfill build parameters (a kind of zip
-% operation).
-%
+-doc """
+Adds the location to the landfill build parameters (a kind of zip operation).
+""".
 merge_parameters( Params, Locations, GISInfo ) ->
 	% In-order is better:
 	lists:reverse( merge_parameters( Params, Locations, _Acc=[], GISInfo ) ).
@@ -274,10 +288,7 @@ get_min_distance_between_two_landfills() ->
 
 
 
-% @doc Sends waste data to probe (if any).
-%
-% (helper)
-%
+-doc "Sends waste data to probe (if any).".
 -spec send_data_to_probe( wooper:state() ) -> void().
 send_data_to_probe( State ) ->
 
@@ -302,10 +313,7 @@ send_data_to_probe( State ) ->
 
 
 
-% @doc Returns a textual representation of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual representation of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -322,15 +330,17 @@ to_string( State ) ->
 
 
 
-% @doc Returns a pair made of the waste capacities for a landfill, and a list of
-% corresponding curve descriptions.
-%
+-doc """
+Returns a pair made of the waste capacities for a landfill, and a list of
+corresponding curve descriptions.
+""".
 build_capacity() ->
 	% We create one (big) waste tank for each waste type:
 	create_waste_tank( waste_utils:get_waste_types(), _AccTank=[], _AccDesc=[],
 					   _Count=0 ).
 
 
+% (helper)
 create_waste_tank( _WasteType=[], AccTank, AccDesc, _Count ) ->
 	{ AccTank, lists:reverse( AccDesc ) };
 

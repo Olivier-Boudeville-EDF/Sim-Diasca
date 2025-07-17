@@ -1,26 +1,27 @@
-% Copyright (C) 2017-2024 EDF R&D
-
+% Copyright (C) 2017-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2017.
 
-
-% @doc Abstract <b>base class common to all Sim-Diasca instances</b>.
 -module(class_EngineBaseObject).
+
+-moduledoc "Abstract **base class common to all Sim-Diasca instances**.".
 
 
 -define( class_description,
@@ -44,8 +45,9 @@
 -define( trace_emitter_categorization, "Core" ).
 
 
+-doc "The PID of an engine base object.".
 -type object_pid() :: class_TraceEmitter:emitter_pid().
-% The PID of an engine base object.
+
 
 -export_type([ object_pid/0 ]).
 
@@ -62,13 +64,13 @@
 -include_lib("traces/include/class_TraceEmitter.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a named Sim-Diasca base object.
+-doc "Constructs a named Sim-Diasca base object.".
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init() ) ->
 						wooper:state().
 construct( State, InstanceName ) ->
@@ -80,26 +82,27 @@ construct( State, InstanceName ) ->
 % Static section.
 
 
-% @doc Returns, should this base object have been deployed (that is should it
-% run on a computing node), the (object-local) root directory of the deployment
-% tree.
-%
+-doc """
+Returns, should this base object have been deployed (that is should it run on a
+computing node), the (object-local) root directory of the deployment tree.
+""".
 -spec get_deployment_root_directory() ->
-					static_return( file_utils:directory_path() ).
+                            static_return( file_utils:directory_path() ).
 get_deployment_root_directory() ->
 
 	% Returns typically /tmp/sim-diasca-$CASE-$USER-$TIME/deployed-elements",
-	% in which all layers (ex: myriad, wooper, etc.) are located:
+	% in which all layers (e.g. myriad, wooper, etc.) are located:
 	%
 	wooper:return_static( file_utils:get_current_directory() ).
 
 
 
-% @doc Returns the names of all the base state attributes (be they defined by
-% this class or inherited).
-%
+-doc """
+Returns the names of all the base state attributes (be they defined by this
+class or inherited).
+""".
 -spec get_all_base_attribute_names() ->
-								static_return( [ wooper:attribute_name() ] ).
+							static_return( [ wooper:attribute_name() ] ).
 get_all_base_attribute_names() ->
 
 	AttrNames =
@@ -115,14 +118,14 @@ get_all_base_attribute_names() ->
 % Helper section.
 
 
-% @doc Initializes some context-specific information.
+-doc "Initializes some context-specific information.".
 -spec init( wooper:state() ) -> wooper:state().
 init( State ) ->
 	class_TraceEmitter:init( State ).
 
 
 
-% @doc Returns a textual description of this instance.
+-doc "Returns a textual description of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Sim-Diasca base object named '~ts'",

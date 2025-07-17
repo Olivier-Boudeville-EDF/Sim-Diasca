@@ -92,7 +92,7 @@ clean-local:
 
 
 # When moving source archives here and there, often symbolic links pointing to
-# sim-diasca-host-candidates.txt files are replaced by actual copies.
+# sim-diasca-host-candidates.etf files are replaced by actual copies.
 #
 # We get rid of them here, see the make-config-links-recurse rule to repopulate
 # these files with links.

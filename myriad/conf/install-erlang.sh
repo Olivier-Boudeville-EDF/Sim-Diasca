@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009-2023 Olivier Boudeville
+# Copyright (C) 2009-2025 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 #
@@ -27,7 +27,7 @@ nice_opt="nice --adjustment=19"
 # It may not be available on the local host (with Arch Linux, use 'pacman -Sy
 # cpulimit').
 #
-# No root priviledges specifically needed.
+# By default no root privileges will be specifically needed.
 #
 cpulimit="$(which cpulimit 2>/dev/null)"
 
@@ -58,13 +58,45 @@ fi
 # source archive, and to be able to switch back and forth more easily:
 
 # To be obtained with: 'sha512sum otp_src_x.y.tar.gz':
+
+# As for erlang_commit_id_for_* (Git commit of the release; currently not used),
+# it is just obtained from (some) downloaded source archive.
+
+
+erlang_sha512_for_28_0_1="77a0a40ea0f81a08fa00b018c55a34e632eb693c8ca4114066e9a98dbf997c1a017f986bc180c095616939f65a465bb776846c8a6a81f2773d6e8111d93ce527"
+
+erlang_sha512_for_28_0="2d85ce5ec069e483b4471053faf602d61abcb6fb1d041a0956df95ab38786944e3c3674a0ef3e84815d99d3bf955f2c4d93e151151672249cd48a2f7367f5c56"
+
+erlang_sha512_for_27_3_2="2268b86a30d64c5a060547d793ed93209144e3e2d07adb177325140ca7a4cbeff92d21113ca9925cb6a9b619e6f250b17d37a3bdd0c0956ea2a3af174e8b4a0a"
+
+erlang_sha512_for_27_2="3216d41cdde40764f3a39c219f2b5f85d50c2cc7ddd20573d785b1eb84f9500796fffe39956778e46de68652e9b934d8ee33e21f86c1e6f39ad7ace47debcde1"
+
+#erlang_sha512_for_27_1="2841e0f94e9bd939280eaa38c47d0c5a2f12c8a47c8ec676cfdcc1e04213d8ed1a37b70689826b53656b84e8f37ab4242bf9c75861e0a05a48a9a942bff6c20e"
+
+erlang_sha512_for_27_1="e923c063db63cab1946adede122887841503201f13244e42134845ad7ac3d456f2f48b735d147aea145f093b26ffc03dce36cd3a9ec8bf6c7bb598cf389f8813"
+#erlang_commit_id_for_27_1_0="g9ae2ef5"
+
+
+# Changed apparently:
+#erlang_sha512_for_27_0="7166b0a86b6ac0f84b628dc5fd649b69d35b1e271dd5d5f89adb75789098247a7344ea8f2101136ce17d04e0813f985e9361a9aaa638e6f0697f8e4bb904800b"
+
+erlang_sha512_for_27_0="64c9a46a74486fe733afcdbffccf4091306f2d68001cd35800a7251ca508bf2bd92cbd69f7baa2113665bc2bc634e475f0fa881edf5159ccbeed6870d6d7e447"
+
+
 erlang_sha512_for_26_2_1="c822d26af1e653dbd77f7f616b1d1e7f9350967bf95e8a1606c5abccebd65744fb35d1fb92641cd7a7db3626e0451e74db71a5d1718b442924acd410be953d0b"
+
 erlang_sha512_for_26_2="1b9ab5698d6ea51e471bafd35e39140425dddfa7a7c9fdf547793a85a607d1ce0d603e978bdc0e7be74d0d3a975638e3240721d5398af949a09e891845d66d06"
+
 erlang_sha512_for_26_1="949815e8a405ed167aab8102f932ba801cfe5245b352cccf373931b3c01fa48c4b578a355b35de68f6b50bbb20cb7d5aecf33389765b758a07332f79b71d239a"
+
 erlang_sha512_for_26_0_2="4affbd661cf444c3eadbc23e2cd4a494c953d97c0bb7ef1525f28d7a6b4a9abc1f2200f3e842f72d9a5e1dd18b1147a4433ae8038a75b86c4f7fa843d6035d22"
+
 erlang_sha512_for_26_0="f9e373724d84f249d2b59dddf8624563936a109b81b0e7af4ab761c52c1cca544ad1c7734aa60c1612b286b0bba372fb6714916d7a6226f70afc692a66fd766e"
+
 erlang_sha512_for_25_3="871e767361ff81ceade361bd45ace807ee411cc24b237680ce2d1d516c115f326dfc969b95ad6e6391f24cb465bb6cbcffe5740374abeb67dc5ee0c2bf8f864b"
+
 erlang_sha512_for_25_2="2bfa14a75f91caa6e8e11a2de871539ead8b0c44c07412a000df04f6b2ed2fc3f75ca0f345bf2c01c322afa9122dc96e5241ba1d39abb400bdadcd93446ad478"
+
 erlang_sha512_for_25_1="26f597d3637445fa3f602e75b7854d6386f4a6e5702715f4339c5107b02a571b9ff15e6f48a81ff82d994a10d396e6154609d0d8d74076afa305c9fe87efbefa"
 
 erlang_md5_for_25_0="3c4c9da083f2a6b89aa1766415339d0c"
@@ -89,15 +121,25 @@ erlang_md5_for_20_1="4c9eb112cd0e56f17c474218825060ee"
 
 
 # Current stable (an update of the next two lines is needed):
-erlang_version="26.2.1"
-erlang_sum="${erlang_sha512_for_26_2_1}"
+#
+# (refer to https://github.com/erlang/otp/releases/download/ to obtain the right
+# versions)
+#
+erlang_version="28.0.1"
+#erlang_version="27.3.2"
+
+erlang_sum="${erlang_sha512_for_28_0_1}"
+#erlang_sum="${erlang_sha512_for_27_3_2}"
+
+#erlang_commit_id="${erlang_commit_id_for_27_1_0}"
 
 
 # Candidate version (e.g. either cutting-edge or, most probably, the previous
 # version that we deem stable enough, should the current introduce regressions):
 #
-erlang_version_candidate="26.1" # "26.0.2", "25.3"
-erlang_sum_candidate="${erlang_sha512_for_26_1}"
+erlang_version_candidate="28.0" # "27.3.2"
+erlang_sum_candidate="${erlang_sha512_for_28_0}"
+#erlang_commit_id_candidate=""
 
 base_install_dir="${HOME}/Software/Erlang"
 
@@ -138,6 +180,8 @@ limit_opt_long="--no-cpu-limit"
 previous_opt_short="-p"
 previous_opt_long="--previous"
 
+current_install_link_name="Erlang-current-install"
+
 # Currently removed:
 #   [${patch_opt_short}|${patch_opt_long}]
 #   downloads, patches, builds and installs
@@ -145,13 +189,13 @@ previous_opt_long="--previous"
 #   ${patch_opt_short} or ${patch_opt_long}: disable the automatic patching we
 #   make use of
 
-usage="Usage: $(basename $0) [${help_opt_short}|${help_opt_long}] [${version_opt_short}|${version_opt_long}] [${doc_opt_short}|${doc_opt_long}] [${plt_opt_short}|${plt_opt_long}] [${download_opt_short}|${download_opt_long}] [${limit_opt_short}|${limit_opt_long}] [${previous_opt_short}|${previous_opt_long}] [<base install directory>]: downloads, builds and installs a fresh ${erlang_version} Erlang version in the specified base install directory (if defined), or in default directory, and in this case adds a symbolic link pointing to it from its parent directory so that an 'Erlang-current-install' symbolic link always points to the latest installed version.
+usage="Usage: $(basename $0) [${help_opt_short}|${help_opt_long}] [${version_opt_short}|${version_opt_long}] [${doc_opt_short}|${doc_opt_long}] [${plt_opt_short}|${plt_opt_long}] [${download_opt_short}|${download_opt_long}] [${limit_opt_short}|${limit_opt_long}] [${previous_opt_short}|${previous_opt_long}] [<base install directory>]: downloads, builds and installs a fresh ${erlang_version} Erlang version in the specified base install directory (if defined), or in default directory, and in this case adds a symbolic link pointing to it from its parent directory so that an '${current_install_link_name}' symbolic link always points to the latest installed version.
 
 Note that, if relevant archives are found in the current directory, they will be used, even if the user did not specify a 'no download' option.
 
 If no base install directory is specified, then:
- - if this script is run as root thanks to a sudo (i.e. 'sudo $(basename $0)...'), Erlang will be built by the (supposedly non-priviledged) original sudoer in the current directory, before being installed as root in /usr/local/ (i.e. system-wide); no Erlang-current-install symbolic link applies then
- - otherwise it will be installed in ${base_install_dir}/Erlang-${erlang_version}/.
+ - if this script is run as root thanks to a sudo (i.e. 'sudo $(basename $0)...'), Erlang will be built by the (supposedly non-privileged) original sudoer in the current directory, before being installed as root in /usr/local/ (i.e. system-wide); no ${current_install_link_name} symbolic link applies then
+ - otherwise it will be installed in ${base_install_dir}/Erlang-${erlang_version}/
 
 Otherwise, i.e. if a base install directory MY_DIR is specified, then Erlang will be installed into MY_DIR/Erlang/Erlang-${erlang_version}/.
 
@@ -228,6 +272,8 @@ do_cpulimit=0
 
 # See list in https://github.com/erlang/otp/releases:
 erlang_download_location="https://github.com/erlang/otp/releases/download/OTP-${erlang_version}"
+#erlang_download_location="https://api.github.com/repos/erlang/otp/tarball/refs/tags/OTP-${erlang_version}"
+
 
 # The user that is to perform the build (everything but installation):
 build_user="$(id -un)"
@@ -287,7 +333,9 @@ while [ $token_eaten -eq 0 ]; do
 
 		erlang_version="${erlang_version_candidate}"
 		erlang_sum="${erlang_sum_candidate}"
-		plt_file="Erlang-${erlang_version}_candidate"
+		#erlang_commit_id="${erlang_commit_id_candidate}"
+
+		plt_file="Erlang-${erlang_version_candidate}"
 
 		echo "Warning: not installing the default version of Erlang currently supported, using candidate one, i.e. version ${erlang_version}." 1>&2
 
@@ -349,7 +397,7 @@ while [ $token_eaten -eq 0 ]; do
 done
 
 
-# We had to define that variable, as for a (non-priviledged) user U, at least on
+# We had to define that variable, as for a (non-privileged) user U, at least on
 # some settings, sudo -u U <a command> will fail ("Sorry, user U is not allowed
 # to execute 'XXX' as U on H."), so now we execute sudo iff strictly necessary:
 #
@@ -370,7 +418,7 @@ if [ -z "${read_parameter}" ]; then
 
 		if [ -z "${SUDO_USER}" ]; then
 
-			echo "Error, if this script is to be run as root, 'sudo' shall be used, so that build operations can be performed as a normal user (not with root priviledges)." 1>&2
+			echo "Error, if this script is to be run as root, 'sudo' shall be used, so that build operations can be performed as a normal user (not with root privileges)." 1>&2
 			exit 55
 
 		fi
@@ -385,7 +433,7 @@ if [ -z "${read_parameter}" ]; then
 
 		echo "Run as sudo root, thus using default system installation directory, falling back to user '${build_user}' for the operations that permit it."
 
-		# So here sudo is a way to decrease, not increase, priviledges:
+		# So here sudo is a way to decrease, not increase, privileges:
 		sudo_cmd="sudo -u ${build_user}"
 
 	else
@@ -430,7 +478,8 @@ fi
 
 #echo "build_user=${build_user}"
 
-# On official site or on Github:
+# On official site or on Github (not at the right location apparently):
+#erlang_src_prefix="erlang-otp-OTP-${erlang_version}-${erlang_commit_id w}"
 erlang_src_prefix="otp_src_${erlang_version}"
 #erlang_src_prefix="otp-OTP-${erlang_version}"
 
@@ -439,12 +488,14 @@ erlang_src_archive="${erlang_src_prefix}.tar.gz"
 # As documentation archives were not generated for patch versions (e.g. 24.1.4),
 # only for "base" versions" (e.g. 24.1):
 #
-#erlang_doc_prefix="$(echo "otp_doc_html_${erlang_version}" | awk -F. '{print otp_doc_html_$1"."$2""}')"
+erlang_doc_prefix="$(echo "otp_doc_html_${erlang_version}" | awk -F. '{print otp_doc_html_$1"."$2""}')"
 
+# Yet at least for 27.3.2 the full version applied:
+erlang_doc_prefix="otp_doc_html_${erlang_version}"
 
-# on Github now:
-#erlang_doc_archive="${erlang_doc_prefix}.tar.gz"
-erlang_doc_archive="otp_doc_html_${erlang_version}.tar.gz"
+# As on Github now:
+erlang_doc_archive="${erlang_doc_prefix}.tar.gz"
+
 
 
 # Some early checkings:
@@ -540,6 +591,14 @@ if [ $do_download -eq 0 ]; then
 	# However we check it is not already available in the current directory:
 	if [ -f "${erlang_src_archive}" ]; then
 
+		if [ -z "${erlang_sum}" ]; then
+
+			echo "  Error, no Erlang checksum available for this version." 1>&2
+
+			exit 55
+
+		fi
+
 		sum_res=$(${sha512sum} "${erlang_src_archive}")
 
 		computed_sum=$(echo "${sum_res}" | awk '{printf $1}')
@@ -608,6 +667,10 @@ else
 			echo "  Error, Erlang documentation archive (${erlang_doc_archive}) could not be found, and no download was requested." 1>&2
 			exit 21
 
+		else
+
+			echo "(documentation archive '${erlang_doc_archive}' already available)"
+
 		fi
 	fi
 
@@ -617,6 +680,14 @@ fi
 if [ ! ${src_checked} -eq 0 ]; then
 
 	echo "Checksum for ${erlang_src_archive}"
+
+	if [ -z "${erlang_sum}" ]; then
+
+		echo "  Error, no Erlang checksum available for this version." 1>&2
+
+		exit 65
+
+	fi
 
 	sum_res=$(${sha512sum} "${erlang_src_archive}")
 
@@ -796,7 +867,9 @@ if ! ${sudo_cmd} ${nice_opt} ${cpu_limit_expr} make; then
 fi
 
 
-# No sudo here:
+# No sudo used here intentionally, as installation may have to be done in the
+# system (here root needed):
+#
 if ! ${nice_opt} ${cpu_limit_expr} make install; then
 
 	echo "Installation failed, exiting." 1>&2
@@ -805,32 +878,53 @@ if ! ${nice_opt} ${cpu_limit_expr} make install; then
 fi
 
 
-echo "  Erlang successfully built and installed in ${prefix}."
-
-
-# More global than 'if [ $use_prefix -eq 0 ]; then' so that most installs
-# include these links:
+# More global than 'if [ $use_prefix -eq 0 ]; then' so that most installs have
+# that:
 #
+if [ -z "${prefix}" ]; then
+
+	standard_loc="/usr/local/"
+
+	# For some strange reason, at least with 27.3.2, /usr/local/lib/erlang/bin
+	# is created as 'drwxr-x--- 2 root root', which prevents regular users from
+	# using it. So:
+	#
+	chmod 755 "${standard_loc}/lib/erlang/bin"
+
+	# For next operations:
+	install_base="${standard_loc}"
+
+else
+
+	install_base="${prefix}"
+
+fi
+
+
+echo "Post-fixing versions of Erlang built-in libraries now."
+
+# First, let's create a symbolic link so that this new version can be
+# transparently used by emacs:
+#
+cd "${install_base}/lib/erlang"
+
+# Exactly one match expected for the wildcard (e.g. tools-2.8.2), useful to
+# avoid having to update our ~/.emacs.d/init.el file whenever the 'tools'
+# version changes:
+#
+${ln} -sf lib/tools-*/emacs
+
+# Same story so that the crashdump viewer can be found irrespective of the
+# Erlang version:
+#
+${ln} -sf lib/observer-*/priv/bin/cdv
+
+# The same for JInterface:
+${ln} -sf lib/jinterface-* jinterface
+
+
+
 if [ -n "${prefix}" ]; then
-
-	# First, let's create a symbolic link so that this new version can be
-	# transparently used by emacs:
-	#
-	cd "${prefix}/lib/erlang"
-
-	# Exactly one match expected for the wildcard (e.g. tools-2.8.2), useful to
-	# avoid having to update our ~/.emacs.d/init.el file whenever the 'tools'
-	# version changes:
-	#
-	${ln} -sf lib/tools-*/emacs
-
-	# Same story so that the crashdump viewer can be found irrespective of the
-	# Erlang version:
-	#
-	${ln} -sf lib/observer-*/priv/bin/cdv
-
-	# The same for JInterface:
-	${ln} -sf lib/jinterface-* jinterface
 
 	# Then go again in the install (not source) tree to create the base link:
 	cd "${prefix}/.."
@@ -838,13 +932,13 @@ if [ -n "${prefix}" ]; then
 	# So we are in ${base_install_dir} now.
 
 	# Sets as current:
-	if [ -e "Erlang-current-install" ]; then
+	if [ -e "${current_install_link_name}" ]; then
 
-		${rm} -f Erlang-current-install
+		${rm} -f "${current_install_link_name}"
 
 	fi
 
-	${ln} -sf "Erlang-${erlang_version}" Erlang-current-install
+	${ln} -sf "Erlang-${erlang_version}" "${current_install_link_name}"
 
 fi
 
@@ -861,10 +955,10 @@ if [ $do_manage_doc -eq 0 ]; then
 
 	fi
 
-	# No sudo from there, as we have to use any right needed (for example to
-	# write in the system tree)
+	# No sudo from there, as we have to use any root rights that are needed (for
+	# example to write in the system tree)
 
-	erlang_doc_root="Erlang-${erlang_version}-documentation"
+	erlang_doc_root="$(pwd)/Erlang-${erlang_version}-documentation"
 
 	if [ -e "${erlang_doc_root}" ]; then
 
@@ -884,7 +978,7 @@ if [ $do_manage_doc -eq 0 ]; then
 	cd ..
 
 	# Sets as current:
-	if [ -e "Erlang-current-install" ]; then
+	if [ -e "${current_install_link_name}" ]; then
 
 		${rm} -f Erlang-current-documentation
 
@@ -892,7 +986,7 @@ if [ $do_manage_doc -eq 0 ]; then
 
 	${ln} -sf "${erlang_doc_root}" Erlang-current-documentation
 
-	echo "Erlang documentation successfully installed."
+	echo "Erlang documentation successfully installed, in '${erlang_doc_root}'."
 
 fi
 
@@ -912,9 +1006,9 @@ fi
 echo
 
 if [ -n "${prefix}" ]; then
-	echo "The Erlang environment was successfully installed in ${prefix}."
+	echo "The Erlang environment was successfully installed in '${install_base}'."
 else
-	echo "The Erlang environment was successfully installed in its standard location."
+	echo "The Erlang environment was successfully installed in its standard location ('${install_base}')."
 fi
 
 

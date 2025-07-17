@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 Olivier Boudeville
+% Copyright (C) 2012-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,12 +7,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2012.
 
-
-% @doc Testing the implementation of the <b>serialisation of WOOPER
-% instances</b>, that is of the default implementation of the Serialisable
-% interface.
-%
 -module(serialisable_test).
+
+-moduledoc """
+Testing the implementation of the **serialisation of WOOPER instances**, that is
+ of the default implementation of the Serialisable interface.
+""".
+
 
 
 % For run/0 export and al:
@@ -69,7 +70,6 @@ test_individual_serialisations() ->
 	CatSerialisation = receive
 
 		{ wooper_result, { CatSerial, SerialUserData, MyC } } ->
-
 			test_facilities:display( "Text transformer returned:~n"
 				" - serialisation of ~ts:~n ~p~n"
 				" - resulting user data: ~p~n",

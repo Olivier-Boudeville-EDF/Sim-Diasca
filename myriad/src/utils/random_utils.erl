@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,15 +25,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc Gathering of various <b>random-related</b> facilities, based on
-% probability distributions, either as Myriad built-in ones (uniform,
-% exponential, gaussian, etc.) or user-defined, arbitrary ones.
-%
-% See random_utils_test.erl for the corresponding test.
-%
 -module(random_utils).
 
+-moduledoc """
+Gathering of various **random-related** facilities, based on probability
+distributions, either as Myriad built-in ones (uniform, exponential, gaussian,
+etc.) or user-defined, arbitrary ones.
+
+See random_utils_test.erl for the corresponding test.
+""".
 
 
 % Usage notes.
@@ -193,23 +193,32 @@
 
 
 
--type seed_element() :: integer().
-% Not future-proof enough (e.g. not compliant with other solutions like
-% SIMD-oriented Fast Mersenne Twister).
+-doc """
+An element of a random seed.
 
+Not future-proof enough (e.g. not compliant with other solutions like
+SIMD-oriented Fast Mersenne Twister).
+""".
+-type seed_element() :: integer().
+
+
+
+-doc "A type of seed for random generators.".
 -type seed() :: { seed_element(), seed_element(), seed_element() }.
-% A type of seed for random generators.
+
 
 
 % random:ran/0 does not seem exported, replaced by seed/0:
+-doc """
+For simpler generators, the state is just a seed, for all the others the state
+may be much larger/more complex.
+
+Not to be mixed with the static data (random_law_data/0) corresponding to a
+random law, so that samples can be obtained from it.
+""".
 -type random_state() :: seed()
 					  | rand:state()
 					  | any().
-% For simpler generators, the state is just a seed, for all the others the state
-% may be much larger/more complex.
-%
-% Not to be mixed with the static data (random_law_data/0) corresponding to a
-% random law, so that samples can be obtained from it.
 
 
 -record( alias_table, {
@@ -227,97 +236,138 @@
 	prob_likes :: array( probability_like() ) } ).
 
 
+
+-doc """
+The static information corresponding to a random law in charge of producing
+samples according to the specified discrete probability distribution, based on
+the alias method.
+""".
 -opaque alias_table() :: #alias_table{}.
-% The static information corresponding to a random law in charge of producing
-% samples according to the specified discrete probability distribution, based on
-% the alias method.
 
 
 
+-doc """
+The type of a sample that can be drawn from a probability distribution; a
+probability may be indeed associated to any kind of samples (integer ones,
+strings, vectors, etc.).
+""".
 -type sample( T ) :: T.
-% The type of a sample that can be drawn from a probability distribution; a
-% probability may be indeed associated to any kind of samples (integer ones,
-% strings, vectors, etc.).
 
 
+
+-doc """
+Designates a sample value of unknown type.
+
+It may be a number or a symbol (for example: 'obverse' / 'reverse', or 'head' /
+'tail').
+""".
 -type sample() :: sample( any() ).
-% Designates a sample value of unknown type.
-%
-% It may be a number or a symbol (for example: 'obverse', 'reverse').
 
 
+
+-doc "Designates a floating-point sample value.".
 -type float_sample() :: sample( float() ).
-% Designates a floating-point sample value.
 
+
+
+-doc "Designates a positive floating-point sample value.".
 -type positive_float_sample() :: sample( float() ).
-% Designates a positive floating-point sample value.
 
 
+
+-doc "A number of samples.".
 -type sample_count() :: count().
-% A number of samples.
 
 
+
+-doc "The increment added between two discretisation steps.".
 -type increment() :: float().
-% The increment added between two discretisation steps.
 
 
-%-type discrete_sampling_info() :: sample_count().
-% Information regarding a sampling among discrete (unordered) values.
+
+-doc "Information regarding a sampling among discrete (unordered) values.".
+-type discrete_sampling_info() :: sample_count().
 
 
-%-type interval_sampling_info() ::
-%	{ StartSample :: float_sample(), StopSample :: float_sample(),
-%	  sample_count() }.
-% Information regarding a numerical (float-based) sampling on an interval.
+
+-doc "Information regarding a numerical (float-based) sampling on an interval.".
+-type interval_sampling_info() ::
+	{ StartSample :: float_sample(), StopSample :: float_sample(),
+	  sample_count() }.
 
 
-%-type sampling_info() :: discrete_sampling_info() | interval_sampling_info().
-% Information regarding a (float-based) sampling.
+
+-doc "Information regarding a (float-based) sampling.".
+-type sampling_info() :: discrete_sampling_info() | interval_sampling_info().
 
 
+
+-doc """
+An entry corresponding to a sample of the specified type in a probability
+distribution.
+""".
 -type sample_entry( T ) :: { sample( T ), probability_like() }.
-% An entry corresponding to a sample of the specified type in a probability
-% distribution.
 
+
+
+-doc """
+An entry corresponding to a sample of unspecified type in a probability
+distribution.
+""".
 -type sample_entry() :: sample_entry( any() ).
-% An entry corresponding to a sample of unspecified type in a probability
-% distribution.
 
 
+
+-doc """
+A rate parameter, typically for the Lambda parameter of the exponential law.
+""".
 -type rate() :: number().
-% A rate parameter, typically for the Lambda parameter of the exponential law.
 
+
+
+-doc "A shape parameter of a random law.".
 -type shape() :: number().
-% A shape parameter of a random law.
 
+
+
+-doc "A scale parameter of a random law.".
 -type scale() :: number().
-% A scale parameter of a random law.
 
 
+
+-doc """
+An arithmetic mean of a list of numbers, that is the sum of all of the numbers
+divided by the number of numbers.
+
+See <https://en.wikipedia.org/wiki/Mean#Arithmetic_mean_(AM)>.
+""".
 -type mean() :: number().
-% An arithmetic mean of a list of numbers, that is the sum of all of the numbers
-% divided by the number of numbers.
-%
-% See https://en.wikipedia.org/wiki/Mean#Arithmetic_mean_(AM)
 
 
+
+-doc """
+A measure of the amount of dispersion of a set of values.
+
+It is the square root of its variance.
+
+See <https://en.wikipedia.org/wiki/Standard_deviation>.
+""".
 -type standard_deviation() :: math_utils:standard_deviation().
-% A measure of the amount of dispersion of a set of values.
-%
-% It is the square root of its variance.
-%
-% See https://en.wikipedia.org/wiki/Standard_deviation
+
+
 
 
 % Section for the description of random laws (probability distributions).
 
 
+-doc """
+The name, as an atom, of a type of (unparametrised) law.
+
+For example, 'uniform' or 'weibull_3p'.
+
+Acts as an identifier of this type of laws.
+""".
 -type law_name() :: atom().
-% The name, as an atom, of a type of (unparametrised) law.
-%
-% For example, 'uniform' or 'weibull_3p'.
-%
-% Acts as an identifier of this type of laws.
 
 
 
@@ -329,6 +379,12 @@
 % parameters will be designated as foobar_Np (e.g. lognormal_3p).
 
 
+-doc """
+A user-level specification of a (parametrised) randow law, either natively
+supported or arbitrary.
+
+It is a tuple whose first element is a law identifier.
+""".
 -type random_law_spec() ::
 	uniform_law_spec() | full_uniform_law_spec()
   | integer_uniform_law_spec()
@@ -366,10 +422,6 @@
   | beta_2p_law_spec() | full_beta_2p_law_spec()
 
   | arbitrary_law_spec().
-% A user-level specification of a (parametrised) randow law, either natively
-% supported or arbitrary.
-%
-% It is a tuple whose first element is a law identifier.
 
 
 
@@ -377,24 +429,34 @@
 % Uniform distributions.
 
 
+-doc """
+A probability distribution with which all declared samples have the same
+probability of being drawn: will return random floats uniformly distributed in
+[Min,Max] if both bounds are specified, otherwise in [0,Max].
+""".
 -type uniform_law_spec() :: { 'uniform', Min :: number(), Max :: number() }
 						  | { 'uniform', Max :: number() }.
-% A probability distribution with which all declared samples have the same
-% probability of being drawn: will return random floats uniformly distributed
-% in [Min,Max] if both bounds are specified, otherwise in [0,Max].
 
 
+
+-doc "Canonical, most complete uniform law specification.".
 -type full_uniform_law_spec() :: { 'uniform', Min :: float(), Max :: float() }.
-% Canonical, most complete uniform law specification.
 
 
+
+-doc """
+A probability distribution with which all declared samples have the same
+probability of being drawn: will return random integers uniformly distributed in
+[Nmin,Nmax] if both bounds are specified, otherwise in [0,Nmax].
+""".
 -type integer_uniform_law_spec() :: { 'integer_uniform', Nmax :: integer() }
 									| full_integer_uniform_law_spec().
-% A probability distribution with which all declared samples have the same
-% probability of being drawn: will return random integers uniformly distributed
-% in [Nmin,Nmax] if both bounds are specified, otherwise in [0,Nmax].
 
 
+
+-doc """
+A complete specification for an integer, uniform probability distribution.
+""".
 -type full_integer_uniform_law_spec() ::
 	{ 'integer_uniform', Nmin :: integer(), Nmax :: integer() }.
 
@@ -403,54 +465,71 @@
 % Exponential distributions.
 
 
+-doc """
+The exponential law with one parameter is fully determined when its single,
+"rate" parameter (Lambda>0) is given.
+
+The probability density function is p(x) = Lambda.exp(-Lambda.x), whose integral
+is 1.
+
+Mean value of drawn samples is 1/Lambda.
+
+Refer to <https://en.wikipedia.org/wiki/Exponential_distribution>.
+""".
 -type exponential_1p_law_spec() :: { 'exponential_1p', Lambda :: rate() }.
-% The exponential law with one parameter is fully determined when its single,
-% "rate" parameter (Lambda>0) is given.
-%
-% The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
-% integral is 1.
-%
-% Mean value of drawn samples is 1/Lambda.
-%
-% Refer to https://en.wikipedia.org/wiki/Exponential_distribution.
 
 
+
+-doc "Alternative to exponential_1p_law_spec/0.".
 -type exponential_law_spec() :: { 'exponential', Lambda :: rate() }.
-% Alternative to exponential_1p_law_spec/0.
 
 
+
+-doc """
+An exponential law with one parameter yielding only positive integer samples.
+
+May be useful for example if wanting to draw duration values.
+
+Refer to exponential_1p_law_spec/0 for further details.
+""".
 -type positive_integer_exponential_1p_law_spec() ::
 		{ 'positive_integer_exponential_1p', Lambda :: rate() }.
-% An exponential law with one parameter yielding only positive integer samples.
-%
-% May be useful for example if wanting to draw duration values.
-%
-% Refer to exponential_1p_law_spec/0 for further details.
 
 
+
+-doc """
+The exponential law with two parameters is fully determined when its two "rate"
+parameters (Lambda>0 and Gamma>0) are given.
+
+The probability density function is p(x) = Lambda.exp(-Gamma.x).
+
+Refer to <https://en.wikipedia.org/wiki/Exponential_distribution> and
+<https://reliability.readthedocs.io/en/latest/API/Fitters/Fit_Exponential_2P.html>.
+""".
 -type exponential_2p_law_spec() ::
 		{ 'exponential_2p', Lambda :: rate(), Gamma :: rate() }
 	  | { 'exponential_2p', Lambda :: rate(), Gamma :: rate(), sample_count() }
 	  | full_exponential_2p_law_spec().
-% The exponential law with two parameters is fully determined when its two
-% "rate" parameters (Lambda>0 and Gamma>0) are given.
-%
-% The probability density function is p(x) = Lambda.exp(-Gamma.x).
-%
-% Refer to https://en.wikipedia.org/wiki/Exponential_distribution and
-% https://reliability.readthedocs.io/en/latest/API/Fitters/Fit_Exponential_2P.html.
+
 
 
 % No full_exponential_1p_law_spec(), as directly computed (alias method not
 % used):
 %
+-doc """
+A complete specification for an exponential probability distribution.
+""".
 -type full_exponential_law_spec() :: full_exponential_2p_law_spec().
 
+
+
+-doc """
+Canonical, most complete Exponential-2p law specification with two parameters.
+Refer to exponential_2p_law_spec/0 for further details.
+""".
 -type full_exponential_2p_law_spec() ::
 	{ 'exponential_2p', Lambda :: rate(), Gamma :: rate(),
 	  sample_count(), bounds() }.
-% Canonical, most complete Exponential-2p law specification with two parameters.
-% Refer to exponential_2p_law_spec/0 for further details.
 
 
 
@@ -462,176 +541,218 @@
 % and the chi-square distribution.
 
 
+-doc "A complete specification for an Gamma probability distribution.".
 -type full_gamma_law_spec() ::
 		full_gamma_2p_law_spec() | full_gamma_3p_law_spec().
 
 
+
+-doc """
+The Gamma law with two parameters, whose Alpha > 0 (sometimes denoted K) is the
+shape parameter and Beta > 0 (sometimes denoted Theta) is the scale parameter.
+
+A sample count and specific bounds can be specified.
+
+See also <https://en.wikipedia.org/wiki/Gamma_distribution> and
+<https://reliawiki.org/index.php/The_Gamma_Distribution>.
+
+gamma_2p corresponds to a gamma_3p for which Theta=0.
+""".
 -type gamma_2p_law_spec() ::
 	{ 'gamma_2p', Alpha :: positive_float(), Beta :: positive_float() }
   | { 'gamma_2p', Alpha :: positive_float(), Beta :: positive_float(),
 	  sample_count() }
   | full_gamma_2p_law_spec().
-% The Gamma law with two parameters, whose Alpha > 0 (sometimes denoted K) is
-% the shape parameter and Beta > 0 (sometimes denoted Theta) is the scale
-% parameter.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Gamma_distribution and
-% https://reliawiki.org/index.php/The_Gamma_Distribution.
-%
-% gamma_2p corresponds to a gamma_3p for which Theta=0.
 
 
+
+-doc """
+Canonical, most complete Gamma law specification with two parameters.
+
+Refer to gamma_2p_law_spec/0 for further details.
+""".
 -type full_gamma_2p_law_spec() ::
 	{ 'gamma_2p', Alpha :: positive_float(), Beta :: positive_float(),
 	  sample_count(), bounds() }.
-% Canonical, most complete Gamma law specification with two parameters.
-% Refer to gamma_2p_law_spec/0 for further details.
 
 
 
+-doc """
+The Gamma law with three parameters, whose:
+
+- Alpha > 0 is the shape parameter
+
+- Beta > 0 is the scale parameter (initially was thought to be a second shape
+parameter)
+
+- Theta > 0 is the location parameter, as an offset for the abscissa of interest
+(x -> x-theta)
+
+A sample count and specific bounds can be specified.
+
+See also <https://en.wikipedia.org/wiki/Gamma_distribution> and
+<https://reliawiki.org/index.php/The_Gamma_Distribution>.
+""".
 -type gamma_3p_law_spec() ::
 	{ 'gamma_3p', Alpha :: positive_float(), Beta :: positive_float(),
 	  Theta :: positive_float() }
   | { 'gamma_3p', Alpha :: positive_float(), Beta :: positive_float(),
 	   Theta :: positive_float(), sample_count() }
   | full_gamma_3p_law_spec().
-% The Gamma law with three parameters, whose:
-%
-% - Alpha > 0 is the shape parameter
-%
-% - Beta > 0 is the scale parameter (initially was thought to be a second shape
-% parameter)
-%
-% - Theta > 0 is the location parameter, as an offset for the abscissa of
-% interest (x -> x-theta)
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Gamma_distribution and
-% https://reliawiki.org/index.php/The_Gamma_Distribution.
 
 
+
+-doc """
+Canonical, most complete Gamma law specification with three parameters.
+
+Refer to gamma_3p_law_spec/0 for further details.
+""".
 -type full_gamma_3p_law_spec() ::
 	{ 'gamma_3p', Alpha :: positive_float(), Beta :: positive_float(),
 	  Theta :: positive_float(), sample_count(), bounds() }.
-% Canonical, most complete Gamma law specification with three parameters.
-% Refer to gamma_3p_law_spec/0 for further details.
+
 
 
 
 % Gaussian distributions.
 
+
+-doc """
+A Gaussian (a.k.a. normal, bell curve) law is fully determined when its two
+parameters are given:
+
+- its mean (Mu; no value restriction), the average value of the samples
+
+- its standard deviation (Sigma>0), being expressed in the same unit as the
+samples (its square being the variance)
+
+About 68% of the samples are in [Mu-Sigma;Mu+Sigma].
+About 95.4% of the samples (i.e. almost all) are in [Mu-2.Sigma;Mu+2.Sigma].
+
+See also: <https://en.wikipedia.org/wiki/Normal_distribution>.
+
+Such a Gaussian law could be designated as normal_2p as well.
+""".
 -type normal_2p_law_spec() ::
 	{ 'normal_2p', Mu :: mean(), Sigma :: standard_deviation() }.
-% A Gaussian (a.k.a. normal, bell curve) law is fully determined when its two
-% parameters are given:
-%
-% - its mean (Mu; no value restriction), the average value of the samples
-%
-% - its standard deviation (Sigma>0), being expressed in the same unit as the
-% samples (its square being the variance)
-%
-% About 68% of the samples are in [Mu-Sigma;Mu+Sigma].
-% About 95.4% of the samples (i.e. almost all) are in [Mu-2.Sigma;Mu+2.Sigma].
-%
-% See also: https://en.wikipedia.org/wiki/Normal_distribution.
-%
-% Such a Gaussian law could be designated as normal_2p as well.
 
 
+
+-doc "Synonym for normal_2p_law_spec/0.".
 -type gaussian_law_spec() ::
 	{ 'gaussian', Mu :: mean(), Sigma :: standard_deviation() }.
-% Synonym for normal_2p_law_spec/0.
 
 
+
+-doc """
+A Gaussian (a.k.a. normal, bell curve) law yielding only positive integer
+samples.
+
+May be useful for example if wanting to draw duration values.
+
+Refer to gaussian_law/0 for further details.
+""".
 -type positive_integer_gaussian_law_spec() ::
 	{ 'positive_integer_gaussian', Mu :: mean(),
 	  Sigma :: standard_deviation() }.
-% A Gaussian (a.k.a. normal, bell curve) law yielding only positive integer
-% samples.
-%
-% May be useful for example if wanting to draw duration values.
-%
-% Refer to gaussian_law/0 for further details.
+
 
 
 
 % Gumbel distribution.
 
 
+-doc """
+The Gumbel law, with two parameters: Mu, in R, is the location parameter, and
+Beta > 0 is the scale parameter.
+
+A sample count and specific bounds can be specified.
+
+See also <https://en.wikipedia.org/wiki/Gumbel_distribution> and
+<https://reliawiki.org/index.php/The_Gumbel/SEV_Distribution>.
+""".
 -type gumbel_2p_law_spec() ::
 	{ 'gumbel_2p', Mu :: float(), Beta :: positive_float() }
   | { 'gumbel_2p', Mu :: float(), Beta :: positive_float(), sample_count() }
   | full_gumbel_2p_law_spec().
-% The Gumbel law, with two parameters: Mu, in R, is the location parameter, and
-% Beta > 0 is the scale parameter.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Gumbel_distribution and
-% https://reliawiki.org/index.php/The_Gumbel/SEV_Distribution.
 
 
+
+-doc """
+Canonical, most complete Gumbel law specification with two parameters.
+
+Refer to gumbel_2p_law_spec/0 for further details.
+""".
 -type full_gumbel_2p_law_spec() ::
 	{ 'gumbel_2p', Mu :: float(), Beta :: positive_float(),
+
 	  sample_count(), bounds() }.
-% Canonical, most complete Gumbel law specification with two parameters.
-%
-% Refer to gumbel_2p_law_spec/0 for further details.
 
 
 
 % Loglogistic distributions.
 
 
+-doc """
+The Log-logistic law, with two parameters: Alpha > 0 (sometimes noted c) is the
+scale parameter, and Beta > 0 (sometimes noted sigma) is the shape parameter.
+
+A sample count and specific bounds can be specified.
+
+See also <https://en.wikipedia.org/wiki/Log-logistic_distribution> and
+<https://reliawiki.org/index.php/The_Loglogistic_Distribution>.
+""".
 -type loglogistic_2p_law_spec() ::
 	{ 'loglogistic_2p', Alpha :: positive_float(), Beta :: positive_float() }
   | { 'loglogistic_2p', Alpha :: positive_float(), Beta :: positive_float(),
 	  sample_count() }
   | full_loglogistic_2p_law_spec().
-% The Log-logistic law, with two parameters: Alpha > 0 (sometimes noted c) is
-% the scale parameter, and Beta > 0 (sometimes noted sigma) is the shape
-% parameter.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Log-logistic_distribution and
-% https://reliawiki.org/index.php/The_Loglogistic_Distribution.
 
 
+
+-doc """
+Canonical, most complete Log-logistic law specification with two parameters.
+
+Refer to loglogistic_2p_law_spec/0 for further details.
+""".
 -type full_loglogistic_2p_law_spec() ::
 	{ 'loglogistic_2p', Alpha :: positive_float(), Beta :: positive_float(),
 	  sample_count(), bounds() }.
-% Canonical, most complete Log-logistic law specification with two parameters.
-%
-% Refer to loglogistic_2p_law_spec/0 for further details.
 
 
+
+-doc """
+The Log-logistic law, with three parameters: Alpha > 0 is the scale parameter,
+Beta > 0 is the shape parameter, Theta is the last one.
+
+A sample count and specific bounds can be specified.
+
+See also <https://en.wikipedia.org/wiki/Log-logistic_distribution> and
+<https://reliawiki.org/index.php/The_Loglogistic_Distribution>.
+""".
 -type loglogistic_3p_law_spec() ::
 	{ 'loglogistic_3p', Alpha :: positive_float(), Beta :: positive_float(),
 	  Theta :: float() }
   | { 'loglogistic_3p', Alpha :: positive_float(), Beta :: positive_float(),
 	  Theta :: float(), sample_count() }
   | full_loglogistic_3p_law_spec().
-% The Log-logistic law, with three parameters: Alpha > 0 is the scale parameter,
-% Beta > 0 is the shape parameter, Theta is the last one.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Log-logistic_distribution and
-% https://reliawiki.org/index.php/The_Loglogistic_Distribution.
 
 
+
+-doc """
+Canonical, most complete Loglogistic law specification with three parameters.
+
+Refer to loglogistic_3p_law_spec/0 for further details.
+""".
 -type full_loglogistic_3p_law_spec() ::
 	{ 'loglogistic_3p', Alpha :: positive_float(), Beta :: positive_float(),
 	  Theta :: positive_float(), sample_count(), bounds() }.
-% Canonical, most complete Loglogistic law specification with three parameters.
-%
-% Refer to loglogistic_3p_law_spec/0 for further details.
 
 
+
+-doc """
+A complete specification for a log-logistic probability distribution.
+""".
 -type full_loglogistic_law_spec() ::
 		full_loglogistic_2p_law_spec() | full_loglogistic_3p_law_spec().
 
@@ -641,54 +762,69 @@
 % Lognormal distribution.
 
 
+-doc """
+The Log-normal law, with two parameters: Mu, in R (typically the mean of the
+natural logarithms of the times-to-failures), and Sigma > 0 (typically the
+standard deviation of the natural logarithms of the times-to-failure).
+
+A sample count and specific bounds can be specified.
+
+See also <https://en.wikipedia.org/wiki/Log-normal_distribution> and
+<http://reliawiki.org/index.php/The_Lognormal_Distribution>.
+""".
 -type lognormal_2p_law_spec() ::
 	{ 'lognormal_2p', Mu :: float(), Sigma :: positive_float() }
   | { 'lognormal_2p', Mu :: float(), Sigma :: positive_float(),
 	  sample_count() }
   | full_lognormal_2p_law_spec().
-% The Log-normal law, with two parameters: Mu, in R (typically the mean of the
-% natural logarithms of the times-to-failures), and Sigma > 0 (typically the
-% standard deviation of the natural logarithms of the times-to-failure).
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Log-normal_distribution and
-% http://reliawiki.org/index.php/The_Lognormal_Distribution.
 
 
+
+-doc """
+Canonical, most complete Log-normal law specification with two parameters.
+
+Refer to lognormal_2p_law_spec/0 for further details.
+""".
 -type full_lognormal_2p_law_spec() ::
 	{ 'lognormal_2p', Mu :: float(), Sigma :: positive_float(),
 	  sample_count(), bounds() }.
-% Canonical, most complete Log-normal law specification with two parameters.
-%
-% Refer to lognormal_2p_law_spec/0 for further details.
 
 
+
+-doc """
+The Log-normal law, with three parameters: Mu, in R (typically the mean of the
+natural logarithms of the times-to-failures), Sigma > 0 (typically the standard
+deviation of the natural logarithms of the times-to-failure) and Theta,
+presumably in R.
+
+A sample count and specific bounds can be specified.
+
+See also <https://en.wikipedia.org/wiki/Log-normal_distribution> and
+<http://reliawiki.org/index.php/The_Lognormal_Distribution>.
+""".
 -type lognormal_3p_law_spec() ::
 	{ 'lognormal_3p', Mu :: float(), Sigma :: positive_float(),
 	  Theta :: float() }
   | { 'lognormal_3p', Mu :: float(), Sigma :: positive_float(),
 	  Theta :: float(), sample_count() }
   | full_lognormal_3p_law_spec().
-% The Log-normal law, with three parameters: Mu, in R (typically the mean of the
-% natural logarithms of the times-to-failures), Sigma > 0 (typically the
-% standard deviation of the natural logarithms of the times-to-failure) and
-% Theta, presumably in R.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Log-normal_distribution and
-% http://reliawiki.org/index.php/The_Lognormal_Distribution.
 
 
+
+-doc """
+Canonical, most complete Lognormal law specification with three parameters.
+
+Refer to lognormal_3p_law_spec/0 for further details.
+""".
 -type full_lognormal_3p_law_spec() ::
 	{ 'lognormal_3p', Mu :: float(), Sigma :: positive_float(),
 	  Theta :: float(), sample_count(), bounds() }.
-% Canonical, most complete Lognormal law specification with three parameters.
-%
-% Refer to lognormal_3p_law_spec/0 for further details.
 
 
+
+-doc """
+A complete specification for a lognormal probability distribution.
+""".
 -type full_lognormal_law_spec() ::
 		full_lognormal_2p_law_spec() | full_lognormal_3p_law_spec().
 
@@ -697,6 +833,7 @@
 % Weibull distributions.
 
 
+-doc "All Weibull laws.".
 -type full_weibull_law_spec() ::
 	full_weibull_2p_law_spec()   | full_weibull_3p_law_spec()
   | full_weibull_cr_law_spec()   | full_weibull_ds_law_spec()
@@ -704,134 +841,168 @@
   | full_weibull_zi_law_spec().
 
 
+
+-doc """
+The Weibull law with two parameters, whose K > 0 is the shape parameter
+(sometimes named beta, or slope) and Lambda > 0 is the scale parameter
+(sometimes named alpha, or eta, or characteristic life).
+
+A sample count and specific bounds can be specified.
+
+See also https://en.wikipedia.org/wiki/Weibull_distribution and
+<https://reliawiki.org/index.php/The_Weibull_Distribution>.
+""".
 -type weibull_2p_law_spec() ::
 	{ 'weibull_2p', K :: positive_float(), Lambda :: positive_float() }
   | { 'weibull_2p', K :: positive_float(), Lambda :: positive_float(),
 	  sample_count() }
   | full_weibull_2p_law_spec().
-% The Weibull law with two parameters, whose K > 0 is the shape parameter
-% (sometimes named beta, or slope) and Lambda > 0 is the scale parameter
-% (sometimes named alpha, or eta, or characteristic life).
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Weibull_distribution and
-% https://reliawiki.org/index.php/The_Weibull_Distribution.
 
 
+
+-doc """
+Canonical, most complete Weibull law specification with two parameters.
+
+Refer to weibull_2p_law_spec/0 for further details.
+""".
 -type full_weibull_2p_law_spec() ::
 	{ 'weibull_2p', K :: positive_float(), Lambda :: positive_float(),
 	  sample_count(), bounds() }.
-% Canonical, most complete Weibull law specification with two parameters.
-%
-% Refer to weibull_2p_law_spec/0 for further details.
 
 
 
+-doc """
+The Weibull law with three parameters, whose:
+
+- K > 0 is the shape parameter (sometimes named beta, or slope)
+
+- Lambda > 0 is the scale parameter (sometimes named alpha, or eta, or
+characteristic life)
+
+- Gamma (in R) is the location parameter (or failure free life)
+
+A sample count and specific bounds can be specified.
+
+See also https://en.wikipedia.org/wiki/Weibull_distribution and
+<https://reliawiki.org/index.php/The_Weibull_Distribution>.
+""".
 -type weibull_3p_law_spec() ::
 	{ 'weibull_3p', K :: positive_float(), Lambda :: positive_float(),
 	  Gamma :: float() }
   | { 'weibull_3p', K :: positive_float(), Lambda :: positive_float(),
 	  Gamma :: float(), sample_count() }
   | full_weibull_3p_law_spec().
-% The Weibull law with three parameters, whose:
-%
-% - K > 0 is the shape parameter (sometimes named beta, or slope)
-%
-% - Lambda > 0 is the scale parameter (sometimes named alpha, or eta, or
-% characteristic life)
-%
-% - Gamma (in R) is the location parameter (or failure free life)
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://en.wikipedia.org/wiki/Weibull_distribution and
-% https://reliawiki.org/index.php/The_Weibull_Distribution.
 
 
+
+-doc """
+Canonical, most complete Weibull law specification with three parameters.
+
+Refer to weibull_3p_law_spec/0 for further details.
+""".
 -type full_weibull_3p_law_spec() ::
 	{ 'weibull_3p', K :: positive_float(), Lambda :: positive_float(),
 	  Gamma :: float(), sample_count(), bounds() }.
-% Canonical, most complete Weibull law specification with three parameters.
-%
-% Refer to weibull_3p_law_spec/0 for further details.
 
 
 
+-doc """
+The Weibull CR ("Competing Risks") law, with three parameters: Lambda > 0, K > 0
+and Theta > 0.
+
+A sample count and specific bounds can be specified.
+
+See also
+<https://reliability.readthedocs.io/en/latest/API/Distributions/Competing_Risks_Model.html>.
+""".
 -type weibull_cr_law_spec() ::
 	{ 'weibull_cr', Lambda :: positive_float(), K :: positive_float(),
 	  Theta :: positive_float() }
   | { 'weibull_cr', Lambda :: positive_float(), K :: positive_float(),
 	  Theta :: positive_float(), sample_count() }
   | full_weibull_cr_law_spec().
-% The Weibull CR ("Competing Risks") law, with three parameters: Lambda > 0, K >
-% 0 and Theta > 0.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also
-% https://reliability.readthedocs.io/en/latest/API/Distributions/Competing_Risks_Model.html
 
 
+
+-doc """
+Canonical, most complete Weibull CR law specification, with three parameters.
+
+Refer to weibull_cr_law_spec/0 for further details.
+""".
 -type full_weibull_cr_law_spec() ::
 	{ 'weibull_cr', Lambda :: positive_float(), K :: positive_float(),
 	  Theta :: positive_float(), sample_count(), bounds() }.
-% Canonical, most complete Weibull CR law specification, with three parameters.
-%
-% Refer to weibull_cr_law_spec/0 for further details.
 
 
 
+-doc """
+The Weibull DS ("Defective Subpopulation") law, with three parameters: Lambda >
+0, K > 0 and Sigma > 0.
+
+A sample count and specific bounds can be specified.
+
+See also
+<https://reliability.readthedocs.io/en/latest/API/Distributions/DSZI_Model.html>,
+which discusses DS as well.
+""".
 -type weibull_ds_law_spec() ::
 	{ 'weibull_ds', Lambda :: positive_float(), K :: positive_float(),
 	  Sigma :: positive_float() }
   | { 'weibull_ds', Lambda :: positive_float(), K :: positive_float(),
 	  Sigma :: positive_float(), sample_count() }
   | full_weibull_ds_law_spec().
-% The Weibull DS ("Defective Subpopulation") law, with three parameters: Lambda
-% > 0, K > 0 and Sigma > 0.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also
-% https://reliability.readthedocs.io/en/latest/API/Distributions/DSZI_Model.html,
-% which discusses DS as well.
 
 
+
+-doc """
+Canonical, most complete Weibull DS law specification, with three parameters.
+
+Refer to weibull_ds_law_spec/0 for further details.
+""".
 -type full_weibull_ds_law_spec() ::
 	{ 'weibull_ds', Lambda :: positive_float(), K :: positive_float(),
 	  Sigma :: positive_float(), sample_count(), bounds() }.
-% Canonical, most complete Weibull DS law specification, with three parameters.
-%
-% Refer to weibull_ds_law_spec/0 for further details.
 
 
 
+-doc """
+The Weibull DSZI ("Defective Subpopulation" / "Zero Inflated") law, with four
+parameters: Lambda > 0, K > 0, Sigma > 0 and Theta > 0.
+
+A sample count and specific bounds can be specified.
+
+See also
+<https://reliability.readthedocs.io/en/latest/API/Distributions/DSZI_Model.html>.
+""".
 -type weibull_dszi_law_spec() ::
 	{ 'weibull_dszi', Lambda :: positive_float(), K :: positive_float(),
 	  Sigma :: positive_float(), Theta :: positive_float() }
   | { 'weibull_dszi', Lambda :: positive_float(), K :: positive_float(),
 	  Sigma :: positive_float(), Theta :: positive_float(), sample_count() }
   | full_weibull_dszi_law_spec().
-% The Weibull DSZI ("Defective Subpopulation" / "Zero Inflated") law, with four
-% parameters: Lambda > 0, K > 0, Sigma > 0 and Theta > 0.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also
-% https://reliability.readthedocs.io/en/latest/API/Distributions/DSZI_Model.html.
 
 
+
+-doc """
+Canonical, most complete Weibull DSZI law specification, with four parameters.
+
+Refer to weibull_dszi_law_spec/0 for further details.
+""".
 -type full_weibull_dszi_law_spec() ::
 	{ 'weibull_dszi', Lambda :: positive_float(), K :: positive_float(),
 	  Sigma :: positive_float(), Theta :: positive_float(), sample_count(),
 	  bounds() }.
-% Canonical, most complete Weibull DSZI law specification, with four parameters.
-%
-% Refer to weibull_dszi_law_spec/0 for further details.
 
 
 
+-doc """
+The Weibull mixture law, a combination of two weibull_2p distributions, with a
+total of five parameters.
+
+A sample count and specific bounds can be specified.
+
+See also <https://reliability.readthedocs.io/en/latest/Mixture%20models.html>.
+""".
 -type weibull_mixture_law_spec() ::
 	{ 'weibull_mixture', P :: positive_float(),
 	  Lambda1 :: positive_float(), K1 :: positive_float(),
@@ -840,47 +1011,49 @@
 	  Lambda1 :: positive_float(), K1 :: positive_float(),
 	  Lambda2 :: positive_float(), K2 :: positive_float(), sample_count() }
   | full_weibull_mixture_law_spec().
-% The Weibull mixture law, a combination of two weibull_2p distributions, with a
-% total of five parameters.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also https://reliability.readthedocs.io/en/latest/Mixture%20models.html
 
 
+
+-doc """
+Canonical, most complete Weibull mixture law specification, with five
+parameters.
+
+Refer to weibull_mixture_law_spec/0 for further details.
+""".
 -type full_weibull_mixture_law_spec() ::
 	{ 'weibull_mixture', P :: positive_float(),
 	  Lambda1 :: positive_float(), K1 :: positive_float(),
 	  Lambda2 :: positive_float(), K2 :: positive_float(),
 	  sample_count(), bounds() }.
-% Canonical, most complete Weibull mixture law specification, with five
-% parameters.
-%
-% Refer to weibull_mixture_law_spec/0 for further details.
 
 
 
+-doc """
+The Weibull ZI ("Zero Inflated") law with three parameters.
+
+A sample count and specific bounds can be specified.
+
+See also
+<https://reliability.readthedocs.io/en/latest/API/Distributions/DSZI_Model.html>,
+which discusses ZI as well.
+""".
 -type weibull_zi_law_spec() ::
 	{ 'weibull_zi', Lambda :: positive_float(), K :: positive_float(),
 	  P :: positive_float() }
   | { 'weibull_zi', Lambda :: positive_float(), K :: positive_float(),
 	  P :: positive_float(), sample_count() }
   | full_weibull_zi_law_spec().
-% The Weibull ZI ("Zero Inflated") law with three parameters.
-%
-% A sample count and specific bounds can be specified.
-%
-% See also
-% https://reliability.readthedocs.io/en/latest/API/Distributions/DSZI_Model.html,
-% which discusses ZI as well.
 
 
+
+-doc """
+Canonical, most complete Weibull ZI law specification with three parameters.
+
+ Refer to weibull_zi_law_spec/0 for further details.
+""".
 -type full_weibull_zi_law_spec() ::
 	{ 'weibull_zi', Lambda :: positive_float(), K :: positive_float(),
 	  P :: positive_float(), sample_count(), bounds() }.
-% Canonical, most complete Weibull ZI law specification with three parameters.
-%
-% Refer to weibull_zi_law_spec/0 for further details.
 
 
 
@@ -890,53 +1063,69 @@
 % Beta distributions.
 
 
+-doc """
+The Beta law (of the first kind) with two shape parameters, Alpha > 0 and Beta >
+0.
+
+A sample count and specific bounds can be specified, generally on the [0,1]
+interval.
+
+See also <https://en.wikipedia.org/wiki/Beta_distribution> and
+<https://reliability.readthedocs.io/en/latest/Equations%20of%20supported%20distributions.html#beta-distribution>.
+""".
 -type beta_2p_law_spec() ::
 	{ 'beta_2p', Alpha :: positive_float(), Beta :: positive_float() }
   | { 'beta_2p', Alpha :: positive_float(), Beta :: positive_float(),
 	  sample_count() }
   | full_beta_2p_law_spec().
-% The Beta law (of the first kind) with two shape parameters, Alpha > 0 and Beta
-% > 0.
-%
-% A sample count and specific bounds can be specified, generally on the [0,1]
-% interval.
-%
-% See also https://en.wikipedia.org/wiki/Beta_distribution and
-% https://reliability.readthedocs.io/en/latest/Equations%20of%20supported%20distributions.html#beta-distribution
 
 
+
+-doc "A complete specification for a beta probability distribution.".
 -type full_beta_law_spec() :: full_beta_2p_law_spec().
 
+
+
+-doc """
+Canonical, most complete Beta law specification with two parameters.
+
+Refer to beta_2p_law_spec/0 for further details.
+""".
 -type full_beta_2p_law_spec() ::
 	{ 'beta_2p', Alpha :: positive_float(), Beta :: positive_float(),
 	  sample_count(), bounds() }.
-% Canonical, most complete Beta law specification with two parameters.
-% Refer to beta_2p_law_spec/0 for further details.
 
 
+
+-doc """
+Information regarding a PDF to be used in order to define an arbitrary law.
+""".
 -type pdf_info() :: pdf()
 				  | { pdf(), sample_count() }
 				  | full_pdf_info().
-% Information regarding a PDF to be used in order to define an arbitrary law.
 
 
+
+-doc """
+Most complete information regarding a PDF to be used in order to define an
+arbitrary law.
+""".
 -type full_pdf_info() :: { pdf(), sample_count(), SampleBounds :: bounds() }.
-% Most complete information regarding a PDF to be used in order to define an
-% arbitrary law.
 
 
 
+-doc """
+User-level specification of an arbitrary random law.
+
+It includes its name, and one way of performing a reverse sampling of it:
+ - either directly from discrete, user-specified samples
+ - or through its Probability Density Function (which will then be discretised)
+ and any relevant parameters that will be applied to it (stored so that they
+ remain available afterwards); its intended sampling may be specified
+""".
 -type arbitrary_law_spec() ::
 	{ 'arbitrary', Name :: any_string(),
 	  discrete_probability_distribution() | full_pdf_info() }.
-% User-level specification of an arbitrary random law.
-%
-% It includes its name, and one way of performing a reverse sampling of it:
-%  - either directly from discrete, user-specified samples
-%  - or through its Probability Density Function (which will then be
-%  discretised) and any relevant parameters that will be applied to it (stored
-%  so that they remain available afterwards); its intended sampling may be
-%  specified
 
 
 
@@ -947,19 +1136,33 @@
 
 
 
+-doc """
+The internal, law-specific settings of a law.
 
+The first element of the tuple should be the name of the law, whereas its last
+elements shall correspond to the sampling information: `{law_name(), ...,
+sample_count(), bounds()}`.
+""".
 -type random_law_settings() :: tuple().
-% The internal, law-specific settings of a law.
-%
-% The first element of the tuple should be the name of the law, whereas its last
-% elements shall correspond to the sampling information:
-%  {law_name(), ..., sample_count(), bounds() }.
 
 
+
+-doc """
+Static, runtime data associated to an actual random law, so that samples can be
+obtained from it.
+
+The runtime data of a law is often mostly the same as its user specification
+(except some transformations in some cases), except for laws obtained through
+discretisation of their PDF, which embed additionally their precomputed alias
+table.
+
+This is not a random state, which is a mutable internal state of a random
+generator (see random_state/0).
+""".
 -type random_law_data() ::
 
   % The general rule:
-  { random_law_settings(), maybe( alias_table() ) }
+  { random_law_settings(), option( alias_table() ) }
 
   | uniform_law_data()
   | integer_uniform_law_data()
@@ -983,209 +1186,289 @@
   | beta_law_data()
 
   | arbitrary_law_data().
-% Static, runtime data associated to an actual random law, so that samples can
-% be obtained from it.
-%
-% The runtime data of a law is often mostly the same as its user specification
-% (except some transformations in some cases), except for laws obtained through
-% discretisation of their PDF, which embed additionally their precomputed alias
-% table.
-%
-% This is not a random state, which is a mutable internal state of a random
-% generator (see random_state/0).
 
 
+
+-doc "Data for a uniform random law.".
 -type uniform_law_data() :: { full_uniform_law_spec(), 'undefined' }.
 
+
+
+-doc "Data for a uniform integer random law.".
 -type integer_uniform_law_data() ::
 		{ full_integer_uniform_law_spec(), 'undefined' }.
 
 
 
+-doc "Data for an exponential-1p random law.".
 -type exponential_1p_law_data() ::
 		{ exponential_1p_law_spec() | exponential_law_spec(), 'undefined' }.
 
+
+
+-doc "Data for an exponential-2p random law.".
 -type exponential_2p_law_data() ::
 		{ full_exponential_2p_law_spec(), alias_table() }.
 
+
+
+-doc "Data for any exponential random law.".
 -type exponential_law_data() :: exponential_1p_law_data()
 							  | exponential_2p_law_data().
 
 
+
+-doc "Data for a positive integer exponential-1p random law.".
 -type positive_integer_exponential_1p_law_data() ::
 		{ positive_integer_exponential_1p_law_spec(), 'undefined' }.
 
+
+-doc "Data for a positive integer exponential random law.".
 -type positive_integer_exponential_law_data() ::
 		positive_integer_exponential_1p_law_data().
 
 
 
+-doc "Internal settings of the Gamma-2p laws.".
 -type gamma_2p_law_settings() :: { 'gamma_2p', Alpha :: positive_float(),
 		Beta :: positive_float(), sample_count(), bounds() }.
-% Internal settings of the Gamma-2p laws.
 
+
+-doc "Internal settings of the Gamma-3p laws.".
 -type gamma_3p_law_settings() :: { 'gamma_3p', Alpha :: positive_float(),
 		Beta :: positive_float(), Theta :: positive_float(), sample_count(),
 		bounds() }.
-% Internal settings of the Gamma-3p laws.
 
 
+-doc "Data for a Gamma-2p random law.".
 -type gamma_2p_law_data() :: { gamma_2p_law_settings(), alias_table() }.
+
+
+-doc "Data for a Gamma-3p random law.".
 -type gamma_3p_law_data() :: { gamma_3p_law_settings(), alias_table() }.
 
 
+-doc """
+Data for a Gamma random law.
+
+A bit like gamma_law_spec/0, except that its precomputed alias table is stored
+as well.
+""".
 -type gamma_law_data() :: gamma_2p_law_data() | gamma_3p_law_data().
-% A bit like gamma_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
 
 
+
+-doc "Internal settings of the Gumbel-2p laws.".
 -type gumbel_2p_law_settings() :: { 'gumbel_2p', Mu :: float(),
 		Beta :: positive_float(), sample_count(), bounds() }.
-% Internal settings of the Gumbel-2p laws.
 
+
+-doc """
+Data for a Gumbel-2p law.
+
+A bit like gumbel_2p_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type gumbel_2p_law_data() :: { gumbel_2p_law_settings(), alias_table() }.
-% A bit like gumbel_2p_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
 
+
+-doc "Data for a Gumbel random law".
 -type gumbel_law_data() :: gumbel_2p_law_data().
 
 
 
+-doc "Internal settings of the Loglogistic-2p laws.".
 -type loglogistic_2p_law_settings() ::
 	{ 'loglogistic_2p', Alpha :: positive_float(), Beta :: positive_float(),
 	  sample_count(), bounds() }.
-% Internal settings of the Loglogistic-2p laws.
 
+
+
+-doc """
+A bit like loglogistic_2p_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type loglogistic_2p_law_data() ::
 		{ loglogistic_2p_law_settings(), alias_table() }.
-% A bit like loglogistic_2p_law_spec/0, except that its precomputed alias table
-% is stored as well.
 
 
+
+-doc "Internal settings of the Loglogistic-3p laws.".
 -type loglogistic_3p_law_settings() ::
 	{ 'loglogistic_3p', Alpha :: positive_float(), Beta :: positive_float(),
 	  Theta :: positive_float(), sample_count(), bounds() }.
-% Internal settings of the Loglogistic-3p laws.
 
+
+
+-doc """
+A bit like loglogistic_3p_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type loglogistic_3p_law_data() ::
 		{ loglogistic_3p_law_settings(), alias_table() }.
-% A bit like loglogistic_3p_law_spec/0, except that its precomputed alias table
-% is stored as well.
 
 
+
+-doc "Data for a log-logistic random law".
 -type loglogistic_law_data() :: loglogistic_2p_law_data()
 							  | loglogistic_3p_law_data().
 
 
 
+-doc "Internal settings of the Lognormal-2p laws.".
 -type lognormal_2p_law_settings() ::
 	{ 'lognormal_2p', Mu :: float(), Sigma :: positive_float(),
 	  sample_count(), bounds() }.
-% Internal settings of the Lognormal-2p laws.
 
+
+
+-doc """
+A bit like lognormal_2p_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type lognormal_2p_law_data() ::
 		{ lognormal_2p_law_settings(), alias_table() }.
-% A bit like lognormal_2p_law_spec/0, except that its precomputed alias table
-% is stored as well.
 
 
+
+-doc "Internal settings of the Lognormal-3p laws.".
 -type lognormal_3p_law_settings() ::
 	{ 'lognormal_3p', Mu :: float(), Sigma :: positive_float(),
 	  Theta :: float(), sample_count(), bounds() }.
-% Internal settings of the Lognormal-3p laws.
 
+
+
+-doc """
+A bit like lognormal_3p_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type lognormal_3p_law_data() :: { lognormal_3p_law_settings(), alias_table() }.
-% A bit like lognormal_3p_law_spec/0, except that its precomputed alias table
-% is stored as well.
 
 
+
+-doc "Data for a lognormal law.".
 -type lognormal_law_data() :: lognormal_2p_law_data() | lognormal_3p_law_data().
 
 
 
+-doc "Data for a gaussian law.".
 -type gaussian_law_data() :: { gaussian_law_spec(), 'undefined' }.
 
+
+
+-doc "Data for a positive integer gaussian law.".
 -type positive_integer_gaussian_law_data() ::
 		{ positive_integer_gaussian_law_spec(), 'undefined' }.
 
 
 
+-doc "Internal settings of the Weibull-2p laws.".
 -type weibull_2p_law_settings() :: { 'weibull_2p', K :: positive_float(),
 		Lambda :: positive_float(), sample_count(), bounds() }.
-% Internal settings of the Weibull-2p laws.
 
 
+-doc "Internal settings of the Weibull-3p laws.".
 -type weibull_3p_law_settings() :: { 'weibull_3p', K :: positive_float(),
 		Lambda :: positive_float(), Gamma :: float(), sample_count(),
 		bounds() }.
-% Internal settings of the Weibull-3p laws.
 
 
+-doc "Internal settings of the Weibull-CR laws.".
 -type weibull_cr_law_settings() :: { 'weibull_cr', Lambda :: positive_float(),
 		K :: positive_float(), Theta :: positive_float(), sample_count(),
 		bounds() }.
-% Internal settings of the Weibull-CR laws.
 
 
+-doc "Internal settings of the Weibull-DS laws.".
 -type weibull_ds_law_settings() :: { 'weibull_ds', Lambda :: positive_float(),
 		K :: positive_float(), Sigma :: positive_float(), sample_count(),
 		bounds() }.
-% Internal settings of the Weibull-DS laws.
 
 
+
+-doc "Internal settings of the Weibull-DSZI laws.".
 -type weibull_dszi_law_settings() :: { 'weibull_dszi',
 		Lambda :: positive_float(), K :: positive_float(),
 		Sigma :: positive_float(), Theta :: positive_float(), sample_count(),
 		bounds() }.
-% Internal settings of the Weibull-DSZI laws.
 
 
+
+-doc "Internal settings of the Weibull-mixture laws.".
 -type weibull_mixture_law_settings() :: { 'weibull_mixture',
 		P :: positive_float(),
 		Lambda1 :: positive_float(), K1 :: positive_float(),
 		Lambda2 :: positive_float(), K2 :: positive_float(), bounds() }.
-% Internal settings of the Weibull-mixture laws.
 
 
+
+-doc "Internal settings of the Weibull-ZI laws.".
 -type weibull_zi_law_settings() :: { 'weibull_zi', Lambda :: positive_float(),
 		K :: positive_float(), P :: positive_float(), sample_count(),
 		bounds() }.
-% Internal settings of the Weibull-ZI laws.
 
 
 
+-doc """
+A bit like weibull_2p_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type weibull_2p_law_data() :: { weibull_2p_law_settings(), alias_table() }.
-% A bit like weibull_2p_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
+
+
+-doc """
+A bit like weibull_3p_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type weibull_3p_law_data() :: { weibull_3p_law_settings(), alias_table() }.
-% A bit like weibull_3p_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
+
+
+-doc """
+A bit like weibull_cr_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type weibull_cr_law_data() :: { weibull_cr_law_settings(), alias_table() }.
-% A bit like weibull_cr_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
+
+
+-doc """
+A bit like weibull_ds_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type weibull_ds_law_data() :: { weibull_ds_law_settings(), alias_table() }.
-% A bit like weibull_ds_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
+
+
+-doc """
+A bit like weibull_dszi_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type weibull_dszi_law_data() :: { weibull_dszi_law_settings(), alias_table() }.
-% A bit like weibull_dszi_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
+
+
+-doc """
+A bit like weibull_mixture_law_spec/0, except that its precomputed alias table
+is stored as well.
+""".
 -type weibull_mixture_law_data() ::
 		{ weibull_mixture_law_settings(), alias_table() }.
-% A bit like weibull_mixture_law_spec/0, except that its precomputed alias table
-% is stored as well.
 
+
+
+-doc """
+A bit like weibull_zi_law_spec/0, except that its precomputed alias table is
+stored as well.
+""".
 -type weibull_zi_law_data() :: { weibull_zi_law_settings(), alias_table() }.
-% A bit like weibull_zi_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
 
+
+-doc "Data for all Weibull laws.".
 -type weibull_law_data() ::
 		weibull_2p_law_data()   | weibull_3p_law_data()
 	  | weibull_cr_law_data()   | weibull_ds_law_data()
@@ -1194,170 +1477,227 @@
 
 
 
+-doc "Internal settings of the Beta law.".
 -type beta_2p_law_settings() :: { 'beta_2p', Alpha :: positive_float(),
 		Beta :: positive_float(), sample_count(), bounds() }.
-% Internal settings of the Beta law.
 
 
+
+-doc "Data for all Beta laws.".
 -type beta_law_data() :: beta_2p_law_data().
 
+
+
+-doc """
+A bit like beta_2p_law_spec/0, except that its precomputed alias table is stored
+as well.
+""".
 -type beta_2p_law_data() :: { beta_2p_law_settings(), alias_table() }.
-% A bit like beta_2p_law_spec/0, except that its precomputed alias table is
-% stored as well.
 
 
 
-
+-doc """
+A (pseudo) specification for an arbitrary law, to be stored in a law data.
+""".
 -type arbitrary_law_pseudo_spec() ::
 		{ 'arbitrary', Name :: bin_string(), sample_count(),
-		  maybe( bounds() ) }.
-% A (pseudo) specification for an arbitrary law, to be stored in a law data.
-%
-%
+		  option( bounds() ) }.
 
+
+
+-doc """
+The definition of an arbitrary law.
+
+Quite like arbitrary_law_spec/0, except for the string type, the PDF that is
+dropped, any parameters that are kept for further reference, and an additional
+precomputed alias table stored.
+""".
 -type arbitrary_law_data() :: { arbitrary_law_pseudo_spec(), alias_table() }.
-% The definition of an arbitrary law.
-%
-% Quite like arbitrary_law_spec/0, except for the string type, the PDF that is
-% dropped, any parameters that are kept for further reference, and an additional
-% precomputed alias table stored.
 
 
 
+-doc """
+The specification of a discrete probability distribution (a.k.a. frequency
+distribution) whose samples are of the specified type.
+
+For example `discrete_probability_distribution(integer())` or
+`discrete_probability_distribution(vector3:vector3())`.
+
+Samples of null probability are usually omitted, as such a probability is
+implicit and results in the corresponding sample never to be drawn.
+
+At least an entry with a non-null probability must be defined for any drawing to
+occur.
+
+Preferably a given sample value is specified only once, i.e. is declared in a
+single entry (otherwise the distribution will behave as if the probabilities for
+that sample were summed - yet the distribution will be less compact).
+
+Such a distribution can be obtained either directly or by sampling a fun(T ->
+probability_like()) function over at least a part of its domain.
+
+It may no be normalised.
+""".
 -type discrete_probability_distribution( T ) :: [ sample_entry( T ) ].
-% The specification of a discrete probability distribution (a.k.a. frequency
-% distribution) whose samples are of the specified type.
-%
-% For example discrete_probability_distribution(integer()) or
-% discrete_probability_distribution(vector3:vector3()).
-%
-% Samples of null probability are usually omitted, as such a probability is
-% implicit and results in the corresponding sample never to be drawn.
-%
-% At least an entry with a non-null probability must be defined for any drawing
-% to occur.
-%
-% Preferably a given sample value is specified only once, i.e. is declared in a
-% single entry (otherwise the distribution will behave as if the probabilities
-% for that sample were summed - yet the distribution will be less compact).
-%
-% Such a distribution can be obtained either directly or by sampling a fun(T ->
-% probability_like()) function over at least a part of its domain.
-%
-% It may no be normalised.
 
 
+
+-doc """
+The specification of a discrete probability distribution of unknown sample type.
+
+For example: [{'red', 0.1}, {'blue', 0.2}, {'green', 0.6}].
+""".
 -type discrete_probability_distribution() ::
 		discrete_probability_distribution( any() ).
-% The specification of a discrete probability distribution of unknown sample
-% type.
-%
-% For example: [{'red', 0.1}, {'blue', 0.2}, {'green', 0.6}].
 
 
+
+-doc """
+A Probability Density Function telling, for a given sample of type S, its
+corresponding probability-like value.
+
+See also the math_utils:sample* functions and get_samples_from/2.
+""".
 -type pdf( S ) :: fun( ( S ) -> probability_like() ).
-% A Probability Density Function telling, for a given sample of type S, its
-% corresponding probability-like value.
-%
-% See also the math_utils:sample* functions and get_samples_from/2.
 
 
+
+-doc "A Probability Density Function for samples of unspecified type.".
 -type pdf() :: pdf( any() ).
-% A Probability Density Function for samples of unspecified type.
 
 
+
+-doc "A PDF of an exponential distribution.".
 -type exponential_pdf() :: exponential_1p_pdf() | exponential_2p_pdf().
-% A PDF of an exponential distribution.
 
+
+
+-doc "A PDF of the exponential distribution with one parameter.".
 -type exponential_1p_pdf() :: pdf().
-% A PDF of the exponential distribution with one parameter.
 
+
+
+-doc "A PDF of the exponential distribution with two parameters.".
 -type exponential_2p_pdf() :: pdf().
-% A PDF of the exponential distribution with two parameters.
 
 
 
+-doc "A PDF of a Gamma distribution.".
 -type gamma_pdf() :: gamma_2p_pdf() | gamma_3p_pdf().
-% A PDF of a Gamma distribution.
 
+
+
+-doc "A PDF of the two-parameter Gamma distribution.".
 -type gamma_2p_pdf() :: pdf().
-% A PDF of the two-parameter Gamma distribution.
 
+
+
+-doc "A PDF of the three-parameter Gamma distribution.".
 -type gamma_3p_pdf() :: pdf().
-% A PDF of the three-parameter Gamma distribution.
 
 
+
+-doc "A PDF of a Gumbel distribution.".
 -type gumbel_pdf() :: gumbel_2p_pdf().
-% A PDF of a Gumbel distribution.
 
+
+
+-doc "A PDF of the two-parameter Gumbel distribution.".
 -type gumbel_2p_pdf() :: pdf().
-% A PDF of the two-parameter Gumbel distribution.
 
 
 
+-doc "A PDF of a Log-logistic distribution.".
 -type loglogistic_pdf() :: loglogistic_2p_pdf() | loglogistic_3p_pdf().
-% A PDF of a Log-logistic distribution.
 
 
+
+-doc "A PDF of the two-parameter Log-logistic distribution.".
 -type loglogistic_2p_pdf() :: pdf().
-% A PDF of the two-parameter Log-logistic distribution.
 
+
+
+-doc "A PDF of the three-parameter Log-logistic distribution.".
 -type loglogistic_3p_pdf() :: pdf().
-% A PDF of the three-parameter Log-logistic distribution.
 
 
 
+-doc "A PDF of a Log-normal distribution.".
 -type lognormal_pdf() :: lognormal_2p_pdf() | lognormal_3p_pdf().
-% A PDF of a Log-normal distribution.
 
 
+
+-doc "A PDF of the two-parameter Log-normal distribution.".
 -type lognormal_2p_pdf() :: pdf().
 % A PDF of the two-parameter Log-normal distribution.
 
+
+
+-doc "A PDF of the three-parameter Log-normal distribution.".
 -type lognormal_3p_pdf() :: pdf().
-% A PDF of the three-parameter Log-normal distribution.
 
 
+
+-doc """
+A PDF of a Gaussian distribution.
+
+Could be named normal_2p_pdf() as well.
+""".
 -type gaussian_pdf() :: pdf().
-% A PDF of a Gaussian distribution.
-%
-% Could be named normal_2p_pdf() as well.
 
 
+
+-doc "A PDF of a Weibull distribution.".
 -type weibull_pdf() ::
 	weibull_2p_pdf()   | weibull_3p_pdf()
   | weibull_cr_pdf()   | weibull_ds_pdf()
   | weibull_dszi_pdf() | weibull_mixture_pdf()
   | weibull_zi_pdf().
-% A PDF of a Weibull distribution.
 
 
+
+-doc "A PDF of the two-parameter Weibull distribution".
 -type weibull_2p_pdf() :: pdf().
-% A PDF of the two-parameter Weibull distribution.
 
+
+
+-doc "A PDF of the three-parameter Weibull distribution.".
 -type weibull_3p_pdf() :: pdf().
-% A PDF of the three-parameter Weibull distribution.
 
+
+
+-doc "A PDF of the Weibull-CR distribution.".
 -type weibull_cr_pdf() :: pdf().
-% A PDF of the Weibull-CR distribution.
 
+
+
+-doc "A PDF of the Weibull-DS distribution.".
 -type weibull_ds_pdf() :: pdf().
-% A PDF of the Weibull-DS distribution.
 
+
+
+-doc "A PDF of the Weibull-DSZI distribution.".
 -type weibull_dszi_pdf() :: pdf().
-% A PDF of the Weibull-DSZI distribution.
 
+
+
+-doc "A PDF of the Weibull-mixture distribution.".
 -type weibull_mixture_pdf() :: pdf().
-% A PDF of the Weibull-mixture distribution.
 
+
+
+-doc "A PDF of the Weibull-ZI distribution.".
 -type weibull_zi_pdf() :: pdf().
-% A PDF of the Weibull-ZI distribution.
 
 
+
+-doc "A PDF of a Beta distribution.".
 -type beta_pdf() :: beta_2p_pdf().
 
+
+
+-doc "A PDF of the two-parameter Beta distribution.".
 -type beta_2p_pdf() :: pdf().
-% A PDF of the two-parameter Beta distribution.
 
 
 
@@ -1366,8 +1706,8 @@
 			   sample_count/0,
 
 			   increment/0,
-			   %discrete_sampling_info/0, interval_sampling_info/0,
-			   %sampling_info/0,
+			   discrete_sampling_info/0, interval_sampling_info/0,
+			   sampling_info/0,
 
 			   sample_entry/0, sample_entry/1,
 			   rate/0, shape/0, scale/0, mean/0, standard_deviation/0,
@@ -1534,7 +1874,7 @@
 -include("math_utils.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type array( T ) :: array:array( T ).
 
@@ -1547,11 +1887,12 @@
 -type any_string() :: text_utils:any_string().
 
 
--type probability_like() :: math_utils:probability_like().
 % Any number that can be interpreted ultimately as a probability, at least
 % relatively to others.
 %
 % Notably they may not be normalised (with their sum differing from 1.0).
+%
+-type probability_like() :: math_utils:probability_like().
 
 
 -type bounds() :: math_utils:bounds().
@@ -1603,12 +1944,13 @@
 -spec get_uniform_floating_point_value( number() ) -> float().
 -spec get_uniform_floating_point_value( number(), number() ) -> float().
 
--spec get_random_state() -> maybe( random_state() ).
+-spec get_random_state() -> option( random_state() ).
 -spec set_random_state( random_state() ) -> void().
 
 
 
-% @doc Generates a list of Count elements uniformly drawn in [1,N].
+
+-doc "Generates a list of Count elements uniformly drawn in [1,N].".
 -spec get_uniform_values( pos_integer(), sample_count() ) -> [ pos_integer() ].
 get_uniform_values( N, Count ) ->
 	get_uniform_values_helper( N, Count, _Acc=[] ).
@@ -1622,7 +1964,7 @@ get_uniform_values_helper( N, Count, Acc ) ->
 
 
 
-% @doc Generates a list of Count elements uniformly drawn in [Nmin,Nmax].
+-doc "Generates a list of Count elements uniformly drawn in [Nmin,Nmax].".
 -spec get_uniform_values( integer(), integer(), sample_count() ) ->
 			[ integer() ].
 get_uniform_values( Nmin, Nmax, Count ) ->
@@ -1654,132 +1996,147 @@ get_uniform_values_helper( Nmin, Nmax, Count, Acc ) ->
 % per-process).
 
 
-% @doc Starts the random source with specified seeding.
+-doc "Starts the random source with the specified seeding.".
 start_random_source( _A, _B, _C ) ->
 	throw( crypto_module_cannot_be_seeded ).
 
 
 
-% @doc Starts the random source with specified seeding.
+-doc "Starts the random source with the specified seeding.".
 start_random_source( default_seed ) ->
 
 	cond_utils:if_defined( myriad_debug_random,
 		trace_utils:info_fmt( "~w starting random source with crypto.",
 							  [ self() ] ) ),
 
-	ok = crypto:start();
+	% Better than crypto:start/0, as FIPS-mode compliant:
+	ok = application:start( crypto );
+
 
 start_random_source( time_based_seed ) ->
 	throw( crypto_module_cannot_be_seeded ).
 
 
-% @doc Tells whether this random source can be seeded.
-%
-% crypto cannot be seeded, but rand can.
-%
+
+-doc """
+Tells whether this random source can be seeded.
+
+'crypto' cannot be seeded, but 'rand' can.
+""".
 can_be_seeded() ->
 	false.
 
 
-% @doc Resets the random source with a new seed.
+
+-doc "Resets the random source with a new seed.".
 reset_random_source( _Seed ) ->
 	throw( crypto_module_cannot_be_reset ).
 
 
-% @doc Stops the random source.
+
+-doc "Stops the random source.".
 stop_random_source() ->
-	ok = crypto:stop().
+	ok = application:stop( crypto ).
 
 
 
-% @doc Returns a random float uniformly distributed between 0.0 (included) and
-% 1.0 (excluded), updating the random state in the process dictionary.
-%
-% Spec already specified, for all random settings.
-%
+-doc """
+Returns a random float uniformly distributed between 0.0 (included) and 1.0
+(excluded), updating the random state in the process dictionary.
+
+Spec already specified, for all random settings.
+""".
 get_uniform_value() ->
 	% Not available: crypto:rand_uniform( 0.0, 1.0 ).
 	throw( not_available ).
 
 
 
-% @doc Returns an integer random value generated from an uniform distribution.
-%
-% Given an integer N >= 1, returns a random integer uniformly distributed
-% between 1 and N (both included), updating the random state in the process
-% dictionary.
-%
-% Spec already specified, for all random settings.
-%
+-doc """
+Returns an integer random value generated from an uniform distribution.
+
+Given an integer N >= 1, returns a random integer uniformly distributed between
+1 and N (both included), updating the random state in the process dictionary.
+
+Spec already specified, for all random settings.
+""".
 get_uniform_value( N ) ->
 	crypto:rand_uniform( 1, N+1 ).
 
 
 
-% @doc Returns an integer random value generated from an uniform distribution in
-% [Nmin,Nmax] (thus with both bounds included), updating the random state in the
-% process dictionary.
-%
-% Spec already specified, for all random settings.
-%
+-doc """
+Returns an integer random value generated from an uniform distribution in
+[Nmin,Nmax] (thus with both bounds included), updating the random state in the
+process dictionary.
+
+Spec already specified, for all random settings.
+""".
 get_uniform_value( Nmin, Nmax ) when Nmin =< Nmax ->
 	crypto:rand_uniform( Nmin, Nmax+1 ).
 
 
-% @doc Returns a floating-point random value in [0.0,N[ generated from an
-% uniform distribution.
-%
-% Given a number (integer or float) N (positive or not), returns a random
-% floating-point value uniformly distributed between 0.0 (included) and N
-% (excluded), updating the random state in the process dictionary.
-%
-% Spec already specified, for all random settings.
-%
+
+-doc """
+Returns a floating-point random value in [0.0,N[ generated from an uniform
+distribution.
+
+Given a number (integer or float) N (positive or not), returns a random
+floating-point value uniformly distributed between 0.0 (included) and N
+(excluded), updating the random state in the process dictionary.
+
+Spec already specified, for all random settings.
+""".
 get_uniform_floating_point_value( N ) ->
 	throw( not_available ).
 
 
-% @doc Returns a floating-point random value in [Nmin, Nmax[ generated from an
-% uniform distribution.
-%
-% Given two numbers (integer or float) Nmin and Nmax (each being positive or
-% not), returns a random floating-point value uniformly distributed between Nmin
-% (included) and Nmax (excluded), updating the random state in the process
-% dictionary.
-%
-% Spec already specified, for all random settings.
-%
+
+-doc """
+Returns a floating-point random value in [Nmin, Nmax[ generated from an uniform
+distribution.
+
+Given two numbers (integer or float) Nmin and Nmax (each being positive or not),
+returns a random floating-point value uniformly distributed between Nmin
+(included) and Nmax (excluded), updating the random state in the process
+dictionary.
+
+Spec already specified, for all random settings.
+""".
 get_uniform_floating_point_value( Nmin, Nmax ) ->
 	throw( not_available ).
 
 
 
-% @doc Returns the name of the module managing the random generation.
-%
-% Spec already specified, for all random settings.
-%
+-doc """
+Returns the name of the module managing the random generation.
+
+Spec already specified, for all random settings.
+""".
 -spec get_random_module_name() -> 'crypto'.
 get_random_module_name() ->
 	crypto.
 
 
 
-% @doc Returns the random state of this process (it is useful for example for
-% process serialisations).
-%
-% Spec already specified, for all random settings.
-%
+-doc """
+Returns the random state of this process (it is useful for example for process
+serialisations).
+
+Spec already specified, for all random settings.
+""".
 get_random_state() ->
 	% At least: not implemented yet.
 	throw( not_available ).
 
 
 
-% @doc Sets the random state of this process (it is useful for example for
-% process serialisations).
-%
-% Spec already specified, for all random settings.
-%
+-doc """
+Sets the random state of this process (it is useful for example for process
+serialisations).
+
+Spec already specified, for all random settings.
+""".
 set_random_state( _NewState ) ->
 	% At least: not implemented yet.
 	throw( not_available ).
@@ -1851,7 +2208,7 @@ set_random_state( _NewState ) ->
 
 
 
-% doc: Starts the random source with specified seeding.
+% doc: Starts the random source with the specified seeding.
 %
 % Note: if a process does not explicitly select a seed, with 'rand' a
 % non-constant seed will be assigned. For reproducibility, start your random
@@ -1870,7 +2227,7 @@ start_random_source( A, B, C ) ->
 
 
 
-% doc: Seeds the random number generator, with specified seeding, or with a
+% doc: Seeds the random number generator, with the specified seeding, or with a
 % default seed (if wanting to obtain the same random series at each run) or with
 % current time (if wanting "real", non-reproducible randomness).
 %
@@ -2099,11 +2456,12 @@ set_random_state( RandomState ) ->
 -define( seed_upper_bound, 65500 ).
 
 
-% @doc Returns a seed obtained from the random source in use.
-%
-% This is a randomly-determined seed, meant to be used to create another random
-% generator.
-%
+-doc """
+Returns a seed obtained from the random source in use.
+
+This is a randomly-determined seed, meant to be used to create another random
+generator.
+""".
 -spec get_random_seed() -> seed().
 get_random_seed() ->
 	{ get_uniform_value( ?seed_upper_bound ),
@@ -2112,11 +2470,12 @@ get_random_seed() ->
 
 
 
-% @doc Checks that the specified seed is valid.
-%
-% For example, at least with some algorithms, {0, 0, 0} does not yield a correct
-% random series.
-%
+-doc """
+Checks that the specified seed is valid.
+
+For example, at least with some algorithms, {0, 0, 0} does not yield a correct
+random series.
+""".
 -spec check_random_seed( seed() ) -> void().
 check_random_seed( { A, B, C } ) when is_integer( A ) andalso is_integer( B )
 		andalso is_integer( C ) andalso A > 0 andalso B > 0 andalso C > 0 ->
@@ -2127,10 +2486,10 @@ check_random_seed( S ) ->
 
 
 
-% @doc Initialises the specified random law from its specification, so that as
-% many samples as wanted can be drawn from its returned precomputed data
-% afterwards.
-%
+-doc """
+Initialises the specified random law from its specification, so that as many
+samples as wanted can be drawn from its returned precomputed data afterwards.
+""".
 -spec initialise_law( random_law_spec() ) -> random_law_data().
 % First type of direct arbitrary spec: already with a probability distribution
 % (as opposed to a PDF); easy cases:
@@ -2236,8 +2595,8 @@ initialise_law( LS ) ->
 					 GamBounds={ Min, Max } }, Inc, GamPDFFun } ->
 
 			cond_utils:if_defined( myriad_debug_random,
-				trace_utils:debug_fmt( "Initialising a Gamma-2p law of alpha=~f "
-					"and beta=~f, discretised on interval ~ts "
+				trace_utils:debug_fmt( "Initialising a Gamma-2p law of "
+					"alpha=~f and beta=~f, discretised on interval ~ts "
 					"with ~B points (increment: ~f).",
 					[ Alpha, Beta, math_utils:bounds_to_string( GamBounds ),
 					  SampleCount, Inc ] ) ),
@@ -2581,13 +2940,16 @@ initialise_law( LS ) ->
 
 
 
-% @doc Returns the settings of the law specified by its data.
+-doc "Returns the settings of the law specified by its data.".
 -spec get_law_settings( random_law_data() ) -> random_law_settings().
 get_law_settings( _LawData={ Settings, _AliasTable } ) ->
 	Settings.
 
 
-% @doc Returns the name of the law corresponding to the specified law settings.
+
+-doc """
+Returns the name of the law corresponding to the specified law settings.
+""".
 -spec get_law_name( random_law_settings() ) -> law_name().
 get_law_name( LawSettings ) ->
 	element( _Index=1, LawSettings ).
@@ -2603,19 +2965,21 @@ get_law_name( LawSettings ) ->
 % Section for the generation of random samples according to a uniform law.
 
 
-% @doc Returns a boolean random value generated from a uniform distribution.
-%
-% Therefore true and false are equally likely to be returned.
-%
+-doc """
+Returns a boolean random value generated from a uniform distribution.
+
+Therefore true and false are equally likely to be returned.
+""".
 -spec get_boolean() -> boolean().
 get_boolean() ->
 	get_uniform_value( 0, 100 ) >= 49.
 
 
 
-% @doc Returns a random element of the specified list, selected according to a
-% uniform distribution.
-%
+-doc """
+Returns a random element of the specified list, selected according to a uniform
+distribution.
+""".
 -spec one_of( [ any() ] ) -> any().
 one_of( ListOfThings ) ->
 	Index = get_uniform_value( length( ListOfThings ) ),
@@ -2623,12 +2987,13 @@ one_of( ListOfThings ) ->
 
 
 
-% @doc Returns a list of the specified number of unique elements drawn from the
-% specified input list (so that there is no duplicate in the returned list).
-%
-% Note: defined to ease interface look-up; one should use directly
-% list_utils:draw_elements_from/2 instead.
-%
+-doc """
+Returns a list of the specified number of unique elements drawn from the
+specified input list (so that there is no duplicate in the returned list).
+
+Note: defined to ease interface look-up; one should use directly
+list_utils:draw_elements_from/2 instead.
+""".
 -spec get_random_subset( count(), list() ) -> list().
 get_random_subset( ValueCount, InputList ) ->
 	list_utils:draw_elements_from( InputList, ValueCount ).
@@ -2644,13 +3009,14 @@ get_random_subset( ValueCount, InputList ) ->
 
 
 
-% @doc Returns the Lamba parameter of the exponential probability density
-% function corresponding to the specified mean time, expressed as a DHMS value
-% or a number of seconds.
-%
-% Typical mean times are the MTTF (Mean Time To Failure) and MTTR (Mean Time to
-% Repair).
-%
+-doc """
+Returns the Lamba parameter of the exponential probability density function
+corresponding to the specified mean time, expressed as a DHMS value or a number
+of seconds.
+
+Typical mean times are the MTTF (Mean Time To Failure) and MTTR (Mean Time to
+Repair).
+""".
 -spec get_lambda_from_mean_time( dhms() | seconds() ) -> rate().
 get_lambda_from_mean_time( MTDHMS ) when is_tuple( MTDHMS ) ->
 	get_lambda_from_mean_time( time_utils:dhms_to_seconds( MTDHMS ) );
@@ -2664,16 +3030,17 @@ get_lambda_from_mean_time( MTSecs ) ->
 
 
 
-% @doc Returns an exponential-1p floating-point random value, with Lambda being
-% the rate parameter.
-%
-% As get_uniform_value/1 never returns 1.0, a strictly positive value is always
-% returned.
-%
-% See exponential_law() for further details.
-%
-% Using ad-hoc inverse transform sampling here.
-%
+-doc """
+Returns an exponential-1p floating-point random value, with Lambda being the
+rate parameter.
+
+As get_uniform_value/1 never returns 1.0, a strictly positive value is always
+returned.
+
+See exponential_law() for further details.
+
+Using ad-hoc inverse transform sampling here.
+""".
 -spec get_exponential_1p_value( rate() ) -> float().
 get_exponential_1p_value( Lambda ) ->
 	%trace_utils:debug_fmt( "Lambda=~p", [ Lambda ] ),
@@ -2681,21 +3048,24 @@ get_exponential_1p_value( Lambda ) ->
 
 
 
-% @doc Returns an exponential (positive) integer random value, with Lambda being
-% the rate parameter.
-%
-% See get_exponential_value_1p/1 for further details.
-%
+-doc """
+Returns an exponential (positive) integer random value, with Lambda being the
+rate parameter.
+
+See get_exponential_value_1p/1 for further details.
+""".
 -spec get_positive_integer_exponential_1p_value( rate() ) -> non_neg_integer().
 get_positive_integer_exponential_1p_value( Lambda ) ->
 	round( get_exponential_1p_value( Lambda ) ).
 
 
-% @doc Returns a list of Count exponential-1p values according to the specified
-% Lambda setting.
-%
-% See get_exponential_value_1p/1 for further details.
-%
+
+-doc """
+Returns a list of Count exponential-1p values according to the specified Lambda
+setting.
+
+See get_exponential_value_1p/1 for further details.
+""".
 -spec get_exponential_1p_values( rate(), sample_count() ) -> [ float() ].
 get_exponential_1p_values( Lambda, Count ) ->
 	generate_exponential_1p_list( Lambda, Count, _Acc=[] ).
@@ -2705,9 +3075,11 @@ get_exponential_1p_values( Lambda, Count ) ->
 % The generate_*_list could rely on higher-order functions.
 
 
-% @doc Generates a list of Count exponential-1p random values.
-%
-% (helper)
+-doc """
+Generates a list of Count exponential-1p random values.
+
+(helper)
+""".
 -spec generate_exponential_1p_list( rate(), sample_count(), [ float() ] ) ->
 										[ float() ].
 generate_exponential_1p_list( _Lambda, _Count=0, Acc ) ->
@@ -2719,11 +3091,12 @@ generate_exponential_1p_list( Lambda, Count, Acc ) ->
 
 
 
-% @doc Returns a list of Count positive integer exponential-1p values according
-% to the specified Lambda setting.
-%
-% See get_exponential_value_1p/1 for further details.
-%
+-doc """
+Returns a list of Count positive integer exponential-1p values according to the
+specified Lambda setting.
+
+See get_exponential_value_1p/1 for further details.
+""".
 -spec get_positive_integer_exponential_1p_values( rate(), sample_count() ) ->
 											[ non_neg_integer() ].
 get_positive_integer_exponential_1p_values( Lambda, Count ) ->
@@ -2747,29 +3120,31 @@ generate_positive_integer_exponential_1p_list( Lambda, Count, Acc ) ->
 
 
 
-% @doc Returns a random value generated from the normal (Gaussian) distribution
-% with specified settings.
-%
-% Given a mean Mu and a standard deviation Sigma, returns a random
-% floating-point value drawn according to the corresponding Gaussian law,
-% updating the state in the process dictionary.
-%
+-doc """
+Returns a random value generated from the normal (Gaussian) distribution with
+specified settings.
+
+Given a mean Mu and a standard deviation Sigma, returns a random floating-point
+value drawn according to the corresponding Gaussian law, updating the state in
+the process dictionary.
+""".
 -spec get_gaussian_value( mean(), standard_deviation() ) -> float().
 get_gaussian_value( Mu, Sigma ) ->
 	sigma_loop( Mu, Sigma ).
 
 
 
-% @doc Returns a non-negative integer random value generated from the
-% normal (Gaussian) distribution with specified settings.
-%
-% Given a mean Mu and a standard deviation Sigma, returns random integers drawn
-% according the corresponding Gaussian law, updating the state in the process
-% dictionary.
-%
-% The result is a non-negative integer (not a float). Values will be drawn until
-% they are non-negative.
-%
+-doc """
+Returns a non-negative integer random value generated from the normal (Gaussian)
+distribution with the specified settings.
+
+Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+according the corresponding Gaussian law, updating the state in the process
+dictionary.
+
+The result is a non-negative integer (not a float). Values will be drawn until
+they are non-negative.
+""".
 -spec get_positive_integer_gaussian_value( mean(), standard_deviation() ) ->
 											non_neg_integer().
 get_positive_integer_gaussian_value( Mu, Sigma ) ->
@@ -2777,16 +3152,16 @@ get_positive_integer_gaussian_value( Mu, Sigma ) ->
 
 
 
+-doc """
+Generates a new gaussian value and updates the state.
 
-% @doc Generates a new gaussian value and updates the state.
-%
-% Mu is the mean, Sigma is the standard deviation (variance being its square).
-%
-% Returns the computed value.
-%
-% See also
-% https://en.wikipedia.org/wiki/Normal_distribution#Computational_methods
-%
+Mu is the mean, Sigma is the standard deviation (variance being its square).
+
+Returns the computed value.
+
+See also
+<https://en.wikipedia.org/wiki/Normal_distribution#Computational_methods>.
+""".
 -spec sigma_loop( mean(), standard_deviation() ) -> float().
 sigma_loop( Mu, Sigma ) ->
 
@@ -2832,11 +3207,11 @@ sigma_loop( Mu, Sigma ) ->
 
 
 
-% @doc Generates a new integer non-negative gaussian value and updates the
-% state.
-%
-% Returns the computed value.
-%
+-doc """
+Generates a new integer non-negative gaussian value and updates the state.
+
+Returns the computed value.
+""".
 -spec sigma_loop_positive_integer( mean(), standard_deviation() ) ->
 												non_neg_integer().
 sigma_loop_positive_integer( Mu, Sigma ) ->
@@ -2854,12 +3229,13 @@ sigma_loop_positive_integer( Mu, Sigma ) ->
 
 
 
-% @doc Returns a list of Count Gaussian values.
-%
-% Given a mean Mu and a standard deviation Sigma, returns random floating-point
-% values drawn according the corresponding Gaussian law, updating the state in
-% the process dictionary.
-%
+-doc """
+Returns a list of Count Gaussian values.
+
+Given a mean Mu and a standard deviation Sigma, returns random floating-point
+values drawn according the corresponding Gaussian law, updating the state in the
+process dictionary.
+""".
 -spec get_gaussian_values( mean(), standard_deviation(), sample_count() ) ->
 													[ float() ].
 get_gaussian_values( Mu, Sigma, Count ) ->
@@ -2867,9 +3243,11 @@ get_gaussian_values( Mu, Sigma, Count ) ->
 
 
 
-% @doc Generates a list of Count Gaussian random values.
-%
-% (helper)
+-doc """
+Generates a list of Count Gaussian random values.
+
+(helper)
+""".
 generate_gaussian_list( _Mu, _Sigma, _Count=0, Acc ) ->
 	Acc;
 
@@ -2879,12 +3257,13 @@ generate_gaussian_list( Mu, Sigma, Count, Acc ) ->
 
 
 
-% @doc Returns a list of Count positive integer Gaussian values.
-%
-% Given a mean Mu and a standard deviation Sigma, returns random integers drawn
-% according the corresponding Gaussian law, updating the state in the process
-% dictionary.
-%
+-doc """
+Returns a list of Count positive integer Gaussian values.
+
+Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+according the corresponding Gaussian law, updating the state in the process
+dictionary.
+""".
 -spec get_positive_integer_gaussian_values( mean(), standard_deviation(),
 						sample_count() ) -> [ non_neg_integer() ].
 get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
@@ -2892,7 +3271,9 @@ get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
 
 
 
-% @doc Generates a list of Count positive integer Gaussian random values.
+-doc """
+Generates a list of Count positive integer Gaussian random values.
+""".
 -spec generate_positive_integer_gaussian_list( mean(), standard_deviation(),
 			sample_count() ) -> [ non_neg_integer() ].
 generate_positive_integer_gaussian_list( Mu, Sigma, Count ) ->
@@ -2929,24 +3310,25 @@ generate_positive_integer_gaussian_list( Mu, Sigma, Count, Acc ) ->
 
 
 
-% @doc Returns a precomputed alias table used in order to produce samples
-% according to the specified discrete probability distribution.
-%
-% These samples do not have to be normalised first.
-%
-% For example MyDistribAliasTable = random_utils:generate_alias_table_from(
-%   [{a,10}, {b,20}, {c,40}, {d,30}]).
-%
-% or MyDistribAliasTable = random_utils:generate_alias_table_from(
-%   [{"hello",0.6}, {"goodbye",0.4}]).
-%
-% From this (const) table, computed once for all and whose construction does not
-% depend on any other random state (it is deterministic), any number of samples
-% respecting said distribution can be drawn.
-%
-% This preprocessing uses O(N) time, where N is the number of declared samples
-% of the corresponding distribution, in order to generate its returned table.
-%
+-doc """
+Returns a precomputed alias table used in order to produce samples according to
+the specified discrete probability distribution.
+
+These samples do not have to be normalised first.
+
+For example: `MyDistribAliasTable = random_utils:generate_alias_table_from(
+  [{a,10}, {b,20}, {c,40}, {d,30}]).`
+
+or `MyDistribAliasTable = random_utils:generate_alias_table_from(
+  [{"hello",0.6}, {"goodbye",0.4}]).`.
+
+From this (const) table, computed once for all and whose construction does not
+depend on any other random state (it is deterministic), any number of samples
+respecting said distribution can be drawn.
+
+This preprocessing uses O(N) time, where N is the number of declared samples of
+the corresponding distribution, in order to generate its returned table.
+""".
 -spec generate_alias_table_from( discrete_probability_distribution() ) ->
 											alias_table().
 generate_alias_table_from( DiscreteProbDist ) ->
@@ -3059,12 +3441,13 @@ fill_entries( _UnderFulls, _OverFulls, IdxArray, ProbLikeArray ) ->
 
 
 
-% @doc Returns, for the specified law specification, all the sample pairs that
-% correspond to it, along with extraneous information.
-%
-% Useful for testing, knowing that in the general case the input samples are not
-% kept in the initialised random law.
-%
+-doc """
+Returns, for the specified law specification, all the sample pairs that
+correspond to it, along with extraneous information.
+
+Useful for testing, knowing that in the general case the input samples are not
+kept in the initialised random law.
+""".
 -spec get_all_sample_pairs( random_law_spec() ) ->
 									discrete_probability_distribution().
 % Starting with the non-PDF law specs:
@@ -3278,8 +3661,9 @@ get_all_sample_pairs( LS ) ->
 
 
 
-% @doc Returns canonical settings for the specified PDF-based specification.
-%
+-doc """
+Returns canonical settings for the specified PDF-based specification.
+""".
 % Logic centralised, as fully common to initialise_law/1 and
 % get_all_sample_pairs/1, so that they use exactly the same results.
 %
@@ -3924,9 +4308,10 @@ canonicalise_pdf_based_spec( Other ) ->
 
 
 
-% @doc Checks that the specified term is a suitable lambda for an exponential
-% law and returns it.
-%
+-doc """
+Checks that the specified term is a suitable lambda for an exponential law and
+returns it.
+""".
 -spec check_exponential_lambda( term() ) -> rate().
 check_exponential_lambda( Lambda ) when Lambda > 0 ->
 	float( Lambda );
@@ -3936,9 +4321,10 @@ check_exponential_lambda( Other ) ->
 
 
 
-% @doc Checks that the specified term is a suitable gamma for an exponential-2p
-% law and returns it.
-%
+-doc """
+Checks that the specified term is a suitable gamma for an exponential-2p law and
+returns it.
+""".
 -spec check_exponential_gamma( term() ) -> rate().
 check_exponential_gamma( Gamma ) when Gamma > 0 ->
 	float( Gamma );
@@ -3948,9 +4334,10 @@ check_exponential_gamma( Other ) ->
 
 
 
-% @doc Checks that the specified term is a suitable mu (hence mean) for a
-% gaussian law and returns it.
-%
+-doc """
+Checks that the specified term is a suitable mu (hence mean) for a gaussian law
+and returns it.
+""".
 -spec check_gaussian_mu( term() ) -> mean().
 check_gaussian_mu( Mu ) when is_number( Mu ) ->
 	float( Mu );
@@ -3960,9 +4347,10 @@ check_gaussian_mu( Other ) ->
 
 
 
-% @doc Checks that the specified term is a suitable sigma (hence standard
-% deviation) for a gaussian law and returns it.
-%
+-doc """
+Checks that the specified term is a suitable sigma (hence standard deviation)
+for a gaussian law and returns it.
+""".
 -spec check_gaussian_sigma( term() ) -> standard_deviation().
 check_gaussian_sigma( Sigma ) when Sigma >= 0 ->
 	float( Sigma );
@@ -3972,9 +4360,10 @@ check_gaussian_sigma( Other ) ->
 
 
 
-% @doc Returns the corresponding Exponential-1p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Exponential-1p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_exponential_1p_pdf( term(), term() ) ->
 			{ exponential_1p_pdf(), rate() }.
 get_exponential_1p_pdf( Lambda, _LS ) ->
@@ -3987,9 +4376,10 @@ get_exponential_1p_pdf( Lambda, _LS ) ->
 
 
 
-% @doc Returns the corresponding Exponential-2p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Exponential-2p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_exponential_2p_pdf( term(), term(), term() ) ->
 			{ exponential_2p_pdf(), rate(), rate() }.
 get_exponential_2p_pdf( Lambda, Gamma, _LS ) ->
@@ -4003,9 +4393,10 @@ get_exponential_2p_pdf( Lambda, Gamma, _LS ) ->
 
 
 
-% @doc Returns the corresponding Gamma-2p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Gamma-2p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_gamma_2p_pdf( term(), term(), term() ) ->
 		{ gamma_2p_pdf(), positive_float(), positive_float() }.
 get_gamma_2p_pdf( K, Theta, LS ) ->
@@ -4022,9 +4413,10 @@ get_gamma_2p_pdf( K, Theta, LS ) ->
 
 
 
-% @doc Returns the corresponding Gamma-3p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Gamma-3p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_gamma_3p_pdf( term(), term(), term(), term() ) ->
 		{ gamma_3p_pdf(), positive_float(), positive_float(), float() }.
 get_gamma_3p_pdf( Alpha, Beta, Theta, LS ) ->
@@ -4042,9 +4434,11 @@ get_gamma_3p_pdf( Alpha, Beta, Theta, LS ) ->
 
 
 
-% @doc Returns the corresponding Gumbel-2p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Gumbel-2p PDF, after having checked user-supplied
+parameters.
+""".
+
 -spec get_gumbel_2p_pdf( term(), term(), term() ) ->
 		{ gumbel_2p_pdf(), float(), positive_float() }.
 get_gumbel_2p_pdf( Mu, Beta, LS ) ->
@@ -4060,9 +4454,10 @@ get_gumbel_2p_pdf( Mu, Beta, LS ) ->
 
 
 
-% @doc Returns the corresponding Log-logistic-2p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Log-logistic-2p PDF, after having checked
+user-supplied parameters.
+""".
 -spec get_loglogistic_2p_pdf( term(), term(), term() ) ->
 		{ loglogistic_2p_pdf(), positive_float(), positive_float() }.
 get_loglogistic_2p_pdf( K, Theta, LS ) ->
@@ -4079,9 +4474,10 @@ get_loglogistic_2p_pdf( K, Theta, LS ) ->
 
 
 
-% @doc Returns the corresponding Log-logistic-3p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Log-logistic-3p PDF, after having checked
+user-supplied parameters.
+""".
 -spec get_loglogistic_3p_pdf( term(), term(), term(), term() ) ->
 		{ loglogistic_3p_pdf(), positive_float(), positive_float(),
 		  positive_float() }.
@@ -4101,9 +4497,10 @@ get_loglogistic_3p_pdf( Alpha, Beta, Theta, LS ) ->
 
 
 
-% @doc Returns the corresponding Log-normal-2p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Log-normal-2p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_lognormal_2p_pdf( term(), term(), term() ) ->
 		{ lognormal_2p_pdf(), float(), positive_float() }.
 get_lognormal_2p_pdf( Mu, Sigma, LS ) ->
@@ -4119,9 +4516,10 @@ get_lognormal_2p_pdf( Mu, Sigma, LS ) ->
 
 
 
-% @doc Returns the corresponding Log-normal-3p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Log-normal-3p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_lognormal_3p_pdf( term(), term(), term(), term() ) ->
 		{ lognormal_3p_pdf(), float(), positive_float(), float() }.
 get_lognormal_3p_pdf( Mu, Sigma, Theta, LS ) ->
@@ -4138,9 +4536,10 @@ get_lognormal_3p_pdf( Mu, Sigma, Theta, LS ) ->
 
 
 
-% @doc Returns the corresponding Weibull-2p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Weibull-2p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_weibull_2p_pdf( term(), term(), term() ) ->
 		{ weibull_2p_pdf(), positive_float(), positive_float() }.
 get_weibull_2p_pdf( K, Lambda, LS ) ->
@@ -4157,9 +4556,10 @@ get_weibull_2p_pdf( K, Lambda, LS ) ->
 
 
 
-% @doc Returns the corresponding Weibull-3p PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Weibull-3p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_weibull_3p_pdf( term(), term(), term(), term() ) ->
 		{ weibull_3p_pdf(), positive_float(), positive_float(), float() }.
 get_weibull_3p_pdf( K, Lambda, Gamma, LS ) ->
@@ -4177,9 +4577,10 @@ get_weibull_3p_pdf( K, Lambda, Gamma, LS ) ->
 
 
 
-% @doc Returns the corresponding Weibull-CR PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Weibull-CR PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_weibull_cr_pdf( term(), term(), term(), term() ) ->
 		{ weibull_cr_pdf(), positive_float(), positive_float(),
 		  positive_float() }.
@@ -4199,9 +4600,10 @@ get_weibull_cr_pdf( Lambda, K, Theta, LS ) ->
 
 
 
-% @doc Returns the corresponding Weibull-DS PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Weibull-DS PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_weibull_ds_pdf( term(), term(), term(), term() ) ->
 		{ weibull_ds_pdf(), positive_float(), positive_float(),
 		  positive_float() }.
@@ -4221,10 +4623,10 @@ get_weibull_ds_pdf( Lambda, K, Sigma, LS ) ->
 
 
 
-
-% @doc Returns the corresponding Weibull-DSZI PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Weibull-DSZI PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_weibull_dszi_pdf( term(), term(), term(), term(), term() ) ->
 		{ weibull_dszi_pdf(), positive_float(), positive_float(),
 		  positive_float(), positive_float() }.
@@ -4248,9 +4650,10 @@ get_weibull_dszi_pdf( Lambda, K, Sigma, Theta, LS ) ->
 
 
 
-% @doc Returns the corresponding Weibull-Mixture PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Weibull-Mixture PDF, after having checked
+user-supplied parameters.
+""".
 -spec get_weibull_mixture_pdf( term(), term(), term(), term(), term(),
 							   term() ) ->
 		{ weibull_mixture_pdf(), positive_float(), positive_float(),
@@ -4281,9 +4684,10 @@ get_weibull_mixture_pdf( P, Lambda1, K1, Lambda2, K2, LS ) ->
 
 
 
-% @doc Returns the corresponding Weibull-ZI PDF, after having checked
-% user-supplied parameters.
-%
+-doc """
+Returns the corresponding Weibull-ZI PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_weibull_zi_pdf( term(), term(), term(), term() ) ->
 		{ weibull_zi_pdf(), positive_float(), positive_float(),
 		  positive_float(), positive_float() }.
@@ -4305,9 +4709,10 @@ get_weibull_zi_pdf( Lambda, K, P, LS ) ->
 
 
 
-% @doc Returns the corresponding Beta-2p PDF, after having checked user-supplied
-% parameters.
-%
+-doc """
+Returns the corresponding Beta-2p PDF, after having checked user-supplied
+parameters.
+""".
 -spec get_beta_2p_pdf( term(), term(), term() ) ->
 		{ beta_2p_pdf(), positive_float(), positive_float() }.
 get_beta_2p_pdf( Alpha, Beta, LS ) ->
@@ -4324,10 +4729,11 @@ get_beta_2p_pdf( Alpha, Beta, LS ) ->
 
 
 
-% Common for all Exponential functions.
-%
-% Bounds supposed to be already canonic.
-%
+-doc """
+Common for all Exponential functions.
+
+Bounds supposed to be already canonic.
+""".
 -spec canonicalise_exponential_spec_with( exponential_2p_pdf(), tuple() ) ->
 			{ full_exponential_law_spec(), increment(), exponential_2p_pdf() }.
 canonicalise_exponential_spec_with( ExpPDFFun,
@@ -4353,10 +4759,11 @@ canonicalise_exponential_spec_with( ExpPDFFun,
 
 
 
-% Common for all Gamma functions.
-%
-% Bounds supposed to be already canonic.
-%
+-doc """
+Common for all Gamma functions.
+
+Bounds supposed to be already canonic.
+""".
 -spec canonicalise_gamma_spec_with( gamma_pdf(), tuple() ) ->
 			{ full_gamma_law_spec(), increment(), gamma_pdf() }.
 canonicalise_gamma_spec_with( GamPDFFun,
@@ -4402,10 +4809,11 @@ canonicalise_gamma_spec_with( GamPDFFun,
 
 
 
-% Common for all Gumbel functions.
-%
-% Bounds supposed to be already canonic.
-%
+-doc """
+Common for all Gumbel functions.
+
+Bounds supposed to be already canonic.
+""".
 -spec canonicalise_gumbel_spec_with( gumbel_pdf(), tuple() ) ->
 			{ full_gumbel_2p_law_spec(), increment(), gumbel_pdf() }.
 canonicalise_gumbel_spec_with( GumbelPDFFun,
@@ -4430,10 +4838,11 @@ canonicalise_gumbel_spec_with( GumbelPDFFun,
 
 
 
-% Common for all Log-logistic functions.
-%
-% Bounds supposed to be already canonic.
-%
+-doc """
+ Common for all Log-logistic functions.
+
+Bounds supposed to be already canonic.
+""".
 -spec canonicalise_loglogistic_spec_with( loglogistic_pdf(), tuple() ) ->
 			{ full_loglogistic_law_spec(), increment(), loglogistic_pdf() }.
 canonicalise_loglogistic_spec_with( LogPDFFun,
@@ -4479,10 +4888,11 @@ canonicalise_loglogistic_spec_with( LogPDFFun,
 
 
 
-% Common for all Log-normal functions.
-%
-% Bounds supposed to be already canonic.
-%
+-doc """
+Common for all Log-normal functions.
+
+Bounds supposed to be already canonic.
+""".
 -spec canonicalise_lognormal_spec_with( lognormal_pdf(), tuple() ) ->
 			{ full_lognormal_law_spec(), increment(), lognormal_pdf() }.
 canonicalise_lognormal_spec_with( LogPDFFun,
@@ -4528,11 +4938,11 @@ canonicalise_lognormal_spec_with( LogPDFFun,
 
 
 
+-doc """
+Common for all Weibull functions.
 
-% Common for all Weibull functions.
-%
-% Bounds supposed to be already canonic.
-%
+Bounds supposed to be already canonic.
+""".
 -spec canonicalise_weibull_spec_with( weibull_pdf(), tuple() ) ->
 			{ full_weibull_law_spec(), increment(), weibull_pdf() }.
 canonicalise_weibull_spec_with( WbPDFFun,
@@ -4690,11 +5100,11 @@ canonicalise_weibull_spec_with( WbPDFFun,
 
 
 
+-doc """
+Common for all Beta functions.
 
-% Common for all Beta functions.
-%
-% Bounds supposed to be already canonic.
-%
+Bounds supposed to be already canonic.
+""".
 -spec canonicalise_beta_spec_with( beta_pdf(), tuple() ) ->
 			{ full_beta_law_spec(), increment(), beta_pdf() }.
 canonicalise_beta_spec_with( BetaPDFFun,
@@ -4719,19 +5129,20 @@ canonicalise_beta_spec_with( BetaPDFFun,
 
 
 
-% @doc Returns a new sample drawn from the discrete probability distribution
-% specified through its (constant) law data (which is thus not returned), this
-% table having been obtained initially (and once for all) from its random
-% specification (see initialise_law/1). Only the state of the internal (uniform)
-% random generator is (transparently) modified.
-%
-% Each sample is generated in constant time O(1) time with regard to the number
-% of samples declared in the corresponding distribution.
-%
-% Such a generation depends (and modifies) the state of the underlying uniform
-% random generator (e.g. see start_random_source/0); precisely each non-uniform
-% sampling results in two underlying uniform samples to be drawn.
-%
+-doc """
+Returns a new sample drawn from the discrete probability distribution specified
+through its (constant) law data (which is thus not returned), this table having
+been obtained initially (and once for all) from its random specification (see
+initialise_law/1). Only the state of the internal (uniform) random generator is
+(transparently) modified.
+
+Each sample is generated in constant time O(1) time with regard to the number of
+samples declared in the corresponding distribution.
+
+Such a generation depends (and modifies) the state of the underlying uniform
+random generator (e.g. see start_random_source/0); precisely each non-uniform
+sampling results in two underlying uniform samples to be drawn.
+""".
 -spec get_sample_from( random_law_data() ) -> sample().
 % All distributions covered by an alias table can just be handled by the default
 % case, so we concentrate on those which cannot be "directly" sampled:
@@ -4776,12 +5187,12 @@ get_sample_from( Other ) ->
 
 
 
+-doc """
+Returns the specified number of samples drawn according to the specified law
+data.
 
-% @doc Returns the specified number of samples drawn according to the specified
-% law data.
-%
-% Refer to get_sample_from/1 for more details.
-%
+Refer to get_sample_from/1 for more details.
+""".
 -spec get_samples_from( sample_count(), random_law_data() ) -> [ sample() ].
 get_samples_from( Count, LawData ) ->
 
@@ -4793,18 +5204,19 @@ get_samples_from( Count, LawData ) ->
 
 
 
-% @doc Returns a new sample drawn from the discrete probability distribution
-% specified through its (constant) alias table (which is thus not returned),
-% this table having been obtained initially (and once for all) from
-% generate_alias_table_from/1.
-%
-% Each sample is generated in constant time O(1) time with regard to the number
-% of samples declared in the corresponding distribution.
-%
-% Such a generation depends (and modifies) the state of the underlying uniform
-% random generator (e.g. see start_random_source/0); precisely each non-uniform
-% sampling results in two underlying uniform samples to be drawn.
-%
+-doc """
+Returns a new sample drawn from the discrete probability distribution specified
+through its (constant) alias table (which is thus not returned), this table
+having been obtained initially (and once for all) from
+generate_alias_table_from/1.
+
+Each sample is generated in constant time O(1) time with regard to the number of
+samples declared in the corresponding distribution.
+
+Such a generation depends (and modifies) the state of the underlying uniform
+random generator (e.g. see start_random_source/0); precisely each non-uniform
+sampling results in two underlying uniform samples to be drawn.
+""".
 -spec get_sample_from_table( alias_table() ) -> sample().
 get_sample_from_table( #alias_table{ entry_count=EntryCount,
 									 sample_values=SampleValueArray,
@@ -4834,7 +5246,7 @@ get_sample_from_table( #alias_table{ entry_count=EntryCount,
 % Extra PDFs, which are notably useful for reliability-related computations.
 %
 % See also:
-% https://reliability.readthedocs.io/en/latest/Equations%20of%20supported%20distributions.html
+% <https://reliability.readthedocs.io/en/latest/Equations%20of%20supported%20distributions.html>
 %
 % Each PDF could be implemented according to either of these two approaches:
 % A: it is simply defined analytically, and then sampled
@@ -4843,13 +5255,14 @@ get_sample_from_table( #alias_table{ entry_count=EntryCount,
 
 
 
-% Exponential-1p distribution:
-%
-% See https://en.wikipedia.org/wiki/Exponential_distribution.
-%
-% Lambda > 0 is the parameter of the distribution, often called the rate
-% parameter.
-%
+-doc """
+Exponential-1p distribution.
+
+See <https://en.wikipedia.org/wiki/Exponential_distribution>.
+
+Lambda > 0 is the parameter of the distribution, often called the rate
+parameter.
+""".
 -spec exponential_1p_pdf( positive_float_sample(), rate() ) -> probability().
 exponential_1p_pdf( S, Lambda ) when S >= 0.0 ->
 	% f(x; λ) = λ * e^(-λ * x)
@@ -4860,13 +5273,14 @@ exponential_1p_pdf( _S, _Lambda ) -> % when S < 0.0 ->
 
 
 
-% Exponential-2p distribution:
-%
-% See https://en.wikipedia.org/wiki/Exponential_distribution.
-%
-% Lambda > 0 and Gamma > 0 are the parameters of the distribution, often called
-% the rate parameters.
-%
+-doc """
+Exponential-2p distribution.
+
+See <https://en.wikipedia.org/wiki/Exponential_distribution>.
+
+Lambda > 0 and Gamma > 0 are the parameters of the distribution, often called
+the rate parameters.
+""".
 -spec exponential_2p_pdf( positive_float_sample(), rate(), rate() ) ->
 			probability().
 exponential_2p_pdf( S, Lambda, Gamma ) when S >= 0.0 ->
@@ -4878,12 +5292,13 @@ exponential_2p_pdf( _S, _Lambda, _Gamma ) -> % when S < 0.0 ->
 
 
 
-% Gamma-2p distribution:
-%
-% See https://en.wikipedia.org/wiki/Gamma_distribution.
-%
-% K > 0 is the shape parameter and Theta > 0 is the scale parameter.
-%
+-doc """
+Gamma-2p distribution.
+
+See <https://en.wikipedia.org/wiki/Gamma_distribution>.
+
+K > 0 is the shape parameter and Theta > 0 is the scale parameter.
+""".
 -spec gamma_2p_pdf( positive_float_sample(), shape(), scale() ) ->
 															probability().
 gamma_2p_pdf( S, K, Theta ) when S >= 0.0 ->
@@ -4896,13 +5311,14 @@ gamma_2p_pdf( _S, _Lambda, _Gamma ) -> % when S < 0.0 ->
 
 
 
-% Gamma-3p distribution:
-%
-% See https://en.wikipedia.org/wiki/Gamma_distribution.
-%
-% Alpha > 0 and Beta > 0 are the shape parameters, and Theta > 0 is the scale
-% parameter.
-%
+-doc """
+Gamma-3p distribution.
+
+See <https://en.wikipedia.org/wiki/Gamma_distribution>.
+
+Alpha > 0 and Beta > 0 are the shape parameters, and Theta > 0 is the scale
+parameter.
+""".
 -spec gamma_3p_pdf( positive_float_sample(), shape(), shape(), scale() ) ->
 															probability().
 gamma_3p_pdf( S, Alpha, Beta, Theta ) when S >= 0.0 ->
@@ -4920,13 +5336,14 @@ gamma_3p_pdf( _S, _Alpha, _Beta, _Theta ) -> % when S < 0.0 ->
 
 
 
-% Gaussian (normal) distribution:
-%
-% See https://en.wikipedia.org/wiki/Normal_distribution.
-%
-% Mu is the mean or expectation of the distribution (and also its median and
-% mode), while Sigma is its standard deviation.
-%
+-doc """
+Gaussian (normal) distribution.
+
+See <https://en.wikipedia.org/wiki/Normal_distribution>.
+
+Mu is the mean or expectation of the distribution (and also its median and
+mode), while Sigma is its standard deviation.
+""".
 -spec gaussian_pdf( positive_float_sample(), mean(), standard_deviation() ) ->
 								probability().
 gaussian_pdf( S, Mu, Sigma ) ->
@@ -4937,16 +5354,17 @@ gaussian_pdf( S, Mu, Sigma ) ->
 
 
 
-% Gumbel-2p distribution:
-%
-% See https://en.wikipedia.org/wiki/Gumbel_distribution.
-%
-% Its support is for a sample S in R.
-%
-% Determined by 2 parameters:
-% - Mu, in R, the location parameter
-% - Beta > 0, the scale parameter
-%
+-doc """
+Gumbel-2p distribution.
+
+See <https://en.wikipedia.org/wiki/Gumbel_distribution>.
+
+Its support is for a sample S in R.
+
+Determined by 2 parameters:
+- Mu, in R, the location parameter
+- Beta > 0, the scale parameter
+""".
 -spec gumbel_2p_pdf( float_sample(), float(), positive_float() ) ->
 												probability().
 gumbel_2p_pdf( S, Mu, Beta ) ->
@@ -4957,12 +5375,13 @@ gumbel_2p_pdf( S, Mu, Beta ) ->
 
 
 
-% Log-logistic-2p distribution:
-%
-% See https://en.wikipedia.org/wiki/Log-logistic_distribution.
-%
-% Alpha > 0 is the scale parameter and Beta > 0 is the shape parameter.
-%
+-doc """
+Log-logistic-2p distribution.
+
+See <https://en.wikipedia.org/wiki/Log-logistic_distribution>.
+
+Alpha > 0 is the scale parameter and Beta > 0 is the shape parameter.
+""".
 -spec loglogistic_2p_pdf( positive_float_sample(), positive_float(),
 						  positive_float() ) ->	probability().
 loglogistic_2p_pdf( S, Alpha, Beta ) when S >= 0.0 ->
@@ -4983,13 +5402,15 @@ loglogistic_2p_pdf( _S, _Alpha, _Beta ) -> % when S < 0.0 ->
 
 
 
-% Log-logistic-3p distribution:
-%
-% See https://en.wikipedia.org/wiki/Log-logistic_distribution.
-%
-% Alpha > 0 is the scale parameter, Beta > 0 is the shape parameter, Theta is
-% the last one.
-%
+-doc """
+Log-logistic-3p distribution.
+
+See <https://en.wikipedia.org/wiki/Log-logistic_distribution>.
+
+Alpha > 0 is the scale parameter, Beta > 0 is the shape parameter, Theta is the
+last one.
+
+""".
 -spec loglogistic_3p_pdf( positive_float_sample(), positive_float(),
 						  positive_float(), positive_float() ) -> probability().
 loglogistic_3p_pdf( S, Alpha, Beta, Theta ) when S >= 0.0 ->
@@ -5014,13 +5435,13 @@ loglogistic_3p_pdf( _S, _Alpha, _Beta, _Theta ) -> % when S < 0.0 ->
 
 
 
+-doc """
+Log-normal-2p distribution.
 
-% Log-normal-2p distribution:
-%
-% See https://en.wikipedia.org/wiki/Log-normal_distribution.
-%
-% Refer to lognormal_2p_law_spec/0 for further details.
-%
+See <https://en.wikipedia.org/wiki/Log-normal_distribution>.
+
+Refer to lognormal_2p_law_spec/0 for further details.
+""".
 -spec lognormal_2p_pdf( positive_float_sample(), float(), positive_float() ) ->
 																probability().
 % lognormal_2p_pdf( S, Mu, Sigma ) = lognormal_3p_pdf( S, Mu, Sigma, _Theta=1 ).
@@ -5036,13 +5457,14 @@ lognormal_2p_pdf( _S, _Mu, _Sigma ) -> % when S < 0.0 ->
 
 
 
-% Log-normal-3p distribution:
-%
-% See https://en.wikipedia.org/wiki/Log-normal_distribution.
-%
-% Mu > 0 is the scale parameter, Sigma > 0 is the shape parameter, Theta is
-% the last one.
-%
+-doc """
+Log-normal-3p distribution.
+
+See <https://en.wikipedia.org/wiki/Log-normal_distribution>.
+
+Mu > 0 is the scale parameter, Sigma > 0 is the shape parameter, Theta is the
+last one.
+""".
 -spec lognormal_3p_pdf( positive_float_sample(), float(), positive_float(),
 						float() ) -> probability().
 lognormal_3p_pdf( S, Mu, Sigma, Theta ) when S >= 0.0 ->
@@ -5057,20 +5479,21 @@ lognormal_3p_pdf( _S, _Mu, _Sigma, _Theta ) -> % when S < 0.0 ->
 
 
 
-% Weibull-2p distribution:
-%
-% See https://en.wikipedia.org/wiki/Weibull_distribution.
-%
-% Its support is for a sample S>=0.0.
-%
-% Determined by 2 parameters:
-% - K > 0 is the shape parameter (sometimes named beta)
-% - Lambda > 0 is the scale parameter (sometimes named alpha)
-%
-% Being quite flexible, its proper parametrisation can cover many laws,
-% including the exponential-1p law (K=1) and the Rayleigh law (K=2 and
-% Lambda=sqrt(2).Sigma).
-%
+-doc """
+Weibull-2p distribution.
+
+See <https://en.wikipedia.org/wiki/Weibull_distribution>.
+
+Its support is for a sample S>=0.0.
+
+Determined by 2 parameters:
+- K > 0 is the shape parameter (sometimes named beta)
+- Lambda > 0 is the scale parameter (sometimes named alpha)
+
+Being quite flexible, its proper parametrisation can cover many laws, including
+the exponential-1p law (K=1) and the Rayleigh law (K=2 and
+Lambda=sqrt(2).Sigma).
+""".
 -spec weibull_2p_pdf( positive_float_sample(), positive_float(),
 					  positive_float() ) -> probability().
 weibull_2p_pdf( S, K, Lambda ) when S >= 0.0 ->
@@ -5084,20 +5507,22 @@ weibull_2p_pdf( _S, _K, _Lambda ) -> % when S < 0.0 ->
 	0.0.
 
 
-% Weibull-3p distribution:
-%
-% See https://en.wikipedia.org/wiki/Weibull_distribution.
-%
-% Its support is for a sample S>=Gamma.
-%
-% Determined by 3 parameters:
-% - K > 0 is the shape parameter (sometimes named beta)
-% - Lambda > 0 is the scale parameter (sometimes named alpha)
-% - Gamma (in R) is the location parameter (or failure free life)
-%
-% Being quite flexible, its proper parametrisation can cover many laws,
-% including the Weibull-2p ones (with Gamma=0).
-%
+
+-doc """
+Weibull-3p distribution.
+
+See <https://en.wikipedia.org/wiki/Weibull_distribution>.
+
+Its support is for a sample S>=Gamma.
+
+Determined by 3 parameters:
+- K > 0 is the shape parameter (sometimes named beta)
+- Lambda > 0 is the scale parameter (sometimes named alpha)
+- Gamma (in R) is the location parameter (or failure free life)
+
+Being quite flexible, its proper parametrisation can cover many laws, including
+the Weibull-2p ones (with Gamma=0).
+""".
 -spec weibull_3p_pdf( positive_float_sample(), positive_float(),
 					  positive_float(), float() ) -> probability().
 weibull_3p_pdf( S, K, Lambda, Gamma ) when S >= 0.0 ->
@@ -5112,15 +5537,16 @@ weibull_3p_pdf( _S, _K, _Lambda, _Gamma ) -> % when S < 0.0 ->
 
 
 
-% Weibull-CR distribution:
-%
-% See https://en.wikipedia.org/wiki/Weibull_distribution.
-%
-% Determined by 3 parameters:
-% - K > 0 is the shape parameter (sometimes named beta)
-% - Lambda > 0 is the scale parameter (sometimes named alpha)
-% - Theta (in R) is the location parameter (or failure free life)
-%
+-doc """
+Weibull-CR distribution.
+
+See <https://en.wikipedia.org/wiki/Weibull_distribution>.
+
+Determined by 3 parameters:
+- K > 0 is the shape parameter (sometimes named beta)
+- Lambda > 0 is the scale parameter (sometimes named alpha)
+- Theta (in R) is the location parameter (or failure free life)
+""".
 -spec weibull_cr_pdf( positive_float_sample(), positive_float(),
 					  positive_float(), positive_float() ) -> probability().
 weibull_cr_pdf( S, Lambda, K, Theta ) when S >= 0.0 ->
@@ -5138,15 +5564,17 @@ weibull_cr_pdf( _S, _Lambda, _K, _Theta ) -> % when S < 0.0 ->
 	0.0.
 
 
-% Weibull-DS distribution:
-%
-% See https://en.wikipedia.org/wiki/Weibull_distribution.
-%
-% Determined by 3 parameters:
-% - K > 0 is the shape parameter (sometimes named beta)
-% - Lambda > 0 is the scale parameter (sometimes named alpha)
-% - Sigma > 0
-%
+
+-doc """
+Weibull-DS distribution.
+
+See <https://en.wikipedia.org/wiki/Weibull_distribution>.
+
+Determined by 3 parameters:
+- K > 0 is the shape parameter (sometimes named beta)
+- Lambda > 0 is the scale parameter (sometimes named alpha)
+- Sigma > 0
+""".
 -spec weibull_ds_pdf( positive_float_sample(), positive_float(),
 					  positive_float(), positive_float() ) -> probability().
 weibull_ds_pdf( S, Lambda, K, Sigma ) when S >= 0.0 ->
@@ -5169,20 +5597,21 @@ weibull_ds_pdf( _S, _Lambda, _K, _Sigma ) -> % when S < 0.0 ->
 
 
 
-% Weibull-DSZI distribution:
-%
-% See https://en.wikipedia.org/wiki/Weibull_distribution.
-%
-% Determined by 4 parameters:
-% - K > 0 is the shape parameter (sometimes named beta)
-% - Lambda > 0 is the scale parameter (sometimes named alpha)
-% - Sigma > 0
-% - Theta > 0
-%
-% See, in the Python-Reliability library, in the Distributions module, the
-% DSZI_Model class, notably:
-% 'pdf = pdf0 * (self.DS - self.ZI)  # the DSZI formula for the PDF'.
-%
+-doc """
+Weibull-DSZI distribution.
+
+See <https://en.wikipedia.org/wiki/Weibull_distribution>.
+
+Determined by 4 parameters:
+- K > 0 is the shape parameter (sometimes named beta)
+- Lambda > 0 is the scale parameter (sometimes named alpha)
+- Sigma > 0
+- Theta > 0
+
+See, in the Python-Reliability library, in the Distributions module, the
+DSZI_Model class, notably: 'pdf = pdf0 * (self.DS - self.ZI) # the DSZI formula
+for the PDF'.
+""".
 -spec weibull_dszi_pdf( positive_float_sample(), positive_float(),
 		positive_float(), positive_float(), positive_float() ) -> probability().
 weibull_dszi_pdf( S, Lambda, K, Sigma, Theta ) when S >= 0.0 ->
@@ -5206,20 +5635,21 @@ weibull_dszi_pdf( _S, _Lambda, _K, _Sigma, _Theta ) -> % when S < 0.0 ->
 
 
 
-% Weibull-Mixture distribution:
-%
-% See https://en.wikipedia.org/wiki/Weibull_distribution.
-%
-% Determined by 5 parameters:
-% - P > 0, a kind of proportion between the two Weibull-2p functions (thus
-% typically in [0,1])
-% - K1 > 0 is the shape parameter (sometimes named beta) of the first Weibull
-% - Lambda1 > 0 is the scale parameter (sometimes named alpha) of the first
-% Weibull
-% - K2 > 0 is the shape parameter (sometimes named beta) of the second Weibull
-% - Lambd2a > 0 is the scale parameter (sometimes named alpha) of the second
-% Weibull
-%
+-doc """
+Weibull-Mixture distribution.
+
+See <https://en.wikipedia.org/wiki/Weibull_distribution>.
+
+Determined by 5 parameters:
+- P > 0, a kind of proportion between the two Weibull-2p functions (thus
+typically in [0,1])
+- K1 > 0 is the shape parameter (sometimes named beta) of the first Weibull
+- Lambda1 > 0 is the scale parameter (sometimes named alpha) of the first
+Weibull
+- K2 > 0 is the shape parameter (sometimes named beta) of the second Weibull
+- Lambd2a > 0 is the scale parameter (sometimes named alpha) of the second
+Weibull
+""".
 -spec weibull_mixture_pdf( positive_float_sample(), positive_float(),
 		positive_float(), positive_float(), positive_float(),
 		positive_float() ) -> probability().
@@ -5251,17 +5681,17 @@ weibull_mixture_pdf( _S, _P, _Lambda1, _K1, _Lambda2, _K2 ) -> % when S < 0.0 ->
 
 
 
+-doc """
+Weibull-ZI distribution.
 
-% Weibull-ZI distribution:
-%
-% See https://en.wikipedia.org/wiki/Weibull_distribution.
-%
-% Determined by 3 parameters:
-% - Lambda > 0 is the scale parameter (sometimes named alpha)
-% - K > 0
-% - P > 0, a kind of proportion between the Weibull-2p function and a Dirac
-% distribution (thus typically in [0,1])
-%
+See <https://en.wikipedia.org/wiki/Weibull_distribution>.
+
+Determined by 3 parameters:
+- Lambda > 0 is the scale parameter (sometimes named alpha)
+- K > 0
+- P > 0, a kind of proportion between the Weibull-2p function and a Dirac
+distribution (thus typically in [0,1])
+""".
 -spec weibull_zi_pdf( positive_float_sample(), positive_float(),
 					  positive_float(), positive_float() ) -> probability().
 weibull_zi_pdf( S, Lambda, K, P ) when S > 0.0 ->
@@ -5294,19 +5724,20 @@ weibull_zi_pdf( _S, _Lambda, _K, _P ) -> % when S < 0.0 ->
 
 
 
-% Beta-2p distribution:
-%
-% See https://en.wikipedia.org/wiki/Beta_distribution.
-%
-% Its support is for a sample S in [0,1].
-%
-% Determined by 2 parameters:
-% - Alpha > 0, a shape parameter
-% - Beta > 0, another shape parameter
-%
-% The probabilities that it returns are not normalised, to avoid evaluating the
-% Gamma function (see https://en.wikipedia.org/wiki/Gamma_function).
-%
+-doc """
+Beta-2p distribution.
+
+See <https://en.wikipedia.org/wiki/Beta_distribution>.
+
+Its support is for a sample S in [0,1].
+
+Determined by 2 parameters:
+- Alpha > 0, a shape parameter
+- Beta > 0, another shape parameter
+
+The probabilities that it returns are not normalised, to avoid evaluating the
+Gamma function (see <https://en.wikipedia.org/wiki/Gamma_function>).
+""".
 -spec beta_2p_pdf( positive_float_sample(), positive_float(),
 				   positive_float() ) -> probability().
 beta_2p_pdf( S, Alpha, Beta ) when S >= 0.0 andalso S =< 1.0 ->
@@ -5314,7 +5745,9 @@ beta_2p_pdf( S, Alpha, Beta ) when S >= 0.0 andalso S =< 1.0 ->
 
 
 
-% @doc Checks that the specified term is a sample count (and returns it).
+-doc """
+Checks that the specified term is a sample count (and returns it).
+""".
 -spec check_sample_count( term() ) -> sample_count().
 check_sample_count( C ) when is_integer( C ) andalso C > 0 ->
 	C;
@@ -5324,9 +5757,9 @@ check_sample_count( C ) ->
 
 
 
-% @doc Returns a textual representation of the specified random law
-% specification.
-%
+-doc """
+Returns a textual representation of the specified random law specification.
+""".
 -spec law_spec_to_string( random_law_spec() ) -> ustring().
 % In specs, non-canonical types (e.g. integers instead of floats) may be
 % encountered, so ~w/~p are more appropriate:
@@ -5631,7 +6064,9 @@ law_spec_to_string( { arbitrary, Name, ProbDist } ) when is_list( ProbDist ) ->
 
 
 
-% @doc Returns a textual representation of the specified random law data.
+-doc """
+Returns a textual representation of the specified random law data.
+""".
 -spec law_data_to_string( random_law_data() ) -> ustring().
 law_data_to_string( { _LawSettings={ uniform, Min, Max },
 					  _MaybeAliasTable=undefined } ) ->
@@ -5790,7 +6225,9 @@ law_data_to_string( Other ) ->
 
 
 
-% @doc Returns a textual representation of the specified PDF information.
+-doc """
+Returns a textual representation of the specified PDF information.
+""".
 -spec pdf_info_to_string( pdf_info() ) -> ustring().
 pdf_info_to_string( { _PDF, SampleCount, SampleBounds } ) ->
 	text_utils:format( "arbitrary distribution, based on ~B samples, on ~ts",
@@ -5805,13 +6242,18 @@ pdf_info_to_string( _PDF ) ->
 
 
 
-% @doc Returns a textual representation of the specified sampling information.
+-doc """
+Returns a textual representation of the specified sampling information.
+""".
 -spec sampling_info_to_string( sample_count() ) -> ustring().
 sampling_info_to_string( SampleCount ) ->
 	text_utils:format( "sampled on ~B points", [ SampleCount ] ).
 
 
-% @doc Returns a textual representation of the specified sampling information.
+
+-doc """
+Returns a textual representation of the specified sampling information.
+""".
 -spec sampling_info_to_string( sample_count(), bounds() ) -> ustring().
 sampling_info_to_string( SampleCount, Bounds={ StartSample, StopSample } ) ->
 

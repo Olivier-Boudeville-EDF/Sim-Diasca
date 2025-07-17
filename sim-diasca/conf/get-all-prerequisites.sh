@@ -35,24 +35,24 @@ fi
 install_debian()
 {
 
+	echo "  Installing Sim-Diasca prerequisites on Debian..."
+
 	# Debian 10 (buster);
 	# From myriad/conf/install-erlang.sh:
-	erlang_packets="g++ make libncurses5-dev openssl libssl-dev     \
+	erlang_packages="g++ make libncurses5-dev openssl libssl-dev     \
    libwxgtk2.8-dev libgl1-mesa-dev libglu1-mesa-dev libpng16-16"
 
 	# From sim-diasca/doc/installation-guide/public-version/Sim-Diasca-public-installation-guide-english.rst:
-	sim_diasca_packets="bzip2 coreutils build-essential g++         \
+	sim_diasca_packages="bzip2 coreutils build-essential g++         \
    libncurses5-dev openssl libssl-dev libwxgtk2.8-dev               \
    libgl1-mesa-dev libglu1-mesa-dev libpng3 uuidgen                 \
    python-docutils eog evince gcc gnuplot gnuplot-nox gnuplot-x11   \
    gqview graphviz uuid-runtime make mplayer nedit subversion ant   \
    openjdk-7-jdk texlive"
 
-	target_packets="${erlang_packets} ${sim_diasca_packets}"
+	target_packages="${erlang_packages} ${sim_diasca_packages}"
 
-	echo "  Installing Sim-Diasca prerequisites on Debian..."
-
-	apt-get update && apt-get install ${target_packets}
+	apt-get update && apt-get install ${target_packages}
 
 
 }
@@ -61,15 +61,19 @@ install_debian()
 install_arch()
 {
 
-	erlang_packets=""
+	echo "  Installing Sim-Diasca prerequisites on Arch Linux..."
 
-	sim_diasca_packets=""
+	echo "Still TO-DO!" 1>&2
 
-	target_packets=""
+	exit 40
 
-	echo "  Installing on Arch Linux..."
+	erlang_packages=""
 
-	pacman -Sy ....
+	sim_diasca_packages=""
+
+	target_packages="${erlang_packages} ${sim_diasca_packages}"
+
+	pacman -S --needed ${target_packages}
 
 }
 
@@ -83,7 +87,7 @@ case "${distro_type}" in
 		install_arch;;
 
 	*)
-		echo "  Error, unknown distribution: '${distro_type}'." 1>&2 ;
+		echo "  Error, unsupported distribution: '${distro_type}'." 1>&2 ;
 		exit 15
 
 esac

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -23,12 +23,14 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Wednesday, September 15, 2021
+% Creation date: Wednesday, September 15, 2021.
 
-
-% @doc Allows to test 
-%
 -module(trace_config_test).
+
+-moduledoc """
+Allows to test the **configuration** of traces and of the related tools
+(e.g. trace supervisors), for example regarding encoding.
+""".
 
 
 % Test target:

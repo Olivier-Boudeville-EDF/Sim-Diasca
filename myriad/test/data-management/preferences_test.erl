@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2024 Olivier Boudeville
+% Copyright (C) 2013-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,13 +23,15 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2013.
 
-
-% @doc Unit tests for the <b>preferences</b> service.
-%
-% See the preferences.erl tested module.
-%
 -module(preferences_test).
+
+-moduledoc """
+Unit tests for the **preferences** service.
+
+See the preferences.erl tested module.
+""".
 
 
 

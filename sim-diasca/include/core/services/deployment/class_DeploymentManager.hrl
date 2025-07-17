@@ -1,21 +1,21 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software (Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
@@ -71,7 +71,7 @@
 	%    Laptop"} (supposing that E44927SW is a valid username here)
 	%
 	% Each entry must be alone in its line, which must end with a dot (see
-	% sim-diasca-host-candidates-sample.txt for a full example).
+	% sim-diasca-host-candidates-sample.etf for a full example).
 	%
 	% The use_host_file atom requires such a file to be available and usable,
 	% whereas the use_host_file_otherwise_local will not fail if such a file is
@@ -87,11 +87,11 @@
 	% - { [ computer_a, computer_b ], include_localhost }
 	% - { [ computer_a, computer_b ], exclude_localhost }
 	% - localhost_only
-	% - { use_host_file,"my_hosts.txt" } (which implies include_localhost)
-	% - { use_host_file,"my_hosts.txt", include_localhost }
-	% - { use_host_file,"my_hosts.txt", exclude_localhost }
-	% - { use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" }
-	% - { use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" }
+	% - { use_host_file,"my_hosts.etf" } (which implies include_localhost)
+	% - { use_host_file,"my_hosts.etf", include_localhost }
+	% - { use_host_file,"my_hosts.etf", exclude_localhost }
+	% - { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
+	% - { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
 	%
 	% Of course if the local host is implied, it will be associated with the
 	% current username.
@@ -103,7 +103,7 @@
 	% and not for example by IP addresses.
 	%
 	computing_hosts = { use_host_file_otherwise_local,
-						"sim-diasca-host-candidates.txt" } ::
+						"sim-diasca-host-candidates.etf" } ::
 		  class_DeploymentManager:host_list()
 		| { class_DeploymentManager:host_list(),
 			'include_localhost' | 'exclude_localhost' }
@@ -153,7 +153,7 @@
 	% default settings for the selected execution target.
 	%
 	maximum_allowed_deployment_duration = undefined ::
-		maybe( unit_utils:seconds() ),
+		option( unit_utils:seconds() ),
 
 
 	% This field tells how the deployment package should be managed.
@@ -541,18 +541,18 @@
 	enable_graph_streaming = false :: 'false'
 
 		% Localhost and default port implied; launched iff project is defined:
-		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
+		| { 'true', option( class_GraphStreamProbe:project_path() ),
 			class_GraphStreamProbe:workspace_name() }
 
 		% Localhost implied; launched iff project is defined:
-		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
+		| { 'true', option( class_GraphStreamProbe:project_path() ),
 			class_GraphStreamProbe:workspace_name(),
 			net_utils:tcp_port() }
 
 		% Full settings; launched iff project is defined and the hostname is the
 		% 'localhost' atom):
 		%
-		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
+		| { 'true', option( class_GraphStreamProbe:project_path() ),
 			class_GraphStreamProbe:workspace_name(),
 			net_utils:possibly_local_hostname(), net_utils:tcp_port() },
 
@@ -627,7 +627,7 @@
 -record( computing_host_info, {
 
 	% The PID of the host manager in charge of the corresponding computing host:
-	host_manager_pid :: pid(),
+	host_manager_pid :: class_ComputingHostManager:manager_pid(),
 
 	% The name of the corresponding computing host, as a binary:
 	host_name :: net_utils:bin_host_name(),

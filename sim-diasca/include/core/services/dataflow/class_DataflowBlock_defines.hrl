@@ -1,22 +1,23 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
 
 % This header file is private to the class_DataflowBlock module, and defined to
@@ -37,7 +38,7 @@
 
 
 	% Internal storage of the associated comment (if any):
-	comment = undefined :: basic_utils:maybe( internal_comment() ),
+	comment = undefined :: option( internal_comment() ),
 
 
 	% SUTC information first:
@@ -72,11 +73,9 @@
 
 
 	% The output port (if any) feeding this input port:
-	feeder_port = undefined :: basic_utils:maybe( output_port_id() ) } ).
+	feeder_port = undefined :: option( output_port_id() ) } ).
 
 
--type input_port() :: #input_port{}.
-% Describes an input port of a dataflow block (internal datastructure).
 
 
 
@@ -90,7 +89,7 @@
 
 
 	% Internal storage of the associated comment (if any):
-	comment = undefined :: basic_utils:maybe( internal_comment() ),
+	comment = undefined :: option( internal_comment() ),
 
 
 	% Tells whether this output port shall be seen as a result producer, i.e. if
@@ -134,39 +133,17 @@
 	fed_ports = [] :: [ input_port_id() ] } ).
 
 
--type output_port() :: #output_port{}.
-% Describes an output port of a dataflow block (internal datastructure).
-
 
 
 % Describes a port, notably to check compliance when creating a channel, that is
 % when connecting another port.
 %
 -record( port_description, {
-			semantics :: value_semantics(),
-			unit = dimensionless :: value_unit(),
-			type :: value_type(),
-			constraints = [] :: value_constraints(),
-			status = 'unset' :: value_status() } ).
-
--type port_description() :: #port_description{}.
-% Describes a port, notably to check compliance when creating a channel, that is
-% when connecting another port.
-%
-% Corresponds roughly to the maximal subset of the fields that are common to an
-% input port and an output port; please refer to their counterpart fields for
-% documentation.
-
-
-
-
-
-% The index (starting at 1) of an actual port obtained from an iterated one.
--type iterated_index() :: basic_utils:positive_index().
-
-
-% A count of iterated ports:
--type iterated_count() :: basic_utils:count().
+	semantics :: value_semantics(),
+	unit = dimensionless :: value_unit(),
+	type :: value_type(),
+	constraints = [] :: value_constraints(),
+	status = 'unset' :: value_status() } ).
 
 
 
@@ -197,7 +174,7 @@
 
 
 	% Comment (if any) associated to the corresponding iterated input ports:
-	comment = undefined :: maybe( internal_comment() ),
+	comment = undefined :: option( internal_comment() ),
 
 
 	% Tells about the supported multiplicities in terms of iterated ports:
@@ -235,24 +212,8 @@
 	% port iteration; as any port may be created or destroyed, indexes are
 	% strictly increasing, yet possibly with gaps.
 	%
-	port_indexes = [] :: [ iterated_index() ] } ).
+	port_indexes = [] :: [ class_DataflowBlock:iterated_index() ] } ).
 
-
--type input_port_iteration() :: #input_port_iteration{}.
-% Describes an input port iteration of a dataflow block (internal
-% datastructure).
-%
-% We were initially using a 'spec :: input_port_spec()' field here, where the
-% corresponding specification of the input port template could be stored
-% directly in this iteration as it is; however some of its fields are to be
-% pre-processed from the start and once of all (notably, the user-defined unit
-% was translated into a canonical unit) - and thus these elements should not be
-% lost.
-%
-% As it was not logical to allow an input port spec to store such a
-% (transformed) canonical unit in some cases, we finally defined specific,
-% dedicated fields in order to store all relevant internal information for a
-% port iteration.
 
 
 
@@ -276,7 +237,7 @@
 
 
 	% Comment (if any) associated to the corresponding iterated output ports:
-	comment = undefined :: maybe( internal_comment() ),
+	comment = undefined :: option( internal_comment() ),
 
 
 	% Tells whether the iterated output ports shall be seen as a result
@@ -320,29 +281,4 @@
 	% The ordered list of currently existing iterated ports created from this
 	% port iteration (any port may be created or destroyed):
 	%
-	port_indexes = [] :: [ iterated_index() ] } ).
-
-
--type output_port_iteration() :: #output_port_iteration{}.
-% Describes an output port iteration of a dataflow block (internal
-% datastructure).
-%
-% See input_port_iteration for design comments.
-
-
-
-% Associative table to hold input ports:
--type input_port_table() :: table( input_port_name(), input_port() ).
-
-% Associative table to hold output ports:
--type output_port_table() :: table( output_port_name(), output_port() ).
-
-
-
-% Associative table to hold input port iterations:
--type input_iteration_table() ::
-		table( input_iteration_name(), input_port_iteration() ).
-
-% Associative table to hold output port iterations:
--type output_iteration_table() ::
-		table( output_iteration_name(), output_port_iteration() ).
+	port_indexes = [] :: [ class_DataflowBlock:iterated_index() ] } ).

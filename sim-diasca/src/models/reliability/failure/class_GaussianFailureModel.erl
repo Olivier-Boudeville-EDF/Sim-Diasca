@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc Class modelling the failure behaviour of pieces of equipment according to
-% a Gaussian (normal) law (probability density).
-%
 -module(class_GaussianFailureModel).
+
+-moduledoc """
+Class modelling the failure behaviour of pieces of equipment according to a
+Gaussian (normal) law (probability density).
+""".
 
 
 -define( class_description,
@@ -47,18 +48,19 @@
 
 
 
-% @doc Constructs a Gaussian failure model actor.
-%
-% MTTF is Mean Time To Failure, the mean (average) duration before a working
-% system fails.
-%
-% All equipments using a given instance of this failure model will therefore
-% have the same MTTF, but the shared random manager (thanks to the stochastic
-% inheritance) will ensure each will act independently from the other
-% equipments, according to the gaussian distribution.
-%
-% Note: a random manager must be running beforehand.
-%
+-doc """
+Constructs a Gaussian failure model actor.
+
+MTTF is Mean Time To Failure, the mean (average) duration before a working
+system fails.
+
+All equipments using a given instance of this failure model will therefore have
+the same MTTF, but the shared random manager (thanks to the stochastic
+inheritance) will ensure each will act independently from the other equipments,
+according to the gaussian distribution.
+
+Note: a random manager must be running beforehand.
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_FailureModel:mttf(), math_utils:standard_deviation() ) ->
 						wooper:state().

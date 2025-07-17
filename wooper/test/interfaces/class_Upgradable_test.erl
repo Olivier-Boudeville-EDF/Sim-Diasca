@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, August 16, 2022.
 
-
-% @doc Unit tests for the <b>Upgradable</b> class implementation.
-%
-% See the class_Upgradable module.
-%
 -module(class_Upgradable_test).
+
+-moduledoc """
+Unit tests for the **Upgradable** class implementation.
+
+See the class_Upgradable module.
+""".
+
 
 
 -export([ run/0 ]).
@@ -42,14 +44,14 @@
 %       ERLANG_COMPILER_EXTRA_OPTS="-Denable_upgraded_test_class"
 
 
-% Shorthands:
+% Type shorthands:
 
 -type bin_string() :: text_utils:bin_string().
 -type instance_pid() :: wooper:instance_pid().
 
 
 
-% Tells whether the test module has old code.
+-doc "Tells whether the test module has old code.".
 -spec check_old_code() -> void().
 check_old_code() ->
 	Mod = class_TestUpgradable,
@@ -58,9 +60,10 @@ check_old_code() ->
 
 
 
-% Returns a description of the specified instance, as the TestUpgradable class
-% implements the Describable interface.
-%
+-doc """
+Returns a description of the specified instance, as the TestUpgradable class
+implements the Describable interface.
+""".
 -spec get_description( instance_pid() ) -> bin_string().
 get_description( IPid ) ->
 
@@ -75,7 +78,7 @@ get_description( IPid ) ->
 
 
 
-% @doc Runs the tests.
+-doc "Runs the tests.".
 -spec run() -> no_return().
 run() ->
 
@@ -173,7 +176,7 @@ run() ->
 		  InstancesToUpdate ] ),
 
 	UpFreezeInfos = class_Upgradable:freeze_instances( InstancesToUpdate,
-							TargetVersion, ExtraData ),
+		TargetVersion, ExtraData ),
 
 	test_facilities:display( "Upgrade freeze information received: ~p.",
 							 [ UpFreezeInfos ] ),

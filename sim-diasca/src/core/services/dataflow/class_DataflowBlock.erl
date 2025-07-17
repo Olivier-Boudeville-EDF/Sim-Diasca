@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Base class for all <b>dataflow blocks</b>.
 -module(class_DataflowBlock).
+
+-moduledoc "Base class for all **dataflow blocks**.".
 
 
 -define( class_description,
@@ -64,7 +65,7 @@
 % Channels (a pair made of an input port and the output port feeding it) are
 % abstracted out (they are not instances per se).
 %
-% In some cases (ex: dataflow objects), to an attribute (ex: a dataflow
+% In some cases (e.g. dataflow objects), to an attribute (e.g. a dataflow
 % attribute named 'foobar') will be associated one input port and one output
 % port. It is more convenient to have them bear the same name ('foobar') and be
 % distinguished based on their type (either 'input_port' or 'output_port'),
@@ -77,7 +78,7 @@
 % Semantics and types can be managed both at the class and instance levels:
 % while many verifications can be done statically, and once for all for the
 % instances of a given class of dataflow block, being able to evaluate dynamic
-% dataflows (ex: with a block declaring additional ports at simulation time)
+% dataflows (e.g. with a block declaring additional ports at simulation time)
 % certainly induces the need for runtime, instance-level verifications as well.
 
 % Having a third-party create a channel between two dataflow blocks is to be
@@ -105,7 +106,7 @@
 %
 % The user is expected to rely only on plain strings, not binary ones; hence
 % proper translations (especially when sending messages) shall be done at the
-% interfaces (ex: thanks to static methods), so that (as much as possible) only
+% interfaces (e.g. thanks to static methods), so that (as much as possible) only
 % binary strings are actually exchanged through messages.
 
 % Iterated ports are absolutely standard ports.
@@ -184,31 +185,96 @@
 			   input_iteration_table/0, output_iteration_table/0 ]).
 
 
+
+-doc "Describes an input port of a dataflow block (internal datastructure).".
+-type input_port() :: #input_port{}.
+
+
+-doc "Describes an output port of a dataflow block (internal datastructure).".
+-type output_port() :: #output_port{}.
+
+
+-doc """
+Describes a port, notably to check compliance when creating a channel, that is
+when connecting another port.
+
+Corresponds roughly to the maximal subset of the fields that are common to an
+input port and an output port; please refer to their counterpart fields for
+documentation.
+""".
+-type port_description() :: #port_description{}.
+
+
+
+
+-doc """
+The index (starting at 1) of an actual port obtained from an iterated one.
+""".
+-type iterated_index() :: basic_utils:positive_index().
+
+
+-doc "A count of iterated ports.".
+-type iterated_count() :: count().
+
+
+
+-doc """
+Describes an input port iteration of a dataflow block (internal datastructure).
+
+We were initially using a 'spec :: input_port_spec()' field here, where the
+corresponding specification of the input port template could be stored directly
+in this iteration as it is; however some of its fields are to be pre-processed
+from the start and once of all (notably, the user-defined unit was translated
+into a canonical unit) - and thus these elements should not be lost.
+
+As it was not logical to allow an input port spec to store such a (transformed)
+canonical unit in some cases, we finally defined specific, dedicated fields in
+order to store all relevant internal information for a port iteration.
+""".
+-type input_port_iteration() :: #input_port_iteration{}.
+
+
+-doc """
+Describes an output port iteration of a dataflow block (internal datastructure).
+
+See input_port_iteration for design comments.
+""".
+-type output_port_iteration() :: #output_port_iteration{}.
+
+
+
+-doc "Associative table to hold input ports.".
+-type input_port_table() :: table( input_port_name(), input_port() ).
+
+
+-doc "Associative table to hold output ports.".
+-type output_port_table() :: table( output_port_name(), output_port() ).
+
+
+
+-doc "Associative table to hold input port iterations.".
+-type input_iteration_table() ::
+		table( input_iteration_name(), input_port_iteration() ).
+
+
+-doc "Associative table to hold output port iterations.".
+-type output_iteration_table() ::
+		table( output_iteration_name(), output_port_iteration() ).
+
+
+-doc """
+Describes an inbound connection request, to be sent by an upstream block (with
+its name and description) to a downstream one.
+""".
 -type inbound_connection_info() :: { output_port_name(), port_description(),
-		 class_DataflowUnitManager:canonical_downstream_port_spec() }.
-% Describes an inbound connection request, to be sent by an upstream block (with
-% its name and description) to a downstream one.
+		class_DataflowUnitManager:canonical_downstream_port_spec() }.
 
 
+-doc """
+Describes a fully explicit connection, as established by the downstream block.
+""".
 -type connection_info() :: { output_port_name(), input_port_name() }.
-% Describes a fully explicit connection, as established by the downstream block.
 
-
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
-
--type canonical_connection_spec() ::
-		class_DataflowUnitManager:canonical_connection_spec().
-
--type action_id() :: class_DataflowUnitManager:action_id().
-
--type type_entry() :: class_TypeServer:type_entry().
--type type_entries() :: class_TypeServer:type_entries().
-
--type managed_unit_spec() :: class_DataflowUnitManager:managed_unit_spec().
-
--type vocabulary() :: class_SemanticServer:vocabulary().
 
 
 
@@ -246,12 +312,15 @@
 -export([ parse_raw_input_port_spec/1, parse_raw_output_port_spec/1 ]).
 
 
+
+-doc """
+Describes the run status of this block, which maybe either active (runnable,
+i.e. able to be activated), suspended (i.e. currently disabled), or terminating
+(in the verge of destruction).
+
+By default a block is active when created.
+""".
 -type run_status() :: 'active' | 'suspended' | 'terminating'.
-% Describes the run status of this block, which maybe either active (runnable,
-% i.e. able to be activated), suspended (i.e. currently disabled), or
-% terminating (in the verge of destruction).
-%
-% By default a block is active when created.
 
 
 
@@ -283,7 +352,7 @@
 
 % Returns the types statically declared by this dataflow block.
 % -spec get_declared_types() ->
-%    static_return( type_entries() ).
+%              static_return( type_entries() ).
 % get_declared_types() ->
 %   wooper:return_static( [ { 'my_type', "'something'|'other thing'" } ] ).
 
@@ -302,31 +371,53 @@
 
 % Currently the support of compound value types is incomplete, especially
 % regarding units and constraints; for example, only simple, "scalar" units can
-% be specified (ex: 'km', not {'W', 'm'}) - whereas values may be compounded
-% (ex: of type {float(), float()}). The same applies to constraints.
+% be specified (e.g. 'km', not {'W', 'm'}) - whereas values may be compounded
+% (e.g. of type {float(), float()}). The same applies to constraints.
 %
-% Compound units (ex: {'A', 'm', 'km'}) may be supported in the future.
+% Compound units (e.g. {'A', 'm', 'km'}) may be supported in the future.
+
+
+
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+-type base_status() :: basic_utils:base_status().
+
+-type ustring() :: text_utils:ustring().
+
+-type type_entry() :: class_TypeServer:type_entry().
+-type type_entries() :: class_TypeServer:type_entries().
+
+-type canonical_connection_spec() ::
+		class_DataflowUnitManager:canonical_connection_spec().
+
+-type action_id() :: class_DataflowUnitManager:action_id().
+
+
+-type managed_unit_spec() :: class_DataflowUnitManager:managed_unit_spec().
+
+-type vocabulary() :: class_SemanticServer:vocabulary().
 
 
 
 
+-doc """
+Constructs a dataflow block.
 
-% @doc Constructs a dataflow block.
-%
-% Parameters:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - BlockName is a human-readable name for that dataflow block (as a plain,
-% non-empty string); not an identifier
-%
-% - InputPortSpecs is a list of the specifications of the input ports defined by
-% this dataflow block
-%
-% - OutputPortSpecs is a list of the specifications of the output ports defined
-% by this dataflow block
-%
+Parameters:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- BlockName is a human-readable name for that dataflow block (as a plain,
+non-empty string); not an identifier
+
+- InputPortSpecs is a list of the specifications of the input ports defined by
+this dataflow block
+
+- OutputPortSpecs is a list of the specifications of the output ports defined
+by this dataflow block
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(), ustring(),
 			[ input_port_spec() ], [ output_port_spec() ], dataflow_pid() ) ->
 						wooper:state().
@@ -364,7 +455,7 @@ construct( State, ActorSettings, BlockName, InputPortSpecs, OutputPortSpecs,
 		{ output_iterations, EmptyTable } ] ),
 
 	{ InputTable, InputIterationTable } = register_input_ports(
-			InputPortSpecs, SemanticServerPid, TypeServerPid, BlanckPortState ),
+		InputPortSpecs, SemanticServerPid, TypeServerPid, BlanckPortState ),
 
 	{ OutputTable, OutputIterationTable } = register_output_ports(
 		OutputPortSpecs, SemanticServerPid, TypeServerPid, BlanckPortState ),
@@ -393,7 +484,7 @@ construct( State, ActorSettings, BlockName, InputPortSpecs, OutputPortSpecs,
 
 
 
-% Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -413,10 +504,11 @@ destruct( State ) ->
 
 
 
-% @doc Checks and registers the input ports (including iterations) of this
-% dataflow block based on the provided specifications, and declares their
-% underlying semantics, if any.
-%
+-doc """
+Checks and registers the input ports (including iterations) of this dataflow
+block based on the provided specifications, and declares their underlying
+semantics, if any.
+""".
 -spec register_input_ports( [ input_port_spec() ], semantic_server_pid(),
 							type_server_pid(), wooper:state() ) ->
 								{ input_port_table(), input_iteration_table() }.
@@ -463,14 +555,14 @@ register_input_ports( [ _InputPortSpec=#input_port_spec{
 					  TypeServerPid, State ) ->
 
 	%?debug_fmt( "Registering a new direct, standard input port: ~ts",
-	%			[ input_port_spec_to_string( InputPortSpec ) ] ),
+	%            [ input_port_spec_to_string( InputPortSpec ) ] ),
 
 	PortName = validate_port_name( Name, State ),
 
 	{ ValidatedComment, ValidatedSemantics, ValidatedUnit, ValidatedType,
 	  ValidatedConstraints } = validate_port_specs( _PortSpecType=input_port,
-			PortName, Comment, Semantics, Unit, TypeDescription, Constraints,
-			SemanticServerPid, TypeServerPid, State ),
+		PortName, Comment, Semantics, Unit, TypeDescription, Constraints,
+		SemanticServerPid, TypeServerPid, State ),
 
 
 	% Other values are default ones:
@@ -527,13 +619,13 @@ register_input_ports( [ InputPortSpec=#input_port_spec{
 		validate_iteration( IterationSpec, State ),
 
 	BlankIteration = #input_port_iteration{
-						base_name=BaseIterPortName,
-						comment=ValidatedComment,
-						multiplicity=CanonicalMultiplicity,
-						value_semantics=ValidatedSemantics,
-						value_unit=ValidatedUnit,
-						value_type=ValidatedType,
-						value_constraints=ValidatedConstraints },
+		base_name=BaseIterPortName,
+		comment=ValidatedComment,
+		multiplicity=CanonicalMultiplicity,
+		value_semantics=ValidatedSemantics,
+		value_unit=ValidatedUnit,
+		value_type=ValidatedType,
+		value_constraints=ValidatedConstraints },
 
 	{ NewInputTable, NewIteration } = case InitialCount of
 
@@ -545,7 +637,7 @@ register_input_ports( [ InputPortSpec=#input_port_spec{
 		_ ->
 			{ NewIterPortNames, NewInpTable, NewIter } =
 				create_input_iterated_ports( InitialCount, BlankIteration,
-										InputTable, _OutputPortId=undefined ),
+					InputTable, _OutputPortId=undefined ),
 			?void_fmt( "Input port iteration '~ts' created, with ~B initial "
 					   "ports: ~p", [ Name, InitialCount, NewIterPortNames ] ),
 
@@ -554,7 +646,7 @@ register_input_ports( [ InputPortSpec=#input_port_spec{
 	end,
 
 	NewInputIterationTable = table:add_new_entry( BaseIterPortName,
-											NewIteration, InputIterationTable ),
+		NewIteration, InputIterationTable ),
 
 	register_input_ports( T, NewInputTable, NewInputIterationTable,
 						  SemanticServerPid, TypeServerPid, State );
@@ -570,9 +662,10 @@ register_input_ports( _InputPortSpecs=[ FaultyInputPortSpecs | _T ],
 
 
 
-% @doc Creates, if possible, the specified number of input ports using the
-% specified iteration, and returns a list of their names.
-%
+-doc """
+Creates, if possible, the specified number of input ports using the specified
+iteration, and returns a list of their names.
+""".
 -spec createInputIteratedPorts( wooper:state(), input_iteration_name(),
 				iterated_count() ) -> request_return( [ input_port_name() ] ).
 createInputIteratedPorts( State, InputIterationName, PortCount ) ->
@@ -586,19 +679,20 @@ createInputIteratedPorts( State, InputIterationName, PortCount ) ->
 									 _OutputPortId=undefined ),
 
 	NewInputIterationTable = table:update_entry( InputIterationName,
-					NewInputIteration, ?getAttr(input_iterations) ),
+		NewInputIteration, ?getAttr(input_iterations) ),
 
 	NewState = setAttributes( State, [
-					{ input_iterations, NewInputIterationTable },
-					{ input_ports, NewInputTable } ] ),
+		{ input_iterations, NewInputIterationTable },
+		{ input_ports, NewInputTable } ] ),
 
 	wooper:return_state_result( NewState, NewIteratedPortNames ).
 
 
 
-% @doc Creates, if possible, the specified number of output ports using the
-% specified iteration, and returns a list of their names.
-%
+-doc """
+Creates, if possible, the specified number of output ports using the specified
+iteration, and returns a list of their names.
+""".
 -spec createOutputIteratedPorts( wooper:state(), output_iteration_name(),
 				iterated_count() ) -> request_return( [ output_port_name() ] ).
 createOutputIteratedPorts( State, OutputIterationName, PortCount ) ->
@@ -611,21 +705,22 @@ createOutputIteratedPorts( State, OutputIterationName, PortCount ) ->
 		create_output_iterated_ports( PortCount, OutputIteration, OutputTable ),
 
 	NewOutputIterationTable = table:update_entry( OutputIterationName,
-					NewOutputIteration, ?getAttr(output_iterations) ),
+		NewOutputIteration, ?getAttr(output_iterations) ),
 
 	NewState = setAttributes( State, [
-						{ output_iterations, NewOutputIterationTable },
-						{ output_ports, NewOutputTable } ] ),
+		{ output_iterations, NewOutputIterationTable },
+		{ output_ports, NewOutputTable } ] ),
 
 	wooper:return_state_result( NewState, NewIteratedPortNames ).
 
 
 
-% @doc Checks and registers the output ports of this dataflow block based on the
-% provided specifications, and declares their underlying semantics, if any.
-%
-% (helper)
-%
+-doc """
+Checks and registers the output ports of this dataflow block based on the
+provided specifications, and declares their underlying semantics, if any.
+
+(helper)
+""".
 -spec register_output_ports( [ output_port_spec() ], semantic_server_pid(),
 							 type_server_pid(), wooper:state() ) ->
 						{ output_port_table(), output_iteration_table() }.
@@ -684,12 +779,12 @@ register_output_ports( [ _OutputPortSpec=#output_port_spec{
 
 	% Other values are default ones:
 	OutputPort = #output_port{
-					comment=ValidatedComment,
-					produces_result=ValidatedResultSettings,
-					value_semantics=ValidatedSemantics,
-					value_unit=ValidatedUnit,
-					value_type=ValidatedType,
-					value_constraints=ValidatedConstraints },
+		comment=ValidatedComment,
+		produces_result=ValidatedResultSettings,
+		value_semantics=ValidatedSemantics,
+		value_unit=ValidatedUnit,
+		value_type=ValidatedType,
+		value_constraints=ValidatedConstraints },
 
 	NewOutputTable = table:add_new_entry( _K=PortName, _V=OutputPort,
 										  OutputTable ),
@@ -745,14 +840,14 @@ register_output_ports( [ OutputPortSpec=#output_port_spec{
 		validate_iteration( IterationSpec, State ),
 
 	BlankIteration = #output_port_iteration{
-						base_name=BasePortName,
-						comment=ValidatedComment,
-						produces_result=ValidatedResultSettings,
-						multiplicity=CanonicalMultiplicity,
-						value_semantics=ValidatedSemantics,
-						value_unit=ValidatedUnit,
-						value_type=ValidatedType,
-						value_constraints=ValidatedConstraints },
+		base_name=BasePortName,
+		comment=ValidatedComment,
+		produces_result=ValidatedResultSettings,
+		multiplicity=CanonicalMultiplicity,
+		value_semantics=ValidatedSemantics,
+		value_unit=ValidatedUnit,
+		value_type=ValidatedType,
+		value_constraints=ValidatedConstraints },
 
 	{ NewOutputTable, NewIteration } = case InitialCount of
 
@@ -792,15 +887,16 @@ register_output_ports( _OutputPortSpecs=[ FaultyOutputPortSpecs | _T ],
 
 
 
-% @doc Validates the specified port specifications (common for input or output
-% ones, iterations or not).
-%
+-doc """
+Validates the specified port specifications (common for input or output ones,
+iterations or not).
+""".
 -spec validate_port_specs( port_spec_type(), port_string_name(),
-			maybe( port_comment() ), user_value_semantics(),
+			option( port_comment() ), user_value_semantics(),
 			unit_utils:unit_string(), value_type_description(),
 			value_constraints(), semantic_server_pid(), type_server_pid(),
 			wooper:state() ) ->
-		{ maybe( internal_comment() ), value_semantics(), value_unit(),
+		{ option( internal_comment() ), value_semantics(), value_unit(),
 		  value_type(), value_constraints() }.
 validate_port_specs( PortType, PortName, Comment, Semantics, Unit,
 		TypeDescription, Constraints, SemanticServerPid, TypeServerPid,
@@ -809,98 +905,114 @@ validate_port_specs( PortType, PortName, Comment, Semantics, Unit,
 	% Validation exceptions are intercepted (and rethrown) to be able to emit
 	% more informative traces.
 
-	ValidatedComment = try validate_comment( Comment, State )
+	ValidatedComment =
+        try
 
-					   catch
+            validate_comment( Comment, State )
 
-		throw:CommentError ->
+        catch
 
-			?error_fmt( "Error while validating the comment '~ts' of ~ts: ~p",
-				[ Comment, get_port_textual_description( PortType, PortName ),
-				  CommentError ] ),
+            throw:CommentError ->
 
-			throw( CommentError )
+                ?error_fmt( "Error while validating the comment '~ts' "
+                    "of ~ts: ~p",
+                    [ Comment, get_port_textual_description( PortType,
+                                                             PortName ),
+                      CommentError ] ),
 
-	end,
+                throw( CommentError )
 
-
-	ValidatedConstraints = try
-
-		validate_constraints( Constraints, State )
-
-						   catch
-
-		throw:ConstraintError ->
-
-			ConstraintString =
-				dataflow_support:value_constraint_to_string( Constraints ),
-
-			?error_fmt( "Error while validating the constraint '~ts' "
-				"of ~ts: ~p", [ ConstraintString,
-					get_port_textual_description( PortType, PortName ),
-					ConstraintError ] ),
-
-			throw( ConstraintError )
-
-	end,
-
-	ValidatedUnit = try validate_unit( Unit, State )
-
-					catch
-
-		throw:UnitError ->
-
-			?error_fmt( "Error while validating the unit '~ts' of ~ts: ~p",
-				[ Unit, get_port_textual_description( PortType, PortName ),
-				  UnitError ] ),
-
-			throw( UnitError )
-
-	end,
+        end,
 
 
-	ValidatedSemantics = try
+	ValidatedConstraints =
+        try
 
-					validate_semantics( Semantics, SemanticServerPid, State )
+            validate_constraints( Constraints, State )
 
-						 catch
+        catch
 
-		throw:SemanticError ->
+            throw:ConstraintError ->
 
-			% Warns in case of wrong semantics, yet does not fail.
-			%
-			% (or make that an option for development, not production)
-			%
-			?error_fmt( "Error while validating the semantics '~p' of ~ts:~n~p",
-				[ Semantics, get_port_textual_description( PortType, PortName ),
-				  SemanticError ] ),
+                ConstraintString =
+                    dataflow_support:value_constraint_to_string( Constraints ),
 
-			Semantics
-			%throw( SemanticError )
+                ?error_fmt( "Error while validating the constraint '~ts' "
+                    "of ~ts: ~p", [ ConstraintString,
+                        get_port_textual_description( PortType, PortName ),
+                        ConstraintError ] ),
 
-	end,
+                throw( ConstraintError )
 
-	ValidatedType = try
+        end,
 
-		validate_type_description( TypeDescription, TypeServerPid, State )
 
-	catch
+	ValidatedUnit =
+        try
 
-		throw:TypeError ->
-			?error_fmt( "Error while validating the type description '~ts' of "
-				"~ts: ~p", [ TypeDescription,
-				get_port_textual_description( PortType, PortName ),
-				TypeError ] ),
-			throw( TypeError )
+            validate_unit( Unit, State )
 
-	end,
+        catch
+
+            throw:UnitError ->
+
+                ?error_fmt( "Error while validating the unit '~ts' of ~ts: ~p",
+                    [ Unit, get_port_textual_description( PortType, PortName ),
+                      UnitError ] ),
+
+                throw( UnitError )
+
+        end,
+
+
+	ValidatedSemantics =
+        try
+
+            validate_semantics( Semantics, SemanticServerPid, State )
+
+        catch
+
+            throw:SemanticError ->
+
+                % Warns in case of wrong semantics, yet does not fail.
+                %
+                % (or make that an option for development, not production)
+                %
+                ?error_fmt( "Error while validating the semantics '~p' "
+                    "of ~ts:~n~p",
+                    [ Semantics,
+                      get_port_textual_description( PortType, PortName ),
+                      SemanticError ] ),
+
+                Semantics
+                %throw( SemanticError )
+
+        end,
+
+
+	ValidatedType =
+        try
+
+            validate_type_description( TypeDescription, TypeServerPid, State )
+
+        catch
+
+            throw:TypeError ->
+                ?error_fmt( "Error while validating the type description "
+                    "'~ts' of ~ts: ~p", [ TypeDescription,
+                        get_port_textual_description( PortType, PortName ),
+                        TypeError ] ),
+
+                throw( TypeError )
+
+        end,
 
 	{ ValidatedComment, ValidatedSemantics, ValidatedUnit, ValidatedType,
 	  ValidatedConstraints }.
 
 
 
-% @doc Describes specified designated port.
+-doc "Describes the specified designated port.".
 -spec get_port_textual_description( port_spec_type(), port_string_name() ) ->
 										static_return( ustring() ).
 get_port_textual_description( _PortType=input_port_iteration, PortName ) ->
@@ -921,11 +1033,12 @@ get_port_textual_description( _PortType=output_port, PortName ) ->
 
 
 
-% @doc Connects synchronously and directly (that is based on a direct request,
-% not on an actor message - thus to be done only initially, before the
-% simulation is running) the specified output port of this dataflow block to the
-% specified input port of the specified (downstream) dataflow block.
-%
+-doc """
+Connects synchronously and directly (that is based on a direct request, not on
+an actor message - thus to be done only initially, before the simulation is
+running) the specified output port of this dataflow block to the specified input
+port of the specified (downstream) dataflow block.
+""".
 -spec connectOutputPortInitially( wooper:state(), output_port_name(),
   block_pid(), input_port_name() ) -> request_return( 'output_port_connected' ).
 connectOutputPortInitially( State, OutputPortBinName, DownstreamBlockPid,
@@ -985,7 +1098,7 @@ connectOutputPortInitially( State, OutputPortBinName, DownstreamBlockPid,
 		{ wooper_result, input_port_connected } ->
 
 			PortStrings = [ text_utils:format( "~w:~ts", [ B, P ] )
-							|| { B, P } <- NewFedPorts ],
+                                || { B, P } <- NewFedPorts ],
 
 			?void_fmt( "Output port '~ts' now feeding following ~B input "
 				"port(s): ~ts",
@@ -998,20 +1111,21 @@ connectOutputPortInitially( State, OutputPortBinName, DownstreamBlockPid,
 
 
 
-% @doc Connects synchronously and directly (that is based on a direct request,
-% not on an actor message - thus to be done initially) the specified output port
-% of the specified (upstream) dataflow block to the specified (local) input port
-% of this dataflow block, checking thanks to their description whether they are
-% compliant (that is whether they can form a channel).
-%
-% Typically called by the connectOutputPortInitially/4 method of the upstream
-% dataflow block.
-%
+-doc """
+Connects synchronously and directly (that is based on a direct request, not on
+an actor message - thus to be done initially) the specified output port of the
+specified (upstream) dataflow block to the specified (local) input port of this
+dataflow block, checking thanks to their description whether they are compliant
+(that is whether they can form a channel).
+
+Typically called by the connectOutputPortInitially/4 method of the upstream
+dataflow block.
+""".
 -spec requestConnectionToInputPortInitially( wooper:state(), input_port_name(),
 		block_pid(), output_port_name(), port_description() ) ->
 							request_return( 'input_port_connected' ).
 requestConnectionToInputPortInitially( State, InputPortBinName,
-				UpstreamBlockPid, OutputPortBinName, OutputPortDescription ) ->
+		UpstreamBlockPid, OutputPortBinName, OutputPortDescription ) ->
 
 	% As not based on actor messages:
 	false = class_Actor:is_running( State ),
@@ -1027,27 +1141,29 @@ requestConnectionToInputPortInitially( State, InputPortBinName,
 	InputPortTable = ?getAttr(input_ports),
 
 	ConnectedState = connect_to_input_port( InputPortBinName, InputPortTable,
-			UpstreamBlockPid, OutputPortBinName, OutputPortDescription,
-			_InitiatorInfo=SenderPid, State ),
+		UpstreamBlockPid, OutputPortBinName, OutputPortDescription,
+		_InitiatorInfo=SenderPid, State ),
 
 	wooper:return_state_result( ConnectedState, input_port_connected ).
 
 
 
-% @doc Connects (thanks to an actor message, hence when the simulation is
-% running) the specified (local, standard) output port of this block to
-% specified (remote, standard) input port of specified downstream block.
-%
-% This downstream block will trigger back the onChannelCreated/4 actor oneway of
-% the caller of this first oneway, once done.
-%
+-doc """
+Connects (thanks to an actor message, hence when the simulation is running) the
+specified (local, standard) output port of this block to specified (remote,
+standard) input port of specified downstream block.
+
+This downstream block will trigger back the onChannelCreated/4 actor oneway of
+the caller of this first oneway, once done.
+""".
 -spec connectOutputPort( wooper:state(), output_port_name(),
 		{ downstream_block_pid(), input_port_name() }, action_id(),
 		sending_actor_pid() ) -> actor_oneway_return().
 connectOutputPort( State, OutputPortBinName,
 	{ DownstreamBlockPid, InputPortBinName }, ActionId, SendingActorPid )
-  when is_binary( OutputPortBinName ) andalso is_pid( DownstreamBlockPid )
-	   andalso is_binary( InputPortBinName ) andalso is_integer( ActionId ) ->
+        when is_binary( OutputPortBinName ) andalso is_pid( DownstreamBlockPid )
+              andalso is_binary( InputPortBinName )
+              andalso is_integer( ActionId ) ->
 
 	% Note: to keep in sync with the significantly similar operations performed
 	% by connectOutputPortInitially/4 above.
@@ -1099,23 +1215,16 @@ connectOutputPort( State, OutputPortBinName,
 
 	FedPorts = OutputPort#output_port.fed_ports,
 
-	case lists:member( InputPortId, FedPorts ) of
-
-		true ->
-			throw( { input_port_already_connected, InputPortId, FedPorts } );
-
-		false ->
-			ok
-
-	end,
+	lists:member( InputPortId, FedPorts ) andalso
+		throw( { input_port_already_connected, InputPortId, FedPorts } ),
 
 	NewFedPorts = [ InputPortId | FedPorts ],
 
 	?void_fmt( "Now this (local) output port '~ts' is feeding following "
 		"~B port identifiers: ~ts", [ OutputPortBinName, length( NewFedPorts ),
 		text_utils:strings_to_string(
-		  [ dataflow_support:port_id_to_string( PortId )
-			|| PortId <- NewFedPorts ] ) ] ),
+            [ dataflow_support:port_id_to_string( PortId )
+                || PortId <- NewFedPorts ] ) ] ),
 
 	NewOutputPort = OutputPort#output_port{ fed_ports=NewFedPorts },
 
@@ -1128,18 +1237,19 @@ connectOutputPort( State, OutputPortBinName,
 
 
 
-% @doc Connects (thanks to an actor message, hence when the simulation is
-% running) the specified (local, output) standard ports and iterations of this
-% block to the specified (remote, input) standard ports and iterations of the
-% specified downstream block.
-%
-% Typically called by a unit manager, in order to connect a unit to a dataflow
-% object, or vice-versa.
-%
-% Will trigger back (from the ultimately called onInboundConnectionsCreated/5
-% method) the onConnectionsCreated/4 actor oneway of the caller of this first
-% oneway, once done.
-%
+-doc """
+Connects (thanks to an actor message, hence when the simulation is running) the
+specified (local, output) standard ports and iterations of this block to the
+specified (remote, input) standard ports and iterations of the specified
+downstream block.
+
+Typically called by a unit manager, in order to connect a unit to a dataflow
+object, or vice-versa.
+
+Will trigger back (from the ultimately called onInboundConnectionsCreated/5
+method) the onConnectionsCreated/4 actor oneway of the caller of this first
+oneway, once done.
+""".
 -spec connectToDownstreamBlock( wooper:state(), [ canonical_connection_spec() ],
 		downstream_block_pid(), action_id(), sending_actor_pid() ) ->
 									actor_oneway_return().
@@ -1169,7 +1279,7 @@ connectToDownstreamBlock( State, ConnectionSpecs, DownstreamBlockPid, ActionId,
 	InboundConnectionInfos =
 		get_inbound_connection_infos( IterConnectionSpecs, IterState ),
 
-	% We do not update here the local output ports (ex: regarding fed ports)
+	% We do not update here the local output ports (e.g. regarding fed ports)
 	% from their downstream counterparts as, when connecting to input port
 	% iterations, the name of the actual input ports cannot be anticipated here
 	% (they will be only known when the downstream block replies with an
@@ -1192,15 +1302,16 @@ connectToDownstreamBlock( State, ConnectionSpecs, DownstreamBlockPid, ActionId,
 
 
 
-% @doc Instantiates the output iterated ports from the output port iteration
-% found in specified connection specification.
-%
-% Returns an updated connection specification where said iterations have been
-% replaced by the corresponding instantiated output port, and a state updated
-% accordingly.
-%
-% (helper)
-%
+-doc """
+Instantiates the output iterated ports from the output port iteration found in
+specified connection specification.
+
+Returns an updated connection specification where said iterations have been
+replaced by the corresponding instantiated output port, and a state updated
+accordingly.
+
+(helper)
+""".
 -spec instantiate_output_iterated_ports( [ canonical_connection_spec() ],
 		wooper:state() ) -> { [ canonical_connection_spec() ], wooper:state() }.
 instantiate_output_iterated_ports( ConnectionSpecs, State ) ->
@@ -1209,7 +1320,7 @@ instantiate_output_iterated_ports( ConnectionSpecs, State ) ->
 	OutputIterationTable = ?getAttr(output_iterations),
 
 	instantiate_output_iterated_ports( ConnectionSpecs, OutputPortTable,
-							OutputIterationTable, _AccConnSpec=[], State ).
+		OutputIterationTable, _AccConnSpec=[], State ).
 
 
 % (helper)
@@ -1255,7 +1366,7 @@ instantiate_output_iterated_ports( _ConnectionSpecs=[
 		[ OutputIterationBinName, NewIteratedOutputPortName ] ),
 
 	NewOutputIterationTable = table:update_entry( OutputIterationBinName,
-									NewOutputIteration, OutputIterationTable ),
+		NewOutputIteration, OutputIterationTable ),
 
 	OutputPair = { output_port_name, NewIteratedOutputPortName },
 
@@ -1276,12 +1387,13 @@ instantiate_output_iterated_ports( _ConnectionSpecs=[
 
 
 
-% @doc Returns the inbound connection information suitable for the downstream
-% block, from the specified overall, more general connection specs.
-%
-% Checks that the specified local output ports exist, and gathers their port
-% description.
-%
+-doc """
+Returns the inbound connection information suitable for the downstream block,
+from the specified overall, more general connection specs.
+
+Checks that the specified local output ports exist, and gathers their port
+description.
+""".
 -spec get_inbound_connection_infos( [ canonical_connection_spec() ],
 					wooper:state() ) -> [ inbound_connection_info() ].
 get_inbound_connection_infos( ConnectionSpecs, State ) ->
@@ -1335,18 +1447,20 @@ get_inbound_connection_infos( _ConnectionSpecs=[
 
 
 
-% @doc Connects (thanks to an actor message, hence when the simulation is
-% running) the specified output port of the caller (an upstream dataflow block)
-% to the specified (local) input port of this dataflow block, checking thanks to
-% their description whether they are compliant (that is whether they can form a
-% channel).
-%
-% Typically called by the connectOutputPort/5 actor oneway of an upstream block.
-%
-% The specified listening actor (typically the one that initiated the channel
-% creation) will be notified of the availability of that channel: its
-% onChannelCreated/4 actor oneway will be called.
-%
+-doc """
+Connects (thanks to an actor message, hence when the simulation is running) the
+specified output port of the caller (an upstream dataflow block) to the
+specified (local) input port of this dataflow block, checking thanks to their
+description whether they are compliant (that is whether they can form a
+channel).
+
+Typically called by the connectOutputPort/5 actor oneway of an upstream block.
+
+The specified listening actor (typically the one that initiated the channel
+creation) will be notified of the availability of that channel: its
+onChannelCreated/4 actor oneway will be called.
+
+""".
 -spec requestConnectionToInputPort( wooper:state(), input_port_name(),
 		output_port_name(), port_description(), actor_pid(),
 		action_id(), sending_actor_pid() ) -> actor_oneway_return().
@@ -1381,14 +1495,16 @@ requestConnectionToInputPort( State, InputPortBinName, OutputPortBinName,
 
 
 
-% @doc Requests (thanks to an actor message, hence when the simulation is
-% running) inbound port connections to be made on this (downstream) block.
-%
-% Typically called from the connectToDownstreamBlock/5 oneway of an upstream
-% block.
-%
-% ListenerActorPid and ActionId are just received and passed along.
-%
+-doc """
+Requests (thanks to an actor message, hence when the simulation is running)
+inbound port connections to be made on this (downstream) block.
+
+Typically called from the connectToDownstreamBlock/5 oneway of an upstream
+block.
+
+ListenerActorPid and ActionId are just received and passed along.
+
+""".
 -spec requestInboundConnections( wooper:state(), [ inbound_connection_info() ],
 	actor_pid(), action_id(), sending_actor_pid() ) -> actor_oneway_return().
 requestInboundConnections( State, InboundConnectionInfos, ListenerActorPid,
@@ -1441,8 +1557,8 @@ apply_connections( _UpstreamBlockPid, _InboundConnectionInfo=[], InputPortTable,
 				   InputIterationTable, AccPortPairs, State ) ->
 
 	SetState = setAttributes( State, [
-					{ input_ports, InputPortTable },
-					{ input_iterations, InputIterationTable } ] ),
+		{ input_ports, InputPortTable },
+		{ input_iterations, InputIterationTable } ] ),
 
 	{ AccPortPairs, SetState };
 
@@ -1451,7 +1567,7 @@ apply_connections( _UpstreamBlockPid, _InboundConnectionInfo=[], InputPortTable,
 apply_connections( UpstreamBlockPid, _InboundConnectionInfo=[
 		{ OutputPortBinName, OutputPortDescription,
 			{ input_port_name, InputPortBinName } } | T ],
-				   InputPortTable, InputIterationTable, AccPortPairs, State ) ->
+				InputPortTable, InputIterationTable, AccPortPairs, State ) ->
 
 	?void_fmt( "Received from upstream block ~w a connection request from "
 		"its '~ts' output port to (local) input port '~ts'; this "
@@ -1474,9 +1590,9 @@ apply_connections( UpstreamBlockPid, _InboundConnectionInfo=[
 
 % Targeting an input iteration port here:
 apply_connections( UpstreamBlockPid, _InboundConnectionInfo=[
-		 { OutputPortBinName, OutputPortDescription,
+		{ OutputPortBinName, OutputPortDescription,
 			{ input_iteration_name, InputIterationBinName } } | T ],
-				   InputPortTable, InputIterationTable, AccPortPairs, State ) ->
+				InputPortTable, InputIterationTable, AccPortPairs, State ) ->
 
 	?void_fmt( "Received from upstream block ~w a connection request from "
 		"its '~ts' output port to (local) input iteration '~ts'; this "
@@ -1510,14 +1626,14 @@ apply_connections( UpstreamBlockPid, _InboundConnectionInfo=[
 
 	{ [ NewIteratedInputPortName ], NewInputPortTable,
 	  NewInputIteration } = create_input_iterated_ports( _PortCount=1,
-								InputIteration, InputPortTable, OutputPortId ),
+            InputIteration, InputPortTable, OutputPortId ),
 
 	?void_fmt( "Instantiated input port iteration '~ts': new (input) "
 		"iterated port '~ts' created.",
 		[ InputIterationBinName, NewIteratedInputPortName ] ),
 
 	NewInputIterationTable = table:update_entry( InputIterationBinName,
-									NewInputIteration, InputIterationTable ),
+		NewInputIteration, InputIterationTable ),
 
 	NewAccPortPairs =
 		[ { OutputPortBinName, NewIteratedInputPortName } | AccPortPairs ],
@@ -1527,12 +1643,12 @@ apply_connections( UpstreamBlockPid, _InboundConnectionInfo=[
 
 
 
-% @doc Called by a downstream block (typically from its
-% requestInboundConnections/5 method) when its inbound connections have been
-% created.
-%
+-doc """
+Called by a downstream block (typically from its requestInboundConnections/5
+method) when its inbound connections have been created.
+""".
 -spec onInboundConnectionsCreated( wooper:state(), [ connection_info() ],
-	   actor_pid(), action_id(), sending_actor_pid() ) -> actor_oneway_return().
+	actor_pid(), action_id(), sending_actor_pid() ) -> actor_oneway_return().
 onInboundConnectionsCreated( State, PortPairs, ListenerActorPid, ActionId,
 							 DownstreamBlockPid ) ->
 
@@ -1567,7 +1683,7 @@ onInboundConnectionsCreated( State, PortPairs, ListenerActorPid, ActionId,
 
 
 
-% @doc Records the specified downstream channels.
+-doc "Records the specified downstream channels.".
 -spec record_downstream_channels( downstream_block_pid(), [ connection_info() ],
 								  wooper:state() ) -> wooper:state().
 record_downstream_channels( DownstreamBlockPid, PortPairs, State ) ->
@@ -1622,20 +1738,20 @@ record_downstream_channels( DownstreamBlockPid,
 								State ).
 
 
+-doc """
+Creates the specified number of input iterated ports, based on the specified
+iteration, designated by its name (as a binary string).
 
-% @doc Creates the specified number of input iterated ports, based on the
-% specified iteration, designated by its name (as a binary string).
-%
-% Returns a list of the names of the created iterated input ports, and a
-% corresponding updated state for that dataflow block.
-%
+Returns a list of the names of the created iterated input ports, and a
+corresponding updated state for that dataflow block.
+""".
 -spec create_input_iterated_ports( port_count(), input_port_iteration(),
 								   input_port_table(), output_port_id() ) ->
 		{ [ input_port_name() ], input_port_table(), input_port_iteration() }.
 create_input_iterated_ports( CreationCount,
 							 InputIteration=#input_port_iteration{
-												multiplicity=Multiplicity,
-												port_indexes=Indexes },
+								multiplicity=Multiplicity,
+								port_indexes=Indexes },
 							 InputPortTable,
 							 OutputPortId ) ->
 
@@ -1654,8 +1770,8 @@ create_input_iterated_ports( CreationCount,
 	NewInputPortTable = table:add_new_entries( NewPortEntries, InputPortTable ),
 
 	NewInputIteration = InputIteration#input_port_iteration{
-							multiplicity=NewMultiplicity,
-							port_indexes=AllIndexes },
+		multiplicity=NewMultiplicity,
+		port_indexes=AllIndexes },
 
 	CreatedPortNames = [ Name || { Name, _Port } <- NewPortEntries ],
 
@@ -1663,9 +1779,10 @@ create_input_iterated_ports( CreationCount,
 
 
 
-% @doc Returns an input port entry created from specified iterated index and
-% input port specification.
-%
+-doc """
+Returns an input port entry created from specified iterated index and input port
+specification.
+""".
 -spec create_input_iterated_entry( iterated_index(), input_port_iteration(),
 					output_port_id() ) -> { input_port_name(), input_port() }.
 create_input_iterated_entry( Index, #input_port_iteration{
@@ -1691,19 +1808,20 @@ create_input_iterated_entry( Index, #input_port_iteration{
 
 
 
-% @doc Creates the specified number of output iterated ports, based on the
-% specified iteration, designated by its name (as a binary string).
-%
-% Returns a list of the names of the created iterated output ports, and a
-% corresponding updated state for that dataflow block.
-%
+-doc """
+Creates the specified number of output iterated ports, based on the specified
+iteration, designated by its name (as a binary string).
+
+Returns a list of the names of the created iterated output ports, and a
+corresponding updated state for that dataflow block.
+""".
 -spec create_output_iterated_ports( port_count(), output_port_iteration(),
 									output_port_table() ) ->
 	   { [ output_port_name() ], output_port_table(), output_port_iteration() }.
 create_output_iterated_ports( CreationCount,
 							  OutputIteration=#output_port_iteration{
-												multiplicity=Multiplicity,
-												port_indexes=Indexes },
+								multiplicity=Multiplicity,
+								port_indexes=Indexes },
 							  OutputPortTable ) ->
 
 	{ NewPortCount, _Bounds } = NewMultiplicity =
@@ -1716,14 +1834,14 @@ create_output_iterated_ports( CreationCount,
 
 	% List of {Name,OutputPort} pairs::
 	NewPortEntries = [ create_output_iterated_entry( I, OutputIteration )
-						|| I <- NewIndexes ],
+                            || I <- NewIndexes ],
 
 	NewOutputPortTable = table:add_new_entries( NewPortEntries,
 												OutputPortTable ),
 
 	NewOutputIteration = OutputIteration#output_port_iteration{
-							multiplicity=NewMultiplicity,
-							port_indexes=AllIndexes },
+		multiplicity=NewMultiplicity,
+		port_indexes=AllIndexes },
 
 	CreatedPortNames = [ Name || { Name, _Port } <- NewPortEntries ],
 
@@ -1731,9 +1849,10 @@ create_output_iterated_ports( CreationCount,
 
 
 
-% @doc Returns an output port entry created from specified iterated index and
-% output port specification.
-%
+-doc """
+Returns an output port entry created from specified iterated index and output
+port specification.
+""".
 -spec create_output_iterated_entry( iterated_index(),
 			output_port_iteration() ) -> { output_port_name(), output_port() }.
 create_output_iterated_entry( Index, #output_port_iteration{
@@ -1759,23 +1878,24 @@ create_output_iterated_entry( Index, #output_port_iteration{
 
 
 
-% @doc Returns the name of the iterated port having specified base name and port
-% index.
-%
+-doc """
+Returns the name of the iterated port having specified base name and port index.
+""".
 -spec get_iterated_port_name( iteration_name(), iterated_index() ) ->
 									port_name().
 get_iterated_port_name( IterationName, Index ) ->
 
 	PortName = text_utils:format( "~ts~ts~B",
-						[ IterationName, ?iterated_port_token, Index ] ),
+        [ IterationName, ?iterated_port_token, Index ] ),
 
 	text_utils:string_to_binary( PortName ).
 
 
 
-% @doc Updates the specified iteration multiplicity with the specified number of
-% iterated ports to be created.
-%
+-doc """
+Updates the specified iteration multiplicity with the specified number of
+iterated ports to be created.
+""".
 -spec update_multiplicity( port_count(), iteration_multiplicity() ) ->
 									iteration_multiplicity().
 update_multiplicity( PortCreationCount,
@@ -1798,17 +1918,18 @@ update_multiplicity( PortCreationCount, { Current, Bounds={ _Min, Max } } ) ->
 
 
 
-% @ðoc Defines the specified number of new indexes in the specified list of
-% indexes, and returns a pair of two ordered lists of indexes: just the newly
-% introduced ones, and all indexes.
-%
-% Note: we could have tried to fill the gaps that may have been induced by port
-% destructions, however port names would have been reused, which could be the
-% entry point of a possible bug. Instead we just continuously expand the indexes
-% (anyway they are unlikely to reach extremely high values), and thus only fresh
-% names are used.
-%
--spec insert_indexes( basic_utils:count(), [ iterated_index() ] ) ->
+-doc """
+Defines the specified number of new indexes in the specified list of indexes,
+and returns a pair of two ordered lists of indexes: just the newly introduced
+ones, and all indexes.
+
+Note: we could have tried to fill the gaps that may have been induced by port
+destructions, however port names would have been reused, which could be the
+entry point of a possible bug. Instead we just continuously expand the indexes
+(anyway they are unlikely to reach extremely high values), and thus only fresh
+names are used.
+""".
+-spec insert_indexes( count(), [ iterated_index() ] ) ->
 							{ [ iterated_index() ], [ iterated_index() ] }.
 insert_indexes( CreationCount, Indexes ) ->
 
@@ -1853,17 +1974,17 @@ get_rev_new_indexes( CreationCount, CurrentIndex, Acc ) ->
 
 
 
-% @doc Sets explicitly the specified input port to the specified fully-specified
-% value.
-%
-% Note: calling this method bypasses the (channel-based) dataflow system; it is
-% mostly useful in order to feed source blocks from outside of the dataflow
-% (typically from the experiment entry point). Such an explicit setting will
-% perform activations exactly like a standard setting.
-%
+-doc """
+Sets explicitly the specified input port to the specified fully-specified value.
+
+Note: calling this method bypasses the (channel-based) dataflow system; it is
+mostly useful in order to feed source blocks from outside of the dataflow
+(typically from the experiment entry point). Such an explicit setting will
+perform activations exactly like a standard setting.
+""".
 -spec setInputPortValue( wooper:state(),
-			input_port_name() | input_port_string_name(), channel_value(),
-			class_Actor:actor_pid() ) -> oneway_return().
+    input_port_name() | input_port_string_name(), channel_value(),
+    actor_pid() ) -> oneway_return().
 setInputPortValue( _State, _InputPortName, _Value, _SenderPid ) ->
 
 	% Mere placeholder, meant to be overridden, as its implementation depends on
@@ -1873,17 +1994,18 @@ setInputPortValue( _State, _InputPortName, _Value, _SenderPid ) ->
 
 
 
-% @doc Notifies this dataflow block that, for specified input port, one of its
-% upstream blocks just emitted a new (channel) value.
-%
-% Note: an immediate value (with no specific metadata) could have sufficed, as
-% ports are already connected.
-%
+-doc """
+Notifies this dataflow block that, for specified input port, one of its upstream
+blocks just emitted a new (channel) value.
+
+Note: an immediate value (with no specific metadata) could have sufficed, as
+ports are already connected.
+""".
 -spec notifyNewInput( wooper:state(), input_port_name(), channel_value(),
 					  block_pid() ) -> actor_oneway_return().
 notifyNewInput( _State, InputPortName, ChannelValue, _UpstreamBlockPid )
-  when is_binary( InputPortName )
-	   andalso is_record( ChannelValue, channel_value ) ->
+                    when is_binary( InputPortName )
+                         andalso is_record( ChannelValue, channel_value ) ->
 
 	% Mere placeholder, meant to be overridden as its implementation depends on
 	% the type of that block:
@@ -1892,19 +2014,20 @@ notifyNewInput( _State, InputPortName, ChannelValue, _UpstreamBlockPid )
 
 
 
-% @doc Informs back the calling actor regarding the status of the specified
-% local output port, by calling its notifyOutputPortStatus/3 actor oneway.
-%
-% Note: calling this method bypasses the (channel-based) dataflow system; it is
-% mostly useful in order that blocks from outside of the dataflow are able to
-% read statuses of various dataflow blocks (typically useful for the experiment
-% exit point).
-%
+-doc """
+Informs back the calling actor regarding the status of the specified local
+output port, by calling its notifyOutputPortStatus/3 actor oneway.
+
+Note: calling this method bypasses the (channel-based) dataflow system; it is
+mostly useful in order that blocks from outside of the dataflow are able to read
+statuses of various dataflow blocks (typically useful for the experiment exit
+point).
+""".
 -spec requestOutputPortStatus( wooper:state(),
 			output_port_name() | output_port_string_name(),
 			sending_actor_pid() ) -> actor_oneway_return().
 requestOutputPortStatus( State, BinOutputPortName, ActorPid )
-  when is_binary( BinOutputPortName ) ->
+                                    when is_binary( BinOutputPortName ) ->
 
 	?void_fmt( "Received a request about the status of output port '~ts' "
 			   "from ~w.", [ BinOutputPortName, ActorPid ] ),
@@ -1912,23 +2035,24 @@ requestOutputPortStatus( State, BinOutputPortName, ActorPid )
 	Status = get_output_port_status( BinOutputPortName, State ),
 
 	SentState = class_Actor:send_actor_message( ActorPid,
-					{ notifyOutputPortStatus, [ Status ] }, State ),
+		{ notifyOutputPortStatus, [ Status ] }, State ),
 
 	actor:return_state( SentState );
 
 
 requestOutputPortStatus( State, OutputPortName, SenderPid )
-  when is_list( OutputPortName ) ->
+                                    when is_list( OutputPortName ) ->
 	BinOutputPortName = text_utils:string_to_binary( OutputPortName ),
 	NewState = requestOutputPortStatus( State, BinOutputPortName, SenderPid ),
 	actor:return_state( NewState ).
 
 
 
-% @doc Unsets specified (supposedly set) input port.
-%
-% (exported helper)
-%
+-doc """
+Unsets specified (supposedly set) input port.
+
+(exported helper)
+""".
 -spec unset_input_port( input_port(), input_port_name() ) -> input_port().
 unset_input_port( #input_port{ value_status=unset }, InputPortName ) ->
 	throw( { input_port_name_already_unset, InputPortName } );
@@ -1938,10 +2062,11 @@ unset_input_port( InputPort, _InputPortName ) ->
 
 
 
-% @doc Unsets specified (supposedly set) output port.
-%
-% (exported helper)
-%
+-doc """
+Unsets specified (supposedly set) output port.
+
+(exported helper)
+""".
 -spec unset_output_port( output_port(), output_port_name() ) -> output_port().
 unset_output_port( #output_port{ value_status=unset }, OutputPortName ) ->
 	throw( { output_port_name_already_unset, OutputPortName } );
@@ -1951,7 +2076,7 @@ unset_output_port( OutputPort, _OutputPortName ) ->
 
 
 
-% @doc Resumes that block, supposedly having been suspended beforehand.
+-doc "Resumes that block, supposedly having been suspended beforehand.".
 -spec resume( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 resume( State, _SendingActorPid ) ->
 
@@ -1966,18 +2091,19 @@ resume( State, _SendingActorPid ) ->
 		send_suspended_values( OutputPortTable, State ),
 
 	ResumeState = setAttributes( NewState, [
-					{ run_status, active },
-					{ output_ports, NewOutputPortTable } ] ),
+		{ run_status, active },
+		{ output_ports, NewOutputPortTable } ] ),
 
 	actor:return_state( ResumeState ).
 
 
 
-% @doc Sends now the values that were assigned to output ports while this block
-% was suspended.
-%
-% (helper)
-%
+-doc """
+Sends now the values that were assigned to output ports while this block was
+suspended.
+
+(helper)
+""".
 -spec send_suspended_values( output_port_table(), wooper:state() ) ->
 								{ output_port_table(), wooper:state() }.
 send_suspended_values( OutputPortTable, State ) ->
@@ -2012,8 +2138,8 @@ send_suspended_values( _OutputPorts=[ { OutputPortName,
 	?info_fmt( "Exiting suspension, notifying of ~ts following remote input "
 		"ports:~n~ts",
 		[ value_to_string( ChannelValue ), text_utils:strings_to_string(
-					[ dataflow_support:port_id_to_string( PortId )
-							|| PortId <- FedPorts ] ) ] ),
+			[ dataflow_support:port_id_to_string( PortId )
+				|| PortId <- FedPorts ] ) ] ),
 
 	SentState = notify_fed_input_ports( ChannelValue, FedPorts, State ),
 
@@ -2036,9 +2162,10 @@ send_suspended_values( _OutputPorts=[ { OutputPortName, OutputPort } | T ],
 
 
 
-% @doc Requests this block to disconnect from specified one, knowing the latter
-% already forgot this former block.
-%
+-doc """
+Requests this block to disconnect from specified one, knowing the latter already
+forgot this former block.
+""".
 -spec disconnectFromBlock( wooper:state(), sending_actor_pid() ) ->
 									actor_oneway_return().
 disconnectFromBlock( State, BlockPid ) ->
@@ -2054,8 +2181,8 @@ disconnectFromBlock( State, BlockPid ) ->
 													   ?getAttr(output_ports) ),
 
 	FinalState = setAttributes( State, [
-						{ input_ports, NewInputPortTable },
-						{ output_ports, NewOutputPortTable } ] ),
+		{ input_ports, NewInputPortTable },
+		{ output_ports, NewOutputPortTable } ] ),
 
 	actor:return_state( FinalState ).
 
@@ -2067,7 +2194,7 @@ disconnect_input_ports_from( BlockPid, InputPortTable ) ->
 	InputPorts = table:enumerate( InputPortTable ),
 
 	NewInputPorts = [ { PortName, disconnect_input_port( BlockPid, InputPort ) }
-						|| { PortName, InputPort } <- InputPorts ],
+		|| { PortName, InputPort } <- InputPorts ],
 
 	table:new( NewInputPorts ).
 
@@ -2129,11 +2256,11 @@ filter_block_from_ids( BlockPid, _PortIds=[ Id | T ], Acc ) ->
 
 
 
-% @doc Returns the PID of the block corresponding to the specified external
-% identifier.
-%
-% (exported helper)
-%
+-doc """
+Returns the PID of the block corresponding to the specified external identifier.
+
+(exported helper)
+""".
 -spec get_block_pid( external_id(), wooper:state() ) -> block_pid().
 get_block_pid( ExternalId, State ) ->
 
@@ -2155,11 +2282,11 @@ get_block_pid( ExternalId, State ) ->
 % Section dedicated to the internal use of ports.
 
 
-% @doc Returns the specified input port.
+-doc "Returns the specified input port.".
 -spec get_input_port( input_port_name(), input_port_table(), wooper:state() ) ->
-						input_port().
+                                            input_port().
 get_input_port( InputPortName, InputPortTable, State )
-  when is_binary( InputPortName ) ->
+                                    when is_binary( InputPortName ) ->
 
 	case table:lookup_entry( _K=InputPortName, InputPortTable ) of
 
@@ -2184,23 +2311,24 @@ get_input_port( InputPortName, _InputPortTable, State ) ->
 
 
 
-% @doc Returns the status of specified input port, that is either 'unset' or
-% {'set',Value}, and leaves it unchanged.
-%
-% Typically used for blocks wanting that the corresponding input value remains
-% as long as it is not explicitly changed (or, previously, relying on the
-% 'activate_when_all_set activation' policy that used to reset all input ports
-% after activation anyway).
-%
+-doc """
+Returns the status of specified input port, that is either 'unset' or
+{'set',Value}, and leaves it unchanged.
+
+Typically used for blocks wanting that the corresponding input value remains as
+long as it is not explicitly changed (or, previously, relying on the
+'activate_when_all_set activation' policy that used to reset all input ports
+after activation anyway).
+""".
 -spec get_input_port_status( input_port_string_name() | input_port_name(),
 							 wooper:state() ) -> value_status().
 get_input_port_status( InputPortName, State )
-  when is_list( InputPortName ) ->
+                                        when is_list( InputPortName ) ->
 	BinPortName = text_utils:string_to_binary( InputPortName ),
 	get_input_port_status( BinPortName, State );
 
 get_input_port_status( InputBinPortName, State )
-  when is_binary( InputBinPortName ) ->
+                                        when is_binary( InputBinPortName ) ->
 
 	InputPortTable = ?getAttr(input_ports),
 
@@ -2215,47 +2343,48 @@ get_input_port_status( InputBinPortName, State )
 
 
 
-% @doc Returns the (supposedly set) actual, raw value (not a full channel value)
-% of specified input port, and leaves it unchanged.
-%
-% Throws an exception if the port is not set.
-%
-% Typically used for blocks wanting that the corresponding input value remains
-% as long as it is not explicitly changed (or, previously, relying on the
-% 'activate_when_all_set activation' policy that used to reset all input ports
-% after activation anyway).
-%
-% Note: the port name specified as string for convenience (intra-process
-% service).
-%
+-doc """
+Returns the (supposedly set) actual, raw value (not a full channel value) of
+specified input port, and leaves it unchanged.
+
+Throws an exception if the port is not set.
+
+Typically used for blocks wanting that the corresponding input value remains as
+long as it is not explicitly changed (or, previously, relying on the
+'activate_when_all_set activation' policy that used to reset all input ports
+after activation anyway).
+
+Note: the port name specified as string for convenience (intra-process service).
+""".
 -spec get_input_port_value( input_port_string_name(), wooper:state() ) ->
-									actual_value().
+                                        actual_value().
 get_input_port_value( InputPortName, State ) ->
 	{ set, V } = get_input_port_status( InputPortName, State ),
 	V.
 
 
 
-% @doc Returns the value of the specified input port if it is set, and leaves it
-% in 'unset' state in all cases.
-%
-% As a result, returns:
-%
-%  - either 'port_already_unset'
-%
-%  - or {InputPortValue, UpdatedInputPortTable}
-%
-% Typically used for blocks relying on the 'activate_on_new_set' policy, to
-% unset an input port when it is read.
-%
-% Note: the port name is specified as string for convenience (intra-process
-% service).
-%
+-doc """
+Returns the value of the specified input port if it is set, and leaves it in
+'unset' state in all cases.
+
+As a result, returns:
+
+ - either 'port_already_unset'
+
+ - or {InputPortValue, UpdatedInputPortTable}
+
+Typically used for blocks relying on the 'activate_on_new_set' policy, to unset
+an input port when it is read.
+
+Note: the port name is specified as string for convenience (intra-process
+service).
+""".
 -spec extract_input_port_value( input_port_string_name(), input_port_table(),
 								wooper:state() ) ->
 			'port_already_unset' | { actual_value(), input_port_table() }.
 extract_input_port_value( InputPortName, InputPortTable, State )
-  when is_list( InputPortName ) ->
+                                        when is_list( InputPortName ) ->
 
 	BinPortName = text_utils:string_to_binary( InputPortName ),
 
@@ -2270,7 +2399,7 @@ extract_input_port_value( InputPortName, InputPortTable, State )
 			ResetInputPort = InputPort#input_port{ value_status=unset },
 
 			UpdatedInputPortTable = table:update_entry( BinPortName,
-											ResetInputPort, InputPortTable ),
+				ResetInputPort, InputPortTable ),
 
 			{ InputPortValue, UpdatedInputPortTable }
 
@@ -2278,11 +2407,11 @@ extract_input_port_value( InputPortName, InputPortTable, State )
 
 
 
-% @doc Returns the specified output port.
+-doc "Returns the specified output port.".
 -spec get_output_port( output_port_name(), output_port_table(),
 					   wooper:state() ) -> output_port().
 get_output_port( OutputPortName, OutputPortTable, State )
-  when is_binary( OutputPortName ) ->
+                                        when is_binary( OutputPortName ) ->
 
 	case table:lookup_entry( _K=OutputPortName, OutputPortTable ) of
 
@@ -2309,13 +2438,14 @@ get_output_port( OutputPortName, _OutputPortTable, State ) ->
 
 
 
-% @doc Returns the status of specified output port, that is either 'unset' or
-% {'set',Value}, and leaves it unchanged.
-%
+-doc """
+Returns the status of specified output port, that is either 'unset' or
+{'set',Value}, and leaves it unchanged.
+""".
 -spec get_output_port_status( output_port_string_name() | output_port_name(),
 							  wooper:state() ) -> value_status().
 get_output_port_status( BinOutputPortName, State )
-  when is_binary( BinOutputPortName ) ->
+                                        when is_binary( BinOutputPortName ) ->
 
 	OutputPortTable = ?getAttr(output_ports),
 
@@ -2330,7 +2460,7 @@ get_output_port_status( BinOutputPortName, State )
 
 
 get_output_port_status( OutputPortName, State )
-  when is_list( OutputPortName ) ->
+                                        when is_list( OutputPortName ) ->
 
 	BinPortName = text_utils:string_to_binary( OutputPortName ),
 
@@ -2338,15 +2468,16 @@ get_output_port_status( OutputPortName, State )
 
 
 
-% @doc Returns the SUTC metadata associated to an output port, in a form
-% typically suitable for class_Dataflow:create_channel_value/4.
-%
-% (helper)
-%
+-doc """
+Returns the SUTC metadata associated to an output port, in a form typically
+suitable for class_Dataflow:create_channel_value/4.
+
+(helper)
+""".
 -spec get_output_port_metadata( output_port_string_name() | output_port_name(),
 								wooper:state() ) -> port_metadata().
 get_output_port_metadata( OutputPortName, State )
-  when is_binary( OutputPortName ) ->
+                                        when is_binary( OutputPortName ) ->
 
 	OutputPortTable = ?getAttr(output_ports),
 
@@ -2359,7 +2490,7 @@ get_output_port_metadata( OutputPortName, State )
 
 
 get_output_port_metadata( OutputPortName, State )
-  when is_list( OutputPortName ) ->
+                                        when is_list( OutputPortName ) ->
 
 	BinPortName = text_utils:string_to_binary( OutputPortName ),
 
@@ -2371,11 +2502,11 @@ get_output_port_metadata( OutputPortName, State )
 % Section specific to port iterations.
 
 
-% @doc Returns specified input port iteration.
+-doc "Returns specified input port iteration.".
 -spec get_input_port_iteration( input_iteration_name(), wooper:state() ) ->
 										input_port_iteration().
 get_input_port_iteration( InputIterationName, State )
-  when is_binary( InputIterationName ) ->
+                                        when is_binary( InputIterationName ) ->
 
 	InputIterationTable = ?getAttr(input_iterations),
 
@@ -2398,11 +2529,11 @@ get_input_port_iteration( InputIterationName, State )
 
 
 
-% @doc Returns specified output port iteration.
+-doc "Returns specified output port iteration.".
 -spec get_output_port_iteration( output_iteration_name(), wooper:state() ) ->
 										output_port_iteration().
 get_output_port_iteration( OutputIterationName, State )
-  when is_binary( OutputIterationName )->
+                                        when is_binary( OutputIterationName )->
 
 	OutputIterationTable = ?getAttr(output_iterations),
 
@@ -2424,7 +2555,7 @@ get_output_port_iteration( OutputIterationName, State )
 
 
 
-% @doc Returns the port description corresponding to the specified port.
+-doc "Returns the port description corresponding to the specified port.".
 -spec get_port_description( input_port() | output_port(), wooper:state() ) ->
 									port_description().
 get_port_description( #output_port{ value_semantics=Semantics,
@@ -2456,7 +2587,7 @@ get_port_description( #output_port{ value_semantics=Semantics,
 
 
 
-% @doc Returns the set of the PIDs of the upstream blocks of this block.
+-doc "Returns the set of the PIDs of the upstream blocks of this block.".
 -spec get_upstream_blocks( wooper:state() ) -> set_utils:set( block_pid() ).
 get_upstream_blocks( State ) ->
 
@@ -2471,7 +2602,7 @@ get_upstream_blocks( State ) ->
 
 
 
-% @doc Returns the set of the PIDs of the downstream blocks of this block.
+-doc "Returns the set of the PIDs of the downstream blocks of this block.".
 -spec get_downstream_blocks( wooper:state() ) -> set_utils:set( block_pid() ).
 get_downstream_blocks( State ) ->
 
@@ -2492,9 +2623,10 @@ get_downstream_blocks( State ) ->
 
 
 
-% @doc Returns the set of the PIDs of all blocks directly connected to this
-% block (whether they are downstream, upstream or both).
-%
+-doc """
+Returns the set of the PIDs of all blocks directly connected to this block
+(whether they are downstream, upstream or both).
+""".
 -spec get_directly_connected_blocks( wooper:state() ) ->
 											set_utils:set( block_pid() ).
 get_directly_connected_blocks( State ) ->
@@ -2503,13 +2635,14 @@ get_directly_connected_blocks( State ) ->
 
 
 
-% @doc Validates that the specified channel value can be accepted by the
-% specified input port.
-%
-% The last two parameters allow to better report errors.
-%
+-doc """
+Validates that the specified channel value can be accepted by the specified
+input port.
+
+The last two parameters allow to better report errors.
+""".
 -spec validate_value_for_input_port( channel_value(), input_port(),
-			input_port_name(), wooper:state() ) -> void().
+                        input_port_name(), wooper:state() ) -> void().
 validate_value_for_input_port( ChannelValue=#channel_value{
 									actual_value=Value,
 									semantics=ValueSemantics,
@@ -2522,12 +2655,9 @@ validate_value_for_input_port( ChannelValue=#channel_value{
 									value_constraints=PortConstraints },
 							   PortName, State ) ->
 
-	case rdf_utils:implies( ValueSemantics, PortSemantics ) of
+	rdf_utils:implies( ValueSemantics, PortSemantics ) orelse
 
-		true ->
-			ok;
-
-		false ->
+        begin
 
 			LackingSem = set_utils:difference( PortSemantics, ValueSemantics ),
 
@@ -2543,10 +2673,9 @@ validate_value_for_input_port( ChannelValue=#channel_value{
 				[ PortName, value_to_string( ChannelValue ),
 				  length( LackingSemList ), LackingSemList,
 				  rdf_utils:vocabulary_to_string( ValueSemantics ),
-				  rdf_utils:vocabulary_to_string( PortSemantics ) ] ),
+				  rdf_utils:vocabulary_to_string( PortSemantics ) ] )
 
-			% We currently do not consider that it is a blocking issue:
-			ok
+			% We currently do not consider that it is a blocking issue.
 
 			% ValueSemList = set_utils:to_list( ValueSemantics ),
 			% PortSemList = set_utils:to_list( PortSemantics ),
@@ -2554,20 +2683,18 @@ validate_value_for_input_port( ChannelValue=#channel_value{
 			% throw( { incompatible_semantics, { { value, ValueSemList },
 			%           { input_port, PortSemList } } } )
 
-	end,
+        end,
 
 	% In future versions, provided of course that units are compatible,
 	% transparent conversions could be done (should it be considered desirable -
 	% which is not sure):
 	%
-	case unit_utils:are_units_identical( ValueUnit, PortUnit ) of
+	unit_utils:are_units_identical( ValueUnit, PortUnit ) orelse
 
-		true ->
-			ok;
+        begin
 
-		false ->
 			ValueUnitString = text_utils:binary_to_string( ValueUnitBinString ),
-			PortUnitString = text_utils:binary_to_string( PortUnitBinString ),
+			PortUnitString =  text_utils:binary_to_string( PortUnitBinString ),
 
 			?error_fmt( "Trying to feed the input port '~ts' with a "
 				"value (~ts) whose unit (~ts) does not match the one of "
@@ -2578,17 +2705,14 @@ validate_value_for_input_port( ChannelValue=#channel_value{
 			throw( { unmatching_units, { { value, ValueUnitString },
 										 { input_port, PortUnitString } } } )
 
-	end,
+        end,
 
 	% The same applies here, as types may be distinct yet potentially compatible
-	% (ex: floats and integers):
+	% (e.g. floats and integers):
 	%
-	case type_utils:are_types_identical( ValueType, PortType ) of
+	type_utils:are_types_identical( ValueType, PortType ) orelse
+        begin
 
-		true ->
-			ok;
-
-		false ->
 			?error_fmt( "Trying to feed the input port '~ts' with a "
 				"value (~ts) whose type (~ts) does not match the one of "
 				"this port (~ts).",
@@ -2599,7 +2723,7 @@ validate_value_for_input_port( ChannelValue=#channel_value{
 			throw( { unmatching_types, { { value, ValueType },
 										 { input_port, PortType } } } )
 
-	end,
+        end,
 
 	case satisfies_constraints( Value, PortConstraints ) of
 
@@ -2616,19 +2740,20 @@ validate_value_for_input_port( ChannelValue=#channel_value{
 	end;
 
 validate_value_for_input_port( Value, _InputPort, _PortName, _State )
-  when not is_record( Value, channel_value ) ->
+                                when not is_record( Value, channel_value ) ->
 	throw( { not_a_channel_value, Value } ).
 
 
 
 
-% @doc Validates that the specified channel value can be accepted by the
-% specified output port.
-%
-% The last two parameters allow to better report errors.
-%
-% Note: extremely similar to validate_value_for_input_port/4.
-%
+-doc """
+Validates that the specified channel value can be accepted by the specified
+output port.
+
+The last two parameters allow to better report errors.
+
+Note: extremely similar to validate_value_for_input_port/4.
+""".
 -spec validate_value_for_output_port( channel_value(), output_port(),
 			output_port_name(), wooper:state() ) -> void().
 validate_value_for_output_port( ChannelValue=#channel_value{
@@ -2643,12 +2768,8 @@ validate_value_for_output_port( ChannelValue=#channel_value{
 									value_constraints=PortConstraints },
 								PortName, State ) ->
 
-	case rdf_utils:implies( ValueSemantics, PortSemantics ) of
-
-		true ->
-			ok;
-
-		false ->
+	rdf_utils:implies( ValueSemantics, PortSemantics ) orelse
+        begin
 
 			LackingSem = set_utils:difference( PortSemantics, ValueSemantics ),
 
@@ -2661,10 +2782,9 @@ validate_value_for_output_port( ChannelValue=#channel_value{
 				[ PortName, value_to_string( ChannelValue ),
 				  length( LackingSemList ), LackingSemList,
 				  rdf_utils:vocabulary_to_string( ValueSemantics ),
-				  rdf_utils:vocabulary_to_string( PortSemantics ) ] ),
+				  rdf_utils:vocabulary_to_string( PortSemantics ) ] )
 
-			% We currently do not consider it is a blocking issue:
-			ok
+			% We currently do not consider it is a blocking issue.
 
 			% ValueSemList = set_utils:to_list( ValueSemantics ),
 			% PortSemList = set_utils:to_list( PortSemantics ),
@@ -2672,18 +2792,16 @@ validate_value_for_output_port( ChannelValue=#channel_value{
 			% throw( { incompatible_semantics, { { value, ValueSemList },
 			%                   { output_port, PortSemList } } } )
 
-	end,
+        end,
 
 	% In future versions, provided of course that units are compatible,
 	% transparent conversions could be done (should it be considered desirable -
 	% which is not sure at all):
 	%
-	case unit_utils:are_units_identical( ValueUnit, PortUnit ) of
+	unit_utils:are_units_identical( ValueUnit, PortUnit ) orelse
 
-		true ->
-			ok;
+        begin
 
-		false ->
 			ValueUnitString = text_utils:binary_to_string( ValueUnitBinString ),
 			PortUnitString = text_utils:binary_to_string( PortUnitBinString ),
 
@@ -2696,17 +2814,14 @@ validate_value_for_output_port( ChannelValue=#channel_value{
 			throw( { unmatching_units, { { value, ValueUnitString },
 										 { output_port, PortUnitString } } } )
 
-	end,
+        end,
 
 	% The same applies here, as types may be distinct yet potentially compatible
-	% (ex: floats and integers):
+	% (e.g. floats and integers):
 	%
-	case type_utils:are_types_identical( ValueType, PortType ) of
+	type_utils:are_types_identical( ValueType, PortType ) orelse
+        begin
 
-		true ->
-			ok;
-
-		false ->
 			?error_fmt( "Trying to feed the output port '~ts' with a "
 				"value (~ts) whose type (~ts) does not match the one of "
 				"this port (~ts).",
@@ -2717,7 +2832,7 @@ validate_value_for_output_port( ChannelValue=#channel_value{
 			throw( { unmatching_types, { { value, ValueType },
 										 { output_port, PortType } } } )
 
-	end,
+        end,
 
 	case satisfies_constraints( Value, PortConstraints ) of
 
@@ -2735,21 +2850,22 @@ validate_value_for_output_port( ChannelValue=#channel_value{
 	end;
 
 validate_value_for_output_port( Value, _OutputPort, _PortName, _State )
-  when not is_record( Value, channel_value ) ->
+                                when not is_record( Value, channel_value ) ->
 	throw( { not_a_channel_value, Value } ).
 
 
 
-% @doc Assigns the specified value to the specified input port, with (almost) no
-% specific value-level checking (see validate_value_for_input_port/4) for that,
-% and returns the corresponding updated input port.
-%
-% Note:
-%
-% - the port name is specified only to provide better error diagnoses
-%
-% - the state is const
-%
+-doc """
+Assigns the specified value to the specified input port, with (almost) no
+specific value-level checking (see validate_value_for_input_port/4) for that,
+and returns the corresponding updated input port.
+
+Note:
+
+- the port name is specified only to provide better error diagnoses
+
+- the state is const
+""".
 -spec assign_input_value( channel_value(), input_port(), port_name(),
 						  wooper:state() ) -> input_port().
 assign_input_value( ChannelValue=#channel_value{ actual_value=Value },
@@ -2784,14 +2900,15 @@ assign_input_value( ChannelValue=#channel_value{ actual_value=Value },
 
 
 
-% @doc Assigns the specified (channel) value to the specified output port, with
-% (almost) no specific value-level checking (see
-% validate_value_for_output_port/4) for that, and returns a pair made of the
-% corresponding updated output port and a new state, just updated regarding the
-% sending of a message to notify the associated target dataflow blocks.
-%
-% (exported helper)
-%
+-doc """
+Assigns the specified (channel) value to the specified output port, with
+(almost) no specific value-level checking (see validate_value_for_output_port/4)
+for that, and returns a pair made of the corresponding updated output port and a
+new state, just updated regarding the sending of a message to notify the
+associated target dataflow blocks.
+
+(exported helper)
+""".
 -spec assign_output_value( channel_value(), output_port(), port_name(),
 					wooper:state() ) -> { output_port(), wooper:state() }.
 assign_output_value( ChannelValue=#channel_value{ actual_value=Value },
@@ -2811,8 +2928,8 @@ assign_output_value( ChannelValue=#channel_value{ actual_value=Value },
 
 					% Setting output ports is not that useful:
 					NewOutputPort = OutputPort#output_port{
-										value_status={ set, Value },
-										last_sending=PortTimestamp },
+						value_status={ set, Value },
+						last_sending=PortTimestamp },
 
 					SentState = case FedPorts of
 
@@ -2841,8 +2958,8 @@ assign_output_value( ChannelValue=#channel_value{ actual_value=Value },
 
 				suspended ->
 					NewOutputPort = OutputPort#output_port{
-										value_status={ set, Value },
-										last_sending=send_on_resume },
+						value_status={ set, Value },
+						last_sending=send_on_resume },
 
 					{ NewOutputPort, State }
 
@@ -2870,12 +2987,13 @@ assign_output_value( ChannelValue=#channel_value{ actual_value=Value },
 
 
 
-% @doc Notifies the specified downstream input ports of the specified value, fed
-% by our specified output port.
-%
-% Note: specifying the source output port name could be considered, to add debug
-% information.
-%
+-doc """
+Notifies the specified downstream input ports of the specified value, fed by our
+specified output port.
+
+Note: specifying the source output port name could be considered, to add debug
+information.
+""".
 -spec notify_fed_input_ports( channel_value(), [ input_port_id() ],
 							  wooper:state() ) -> wooper:state().
 notify_fed_input_ports( _ChannelValue, _InputPortId=[], State ) ->
@@ -2895,9 +3013,10 @@ notify_fed_input_ports( ChannelValue,
 
 
 
-% @doc Returns a list of the identifiers of the iterated ports that correspond
-% to specified input port iteration.
-%
+-doc """
+Returns a list of the identifiers of the iterated ports that correspond to
+specified input port iteration.
+""".
 -spec get_input_iterated_ports( input_port_iteration(), wooper:state() ) ->
 										[ input_port_id() ].
 get_input_iterated_ports( #input_port_iteration{
@@ -2907,21 +3026,22 @@ get_input_iterated_ports( #input_port_iteration{
 	InputPortTable = ?getAttr(input_ports),
 
 	[ begin
-			PortName = get_iterated_port_name( BaseName, I ),
-			InputPort = get_input_port( PortName, InputPortTable, State ),
-			{ PortName, InputPort }
+		PortName = get_iterated_port_name( BaseName, I ),
+		InputPort = get_input_port( PortName, InputPortTable, State ),
+		{ PortName, InputPort }
 	  end || I <- Indexes ].
 
 
 
-% @doc Returns a list of all the actual values that the specified input port
-% iteration stores, knowing that all of its iterated ports must be set
-% (otherwise an exception is raised).
-%
+-doc """
+Returns a list of all the actual values that the specified input port iteration
+stores, knowing that all of its iterated ports must be set (otherwise an
+exception is raised).
+""".
 -spec get_all_input_iteration_values( string_iteration_name(),
 									  wooper:state() ) -> [ actual_value() ].
 get_all_input_iteration_values( InputIterationName, State )
-  when is_list( InputIterationName ) ->
+                                    when is_list( InputIterationName ) ->
 
 	BinIterationName = text_utils:string_to_binary( InputIterationName ),
 
@@ -2935,8 +3055,8 @@ get_all_input_iteration_values( InputIterationName, State )
 	InputPortTable = ?getAttr(input_ports),
 
 	IteratedPorts = [ begin
-							PortName = get_iterated_port_name( BaseName, I ),
-							get_input_port( PortName, InputPortTable, State )
+						PortName = get_iterated_port_name( BaseName, I ),
+						get_input_port( PortName, InputPortTable, State )
 					  end || I <- Indexes ],
 
 	ChannelStatuses = [ IP#input_port.value_status || IP <- IteratedPorts ],
@@ -2954,18 +3074,20 @@ get_all_input_iteration_values( InputIterationName, State )
 
 
 
-% @doc Assigns the specified list of actual (raw) values to the iterated ports
-% of the specified output port iteration.
-%
-% Fails if at least a value is specified and the number of values does not match
-% the current number of iterated ports (as obviously there is a mismatch);
-% writing (any number of) values to an empty iteration is allowed (as for
-% standard output ports, which may or may not be connected).
-%
+-doc """
+Assigns the specified list of actual (raw) values to the iterated ports of the
+specified output port iteration.
+
+Fails if at least a value is specified and the number of values does not match
+the current number of iterated ports (as obviously there is a mismatch); writing
+(any number of) values to an empty iteration is allowed (as for standard output
+ports, which may or may not be connected).
+
+""".
 -spec set_all_output_iteration_values( string_iteration_name(),
 					[ actual_value() ], wooper:state() ) -> wooper:state().
 set_all_output_iteration_values( OutputIterationName, Values, State )
-  when is_list( OutputIterationName ) ->
+                                when is_list( OutputIterationName ) ->
 
 	ValueCount = length( Values ),
 
@@ -3032,10 +3154,11 @@ set_all_output_iteration_values( OutputIterationName, Values, State )
 
 
 
-% @doc Callback executed automatically whenever the block is activated.
-%
-% Meant to be overridden.
-%
+-doc """
+Callback executed automatically whenever the block is activated.
+
+Meant to be overridden.
+""".
 -spec activate( wooper:state() ) -> const_oneway_return().
 activate( State ) ->
 
@@ -3046,11 +3169,12 @@ activate( State ) ->
 
 
 
-% @doc Sets the specified input ports to their respective specified (channel)
-% values, internally (that is directly from this block).
-%
-% (exported helper)
-%
+-doc """
+Sets the specified input ports to their respective specified (channel) values,
+internally (that is directly from this block).
+
+(exported helper)
+""".
 -spec set_input_port_values( [ { input_port_string_name(), channel_value() } ],
 							 wooper:state() ) -> wooper:state().
 set_input_port_values( PortPairs, State ) ->
@@ -3083,12 +3207,13 @@ set_input_port_values_helper( _PortPairs=[ { PortName, ChannelValue } | T ],
 
 
 
-% @doc Sets the specified input port to the specified direct (that is plain,
-% non-channel) values.
-%
-% Typically useful at times like initialisation, where direct values (with no
-% associated metadata), are available, and must be assigned to ports.
-%
+-doc """
+Sets the specified input port to the specified direct (that is plain,
+non-channel) values.
+
+Typically useful at times like initialisation, where direct values (with no
+associated metadata), are available, and must be assigned to ports.
+""".
 -spec set_input_port_direct_values(
 		[ { input_port_string_name(), actual_value() } ], wooper:state() ) ->
 											wooper:state().
@@ -3114,7 +3239,7 @@ set_input_port_direct_values_helper(
 	% We could have however preferred reading from the input port the various
 	% expected metadata, and used class_Dataflow:create_channel_value/4 to
 	% obtain a proper, corresponding channel value, but useless transformations
-	% (ex: regarding types) would then have be performed.
+	% (e.g. regarding types) would then have be performed.
 	%
 	InputPort = get_input_port( InputPortBinName, InputPortTable, State ),
 
@@ -3140,7 +3265,7 @@ set_input_port_direct_values_helper(
 
 
 
-% @doc Returns a textual description of the known input ports of this block.
+-doc "Returns a textual description of the known input ports of this block.".
 -spec list_input_ports( input_port_table() ) -> ustring().
 list_input_ports( InputPortTable ) ->
 
@@ -3158,7 +3283,7 @@ list_input_ports( InputPortTable ) ->
 
 
 
-% @doc Returns a textual description of the known output ports of this block.
+-doc "Returns a textual description of the known output ports of this block.".
 -spec list_output_ports( output_port_table() ) -> ustring().
 list_output_ports( OutputPortTable ) ->
 
@@ -3176,9 +3301,9 @@ list_output_ports( OutputPortTable ) ->
 
 
 
-% @doc Returns a textual description of the known input iterations of this
-% block.
-%
+-doc """
+Returns a textual description of the known input iterations of this block.
+""".
 -spec list_input_iterations( input_iteration_table() ) -> ustring().
 list_input_iterations( InputIterationTable ) ->
 
@@ -3198,9 +3323,9 @@ list_input_iterations( InputIterationTable ) ->
 
 
 
-% @doc Returns a textual description of the known output iterations of this
-% block.
-%
+-doc """
+Returns a textual description of the known output iterations of this block.
+""".
 -spec list_output_iterations( output_iteration_table() ) -> ustring().
 list_output_iterations( OutputIterationTable ) ->
 
@@ -3211,7 +3336,7 @@ list_output_iterations( OutputIterationTable ) ->
 
 		IterationNames ->
 			SortedString = text_utils:binaries_to_sorted_string(
-								IterationNames ),
+				IterationNames ),
 			text_utils:format( "the ~B existing output iterations are "
 				"(alphabetically): ~ts",
 				[ length( IterationNames ), SortedString ] )
@@ -3220,10 +3345,11 @@ list_output_iterations( OutputIterationTable ) ->
 
 
 
-% @doc Sets the specified output port to the specified (channel) value.
-%
-% (exported helper)
-%
+-doc """
+Sets the specified output port to the specified (channel) value.
+
+(exported helper)
+""".
 -spec set_output_port_value( output_port_string_name(), channel_value(),
 							 wooper:state() ) -> wooper:state().
 set_output_port_value( OutputPortName, ChannelValue, State ) ->
@@ -3234,17 +3360,17 @@ set_output_port_value( OutputPortName, ChannelValue, State ) ->
 	OutputPortTable = ?getAttr(output_ports),
 
 	{ NewOutputPortTable, NewState } = set_output_ports_internal(
-			OutputPortName, ChannelValue, OutputPortTable, State ),
+		OutputPortName, ChannelValue, OutputPortTable, State ),
 
 	setAttribute( NewState, output_ports, NewOutputPortTable ).
 
 
 
-% @doc Sets the specified output ports to their respective specified (channel)
-% value.
-%
-% (exported helper)
-%
+-doc """
+Sets the specified output ports to their respective specified (channel) value.
+
+(exported helper)
+""".
 -spec set_output_port_values(
 		[ { output_port_string_name(), channel_value() } ], wooper:state() ) ->
 									wooper:state().
@@ -3263,19 +3389,20 @@ set_output_ports_helper( _PortPairs=[], OutputPortTable, State ) ->
 
 set_output_ports_helper( _PortPairs=[ { PortName, ChannelValue } | T ],
 						 OutputPortTable, State )
-  when is_record( ChannelValue, channel_value ) ->
+                    when is_record( ChannelValue, channel_value ) ->
 
 	{ NewOutputPortTable, NewState } = set_output_ports_internal( PortName,
-								ChannelValue, OutputPortTable, State ),
+		ChannelValue, OutputPortTable, State ),
 
 	set_output_ports_helper( T, NewOutputPortTable, NewState ).
 
 
 
-% @doc Helper used both by single/multi-ports versions.
-%
-% (note: the returned state does not include yet the change in the port table)
-%
+-doc """
+Helper used both by single/multi-ports versions.
+
+(note: the returned state does not include yet the change in the port table)
+""".
 -spec set_output_ports_internal( output_port_string_name(), channel_value(),
 								 output_port_table(), wooper:state() ) ->
 										{ output_port_table(), wooper:state() }.
@@ -3289,8 +3416,7 @@ set_output_ports_internal( OutputPortName, ChannelValue, OutputPortTable,
 
 
 set_output_ports_internal( OutputPortBinName, ChannelValue, OutputPortTable,
-						   State )
-  when is_binary( OutputPortBinName ) ->
+						   State ) when is_binary( OutputPortBinName ) ->
 
 	OutputPort = case table:lookup_entry( OutputPortBinName,
 										  OutputPortTable ) of
@@ -3311,7 +3437,7 @@ set_output_ports_internal( OutputPortBinName, ChannelValue, OutputPortTable,
 									State ),
 
 	{ NewOutputPort, NewState } = assign_output_value( ChannelValue,
-										OutputPort, OutputPortBinName, State ),
+		OutputPort, OutputPortBinName, State ),
 
 	NewPortTable = table:update_entry( OutputPortBinName, NewOutputPort,
 									   OutputPortTable ),
@@ -3320,12 +3446,14 @@ set_output_ports_internal( OutputPortBinName, ChannelValue, OutputPortTable,
 
 
 
-% @doc Sets the specified output ports to the specified direct (that is plain,
-% non-channel) values.
-%
-% Typically useful at times like initialisation, where direct values (with no
-% associated metadata) are available, and must be assigned to (output) ports.
-%
+-doc """
+Sets the specified output ports to the specified direct (that is plain,
+non-channel) values.
+
+Typically useful at times like initialisation, where direct values (with no
+associated metadata) are available, and must be assigned to (output) ports.
+
+""".
 -spec set_output_port_direct_values(
 		[ { output_port_string_name(), actual_value() } ], wooper:state() ) ->
 											wooper:state().
@@ -3372,7 +3500,7 @@ set_output_port_direct_values_helper(
 	% We could have however preferred reading from the output port the various
 	% expected metadata, and used class_Dataflow:create_channel_value/4 to
 	% obtain a proper, corresponding channel value, but useless transformations
-	% (ex: regarding types) would then have be performed.
+	% (e.g. regarding types) would then have be performed.
 	%
 	OutputPort = table:get_value( BinPortName, OutputPortTable ),
 
@@ -3400,12 +3528,13 @@ set_output_port_direct_values_helper(
 % Static section.
 
 
-% @doc Declares statically (that is exactly once per type of dataflow block) the
-% associated semantics and types operations.
-%
+-doc """
+Declares statically (that is exactly once per type of dataflow block) the
+associated semantics and types operations.
+""".
 -spec declare_static_information_for(
 		[ block_type() | managed_unit_spec() ] ) ->
-									static_return( basic_utils:base_status() ).
+									static_return( base_status() ).
 declare_static_information_for( DataflowBlockTypes ) ->
 
 	% Semantics and types are each aggregated per block first, then sent to
@@ -3422,8 +3551,7 @@ declare_static_information_for( DataflowBlockTypes ) ->
 
 % (helper)
 -spec declare_static_information_for( [ block_type() | managed_unit_spec() ],
-		semantic_server_pid(), type_server_pid() ) ->
-											basic_utils:base_status().
+		semantic_server_pid(), type_server_pid() ) -> base_status().
 declare_static_information_for( _DataflowBlockTypes=[], _SemanticServerPid,
 								_TypeServerPid ) ->
 	% No semantics to be declared here:
@@ -3454,12 +3582,12 @@ declare_static_information_for( _DataflowBlockTypes=[ BlockTypeModule | T ],
 
 
 
+-doc """
+Collects the semantics for specified dataflow block and, if obtained, declares
+them.
 
-% @doc Collects the semantics for specified dataflow block and, if obtained,
-% declares them.
-%
-% Returns whether an acknowledgement is waited for.
-%
+Returns whether an acknowledgement is waited for.
+""".
 -spec get_and_trigger_semantics( block_type() | managed_unit_spec(),
 		semantic_server_pid() ) -> static_return( boolean() ).
 get_and_trigger_semantics( BlockTypeModule, SemanticServerPid ) ->
@@ -3508,19 +3636,19 @@ get_and_trigger_semantics( BlockTypeModule, SemanticServerPid ) ->
 			%                       [ ActualSemantics ] ),
 
 			% Will then trigger back a validation_outcome() as result:
-			SemanticServerPid ! { validateSemantics, [ ActualSemantics ],
-								  self() },
+			SemanticServerPid !
+                { validateSemantics, [ ActualSemantics ], self() },
 			wooper:return_static( true )
 
 	end.
 
 
 
-% @doc Collects the types for specified dataflow block and, if obtained,
-% declares them.
-%
-% Returns whether an acknowledgement is waited for.
-%
+-doc """
+Collects the types for specified dataflow block and, if obtained, declares them.
+
+Returns whether an acknowledgement is waited for.
+""".
 -spec get_and_trigger_types( block_type() | managed_unit_spec(),
 							 type_server_pid() ) -> static_return( boolean() ).
 get_and_trigger_types( BlockTypeModule, TypeServerPid ) ->
@@ -3560,7 +3688,7 @@ get_and_trigger_types( BlockTypeModule, TypeServerPid ) ->
 
 
 
-% @doc Waits for the outcome of any semantic or type declaration.
+-doc "Waits for the outcome of any semantic or type declaration.".
 wait_for( _IsSemanticWaited=false, _IsTypeWaited=false ) ->
 	%trace_utils:debug( "Waiting over." ),
 	ok;
@@ -3593,7 +3721,7 @@ wait_for( IsSemanticWaited, _IsTypeWaited=true ) ->
 
 
 
-% @doc Returns all semantics used by specified ports.
+-doc "Returns all semantics used by specified ports.".
 -spec get_referenced_semantics( [ input_port_spec() ],
 				[ output_port_spec() ] ) -> static_return( vocabulary() ).
 get_referenced_semantics( InputPortSpecs, OutputPortSpecs ) ->
@@ -3605,13 +3733,13 @@ get_referenced_semantics( InputPortSpecs, OutputPortSpecs ) ->
 						|| OS <- OutputPortSpecs ],
 
 	FlatBinList = text_utils:strings_to_binaries(
-				list_utils:flatten_once( InputSemantics ++ OutputSemantics ) ),
+		list_utils:flatten_once( InputSemantics ++ OutputSemantics ) ),
 
 	wooper:return_static( list_utils:uniquify( FlatBinList ) ).
 
 
 
-% @doc Returns all types used by specified ports.
+-doc "Returns all types used by specified ports.".
 -spec get_referenced_types( [ input_port_spec() ], [ output_port_spec() ] ) ->
 						static_return( [ type_entry() ] ).
 get_referenced_types( InputPortSpecs, OutputPortSpecs ) ->
@@ -3630,9 +3758,10 @@ get_referenced_types( InputPortSpecs, OutputPortSpecs ) ->
 % Helper section.
 
 
-% @doc Returns whether the specified dataflow block class declared its semantics
-% and, if yes, what they are.
-%
+-doc """
+Returns whether the specified dataflow block class declared its semantics and,
+if yes, what they are.
+""".
 -spec get_declared_semantics( block_type() | managed_unit_spec() ) ->
 				static_return( 'no_semantics_declared' | vocabulary() ).
 get_declared_semantics( { DataflowBlockClassname, erlang } ) ->
@@ -3677,9 +3806,10 @@ get_declared_semantics( DataflowBlockClassname ) ->
 
 
 
-% @doc Returns whether the specified dataflow block class declared its types
-% and, if yes, what they are.
-%
+-doc """
+Returns whether the specified dataflow block class declared its types and, if
+yes, what they are.
+""".
 -spec get_declared_types( block_type() | managed_unit_spec() ) ->
 						static_return( 'no_types_declared' | type_entries() ).
 get_declared_types( { DataflowBlockClassname, erlang } ) ->
@@ -3724,14 +3854,15 @@ get_declared_types( DataflowBlockClassname ) ->
 
 
 
-% @doc Returns all static (class-level) information that can be collected
-% regarding the actual dataflow block at hand.
-%
-% The specified state is expected to correspond to a (direct or not) instance of
-% class_TraceEmitter.
-%
-% (exported helper, for convenience)
-%
+-doc """
+Returns all static (class-level) information that can be collected regarding the
+actual dataflow block at hand.
+
+The specified state is expected to correspond to a (direct or not) instance of
+class_TraceEmitter.
+
+(exported helper, for convenience)
+""".
 -spec get_static_information( wooper:state() ) ->
 			{ vocabulary(), type_entries() }.
 get_static_information( State ) ->
@@ -3742,7 +3873,8 @@ get_static_information( State ) ->
 
 		class_DataflowPythonProcessingUnit ->
 			WOOPERPythonClass =
-			  wooper_utils:pep8_class_to_wooper_class( ?getAttr(python_class) ),
+                wooper_utils:pep8_class_to_wooper_class(
+                    ?getAttr(python_class) ),
 			{ WOOPERPythonClass, python };
 
 		%class_DataflowJavaProcessingUnit ->
@@ -3759,14 +3891,15 @@ get_static_information( State ) ->
 
 
 
-% @doc Returns all static (class-level) information that can be collected
-% regarding the processing unit whose spec is specified.
-%
-% The specified state is expected to correspond to a (direct or not) instance of
-% class_TraceEmitter.
-%
-% (exported helper, for convenience)
-%
+-doc """
+Returns all static (class-level) information that can be collected regarding the
+processing unit whose spec is specified.
+
+The specified state is expected to correspond to a (direct or not) instance of
+class_TraceEmitter.
+
+(exported helper, for convenience)
+""".
 -spec get_static_information( managed_unit_spec(), wooper:state() ) ->
 									{ vocabulary(), type_entries() }.
 get_static_information( UnitSpec, State ) ->
@@ -3801,14 +3934,15 @@ get_static_information( UnitSpec, State ) ->
 
 
 
-% @doc Returns the static (class-level) port specifications that can be
-% collected regarding the actual dataflow block at hand.
-%
-% The specified state is expected to correspond to a (direct or not) instance of
-% class_TraceEmitter.
-%
-% (exported helper, for convenience)
-%
+-doc """
+Returns the static (class-level) port specifications that can be collected
+regarding the actual dataflow block at hand.
+
+The specified state is expected to correspond to a (direct or not) instance of
+class_TraceEmitter.
+
+(exported helper, for convenience)
+""".
 -spec get_port_specifications( block_type() | managed_unit_spec() ) ->
 	'no_port_specifications_declared' |
 		{ [ input_port_spec() ], [ output_port_spec() ] }.
@@ -3832,6 +3966,7 @@ get_port_specifications( { DataflowBlockClassname, Language } ) ->
 
 	end;
 
+
 get_port_specifications( DataflowBlockClassname ) ->
 
 	PortFunctionName = get_port_specifications,
@@ -3849,7 +3984,7 @@ get_port_specifications( DataflowBlockClassname ) ->
 
 
 
-% @doc Creates dynamically a set of output ports.
+-doc "Creates dynamically a set of output ports.".
 -spec createOutputPorts( wooper:state(), [ output_port_spec() ] ) ->
 								request_return( 'output_ports_created' ).
 createOutputPorts( State, OutputPortSpecs ) ->

@@ -1,36 +1,32 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-% This file is part of Sim-Diasca, on behalf of the EDF City Simulation
-% project. It does not pertain to the free software release of Sim-Diasca.
-
-% Creation date: Thursday, August 25, 2016
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc The purpose of this module is to test the support provided by the
-% semantic server.
 %
-% See also class_SemanticServer.erl.
-%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: Thursday, August 25, 2016.
+
 -module(semantic_server_test).
+
+-moduledoc """
+The purpose of this module is to test the support provided by the semantic
+server.
+
+See also class_SemanticServer.erl.
+""".
 
 
 % For facilities common to all cases:
@@ -38,9 +34,10 @@
 
 
 
-% @doc Runs the test, determining the settings from the command-line, otherwise
-% using defaults.
-%
+-doc """
+Runs the test, determining the settings from the command-line, otherwise using
+defaults.
+""".
 -spec run() -> no_return().
 run() ->
 
@@ -50,13 +47,13 @@ run() ->
 
 	% Add 'wheels' to test a failure case:
 	FirstWords = text_utils:strings_to_binaries(
-					[ "wheel", "motor", "hood", "brakes" ] ),
+		[ "wheel", "motor", "hood", "brakes" ] ),
 
 	[ SemanticServerPid ! { declareSemantics, [ W ] } || W <- FirstWords ],
 
 
 	SecondWords = text_utils:strings_to_binaries(
-					[ "boat", "river", "fish", "wheels", "island" ] ),
+		[ "boat", "river", "fish", "wheels", "island" ] ),
 
 	ValidationRequests = [ { validateSemantics, W } || W <- SecondWords ],
 
@@ -72,7 +69,7 @@ run() ->
 						 semantics_accepted ],
 
 	ExpectedOutcomes = wooper:obtain_results_for_request_series(
-							ValidationRequests, SemanticServerPid ),
+		ValidationRequests, SemanticServerPid ),
 
 	% Also useful for synchronous operation of the test:
 	SemanticServerPid ! { getStatus, [], self() },

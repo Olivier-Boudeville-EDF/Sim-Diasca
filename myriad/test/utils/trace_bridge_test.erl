@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2024 Olivier Boudeville
+% Copyright (C) 2020-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,16 +25,18 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 21, 2020.
 
-
-% Unit tests for the trace_bridge toolbox, when no specific bridge is
-% registered.
-%
-% See the trace_bridge.erl tested module.
-%
-% For a test with a bridge registered, refer, in Ceylan-Traces, to
-% trace_bridging_test.erl.
-%
 -module(trace_bridge_test).
+
+-moduledoc """
+Unit tests for the `trace_bridge` toolbox, when no specific bridge is
+registered.
+
+See the `trace_bridge` tested module.
+
+For a test with a bridge registered, refer, in Ceylan-Traces, to
+`trace_bridging_test.erl`.
+""".
+
 
 
 % For run/0 export and al:
@@ -52,6 +54,10 @@ emit_traces() ->
 	trace_bridge:debug( "I am a debug simple message." ),
 	trace_bridge:debug_fmt( "I am a debug ~ts message.", [ "formatted" ] ),
 
+    % To check that a ill-formatted trace is caught at compilation time:
+	%trace_bridge:debug_fmt( "I am a faulty message: ~B and ~B.",
+    %                        [ _SingleValue=1 ] ),
+
 	trace_bridge:set_application_timestamp( "My applicative timestamp" ),
 
 	trace_bridge:info( "I am an info simple message." ),
@@ -67,7 +73,7 @@ emit_traces() ->
 	trace_bridge:error_fmt( "I am an error ~ts message.", [ "formatted" ] ),
 
 	trace_bridge:critical( "I am a critical simple message." ),
-	trace_bridge:critical_fmt( "I am a critical ~ts message.", 
+	trace_bridge:critical_fmt( "I am a critical ~ts message.",
 							   [ "formatted" ] ),
 
 	trace_bridge:alert( "I am an alert simple message." ),

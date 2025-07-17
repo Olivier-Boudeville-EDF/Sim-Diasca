@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -18,22 +18,23 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2012.
 
-
-% @doc Class in charge of organising the mechanisms in order to enhance the
-% <b>resilience of simulations with regard to crashes<b>.
-%
-% Note that the serialisation of a complete simulation is a complex challenge
-% and that the resilience -oriented elements constitute only a first experiment,
-% neither complete nor reliable.
-%
 -module(class_ResilienceManager).
+
+-moduledoc """
+Class in charge of organising the mechanisms in charge of **enhancing the
+resilience of simulations with regard to crashes**.
+
+Note that the serialisation of a complete simulation is a complex challenge and
+that the resilience-oriented elements constitute only a first experiment,
+neither complete nor reliable.
+""".
 
 
 -define( class_description,
 		 "enhances the capacity of the simulator to overcome "
 		 "faults and technical issues, like the loss of computing hosts in "
 		 "the course of the simulation. "
-		 "It allows to implement the 'k-crash resistance' feature, see, in "
+		 "It allows implementing the 'k-crash resistance' feature, see, in "
 		 "class_DeploymentManager.hrl, the 'crash_resilience' field of the "
 		 "deployment_settings record for more information. "
 		 "It drives the resilience agents. "
@@ -84,14 +85,14 @@
 	  "manager, needed so that resilience agents can know what are the local "
 	  "probes that they must manage, serialisation-wise" },
 
-	{ time_tracker_pid, maybe( pid() ), "the PID of the internal process to "
+	{ time_tracker_pid, option( pid() ), "the PID of the internal process to "
 	  "watch for serialisation periods to be elapsed" },
 
 	{ serialisation_enabled, boolean(),
 	  "tells whether serialisations can occur (for example none should happen "
 	  "before the simulation is started)" },
 
-	{ lost_nodes, [ net_utils:atom_node_name() ],
+	{ lost_nodes, [ atom_node_name() ],
 	  "a list of all computing nodes that have been currently reported as "
 	  "down, since the simulation started" },
 
@@ -108,7 +109,7 @@
 	  "stores the user-specified settings, to be kept here if needing to "
 	  "perform a rollback" },
 
-	{ start_timestamp, time_utils:timestamp(),
+	{ start_timestamp, timestamp(),
 	  "records a timestamp corresponding to the simulation start" },
 
 	{ engine_root_dir, file_utils:path(), "corresponds to the absolute root "
@@ -126,7 +127,7 @@
 
 
 
--type manager_pid() :: agent_pid().
+-type manager_pid() :: sim_diasca:agent_pid().
 
 -export_type([ manager_pid/0 ]).
 
@@ -142,8 +143,6 @@
 % Allows to use macros for trace sending:
 -include_lib("traces/include/class_TraceEmitter.hrl").
 
-% For agent_pid() and all:
--include("engine_common_defines.hrl").
 
 % For case_main_process_name:
 -include("case_defines.hrl").
@@ -173,33 +172,33 @@
 
 
 
-% A k-map registers all node-related information to prepare for crashes and
-% overcome them.
-%
-% To each node N is associated a k-record, storing:
-%
-% - a list of the k nodes that a node N will back-up ("secured nodes") for N,
-% i.e. whose information will be backed-up by N
-%
-% - a list of the k nodes that will be used as back-up nodes ("securing nodes")
-% for N, i.e. that will store information on the behalf of N
-%
-%
-% For example with a resilience level of k=3, to node 'a' may be associated the
-% secured nodes [g, h, i] (they rely on 'a'), while the securing nodes may be
-% ['b', 'c', 'd'] ('a' rely on them).
+-doc """
+A k-record stores:
 
+- a list of the k nodes that a node N will back-up (`"secured nodes"`),
+i.e. whose information will be backed-up by N
 
+- a list of the k nodes that will be used as back-up nodes (`"securing nodes"`)
+for N, i.e. that will store information on the behalf of N
+
+For example, with a resilience level of k=3, to node 'a' may be associated the
+secured nodes `[g, h, i]` (they rely on 'a'), while its securing nodes may be
+`['b', 'c', 'd']` ('a' rely on them).
+""".
 -type k_record() :: #k_record{}.
-% Record defined in corresponding header.
 
 
+-doc """
+A k-map registers all node-related information to prepare for crashes and
+overcome them.
+
+To each node is associated a k-record.
+""".
 -type k_map() :: table( atom_node_name(), k_record() ).
-% The associative table for resilience: for each node, a k-record.
 
 
--type node_table() :: table( atom_node_name(), pid() ).
-% To associate the PID of a resilience agent to its node.
+-doc "To associate the PID of a resilience agent to its node.".
+-type node_table() :: table( atom_node_name(), resilience_agent_pid() ).
 
 
 
@@ -237,43 +236,52 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
 
+-type timestamp() :: time_utils:timestamp().
+
 -type atom_node_name() :: net_utils:atom_node_name().
 
 -type computing_host_info() :: class_DeploymentManager:computing_host_info().
-
 -type deployment_settings() :: class_DeploymentManager:deployment_settings().
 
+-type load_balancing_settings() :: class_LoadBalancer:load_balancing_settings().
+
+-type time_manager_pid() :: class_TimeManager:time_manager_pid().
+
+-type result_manager_pid() :: class_ResultManager:manager_pid().
+
+-type resilience_agent_pid() :: class_ResilienceAgent:agent_pid().
 
 
-% @doc Constructs a resilience manager, from following parameters:
-%
-% - FullSettings allows this resilience manager to record all the initial
-% settings so that, if a redeployment becomes necessary, all the services can be
-% created again
-%
-% - AllComputingNodes is a list of the computing nodes that have to be secured
-% by this manager and thus that must host a resilience agent
-%
-% - RootTimeManagerPid is the PID of the root time manager
-%
-% - ResultManagerPid is the PID of the result manager
-%
-% - StartTimestamp is a timestamp corresponding to the simulation start
-%
-% - RootDir is the path to the root directory of the engine
-% (i.e. SIM_DIASCA_TOP)
-%
-% - AvailableHosts lists the information of the available computing hosts
-%
+
+-doc """
+Constructs a resilience manager, from following parameters:
+
+- FullSettings allows this resilience manager to record all the initial settings
+so that, if a redeployment becomes necessary, all the services can be created
+again
+
+- AllComputingNodes is a list of the computing nodes that have to be secured by
+this manager and thus that must host a resilience agent
+
+- RootTimeManagerPid is the PID of the root time manager
+
+- ResultManagerPid is the PID of the result manager
+
+- StartTimestamp is a timestamp corresponding to the simulation start
+
+- RootDir is the path to the root directory of the engine (i.e. SIM_DIASCA_TOP)
+
+- AvailableHosts lists the information of the available computing hosts
+""".
 -spec construct( wooper:state(), { simulation_settings(), deployment_settings(),
 								   load_balancing_settings() },
-	[ net_utils:atom_node_name() ], time_manager_pid(), result_manager_pid(),
-	time_utils:timestamp(), sim_diasca:sii(), file_utils:directory_name(),
+	[ atom_node_name() ], time_manager_pid(), result_manager_pid(),
+	timestamp(), sim_diasca:sii(), file_utils:directory_name(),
 	[ computing_host_info() ] ) -> wooper:state().
 construct( State, _FullSettings={ SimulationSettings,
 	DeploymentSettings=#deployment_settings{ crash_resilience=ResilienceLevel },
@@ -331,7 +339,7 @@ construct( State, _FullSettings={ SimulationSettings,
 	DeploymentSettings=#deployment_settings{ crash_resilience=ResilienceLevel },
 		LoadBalancingSettings }, AllComputingNodes, RootTimeManagerPid,
 	ResultManagerPid, StartTimestamp, SII, RootDir, AvailableHosts )
-  when is_integer( ResilienceLevel ) andalso ResilienceLevel > 0 ->
+            when is_integer( ResilienceLevel ) andalso ResilienceLevel > 0 ->
 
 	% Here some resilience was required.
 
@@ -375,16 +383,16 @@ construct( State, _FullSettings={ SimulationSettings,
 	KMap = build_k_map( ResilienceLevel, AllComputingNodes ),
 
 	TmpDir = class_DeploymentManager:determine_temporary_directory(
-													DeploymentSettings ),
+		DeploymentSettings ),
 
 	SimulationName = sim_diasca:get_simulation_name( SimulationSettings ),
 
 	DeploymentBaseDir =
 		class_DeploymentManager:get_deployment_base_directory_for(
-				SimulationName, TmpDir, StartTimestamp, SII ),
+			SimulationName, TmpDir, StartTimestamp, SII ),
 
 	ResilienceDirBin = text_utils:string_to_binary(
-				file_utils:join( DeploymentBaseDir, "resilience-snapshots" ) ),
+		file_utils:join( DeploymentBaseDir, "resilience-snapshots" ) ),
 
 	% Creates the resilience agents as well:
 	NodeTable = create_node_table( AllComputingNodes, KMap, ResilienceDirBin ),
@@ -466,7 +474,7 @@ construct_common( State ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -511,11 +519,11 @@ destruct( State ) ->
 
 
 
-% @doc Callback triggered by the root time manager, as we are a simulation
-% listener.
-%
-% Note: called iff an actual resilience was requested.
-%
+-doc """
+Callback triggered by the root time manager, as we are a simulation listener.
+
+Note: called iff an actual resilience was requested.
+""".
 -spec simulation_started( wooper:state() ) -> oneway_return().
 simulation_started( State ) ->
 
@@ -534,7 +542,7 @@ simulation_started( State ) ->
 	% tracker, which is itself needed for trigger_serialisation/3:
 	%
 	IsTimeForSnapshot = time_utils:get_duration_since(
-							InitialSerialisationTimestamp ) > Period,
+		InitialSerialisationTimestamp ) > Period,
 
 	LastTimestampWatchdog = case IsTimeForSnapshot of
 
@@ -555,7 +563,7 @@ simulation_started( State ) ->
 	% The watchdog ensures the manager does not get stuck:
 	% (closure used to avoid exporting the function)
 	TimeTrackerPid = ?myriad_spawn_link( fun() -> time_tracker_main_loop(
-					ResilienceManagerPid, LastTimestampWatchdog, Period ) end ),
+		ResilienceManagerPid, LastTimestampWatchdog, Period ) end ),
 
 	EnabledState = setAttributes( State, [
 		{ serialisation_enabled, true },
@@ -585,27 +593,27 @@ simulation_started( State ) ->
 
 
 
-% @doc Callback triggered by the root time manager, as we are a simulation
-% listener.
-%
+-doc """
+Callback triggered by the root time manager, as we are a simulation listener.
+""".
 -spec simulation_suspended( wooper:state() ) -> const_oneway_return().
 simulation_suspended( State ) ->
 	wooper:const_return().
 
 
 
-% @doc Callback triggered by the root time manager, as we are a simulation
-% listener.
-%
+-doc """
+Callback triggered by the root time manager, as we are a simulation listener.
+""".
 -spec simulation_resumed( wooper:state() ) -> const_oneway_return().
 simulation_resumed( State ) ->
 	wooper:const_return().
 
 
 
-% @doc Callback triggered by the root time manager, as we are a simulation
-% listener.
-%
+-doc """
+Callback triggered by the root time manager, as we are a simulation listener.
+""".
 -spec simulation_succeeded( wooper:state() ) -> oneway_return().
 simulation_succeeded( State ) ->
 	% Exact same code:
@@ -614,9 +622,9 @@ simulation_succeeded( State ) ->
 
 
 
-% @doc Callback triggered by the root time manager, as we are a simulation
-% listener.
-%
+-doc """
+Callback triggered by the root time manager, as we are a simulation listener.
+""".
 -spec simulation_stopped( wooper:state() ) -> oneway_return().
 simulation_stopped( State ) ->
 
@@ -637,9 +645,10 @@ simulation_stopped( State ) ->
 
 
 
-% @doc Notifies that a serialisation is requested (expected to be called by the
-% internal tracker process).
-%
+-doc """
+Notifies that a serialisation is requested (expected to be called by the
+internal tracker process).
+""".
 -spec serialisationRequested( wooper:state() ) -> const_oneway_return().
 serialisationRequested( State ) ->
 
@@ -660,13 +669,14 @@ serialisationRequested( State ) ->
 
 
 
-% @doc Called (presumably by the root time manager) whenever we are in an
-% inter-diasca moment and when a serialisation was previously requested, so that
-% it can be performed immediately.
-%
-% Note: we are thus blocking the whole simulation during this call - beware to
-% induced latency.
-%
+-doc """
+Called (presumably by the root time manager) whenever we are in an inter-diasca
+moment and when a serialisation was previously requested, so that it can be
+performed immediately.
+
+Note: we are thus blocking the whole simulation during this call - beware to
+induced latency.
+""".
 -spec triggerSerialisation( wooper:state(), class_TimeManager:tick_offset(),
 		class_TimeManager:diasca() ) -> request_return( 'serialisation_done' ).
 triggerSerialisation( State, Tick, Diasca ) ->
@@ -677,10 +687,11 @@ triggerSerialisation( State, Tick, Diasca ) ->
 
 
 
-% @doc Called automatically by net_kernel (since net_kernel:monitor_nodes/2 was
-% used) whenever a computing node is deemed lost, so that a simulation rollback
-% is performed immediately.
-%
+-doc """
+Called automatically by net_kernel (since net_kernel:monitor_nodes/2 was used)
+whenever a computing node is deemed lost, so that a simulation rollback is
+performed immediately.
+""".
 nodedown( State, Node ) ->
 
 	%?notice_fmt( "Node '~ts' reported as lost.", [ Node ] ),
@@ -709,12 +720,11 @@ nodedown( State, Node ) ->
 
 
 
-% @doc Performs a rollback to specified simulation timestamp.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Performs a rollback to the specified simulation timestamp.
+
+Returns an updated state.
+""".
 perform_rollback( Tick, Diasca, CrashedNodes, State ) ->
 
 	CrashCount = length( CrashedNodes ),
@@ -870,10 +880,11 @@ perform_rollback( Tick, Diasca, CrashedNodes, State ) ->
 
 
 
-% @doc Repopulates the surviving nodes with adequate agents.
-%
-% Returns an updated state.
-%
+-doc """
+Repopulates the surviving nodes with adequate agents.
+
+Returns an updated state.
+""".
 recreate_simulation_services( SurvivingNodes, _CrashedNodes, State ) ->
 
 	?debug_fmt( "Recreating the simulation agents onto the set of "
@@ -910,13 +921,11 @@ recreate_simulation_services( SurvivingNodes, _CrashedNodes, State ) ->
 
 
 
-% @doc Reconfigures the resilience service so that any next crash can be best
-% resisted.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Reconfigures the resilience service so that any next crash can be best resisted.
+
+Returns an updated state.
+""".
 prepare_next_crash( ResilienceLevel, SurvivingNodes, NodeTable, State ) ->
 
 	NodeCount = length( SurvivingNodes ),
@@ -971,10 +980,7 @@ prepare_next_crash( ResilienceLevel, SurvivingNodes, NodeTable, State ) ->
 
 
 
-% @doc Waits for all resilience agents to report their recovery actions.
-%
-% (helper)
-%
+-doc "Waits for all resilience agents to report their recovery actions.".
 wait_for_recoveries( _WaitedAgents=[], _InitialTimestamp, _MaxDuration ) ->
 	success;
 
@@ -1094,7 +1100,7 @@ find_min( _WeightedNodes=[ { Node, List } | T ],
 
 
 
-% Adds specified node N into the entry of the selected node.
+% Adds the specified node N into the entry of the selected node.
 update_weighted_nodes( ElectedNode, N,
 					   _WeightedNodes=[ { ElectedNode, List } | T ],  Acc ) ->
 	% Found!
@@ -1151,7 +1157,7 @@ relink_instances( SurvivorAgentPidList, State ) ->
 
 
 
-% @doc Returns a textual description of this manager.
+-doc "Returns a textual description of this manager.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
@@ -1167,13 +1173,14 @@ toString( State ) ->
 
 
 
-% @doc Loop of the internal process to wait for serialisation to be needed.
-%
-% We want the period to be enforced before the end of serialisation N and the
-% beginning of serialisation N+1, not between the beginning of the two
-% serialisations (i.e. the period should not be decreased of the duration of the
-% serialisation itself, as it may last for long, even longer than the period).
-%
+-doc """
+Loop of the internal process to wait for serialisation to be needed.
+
+We want the period to be enforced before the end of serialisation N and the
+beginning of serialisation N+1, not between the beginning of the two
+serialisations (i.e. the period should not be decreased of the duration of the
+serialisation itself, as it may last for long, even longer than the period).
+""".
 time_tracker_main_loop( ResilienceManagerPid,
 						_LastTimestamp=serialisation_in_progress, Period ) ->
 
@@ -1228,10 +1235,7 @@ time_tracker_main_loop( ResilienceManagerPid, LastTimestamp, Period ) ->
 
 
 
-% @doc Returns a textual description of this instance.
-%
-% (helper)
-%
+-doc "Returns a textual description of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -1263,10 +1267,7 @@ to_string( State ) ->
 
 
 
-% @doc Returns a textual description of this k-record.
-%
-% (helper)
-%
+-doc "Returns a textual description of this k-record.".
 -spec k_record_to_string( k_record() ) -> ustring().
 k_record_to_string( #k_record{ securing=Securing,
 							   secured_by=SecuredBy } ) ->
@@ -1297,10 +1298,7 @@ k_record_to_string( #k_record{ securing=Securing,
 
 
 
-% @doc Returns a textual description of this k-map.
-%
-% (helper)
-%
+-doc "Returns a textual description of this k-map.".
 -spec k_map_to_string( k_map() ) -> ustring().
 k_map_to_string( _KMap=undefined ) ->
 	"no k-map defined";
@@ -1321,12 +1319,11 @@ k_map_to_string( KMap ) ->
 
 
 
-% @doc Builds a k-map for the specified resilience level.
-%
-% (state specified for traces)
-%
-% (helper)
-%
+-doc """
+Builds a k-map for the specified resilience level.
+
+(state specified for traces)
+""".
 -spec build_k_map( basic_utils:count(), [ atom_node_name() ] ) -> k_map().
 build_k_map( _ResilienceLevel, _ProtectedNodes=[] ) ->
 	% Empty by design:
@@ -1381,12 +1378,11 @@ build_k_map( ResilienceLevel, ProtectedNodes ) ->
 
 
 
-% @doc Registers nodes one by one in the k-map, thanks to k-records.
+
+% Registers nodes one by one in the k-map, thanks to k-records.
 %
 % For each node, we determine the nodes that it secures, and we let it know to
 % each of them, to establish reverse dependencies.
-%
-% (helper)
 %
 register_nodes( _ProtectedNodes=[], _RingNodes, _ResilienceLevel, KMap ) ->
 	KMap;
@@ -1412,10 +1408,8 @@ register_nodes( _ProtectedNodes=[ N | T ], RingNodes, ResilienceLevel, KMap ) ->
 
 
 
-% @doc Registers the securing node into all its secured ones.
-%
-% (helper)
-%
+
+% Registers the securing node into all its secured ones.
 add_securing_node( SecuringNode, SecuredNodes, KMap ) ->
 
 	lists:foldl( fun( SecuredNode, AccKMap ) ->
@@ -1433,9 +1427,10 @@ add_securing_node( SecuringNode, SecuredNodes, KMap ) ->
 
 
 
-% @doc Returns any pre-existing k-record for specified node, otherwise a newly
-% created one.
-%
+-doc """
+Returns any pre-existing k-record for the specified node, otherwise a newly
+created one.
+""".
 obtain_k_record_for( Node, KMap ) ->
 
 	case table:lookup_entry( _K=Node, KMap ) of
@@ -1451,9 +1446,10 @@ obtain_k_record_for( Node, KMap ) ->
 
 
 
-% @doc Creates the node table, which includes creating the corresponding
-% resilience agents, on each node.
-%
+-doc """
+Creates the node table, which includes creating the corresponding resilience
+agents, on each node.
+""".
 -spec create_node_table( [ atom_node_name() ], k_map(), bin_string() ) ->
 								node_table().
 create_node_table( AllComputingNodes, KMap, ResilienceDirBin ) ->
@@ -1477,9 +1473,10 @@ create_node_table( AllComputingNodes, KMap, ResilienceDirBin ) ->
 
 
 
-% @doc Updates the node table (that is create a table and update the
-% corresponding resilience agents).
-%
+-doc """
+Updates the node table (that is create a table and update the corresponding
+resilience agents).
+""".
 -spec update_node_table( [ atom_node_name() ], node_table(), k_map() ) ->
 								node_table().
 update_node_table( SurvivingNodes, PreviousNodeTable, KMap ) ->
@@ -1509,13 +1506,12 @@ update_node_table( SurvivingNodes, PreviousNodeTable, KMap ) ->
 
 
 
-% @doc Triggers an actual full serialisation of the simulation state, for a
-% later re-use in case of computing node crash(es).
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+Triggers an actual full serialisation of the simulation state, for a later
+re-use in case of computing node crash(es).
+
+Returns an updated state.
+""".
 -spec trigger_serialisation( class_TimeManager:tick_offset(),
 			class_TimeManager:diasca(), wooper:state() ) -> wooper:state().
 trigger_serialisation( Tick, Diasca, State ) ->
@@ -1624,10 +1620,9 @@ trigger_serialisation( Tick, Diasca, State ) ->
 
 
 
-% @doc Collects the various crash reports that may happen in a row (during a
+
+% Collects the various crash reports that may happen in a row (during a
 % short duration).
-%
-% (helper)
 %
 collect_crash_reports( CrashedNodes ) ->
 

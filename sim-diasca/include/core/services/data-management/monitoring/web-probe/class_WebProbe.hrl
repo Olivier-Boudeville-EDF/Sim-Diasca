@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2019-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -17,7 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-% Creation date: Tuesday, June 18, 2019
+% Creation date: Tuesday, June 18, 2019.
 
 
 % Describes options that apply to web probes:
@@ -29,11 +29,7 @@
 	register_as_tracked_producer = true :: boolean(),
 
 
-	% Specifies the directory in which the files related to this probe (ex: *.p,
-	% *.data, *.png) should be written.
+	% Specifies any specific directory in which the files related to this probe
+	% (e.g. *.p, *.data, *.png) should be written.
 	%
-	probe_directory = undefined :: maybe( file_utils:directory_name() ) } ).
-
-
--type web_probe_options() :: #web_probe_options{}.
-% Describes options that apply to web probes.
+	probe_directory = undefined :: option( file_utils:directory_name() ) } ).

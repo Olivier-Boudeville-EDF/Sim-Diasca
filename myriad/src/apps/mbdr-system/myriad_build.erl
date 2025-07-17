@@ -1,22 +1,23 @@
-% Copyright (C) 2020-2024 Olivier Boudeville
-%
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Copyright (C) 2020-2025 Olivier Boudeville
 %
 % Released as LGPL software.
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2020.
 
-
-% @doc An experimental (not functional yet) module to <b>explore alternate build
-% systems</b>.
-%
-% We finally stick to our make-based build system that we found more suitable
-% than (for example) rebar3.
-%
-% Better here than in `myriad-build.escript' to benefit from a more
-% user-friendly debugging.
-%
-% @hidden Most empty currently.
-%
 -module(myriad_build).
+
+% Should be hidden, as not useful to list in APIs (and mostly empty currently):
+-moduledoc """
+An experimental (not functional yet) module to **explore alternate build
+systems**.
+
+We finally stick to our make-based build system that we found more suitable than
+ (for example) rebar3.
+
+Better here than in `myriad-build.escript` to benefit from a more user-friendly
+debugging.
+""".
 
 
 -define( exec_name, "myriad-build.escript" ).
@@ -26,17 +27,17 @@
 
 
 
-% @doc Typically for testing.
+-doc "Typically for testing.".
 -spec run() -> void().
 run() ->
-	ArgTable = shell_utils:get_argument_table(),
+	ArgTable = cmd_line_utils:get_argument_table(),
 	main( ArgTable ).
 
 
 % Defaults:
 
 
-% @doc Returns the usage information of the corresponding application.
+-doc "Returns the usage information of the corresponding application.".
 -spec get_usage() -> void().
 get_usage() ->
 	text_utils:format( "Usage: ~ts MBDR_PROJECT_FILE.mbdr"
@@ -47,14 +48,15 @@ get_usage() ->
 
 
 
-% @doc Sole entry point for this generation service, either triggered by `run/0'
-% or by the associated escript.
-%
--spec main( shell_utils:argument_table() ) -> void().
+-doc """
+Sole entry point for this buid service, either triggered by `run/0` or by the
+associated escript.
+""".
+-spec main( cmd_line_utils:argument_table() ) -> void().
 main( ArgTable ) ->
 
 	%trace_utils:debug_fmt( "Original script-specific arguments: ~ts",
-	%	[ shell_utils:argument_table_to_string( ArgTable ) ] ),
+	%   [ cmd_line_utils:argument_table_to_string( ArgTable ) ] ),
 
 	[ %InteractiveRefKey,
 	  HelpRefKey ] =
@@ -67,7 +69,7 @@ main( ArgTable ) ->
 			{ HelpRefKey, [ 'h' ] } ], ArgTable ),
 
 	%trace_utils:debug_fmt( "Canonicalized script-specific arguments: ~ts",
-	%	   [ shell_utils:argument_table_to_string( MergedTable ) ] ),
+	%   [ cmd_line_utils:argument_table_to_string( MergedTable ) ] ),
 
 	list_table:has_entry( HelpRefKey, MergedTable ) andalso display_usage(),
 
@@ -96,7 +98,7 @@ main( ArgTable ) ->
 
 		UnexpectedOpts ->
 			trace_utils:error_fmt( "Unexpected user input: ~ts~n~ts",
-				[ shell_utils:argument_table_to_string( ResultingTable ),
+				[ cmd_line_utils:argument_table_to_string( ResultingTable ),
 				  get_usage() ] ),
 			throw( { unexpected_command_line_options, UnexpectedOpts } )
 
@@ -107,7 +109,8 @@ main( ArgTable ) ->
 	basic_utils:stop( _ErrorCode=0 ).
 
 
-% @doc Displays the usage of this service, and stops (with no error).
+
+-doc "Displays the usage of this service, and stops (with no error).".
 display_usage() ->
 	io:format( get_usage(), [] ),
 	basic_utils:stop( _ErrorCode=0 ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 EDF R&D
+% Copyright (C) 2012-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -23,16 +23,20 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
+-module(case_facilities).
+
+-moduledoc """
+Provides a few basic **facilities for simulation cases**, at the level of the
+Sim-Diasca layer (first one to introduce the concept of case).
+
+Class defining the overall, unique **manager of all Java Virtual Machines**
+spawned by the engine.
+""".
 
 % Directly obtained from myriad/src/utils/test_facilities.erl.
 
-
-% @doc This module defines a few basic <b>facilities for simulation cases</b>,
-% at the level of the Sim-Diasca layer (first one to introduce the concept of
-% case).
-%
--module(case_facilities).
 
 
 % To be output before each displayed message:
@@ -42,26 +46,29 @@
 -export([ start/1, stop/0, display/1, display/2, fail/1, fail/2, finished/0 ] ).
 
 
-% Shorthands:
+% Type shorthands:
+
+-type module_name() :: basic_utils:module_name().
 
 -type ustring() :: text_utils:ustring().
 
 -type format_string() :: text_utils:format_string().
 -type format_values() :: text_utils:format_values().
 
+-type maybe_list( T ) :: list_utils:maybe_list( T ).
 
 
-% @doc Starts a case; expected to be the first case statement.
-%
-% Here we disable explicitly the trapping of EXIT events, as a function run
-% through "erl -eval" (like our cases) or through "erl -run" will be executed in
-% a process which will silently trap EXIT events, which would mean that the
-% crash of any process created from the case, even thanks to spawn_link, would
-% most probably remain unnoticed (just leading to an EXIT message happily
-% sitting in the mailbox of the case process).
-%
--spec start( basic_utils:module_name() | [ basic_utils:module_name() ] ) ->
-					void().
+-doc """
+Starts a case; expected to be the first case statement.
+
+Here we disable explicitly the trapping of EXIT events, as a function run
+through "erl -eval" (like our cases) or through "erl -run" will be executed in a
+process which will silently trap EXIT events, which would mean that the crash of
+any process created from the case, even thanks to spawn_link, would most
+probably remain unnoticed (just leading to an EXIT message happily sitting in
+the mailbox of the case process).
+""".
+-spec start( maybe_list( module_name() ) ) -> void().
 start( Module ) when is_atom( Module ) ->
 	erlang:process_flag( trap_exit, false ),
 	basic_utils:display( "~n~n--> Running case ~ts.~n", [ Module ] );
@@ -72,7 +79,9 @@ start( Modules ) when is_list( Modules ) ->
 
 
 
-% @doc Stops a case; expected to be the last case statement in the normal case.
+-doc """
+Stops a case; expected to be the last case statement in the normal case.
+""".
 -spec stop() -> no_return().
 stop() ->
 	basic_utils:display( "\n--> Successful termination of case.\n" ),
@@ -80,7 +89,7 @@ stop() ->
 
 
 
-% @doc Displays a case message.
+-doc "Displays a case message.".
 -spec display( ustring() ) -> void().
 display( Message ) ->
 	% Carriage return already added in basic_utils:display/1:
@@ -88,11 +97,12 @@ display( Message ) ->
 
 
 
-% @doc Displays a case message, once formatted.
-%
-% FormatString is an io:format-style format string, ValueList is the
-% corresponding list of field values.
-%
+-doc """
+Displays a case message, once formatted.
+
+FormatString is an io:format-style format string, ValueList is the corresponding
+list of field values.
+""".
 -spec display( format_string(), format_values() ) -> void().
 display( FormatString, ValueList ) ->
 	basic_utils:display( FormatString, ValueList ).
@@ -102,7 +112,7 @@ display( FormatString, ValueList ) ->
 -define(ExitAfterCase,).
 
 
-% @doc Called for proper teardown.
+-doc "Called for proper teardown.".
 -spec finished() -> no_return().
 
 
@@ -141,10 +151,11 @@ finished() ->
 
 
 
-% @doc To be called whenever a case is to fail (crash on error) immediately.
-%
-% Ex: case_facilities:fail( "server on strike" )
-%
+-doc """
+To be called whenever a case is to fail (crash on error) immediately.
+
+For example: ``case_facilities:fail("server on strike").``
+""".
 -spec fail( ustring() ) -> no_return().
 fail( Reason ) ->
 
@@ -163,21 +174,23 @@ fail( Reason ) ->
 
 	% Useless, but otherwise Dialyzer will complain that this function has no
 	% local return:
+    %
 	case_failed.
 
 
 
-% @doc To be called whenever a case is to fail (crash on error) immediately.
-%
-% FormatString is an io:format-style format string, ValueList is the
-% corresponding list of field values.
-%
-% Ex: case_facilities:fail("server ~ts on strike", ["foobar.org"])
-%
+-doc """
+To be called whenever a case is to fail (crash on error) immediately.
+
+FormatString is an io:format-style format string, ValueList is the corresponding
+list of field values.
+
+For example: ``case_facilities:fail("server ~ts on strike", ["foobar.org"])``.
+""".
 -spec fail( format_string(), format_values() ) -> no_return().
 fail( FormatString, ValueList ) ->
 
-	% For some reason, erlang:error is unable to interpret strings as strings,
+	% For some reason, erlang:error/1 is unable to interpret strings as strings,
 	% they are always output as unreadable lists.
 
 	ErrorMessage = text_utils:format( "~n!!!! Case failed, reason: ~ts.~n~n",

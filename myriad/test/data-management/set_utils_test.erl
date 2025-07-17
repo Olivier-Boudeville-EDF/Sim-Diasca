@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,13 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2016.
 
-
-% Unit tests for the set management utilities.
-%
-% See the list_utils.erl tested module.
-%
 -module(set_utils_test).
+
+-moduledoc """
+Unit tests for the **set** management utilities.
+
+See the list_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -48,7 +51,7 @@ run() ->
 	true = set_utils:is_empty( EmptySet ),
 	0 = set_utils:size( EmptySet ),
 
-	test_facilities:display( "Empty: ~ts", 
+	test_facilities:display( "Empty: ~ts",
 							 [ set_utils:to_string( EmptySet ) ] ),
 
 

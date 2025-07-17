@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,9 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, February 26, 2022.
 
-
-% @doc Gathering of various facilities for <b>mouse management</b>.
 -module(gui_mouse).
+
+-moduledoc """
+Gathering of various facilities for **mouse management**.
+""".
 
 
 % We consider that each mouse can have up to 5 buttons, designated as:
@@ -62,6 +64,12 @@
 
 
 % To be kept updated with list_cursor_types/0:
+-doc """
+A cursor is a small bitmap usually used for denoting where the mouse pointer is,
+with a picture that might indicate the interpretation of a mouse click.
+
+Refer to the 'cursor' example of wx:demo/0 that showcases them all.
+""".
 -type cursor_type() ::
 	'default'
   | 'none' % Unsupported type
@@ -93,19 +101,22 @@
   | 'size_nw_se'
   | 'size_we'
   | 'sizing'.
-% A cursor is a small bitmap usually used for denoting where the mouse pointer
-% is, with a picture that might indicate the interpretation of a mouse click.
-%
-% Refer to the 'cursor' example of wx:demo/0 that showcases them all.
 
 
+-doc """
+A table storing the correspondance between MyriadGUI and backend cursor types.
+""".
 -type cursor_table() :: table( cursor_type(), wx_cursor_type() ).
-% A table storing the correspondance between MyriadGUI and backend cursor types.
 
+
+-doc """
+Tells whether the mouse shall be grabbed.
+""".
 -type grab_status() :: 'no_grab' | 'still_grabbed'.
 
 
 % To be kept in line with get_{all_mouse_event_types,event_types_to_trap}/0.
+-doc "A type of event possibly emitted by a mouse.".
 -type mouse_event_type() ::
 
 	% Button 1:
@@ -131,9 +142,9 @@
 	% Wheel:
 	| 'onMouseWheelScrolled'
 
-	| 'onMouseEnteredWindow' | 'onMouseLeftWindow'
+	| 'onMouseEnteredWidget' | 'onMouseLeftWidget'
 	| 'onMouseMoved'.
-% A type of event possibly emitted by a mouse.
+
 
 -export_type([ cursor_type/0, cursor_table/0, grab_status/0,
 			   mouse_event_type/0 ]).
@@ -150,16 +161,17 @@
 
 % Internals:
 
+-doc "See include/wx.hrl.".
 -type wx_cursor_type() :: non_neg_integer().
-% See include/wx.hrl.
+
 
 -export([ cursor_type_to_wx/1 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type coordinate() :: gui:coordinate().
--type window() :: gui:window().
+-type window() :: gui_window:window().
 -type gui_env_pid() :: gui:gui_env_pid().
 
 -type gui_env_designator() :: gui:gui_env_designator().
@@ -168,10 +180,11 @@
 
 
 
-% @doc Registers in the MyriadGUI environment server the mouse-related settings.
-%
-% This server is expected to already exist.
-%
+-doc """
+Registers in the MyriadGUI environment server the mouse-related settings.
+
+This server is expected to already exist.
+""".
 -spec register_in_environment( gui_env_pid() ) -> void().
 register_in_environment( GUIEnvPid ) ->
 	AllCursorTypes = list_cursor_types(),
@@ -180,11 +193,12 @@ register_in_environment( GUIEnvPid ) ->
 	environment:cache( { grab_stack, [] }, GUIEnvPid ).
 
 
-% @doc Sets in the MyriadGUI environment server the specified standard mouse
-% cursors.
-%
-% The GUI environment is assumed to be already known of the caller cache.
-%
+
+-doc """
+Sets in the MyriadGUI environment server the specified standard mouse cursors.
+
+The GUI environment is assumed to be already known of the caller cache.
+""".
 -spec set_cursor_types( [ cursor_type() ], gui_env_pid() ) -> void().
 set_cursor_types( CursorTypes, GUIEnvPid ) ->
 	CursorEntries = [ { CT,
@@ -223,7 +237,9 @@ set_cursor_types( CursorTypes, GUIEnvPid ) ->
 
 
 
-% @doc Unregisters the mouse-related settings from the MyriadGUI environment.
+-doc """
+Unregisters the mouse-related settings from the MyriadGUI environment.
+""".
 -spec unregister_from_environment( gui_env_pid() ) -> void().
 unregister_from_environment( GUIEnvPid ) ->
 
@@ -234,7 +250,7 @@ unregister_from_environment( GUIEnvPid ) ->
 
 
 
-% @doc Returns a list of all types of mouse-related events.
+-doc "Returns a list of all types of mouse-related events.".
 -spec get_all_mouse_event_types() -> [ mouse_event_type() ].
 get_all_mouse_event_types() ->
 
@@ -264,21 +280,22 @@ get_all_mouse_event_types() ->
 	  % Wheel:
 	  onMouseWheelScrolled,
 
-	  onMouseEnteredWindow, onMouseLeftWindow,
+	  onMouseEnteredWidget, onMouseLeftWidget,
 	  onMouseMoved ].
 
 
 
-% @doc Returns a list of the types of mouse-related events that shall be trapped
-% by default.
-%
+-doc """
+Returns a list of the types of mouse-related events that shall be trapped by
+default.
+""".
 -spec get_event_types_to_trap() -> [ mouse_event_type() ].
 get_event_types_to_trap() ->
 	get_all_mouse_event_types().
 
 
 
-% @doc Returns a list of all the standard mouse cursor types.
+-doc "Returns a list of all the standard mouse cursor types.".
 -spec list_cursor_types() -> [ cursor_type() ].
 list_cursor_types() ->
 	% To be kept updated with the cursor_type/0 type:
@@ -292,13 +309,14 @@ list_cursor_types() ->
 
 
 
-% @doc Sets the type of the current mouse cursor.
+-doc "Sets the type of the current mouse cursor.".
 -spec set_cursor( cursor_type() ) -> void().
 set_cursor( CursorType ) ->
 	set_cursor( CursorType, ?gui_env_reg_name ).
 
 
-% @doc Sets the type of the current mouse cursor.
+
+-doc "Sets the type of the current mouse cursor.".
 -spec set_cursor( cursor_type(), gui_env_designator() ) -> void().
 set_cursor( CursorType, GUIEnvDesignator ) ->
 
@@ -341,20 +359,23 @@ set_cursor( CursorType, GUIEnvDesignator ) ->
 
 % Section about mouse grabbing.
 
-% @doc Resets the mouse grabbing, releasing it.
+
+-doc "Resets the mouse grabbing, releasing it.".
 -spec reset_grab() -> void().
 reset_grab() ->
 	reset_grab( _ReleaseGrab=true ).
 
 
-% @doc Resets the mouse grabbing, releasing it if requested.
+
+-doc "Resets the mouse grabbing, releasing it if requested.".
 -spec reset_grab( boolean() ) -> void().
 reset_grab( ReleaseGrab ) ->
 	GUIEnvPid = environment:get_server( ?gui_env_reg_name ),
 	reset_grab( ReleaseGrab, GUIEnvPid ).
 
 
-% @doc Resets the mouse grabbing, releasing it if requested.
+
+-doc "Resets the mouse grabbing, releasing it if requested.".
 -spec reset_grab( boolean(), gui_env_pid() ) -> void().
 reset_grab( ReleaseGrab, GUIEnvPid ) ->
 	case environment:get( grab_stack, GUIEnvPid ) of
@@ -372,14 +393,15 @@ reset_grab( ReleaseGrab, GUIEnvPid ) ->
 
 
 
-% @doc Have the specified window grab the mouse cursor.
+-doc "Have the specified window grab the mouse cursor.".
 -spec grab( window() ) -> void().
 grab( Window ) ->
 	GUIEnvPid = environment:get_server( ?gui_env_reg_name ),
 	grab( Window, GUIEnvPid ).
 
 
-% @doc Have the specified window grab the mouse cursor.
+
+-doc "Have the specified window grab the mouse cursor.".
 -spec grab( window(), gui_env_pid() ) -> void().
 grab( Window, GUIEnvPid ) ->
 	case environment:get( grab_stack, GUIEnvPid ) of
@@ -402,18 +424,21 @@ grab( Window, GUIEnvPid ) ->
 
 
 
-% @doc Ungrabs the mouse cursor, having it appear (warp) at specified
-% coordinates, returns whether it is still grabbed.
-%
+-doc """
+Ungrabs the mouse cursor, having it appear (warp) at specified coordinates,
+returns whether it is still grabbed.
+""".
 -spec ungrab( coordinate(), coordinate() ) -> grab_status().
 ungrab( X, Y ) ->
 	GUIEnvPid = environment:get_server( ?gui_env_reg_name ),
 	ungrab( X, Y, GUIEnvPid ).
 
 
-% @doc Ungrabs the mouse cursor, having it appear (warp) at specified
-% coordinates, returns whether it is still grabbed.
-%
+
+-doc """
+Ungrabs the mouse cursor, having it appear (warp) at specified coordinates,
+returns whether it is still grabbed.
+""".
 -spec ungrab( coordinate(), coordinate(), gui_env_pid() ) -> grab_status().
 ungrab( X, Y, GUIEnvPid ) ->
 
@@ -437,32 +462,36 @@ ungrab( X, Y, GUIEnvPid ) ->
 
 
 
-% @doc Tells whether the mouse cursor is grabbed.
+
+-doc "Tells whether the mouse cursor is grabbed.".
 -spec is_grabbed() -> boolean().
 is_grabbed() ->
 	GUIEnvPid = environment:get_server( ?gui_env_reg_name ),
 	is_grabbed( GUIEnvPid ).
 
 
-% @doc Tells whether the mouse cursor is grabbed.
+
+-doc "Tells whether the mouse cursor is grabbed.".
 -spec is_grabbed( gui_env_pid() ) -> boolean().
 is_grabbed( GUIEnvPid ) ->
 	environment:get( grab_stack, GUIEnvPid ) =/= [].
 
 
 
-% @doc Warps (moves) the mouse cursor at the specified location on the specified
-% window.
-%
+-doc """
+Warps (moves) the mouse cursor at the specified location on the specified
+window.
+""".
 -spec warp( window(), coordinate(), coordinate() ) -> void().
 warp( Window, X, Y ) ->
 	GUIEnvPid = environment:get_server( ?gui_env_reg_name ),
 	warp( Window, X, Y, GUIEnvPid ).
 
 
-% @doc Warps (moves) the mouse cursor at the specified location on the specified
-% window.
-%
+-doc """
+Warps (moves) the mouse cursor at the specified location on the specified
+window.
+""".
 -spec warp( window(), coordinate(), coordinate(), gui_env_pid() ) -> void().
 warp( Window, X, Y, GUIEnvPid ) ->
 	environment:set( warp_coordinates, _Point={X,Y}, GUIEnvPid ),
@@ -470,9 +499,10 @@ warp( Window, X, Y, GUIEnvPid ) ->
 
 
 
-% @doc Returns a blank cursor, either the specified predefined one if legit or,
-% if it has no data associated, a new one.
-%
+-doc """
+Returns a blank cursor, either the specified predefined one if legit or, if it
+has no data associated, a new one.
+""".
 -spec blank( wxCursor() ) -> wxCursor().
 blank( WxCursor ) ->
 	case wxCursor:ok( WxCursor ) of
@@ -504,7 +534,9 @@ blank( WxCursor ) ->
 % Helpers related to wx:
 
 
-% @doc Returns the wx cursor type corresponding to the MyriadGUI specified one.
+-doc """
+Returns the wx cursor type corresponding to the MyriadGUI specified one.
+""".
 -spec cursor_type_to_wx( cursor_type() ) -> wx_cursor_type().
 % From wx.hrl:
 cursor_type_to_wx( default ) -> ?wxCURSOR_DEFAULT;

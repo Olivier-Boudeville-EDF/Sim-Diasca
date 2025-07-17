@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 EDF R&D
+% Copyright (C) 2014-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -20,14 +20,15 @@
 % Creation date: 2014.
 
 
-% @doc Module dedicated to the <b>loading of instances</b> from an information
-% stream.
-%
-% The typical use case is to load from a set of files a description of the
-% initial state of the simulation, i.e. the construction parameters of initial
-% actors and scenarios.
-%
 -module(instance_loading).
+
+-moduledoc """
+Module dedicated to the **loading of instances** from an information stream.
+
+The typical use case is to load from a set of files a description of the initial
+state of the simulation, i.e. the construction parameters of initial actors and
+scenarios.
+""".
 
 
 % For all traces (sent with ?notify_* or trace_bridge); must be included before
@@ -72,51 +73,58 @@
 
 % Types related to creation lines:
 
+
+-doc "To identify a construction line in a file; therefore a physical line.".
 -type line_number() :: count().
-% To identify a construction line in a file; therefore a physical line.
 
 
+-doc "A full line being examined (as a binary).".
 -type line() :: bin_string().
-% A full line being examined (as a binary).
 
 
+-doc "Information about a read creation line.".
 -type line_info() :: { line_number(), line() }.
-% Information about a read creation line.
 
 
+-doc "Full information to create an instance.".
 -type creation_spec() :: { classname(), [ method_argument() ],
 						   class_LoadBalancer:placement_hint(), line_number() }.
-% Full information to create an instance.
 
 
+-doc "Full context of a parsed creation line (file origin, etc.).".
 -type line_context() ::
 	{ bin_file_name(), StartLineNumber :: line_number(), line() }.
-% Full context of a parsed creation line (file origin, etc.).
 
 
 
+-doc "A user-specified identifier of an initially-created actor instance.".
 -type user_identifier() :: bin_string().
-% A user-specified identifier of an initially-created actor instance.
 
 
+-doc """
+A user-specified identifier of an initially-created actor instance, as a plain
+string.
+""".
 -type plain_user_identifier() :: ustring().
-% A user-specified identifier of an initially-created actor instance, as a plain
-% string.
 
 
+-doc """
+A user-specified identifier, as any type of string, of an initially-created
+actor instance.
+""".
 -type any_user_identifier() :: user_identifier() | plain_user_identifier().
-% A user-specified identifier, as any type of string, of an initially-created
-% actor instance.
 
 
 
+-doc """
+Used in a creation specification, as a construction parameter referring to
+another initial actor instance.
+""".
 -type id_ref() :: { 'user_id', any_user_identifier() }.
-% Used in a creation specification, as a construction parameter referring to
-% another initial actor instance.
 
 
+-doc "Either the user identifier itself (as a binary) or 'none'.".
 -type identifier_info() :: user_identifier() | 'none'.
-% Either the user identifier itself (as a binary) or 'none'.
 
 
 -export_type([ line_number/0, creation_spec/0,
@@ -139,34 +147,8 @@
 -include_lib("traces/include/traces.hrl").
 
 % For load_balancer_pid() and others:
--include("engine_common_defines.hrl").
+%-include("engine_common_defines.hrl").
 
-
-
-% Shorthands:
-
--type count() :: basic_utils:count().
-
--type file_name() :: file_utils:file_name().
--type bin_file_name() :: file_utils:bin_file_name().
--type file_path() :: file_utils:file_path().
--type file() :: file_utils:file().
-
--type ustring() :: text_utils:ustring().
--type bin_string() :: text_utils:bin_string().
-
--type id_resolver_pid() :: pid().
--type creator_pid() :: pid().
--type reader_pid() :: pid().
--type loader_pid() :: pid().
--type instance_pid() :: pid().
-
--type classname() :: wooper:classname().
--type method_argument() :: wooper:method_argument().
-
-
-% For myriad_spawn*:
--include_lib("myriad/include/spawn_utils.hrl").
 
 
 
@@ -241,24 +223,56 @@
 
 
 
-% @doc Returns a suitable user_id reference, as a string, from the specified
-% user identifier.
-%
-% For example, get_user_id_reference_for("John") = "{user_id, \"John\"}".
-%
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+
+-type file_name() :: file_utils:file_name().
+-type bin_file_name() :: file_utils:bin_file_name().
+-type file_path() :: file_utils:file_path().
+-type file() :: file_utils:file().
+
+-type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+-type id_resolver_pid() :: pid().
+-type creator_pid() :: pid().
+-type reader_pid() :: pid().
+-type loader_pid() :: pid().
+-type instance_pid() :: pid().
+
+-type classname() :: wooper:classname().
+-type method_argument() :: wooper:method_argument().
+
+
+% For myriad_spawn*:
+-include_lib("myriad/include/spawn_utils.hrl").
+
+
+
+-doc """
+Returns a suitable user_id reference, as a string, from the specified user
+identifier.
+
+For example, get_user_id_reference_for("John") = "{user_id, \"John\"}".
+""".
 -spec get_user_id_reference_for( any_user_identifier() ) -> ustring().
 get_user_id_reference_for( AnyUserId ) ->
 	text_utils:format( "{user_id,\"~ts\"}",
 					   [ text_utils:ensure_string( AnyUserId ) ] ).
 
 
-% @doc Returns a suitable user_id reference, as a string, from the specified
-% user identifier (if any).
-%
-% For example, get_user_id_reference_for("John") = "{user_id, \"John\"}".
-%
--spec get_maybe_user_id_reference_for( maybe( any_user_identifier() ) ) ->
-													maybe( ustring() ).
+
+-doc """
+Returns a suitable user_id reference, as a string, from the specified user
+identifier (if any).
+
+For example, `get_user_id_reference_for("John") = "{user_id, \"John\"}".`.
+""".
+-spec get_maybe_user_id_reference_for( option( any_user_identifier() ) ) ->
+													option( ustring() ).
 get_maybe_user_id_reference_for( _MaybeAnyUserId=undefined ) ->
 	undefined;
 
@@ -268,14 +282,13 @@ get_maybe_user_id_reference_for( AnyUserId ) ->
 
 
 
-% @doc Entry point of the logic for instance loading, when having to create the
-% initial instances from specified file(s).
-%
-% Typically spawned-linked from the load balancer (see class_LoadBalancer),
-% letting it able to answer placement requests and al afterwards.
-%
-% (helper)
-%
+-doc """
+Entry point of the logic for instance loading, when having to create the initial
+instances from specified file(s).
+
+Typically spawned-linked from the load balancer (see class_LoadBalancer),
+letting it able to answer placement requests and al afterwards.
+""".
 -spec manage_initialisation( [ file_path() ], count(), load_balancer_pid() ) ->
 									no_return().
 manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
@@ -426,7 +439,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
 
 
-% @doc Main loop driving the loadings.
+-doc "Main loop driving the loadings.".
 -spec initialisation_waiting_loop( id_resolver_pid(), count(),
 			[ creator_pid() ], [ reader_pid() ],
 			time_utils:precise_timestamp(), load_balancer_pid() ) -> void().
@@ -533,13 +546,14 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 
 
 
-% @doc Code entry point for a reader of a given initialisation file.
-%
-% Typically spawned-linked by the main, overall process in charge of instance
-% loading.
-%
-% Quite often a single reader process is created.
-%
+-doc """
+Code entry point for a reader of a given initialisation file.
+
+Typically spawned-linked by the main, overall process in charge of instance
+loading.
+
+Quite often a single reader process is created.
+""".
 -spec read_init_file( file_path(), [ creator_pid() ], loader_pid() ) ->
 							no_return().
 read_init_file( FilePath, Creators, InstanceLoaderPid ) ->
@@ -614,9 +628,10 @@ read_init_file( FilePath, Creators, InstanceLoaderPid ) ->
 
 
 
-% @doc Reads all lines of specified file, by chunks of specified size, and feeds
-% them to creators as early as possible.
-%
+-doc """
+Reads all lines of specified file, by chunks of specified size, and feeds them
+to creators as early as possible.
+""".
 -spec read_all_lines( file(), count(), count(), [ creator_pid() ],
 					  file_name() ) -> count().
 read_all_lines( File, CurrentChunkSize, MaxChunkSize, Creators, Filename ) ->
@@ -757,29 +772,31 @@ read_all_lines( File, CurrentChunkSize, MaxChunkSize, CreationCount,
 
 
 
-% @doc Returns {InfoLines,CurrentLineNumber,ChunkCreationCount}, where:
-%
-% - InfoLines is a list of up to ChunkCount pairs, made of a line number and of
-% a logical creation line (as a binary), read from the specified file
-%
-% - CurrentLineNumber is the new current line number
-%
-% - ChunkCreationCount is the number of creations done through this chunk
-%
-% We read physical lines, yet we want to consider logical ones (possibly
-% spreading over multiple physical ones), so we have to perform a pre-parsing.
-%
-% We record also the (physical) line number of the start of a logical line, so
-% that error messages, in case of a parsing reporting an internal error line
-% within a logical line, can point to the correct absolute physical line.
-%
-% Note: line order is not preserved (each chunk is in reverse order compared to
-% the one of the read file), but, as we record the line number anyway, and will
-% rely on it to preserve reproducibility, this is not a problem.
-%
-% Creation count is passed just so that we can emit a progress trace, as
-% instances are being created.
-%
+-doc """
+Returns `{InfoLines, CurrentLineNumber, ChunkCreationCount}`, where:
+
+- InfoLines is a list of up to ChunkCount pairs, made of a line number and of a
+logical creation line (as a binary), read from the specified file
+
+- CurrentLineNumber is the new current line number
+
+- ChunkCreationCount is the number of creations done through this chunk
+
+We read physical lines, yet we want to consider logical ones (possibly spreading
+over multiple physical ones), so we have to perform a pre-parsing.
+
+We record also the (physical) line number of the start of a logical line, so
+that error messages, in case of a parsing reporting an internal error line
+within a logical line, can point to the correct absolute physical line.
+
+Note: line order is not preserved (each chunk is in reverse order compared to
+the one of the read file), but, as we record the line number anyway, and will
+rely on it to preserve reproducibility, this is not a problem.
+
+Creation count is passed just so that we can emit a progress trace, as instances
+are being created.
+
+""".
 -spec read_chunk( file(), count(), line_number(), count(), file_name() ) ->
 						{ [ line_info() ], line_number(), count() }.
 read_chunk( File, ChunkSize, CurrentLineNumber, CreationCount,
@@ -885,14 +902,15 @@ read_chunk( File, ChunkCount, CurrentLineNumber, CreationCount, ShortenFilename,
 
 
 
-% @doc Tells whether the specified logical line is autonomous, that is whether
-% it should be interpreted as a full (non-truncated) creation line, or it shall
-% be ignored.
-%
-% We are still in the sequential section, we want to perform only the most
-% lightweight pre-parsing here, so that the actual parsing is done at the next
-% step, in the parallel pool.
-%
+-doc """
+Tells whether the specified logical line is autonomous, that is whether it
+should be interpreted as a full (non-truncated) creation line, or it shall be
+ignored.
+
+We are still in the sequential section, we want to perform only the most
+lightweight pre-parsing here, so that the actual parsing is done at the next
+step, in the parallel pool.
+""".
 -spec is_complete_logical_line( line() ) -> boolean() | 'ignore'.
 is_complete_logical_line( Line ) ->
 
@@ -939,7 +957,7 @@ is_complete_logical_line( Line ) ->
 
 
 
-% @doc Main loop of an instance creator process.
+-doc "Main loop of an instance creator process.".
 -spec instance_creator_loop( count(), id_resolver_pid(),
 		load_balancer_pid(), loader_pid() ) -> no_return().
 instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
@@ -1054,12 +1072,13 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 
 
 
-% @doc Parses (supposedly from an instance creator process) the specified
-% creation line, possibly resulting on an instance creation and on various blank
-% processes to be created.
-%
-% Synchronicity enforced here, for a better control.
-%
+-doc """
+Parses (supposedly from an instance creator process) the specified creation
+line, possibly resulting on an instance creation and on various blank processes
+to be created.
+
+Synchronicity enforced here, for a better control.
+""".
 -spec parse_creation_line( line_info(), bin_file_name(), id_resolver_pid(),
 				load_balancer_pid() ) -> instance_pid() | 'no_creation'.
 parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
@@ -1171,15 +1190,16 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 
 
 
-% @doc Returns {BinUserId,ActualCreationLine} from specified string, akin to:
-% 'John" <- {class_Beatle,[{user_id,"Paul"},{user_id,"George"}]}.'  (note that
-% there is no leading '"' expected here)
-%
-% Should return : { <<"John">>,
-%   "{class_Beatle,[{user_id,\"Paul\"},{user_id,\"George\"}]}." }
-%
-% LineContext is {BinFilename,LineNumber,BinLine}:
-%
+-doc """
+Returns `{BinUserId, ActualCreationLine}` from specified string, akin to:
+`'John" <- {class_Beatle,[{user_id,"Paul"},{user_id,"George"}]}.'` (note that
+there is no leading '"' expected here).
+
+Should return : `{<<"John">>,
+  "{class_Beatle,[{user_id,\"Paul\"},{user_id,\"George\"}]}."}`.
+
+LineContext is `{BinFilename, LineNumber, BinLine}`.
+""".
 -spec extract_id( ustring(), line_context() ) -> { bin_string(), ustring() }.
 extract_id( String, LineContext ) ->
 
@@ -1217,11 +1237,12 @@ extract_id( String, LineContext ) ->
 
 
 
-% @doc Creates a corresponding instance from the specified actual creation
-% clause, like: {class_Foo, ["Hello world!", {user_id,"Charles"}, 154.06],
-% _PlacementHint="greetings"} and user_id information for this instance to
-% create.
-%
+-doc """
+Creates a corresponding instance from the specified actual creation clause,
+like: `{class_Foo, ["Hello world!", {user_id,"Charles"}, 154.06],
+_PlacementHint="greetings"}` and user_id information for this instance to
+create.
+""".
 -spec create_instance_from( ustring(), identifier_info(), line_context(),
 		id_resolver_pid(), load_balancer_pid() ) -> instance_pid().
 create_instance_from( CreationClause, IdInfo,
@@ -1260,7 +1281,7 @@ create_instance_from( CreationClause, IdInfo,
 
 					{ ActualConstructionParameters, _FirstUserId } =
 						replace_identifiers_by_pid( Args, IdResolverPid,
-											LoadBalancerPid, LineContext ),
+							LoadBalancerPid, LineContext ),
 
 					%trace_utils:debug_fmt( "using '~p' as placement hint and "
 					%   "'~p' as construction parameters.",
@@ -1275,7 +1296,7 @@ create_instance_from( CreationClause, IdInfo,
 					end,
 
 					BlankPid = wooper:create_hosting_process( _Loc=TargetNode,
-											_ToLinkWithPid=LoadBalancerPid ),
+						_ToLinkWithPid=LoadBalancerPid ),
 
 					FullParams =
 						[ ActorSettings | ActualConstructionParameters ],
@@ -1322,7 +1343,7 @@ create_instance_from( CreationClause, IdInfo,
 					%
 					{ ActualConstructionParameters, FirstUserId } =
 						replace_identifiers_by_pid( Args, IdResolverPid,
-											LoadBalancerPid, LineContext ),
+							LoadBalancerPid, LineContext ),
 
 					% The target instance might not have a user identifier
 					% defined for it; in this case we could thus create it
@@ -1368,7 +1389,7 @@ create_instance_from( CreationClause, IdInfo,
 						none ->
 							% No need to involve the id resolver here:
 							wooper:create_hosting_process( _Loc=TargetNode,
-										_ToLinkWithPid=LoadBalancerPid );
+								_ToLinkWithPid=LoadBalancerPid );
 
 						_ ->
 							% Here the id resolver shall create a corresponding
@@ -1393,7 +1414,7 @@ create_instance_from( CreationClause, IdInfo,
 					cond_utils:if_defined( sim_diasca_debug_instance_loading,
 						trace_utils:debug_fmt(
 							" - embodiment of an instance of ~ts",
-							[ Class ] ) ),
+                            [ Class ] ) ),
 
 					%trace_utils:debug_fmt(
 					%   " - embodiment of an instance of ~ts "
@@ -1425,12 +1446,13 @@ create_instance_from( CreationClause, IdInfo,
 
 
 
-% @doc Explores and transforms specified construction arguments, replacing
-% {user_id,Id} by the corresponding PID to be used for that identifier, and
-% returning a {ActualConstructionParameters, FirstUserIdFound} pair made of the
-% transformed parameters and the first user identifier referenced in them (if
-% any).
-%
+-doc """
+Explores and transforms specified construction arguments, replacing
+`{user_id,Id}` by the corresponding PID to be used for that identifier, and
+returning a `{ActualConstructionParameters, FirstUserIdFound}` pair made of the
+transformed parameters and the first user identifier referenced in them (if
+any).
+""".
 -spec replace_identifiers_by_pid( [ method_argument() ], id_resolver_pid(),
 			load_balancer_pid(), line_context() ) ->
 						{ [ method_argument() ], identifier_info() }.
@@ -1458,11 +1480,12 @@ replace_identifiers_by_pid( Arguments, IdResolverPid, LoadBalancerPid,
 
 
 
-% @doc Transforms specified argument, replacing {user_id,Id} by the
-% corresponding PID to be used, and updating the first user identifier found.
-%
-% Returns {TransformedArgument, FirstUserId}.
-%
+-doc """
+Transforms specified argument, replacing `{user_id,Id}` by the corresponding PID
+to be used, and updating the first user identifier found.
+
+Returns `{TransformedArgument, FirstUserId}`.
+""".
 -spec transform_argument( method_argument(), id_resolver_pid(),
 		load_balancer_pid(), identifier_info(), line_context() ) ->
 								{ method_argument(), identifier_info() }.
@@ -1525,7 +1548,7 @@ transform_argument( Arg, IdResolverPid, LoadBalancerPid, FirstUserId,
 
 
 
-% @doc Reports specified error while parsing specified creation line.
+-doc "Reports specified error while parsing specified creation line.".
 -spec report_parse_error( atom() | { atom(), any() }, line_context() ) ->
 								no_return().
 
@@ -1583,32 +1606,32 @@ report_parse_error( Reason,
 % Section about user identifiers.
 
 
-% @doc Launcher of the resolver of user identifiers.
+-doc "Launcher of the resolver of user identifiers.".
 user_identifier_resolver_loop( InstanceLoaderPid ) ->
 	user_identifier_resolver_loop( _IdTable=table:new(), InstanceLoaderPid ).
 
 
 
-% @doc Main loop of the resolver of user identifiers.
-%
-% Its role is to keep track of user identifiers, and associate to each of them
-% the PID of a process meant to host, sooner or later, the corresponding
-% instance.
-%
-% Parameters:
-%
-% - IdTable :: table(user_identifier(), {blank_pid, pid()} | pid()) is a table
-% whose keys are user identifiers (as binary strings), and whose values are:
-%
-%   - either {blank_pid, P} where P is a blank PID that will host the
-%   corresponding instance once it will be constructed
-%
-%   - or a PID already corresponding to that instance (if already created,
-%   i.e. constructed and embodied in this process)
-%
-% - InstanceLoaderPid :: pid(), the PID of the instance loader process, as it
-% must be notified of termination
-%
+-doc """
+Main loop of the resolver of user identifiers.
+
+Its role is to keep track of user identifiers, and associate to each of them the
+PID of a process meant to host, sooner or later, the corresponding instance.
+
+Parameters:
+
+- IdTable :: table(user_identifier(), {blank_pid, pid()} | pid()) is a table
+whose keys are user identifiers (as binary strings), and whose values are:
+
+  - either {blank_pid, P} where P is a blank PID that will host the
+  corresponding instance once it will be constructed
+
+  - or a PID already corresponding to that instance (if already created,
+  i.e. constructed and embodied in this process)
+
+- InstanceLoaderPid :: pid(), the PID of the instance loader process, as it must
+be notified of termination
+""".
 -spec user_identifier_resolver_loop( table(), loader_pid() ) -> no_return().
 user_identifier_resolver_loop( IdTable, InstanceLoaderPid ) ->
 
@@ -1646,9 +1669,9 @@ user_identifier_resolver_loop( IdTable, InstanceLoaderPid ) ->
 
 
 
-% @doc Returns an updated identifier table, and sends back a pid_assigned
-% message.
-%
+-doc """
+Returns an updated identifier table, and sends back a pid_assigned message.
+""".
 declare_id( BinId, TargetNode, IdTable, LoadBalancerPid, CallerPid ) ->
 
 	% We declare here a user identifier being defined, expected to be new:
@@ -1695,9 +1718,9 @@ declare_id( BinId, TargetNode, IdTable, LoadBalancerPid, CallerPid ) ->
 
 
 
-% @doc Returns an updated identifier table, and sends back a pid_resolved
-% message.
-%
+-doc """
+Returns an updated identifier table, and sends back a pid_resolved message.
+""".
 resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 
 	case table:lookup_entry( _Key=BinId, IdTable ) of
@@ -1717,7 +1740,7 @@ resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 			end,
 
 			BlankPid = wooper:create_hosting_process( NodeForID,
-										_ToLinkWithPid=LoadBalancerPid ),
+				_ToLinkWithPid=LoadBalancerPid ),
 
 			CallerPid ! { pid_resolved, BlankPid },
 
@@ -1756,7 +1779,7 @@ resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 
 
 
-% @doc Does not return any result of interest.
+-doc "Does not return any result of interest.".
 wrap_up_and_terminate( IdTable ) ->
 
 	% Let's scan the table to ensure no blank_pid remains (the accumulator will
@@ -1811,11 +1834,10 @@ wrap_up_and_terminate( IdTable ) ->
 
 
 
-% @doc Returns a string corresponding to the specified initialisation
-% information, like:
-%
-% "my_city" <- {class_City, [ "Paris", "city_pa" ]}.
-%
+-doc """
+Returns a string corresponding to the specified initialisation
+information, like: `"my_city" <- {class_City, [ "Paris", "city_pa" ]}.`.
+""".
 -spec get_instance_initialisation_line( wooper:classname(),
 		wooper:method_arguments(), identifier_info() ) -> ustring().
 get_instance_initialisation_line( Classname, Parameters,

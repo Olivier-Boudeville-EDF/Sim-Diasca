@@ -1,21 +1,21 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
@@ -43,7 +43,7 @@
 % then the simulation frequency will be 1/300Hz.
 %
 % As a consequence, frequencies may be arbitrarily low or high. One should
-% nevertheless ensure that rounding errors (ex: when dealing with very low
+% nevertheless ensure that rounding errors (e.g. when dealing with very low
 % frequencies) do not interfere. The conversion functions between virtual
 % durations and tick counts acts as a safety net (they ensure that the relative
 % error remains smaller than a threshold, either a default one or a user-defined
@@ -70,17 +70,18 @@
 -define( scale_factor_for_interactive_time, 1.0 ).
 
 
+-doc "Tells whether (often costly) troubleshooting measures are activated.".
 -type troubleshooting_mode() :: 'enabled' | 'disabled'.
-% Tells whether (often costly) troubleshooting measures are activated.
 
 
+-doc "Allows to describe the evaluation mode of the simulation.".
 -type evaluation_mode() :: 'fastest' | 'reproducible' | 'ergodic'.
-% Allows to describe the evaluation mode of the simulation.
 
 
--type evaluation_requested_properties() :: evaluation_mode()
-		| { 'reproducible', random_utils:seed() }.
-% Allows to describe actual key properties expected from the simulation.
+-doc "Allows to describe actual key properties expected from the simulation.".
+-type evaluation_requested_properties() ::
+    evaluation_mode()
+  | { 'reproducible', random_utils:seed() }.
 
 
 
@@ -90,7 +91,7 @@
 	% The name of that simulation, as a plain string (otherwise as a module
 	% name).
 	%
-	% Ex: simulation_name="My Simulation"
+	% For example: simulation_name="My Simulation"
 	%
 	% (if left undefined, will automatically adopt the module name of the case
 	% being run)
@@ -184,21 +185,21 @@
 	% At the end, the selected results are the targeted non-blacklisted outputs,
 	% and only them.
 	%
-	% Ex: result_specification = [
+	% For example: result_specification = [
 	%
 	%   {targeted_patterns, [{"*-case-A-*",rendering_only}, "*-case-B-*",
 	%                           {"my-test-probe", [data_and_rendering]}]},
 	%
 	%   {blacklisted_patterns, ["*-emitter-(first|second)-*"]}]
 	%
-	% Note that if strings are not separated by commas (ex: ["aaa" "bbb"],
+	% Note that if strings are not separated by commas (e.g. ["aaa" "bbb"],
 	% instead of ["aaa", "bbb"]), then they will be concatenated by the
 	% preprocessor and be equivalent to "aaabbb" (which, in the general case,
 	% leads to different selections than ["aaa", "bbb"]).
 	%
 	% Note also that the patterns are checked against the name of the output
-	% (ex: "my interesting probe"), not against its translation to be a proper
-	% filename (ex: "my_interesting_probe"). As a result, the corresponding
+	% (e.g. "my interesting probe"), not against its translation to be a proper
+	% filename (e.g. "my_interesting_probe"). As a result, the corresponding
 	% pattern should target the former, not the latter, as it would not match
 	% otherwise.
 	%
@@ -209,8 +210,8 @@
 	%
 	% See also: http://erlang.org/doc/man/re.html
 	%
-	result_specification = all_outputs ::
-				class_ResultManager:result_specification(),
+	result_specification = all_outputs
+                                :: class_ResultManager:result_specification(),
 
 
 	% Tells whether the troubleshooting mode for models is to be enabled. If
@@ -221,8 +222,8 @@
 	troubleshooting_mode = enabled :: troubleshooting_mode() } ).
 
 
+-doc "Allows to store most general simulation settings.".
 -type simulation_settings() :: #simulation_settings{}.
-% Allows to store most general simulation settings.
 
 
 % It may be more efficient to handle larger numbers of actors per chunk.

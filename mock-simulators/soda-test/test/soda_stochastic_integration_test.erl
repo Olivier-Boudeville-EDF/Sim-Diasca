@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,14 +19,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc <b>Integration test</b> for the soda stochastic example case.
-%
-% See also:
-%  - class_SodaVendingMachine.erl
-%  - class_StochasticThirstyCustomer.erl
-%
 -module(soda_stochastic_integration_test).
+
+
+-doc """
+**Integration test** for the soda stochastic example case.
+
+See also:
+ - class_SodaVendingMachine.erl
+ - class_StochasticThirstyCustomer.erl
+""".
 
 
 % To silence a never-match Dialyzer warning:
@@ -42,11 +44,12 @@
 % or not, depending on the test being run in batch or not.
 
 
-% @doc Returns the settings for a test required to be more or less long.
-%
-% Returns {{FirstInitialCanCount, FirstInitialBudget},
-% {SecondInitialCanCount, SecondInitialBudget}, StopTick}.
-%
+-doc """
+Returns the settings for a test required to be more or less long.
+
+Returns `{{FirstInitialCanCount, FirstInitialBudget},
+{SecondInitialCanCount, SecondInitialBudget}, StopTick}`.
+""".
 get_settings_for( base_test ) ->
 
 	FirstInitialCanCount = 150,
@@ -80,7 +83,7 @@ get_settings_for( longer_test ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 	run( base_test ).

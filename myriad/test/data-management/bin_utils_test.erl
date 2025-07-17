@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2024 Olivier Boudeville
+% Copyright (C) 2017-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,18 +23,20 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2017.
 
-
-% Unit tests for the management of units.
-%
-% See the unit_utils.erl tested module.
-%
 -module(bin_utils_test).
+
+-moduledoc """
+Unit tests for the management of units.
+
+See the unit_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
-
 
 
 

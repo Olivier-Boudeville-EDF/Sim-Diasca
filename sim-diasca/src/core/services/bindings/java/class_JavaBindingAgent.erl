@@ -1,26 +1,29 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Class managing locally, on a given node, the <b>Java binding</b>.
 -module(class_JavaBindingAgent).
+
+-moduledoc """
+Class managing locally, on a given node, the **Java binding**.
+""".
 
 
 -define( class_description,
@@ -44,22 +47,22 @@
 	"the PID of the overall manager of the Java binding (federating all "
 	"Java binding agents)" },
 
-  { controller_mbox, maybe( controller_mbox_pid() ),
+  { controller_mbox, option( controller_mbox_pid() ),
 	"PID of the controller mailbox (if any)" },
 
-  { worker_mboxes, [ maybe( worker_mbox_pid() ) ],
+  { worker_mboxes, [ option( worker_mbox_pid() ) ],
 	"a list of the PID of all (local) worker mailboxes (if any)" } ] ).
 
 
 -type agent_pid() :: class_EngineBaseObject:object_pid().
 
 
+-doc "PID of a controller mailbox.".
 -type controller_mbox_pid() :: java_utils:java_mbox_pid().
-% PID of a controller mailbox.
 
 
+-doc "PID of a worker mailbox.".
 -type worker_mbox_pid() :: java_utils:java_mbox_pid().
-% PID of a worker mailbox.
 
 
 -export_type([ agent_pid/0, controller_mbox_pid/0, worker_mbox_pid/0 ]).
@@ -93,13 +96,6 @@
 
 % Allows to use macros for trace sending:
 -include_lib("traces/include/traces.hrl").
-
-
-% Shorthands:
-
--type code_path() :: code_utils:code_path().
-
--type directory_path() :: file_utils:directory_path().
 
 
 
@@ -164,13 +160,19 @@
 % too many for the JVM).
 
 
-% Shorthands:
+% Type shorthands:
+
+-type code_path() :: code_utils:code_path().
+
+-type directory_path() :: file_utils:directory_path().
 
 -type ustring() :: text_utils: ustring().
 
 
 
-% @doc Constructs a binding agent managing, on a given node, the use of Java.
+-doc """
+Constructs a binding agent managing, on a given node, the use of Java.
+""".
 -spec construct( wooper:state(), net_utils:tcp_port(), code_path(),
 				 class_JavaBindingManager:manager_pid() ) -> wooper:state().
 construct( State, EpmdPort, ClassPath, JavaBindingManagerPid ) ->
@@ -181,7 +183,7 @@ construct( State, EpmdPort, ClassPath, JavaBindingManagerPid ) ->
 
 	% First the direct mother class:
 	LangState = class_EngineBaseObject:construct( State,
-											?trace_categorize(AgentName) ),
+		?trace_categorize(AgentName) ),
 
 	% Any language-specific binding agent might be registered that way:
 	% (enforces local uniqueness, and can then be looked up)
@@ -201,13 +203,13 @@ construct( State, EpmdPort, ClassPath, JavaBindingManagerPid ) ->
 	% oneway.
 
 	setAttributes( LaunchedState, [
-					{ binding_manager_pid, JavaBindingManagerPid },
-					{ controller_mbox, undefined },
-					{ worker_mboxes, undefined } ] ).
+		{ binding_manager_pid, JavaBindingManagerPid },
+		{ controller_mbox, undefined },
+		{ worker_mboxes, undefined } ] ).
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -228,10 +230,11 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Notifies this agent of a handshake request, expected to come from the
-% just locally-launched JVM, specifying the PID of its main, controller mailbox,
-% and the ones of its workers.
-%
+-doc """
+Notifies this agent of a handshake request, expected to come from the just
+locally-launched JVM, specifying the PID of its main, controller mailbox, and
+the ones of its workers.
+""".
 -spec handshakeRequest( wooper:state(), controller_mbox_pid(),
 						[ worker_mbox_pid() ] ) -> oneway_return().
 handshakeRequest( State, MainMboxPid, WorkerMboxPids ) ->
@@ -254,7 +257,7 @@ handshakeRequest( State, MainMboxPid, WorkerMboxPids ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent a debug message.
+-doc "Notifies this agent that the Java side sent a debug message.".
 -spec onJavaDebugMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaDebugMessage( State, DebugMessage ) ->
 
@@ -265,7 +268,7 @@ onJavaDebugMessage( State, DebugMessage ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent a info message.
+-doc "Notifies this agent that the Java side sent a info message.".
 -spec onJavaInfoMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaInfoMessage( State, InfoMessage ) ->
 
@@ -276,7 +279,7 @@ onJavaInfoMessage( State, InfoMessage ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent a trace message.
+-doc "Notifies this agent that the Java side sent a trace message.".
 -spec onJavaNoticeMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaNoticeMessage( State, TraceMessage ) ->
 
@@ -287,7 +290,7 @@ onJavaNoticeMessage( State, TraceMessage ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent a warning message.
+-doc "Notifies this agent that the Java side sent a warning message.".
 -spec onJavaWarningMessage( wooper:state(), ustring() ) ->
 										const_oneway_return().
 onJavaWarningMessage( State, WarningMessage ) ->
@@ -299,7 +302,7 @@ onJavaWarningMessage( State, WarningMessage ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent a error message.
+-doc "Notifies this agent that the Java side sent a error message.".
 -spec onJavaErrorMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaErrorMessage( State, ErrorMessage ) ->
 
@@ -310,7 +313,7 @@ onJavaErrorMessage( State, ErrorMessage ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent an critical message.
+-doc "Notifies this agent that the Java side sent an critical message.".
 -spec onJavaCriticalMessage( wooper:state(), ustring() ) ->
 										const_oneway_return().
 onJavaCriticalMessage( State, CriticalMessage ) ->
@@ -322,7 +325,7 @@ onJavaCriticalMessage( State, CriticalMessage ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent an alert message.
+-doc "Notifies this agent that the Java side sent an alert message.".
 -spec onJavaAlertMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaAlertMessage( State, AlertMessage ) ->
 
@@ -333,7 +336,7 @@ onJavaAlertMessage( State, AlertMessage ) ->
 
 
 
-% @doc Notifies this agent that the Java side sent an emergency message.
+-doc "Notifies this agent that the Java side sent an emergency message.".
 -spec onJavaEmergencyMessage( wooper:state(), ustring() ) ->
 										const_oneway_return().
 onJavaEmergencyMessage( State, EmergencyMessage ) ->
@@ -346,7 +349,7 @@ onJavaEmergencyMessage( State, EmergencyMessage ) ->
 
 
 
-% @doc Notifies this agent that an exception was thrown from the Java side.
+-doc "Notifies this agent that an exception was thrown from the Java side.".
 -spec onJavaExceptionThrown( wooper:state(), ustring() ) ->
 										const_oneway_return().
 onJavaExceptionThrown( State, ExceptionString ) ->
@@ -361,12 +364,12 @@ onJavaExceptionThrown( State, ExceptionString ) ->
 
 
 
-% @doc Returns the Java Virtual Machine associated to the sender of this
-% request.
-%
-% In practice the returned binding container is the Java VM running on the same
-% node as the sender, to lighten the load induced by their exchanges.
-%
+-doc """
+Returns the Java Virtual Machine associated to the sender of this request.
+
+In practice the returned binding container is the Java VM running on the same
+node as the sender, to lighten the load induced by their exchanges.
+""".
 -spec getAssociatedJavaMailbox( wooper:state() ) ->
 			const_request_return( language_utils:java_vm_container_pid() ).
 getAssociatedJavaMailbox( State ) ->
@@ -385,23 +388,25 @@ getAssociatedJavaMailbox( State ) ->
 % Static section.
 
 
-% @doc Returns the atom corresponding to the name the Java binding agent should
-% be registered as.
-%
-% Note: executed on the caller node.
-%
+-doc """
+Returns the atom corresponding to the name the Java binding agent should be
+registered as.
+
+Note: executed on the caller node.
+""".
 -spec get_registration_name() ->
 							static_return( naming_utils:registration_name() ).
 get_registration_name() ->
-	% Ex: 'sim_diasca_java_binding_agent':
+	% For example 'sim_diasca_java_binding_agent':
 	wooper:return_static( ?java_binding_agent_name ).
 
 
 
-% @doc Returns the PID of the (unique) local Java binding agent.
-%
-% To be used by clients of the Java binding agent.
-%
+-doc """
+Returns the PID of the (unique) local Java binding agent.
+
+To be used by clients of the Java binding agent.
+""".
 -spec get_registered_agent() -> static_return( 'none' | agent_pid() ).
 get_registered_agent() ->
 
@@ -417,32 +422,35 @@ get_registered_agent() ->
 
 
 
-% @doc Returns the path to the binding support code, relatively to the engine
-% root (either the build one, typically from the user node, or the deployment
-% one, from the computing nodes).
-%
+-doc """
+Returns the path to the binding support code, relatively to the engine root
+(either the build one, typically from the user node, or the deployment one, from
+the computing nodes).
+""".
 -spec get_engine_relative_binding_path() -> static_return( directory_path() ).
 get_engine_relative_binding_path() ->
+    % Fragile:
 	wooper:return_static( file_utils:join( [ "sim-diasca", "src", "core",
-				"services", "dataflow", "bindings", "java", "api" ] ) ).
+		"services", "dataflow", "bindings", "java", "api" ] ) ).
 
 
 
-% @doc Returns the name of the binding main class.
+-doc "Returns the name of the binding main class.".
 -spec get_binding_classname() -> static_return( java_utils:java_classname() ).
 get_binding_classname() ->
 
 	% Defined in SimDiascaJavaRuntimeContainer.java, expected to be available as
-	% SimDiascaJavaRuntimeContainer.class and related (ex:
+	% SimDiascaJavaRuntimeContainer.class and related (e.g.
 	% SimDiascaJavaRuntimeContainer$RequestCall.class):
 	%
 	wooper:return_static( "SimDiascaJavaRuntimeContainer" ).
 
 
 
-% @doc Returns the implementation file (*.class) corresponding to the binding
-% main class.
-%
+-doc """
+Returns the name of the implementation file (*.class) corresponding to the
+binding main class.
+""".
 -spec get_binding_class_filename() ->
 					static_return( java_utils:java_bytecode_filename() ).
 get_binding_class_filename() ->
@@ -455,11 +463,12 @@ get_binding_class_filename() ->
 % Helpers section.
 
 
-% @doc Launches the specified JVM (as a separate UNIX process), with proper
-% settings for interconnection, so that the handshake can proceed.
-%
+-doc """
+Launches the specified JVM (as a separate UNIX process), with proper settings
+for interconnection, so that the handshake can proceed.
+""".
 -spec launch_jvm( net_utils:tcp_port(), code_path(), wooper:state() ) ->
-						wooper:state().
+                                            wooper:state().
 launch_jvm( EpmdPort, UserClassPath, State ) ->
 
 	% Establishing the proper launch command-line for the JVM.
@@ -491,19 +500,14 @@ launch_jvm( EpmdPort, UserClassPath, State ) ->
 
 	BindingAbsFilename = file_utils:join( JavaAPIPath, BindingClassFilename ),
 
-	case file_utils:is_existing_file( BindingAbsFilename ) of
-
-		true ->
-			ok;
-
-		false ->
+	file_utils:is_existing_file( BindingAbsFilename ) orelse
+        begin
 			?error_fmt( "Java binding class in '~ts' has not been deployed, "
 				"since this file could not be found from '~ts'.",
 				[ BindingClassFilename, JavaAPIPath ] ),
 
 			throw( { no_java_binding_class_found, BindingAbsFilename } )
-
-	end,
+        end,
 
 	CookieOpt = "--cookie '"
 		++ text_utils:atom_to_string( net_utils:get_cookie() ) ++ "'",
@@ -542,7 +546,7 @@ launch_jvm( EpmdPort, UserClassPath, State ) ->
 
 
 
-% @doc Returns a textual description of this binding agent.
+-doc "Returns a textual description of this binding agent.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

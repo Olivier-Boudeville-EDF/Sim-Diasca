@@ -252,9 +252,9 @@ The ``deployment_settings`` record allows to set precisely the **computing hosts
 
 Sim-Diasca can indeed run a simulation on the user host only (the computer on which it is run), yet it is a *distributed* engine - so a single simulation can be also run on a *set* of computers (potentially dozens of nodes of a high-performance computing cluster).
 
-For our simulation case to be able to run indifferently either on a single host or on multiple ones, the ``computing_hosts`` field will be set to request the engine to check first whether a text file, named here ``sim-diasca-host-candidates.txt``, can be found. The purpose of this file is to list the host names of all the potential computers that may be involved in the simulation [#]_.
+For our simulation case to be able to run indifferently either on a single host or on multiple ones, the ``computing_hosts`` field will be set to request the engine to check first whether a text file, named here ``sim-diasca-host-candidates.etf``, can be found. The purpose of this file is to list the host names of all the potential computers that may be involved in the simulation [#]_.
 
-.. [#] Please refer to the section 19.2 of the *Sim-Diasca Technical Manual* for its actual syntax (hostnames but also per-host usernames can be specified), or look directly to ``sim-diasca-host-candidates-sample.txt``, to be found in the ``sim-diasca/conf`` directory.
+.. [#] Please refer to the section 19.2 of the *Sim-Diasca Technical Manual* for its actual syntax (hostnames but also per-host usernames can be specified), or look directly to ``sim-diasca-host-candidates-sample.etf``, to be found in the ``sim-diasca/conf`` directory.
 
 If this host file is found, the engine will look-up and try to use as many of the host candidates listed there as possible (depending on their availability and on the checking of various prerequisites).
 
@@ -265,7 +265,7 @@ So the definition for this field of the ``deployment_settings`` record boils dow
 .. code-block:: erlang
 
   computing_hosts = {use_host_file_otherwise_local,
-					   "sim-diasca-host-candidates.txt"}
+					 "sim-diasca-host-candidates.etf"}
 
 
 That same ``deployment_settings`` record is also the place where we can define **the simulation elements** (code and data) beyond the mere engine **that shall be deployed** on the computing nodes. This includes typically the binary files corresponding to the implementation of the models and scenarios [#]_, possibly with any set of data files they might rely upon.
@@ -287,7 +287,7 @@ Still in the ``deployment_settings`` record, other parameters can be set (e.g. `
 
 	DeploymentSettings = #deployment_settings{
 		computing_hosts = {use_host_file_otherwise_local,
-					   "sim-diasca-host-candidates.txt"},
+					       "sim-diasca-host-candidates.etf"},
 		additional_elements_to_deploy = [ {".",code} ]
 	}
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 10, 2021.
 
-
-% @doc Unit tests for the <b>4D vector</b> facilities.
-%
-% See the vector4 tested module.
-%
 -module(vector4_test).
+
+-moduledoc """
+Unit tests for the **4D vector** facilities.
+
+See the vector4 tested module.
+""".
+
 
 
 % For run/0 export and al:

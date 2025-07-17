@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -87,43 +87,43 @@
 
 
 	% The title, if any, to display on this plot.
-	title :: maybe( ui:bin_title() ),
+	title :: option( ui:bin_title() ),
 
 	% Key (legend) options:
-	key_options :: maybe( plot_utils:key_options() ),
+	key_options :: option( plot_utils:key_options() ),
 
 
 	% Label for the abscissa axis (as a binary):
-	x_label :: maybe( plot_utils:label_text() ),
+	x_label :: option( plot_utils:label_text() ),
 
 	% Label for the ordinate axis (as a binary):
-	y_label :: maybe( plot_utils:label_text() ),
+	y_label :: option( plot_utils:label_text() ),
 
 
 	% Settings for tick layout along the abscissa axis:
-	x_tick :: maybe( plot_utils:tick_option() ),
+	x_tick :: option( plot_utils:tick_option() ),
 
 	% Settings for tick layout along the ordinate axis:
-	y_tick :: maybe( plot_utils:tick_option() ),
+	y_tick :: option( plot_utils:tick_option() ),
 
 
 	% Abscissa range (pair of {MaybeMinX,MaybeMaxX} integers, or 'undefined'),
 	% knowing that such a range can be open, if either of the bounds is not
 	% specified (e.g. resulting in a "[5:]" range):
 	%
-	x_range :: maybe(
-		{ maybe( gui:coordinate() ), maybe( gui:coordinate() ) } ),
+	x_range :: option(
+		{ option( gui:coordinate() ), option( gui:coordinate() ) } ),
 
 	% Ordinate range (pair of {MaybeMinY,MaybeMaxY} integers, or 'undefined'),
 	% knowing that such a range can be open, if either of the bounds is not
 	% specified (e.g. resulting in a "[5:]" range):
 	%
-	y_range :: maybe(
-		{ maybe( gui:coordinate() ), maybe( gui:coordinate() ) } ),
+	y_range :: option(
+		{ option( gui:coordinate() ), option( gui:coordinate() ) } ),
 
 
 	% Fine control of the major (labeled) ticks on the abscissa axis.
-	x_ticks :: maybe( plot_utils:ticks_option() ),
+	x_ticks :: option( plot_utils:ticks_option() ),
 
 
 	% Tells whether the abscissa axis gathers timestamps.
@@ -131,11 +131,11 @@
 
 	% The display time format to use if the x axis is a timestamped one:
 	x_ticks_timestamp_time_format ::
-		maybe( plot_utils:timestamp_time_format() ),
+		option( plot_utils:timestamp_time_format() ),
 
 
 	% Fine control of the major (labeled) ticks on the ordinate axis.
-	y_ticks :: maybe( plot_utils:ticks_option() ),
+	y_ticks :: option( plot_utils:ticks_option() ),
 
 
 	% Defines how graphs should be rendered:
@@ -194,12 +194,12 @@
 	% The directory (if any; otherwise the current working directory will be
 	% used) in which the plot is to be generated.
 	%
-	plot_directory :: maybe( file_utils:bin_directory_name() ),
+	plot_directory :: option( file_utils:bin_directory_name() ),
 
 	% The filename (if any; otherwise it will be generated) to the plot that is
 	% to be generated.
 	%
-	plot_filename :: maybe( file_utils:bin_file_name() ),
+	plot_filename :: option( file_utils:bin_file_name() ),
 
 
 	% Internals:
@@ -223,7 +223,7 @@
 	% How a data row shall be formatted when writing a data file, should a
 	% specific format be wanted:
 	%
-	row_format_string :: maybe( text_utils:format_bin_string() ) } ).
+	row_format_string :: option( text_utils:format_bin_string() ) } ).
 
 
 
@@ -238,16 +238,16 @@
 	location :: plot_utils:label_location(),
 
 	% Specific color (if any) for the text:
-	color = 'black' :: maybe( plot_utils:label_color() ),
+	color = 'black' :: option( plot_utils:label_color() ),
 
 	% Justification (if any) of the text based onto the location for the label:
-	justification :: maybe( plot_utils:label_justification() ),
+	justification :: option( plot_utils:label_justification() ),
 
 	% The label may be rendered with an angle from the abscissa axis:
 	%
 	% (by default no rotation applied)
 	%
-	orientation = 'upright' :: maybe( plot_utils:label_orientation() ),
+	orientation = 'upright' :: option( plot_utils:label_orientation() ),
 
 	% Tells whether a point shall be rendered at the label location:
-	point :: maybe( plot_utils:point_style_spec() ) } ).
+	point :: option( plot_utils:point_style_spec() ) } ).

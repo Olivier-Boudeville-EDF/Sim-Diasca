@@ -1,0 +1,21 @@
+@author Olivier Boudeville <olivier (dot) boudeville (at) edf (dot) fr>
+
+@copyright COPYRIGHT_YEAR EDF R&D
+
+@version PROJECT_VERSION
+
+@title Welcome to the official documentation of the Sim-Diasca API
+
+@doc <h3>Overview</h3>
+
+<p><b>Sim-Diasca</b> (<em>Simulation of Discrete Systems of All Scales</em>) is a discrete-time simulation engine aiming for maximum concurrency, relying on a mode of operation that is both parallel and distributed.</p>
+
+<p>The engine focuses notably on scalability, in order to handle simulation cases that may be very large (potentially involving millions of interacting instances of models), while still preserving essential simulation properties, like causality, total reproducibility and some form of ergodicity.</p>
+
+<p>
+The simulation engine is implemented in the Erlang programming language and its execution platform of choice is GNU/Linux.
+</p>
+
+<p>
+Sim-Diasca has been released since 2010 by EDF R&amp;D under the LGPL licence.
+</p>

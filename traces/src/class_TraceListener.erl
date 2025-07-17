@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,11 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
-
-% @doc The <b>trace listener class</b> is similar to a remote trace
-% supervisor, able to synchronise at will to a trace aggregator.
-%
 -module(class_TraceListener).
+
+-moduledoc """
+The *trace listener class* is similar to a remote trace supervisor, able to
+synchronise at will to a trace aggregator.
+""".
+
 
 
 -define( class_description, "Trace listener, similar to a remote trace "
@@ -62,18 +64,20 @@
 	{ temp_dir, file_utils:directory_name(), "the name of the directory where "
 	  "the compressed trace archive will be stored" },
 
-	{ supervision_waiter_pid, maybe( pid() ),
+	{ supervision_waiter_pid, option( pid() ),
 	  "the PID of the helper process (if any) in charge of waiting for the "
 	  "trace interface to be closed" },
 
-	{ close_listener_pid, maybe( pid() ),
+	{ close_listener_pid, option( pid() ),
 	  "the PID of the process (if any) to notify whenever this listener is "
 	  "to terminate (typically so that the calling application can itself "
 	  "terminate afterwards)" } ] ).
 
 
-% The PID of a trace listener:
+
+-doc "The PID of a trace listener.".
 -type listener_pid() :: pid().
+
 
 -export_type([ listener_pid/0 ]).
 
@@ -93,8 +97,11 @@
 -define( LogOutput( Message, Format ), void ).
 
 
-% Shorthand:
+
+% Type shorthand:
+
 -type aggregator_pid() :: class_TraceAggregator:aggregator_pid().
+
 
 
 
@@ -119,11 +126,12 @@
 
 
 
-% @doc Constructs a trace listener, synchronised to specified trace aggregator.
-%
-% TraceAggregatorPid is the PID of the trace aggregator to which this listener
-% will be synchronized.
-%
+-doc """
+Constructs a trace listener, synchronised to specified trace aggregator.
+
+TraceAggregatorPid is the PID of the trace aggregator to which this listener
+will be synchronized.
+""".
 -spec construct( wooper:state(), aggregator_pid(), pid() ) -> wooper:state().
 construct( State, TraceAggregatorPid, CloseListenerPid ) ->
 
@@ -139,22 +147,22 @@ construct( State, TraceAggregatorPid, CloseListenerPid ) ->
 	% We used to rely on basic ZIP sent over Erlang messages:
 	%receive
 	%
-	%	 { trace_sending, Bin, TraceFilename } ->
+	%    { trace_sending, Bin, TraceFilename } ->
 	%
-	%			% Allows to run for the same directory as aggregator:
-	%			ListenerTraceFilename = "Listener-" ++ TraceFilename,
+	%           % Allows to run for the same directory as aggregator:
+	%           ListenerTraceFilename = "Listener-" ++ TraceFilename,
 	%
 	%           file_utils:zipped_term_to_unzipped_file( Bin,
-	%										 ListenerTraceFilename ),
-	%	{ trace_sending, ErrorReason } ->
+	%               ListenerTraceFilename ),
+	%   { trace_sending, ErrorReason } ->
 	%
-	%		trace_utils:error_fmt(
+	%       trace_utils:error_fmt(
 	%           "~ts Trace listener cannot listen to current trace "
-	%			"aggregator, as this aggregator does not use "
-	%			"LogMX-based traces.", [ ?LogPrefix ] ),
+	%           "aggregator, as this aggregator does not use "
+	%           "LogMX-based traces.", [ ?LogPrefix ] ),
 	%
 	%		throw( { cannot_listen_aggregator, TraceAggregatorPid,
-	%				 ErrorReason } )
+	%                ErrorReason } )
 
 	% Now we prefer XZ + sendFile:
 
@@ -182,13 +190,14 @@ construct( State, TraceAggregatorPid, CloseListenerPid ) ->
 
 
 
-% @doc Constructs a trace listener whose listening sockets will have to be
-% elected within the specified range of TCP ports, synchronised to specified
-% trace aggregator.
-%
-% TraceAggregatorPid is the PID of the trace aggregator to which this listener
-% will be synchronized.
-%
+-doc """
+Constructs a trace listener whose listening sockets will have to be elected
+within the specified range of TCP ports, synchronised to specified trace
+aggregator.
+
+TraceAggregatorPid is the PID of the trace aggregator to which this listener
+will be synchronized.
+""".
 -spec construct( wooper:state(), aggregator_pid(), net_utils:tcp_port(),
 				 net_utils:tcp_port(), pid() ) -> wooper:state().
 construct( State, TraceAggregatorPid, MinTCPPort, MaxTCPPort,
@@ -228,7 +237,6 @@ construct( State, TraceAggregatorPid, MinTCPPort, MaxTCPPort,
 
 
 
-
 % (construction helper)
 manage_send_traces( CompressedFilename, State ) ->
 
@@ -253,7 +261,7 @@ manage_send_traces( CompressedFilename, State ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -291,14 +299,14 @@ destruct( State ) ->
 % Methods section.
 
 
+-doc """
+Triggers an asynchronous supervision (trace monitoring).
 
-% @doc Triggers an asynchronous supervision (trace monitoring).
-%
-% Will return immediately.
-%
-% Note: directly inspired from class_TraceSupervisor.erl, for monitor/1 and
-% blocking_monitor/1.
-%
+Will return immediately.
+
+Note: directly inspired from class_TraceSupervisor.erl, for monitor/1 and
+blocking_monitor/1.
+""".
 -spec monitor( wooper:state() ) -> oneway_return().
 monitor( State ) ->
 
@@ -345,10 +353,11 @@ monitor( State ) ->
 
 
 
-% @doc Registers a new pre-formatted trace in the (local) trace file.
-%
-% To be called by the trace aggregator.
-%
+-doc """
+Registers a new pre-formatted trace in the (local) trace file.
+
+To be called by the trace aggregator.
+""".
 -spec addTrace( wooper:state(), text_utils:bin_string() ) ->
 								const_oneway_return().
 addTrace( State, NewTrace ) ->
@@ -366,7 +375,7 @@ addTrace( State, NewTrace ) ->
 	% Not the following, which would break the encoding of Unicode messages:
 	%Content = text_utils:format( "~ts",
 	%   [ text_utils:binary_to_string( NewTrace ) ] ),
-	% file_utils:write( ?getAttr(trace_file), Content ),
+	%file_utils:write( ?getAttr(trace_file), Content ),
 
 	% A correct form is instead:
 	file_utils:write_ustring( ?getAttr(trace_file), NewTrace ),
@@ -375,9 +384,10 @@ addTrace( State, NewTrace ) ->
 
 
 
-% @doc Callback triggered when the waiter process detected that the supervision
-% tool has been closed.
-%
+-doc """
+Callback triggered when the waiter process detected that the supervision tool
+has been closed.
+""".
 -spec onMonitoringOver( wooper:state(), pid() ) -> const_oneway_return().
 onMonitoringOver( State, WaiterPid ) ->
 
@@ -393,13 +403,14 @@ onMonitoringOver( State, WaiterPid ) ->
 % Static section:
 
 
-% @doc Creates a trace listener that will synchronize itself to the specified
-% aggregator.
-%
+-doc """
+Creates a trace listener that will synchronize itself to the specified
+aggregator.
+""".
 -spec create( aggregator_pid() ) -> static_return( listener_pid() ).
 create( AggregatorPid ) ->
 
-	% No link here, not wanting to take down the whole system because of a
+	% No link here, not wanting to take the whole system down because of a
 	% listener:
 	%
 	ListenerPid = new( AggregatorPid, _CloseListenerPid=undefined ),

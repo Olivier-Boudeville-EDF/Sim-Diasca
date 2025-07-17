@@ -1,34 +1,44 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
 
-
-% @doc Module gathering the helper functions introduced to facilitate the
-% <b>support of the binding APIs</b>, for all the runtime programming languages
-% supported by the engine.
-%
 -module(binding_utils).
+
+-moduledoc """
+Module gathering the helper functions introduced to facilitate the **support of
+the binding APIs**, for all the runtime programming languages supported by the
+engine.
+""".
 
 
 
 % For all bindings-related types and defines:
 -include("bindings.hrl").
+
+
+-doc """
+A record gathering all the binding managers of the various languages involved.
+""".
+-type binding_managers() :: #binding_managers{}.
+
+
+-export_type([ binding_managers/0 ]).
 
 
 % Exports of helpers:
@@ -48,8 +58,17 @@
 % level.
 
 
+% Type shorthands:
 
-% @doc Returns the binding manager for the specified language.
+-type classname() :: wooper:classname().
+
+-type language() :: language_utils:language().
+
+-type binding_manager_pid() :: class_LanguageBindingManager:manager_pid().
+
+
+
+-doc "Returns the binding manager for the specified language.".
 -spec get_binding_manager( language() ) -> binding_manager_pid().
 get_binding_manager( Language ) ->
 
@@ -63,19 +82,20 @@ get_binding_manager( Language ) ->
 
 
 
-% @doc Returns the binding manager associated to the specified bound language,
-% based on a binding manager record.
-%
+-doc """
+Returns the binding manager associated to the specified bound language, based on
+a binding manager record.
+""".
 -spec get_binding_manager( language(), binding_managers() ) ->
 									binding_manager_pid().
-get_binding_manager( python, BindingManagers ) ->
+get_binding_manager( _Lang=python, BindingManagers ) ->
 	BindingManagers#binding_managers.python_binding_manager;
 
-get_binding_manager( java, BindingManagers ) ->
+get_binding_manager( _Lang=java, BindingManagers ) ->
 	BindingManagers#binding_managers.java_binding_manager;
 
 get_binding_manager( UnknownLanguage, _BindingManagers )
-  when is_atom( UnknownLanguage ) ->
+                                when is_atom( UnknownLanguage ) ->
 	throw( { unsupported_binding_language, UnknownLanguage } );
 
 get_binding_manager( InvalidLanguageSpec, _BindingManagers ) ->
@@ -83,14 +103,15 @@ get_binding_manager( InvalidLanguageSpec, _BindingManagers ) ->
 
 
 
-% @doc Returns the name of the class of the binding manager that is associated
-% to specified bound language.
-%
--spec get_binding_manager_class( language() ) -> wooper:classname().
-get_binding_manager_class( python ) ->
+-doc """
+Returns the name of the class of the binding manager that is associated to
+specified bound language.
+""".
+-spec get_binding_manager_class( language() ) -> classname().
+get_binding_manager_class( _Lang=python ) ->
 	class_PythonBindingManager;
 
-get_binding_manager_class( java ) ->
+get_binding_manager_class( _Lang=java ) ->
 	class_JavaBindingManager;
 
 get_binding_manager_class( UnknownLanguage ) when is_atom( UnknownLanguage ) ->
@@ -101,12 +122,12 @@ get_binding_manager_class( InvalidLanguageSpec ) ->
 
 
 
-% @doc Generates the binding manager record, federating all known binding
-% languages.
-%
+-doc """
+Generates the binding manager record, federating all known binding languages.
+""".
 -spec set_binding_managers_record(
 		[ { language(), binding_manager_pid() } ] ) -> binding_managers().
-set_binding_managers_record( [] ) ->
+set_binding_managers_record( _BindingManagerPairs=[] ) ->
 	% All managers default to 'none':
 	%trace_utils:debug( "No binding manager declared." ),
 	#binding_managers{};
@@ -123,15 +144,8 @@ set_binding_managers_record( BindingManagerPairs )
 	% Check that each language was mentioned no more than once:
 	LangCount = table:size( BindingsTable ),
 
-	case length( BindingManagerPairs ) of
-
-		LangCount ->
-			ok;
-
-		_ ->
-			throw( { multiple_binding_declarations, BindingManagerPairs } )
-
-	end,
+	length( BindingManagerPairs ) =:= LangCount orelse
+		throw( { multiple_binding_declarations, BindingManagerPairs } ),
 
 	PythonBindingManagerPid =
 			case table:lookup_entry( python, BindingsTable ) of
@@ -159,17 +173,18 @@ set_binding_managers_record( BindingManagerPairs )
 
 
 
-% @doc Checks the availability of the language bindings necessary for the
-% specified instantiation specifications declaring an implementation language
-% (the expected specs take the form of a {Classname, Language} pair).
-%
-% This availability is tested through the presence of a valid PID in a
-% binding_managers record.
-%
-% (helper)
-%
+-doc """
+Checks the availability of the language bindings necessary for the specified
+instantiation specifications declaring an implementation language (the expected
+specs take the form of a {Classname, Language} pair).
+
+This availability is tested through the presence of a valid PID in a
+binding_managers record.
+
+(helper)
+""".
 -spec check_implementation_language(
-		[ wooper:classname() | { wooper:classname(), language() } ],
+		[ classname() | { classname(), language() } ],
 		binding_managers() ) -> void().
 check_implementation_language( _Specs=[], _BindingManagers ) ->
 	ok;

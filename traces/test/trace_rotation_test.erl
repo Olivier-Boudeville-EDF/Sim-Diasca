@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,13 +25,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, January 17, 2021.
 
-
-% Unit tests for the rotation of the trace file.
 -module(trace_rotation_test).
+
+-moduledoc """
+Unit tests for the **rotation** of the trace file.
+""".
+
 
 
 -include("traces_for_tests.hrl").
-
 
 
 % Runs the test.

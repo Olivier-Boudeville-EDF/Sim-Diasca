@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,24 +39,24 @@
 
 
 % Uncomment to enable Myriad-level metaprogramming traces:
-%-define( enable_myriad_display_trace, ).
+%-define( enable_myriad_meta_traces, ).
 
 
--ifdef(enable_myriad_traces).
+-ifdef(enable_myriad_meta_traces).
 
--define( display_trace( S ), ast_utils:display_trace( "[Myriad] " ++ S ) ).
+-define( display_debug( S ), ast_utils:display_debug( "[Myriad-meta] " ++ S ) ).
 
--define( display_trace( S, F ),
-		 ast_utils:display_trace( "[Myriad] " ++ S, F ) ).
+-define( display_debug( S, F ),
+		 ast_utils:display_debug( "[Myriad-meta] " ++ S, F ) ).
 
--else. % enable_myriad_traces
+-else. % enable_myriad_meta_traces
 
 % To avoid variables being reported as unused depending on the mode:
 
--define( display_trace( S ),
-		 basic_utils:ignore_unused( { myriad_trace_disabled, S } ) ).
+-define( display_debug( S ),
+		 basic_utils:ignore_unused( { myriad_tracesdisabled, S } ) ).
 
--define( display_trace( S, F ),
-		 basic_utils:ignore_unused({ myriad_trace_disabled, S, F } ) ).
+-define( display_debug( S, F ),
+		 basic_utils:ignore_unused( { myriad_traces_disabled, S, F } ) ).
 
--endif. % enable_myriad_traces
+-endif. % enable_myriad_meta_traces

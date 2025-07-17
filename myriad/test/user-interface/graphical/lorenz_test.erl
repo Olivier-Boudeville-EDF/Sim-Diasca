@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2014.
 
-
-% @doc Unit test mostly for the <b>canvas facility</b>, based on the Lorenz
-% equations to show its strange attractor (and also test the `rk4_solver'
-% module).
-%
 -module(lorenz_test).
+
+-moduledoc """
+Unit test mostly for the **canvas facility**, based on the Lorenz equations to
+show its strange attractor (and also test the `rk4_solver` module).
+""".
+
 
 
 % For run/0 export and al:
@@ -44,7 +45,6 @@
 % Rendering section.
 
 
-% Description of a simple, local, screen coordinate system:
 -record( screen, {
 
 	center :: integer_point2(),
@@ -52,17 +52,21 @@
 	zoom_x :: zoom_factor(),
 	zoom_y :: zoom_factor() } ).
 
+
+-doc "Description of a simple, local, screen coordinate system.".
 -type screen() :: #screen{}.
 
 
 
+-doc """
+The solver table is an associative table whose keys are the PID of each solver,
+and whose values are {Color, LastPoint} pairs.
+""".
 -type solver_table() :: table( solver_pid(), { color(), point3() } ).
-% The solver table is an associative table whose keys are the PID of each
-% solver, and whose values are {Color, LastPoint} pairs.
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type message() :: basic_utils:message().
 
@@ -86,12 +90,12 @@
 
 
 
-% @doc Resolves the specified equations based on the specified initial
-% conditions and derivate function, notifying the specified listener of the new
-% computations.
-%
-% Main loop of a solver instance.
-%
+-doc """
+Resolves the specified equations based on the specified initial conditions and
+derivate function, notifying the specified listener of the new computations.
+
+Main loop of a solver instance.
+""".
 % We are in 3D here:
 -spec solver_main_loop( f3p(), point3(), time(), time_step(), screen(),
 						pid() ) -> no_return().
@@ -150,7 +154,7 @@ solver_main_loop( F, CurrentPoint, CurrentTime, Timestep, Screen,
 
 		%trace_utils:debug_fmt( "- new point computed: ~p", [ NewPoint ] ),
 
-		%ListenerPid ! { draw_point, NewPoint, self() },
+		%ListenerPid ! { drawPoint, NewPoint, self() },
 
 
 		% New version: sending a list of PointCount points at once, and moreover
@@ -165,7 +169,7 @@ solver_main_loop( F, CurrentPoint, CurrentTime, Timestep, Screen,
 		%trace_utils:debug_fmt( "Computed following points: ~w.",
 		%                       [ NewProjectedPoints ] ),
 
-		ListenerPid ! { draw_points, NewProjectedPoints, self() },
+		ListenerPid ! { drawPoints, NewProjectedPoints, self() },
 
 		% Slowed down, as otherwise results may ultimately result in overloading
 		% the MyriadGUI main loop:
@@ -182,9 +186,10 @@ solver_main_loop( F, CurrentPoint, CurrentTime, Timestep, Screen,
 
 
 
-% @doc Returns a list of the next PointCount projected points, the last point
-% computed and the corresponding next current time.
-%
+-doc """
+Returns a list of the next PointCount projected points, the last point computed
+and the corresponding next current time.
+""".
 compute_next_estimates( F, Point, Time, Timestep, Screen, PointCount ) ->
 	% Clearer than a fold:
 	compute_next_estimates( F, Point, Time, Timestep, Screen, PointCount,
@@ -207,10 +212,11 @@ compute_next_estimates( F, Point, Time, Timestep, Screen, PointCount, Acc ) ->
 
 
 
-% @doc Function f(t,v) corresponding to the equations of the Lorenz system.
-%
-% See http://en.wikipedia.org/wiki/Lorenz_system
-%
+-doc """
+Function f(t,v) corresponding to the equations of the Lorenz system.
+
+See <http://en.wikipedia.org/wiki/Lorenz_system>.
+""".
 -spec lorenz_function( time(), point3() ) -> point3().
 lorenz_function( _Time, _P={ X0, Y0, Z0 } ) ->
 
@@ -231,6 +237,9 @@ lorenz_function( _Time, _P={ X0, Y0, Z0 } ) ->
 
 % GUI section.
 
+% The left part of the frame gathers the buttons, while the right one shows the
+% canvas.
+
 
 % State of the program, passed between event drivers.
 -record( gui_state, { main_frame,
@@ -248,11 +257,6 @@ lorenz_function( _Time, _P={ X0, Y0, Z0 } ) ->
 
 					  % The current applicable timestep:
 					  timestep :: time_step() } ).
-
-
-
-% The left part of the frame gathers the buttons, while the right one shows the
-% canvas.
 
 
 -spec get_main_window_width() -> coordinate().
@@ -275,7 +279,7 @@ get_main_window_height() ->
 %   480.
 
 
-% @doc Initialises the GUI and the associated parts (solvers).
+-doc "Initialises the GUI and the associated parts (solvers).".
 -spec start() -> no_return().
 start() ->
 
@@ -387,8 +391,6 @@ start() ->
 
 	Canvas = gui_canvas:create( RightPanel ),
 
-	gui_canvas:set_background_color( Canvas, red ),
-
 	gui_canvas:clear( Canvas ),
 
 	gui:subscribe_to_events( { [ onRepaintNeeded, onResized ], Canvas } ),
@@ -412,6 +414,7 @@ start() ->
 					  zoom_x=ZoomFactor,
 					  zoom_y=ZoomFactor },
 
+	% They change at each run:
 	Colors = gui_color:get_random_colors( SolverCount ),
 
 	% The function corresponding to the equation system to solve:
@@ -446,15 +449,17 @@ start() ->
 
 
 
-% @doc Returns the initial base point (initial condition) for solvers.
+-doc "Returns the initial base point (initial condition) for solvers.".
 -spec get_initial_base_point() -> point3().
 get_initial_base_point() ->
 	{ 0.1, 0.0, 0.0 }.
 
 
-% @doc This table helps the rendering process keeping track of the solvers that
-% feed it with new points to plot.
-%
+
+-doc """
+This table helps the rendering process keeping track of the solvers that feed it
+with new points to plot.
+""".
 create_solver_table( Derivative, Colors, InitialPoint, InitialTime,
 					 InitialTimestep, Screen ) ->
 	create_solver_table( Derivative, Colors, InitialPoint, InitialTime,
@@ -486,7 +491,8 @@ create_solver_table( Derivative, _Colors=[ C | T ],
 						 InitialTimestep, Screen, NewAcc ).
 
 
-% @doc Resets the solvers based on the specified base point.
+
+-doc "Resets the solvers based on the specified base point.".
 -spec reset_solvers( solver_table(), point3() ) -> void().
 reset_solvers( SolverTable, InitialP ) ->
 	TransVec = [ -4.0, 11.0, 7.0 ],
@@ -504,9 +510,9 @@ reset_solvers( _Solvers=[ SolverPid | T ], CurrentP, TransVec ) ->
 
 
 
-% @doc The main loop of this test, driven by the receiving of MyriadGUI
-% messages.
-%
+-doc """
+The main loop of this test, driven by the receiving of MyriadGUI messages.
+""".
 gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 									start_button=StartButton,
 									increase_step_button=IncButton,
@@ -526,15 +532,15 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 		% Routine messages sent by solvers shall be listed last, otherwise they
 		% will eclipse other messages (e.g. GUI ones):
 
-		{ onWindowClosed, [ MainFrame, _MainFrameId, Context ] } ->
+		{ onWindowClosed, [ MainFrame, _MainFrameId, EventContext ] } ->
 			trace_utils:notice_fmt( "Test main frame ~ts has been closed "
 				"(~ts), quitting Lorenz test, test success.",
 				[ gui:object_to_string( MainFrame ),
-				  gui_event:context_to_string( Context ) ] ),
+				  gui_event:context_to_string( EventContext ) ] ),
 			undefined;
 
 
-		{ onButtonClicked, [ StartButton, _StartButtonId, _Context ] } ->
+		{ onButtonClicked, [ StartButton, _StartButtonId, _EventContext ] } ->
 			%test_facilities:display( "Start button clicked." ),
 
 			SolverTable = GUIState#gui_state.solver_table,
@@ -548,7 +554,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 			GUIState;
 
 
-		{ onButtonClicked, [ IncButton, _IncButtonId, _Context ] } ->
+		{ onButtonClicked, [ IncButton, _IncButtonId, _EventContext ] } ->
 			%test_facilities:display( "Increase timestep button clicked." ),
 
 			NewTimestep = 1.05 * GUIState#gui_state.timestep,
@@ -562,7 +568,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 			GUIState#gui_state{ timestep=NewTimestep };
 
 
-		{ onButtonClicked, [ DecButton, _DecButtonId, _Context ] } ->
+		{ onButtonClicked, [ DecButton, _DecButtonId, _EventContext ] } ->
 			%test_facilities:display( "Decrease timestep button clicked." ),
 
 			NewTimestep = 0.95 * GUIState#gui_state.timestep,
@@ -576,7 +582,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 			GUIState#gui_state{ timestep=NewTimestep };
 
 
-		{ onButtonClicked, [ ClearButton, _ClearButtonId, _Context ] } ->
+		{ onButtonClicked, [ ClearButton, _ClearButtonId, _EventContext ] } ->
 			%test_facilities:display( "Clear button clicked." ),
 
 			gui_statusbar:push_text( GUIState#gui_state.status_bar,
@@ -587,7 +593,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 			GUIState;
 
 
-		{ onButtonClicked, [ StopButton, _StopButtonId, _Context ] } ->
+		{ onButtonClicked, [ StopButton, _StopButtonId, _EventContext ] } ->
 			%test_facilities:display( "Stop button clicked." ),
 
 			SolverTable = GUIState#gui_state.solver_table,
@@ -601,7 +607,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 			GUIState;
 
 
-		{ onButtonClicked, [ ResetButton, _ResetButtonId, _Context ] } ->
+		{ onButtonClicked, [ ResetButton, _ResetButtonId, _EventContext ] } ->
 			%test_facilities:display( "Reset button clicked." ),
 
 			reset_solvers( GUIState#gui_state.solver_table,
@@ -613,38 +619,39 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 
 
 		% To showcase the use of name identifiers:
-		{ onButtonClicked, [ _QuitButton, quit_button_id, _Context ] } ->
+		{ onButtonClicked, [ _QuitButton, quit_button_id, _EventContext ] } ->
 			test_facilities:display( "Quit button clicked." ),
 			undefined;
 
 
-		{ onButtonClicked, [ AnyOtherButton, _AnyOtherButtonId, _Context ] } ->
+		{ onButtonClicked,
+				[ AnyOtherButton, _AnyOtherButtonId, _EventContext ] } ->
 			test_facilities:display( "Following unexpected button clicked: ~w.",
 									 [ AnyOtherButton ] ),
 			GUIState;
 
 
-		{ onRepaintNeeded, [ Canvas, _CanvasId, _Context ] } ->
+		{ onRepaintNeeded, [ Canvas, _CanvasId, _EventContext ] } ->
 
 			%trace_utils:notice_fmt( "Test canvas '~ts' needing repaint (~ts).",
 			%   [ gui:object_to_string( Canvas ),
-			%     gui_event:context_to_string( Context ) ] ),
+			%     gui_event:context_to_string( EventContext ) ] ),
 
 			gui_canvas:blit( Canvas ),
 			GUIState;
 
 
-		{ onResized, [ Canvas, _CanvasId, _NewSize, _Context ] } ->
+		{ onResized, [ Canvas, _CanvasId, _NewSize, _EventContext ] } ->
 
 			%trace_utils:notice_fmt( "Test canvas '~ts' resized to ~p (~ts).",
 			%   [ gui:object_to_string( Canvas ), NewSize,
-			%     gui_event:context_to_string( Context ) ] ),
+			%     gui_event:context_to_string( EventContext ) ] ),
 
 			gui_canvas:clear( Canvas ),
 			GUIState;
 
 
-		{ draw_points, NewPoints, SendingSolverPid } ->
+		{ drawPoints, NewPoints, SendingSolverPid } ->
 
 			%trace_utils:debug_fmt( "Drawing ~B points from ~w.",
 			%   [ length( NewPoints ), SendingSolverPid ] ),
@@ -667,7 +674,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 			GUIState#gui_state{ solver_table=NewSolverTable };
 
 
-		{ draw_point, NewPoint, SendingSolverPid } ->
+		{ drawPoint, NewPoint, SendingSolverPid } ->
 
 			trace_utils:debug_fmt( " - drawing ~p (from ~p)~n",
 								   [ NewPoint, SendingSolverPid ] ),
@@ -682,7 +689,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 			DestinationDrawPoint = project_2D( NewPoint, Screen ),
 
 			gui_canvas:draw_line( Canvas, SourceDrawPoint, DestinationDrawPoint,
-						   Color ),
+								  Color ),
 
 			gui_canvas:blit( Canvas ),
 
@@ -730,7 +737,7 @@ gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
 
 
 
-% @doc Sends specified message to all solvers.
+-doc "Sends specified message to all solvers.".
 -spec send_to_solvers( message(), solver_table() ) -> void().
 send_to_solvers( Msg, SolverTable ) ->
 	Solvers = table:keys( SolverTable ),
@@ -738,7 +745,9 @@ send_to_solvers( Msg, SolverTable ) ->
 
 
 
-% @doc Projects the specified 3D point onto 2D screen system.
+-doc """
+Projects the specified 3D point onto 2D screen system.
+""".
 -spec project_2D( point3(), screen() ) -> integer_point2().
 project_2D( _Point={ X, Y, Z }, #screen{ center={ Xc, Yc },
 										 zoom_x=ZoomX,
@@ -750,9 +759,10 @@ project_2D( _Point={ X, Y, Z }, #screen{ center={ Xc, Yc },
 
 
 
-% @doc Draws lines between all the specified (already projected) points, and
-% returns the last of these points.
-%
+-doc """
+Draws lines between all the specified (already projected) points, and returns
+the last of these points.
+""".
 draw_lines( _Canvas, _Points=[ LastPoint ], _Color ) ->
 	LastPoint;
 
@@ -762,7 +772,7 @@ draw_lines( Canvas, _Points=[ P1, P2 | T ], Color ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

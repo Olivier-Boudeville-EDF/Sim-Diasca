@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2024 Olivier Boudeville
+% Copyright (C) 2013-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,29 +25,33 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2013.
 
-
-% <b>Simple unit tests for the MyriadGUI toolbox</b>: creates a few frames,
-% enters a main loop, and exits when the fourth frame is closed by the user.
-%
-% Note: this test showcases also how an (explicit) GUI state can be kept and
-% used, if ever needed.
-%
-% See the gui.erl tested module.
-%
 -module(gui_frame_test).
+
+-moduledoc """
+**Simple unit tests for the MyriadGUI toolbox**: creates a few frames, enters a
+main loop, and exits when the fourth frame is closed by the user.
+
+Note: this test showcases also how an (explicit) GUI state can be kept and
+used, if ever needed.
+
+See the gui.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
 
 
+
+-doc """
+Here the main loop just has to remember the frame whose closing is awaited for.
+""".
 -type my_test_state() :: gui_frame:frame().
-% Here the main loop just has to remember the frame whose closing is awaited
-% for.
 
 
 
-% @doc Executes the actual test.
+-doc "Executes the actual test.".
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
@@ -88,11 +92,11 @@ run_gui_test() ->
 
 
 
-
-% @doc A very simple main loop, whose actual state is simply the GUI object
-% corresponding to the frame that shall be closed to stop the test
-% (i.e. CloseFrame).
-%
+-doc """
+A very simple main loop, whose actual state is simply the GUI object
+corresponding to the frame that shall be closed to stop the test
+(i.e. CloseFrame).
+""".
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( CloseFrame ) ->
 
@@ -100,21 +104,21 @@ test_main_loop( CloseFrame ) ->
 
 	receive
 
-		{ onWindowClosed, [ CloseFrame, _FrameId, Context ] } ->
+		{ onWindowClosed, [ CloseFrame, _FrameId, EventContext ] } ->
 			trace_utils:info_fmt( "The closing frame ~ts has been, well, "
 				"closed (~ts); test success.",
 				[ gui:object_to_string( CloseFrame ),
-				  gui_event:context_to_string( Context ) ] ),
+				  gui_event:context_to_string( EventContext ) ] ),
 
 			gui_frame:destruct( CloseFrame ),
 
 			gui:stop();
 
 
-		{ onWindowClosed, [ AnyFrame, AnyFrameId, Context ] } ->
+		{ onWindowClosed, [ AnyFrame, AnyFrameId, EventContext ] } ->
 			trace_utils:info_fmt( "Frame ~ts (id: ~w) closed (~ts).",
 				[ gui:object_to_string( AnyFrame ), AnyFrameId,
-				  gui_event:context_to_string( Context ) ] ),
+				  gui_event:context_to_string( EventContext ) ] ),
 
 			gui_frame:destruct( AnyFrame ),
 			test_main_loop( CloseFrame );
@@ -129,7 +133,7 @@ test_main_loop( CloseFrame ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 
@@ -147,5 +151,3 @@ run() ->
 	end,
 
 	test_facilities:stop().
-
-

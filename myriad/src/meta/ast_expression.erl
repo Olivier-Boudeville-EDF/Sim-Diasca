@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2024 Olivier Boudeville
+% Copyright (C) 2018-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,32 +25,35 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 4, 2018.
 
-
-% @doc Module in charge of handling <b>expressions defined with an AST</b>.
-%
-% See [http://erlang.org/doc/apps/erts/absform.html] for more information.
-%
 -module(ast_expression).
 
+-moduledoc """
+Module in charge of handling **expressions defined with an AST**.
 
+See [http://erlang.org/doc/apps/erts/absform.html] for more information.
+""".
+
+
+
+-doc """
+The description of an expression in an AST, with in-file location information.
+
+For example `{integer, {97,1}, 2}` or `{match, 117, {var,117,'A'}, {atom, 117,
+foobar}}`, etc.
+
+Note that an expression is different from a pattern: even if they share at least
+some types of forms, they are to be interpreted differently (e.g. their
+sub-elements are of the same kind as they are, and at least some rules differ).
+""".
 -type ast_expression() :: ast_base:ast_element().
-% The description of an expression in an AST, with in-file location information.
-%
-% For example '{integer, {97,1}, 2}' or '{match, 117, {var,117,'A'}, {atom, 117,
-% foobar}}', etc.
-%
-% Note that an expression is different from a pattern: even if they share at
-% least some types of forms, they are to be interpreted differently (e.g. their
-% sub-elements are of the same kind as they are, and at least some rules
-% differ).
 
 
+
+-doc "An expression that can be evaluated to an integer.".
 -type ast_integer_expression() :: ast_expression().
-% An expression that can be evaluated to an integer.
 
 
--type ast_field_init() :: ast_record:ast_untyped_record_field_definition().
-
+-doc "A list of expressions.".
 -type ast_expressions() :: [ ast_expression() ].
 
 
@@ -58,7 +61,59 @@
 			   ast_expressions/0 ]).
 
 
+
+-doc "List-comprehension generator.".
+-type lc_generator_qualifier() ::
+		{ 'generate', file_loc(), ast_pattern(), ast_expression() }.
+
+
+
+-doc "Bitstring generator.".
+-type bitstring_generator_qualifier() ::
+		{ 'b_generate', file_loc(), ast_pattern(), ast_expression() }.
+
+
+
+-doc """
+A qualifier is one of the following: an expression-based filter, a
+list-comprehension generator or a bitstring generator.
+""".
+-type ast_qualifier() :: ast_expression() | lc_generator_qualifier()
+							| bitstring_generator_qualifier().
+
+
+
+-doc "Allows to designate any kind of AST expression.".
+-type expression_kind() :: 'call' | 'if' | 'case' | 'match' | 'bin'
+	| 'unary_op' | 'binary_op' | 'simple_receive' | 'receive_with_after'
+	| 'try' | 'remote' | 'catch' | 'cons' | 'lc' | 'bc' | 'tuple'
+	| 'map_creation' | 'map_field_assoc' | 'map_field_exact'
+	| 'record_creation' | 'record_index' | 'record_field'
+	| 'record_field_other' | 'record_update' | 'block' | 'fun_definition'
+	| 'fun_local' | 'fun_mfa_old' | 'fun_mfa' | 'var' | 'nil' | 'named_fun'
+	| 'atomic_literal'.
+
+
+
+-doc "Expression designating a reference to a function (local or remote).".
+-type function_ref_expression() :: ast_expression().
+
+
+
+-doc "List of expressions corresponding to function parameters.".
+-type params_expression() :: [ ast_expression() ].
+
+
+-export_type([ expression_kind/0, function_ref_expression/0,
+			   params_expression/0 ]).
+
+
 -export([ transform_expression/2, transform_expressions/2 ]).
+
+
+% Local types:
+
+-type ast_field_init() :: ast_record:ast_untyped_record_field_definition().
 
 
 
@@ -70,6 +125,7 @@
 
 % For the rec_guard define:
 -include("ast_utils.hrl").
+
 
 
 % Implementation notes:
@@ -84,7 +140,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type file_loc() :: ast_base:file_loc().
 
@@ -98,45 +154,6 @@
 -type ast_transforms() :: ast_transform:ast_transforms().
 
 -type form() :: ast_base:form().
-
-
--type lc_generator_qualifier() ::
-		{ 'generate', file_loc(), ast_pattern(), ast_expression() }.
-% List-comprehension generator.
-
-
--type bitstring_generator_qualifier() ::
-		{ 'b_generate', file_loc(), ast_pattern(), ast_expression() }.
-% Bitstring generator.
-
-
--type ast_qualifier() :: ast_expression() | lc_generator_qualifier()
-							| bitstring_generator_qualifier().
-% A qualifier is one of the following: an expression-based filter, a
-% list-comprehension generator or a bitstring generator.
-
-
--type expression_kind() :: 'call' | 'if' | 'case' | 'match' | 'bin'
-	| 'unary_op' | 'binary_op' | 'simple_receive' | 'receive_with_after'
-	| 'try' | 'remote' | 'catch' | 'cons' | 'lc' | 'bc' | 'tuple'
-	| 'map_creation' | 'map_field_assoc' | 'map_field_exact'
-	| 'record_creation' | 'record_index' | 'record_field'
-	| 'record_field_other' | 'record_update' | 'block' | 'fun_definition'
-	| 'fun_local' | 'fun_mfa_old' | 'fun_mfa' | 'var' | 'nil' | 'named_fun'
-	| 'atomic_literal'.
-% Allows to designate any kind of AST expression.
-
-
--type function_ref_expression() :: ast_expression().
-% Expression designating a reference to a function (local or remote).
-
-
--type params_expression() :: [ ast_expression() ].
-% List of expressions corresponding to function parameters.
-
-
--export_type([ expression_kind/0, function_ref_expression/0,
-			   params_expression/0 ]).
 
 
 
@@ -180,14 +197,14 @@
 -endif. % log_traversal
 
 
-% @doc Transforms specified expression into a list of expressions.
-%
-% See section "7.4 Expressions" in
-% [http://erlang.org/doc/apps/erts/absform.html].
-%
+
+-doc """
+Transforms specified expression into a list of expressions.
+
+See section `7.4 Expressions` in [http://erlang.org/doc/apps/erts/absform.html].
+""".
 -spec transform_expression( ast_expression(), ast_transforms() ) ->
 								{ [ ast_expression() ], ast_transforms() }.
-
 
 % Function call found:
 %
@@ -1304,11 +1321,12 @@ transform_expression( Expression, Transforms ) ->
 
 
 
-% @doc Transforms an expression corresponding to a function call into another
-% one (exactly).
-%
-% (default traversal implementation)
-%
+-doc """
+Transforms an expression corresponding to a function call into another one
+(exactly).
+
+(default traversal implementation)
+""".
 -spec transform_call( file_loc(), function_ref_expression(),
 					  params_expression(), ast_transforms() ) ->
 							{ [ ast_expression() ], ast_transforms() }.
@@ -1340,11 +1358,11 @@ transform_call( FileLoc, FunctionRef, Params, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms an expression corresponding to an 'if' into another one
-% (exactly).
-%
-% (default traversal implementation)
-%
+-doc """
+Transforms an expression corresponding to an `if` into another one (exactly).
+
+(default traversal implementation)
+""".
 -spec transform_if( file_loc(), [ ast_if_clause() ], ast_transforms() ) ->
 							{ [ ast_expression() ], ast_transforms() }.
 transform_if( FileLoc, Clauses, Transforms ) ?rec_guard ->
@@ -1358,11 +1376,11 @@ transform_if( FileLoc, Clauses, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms an expression corresponding to a 'case' into another one
-% (exactly).
-%
-% (default traversal implementation)
-%
+-doc """
+Transforms an expression corresponding to a `case` into another one (exactly).
+
+(default traversal implementation)
+""".
 -spec transform_case( file_loc(), ast_expression(), [ ast_case_clause() ],
 			ast_transforms() ) -> { [ ast_expression() ], ast_transforms() }.
 transform_case( FileLoc, TestExpression, CaseClauses, Transforms ) ?rec_guard ->
@@ -1379,12 +1397,11 @@ transform_case( FileLoc, TestExpression, CaseClauses, Transforms ) ?rec_guard ->
 
 
 
+-doc """
+Transforms an expression corresponding to a `match` into another one (exactly).
 
-% @doc Transforms an expression corresponding to a 'match' into another one
-% (exactly).
-%
-% (default traversal implementation)
-%
+(default traversal implementation)
+""".
 -spec transform_match( file_loc(), ast_pattern(), ast_expression(),
 			ast_transforms() ) -> { [ ast_expression() ], ast_transforms() }.
 transform_match( FileLoc, MatchPattern, MatchExpression,
@@ -1407,11 +1424,12 @@ transform_match( FileLoc, MatchPattern, MatchExpression,
 
 
 
-% @doc Transforms an expression corresponding to a simple 'receive' into another
-% one (exactly).
-%
-% (default traversal implementation)
-%
+-doc """
+Transforms an expression corresponding to a simple `receive` into another one
+(exactly).
+
+(default traversal implementation)
+""".
 -spec transform_simple_receive( file_loc(), [ ast_case_clause() ],
 			ast_transforms() ) -> { [ ast_expression() ], ast_transforms() }.
 transform_simple_receive( FileLoc, ReceiveClauses, Transforms ) ?rec_guard ->
@@ -1426,11 +1444,12 @@ transform_simple_receive( FileLoc, ReceiveClauses, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms an expression corresponding to a simple 'receive' into another
-% one (exactly).
-%
-% (default traversal implementation)
-%
+-doc """
+Transforms an expression corresponding to a simple `receive` into another one
+(exactly).
+
+(default traversal implementation)
+""".
 -spec transform_receive_with_after( file_loc(), [ ast_case_clause() ],
 		ast_expression(), ast_body(), ast_transforms() ) ->
 								{ [ ast_expression() ], ast_transforms() }.
@@ -1459,11 +1478,11 @@ transform_receive_with_after( FileLoc, ReceiveClauses, AfterTest,
 
 
 
-% @doc Transforms an expression corresponding to a 'try' into another one
-% (exactly).
-%
-% (default traversal implementation)
-%
+-doc """
+Transforms an expression corresponding to a `try` into another one (exactly).
+
+(default traversal implementation)
+""".
 -spec transform_try( file_loc(), ast_body(), [ ast_case_clause() ],
 					 [ ast_case_clause() ], ast_body(), ast_transforms() ) ->
 							{ [ ast_expression() ], ast_transforms() }.
@@ -1489,11 +1508,11 @@ transform_try( FileLoc, TryBody, TryClauses, CatchClauses, AfterBody,
 
 
 
-% @doc Transforms an expression corresponding to a 'catch' into another one
-% (exactly).
-%
-% (default traversal implementation)
-%
+-doc """
+Transforms an expression corresponding to a `catch` into another one (exactly).
+
+(default traversal implementation)
+""".
 -spec transform_catch( file_loc(), ast_expression(), ast_transforms() ) ->
 							{ [ ast_expression() ], ast_transforms() }.
 transform_catch( FileLoc, Expression, Transforms ) ?rec_guard ->
@@ -1507,11 +1526,11 @@ transform_catch( FileLoc, Expression, Transforms ) ?rec_guard ->
 
 
 
+-doc """
+Transforms the specified list of expressions.
 
-% @doc Transforms the specified list of expressions.
-%
-% Defined for convenience.
-%
+Defined for convenience.
+""".
 -spec transform_expressions( [ ast_expression() ], ast_transforms() ) ->
 									{ [ ast_expression() ], ast_transforms() }.
 transform_expressions( Expressions, Transforms ) ?rec_guard ->
@@ -1529,18 +1548,16 @@ transform_expressions( Expressions, Transforms ) ?rec_guard ->
 
 
 
-% @doc Removes a single depth of nesting (not an arbitrary flattening) regarding
-% expressions.
-%
-% (helper)
-%
-% Note: directly inspired from list_utils:flatten_once/1, yet we do not want to
-% bootstrap the full list_utils module just for that.
-%
+-doc """
+Removes a single depth of nesting (not an arbitrary flattening) regarding
+expressions.
+
+Note: directly inspired from `list_utils:flatten_once/1`, yet we do not want to
+bootstrap the full `list_utils` module just for that.
+""".
 merge_expression_lists( List ) ->
 	%ast_utils:display_trace( "merging expression list ~p", [ List ] ),
 	merge_expression_lists( List, _Acc=[] ).
-
 
 
 % (helper)
@@ -1559,12 +1576,13 @@ merge_expression_lists( [ Unexpected | _T ], _Acc ) ->
 
 
 
-% @doc Transforms specified qualifiers.
-%
-% Allows filters to be both guard tests and general expressions.
-%
-% See also: lc_bc_quals/1 in erl_id_trans
-%
+-doc """
+Transforms the specified qualifiers.
+
+Allows filters to be both guard tests and general expressions.
+
+See also `lc_bc_quals/1` in `erl_id_trans`.
+""".
 -spec transform_qualifiers( [ ast_qualifier() ], ast_transforms() ) ->
 									{ [ ast_qualifier() ], ast_transforms() }.
 transform_qualifiers( Qualifiers, Transforms ) ?rec_guard ->
@@ -1573,7 +1591,7 @@ transform_qualifiers( Qualifiers, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms specified qualifier.
+-doc "Transforms the specified qualifier.".
 -spec transform_qualifier( ast_qualifier(), ast_transforms() ) ->
 									{ ast_qualifier(), ast_transforms() }.
 
@@ -1735,17 +1753,17 @@ transform_record_field_update( { 'record_field', FileLocField, FieldNameExpr,
 
 
 
+-doc """
+Remote call expression found.
 
-% @doc Remote call expression found.
-%
-% "If E is a function call E_m:E_0(E_1, ..., E_k), then Rep(E) = {call,
-% FILE_LOC, {remote, FILE_LOC, Rep(E_m), Rep(E_0)}, [Rep(E_1), ..., Rep(E_k)]}.
-%
-% Remote call expression found, with an immediate name for both the module and
-% the function:
-%
-% (parameters already transformed)
-%
+`"If E is a function call E_m:E_0(E_1, ..., E_k), then Rep(E) = {call, FILE_LOC,
+{remote, FILE_LOC, Rep(E_m), Rep(E_0)}, [Rep(E_1), ..., Rep(E_k)]}`.
+
+Remote call expression found, with an immediate name for both the module and the
+function.
+
+(parameters already transformed)
+""".
 -spec transform_call_expression( form(), arity(), ast_transforms() ) ->
 										{ form(), ast_transforms() }.
 transform_call_expression( OriginalExpr={ 'remote', FileLocRemote,

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 EDF R&D
+% Copyright (C) 2022-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -21,15 +21,16 @@
 %
 % Creation date: Tuesday, June 21, 2022.
 
-
-% @doc Probe able to process and display <b>streams of graphs</b>, that is
-% graphs that may change over (simulation) time.
-%
-% A graph comprises nodes, edges and properties.
-%
-% Relies on the gephi_support Myriad module.
-%
 -module(class_GraphStreamProbe).
+
+-moduledoc """
+Probe able to process and display **streams of graphs**, that is graphs that may
+change over (simulation) time.
+
+A graph comprises nodes, edges and properties.
+
+Relies on the gephi_support Myriad module.
+""".
 
 
 % Usage notes:
@@ -48,15 +49,21 @@
 -define( superclasses, [ class_ResultProducer ] ).
 
 
+% Placeholder types for generalisation:
+%-type element_pid() :: pid().
+%-type element_id() :: any().
+
+
 -define( class_attributes, [
 
 	{ graph_info, graph_info(),
 	  "all information necessary to interact with a graph server of interest" },
 
 	{ timestamp_table,
-	  table( app_service_pid(), { ins(), [ { timestamp(), timestamp() } ] } ),
-	  "a table associating to the PID of each service its INS and time-related "
-	  "information, in reverse chronological order" } ] ).
+	  table( element_pid(),
+             { element_id(), [ { timestamp(), timestamp() } ] } ),
+	  "a table associating to the PID of each element its identifier and
+	  time-related information, in reverse chronological order" } ] ).
 
 
 % Must be included before class_TraceEmitter header:
@@ -76,8 +83,8 @@
 -type graph_stream_probe_pid() :: class_ResultProducer:producer_pid().
 
 
+-doc "A probe may not be a wanted result producer.".
 -type graph_stream_probe_ref() :: 'non_wanted_probe' | graph_stream_probe_pid().
-% A probe may not be a wanted result producer.
 
 
 -type node_id() :: gephi_support:node_id().
@@ -151,8 +158,7 @@
 
 
 
-% Shorthands:
-
+% Type shorthands:
 
 -type bin_json() :: json_utils:bin_json().
 
@@ -167,20 +173,19 @@
 
 -type graph_value() :: gephi_support:graph_value().
 -type graph_color() :: gephi_support:graph_color().
--type node_id() :: gephi_support:node_id().
--type edge_id() :: gephi_support:edge_id().
 -type property_id() :: gephi_support:property_id().
 -type property_table() :: gephi_support:property_table().
 -type element_label() :: gephi_support:element_label().
 
 
 
-% @doc Constructs a graph stream probe of the specified name, using the
-% specified information about the graph stream server to act upon.
-%
-% Refer to declare_result_probe/1 for the actual creation API for actors and
-% cases.
-%
+-doc """
+Constructs a graph stream probe of the specified name, using the specified
+information about the graph stream server to act upon.
+
+Refer to declare_result_probe/1 for the actual creation API for actors and
+cases.
+""".
 -spec construct( wooper:state(), probe_name_init(), graph_info() ) ->
 									wooper:state().
 construct( State, NameInit, GraphInfo ) ->
@@ -224,7 +229,7 @@ construct( State, NameInit, GraphInfo ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -247,7 +252,7 @@ destruct( State ) ->
 % synchronous one.
 
 
-% @doc Adds (asynchronously) the specified node to the graph.
+-doc "Adds (asynchronously) the specified node to the graph.".
 -spec addNode( wooper:state(), node_id() ) -> const_oneway_return().
 addNode( State, NodeId ) ->
 
@@ -258,7 +263,7 @@ addNode( State, NodeId ) ->
 	wooper:const_return().
 
 
-% @doc Adds synchronously the specified node to the graph.
+-doc "Adds synchronously the specified node to the graph.".
 -spec addNodeSync( wooper:state(), node_id() ) ->
 								const_request_return( 'node_added' ).
 addNodeSync( State, NodeId ) ->
@@ -271,9 +276,10 @@ addNodeSync( State, NodeId ) ->
 
 
 
-% @doc Adds (asynchronously) the specified node, with the specified label, to
-% the graph.
-%
+-doc """
+Adds (asynchronously) the specified node, with the specified label, to the
+graph.
+""".
 -spec addNode( wooper:state(), node_id(), element_label() ) ->
 								const_oneway_return().
 addNode( State, NodeId, NodeLabel ) ->
@@ -286,9 +292,9 @@ addNode( State, NodeId, NodeLabel ) ->
 	wooper:const_return().
 
 
-% @doc Adds synchronously the specified node, with the specified label, to
-% the graph.
-%
+-doc """
+Adds synchronously the specified node, with the specified label, to the graph.
+""".
 -spec addNodeSync( wooper:state(), node_id(), element_label() ) ->
 								const_request_return( 'node_added' ).
 addNodeSync( State, NodeId, NodeLabel ) ->
@@ -303,9 +309,10 @@ addNodeSync( State, NodeId, NodeLabel ) ->
 
 
 
-% @doc Adds (asynchronously) the specified node, with the specified label and
-% color, to the graph.
-%
+-doc """
+Adds (asynchronously) the specified node, with the specified label and color, to
+the graph.
+""".
 -spec addNode( wooper:state(), node_id(), element_label(), graph_color() ) ->
 								const_oneway_return().
 addNode( State, NodeId, NodeLabel, NodeColor ) ->
@@ -320,9 +327,11 @@ addNode( State, NodeId, NodeLabel, NodeColor ) ->
 	wooper:const_return().
 
 
-% @doc Adds synchronously the specified node, with the specified label and
-% color, to the graph.
-%
+
+-doc """
+Adds synchronously the specified node, with the specified label and color, to
+the graph.
+""".
 -spec addNodeSync( wooper:state(), node_id(), element_label(),
 				   graph_color() ) -> const_request_return( 'node_added' ).
 addNodeSync( State, NodeId, NodeLabel, NodeColor ) ->
@@ -338,9 +347,10 @@ addNodeSync( State, NodeId, NodeLabel, NodeColor ) ->
 
 
 
-% @doc Updates (asynchronously) the specified property of the specified node to
-% the specified constant (timestamp-less) value.
-%
+-doc """
+Updates (asynchronously) the specified property of the specified node to the
+specified constant (timestamp-less) value.
+""".
 -spec updateNodeProperty( wooper:state(), node_id(), property_id(),
 						  graph_value() ) -> const_oneway_return().
 updateNodeProperty( State, NodeId, PropertyId, PropertyValue ) ->
@@ -356,9 +366,10 @@ updateNodeProperty( State, NodeId, PropertyId, PropertyValue ) ->
 	wooper:const_return().
 
 
-% @doc Updates synchronously the specified property of the specified node to
-% the specified constant (timestamp-less) value.
-%
+-doc """
+Updates synchronously the specified property of the specified node to the
+specified constant (timestamp-less) value.
+""".
 -spec updateNodePropertySync( wooper:state(), node_id(), property_id(),
 		graph_value() ) -> const_request_return( 'node_updated' ).
 updateNodePropertySync( State, NodeId, PropertyId, PropertyValue ) ->
@@ -375,9 +386,10 @@ updateNodePropertySync( State, NodeId, PropertyId, PropertyValue ) ->
 
 
 
-% @doc Updates (asynchronously) the specified properties of the specified node
-% to the specified constant (timestamp-less) values.
-%
+-doc """
+Updates (asynchronously) the specified properties of the specified node to the
+specified constant (timestamp-less) values.
+""".
 -spec updateNodeProperties( wooper:state(), node_id(), property_table() ) ->
 											const_oneway_return().
 updateNodeProperties( State, NodeId, PropertyTable ) ->
@@ -393,9 +405,10 @@ updateNodeProperties( State, NodeId, PropertyTable ) ->
 	wooper:const_return().
 
 
-% @doc Updates synchronously the specified properties of the specified node
-% to the specified constant (timestamp-less) values.
-%
+-doc """
+Updates synchronously the specified properties of the specified node to the
+specified constant (timestamp-less) values.
+""".
 -spec updateNodePropertiesSync( wooper:state(), node_id(), property_table() ) ->
 									const_request_return( 'node_updated' ).
 updateNodePropertiesSync( State, NodeId, PropertyTable ) ->
@@ -411,9 +424,10 @@ updateNodePropertiesSync( State, NodeId, PropertyTable ) ->
 	wooper:const_return_result( node_updated ).
 
 
-% @doc Updates (asynchronously) the specified property of the specified node to
-% the specified value for the specified timestamp.
-%
+-doc """
+Updates (asynchronously) the specified property of the specified node to the
+specified value for the specified timestamp.
+""".
 -spec updateNodeProperty( wooper:state(), node_id(), property_id(),
 						  graph_value(), timestamp() ) -> const_oneway_return().
 updateNodeProperty( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
@@ -429,9 +443,10 @@ updateNodeProperty( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
 	wooper:const_return().
 
 
-% @doc Updates synchronously the specified property of the specified node to
-% the specified value for the specified timestamp.
-%
+-doc """
+Updates synchronously the specified property of the specified node to the
+specified value for the specified timestamp.
+""".
 -spec updateNodePropertySync( wooper:state(), node_id(), property_id(),
 		graph_value(), timestamp() ) -> const_request_return( 'node_updated' ).
 updateNodePropertySync( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
@@ -448,9 +463,10 @@ updateNodePropertySync( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
 
 
 
-% @doc Updates (asynchronously) the specified properties of the specified node
-% to the specified values for the specified timestamp.
-%
+-doc """
+Updates (asynchronously) the specified properties of the specified node to the
+specified values for the specified timestamp.
+""".
 -spec updateNodeProperties( wooper:state(), node_id(), property_table(),
 							timestamp() ) -> const_oneway_return().
 updateNodeProperties( State, NodeId, PropertyTable, Timestamp ) ->
@@ -466,9 +482,10 @@ updateNodeProperties( State, NodeId, PropertyTable, Timestamp ) ->
 	wooper:const_return().
 
 
-% @doc Updates synchronously the specified properties of the specified node to
-% the specified values for the specified timestamp.
-%
+-doc """
+Updates synchronously the specified properties of the specified node to the
+specified values for the specified timestamp.
+""".
 -spec updateNodePropertiesSync( wooper:state(), node_id(), property_table(),
 		timestamp() ) -> const_request_return( 'node_updated' ).
 updateNodePropertiesSync( State, NodeId, PropertyTable, Timestamp ) ->
@@ -485,10 +502,11 @@ updateNodePropertiesSync( State, NodeId, PropertyTable, Timestamp ) ->
 
 
 
-% @doc Adds (asynchronously) an edge whose identifier is specified, together
-% with the identifiers of the first node and the second one, telling whether it
-% is a directed edge (from first node to second one).
-%
+-doc """
+Adds (asynchronously) an edge whose identifier is specified, together with the
+identifiers of the first node and the second one, telling whether it is a
+directed edge (from first node to second one).
+""".
 -spec addEdge( wooper:state(), edge_id(), node_id(), node_id(), boolean() ) ->
 											const_oneway_return().
 addEdge( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
@@ -503,10 +521,11 @@ addEdge( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
 	wooper:const_return().
 
 
-% @doc Adds synchronously an edge whose identifier is specified, together with
-% the identifiers of the first node and the second one, telling whether it is a
-% directed edge (from first node to second one).
-%
+-doc """
+Adds synchronously an edge whose identifier is specified, together with the
+identifiers of the first node and the second one, telling whether it is a
+directed edge (from first node to second one).
+""".
 -spec addEdgeSync( wooper:state(), edge_id(), node_id(), node_id(),
 				   boolean() ) -> const_request_return( 'edge_added' ).
 addEdgeSync( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
@@ -523,10 +542,11 @@ addEdgeSync( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
 
 
 
-% @doc Adds (asynchronously) an edge whose identifier is specified, together
-% with the identifiers of the first node and the second one, telling whether it
-% is a directed edge (from first node to second one) and what its color is.
-%
+-doc """
+Adds (asynchronously) an edge whose identifier is specified, together with the
+identifiers of the first node and the second one, telling whether it is a
+directed edge (from first node to second one) and what its color is.
+""".
 -spec addEdge( wooper:state(), edge_id(), graph_color(), node_id(), node_id(),
 			   boolean() ) -> const_oneway_return().
 addEdge( State, EdgeId, EdgeColor, FirstNodeId, SecondNodeId, IsDirected ) ->
@@ -542,10 +562,11 @@ addEdge( State, EdgeId, EdgeColor, FirstNodeId, SecondNodeId, IsDirected ) ->
 	wooper:const_return().
 
 
-% @doc Adds synchronously an edge whose identifier is specified, together with
-% the identifiers of the first node and the second one, telling whether it is a
-% directed edge (from first node to second one) and what its color is..
-%
+-doc """
+Adds synchronously an edge whose identifier is specified, together with the
+identifiers of the first node and the second one, telling whether it is a
+directed edge (from first node to second one) and what its color is..
+""".
 -spec addEdgeSync( wooper:state(), edge_id(), graph_color(),
 				   node_id(), node_id(), boolean() ) ->
 										const_request_return( 'edge_added' ).
@@ -564,11 +585,11 @@ addEdgeSync( State, EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
 
 
 
-% @doc Adds (asynchronously) an edge whose identifier is specified, together
-% with the identifiers of the first node and the second one, telling whether it
-% is a directed edge (from first node to second one) and what its label and
-% color are.
-%
+-doc """
+Adds (asynchronously) an edge whose identifier is specified, together with the
+identifiers of the first node and the second one, telling whether it is a
+directed edge (from first node to second one) and what its label and color are.
+""".
 -spec addEdge( wooper:state(), edge_id(), element_label(), graph_color(),
 			   node_id(), node_id(), boolean() ) -> const_oneway_return().
 addEdge( State, EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
@@ -585,10 +606,12 @@ addEdge( State, EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
 	wooper:const_return().
 
 
-% @doc Adds synchronously an edge whose identifier is specified, together with
-% the identifiers of the first node and the second one, telling whether it is a
-% directed edge (from first node to second one) and what its color is..
-%
+
+-doc """
+Adds synchronously an edge whose identifier is specified, together with the
+identifiers of the first node and the second one, telling whether it is a
+directed edge (from first node to second one) and what its color is.
+""".
 -spec addEdgeSync( wooper:state(), edge_id(), element_label(), graph_color(),
 				   node_id(), node_id(), boolean() ) ->
 										const_request_return( 'edge_added' ).
@@ -607,11 +630,10 @@ addEdgeSync( State, EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
 
 
 
-
-
-% @doc Updates (asynchronously) the specified property of the specified edge to
-% the specified constant (timestamp-less) value.
-%
+-doc """
+Updates (asynchronously) the specified property of the specified edge to the
+specified constant (timestamp-less) value.
+""".
 -spec updateEdgeProperty( wooper:state(), edge_id(), property_id(),
 						  graph_value() ) -> const_oneway_return().
 updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue ) ->
@@ -622,9 +644,11 @@ updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue ) ->
 	wooper:const_return().
 
 
-% @doc Updates synchronously the specified property of the specified edge to the
-% specified constant (timestamp-less) value.
-%
+
+-doc """
+Updates synchronously the specified property of the specified edge to the
+specified constant (timestamp-less) value.
+""".
 -spec updateEdgePropertySync( wooper:state(), edge_id(), property_id(),
 		graph_value() ) -> const_request_return( 'edge_updated' ).
 updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue ) ->
@@ -636,9 +660,10 @@ updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue ) ->
 
 
 
-% @doc Updates (asynchronously) the specified properties of the specified edge
-% to the specified constant (timestamp-less) values.
-%
+-doc """
+Updates (asynchronously) the specified properties of the specified edge to the
+specified constant (timestamp-less) values.
+""".
 -spec updateEdgeProperties( wooper:state(), edge_id(), property_table() ) ->
 											const_oneway_return().
 updateEdgeProperties( State, EdgeId, PropertyTable ) ->
@@ -649,9 +674,10 @@ updateEdgeProperties( State, EdgeId, PropertyTable ) ->
 	wooper:const_return().
 
 
-% @doc Updates synchronously the specified properties of the specified edge to
-% the specified constant (timestamp-less) values.
-%
+-doc """
+Updates synchronously the specified properties of the specified edge to the
+specified constant (timestamp-less) values.
+""".
 -spec updateEdgePropertiesSync( wooper:state(), edge_id(), property_table() ) ->
 									const_request_return( 'edge_updated' ).
 updateEdgePropertiesSync( State, EdgeId, PropertyTable ) ->
@@ -663,9 +689,10 @@ updateEdgePropertiesSync( State, EdgeId, PropertyTable ) ->
 
 
 
-% @doc Updates (asynchronously) the specified property of the specified edge to
-% the specified value for the specified timestamp.
-%
+-doc """
+Updates (asynchronously) the specified property of the specified edge to the
+specified value for the specified timestamp.
+""".
 -spec updateEdgeProperty( wooper:state(), edge_id(), property_id(),
 						  graph_value(), timestamp() ) -> const_oneway_return().
 updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
@@ -676,9 +703,11 @@ updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
 	wooper:const_return().
 
 
-% @doc Updates synchronously the specified property of the specified edge to the
-% specified value for the specified timestamp.
-%
+
+-doc """
+Updates synchronously the specified property of the specified edge to the
+specified value for the specified timestamp.
+""".
 -spec updateEdgePropertySync( wooper:state(), edge_id(), property_id(),
 		graph_value(), timestamp() ) -> const_request_return( 'edge_updated' ).
 updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
@@ -690,12 +719,13 @@ updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
 
 
 
-% @doc Synchronises this probe to the graph: ensures that all previous
-% operations that are potentially still pending have been processed for good.
-%
-% Typically useful to close a series of asynchronous operations, in order to
-% avoid any race condition.
-%
+-doc """
+Synchronises this probe to the graph: ensures that all previous operations that
+are potentially still pending have been processed for good.
+
+Typically useful to close a series of asynchronous operations, in order to avoid
+any race condition.
+""".
 -spec sync( wooper:state() ) -> const_request_return( 'graph_synchronised' ).
 sync( State ) ->
 
@@ -713,12 +743,13 @@ sync( State ) ->
 % ResultProducer-related section.
 
 
-% @doc Sends the specified results to the caller (generally the result manager).
-%
-% At least currently, such a probe has no specific result to report.
-%
-% (const request, for synchronous yet concurrent operations)
-%
+-doc """
+Sends the specified results to the caller (generally the result manager).
+
+At least currently, such a probe has no specific result to report.
+
+(const request, for synchronous yet concurrent operations)
+""".
 -spec sendResults( wooper:state(), producer_options() ) ->
 						request_return( producer_result() ).
 sendResults( State, _Options ) ->
@@ -730,23 +761,24 @@ sendResults( State, _Options ) ->
 % Static section.
 
 
-% @doc Declares (synchronously) a new graph stream probe, to be seen as a result
-% producer, and to be created either from an actor or from a test case.
-%
-% Returns:
-%
-% - either the PID of this newly created result probe, if graph streaming was
-% enabled in the deployment settings (refer to its 'enable_graph_streaming'
-% field) and also if the name of that probe is acknowledged as a wanted
-% result by the result manager
-%
-% - or the 'non_wanted_probe' atom
-%
-% Note that the graph stream tool itself is to be launched by the deployment
-% manager, only based on whether the graph stream service is enabled and whether
-% the simulation is in batch mode (hence regardless of whether actual graph
-% stream probes are created).
-%
+-doc """
+Declares (synchronously) a new graph stream probe, to be seen as a result
+producer, and to be created either from an actor or from a test case.
+
+Returns:
+
+- either the PID of this newly created result probe, if graph streaming was
+enabled in the deployment settings (refer to its 'enable_graph_streaming' field)
+and also if the name of that probe is acknowledged as a wanted result by the
+result manager
+
+- or the 'non_wanted_probe' atom
+
+Note that the graph stream tool itself is to be launched by the deployment
+manager, only based on whether the graph stream service is enabled and whether
+the simulation is in batch mode (hence regardless of whether actual graph stream
+probes are created).
+""".
 -spec declare_result_probe( probe_name_init() ) ->
 								static_return( graph_stream_probe_ref() ).
 declare_result_probe( NameInit ) ->
@@ -818,10 +850,11 @@ declare_result_probe( NameInit ) ->
 
 
 
-% @doc Synchronises to the specified graph stream probe.
-%
-% Prevents the overflowing of it by callers.
-%
+-doc """
+Synchronises to the specified graph stream probe.
+
+Prevents the overflowing of it by callers.
+""".
 -spec wait_for( graph_stream_probe_pid() ) -> static_void_return().
 wait_for( GSPPid ) ->
 	GSPPid ! { sync, [], self() },
@@ -834,7 +867,7 @@ wait_for( GSPPid ) ->
 
 
 
-% @doc Returns a JSON binary string aggregating the specified terms.
+-doc "Returns a JSON binary string aggregating the specified terms.".
 -spec encode_terms_to_json( [ term() ] ) -> static_return( bin_json() ).
 encode_terms_to_json( Terms ) ->
 
@@ -849,9 +882,10 @@ encode_terms_to_json( Terms ) ->
 
 
 
-% @doc Returns a JSON binary string appending to the end of the specified one
-% the specified term.
-%
+-doc """
+Returns a JSON binary string appending to the end of the specified one the
+specified term.
+""".
 -spec append_term_to_json( bin_json(), term() ) -> static_return( bin_json() ).
 append_term_to_json( BaseBinJson, Term ) ->
 	TermAsBinJson = json_utils:to_json( Term ),
@@ -863,9 +897,10 @@ append_term_to_json( BaseBinJson, Term ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Waits for the feedback of the result manager, after this probe declared
-% itself to it (after a call to its declareGraphStreamProbe/3 request).
-%
+-doc """
+Waits for the feedback of the result manager, after this probe declared itself
+to it (after a call to its `declareGraphStreamProbe/3` request).
+""".
 -spec wait_result_declaration_outcome( probe_name(), wooper:state() ) ->
 												wooper:state().
 wait_result_declaration_outcome( ProbeName, State ) ->

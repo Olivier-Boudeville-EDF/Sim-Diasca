@@ -1,29 +1,31 @@
-% Copyright (C) 2010-2024 EDF R&D
-
+% Copyright (C) 2010-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Allows to generate the <b>plots</b> (PNG files, usually for probe
-% reports) corresponding to all the <b>time series</b> (*.dat and *.p) files
-% found in the current directory.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2010.
+
 -module(generate_plots_for_time_series).
+
+-moduledoc """
+Allows to generate the **plots** (PNG files, usually for probe reports)
+corresponding to all the **time series** (*.dat and *.p) files found in the
+current directory.
+""".
 
 
 -export([ run/1 ]).
@@ -37,7 +39,8 @@
 -include_lib("myriad/include/spawn_utils.hrl").
 
 
-% @doc Runs the plot generator.
+
+-doc "Runs the plot generator.".
 -spec run( file_utils:directory_path() ) -> void().
 run( Dir ) ->
 
@@ -72,7 +75,7 @@ run( Dir ) ->
 
 
 
-% @doc Returns a list of the filenames corresponding to time series.
+-doc "Returns a list of the filenames corresponding to time series.".
 select_data_files( DirectoryName ) ->
 
 	{ RegularFiles, _Symlinks, _Directories, _OtherFiles, _Devices } =
@@ -144,20 +147,20 @@ update_workers( _DataFilenames=[], Workers, _MaxWorkerCount ) ->
 
 
 update_workers( _DataFilenames=[ Filename | T ], Workers, MaxWorkerCount )
-  when length( Workers ) < MaxWorkerCount ->
+                        when length( Workers ) < MaxWorkerCount ->
 
 	% There is still work to be done, and room for one more worker here:
 
 	DispatcherPid = self(),
 	F = fun() ->
-				manage_plot( Filename, DispatcherPid )
+			manage_plot( Filename, DispatcherPid )
 		end,
 
 	NewWorkerPid = ?myriad_spawn_link( F ),
 	{ T, [ NewWorkerPid | Workers ] };
 
 update_workers( DataFilenames, Workers, MaxWorkerCount )
-  when length( Workers ) =:= MaxWorkerCount ->
+                        when length( Workers ) =:= MaxWorkerCount ->
 	{ DataFilenames, Workers }.
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 Olivier Boudeville
+% Copyright (C) 2012-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,16 +25,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2012.
 
-
-% Nope: @headerfile "wooper_state_functions.hrl"
-
-
-% @doc Module containing some <b>general facilities for WOOPER class
-% developers</b>.
-%
-% Better placed in a standalone module than duplicated in each class.
-%
 -module(wooper).
+
+-moduledoc """
+Module containing some **general facilities for WOOPER class developers**.
+""".
 
 
 
@@ -185,91 +180,148 @@
 % Actual definitions the shorthands in wooper_types_exports.hrl refer to:
 
 
+-doc """
+An atom prefixed with `class_`; could be `basic_utils:module_name/0` as well.
+""".
 -type classname() :: atom().
-% An atom prefixed with 'class_'; could be basic_utils:module_name() as well.
 
 
+
+-doc """
+The key in the `persistent_term` registry corresponding to a class, to fetch its
+virtual table.
+""".
 -type class_key() :: term().
-% The key in the persistent_term registry corresponding to a class, to fetch its
-% virtual table.
 
 
+
+-doc "A method name (e.g. `setColor`).".
 -type method_name() :: meta_utils:function_name().
-% A method name (e.g. 'setColor').
 
 
+
+% A request is typically:
+%
+% -spec my_request :: fun( wooper:state(), Arg1 :: method_argument(),
+%    Arg2 :: method_argument(), ... ) -> request_return( T ).
+
+
+-doc "The name of a request method.".
 -type request_name() :: method_name().
-% Name of a request method.
 
 
+% A oneway is typically:
+%
+% -spec my_oneway :: fun( wooper:state(), Arg1 :: method_argument(),
+%    Arg2 :: method_argument(), ... ) -> oneway_return().
+
+
+-doc "The name of a oneway method.".
 -type oneway_name()  :: method_name().
-% Name of a oneway method.
 
 
+
+-doc "The name of a static method.".
 -type static_name()  :: method_name().
-% Name of a static method.
 
 
+
+-doc "Arity of a method (including the initial state parameter).".
 -type method_arity() :: meta_utils:function_arity().
+
 % Arity of a method (including the initial state parameter).
 
 -type request_arity() :: method_arity().
+
 -type oneway_arity() ::  method_arity().
+
 -type static_arity() ::  method_arity().
 
 
 -type method_id() :: { method_name(), method_arity() }.
 
 -type request_id() :: { request_name(), request_arity() }.
+
 -type oneway_id() ::  { oneway_name(),  oneway_arity() }.
+
 -type static_id() ::  { static_name(),  static_arity() }.
 
 
+-doc "Access qualifier, applying either to a method or to an attribute.".
 -type access_qualifier() :: 'public' | 'protected' | 'private'.
-% Access qualifier, applying either to a method or to an attribute.
 
 
+-doc "A method argument can be of any type.".
 -type method_argument() :: any().
-% A method argument can be of any type.
 
 
--type method_arguments() :: method_argument() | [ method_argument() ].
-% Standalone (non-list) arguments may also be specified in calls.
+-doc """
+Arguments of a method.
+
+Standalone (non-list) arguments may also be specified in calls.
+""".
+-type method_arguments() :: maybe_list( method_argument() ).
 
 
--type method_qualifier() :: access_qualifier()
 
-							% This method cannot be overridden:
-						  | 'final'
+-doc "Qualifiers applying to methods.".
+-type method_qualifier() ::
+	access_qualifier()
 
-							% This method does not change the state of the
-							% instance it is applied on:
-							%
-							% (only meaningful for requests and oneways)
-							%
-						  | 'const'.
-% Qualifiers applying to methods.
+	% This method cannot be overridden:
+  | 'final'
+
+	% This method does not change the state of the instance it is applied on:
+	%
+	% (only meaningful for requests and oneways)
+	%
+  | 'const'.
 
 
+
+-doc """
+The qualifiers applying to a method.
+
+Now we recommend using directly `[method_qualifier()]` instead (deemed clearer).
+""".
 -type method_qualifiers() :: [ method_qualifier() ].
-% The qualifiers applying to a method.
 
 
--type construction_parameter() :: method_argument().
-% Special case of construction parameters.
+
+-doc "A parameter used to construct an instance.".
+-type construction_parameter() :: any().
 
 
+-doc """
+Parameters used to construct an instance.".
+
+Now we recommend using directly `[construction_parameter()]` instead (deemed
+clearer).
+""".
 -type construction_parameters() :: [ construction_parameter() ].
 
 
+-doc """
+Describes the outcome of a set of requests: either all succeeded, or some failed
+(that are then specified).
+""".
 -type requests_outcome() :: 'success' | { 'failure', [ pid() ] }.
+
 
 % To be specified more closely maybe:
 -type method_internal_result() :: any().
 
+
 % To describe all kinds of results:
 
+-doc """
+Just an internal convenience type (not to be mixed up with the lot more
+essential `request_return/1` type).
+""".
 -type request_result( T ) :: T.
+
+
+-doc "Convenience type to designate the result of the execution of a request.".
 -type request_result() :: request_result( any() ).
 
 -type static_result( T ) :: T.
@@ -280,13 +332,43 @@
 
 % For method specs:
 
+-doc """
+To specify the type of the actual value of interest returned by a (non-const)
+request.
+""".
 -type request_return( T ) :: { state(), request_result( T ) }.
+
+
+-doc """
+To specify the type of the actual value of interest returned by a const request.
+""".
 -type const_request_return( T ) :: request_return( T ).
 
+
+-doc "To specify the return type of a (non-const) oneway.".
 -type oneway_return() :: state().
+
+
+-doc "To specify the return type of a const oneway.".
 -type const_oneway_return() :: void().
 
+
+-doc """
+To specify the type of the actual value of interest returned by a static method.
+""".
 -type static_return( T ) :: static_result( T ).
+
+
+-doc "To specify that a static method does not return any value of use.".
+% Must be any():
+-type static_void_return() :: %static_return( 'wooper_void_return' ).
+							  static_return( any() ).
+
+
+-doc "To specify that a static method is not expected to return at all.".
+-type static_no_return() :: no_return().
+
+
 
 % Constness irrelevant for static methods.
 
@@ -298,36 +380,62 @@
 -type attribute_entry() :: { attribute_name(), attribute_value() }.
 
 
+-doc "The type-as-a-term of an attribute.".
 -type attribute_type() :: type_utils:type().
-% The type-as-a-term of an attribute.
 
 
+
+-doc "Qualifiers applying to attributes.".
 -type attribute_qualifier() ::
 		% The initial value of that attribute cannot be modified:
 		'const'.
-% Qualifiers applying to attributes.
 
 
+-doc "Designates the PID of a WOOPER instance.".
 -type instance_pid() :: pid().
-% PID of a WOOPER instance.
 
 
+
+-doc "A passive instance is a mere state.".
 -type passive_instance() :: state().
-% A passive instance is a mere state.
 
 
+
+-doc """
+A term (often an atom) used to denote an acknowlegment (i.e. a conventional
+symbol to ensure that a request was synchronously executed).
+""".
 -type ack_term() :: term().
-% A term (often an atom) used to denote an acknowlegment (i.e. a conventional
-% symbol to ensure that a request was synchronously executed).
 
 
+
+-doc """
+PID of a process (not necessarily a WOOPER instance) interacting with such an
+instance (clearer that just `pid/0`).
+""".
 -type caller_pid() :: pid().
-% PID of a process (not necessarily a WOOPER instance) interacting with such an
-% instance (clearer that just pid()).
 
 
+-doc "A term corresponding to the message sent in order to trigger a method.".
+-type method_call() :: request_call() | oneway_call().
+
+
+-doc "A term corresponding to the message sent in order to trigger a request.".
 -type request_call() :: { request_name(), method_arguments(), caller_pid() }.
+
+
+-doc """
+A term corresponding to base information in order to describe a request.
+
+Useful to describe a potential request, to be triggered just by adding the
+caller PID.
+""".
+-type base_request_call() :: { request_name(), method_arguments() }.
+
+
+-doc "A term corresponding to the message sent in order to trigger a oneway.".
 -type oneway_call()  :: { oneway_name(), method_arguments() } | oneway_name().
+
 
 
 % Otherwise wooper_execute_method_as/4 is unused:
@@ -339,9 +447,12 @@
 -type state() :: #state_holder{}.
 
 
+
+-doc """
+Allows to record the functions exported by a module (typically the `wooper`
+one).
+""".
 -type function_export_set() :: set_utils:set( meta_utils:function_id() ).
-% Allows to record the functions exported by a module (typically the 'wooper'
-% one).
 
 
 
@@ -361,21 +472,25 @@
 
 			   request_return/1, const_request_return/1,
 			   oneway_return/0, const_oneway_return/0,
-			   static_return/1,
+			   static_return/1, static_void_return/0, static_no_return/0,
 
 			   attribute_name/0, attribute_value/0, attribute_entry/0,
 			   attribute_type/0, attribute_qualifier/0,
 			   instance_pid/0, passive_instance/0,
-			   caller_pid/0, request_call/0, oneway_call/0,
+			   caller_pid/0,
+               method_call/0, request_call/0, base_request_call/0,
+               oneway_call/0,
 			   state/0, function_export_set/0 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 -type exception_class() :: basic_utils:exception_class().
 -type exception_term() :: basic_utils:exception_term().
 -type exit_reason() :: basic_utils:exit_reason().
+
+-type maybe_list(T) :: list_utils:maybe_list(T).
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
@@ -387,8 +502,8 @@
 
 -type atom_node_name() :: net_utils:atom_node_name().
 
--type time_out() :: time_utils:time_out().
 % In milliseconds, if finite.
+-type time_out() :: time_utils:time_out().
 
 -type monitor_node_info() :: monitor_utils:monitor_node_info().
 
@@ -417,7 +532,6 @@
 % Tried adding a @headerfile "wooper_state_functions.hrl" tag in various places
 % with no luck (doc tags were always ignored).
 
-% % @headerfile "wooper_state_functions.hrl"
 
 % For getAttribute/2 and al:
 -include("wooper_state_functions.hrl").
@@ -466,12 +580,13 @@
 
 
 
-% @doc Sends the specified request to the specified (active or passive)
-% instance; if active, waits indefinitively for its returned value (supposing
-% none is already waiting among the received messages), and returns it.
-%
-% (public helper, as a convenience wrapper for passive instances)
-%
+-doc """
+Sends the specified request to the specified (active or passive) instance; if
+active, waits indefinitively for its returned value (supposing none is already
+waiting among the received messages), and returns it.
+
+(public helper, as a convenience wrapper for passive instances)
+""".
 -spec execute_request( instance_pid(), request_name() ) -> request_result();
 					 ( passive_instance(), request_name() ) ->
 							{ passive_instance(), method_internal_result() }.
@@ -496,27 +611,28 @@ execute_request( PassiveInstance, RequestName )
 
 
 
-% @doc Sends the specified request to the specified (active or passive)
-% instance; if active, waits indefinitively for its returned value (supposing
-% none is already waiting among the received messages), and returns it.
-%
-% (public helper, as a convenience wrapper for passive instances)
-%
+-doc """
+Sends the specified request to the specified (active or passive) instance; if
+active, waits indefinitively for its returned value (supposing none is already
+waiting among the received messages), and returns it.
+
+(public helper, as a convenience wrapper for passive instances)
+""".
 -spec execute_request( instance_pid(), request_name(), method_arguments() ) ->
 							request_result();
 					 ( passive_instance(), request_name(),
 					   method_arguments() ) ->
 							{ passive_instance(), method_internal_result() }.
 execute_request( TargetInstancePID, RequestName, RequestArgs )
-  when is_pid( TargetInstancePID ) andalso is_atom( RequestName ) ->
+		when is_pid( TargetInstancePID ) andalso is_atom( RequestName ) ->
 
 	TargetInstancePID ! { RequestName, RequestArgs, self() },
 
 	execute_request_waiter( TargetInstancePID, RequestName, RequestArgs );
 
 execute_request( PassiveInstance, RequestName, RequestArgs )
-					when is_record( PassiveInstance, ?passive_record )
-						 andalso is_atom( RequestName ) ->
+		when is_record( PassiveInstance, ?passive_record )
+			 andalso is_atom( RequestName ) ->
 
 	{ NewPassiveInstance, { wooper_result, R } } =
 		wooper_execute_method( RequestName, RequestArgs, PassiveInstance ),
@@ -546,12 +662,11 @@ execute_request_waiter( TargetInstancePID, RequestName, RequestArgs ) ->
 
 
 
-% @doc Sends the specified request to the specified instance and waits
-% indefinitively for its specified, expected returned value (supposing none is
-% already waiting among the received messages) that is usually an atom.
-%
-% (helper)
-%
+-doc """
+Sends the specified request to the specified instance and waits indefinitively
+for its specified, expected returned value (supposing none is already waiting
+among the received messages) that is usually an atom.
+""".
 -spec execute_request( instance_pid(), request_name(), method_arguments(),
 					   method_internal_result() ) -> void().
 execute_request( TargetInstancePID, RequestName, RequestArgs,
@@ -587,14 +702,15 @@ execute_request_waiter( ExpectedResult, TargetInstancePID, RequestName,
 
 
 
-% @doc Triggers the specified const request on the specified passive instance,
-% and returns its result, knowing that the state of this passive instance is
-% expected to remain the same (and thus will not be returned).
-%
-% Note: the called method is checked for constness only in debug mode.
-%
-% (public helper, as a convenience wrapper for passive instances)
-%
+-doc """
+Triggers the specified const request on the specified passive instance, and
+returns its result, knowing that the state of this passive instance is expected
+to remain the same (and thus will not be returned).
+
+Note: the called method is checked for constness only in debug mode.
+
+(public helper, as a convenience wrapper for passive instances)
+""".
 -spec execute_const_request( passive_instance(), request_name() ) ->
 								method_internal_result().
 
@@ -625,14 +741,15 @@ execute_const_request( PassiveInstance, RequestName )
 
 
 
-% @doc Triggers the specified const request on the specified passive instance,
-% and returns its result, knowing that the state of this passive instance is
-% expected to remain the same (and thus will not be returned).
-%
-% Note: the called method is checked for constness only in debug mode.
-%
-% (public helper, as a convenience wrapper for passive instances)
-%
+-doc """
+Triggers the specified const request on the specified passive instance, and
+returns its result, knowing that the state of this passive instance is expected
+to remain the same (and thus will not be returned).
+
+Note: the called method is checked for constness only in debug mode.
+
+(public helper, as a convenience wrapper for passive instances)
+""".
 -spec execute_const_request( passive_instance(), request_name(),
 							 method_arguments() ) -> method_internal_result().
 -ifdef(wooper_debug_mode).
@@ -662,14 +779,15 @@ execute_const_request( PassiveInstance, RequestName, RequestArgs )
 
 
 
-% @doc Triggers the specified const oneway on the specified passive instance,
-% and returns nothing at all, knowing that the state of this passive instance is
-% expected to remain the same (and thus will not be returned).
-%
-% Note: the called method is checked for constness only in debug mode.
-%
-% (public helper, as a convenience wrapper for passive instances)
-%
+-doc """
+Triggers the specified const oneway on the specified passive instance, and
+returns nothing at all, knowing that the state of this passive instance is
+expected to remain the same (and thus will not be returned).
+
+Note: the called method is checked for constness only in debug mode.
+
+(public helper, as a convenience wrapper for passive instances)
+""".
 -spec execute_const_oneway( passive_instance(), oneway_name() ) -> void().
 
 -ifdef(wooper_debug_mode).
@@ -696,14 +814,15 @@ execute_const_oneway( PassiveInstance, OnewayName )
 
 
 
-% @doc Triggers specified const oneway on the specified passive instance, and
-% returns nothing at all, knowing that the state of this passive instance is
-% expected to remain the same (and thus will not be returned).
-%
-% Note: the called method is checked for constness only in debug mode.
-%
-% (public helper, as a convenience wrapper for passive instances)
-%
+-doc """
+Triggers specified const oneway on the specified passive instance, and returns
+nothing at all, knowing that the state of this passive instance is expected to
+remain the same (and thus will not be returned).
+
+Note: the called method is checked for constness only in debug mode.
+
+(public helper, as a convenience wrapper for passive instances)
+""".
 -spec execute_const_oneway( passive_instance(), oneway_name(),
 							method_arguments() ) -> void().
 
@@ -736,12 +855,14 @@ execute_const_oneway( PassiveInstance, OnewayName, OnewayArgs )
 % parallel, with a time-out or not.
 
 
-% @doc Triggers in turn a request on the specified series of instances,
-% sequentially (with no overlapping of their processing), and returns their
-% respective, ordered results.
-%
-% No time-out applies: blocks indefinitely if an instance fails to answer.
-%
+
+-doc """
+Triggers in turn a request on the specified series of instances, sequentially
+(with no overlapping of their processing), and returns their respective, ordered
+results.
+
+No time-out applies: blocks indefinitely if an instance fails to answer.
+""".
 -spec send_request_in_turn( request_name(), method_arguments(),
 							[ instance_pid() ] ) -> [ request_result() ].
 send_request_in_turn( RequestName, RequestArgs, TargetInstancePIDs ) ->
@@ -756,12 +877,13 @@ send_request_in_turn( RequestName, RequestArgs, TargetInstancePIDs ) ->
 
 
 
-% @doc Triggers in turn a request on the specified series of instances,
-% sequentially (with no overlapping of their processing), and returns their
-% respective, ordered results.
-%
-% Throws an exception if an instance fails to answer within specified time-out.
-%
+-doc """
+Triggers in turn a request on the specified series of instances, sequentially
+(with no overlapping of their processing), and returns their respective, ordered
+results.
+
+Throws an exception if an instance fails to answer within specified time-out.
+""".
 -spec send_request_in_turn( request_name(), method_arguments(),
 		[ instance_pid() ], time_out() ) -> [ request_result() ].
 send_request_in_turn( RequestName, RequestArgs, TargetInstancePIDs, Timeout ) ->
@@ -809,13 +931,14 @@ send_request_in_turn( RequestName, RequestArgs,
 
 
 
-% @doc Sends (in parallel) the specified request (based on its name and
-% arguments) to each of the specified target instances.
-%
-% No waiting/receiving of the request results performed here.
-%
-% (helper)
-%
+-doc """
+Sends (in parallel) the specified request (based on its name and arguments) to
+each of the specified target instances.
+
+No waiting/receiving of the request results performed here.
+
+(helper)
+""".
 -spec send_requests( request_name(), method_arguments(), [ instance_pid() ] ) ->
 						void().
 send_requests( RequestName, RequestArgs, TargetInstancePIDs ) ->
@@ -826,14 +949,14 @@ send_requests( RequestName, RequestArgs, TargetInstancePIDs ) ->
 
 
 
+-doc """
+Sends (in parallel) the specified request (based on its name and arguments) to
+each of the specified target instances, and waits (indefinitively) for their
+acknowledgement, which shall be their only result (meaning that these methods
+should be requests only for synchronisation).
 
-% @doc Sends (in parallel) the specified request (based on its name and
-% arguments) to each of the specified target instances, and waits
-% (indefinitively) for their acknowledgement, which shall be their only result
-% (meaning that these methods should be requests only for synchronisation).
-%
-% No time-out: answers will be waited indefinitely.
-%
+No time-out: answers will be waited indefinitely.
+""".
 -spec send_requests_and_wait_acks( request_name(), method_arguments(),
 								   [ instance_pid() ], ack_term() ) -> void().
 send_requests_and_wait_acks( RequestName, RequestArgs, TargetInstancePIDs,
@@ -845,11 +968,12 @@ send_requests_and_wait_acks( RequestName, RequestArgs, TargetInstancePIDs,
 
 
 
-% @doc Sends (in parallel) the specified request (based on its name and
-% arguments) to each of the specified target instances, and waits for their
-% acknowledgement; returns whether it succeeded as a whole or if some instances
-% triggered a time-out.
-%
+-doc """
+Sends (in parallel) the specified request (based on its name and arguments) to
+each of the specified target instances, and waits for their acknowledgement;
+returns whether it succeeded as a whole or if some instances triggered a
+time-out.
+""".
 -spec send_requests_and_wait_acks( request_name(), method_arguments(),
 		[ instance_pid() ], time_out(), ack_term() ) -> requests_outcome().
 send_requests_and_wait_acks( RequestName, RequestArgs, TargetInstancePIDs,
@@ -861,18 +985,18 @@ send_requests_and_wait_acks( RequestName, RequestArgs, TargetInstancePIDs,
 
 
 
-% @doc Triggers a oneway on the specified series of instances, sequentially
-% (with no overlapping of their processing), and returns the ones that failed to
-% report on time that they were executed.
-%
-% More precisely, for each of the specified instances, sends the specified
-% oneway (expecting one of the specified arguments to contain the PID of the
-% caller process so that the instance can send back an answer) and waits for an
-% acknowledgement thereof (as {AckTerm, InstancePid}}), then proceeds to the
-% next instance. Returns an (ordered, according to the input one) list of the
-% PIDs of the instances that failed to answer on time, based on specified
-% time-out.
-%
+-doc """
+Triggers a oneway on the specified series of instances, sequentially (with no
+overlapping of their processing), and returns the ones that failed to report on
+time that they were executed.
+
+More precisely, for each of the specified instances, sends the specified oneway
+(expecting one of its specified arguments to contain the PID of the caller
+process, so that the instance can send back an answer) and waits for an
+acknowledgement thereof (as `{AckTerm, InstancePid}`), then proceeds to the next
+instance. Returns an (ordered, according to the input one) list of the PIDs of
+the instances that failed to answer on time, based on the specified time-out.
+""".
 -spec send_acknowledged_oneway_in_turn( oneway_name(), method_arguments(),
 		[ instance_pid() ], time_out(), ack_term() ) -> [ instance_pid() ].
 send_acknowledged_oneway_in_turn( OnewayName, OnewayArgs, TargetInstancePIDs,
@@ -931,16 +1055,16 @@ send_acked_oneway_in_turn_helper( OnewayCall,
 
 
 
-% @doc Waits for an acknowledgement answer, based on specified term and on the
-% PID of each of the specified requested instances, indefinitively (no
-% time-out).
-%
-% Allows to trigger requests (supposingly returning all the same, specified
-% term) in parallel yet being able to wait synchronously for them, and know
-% which, if any, did not answer.
-%
-% (helper)
-%
+-doc """
+Waits for an acknowledgement answer, based on specified term and on the PID of
+each of the specified requested instances, indefinitively (no time-out).
+
+Allows to trigger requests (supposingly returning all the same, specified term)
+in parallel yet being able to wait synchronously for them, and know which, if
+any, did not answer.
+
+(helper)
+""".
 -spec wait_for_request_answers( [ instance_pid() ], ack_term() ) ->
 									requests_outcome().
 wait_for_request_answers( RequestedPids, AckTerm ) ->
@@ -948,16 +1072,17 @@ wait_for_request_answers( RequestedPids, AckTerm ) ->
 
 
 
-% @doc Waits for an acknowledgement answer, based on specified term, from the
-% specified requested instances, unless the specified time-out is exceeded
-% (specified as integer milliseconds or as the 'infinity' atom).
-%
-% Allows to trigger requests (supposingly returning all the same, specified
-% term)in parallel yet being able to wait synchronously for them, and know
-% which, if any, did not answer.
-%
-% (helper)
-%
+-doc """
+Waits for an acknowledgement answer, based on specified term, from the specified
+requested instances, unless the specified time-out is exceeded (specified as
+integer milliseconds or as the 'infinity' atom).
+
+Allows to trigger requests (supposingly returning all the same, specified
+term) in parallel yet being able to wait synchronously for them, and know which,
+if any, did not answer.
+
+(helper)
+""".
 -spec wait_for_request_answers( [ instance_pid() ], time_out(), ack_term() ) ->
 									requests_outcome().
 wait_for_request_answers( RequestedPids, _Timeout=infinity, AckTerm ) ->
@@ -971,11 +1096,13 @@ wait_for_request_answers( RequestedPids, Timeout, AckTerm ) ->
 							  AckTerm ).
 
 
-% @doc Waits, until end of time if necessary, for the specified ack term from
-% specified processes.
-%
-% (helper)
-%
+
+-doc """
+Waits, until end of time if necessary, for the specified ack term from specified
+processes.
+
+(helper)
+""".
 wait_indefinitively_for_request_answers( _RequestedPids=[], _AckTerm ) ->
 	success;
 
@@ -994,13 +1121,13 @@ wait_indefinitively_for_request_answers( RequestedPids, AckTerm ) ->
 
 
 
-% @doc Waits, until end of time if necessary, for the specified ack term from
-% specified processes, based on specified initial timestamp.
-%
-% (helper)
-%
-wait_for_request_answers( RequestedPids, InitialTimestamp, Timeout,
-						  AckTerm ) ->
+-doc """
+Waits, until end of time if necessary, for the specified ack term from specified
+processes, based on specified initial timestamp.
+
+(helper)
+""".
+wait_for_request_answers( RequestedPids, InitialTimestamp, Timeout, AckTerm ) ->
 	wait_for_request_answers( RequestedPids, InitialTimestamp, Timeout,
 							  _DefaultPollDuration=1000, AckTerm ).
 
@@ -1042,18 +1169,20 @@ wait_for_request_answers( RequestedPids, InitialTimestamp, Timeout,
 
 
 
-% @doc Waits (indefinitively) that the specified number of requests returned as
-% result the specified acknowledgement term.
-%
+-doc """
+Waits (indefinitively) that the specified number of requests returned as result
+the specified acknowledgement term.
+""".
 -spec wait_for_request_acknowledgements( count(), ack_term() ) -> void().
 wait_for_request_acknowledgements( Count, AckTerm ) ->
 	wait_for_request_acknowledgements( Count, AckTerm, _Timeout=infinity ).
 
 
 
-% @doc Waits, with the specified time-out, that the specified number of requests
-% returned as result the specified acknowledgement term.
-%
+-doc """
+Waits, with the specified time-out, that the specified number of requests
+returned as result the specified acknowledgement term.
+""".
 -spec wait_for_request_acknowledgements( count(), ack_term(), time_out() ) ->
 											void().
 wait_for_request_acknowledgements( _Count=0, _AckTerm, _Timeout ) ->
@@ -1092,18 +1221,18 @@ wait_for_request_acknowledgements( Count, AckTerm, Timeout ) ->
 
 
 
+-doc """
+Sends the specified request to all specified instances for execution, in
+parallel, and returns the corresponding results, in indiscriminate order.
 
-% @doc Sends the specified request to all specified instances for execution, in
-% parallel, and returns the corresponding results, in indiscriminate order.
-%
-% Note: no specified order is enforced in the result list; hence this helper is
-% meant to be used when we can collect each result regardless of its specific
-% sender.
-%
-% No time-out enforced.
-%
-% (exported helper)
-%
+Note: no specified order is enforced in the result list; hence this helper is
+meant to be used when we can collect each result regardless of its specific
+sender.
+
+No time-out enforced.
+
+(exported helper)
+""".
 -spec obtain_results_for_requests( request_name(), method_arguments(),
 								   [ instance_pid() ] ) -> [ request_result() ].
 obtain_results_for_requests( RequestName, RequestArgs, TargetInstancePIDs ) ->
@@ -1117,12 +1246,12 @@ obtain_results_for_requests( RequestName, RequestArgs, TargetInstancePIDs ) ->
 
 
 
-% @doc Collects the specified number of WOOPER messages, and returns a list of
-% the corresponding results (ordered from last received to first, if that
-% matters).
-%
-% (helper)
-%
+-doc """
+Collects the specified number of WOOPER messages, and returns a list of the
+corresponding results (ordered from last received to first, if that matters).
+
+(helper)
+""".
 collect_wooper_messages( _Count=0, Acc ) ->
 	Acc;
 
@@ -1145,14 +1274,15 @@ collect_wooper_messages( Count, Acc ) ->
 
 
 
-% @doc Sends directly the specified series of requests (based on their
-% respective names and arguments) to the specified (single) target instance.
-%
-% Request answers not specifically managed by this function, see
-% obtain_results_for_request_series/2 to manage requests and results in one go.
-%
-% (helper)
-%
+-doc """
+Sends directly the specified series of requests (based on their respective names
+and arguments) to the specified (single) target instance.
+
+Request answers not specifically managed by this function, see
+`obtain_results_for_request_series/2` to manage requests and results in one go.
+
+(helper)
+""".
 -spec send_request_series( [ { request_name(), method_arguments() } ],
 						   instance_pid() ) -> void().
 send_request_series( _Requests=[], _TargetInstancePID ) ->
@@ -1173,12 +1303,13 @@ send_request_series( _Requests=[ { RequestName, RequestArgs } | T ],
 
 
 
-% @doc Sends directly the specified series of requests (based on their
-% respective names and arguments) to the specified (single) target instance, and
-% returns the corresponding results, in the specified order for the requests.
-%
-% (exported helper)
-%
+-doc """
+Sends directly the specified series of requests (based on their respective names
+and arguments) to the specified (single) target instance, and returns the
+corresponding results, in the specified order for the requests.
+
+(exported helper)
+""".
 -spec obtain_results_for_request_series(
 		[ { request_name(), method_arguments() } ], instance_pid() ) ->
 											[ request_result() ].
@@ -1209,10 +1340,11 @@ wait_request_series( WaitCount, Acc ) ->
 % Section for creation helpers.
 
 
-% @doc Creates (synchronously or not) a blank process, waiting to embody a
-% WOOPER instance once it will have received its class and construction
-% parameters, and links it to the caller and to any specified process.
-%
+-doc """
+Creates (synchronously or not) a blank process, waiting to embody a WOOPER
+instance once it will have received its class and construction parameters, and
+links it to the caller and to any specified process.
+""".
 -spec create_hosting_process( net_utils:node_name(), pid() ) ->
 												instance_pid().
 create_hosting_process( Node, ToLinkWithPid ) ->
@@ -1263,9 +1395,10 @@ create_hosting_process( Node, ToLinkWithPid ) ->
 
 
 
-% @doc Checks, for the specified classname and construction parameters, that a
-% corresponding module exists and that it has the relevant arity.
-%
+-doc """
+Checks, for the specified classname and construction parameters, that a
+corresponding module exists and that it has the relevant arity.
+""".
 -spec check_classname_and_arity( classname(), construction_parameters() ) ->
 									void().
 check_classname_and_arity( Classname, ConstructionParameters ) ->
@@ -1336,11 +1469,12 @@ check_classname_and_arity( Classname, ConstructionParameters ) ->
 
 
 
-% @doc Constructs the initial state of an instance of the specified class, using
-% specified construction parameters, and enters its main loop.
-%
-% (helper)
-%
+-doc """
+Constructs the initial state of an instance of the specified class, using
+specified construction parameters, and enters its main loop.
+
+(helper)
+""".
 -spec construct_and_run( classname(), construction_parameters() ) ->
 													no_return().
 
@@ -1382,7 +1516,6 @@ construct_and_run( Classname, ConstructionParameters ) ->
 
 
 		Other ->
-
 			log_error( "WOOPER error for PID ~w of class ~ts: "
 				"constructor did not return a state, but returned '~p' "
 				"instead. Construction parameters were:~n~p.",
@@ -1430,7 +1563,7 @@ construct_and_run( Classname, ConstructionParameters ) ->
 	% convention no attribute should be introduced outside of the constructor:
 	%
 	%TunedTable = ?wooper_table_type:optimise(
-	%                   ConstructState#state_holder.attribute_table ),
+	%   ConstructState#state_holder.attribute_table ),
 
 
 	%ReadyState = ConstructState#state_holder{ attribute_table=TunedTable },
@@ -1446,12 +1579,12 @@ construct_and_run( Classname, ConstructionParameters ) ->
 
 
 
+-doc """
+Constructs synchronously the initial state of an instance of specified class,
+using specified construction parameters, and enters its main loop.
 
-% @doc Constructs synchronously the initial state of an instance of specified
-% class, using specified construction parameters, and enters its main loop.
-%
-% (helper)
-%
+(helper)
+""".
 -spec construct_and_run_synchronous( classname(), construction_parameters(),
 									 pid() ) -> no_return().
 
@@ -1462,9 +1595,9 @@ construct_and_run_synchronous( Classname, ConstructionParameters,
 							   SpawnerPid ) ->
 
 	cond_utils:if_defined( wooper_debug_construction,
-	  trace_bridge:debug_fmt( "wooper:construct_and_run_synchronous "
-		"for class ~p and following parameters:~n ~p (in debug mode)",
-		[ Classname, ConstructionParameters ] ) ),
+		trace_bridge:debug_fmt( "wooper:construct_and_run_synchronous "
+			"for class ~p and following parameters:~n ~p (in debug mode)",
+			[ Classname, ConstructionParameters ] ) ),
 
 	%check_classname_and_arity( Classname, ConstructionParameters ),
 
@@ -1572,7 +1705,7 @@ construct_and_run_synchronous( Classname, ConstructionParameters,
 % Section for passive instances.
 
 
-% @doc Constructs a passive instance: returns the initial state thereof.
+-doc "Constructs a passive instance: returns the initial state thereof.".
 -spec construct_passive( classname(), construction_parameters() ) ->
 										passive_instance().
 construct_passive( Classname, ConstructionParameters ) ->
@@ -1617,9 +1750,9 @@ construct_passive( Classname, ConstructionParameters ) ->
 % (same name, same arity, different purposes).
 
 
-% @doc Executes the specified argument-less oneway on the specified passive
-% instance.
-%
+-doc """
+Executes the specified argument-less oneway on the specified passive instance.
+""".
 -spec execute_oneway( instance_pid(), oneway_name() ) -> void();
 					( passive_instance(), oneway_name() ) -> passive_instance().
 execute_oneway( TargetInstancePID, OnewayName )
@@ -1640,9 +1773,10 @@ execute_oneway( PassiveInstance, OnewayName )
 
 
 
-% Executes the specified oneway on the specified passive instance, with
-% specified arguments
-%.
+-doc """
+Executes the specified oneway on the specified passive instance, with the
+specified arguments.
+""".
 -spec execute_oneway( instance_pid(), oneway_name(), method_arguments() ) ->
 							void();
 					( passive_instance(), oneway_name(), method_arguments() ) ->
@@ -1681,13 +1815,11 @@ execute_oneway( PassiveInstance, OnewayName, OnewayArg )
 
 
 
+
 % Helpers.
 
 
-% @doc Returns the state of a blank WOOPER instance of the specified class.
-%
-% (helper)
-%
+-doc "Returns the state of a blank WOOPER instance of the specified class.".
 -spec get_blank_state( classname() ) -> wooper:state().
 get_blank_state( Classname ) ->
 
@@ -1710,15 +1842,14 @@ get_blank_state( Classname ) ->
 % Section for default handlers.
 
 
-% @doc WOOPER default EXIT message handler; called if trapping EXIT signals.
-%
-% It can be overridden by defining or inheriting the onWOOPERExitReceived/3
-% oneway.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc """
+WOOPER default `EXIT` message handler; called if trapping EXIT signals.
+
+It can be overridden by defining or inheriting the `onWOOPERExitReceived/3`
+oneway.
+
+Returns an updated state.
+""".
 -spec default_exit_handler( basic_utils:pid_or_port(), exit_reason(),
 							wooper:state() ) -> wooper:state().
 default_exit_handler( PidOrPort, ExitReason, State ) ->
@@ -1731,16 +1862,15 @@ default_exit_handler( PidOrPort, ExitReason, State ) ->
 
 
 
-% @doc WOOPER default DOWN handler, for process monitors.
-%
-% It can be overridden by defining or inheriting the onWOOPERDownNotified/5
-% oneway.
-%
-% Note: not to be mixed up with the default_node_down_handler/3 /
-% onWOOPERNodeDisconnection/3 pair (which is node-related).
-%
-% (helper)
-%
+-doc """
+WOOPER default `DOWN` handler, for process monitors.
+
+It can be overridden by defining or inheriting the `onWOOPERDownNotified/5`
+oneway.
+
+Note: not to be mixed up with the `default_node_down_handler/3` /
+`onWOOPERNodeDisconnection/3` pair (which is node-related).
+""".
 -spec default_down_handler( monitor_utils:monitor_reference(),
 	monitor_utils:monitored_element_type(), monitor_utils:monitored_element(),
 	exit_reason(), wooper:state() ) -> wooper:state().
@@ -1762,16 +1892,14 @@ default_down_handler( MonitorReference, MonitoredType, MonitoredElement,
 
 
 
+-doc """
+WOOPER default node up handler.
 
-% @doc WOOPER default node up handler.
-%
-% It can be overridden by defining or inheriting the onWOOPERNodeConnection/3
-% oneway.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+It can be overridden by defining or inheriting the `onWOOPERNodeConnection/3`
+oneway.
+
+Returns an updated state.
+""".
 -spec default_node_up_handler( atom_node_name(), monitor_node_info(),
 							   wooper:state() ) -> wooper:state().
 default_node_up_handler( Node, MonitorNodeInfo, State ) ->
@@ -1785,16 +1913,17 @@ default_node_up_handler( Node, MonitorNodeInfo, State ) ->
 
 
 
-% @doc WOOPER default node down handler.
-%
-% It can be overridden by defining or inheriting the onWOOPERNodeDisconnection/3
-% oneway.
-%
-% Returns an updated state.
-%
-% Note: not to be mixed up with the default_down_handler/5 /
-% onWOOPERDownNotified/5 pair (which is process-related).
-%
+-doc """
+WOOPER default node down handler.
+
+It can be overridden by defining or inheriting the `onWOOPERNodeDisconnection/3`
+oneway.
+
+Returns an updated state.
+
+Note: not to be mixed up with the `default_down_handler/5` /
+`onWOOPERDownNotified/5` pair (which is process-related).
+""".
 -spec default_node_down_handler( atom_node_name(), monitor_node_info(),
 								 wooper:state() ) -> wooper:state().
 default_node_down_handler( Node, MonitorNodeInfo, State ) ->
@@ -1808,16 +1937,15 @@ default_node_down_handler( Node, MonitorNodeInfo, State ) ->
 
 
 
-% @doc Returns the key in persistent_term for the virtual table corresponding to
-% the specified class.
-%
-% Note: the key could be directly guessed by the instance; the interest here is
-% mostly for synchronisation (to ensure that a suitable entry for the current
-% class exists in the persistent_term registry, otherwise race conditions could
-% happen).
-%
-% (helper)
-%
+-doc """
+Returns the key in persistent_term for the virtual table corresponding to the
+specified class.
+
+Note: the key could be directly guessed by the instance; the interest here is
+mostly for synchronisation (to ensure that a suitable entry for the current
+class exists in the persistent_term registry, otherwise race conditions could
+happen).
+""".
 -spec retrieve_virtual_table_key( classname() ) -> class_key().
 
 -if( ?wooper_enable_otp_integration =:= true ).
@@ -1856,10 +1984,7 @@ retrieve_virtual_table_key( Classname ) ->
 
 
 
-% @doc Triggers the specified construction error (notify and throw).
-%
-% (helper)
-%
+-doc "Triggers the specified construction error (notify and throw).".
 -spec trigger_error( exception_class(), exception_term(), classname(),
 			[ method_arguments() ], stack_trace() ) -> no_return().
 trigger_error( _ExceptionClass, _ExceptionTerm=undef, Classname,
@@ -1924,9 +2049,10 @@ trigger_error( ExceptionClass, ExceptionTerm, Classname, ConstructionParameters,
 
 
 
-% @doc Returns the description of the best location found from specified
-% stacktrace excerpts.
-%
+-doc """
+Returns the description of the best location found from specified stacktrace
+excerpts.
+""".
 -spec get_location_string( stack_info(), stack_item() ) -> ustring().
 get_location_string( _Loc=[], _NextCalls=[ { _M, _F, _A, NextLoc } | _ ] ) ->
 	LocStr = code_utils:stack_info_to_string( NextLoc ),
@@ -1947,34 +2073,37 @@ get_location_string( Loc, _NextCalls ) ->
 % Method-like helper functions for getting information about an instance.
 
 
-% @doc Returns the actual classname of the specified instance.
-%
-% Can be trusted (reliable in all cases).
-%
-% (helper)
-%
+-doc """
+Returns the actual classname of the specified instance.
+
+Can be trusted (reliable in all cases).
+""".
 -spec get_classname( wooper:state() ) -> classname().
 get_classname( _State=#state_holder{ actual_class=Classname } ) ->
 	Classname.
 
 
 
-% @doc Returns all the mother classes (direct or not) of the instance whose
-% state is specified, or of the specified classname.
-%
-% Note that:
-% - superclasses will be returned breadth-first in the inheritance tree
-% - in case of diamond-shaped inheritance, a given superclass may be listed more
-% than once (list_utils:uniquify/1 may then be used)
-%
-% For example wooper:get_all_superclasses(class_Platypus) =
-%   [class_Mammal,class_OvoviviparousBeing,class_Creature, class_Creature].
-%
-% Not static to avoid making class modules heavier.
-%
-% See the get_superclasses/0 static method to list only the direct superclasses
-% of the corresponding class.
-%
+-doc """
+Returns all the mother classes (direct or not) of the instance whose state is
+specified, or of the specified classname.
+
+Note that:
+- superclasses will be returned breadth-first in the inheritance tree
+- in case of diamond-shaped inheritance, a given superclass may be listed more
+than once (`list_utils:uniquify/1` may then be used)
+
+For example:
+```
+ wooper:get_all_superclasses(class_Platypus) =
+  [class_Mammal,class_OvoviviparousBeing,class_Creature, class_Creature].
+```
+
+Not static to avoid making class modules heavier.
+
+See the `get_superclasses/0` static method to list only the direct superclasses
+of the corresponding class.
+""".
 -spec get_all_superclasses( wooper:state() | classname() ) -> [ classname() ].
 get_all_superclasses( _State=#state_holder{ actual_class=Classname } ) ->
 	% Branch to the next "static" version:
@@ -1989,20 +2118,23 @@ get_all_superclasses( Classname ) ->
 
 
 
-% @doc Tells whether this instance is an instance of the specified class
-% (directly or indirectly, through inheritance).
-%
-% Mostly useful for sanity checks (defining ad hoc member methods is usually
-% preferred).
-%
+-doc """
+Tells whether this instance is an instance of the specified class (directly or
+indirectly, through inheritance).
+
+Mostly useful for sanity checks (defining ad hoc member methods is usually
+preferred).
+""".
 -spec is_instance_of( classname(), wooper:state() ) -> boolean().
 is_instance_of( Classname, State ) ->
 	lists:member( Classname, get_all_superclasses( State ) ).
 
 
-% @doc Checks that this instance is an instance of the specified class,
-% otherwise throws an exception.
-%
+
+-doc """
+Checks that this instance is an instance of the specified class, otherwise
+throws an exception.
+""".
 -spec check_instance_of( classname(), wooper:state() ) -> void().
 check_instance_of( Classname, State ) ->
 	is_instance_of( Classname, State ) orelse
@@ -2010,11 +2142,10 @@ check_instance_of( Classname, State ) ->
 
 
 
-% @doc Returns the (user-level) attributes known of WOOPER for the specified
-% state (that is all attributes except the ones used internally by WOOPER).
-%
-% (helper)
-%
+-doc """
+Returns the (user-level) attributes known of WOOPER for the specified state
+(that is all attributes except the ones used internally by WOOPER).
+""".
 -spec get_attribute_pairs( wooper:state() ) -> [ attribute_entry() ].
 get_attribute_pairs( State ) ->
 
@@ -2027,11 +2158,12 @@ get_attribute_pairs( State ) ->
 
 
 
-% @doc Removes from the specified atttributes the ones used internally by WOOPER
-% (so that only the class-specific ones, inherited or not, remain).
-%
-% (internal helper)
-%
+-doc """
+Removes from the specified atttributes the ones used internally by WOOPER (so
+that only the class-specific ones, inherited or not, remain).
+
+(internal helper)
+""".
 filter_wooper_attributes( _AttrPairs=[], _ReservedAttrs, Acc ) ->
 	Acc;
 
@@ -2050,16 +2182,18 @@ filter_wooper_attributes( _AttrPairs=[ AttrEntry={ Name, _Value } | T ],
 
 
 
-% @doc Returns a list of the attribute names that are used internally by WOOPER.
+-doc """
+Returns a list of the attribute names that are used internally by WOOPER.
+""".
 -spec get_wooper_reserved_attribute_names() -> [ attribute_name() ].
 get_wooper_reserved_attribute_names() ->
 	[].
 
 
 
-% @doc Returns a textual representation of the attributes of the specified
-% state.
-%
+-doc """
+Returns a textual representation of the attributes of the specified state.
+""".
 -spec state_to_string( wooper:state() ) -> ustring().
 state_to_string( State ) ->
 
@@ -2091,19 +2225,21 @@ state_to_string( State ) ->
 
 
 
-% @doc Returns the source filename associated to the specified class.
-%
-% For example get_class_filename('class_Foo') returns simply "class_Foo.erl".
-%
+-doc """
+Returns the source filename associated to the specified class.
+
+For example `get_class_filename('class_Foo')` returns simply `"class_Foo.erl"`.
+""".
 -spec get_class_filename( classname() ) -> file_utils:filename().
 get_class_filename( Classname ) ->
 	text_utils:format( "~ts.erl", [ Classname ] ).
 
 
 
-% @doc Returns the time-out to be used for synchronous operations, depending on
-% the debug mode.
-%
+-doc """
+Returns the time-out to be used for synchronous operations, depending on the
+debug mode.
+""".
 -spec get_synchronous_time_out( boolean() ) -> time_out().
 get_synchronous_time_out( _IsDebugMode=true ) ->
 
@@ -2123,11 +2259,10 @@ get_synchronous_time_out( _IsDebugMode=false ) ->
 -ifdef(wooper_debug_mode).
 
 
-% doc: Returns a textual representation of the virtual table corresponding to
-% the specified state.
-%
-% (helper)
-%
+-doc """
+Returns a textual representation of the virtual table corresponding to the
+specified state.
+""".
 -spec virtual_table_to_string( wooper:state() ) -> ustring().
 virtual_table_to_string( State ) ->
 
@@ -2147,11 +2282,10 @@ virtual_table_to_string( State ) ->
 
 
 
-% doc: Returns a textual representation of this instance, including its state
-% and virtual table.
-%
-% (helper)
-%
+-doc """
+Returns a textual representation of this instance, including its state and
+virtual table.
+""".
 -spec instance_to_string( wooper:state() ) -> ustring().
 instance_to_string( State ) ->
 	text_utils:format( "Inspection of instance ~w:~n~n  + ~ts~n  + ~ts",
@@ -2160,29 +2294,33 @@ instance_to_string( State ) ->
 
 
 
-% doc: Displays the inner state of this instance.
-%
-% This is not a method.
-%
+-doc """
+Displays the inner state of this instance.
+
+This is not a method.
+""".
 -spec display_state( wooper:state() ) -> void().
 display_state( State ) ->
 	logger:info( "~ts~n", [ state_to_string( State ) ] ).
 
 
 
-% doc: Displays the virtual table of this instance.
-%
-% This is not a method.
-%
+-doc """
+Displays the virtual table of this instance.
+
+This is not a method.
+""".
 -spec display_virtual_table( wooper:state() ) -> void().
 display_virtual_table( State ) ->
 	logger:info( "~ts~n", [ virtual_table_to_string( State ) ] ).
 
 
-% doc: Displays information about this instance.
-%
-% This is not a method.
-%
+
+-doc """
+Displays information about this instance.
+
+This is not a method.
+""".
 -spec display_instance( wooper:state() ) -> void().
 display_instance( State ) ->
 	logger:info( "~ts~n", [ instance_to_string( State ) ] ).
@@ -2192,29 +2330,31 @@ display_instance( State ) ->
 
 
 
-% @doc Returns all the attributes of this instance, as a list of {AttributeName,
-% AttributeValue} pairs.
-%
+-doc """
+Returns all the attributes of this instance, as a list of `{AttributeName,
+AttributeValue}` pairs.
+""".
 -spec get_all_attributes( wooper:state() ) -> [ attribute_entry() ].
 get_all_attributes( State ) ->
 	?wooper_table_type:enumerate( State#state_holder.attribute_table ).
 
 
 
-% @doc Declares automatically the relevant BEAM directories in the code path, so
-% that Ceylan-WOOPER can be fully usable from then on.
-%
-% Note:
-%
-% - the code_utils.beam module of Ceylan-Myriad must be available from the
-% current code path
-%
-% - the CEYLAN_MYRIAD and CEYLAN_WOOPER environment variables must be defined
-% and must point to the respective root directories
-%
-% - the determined directories are not specifically checked for existence,
-% and are added at the end of the code path
-%
+-doc """
+Declares automatically the relevant BEAM directories in the code path, so that
+Ceylan-WOOPER can be fully usable from then on.
+
+Note:
+
+- the `code_utils` module of Ceylan-Myriad must be available from the current
+code path
+
+- the `CEYLAN_MYRIAD` and `CEYLAN_WOOPER` environment variables must be defined
+and must point to the respective root directories
+
+- the determined directories are not specifically checked for existence, and are
+added at the end of the code path
+""".
 -spec declare_beam_dirs_for_wooper() -> void().
 declare_beam_dirs_for_wooper() ->
 	code_utils:declare_beam_dirs_for_myriad(),
@@ -2230,18 +2370,21 @@ declare_beam_dirs_for_wooper() ->
 
 
 
-% @doc Reports (on a best-effort basis) the specified information to the user,
-% typically by displaying an information report on the console.
-%
+-doc """
+Reports (on a best-effort basis) the specified information to the user,
+typically by displaying an information report on the console.
+""".
 -spec log_info( ustring() ) -> void().
 log_info( String ) ->
 	logger:info(
 		text_utils:ellipse( String, ?ellipse_length ) ++ "\n" ).
 
 
-% @doc Reports (on a best-effort basis) the specified information to the user,
-% typically by displaying an information report on the console.
-%
+
+-doc """
+Reports (on a best-effort basis) the specified information to the user,
+typically by displaying an information report on the console.
+""".
 -spec log_info( format_string(), format_values() ) -> void().
 log_info( FormatString, ValueList ) ->
 	Str = text_utils:format( FormatString, ValueList ),
@@ -2249,9 +2392,10 @@ log_info( FormatString, ValueList ) ->
 
 
 
-% @doc Reports (on a best-effort basis) the specified warning to the user,
-% typically by displaying a warning report on the console.
-%
+-doc """
+Reports (on a best-effort basis) the specified warning to the user, typically by
+displaying a warning report on the console.
+""".
 -spec log_warning( ustring() ) -> void().
 log_warning( String ) ->
 
@@ -2261,9 +2405,11 @@ log_warning( String ) ->
 	system_utils:await_output_completion( ?wooper_warning_display_waiting ).
 
 
-% @doc Reports (on a best-effort basis) the specified warning to the user,
-% typically by displaying a warning report on the console.
-%
+
+-doc """
+Reports (on a best-effort basis) the specified warning to the user, typically by
+displaying a warning report on the console.
+""".
 -spec log_warning( format_string(), format_values() ) -> void().
 log_warning( FormatString, ValueList ) ->
 
@@ -2276,10 +2422,11 @@ log_warning( FormatString, ValueList ) ->
 
 
 
-% @doc Reports (as synchronously as possible, in order to avoid losing this
-% notification) the specified error to the user, typically by displaying an
-% error report on the console (non-halting function, e.g. no exception thrown).
-%
+-doc """
+Reports (as synchronously as possible, in order to avoid losing this
+notification) the specified error to the user, typically by displaying an error
+report on the console (non-halting function, e.g. no exception thrown).
+""".
 -spec log_error( ustring() ) -> void().
 log_error( Message ) ->
 
@@ -2296,16 +2443,17 @@ log_error( Message ) ->
 
 
 
-% @doc Reports (as synchronously as possible, in order to avoid losing this
-% notification) the specified error to the user, typically by displaying an
-% error report on the console (non-halting function, e.g. no exception thrown).
-%
+-doc """
+Reports (as synchronously as possible, in order to avoid losing this
+notification) the specified error to the user, typically by displaying an error
+report on the console (non-halting function, e.g. no exception thrown).
+""".
 -spec log_error( format_string(), format_values() ) -> void().
 log_error( FormatString, ValueList ) ->
 
 	Str = text_utils:format( "WOOPER error: " ++ FormatString
 		++ "~n= END OF WOOPER ERROR REPORT FOR ~w ===",
-		ValueList ++ [ self() ] ),
+							 ValueList ++ [ self() ] ),
 
 	% To ensure that the message goes through even in production mode:
 	% (this is the case, so commented-out)
@@ -2320,12 +2468,13 @@ log_error( FormatString, ValueList ) ->
 
 
 
-% @doc Reports (as synchronously as possible, in order to avoid losing this
-% notification) the specified error about the current WOOPER instance
-% (preferably thanks to its state, otherwise with the current executed module,
-% so with fewer information) to the user, typically by displaying an error
-% report on the console (non-halting function, e.g. no exception thrown).
-%
+-doc """
+Reports (as synchronously as possible, in order to avoid losing this
+notification) the specified error about the current WOOPER instance (preferably
+thanks to its state, otherwise with the current executed module, so with fewer
+information) to the user, typically by displaying an error report on the console
+(non-halting function, e.g. no exception thrown).
+""".
 -spec log_error( format_string(), format_values(),
 				 wooper:state() | basic_utils:module_name() ) -> void().
 log_error( FormatString, ValueList, State )
@@ -2355,17 +2504,18 @@ log_error( FormatString, ValueList, ModuleName ) when is_atom( ModuleName ) ->
 
 
 
-
-% @doc Called by WOOPER whenever a request fails, to report it on the console
-% and to the caller, and have the process instance exit.
-%
+-doc """
+Called by WOOPER whenever a request fails, to report it on the console and to
+the caller, and have the process instance exit.
+""".
 -spec on_failed_request( request_name(), method_arguments(), pid(),
 		exception_class(), exception_term(), stack_trace(), wooper:state() ) ->
 								no_return().
 on_failed_request( RequestName, ArgumentList, CallerPid, ExceptionClass,
-	ExceptionTerm=undef,
-	_Stacktrace=[ _UndefCall={ ModuleName, FunctionName, UndefArgs, Loc }
-					| NextCalls ], State ) ->
+        ExceptionTerm=undef,
+        _Stacktrace=[ _UndefCall={ ModuleName, FunctionName, UndefArgs,
+                                   Loc } | NextCalls ],
+        State ) ->
 
 	Arity = length( ArgumentList ) + 1,
 
@@ -2438,9 +2588,10 @@ on_failed_request( RequestName, ArgumentList, CallerPid, ExceptionClass,
 
 
 
-% @doc Called by WOOPER whenever a oneway fails, to report it on the console and
-% to the caller, and have the process instance exit.
-%
+-doc """
+Called by WOOPER whenever a oneway fails, to report it on the console and to the
+caller, and have the process instance exit.
+""".
 -spec on_failed_oneway( oneway_name(), method_arguments(), exception_class(),
 			exception_term(), stack_trace(), wooper:state() ) -> no_return().
 on_failed_oneway( OnewayName, ArgumentList, _ExceptionClass,
@@ -2500,13 +2651,12 @@ on_failed_oneway( OnewayName, ArgumentList, ExceptionClass, ExceptionTerm,
 
 
 
-% @doc Looks up the module defining specified method, and returns a textual
-% prefix specifying it, if found.
-%
-% Used for error management, hence designed not to fail.
-%
-% (helper)
-%
+-doc """
+Looks up the module defining the specified method, and returns a textual prefix
+specifying it, if found.
+
+Used for error management, hence designed not to fail.
+""".
 -spec lookup_method_prefix( method_name(), arity(), wooper:state() ) ->
 									ustring().
 lookup_method_prefix( MethodAtom, Arity, State ) ->
@@ -2528,16 +2678,16 @@ lookup_method_prefix( MethodAtom, Arity, State ) ->
 
 
 
-% Helper function to test requests.
-%
-% @doc Allows to test from the shell an instance by sending it requests (hence
-% needing a receive, whereas the caller is the shell), and waiting for any kind
-% of message sent back.
-%
-% Returns the actual result or received value.
-%
-% Available even when debug mode is off.
-%
+% Helper function to test requests:
+-doc """
+Allows to test from the shell an instance by sending it requests (hence needing
+a receive, whereas the caller is the shell), and waiting for any kind of message
+sent back.
+
+Returns the actual result or received value.
+
+Available even when debug mode is off.
+""".
 -spec send_and_listen( instance_pid(), request_name(), method_arguments() ) ->
 							term().
 send_and_listen( InstancePid, RequestName, Arguments ) ->
@@ -2568,11 +2718,10 @@ send_and_listen( InstancePid, RequestName, Arguments ) ->
 
 
 
-% @doc Returns the result corresponding to the first pending WOOPER request
-% (possibly the latest sent one), or blocks.
-%
-% (helper)
-%
+-doc """
+Returns the result corresponding to the first pending WOOPER request (possibly
+the latest sent one), or blocks.
+""".
 -spec receive_result() -> request_result( any() ).
 receive_result() ->
 	receive
@@ -2588,18 +2737,16 @@ receive_result() ->
 % Deletion-related section.
 
 
+-doc """
+Deletes (asynchronously: "fire and forget") the WOOPER instance(s) potentially
+stored in the specified attribute list.
 
-% @doc Deletes (asynchronously: "fire and forget") the WOOPER instance(s)
-% potentially stored in the specified attribute list.
-%
-% Sets the corresponding attribute(s) to 'undefined', returns an updated state.
-%
-% For example in a destructor: DeleteState = delete_any_instance_referenced_in([
-% first_pid_attr, second_pid_attr], State) or
-% delete_any_instance_referenced_in(my_pid_attr, State).
-%
-% (helper)
-%
+Sets the corresponding attribute(s) to `undefined`, returns an updated state.
+
+For example in a destructor: `DeleteState = delete_any_instance_referenced_in([
+first_pid_attr, second_pid_attr], State)` or
+`delete_any_instance_referenced_in(my_pid_attr, State)`.
+""".
 -spec delete_any_instance_referenced_in( [ attribute_name() ],
 										 wooper:state() ) -> wooper:state().
 delete_any_instance_referenced_in( _Attributes=[], State ) ->
@@ -2636,17 +2783,18 @@ delete_any_instance_referenced_in( PidAttribute, State ) ->
 
 
 
-% @doc Deletes (synchronously, in a parallel yet blocking manner) the WOOPER
-% instance(s) potentially stored in specified attribute list (a standalone
-% attribute may be specified as well).
-%
-% Sets the corresponding attribute(s) to 'undefined', returns an updated state.
-%
-% For example in a destructor: NewState =
-% delete_synchronously_any_instance_referenced_in([first_pid_attr,
-% second_pid_attr], State) or
-% delete_synchronously_any_instance_referenced_in(my_pid_attr, State).
-%
+-doc """
+Deletes (synchronously, in a parallel yet blocking manner) the WOOPER
+instance(s) potentially stored in specified attribute list (a standalone
+attribute may be specified as well).
+
+Sets the corresponding attribute(s) to `undefined`, returns an updated state.
+
+For example in a destructor: `NewState =
+delete_synchronously_any_instance_referenced_in([first_pid_attr,
+second_pid_attr], State)` or
+`delete_synchronously_any_instance_referenced_in(my_pid_attr, State)`.
+""".
 -spec delete_synchronously_any_instance_referenced_in(
 	[ attribute_name() ] | attribute_name(), wooper:state() ) -> wooper:state().
 delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
@@ -2654,19 +2802,21 @@ delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
 		_PreTestLiveliness=false, State ).
 
 
-% @doc Deletes safely (pre-testing whether the specified process still exists
-% before attempting to delete it, in order to avoid having to wait for a
-% synchronous time-out) and synchronously, in a parallel yet blocking manner,
-% the WOOPER instance(s) potentially stored in the specified attribute list (a
-% standalone attribute may be specified as well instead).
-%
-% Sets the corresponding attribute(s) to 'undefined', returns an updated state.
-%
-% For example in a destructor: NewState =
-% delete_synchronously_any_instance_referenced_in([first_pid_attr,
-% second_pid_attr], SomeState) or
-% safe_delete_synchronously_any_instance_referenced_in(my_pid_attr, State).
-%
+
+-doc """
+Deletes safely (pre-testing whether the specified process still exists before
+attempting to delete it, in order to avoid having to wait for a synchronous
+time-out) and synchronously, in a parallel yet blocking manner, the WOOPER
+instance(s) potentially stored in the specified attribute list (a standalone
+attribute may be specified as well instead).
+
+Sets the corresponding attribute(s) to `undefined`, returns an updated state.
+
+For example in a destructor: `NewState =
+delete_synchronously_any_instance_referenced_in([first_pid_attr,
+second_pid_attr], SomeState)` or
+`safe_delete_synchronously_any_instance_referenced_in(my_pid_attr, State)`.
+""".
 -spec safe_delete_synchronously_any_instance_referenced_in(
 	[ attribute_name() ] | attribute_name(), wooper:state() ) -> wooper:state().
 safe_delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
@@ -2675,23 +2825,23 @@ safe_delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
 
 
 
-% @doc Deletes safely (if requested, pre-testing whether the specified process
-% still exists before attempting to delete it, in order to avoid having to wait
-% for a synchronous time-out) and synchronously, in a parallel yet blocking
-% manner, the WOOPER instance(s) potentially stored in the specified attribute
-% list (a standalone attribute may be specified as well instead).
-%
-% Sets the corresponding attribute(s) to 'undefined', returns an updated state.
-%
-% For example in a destructor: NewState =
-% delete_synchronously_any_instance_referenced_in([first_pid_attr,
-% second_pid_attr], SomeState) or
-% delete_synchronously_any_instance_referenced_in(my_pid_attr, State).
-%
+-doc """
+Deletes safely (if requested, pre-testing whether the specified process still
+exists before attempting to delete it, in order to avoid having to wait for a
+synchronous time-out) and synchronously, in a parallel yet blocking manner, the
+WOOPER instance(s) potentially stored in the specified attribute list (a
+standalone attribute may be specified as well instead).
+
+Sets the corresponding attribute(s) to `undefined`, returns an updated state.
+
+For example in a destructor: `NewState =
+delete_synchronously_any_instance_referenced_in([first_pid_attr,
+second_pid_attr], SomeState)` or
+`delete_synchronously_any_instance_referenced_in(my_pid_attr, State)`.
+""".
 delete_synchronously_any_instance_referenced_in( _Attributes=[],
 												 _PreTestLiveliness, State ) ->
 	State;
-
 
 delete_synchronously_any_instance_referenced_in( Attributes, PreTestLiveliness,
 		State ) when is_list( Attributes ) ->
@@ -2728,14 +2878,13 @@ delete_synchronously_any_instance_referenced_in( Attribute, PreTestLiveliness,
 
 
 
+-doc """
+Sends delete messages to all PIDs found in the specified list of attributes, and
+returns a list of the corresponding attributes and of their PID.
 
-% @doc Sends delete messages to all PIDs found in the specified list of
-% attributes, and returns a list of the corresponding attributes and of their
-% PID.
-%
-% If PreTestLiveliness is true, checks first that the process is not already
-% dead, to avoid waiting for a synchronous time-out.
-%
+If PreTestLiveliness is true, checks first that the process is not already dead,
+to avoid waiting for a synchronous time-out.
+""".
 delete_pid_from( Attributes, PreTestLiveliness, State ) ->
 
 	DeleteMessage = { synchronous_delete, self() },
@@ -2784,10 +2933,11 @@ delete_pid_from( [ Attr | T ], DeleteMessage, PreTestLiveliness, State,
 
 
 
-% @doc Deletes specified instance synchronously.
-%
-% Will wait forever the effective termination of the specified instance.
-%
+-doc """
+Deletes the specified instance synchronously.
+
+Will wait forever its effective termination.
+""".
 -spec delete_synchronously_instance( instance_pid() ) -> void().
 delete_synchronously_instance( InstancePid ) ->
 
@@ -2807,13 +2957,14 @@ delete_synchronously_instance( InstancePid ) ->
 
 
 
-% @doc Deletes specified instances synchronously (yet in parallel).
-%
-% Will wait forever the effective termination of all instances (and will
-% regularly write a message on the console if waiting for too long).
-%
-% (exported helper)
-%
+-doc """
+Deletes specified instances synchronously (yet in parallel).
+
+Will wait forever the effective termination of all instances (and will regularly
+write a message on the console if waiting for too long).
+
+(exported helper)
+""".
 -spec delete_synchronously_instances( [ instance_pid() ] ) -> void().
 delete_synchronously_instances( InstanceList ) ->
 
@@ -2901,15 +3052,16 @@ examine_waited_deletions( _WaitedPids=[ Pid | T ], Acc ) ->
 
 
 
-% @doc Deletes specified instances synchronously (yet in parallel), safely,
-% knowing there could be duplicates in the specified list and that some
-% instances may even be already dead.
-%
-% Will wait forever the effective termination of all instances (and will
-% regularly write a message on the console if waiting for too long) .
-%
-% (exported helper)
-%
+-doc """
+Deletes specified instances synchronously (yet in parallel), safely, knowing
+there could be duplicates in the specified list and that some instances may even
+be already dead.
+
+Will wait forever the effective termination of all instances (and will regularly
+write a message on the console if waiting for too long) .
+
+(exported helper)
+""".
 -spec safe_delete_synchronously_instances( [ instance_pid() ] ) -> void().
 safe_delete_synchronously_instances( InstanceList ) ->
 
@@ -2922,7 +3074,7 @@ safe_delete_synchronously_instances( InstanceList ) ->
 
 
 
-% @doc Deletes the specified passive instance.
+-doc "Deletes the specified passive instance.".
 -spec delete_passive( passive_instance() ) -> void().
 delete_passive( _PassiveInstance ) ->
 	%trace_bridge:info( "Passive instance deleted." ),
@@ -2934,53 +3086,59 @@ delete_passive( _PassiveInstance ) ->
 % transform is supposed to have replaced them at compilation-time.
 
 
-% @doc WOOPER terminator for a (non-const) request method.
+-doc "WOOPER terminator for a (non-const) request method.".
 -spec return_state_result( any(), any() ) -> no_return().
 return_state_result( _State, _Result ) ->
 	throw( { untransformed_method_terminator, return_state_result } ).
 
 
-% @doc WOOPER terminator for a (non-const) oneway method.
+
+-doc "WOOPER terminator for a (non-const) oneway method.".
 -spec return_state( any() ) -> no_return().
 return_state( _State ) ->
 	throw( { untransformed_method_terminator, return_state_result } ).
 
 
-% @doc WOOPER terminator for a static method.
+
+-doc "WOOPER terminator for a static method.".
 -spec return_static( any() ) -> no_return().
 return_static( _Value ) ->
 	throw( { untransformed_method_terminator, return_static } ).
 
 
-% @doc WOOPER terminator for a const request method.
+
+-doc "WOOPER terminator for a const request method.".
 -spec const_return_result( any() ) -> no_return().
 const_return_result( _Value ) ->
 	throw( { untransformed_method_terminator, const_return_result } ).
 
 
-% @doc WOOPER terminator for a const oneway method.
+
+-doc "WOOPER terminator for a const oneway method.".
 -spec const_return() -> no_return().
 const_return() ->
 	throw( { untransformed_method_terminator, const_return } ).
 
 
 
-% @doc Returns a set containing pairs whose first element is the name of a
-% function exported from the wooper module, and whose second element is its
-% corresponding arity (of course multiple functions might share the same name
-% but have different arities).
-%
-% Typically useful to better intercept user errors in method terminators.
-%
+-doc """
+Returns a set containing pairs whose first element is the name of a function
+exported from the wooper module, and whose second element is its corresponding
+arity (of course multiple functions might share the same name but have different
+arities).
+
+Typically useful to better intercept user errors in method terminators.
+""".
 -spec get_exported_functions_set() -> function_export_set().
 get_exported_functions_set() ->
 	set_utils:new( meta_utils:list_exported_functions( ?MODULE ) ).
 
 
 
-% @doc Checks that specified attribute is indeed associated to a value equal to
-% 'undefined'.
-%
+-doc """
+Checks that specified attribute is indeed associated to a value equal to
+`undefined`.
+""".
 -spec check_undefined( attribute_name(), wooper:state() ) -> void().
 check_undefined( AttributeName, State ) ->
 
@@ -3007,12 +3165,10 @@ check_undefined( AttributeName, State ) ->
 
 
 
-% @doc Checks that all specified attributes are indeed associated to a value
-% equal to 'undefined'.
-%
+-doc """
+Checks that all specified attributes are indeed associated to a value equal to
+`undefined`.
+""".
 -spec check_all_undefined( [ attribute_name() ], wooper:state() ) -> void().
 check_all_undefined( AttributeNames, State ) ->
 	[ check_undefined( Attr, State ) || Attr <- AttributeNames ].
-
-
-%% Nope: @headerfile "wooper_state_functions.hrl"

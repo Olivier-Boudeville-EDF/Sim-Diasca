@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,13 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, June 8, 2016.
 
-
-% @doc Unit tests for the <b>SQL support</b>, based on available backend(s).
-%
-% See the sql_support tested module.
-%
 -module(sql_support_test).
+
+-moduledoc """
+Unit tests for the **SQL support**, based on available backend(s).
+
+See the sql_support tested module.
+""".
 
 
 
@@ -46,7 +47,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type connection() :: sql_support:connection().
 
@@ -60,7 +61,9 @@
 
 
 
-% @doc Returns the connection and user settings (if any) to apply to this test.
+-doc """
+Returns the connection and user settings (if any) to apply to this test.
+""".
 get_test_settings() ->
 
 	% Optional; will look-up the default '~/.ceylan-settings.etf' preference
@@ -87,8 +90,8 @@ get_test_settings() ->
 														  name=DbName },
 
 			UserSettings = #database_user_settings{
-								user_name=DbUserName,
-								user_password=DbUserPassword },
+				user_name=DbUserName,
+				user_password=DbUserPassword },
 
 			{ ConnSettings, UserSettings };
 
@@ -142,7 +145,7 @@ test_sqlite3() ->
 
 	% First writing:
 	{ rowid, 1 } = sqlite3:write( DbPid, my_table,
-						[ {name,"abby"}, {age, 20}, {<<"wage">>, 2000} ] ),
+		[ {name,"abby"}, {age, 20}, {<<"wage">>, 2000} ] ),
 
 	% Second one:
 	MargeEntry = [ {name, "marge"}, {age, 30}, {wage, 2000} ],
@@ -256,17 +259,19 @@ run() ->
 
 
 
-% @doc Connects to the tested database and returns a corresponding connection,
-% useful for interactive testing.
-%
-% Usage example: run 'make shell' from the current test directory, then:
-%
-%  1> MyConn = sql_support_test:run_interactive().
-%  2> Tables = sql_support:list_table_names(MyConn).
-%  2> sql_support:execute_query(MyConn, "select * from customers").
-%  [...]
-%  n > ok = sql_support:close(Conn).
-%
+-doc """
+Connects to the tested database and returns a corresponding connection, useful
+for interactive testing.
+
+Usage example: run 'make shell' from the current test directory, then:
+```
+  1> MyConn = sql_support_test:run_interactive().
+  2> Tables = sql_support:list_table_names(MyConn).
+  2> sql_support:execute_query(MyConn, "select * from customers").
+  [...]
+  n > ok = sql_support:close(Conn).
+```
+""".
 -spec run_interactive() -> connection().
 run_interactive() ->
 

@@ -1,28 +1,29 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% @doc Abstract class for <b>managers for a given set of types of dataflow
-% units</b>.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
+
 -module(class_DataflowUnitManager).
+
+-moduledoc """
+Abstract class for **managers for a given set of types of dataflow units**.
+""".
 
 
 -define( class_description,
@@ -30,7 +31,7 @@
 		 "actual manager for a given set of types of dataflow units shall "
 		 "inherit. "
 		 "Indeed, if relevant, a given unit manager may take care of multiple "
-		 "types of units (ex: a urban manager may manage energy demand units, "
+		 "types of units (e.g. a urban manager may manage energy demand units, "
 		 "pollution units, etc.). "
 		 "For example, by design the Foo, Bar and Baz processing units may be "
 		 "interlinked, in which case a FooBarBazUnitManager class can be "
@@ -40,7 +41,7 @@
 		 "Each unit manager is registered to the (parent, top-level) "
 		 "experiment manager. "
 		 "Each unit manager is a singleton and registers itself globally under "
-		 "its name, which is, conventionally, its actual classname (ex: "
+		 "its name, which is, conventionally, its actual classname (e.g. "
 		 "'class_EnergyDemandManager' or, if needing more clarity, "
 		 "'class_EnergyDemandUnitManager'). "
 		 "As a unit manager may create dataflow units at runtime (for the "
@@ -91,7 +92,7 @@
 	{ load_balancer_pid, load_balancer_pid(),
 	  "PID of the load balancer, useful to create new units for example" },
 
-	{ identification_server_pid, maybe( identification_server_pid() ),
+	{ identification_server_pid, option( identification_server_pid() ),
 	  "PID of the identification server, if enabled by the case" },
 
 	{ event_table, event_table(),
@@ -125,159 +126,175 @@
 -export([ create_runtime_unit/4, to_string/1 ]).
 
 
+-doc "Records all instances of each managed unit type.".
 -type unit_table() :: table( dataflow_unit_type(), [ unit_pid() ] ).
-% Records all instances of each managed unit type.
 
 
 
--type managed_unit_spec() :: dataflow_unit_type() |
-					{ dataflow_unit_type(), language_utils:language() }.
-% Describes a type of processing unit that is to be managed by a given unit
-% manager.
-%
-% It may be:
-%
-% - either directly the classname of that unit (ex:
-% 'class_TransportationDemandUnit') - implying it is an Erlang-based unit
-%
-% - or a {Classname, ImplementationLanguage} pair, meaning said unit is defined
-% in specified class, and implemented in specified programming language (ex:
-% {'class_VehicleTypeUnit', 'python'}, or {'class_EnergyDemandUnit', 'erlang'}
+-doc """
+Describes a type of processing unit that is to be managed by a given unit
+manager.
 
+It may be:
+
+- either directly the classname of that unit (e.g.
+`'class_TransportationDemandUnit'`) - implying it is an Erlang-based unit
+
+- or a `{Classname, ImplementationLanguage}` pair, meaning said unit is defined
+in specified class, and implemented in specified programming language (e.g.
+`{'class_VehicleTypeUnit', 'python'}`, or `{'class_EnergyDemandUnit', 'erlang'}`
+""".
+-type managed_unit_spec() :: dataflow_unit_type()
+    | { dataflow_unit_type(), language_utils:language() }.
 
 
 
 % Section about actions.
 
 
+-doc "The types of actions that a unit manager may track.".
 -type action_type() :: 'unit_creation'
 					 | 'unit_destruction'
 					 | 'unit_connection'
 					 | 'unit_disconnection'.
-% The types of actions that a unit manager may track.
 
 
+-doc "Any contextual information about an action.".
 -type context() :: any().
-% Any contextual information about an action.
 
 
+-doc """
+Allows a unit manager to record a pending action in the context of the
+processing of a given world event.
+""".
 -type action() :: unit_creation_action()
 				| unit_destruction_action()
 				| unit_connection_action()
 				| unit_disconnection_action().
-% Allows a unit manager to record a pending action in the context of the
-% processing of a given world event.
 
 
+-doc "Action corresponding to the creation of a unit.".
 -type unit_creation_action() :: { 'unit_creation', dataflow_unit_type(),
 		wooper:construction_parameters(), event_id(), unit_creation_context() }.
-% Action corresponding to the creation of a unit.
 
 
+-doc """
+Typically the PID of an upstream dataflow object (i.e dataflow_object_pid()).
+""".
 -type unit_creation_context() :: context().
-% Typically the PID of an upstream dataflow object (i.e dataflow_object_pid()).
 
 
 
+-doc "Action corresponding to the destruction of a unit.".
 -type unit_destruction_action() ::
-		{ 'unit_destruction', unit_pid(), event_id() }.
-% Action corresponding to the destruction of a unit.
+	{ 'unit_destruction', unit_pid(), event_id() }.
 
 
 
+-doc """
+Information about the (upstream, outgoing, "left") part of a connection.
+
+(if the kind of port is not specified, a standard port is assumed)
+""".
 -type upstream_port_spec() ::
-		output_port_string_name()
-	  | { 'output_port_name', output_port_string_name() }
-	  | { 'output_iteration_name', output_iteration_string_name() }.
-% Information about the (upstream, outgoing, "left") part of a connection.
-%
-% (if the kind of port is not specified, a standard port is assumed)
+	output_port_string_name()
+  | { 'output_port_name', output_port_string_name() }
+  | { 'output_iteration_name', output_iteration_string_name() }.
 
 
 
+-doc "Canonical form of `upstream_port_spec/0`.".
 -type canonical_upstream_port_spec() ::
-		{ 'output_port_name', output_port_name() }
-	  | { 'output_iteration_name', output_iteration_name() }.
-% Canonical form of upstream_port_spec/0.
+	{ 'output_port_name', output_port_name() }
+  | { 'output_iteration_name', output_iteration_name() }.
 
 
 
+-doc """
+Information about the (downstream, ingoing, "right") part of a connection.
+
+(if the kind of port is not specified, a standard port is assumed)
+""".
 -type downstream_port_spec() ::
-		input_port_string_name()
-	  | { 'input_port_name', input_port_string_name() }
-	  | { 'input_iteration_name', input_iteration_string_name() }.
-% Information about the (downstream, ingoing, "right") part of a connection.
-%
-% (if the kind of port is not specified, a standard port is assumed)
+	input_port_string_name()
+  | { 'input_port_name', input_port_string_name() }
+  | { 'input_iteration_name', input_iteration_string_name() }.
 
 
 
+-doc "Canonical form of downstream_port_spec/0.".
 -type canonical_downstream_port_spec() ::
-		{ 'input_port_name', input_port_name() }
-	  | { 'input_iteration_name', input_iteration_name() }.
-% Canonical form of downstream_port_spec/0.
+	{ 'input_port_name', input_port_name() }
+  | { 'input_iteration_name', input_iteration_name() }.
 
 
 
+-doc """
+Allows to specify, regarding an upstream block and a downstream one, that a
+connection between two ports that shall be made.
+
+Note: such connections are typically aggregated into lists.
+
+(if only a port name is specified, an identically named standard port in both
+ends is assumed)
+""".
 -type connection_spec() :: { upstream_port_spec(), downstream_port_spec() }
-							| port_string_name().
-% Allows to specify, regarding an upstream block and a downstream one, that a
-% connection between two ports that shall be made.
-%
-% Note: such connections are typically aggregated into lists.
-%
-% (if only a port name is specified, an identically named standard port in both
-% ends is assumed)
+                         | port_string_name().
 
 
-
+-doc "Canonical form of connection_spec/0.".
 -type canonical_connection_spec() :: { canonical_upstream_port_spec(),
 									   canonical_downstream_port_spec() }.
-% Canonical form of connection_spec/0.
 
 
 
+-doc """
+Action corresponding to the connection of a unit to the dataflow, i.e. the
+creation of a set of channels, from output ports to input ones, ports being
+standard or iterated ones.
+""".
 -type unit_connection_action() :: { 'unit_connection', event_id(),
-		upstream_block_pid(), downstream_block_pid(),
-		[ canonical_connection_spec() ], unit_connection_context() }.
-% Action corresponding to the connection of a unit to the dataflow, i.e. the
-% creation of a set of channels, from output ports to input ones, ports being
-% standard or iterated ones.
+	upstream_block_pid(), downstream_block_pid(),
+	[ canonical_connection_spec() ], unit_connection_context() }.
 
 
 -type unit_connection_context() :: context(). % 'undefined'
 
 
 
+-doc """
+Action corresponding to the disconnection of a unit to the dataflow, i.e. the
+removal of a set of channels.
+""".
 -type unit_disconnection_action() :: { 'unit_disconnection', event_id(),
-		block_pid(), unit_disconnection_context() }.
-% Action corresponding to the disconnection of a unit to the dataflow, i.e. the
-% removal of a set of channels.
+	block_pid(), unit_disconnection_context() }.
 
 
 -type unit_disconnection_context() :: context(). % 'undefined'
 
 
 
+-doc "Allows to keep track of the actions performed by this unit manager.".
 -type action_id() :: count().
-% Allows to keep track of the actions performed by this unit manager.
 
 
+-doc "Keeps track of the actions in progress.".
 -type action_table() :: table( action_id(), action() ).
-% Keeps track of the actions in progress.
 
 
+-doc "Allows to set action identifiers.".
 -type action_count() :: count().
-% Allows to set action identifiers.
 
 
+-doc """
+Records, for a given world event, all the pending actions still currently in
+progress regarding that unit manager.
+""".
 -type event_table() :: table( event_id(), [ action_id() ] ).
-% Records, for a given world event, all the pending actions still currently
-% in progress regarding that unit manager.
 
 
+-doc "The classname of a unit manager.".
 -type actor_classname() :: class_Actor:classname().
-% The classname of a unit manager.
 
 
 -export_type([ unit_table/0, managed_unit_spec/0, action_type/0, action/0,
@@ -304,13 +321,6 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
-
--type count() :: basic_utils:count().
--type ustring() :: text_utils:ustring().
--type connection_info() :: class_DataflowBlock:connection_info().
-
-
 
 % Implementation notes:
 %
@@ -319,37 +329,51 @@
 
 
 
-% @doc Constructs a unit manager.
-%
-% Parameters are:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - Name, an atom designating the classname of this singleton manager (ex:
-% 'class_FooBarBazUnitManager')
-%
-% - ManagedUnitSpecs specifies the types of units that this manager is to take
-% care of, together with their implementation language (default being Erlang)
-%
-% - ListenedEventMatches is a list of the dataflow synchronization events that
-% this unit manager is interested in
-%
-% - ExperimentManagerPid is the PID of the parent manager of this one
-%
-% - BindingManagers, a record storing the PIDs of all the binding managers
-% corresponding to the activated language bindings; useful whenever an instance
-% implemented in one of these languages has to be created
-%
-% - LoadBalancerPid, the PID of the load balancer, useful when instances have to
-% be created
-%
-% - IdentificationServerPid, the PID of the identification server (if any)
-%
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+-type ustring() :: text_utils:ustring().
+
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+-type binding_managers() :: binding_utils:binding_managers().
+
+-type connection_info() :: class_DataflowBlock:connection_info().
+
+
+
+-doc """
+Constructs a unit manager.
+
+Parameters are:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- Name, an atom designating the classname of this singleton manager (e.g.
+`class_FooBarBazUnitManager`)
+
+- ManagedUnitSpecs specifies the types of units that this manager is to take
+care of, together with their implementation language (default being Erlang)
+
+- ListenedEventMatches is a list of the dataflow synchronization events that
+this unit manager is interested in
+
+- ExperimentManagerPid is the PID of the parent manager of this one
+
+- BindingManagers, a record storing the PIDs of all the binding managers
+corresponding to the activated language bindings; useful whenever an instance
+implemented in one of these languages has to be created
+
+- LoadBalancerPid, the PID of the load balancer, useful when instances have to
+be created
+
+- IdentificationServerPid, the PID of the identification server (if any)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 		class_Actor:name(), [ managed_unit_spec() ], [ event_match() ],
 		experiment_manager_pid(), binding_managers(), load_balancer_pid(),
-		maybe( identification_server_pid() ) ) ->  wooper:state().
+		option( identification_server_pid() ) ) ->  wooper:state().
 construct( State, ActorSettings, Name, ManagedUnitSpecs, ListenedEventMatches,
 		   ExperimentManagerPid, BindingManagers, LoadBalancerPid,
 		   IdentificationServerPid ) ->
@@ -364,7 +388,7 @@ construct( State, ActorSettings, Name, ManagedUnitSpecs, ListenedEventMatches,
 	% request):
 	%
 	ExperimentManagerPid ! { registerUnitManager,
-						[ ManagedUnitTypes, ListenedEventMatches ], self() },
+		[ ManagedUnitTypes, ListenedEventMatches ], self() },
 
 	% We expect child classes to pass atom-based names:
 	{ RegistrationName, TraceInit } = case Name of
@@ -409,7 +433,7 @@ construct( State, ActorSettings, Name, ManagedUnitSpecs, ListenedEventMatches,
 		{ action_table, EmptyTable },
 
 		% One may prefer starting counting the actions from an easily-spotted
-		% offset (ex: to better discriminate actions from event identifiers):
+		% offset (e.g. to better discriminate actions from event identifiers):
 		%
 		%{ action_count, 100 } ] ),
 		{ action_count, 0 } ] ),
@@ -426,7 +450,7 @@ construct( State, ActorSettings, Name, ManagedUnitSpecs, ListenedEventMatches,
 
 
 
-% @doc Prepares the management of the specified types of units.
+-doc "Prepares the management of the specified types of units.".
 -spec prepare_for_units( [ managed_unit_spec() ], wooper:state() ) ->
 								unit_table().
 prepare_for_units( UnitSpecs, State ) ->
@@ -454,7 +478,7 @@ prepare_for_units( UnitSpecs, State ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -469,7 +493,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% @doc Callback executed on the first diasca of existence of this unit manager.
+-doc "Callback executed on the first diasca of existence of this unit manager.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -484,10 +508,11 @@ onFirstDiasca( State, _SendingActorPid ) ->
 % Event processing section.
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager (having requested to be notified of all events) that a world event has
-% been received (and successfully matched).
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+(having requested to be notified of all events) that a world event has been
+received (and successfully matched).
+""".
 -spec processAnyEventMatched( wooper:state(), world_event(),
 							  sending_actor_pid() ) -> actor_oneway_return().
 processAnyEventMatched( State, Event, _SendingActorPid ) ->
@@ -500,12 +525,13 @@ processAnyEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a world event happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a world event happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onAnyEventMatched( wooper:state(), world_event() ) ->
 			const_oneway_return().
 onAnyEventMatched( State, Event ) ->
@@ -517,10 +543,11 @@ onAnyEventMatched( State, Event ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that a creation event has been received and successfully matched
-% against a clause specified by this unit manager.
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that a creation event has been received and successfully matched against a
+clause specified by this unit manager.
+""".
 -spec processCreationEventMatched( wooper:state(), creation_event(),
 							sending_actor_pid() ) -> actor_oneway_return().
 processCreationEventMatched( State, Event, _SendingActorPid ) ->
@@ -533,12 +560,13 @@ processCreationEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching creation happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching creation happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onCreationEventMatched( wooper:state(), creation_event() ) ->
 									const_oneway_return().
 onCreationEventMatched( State, CreationEvent ) ->
@@ -551,10 +579,11 @@ onCreationEventMatched( State, CreationEvent ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that a destruction event has been received and successfully matched
-% against a clause specified by this unit manager.
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that a destruction event has been received and successfully matched against a
+clause specified by this unit manager.
+""".
 -spec processDestructionEventMatched( wooper:state(), destruction_event(),
 								sending_actor_pid() ) -> actor_oneway_return().
 processDestructionEventMatched( State, Event, _SendingActorPid ) ->
@@ -567,12 +596,13 @@ processDestructionEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching destruction happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching destruction happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onDestructionEventMatched( wooper:state(), destruction_event() ) ->
 										const_actor_oneway_return().
 onDestructionEventMatched( State, DestructionEvent ) ->
@@ -585,10 +615,11 @@ onDestructionEventMatched( State, DestructionEvent ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that an association event has been received and successfully matched
-% against a clause specified by this unit manager.
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that an association event has been received and successfully matched against a
+clause specified by this unit manager.
+""".
 -spec processAssociationEventMatched( wooper:state(), association_event(),
 								sending_actor_pid() ) -> actor_oneway_return().
 processAssociationEventMatched( State, Event, _SendingActorPid ) ->
@@ -601,12 +632,13 @@ processAssociationEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching association happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching association happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onAssociationEventMatched( wooper:state(), association_event() ) ->
 										const_oneway_return().
 onAssociationEventMatched( State, AssociationEvent ) ->
@@ -619,10 +651,11 @@ onAssociationEventMatched( State, AssociationEvent ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that a binary association event has been received and successfully
-% matched against a clause specified by this unit manager.
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that a binary association event has been received and successfully matched
+against a clause specified by this unit manager.
+""".
 -spec processBinaryAssociationEventMatched( wooper:state(),
 	binary_association_event(), sending_actor_pid() ) -> actor_oneway_return().
 processBinaryAssociationEventMatched( State, Event, _SendingActorPid ) ->
@@ -636,12 +669,13 @@ processBinaryAssociationEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching binary association happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching binary association happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onBinaryAssociationEventMatched( wooper:state(),
 			binary_association_event() ) -> const_oneway_return().
 onBinaryAssociationEventMatched( State, BinaryAssociationEvent ) ->
@@ -654,12 +688,13 @@ onBinaryAssociationEventMatched( State, BinaryAssociationEvent ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that a disassociation event has been received and successfully matched
-% against a clause specified by this unit manager.
-%
-% (actor oneway)
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that a disassociation event has been received and successfully matched against a
+clause specified by this unit manager.
+
+(actor oneway)
+""".
 -spec processDisassociationEventMatched( wooper:state(), disassociation_event(),
 								sending_actor_pid() ) -> actor_oneway_return().
 processDisassociationEventMatched( State, Event, _SendingActorPid ) ->
@@ -673,12 +708,13 @@ processDisassociationEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching disassociation happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching disassociation happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onDisassociationEventMatched( wooper:state(), disassociation_event() ) ->
 											const_oneway_return().
 onDisassociationEventMatched( State, DisassociationEvent ) ->
@@ -691,10 +727,11 @@ onDisassociationEventMatched( State, DisassociationEvent ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that a connection event has been received and successfully matched
-% against a clause specified by this unit manager.
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that a connection event has been received and successfully matched against a
+clause specified by this unit manager.
+""".
 -spec processConnectionEventMatched( wooper:state(), connection_event(),
 							sending_actor_pid() ) -> actor_oneway_return().
 processConnectionEventMatched( State, Event, _SendingActorPid ) ->
@@ -707,12 +744,13 @@ processConnectionEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching connection happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching connection happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onConnectionEventMatched( wooper:state(), connection_event() ) ->
 										const_oneway_return().
 onConnectionEventMatched( State, ConnectionEvent ) ->
@@ -725,10 +763,11 @@ onConnectionEventMatched( State, ConnectionEvent ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that a disconnection event has been received and successfully matched
-% against a clause specified by this unit manager.
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that a disconnection event has been received and successfully matched against a
+clause specified by this unit manager.
+""".
 -spec processDisconnectionEventMatched( wooper:state(), connection_event(),
 								sending_actor_pid() ) -> actor_oneway_return().
 processDisconnectionEventMatched( State, Event, _SendingActorPid ) ->
@@ -742,12 +781,13 @@ processDisconnectionEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching disconnection happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching disconnection happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onDisconnectionEventMatched( wooper:state(), disconnection_event() ) ->
 											const_oneway_return().
 onDisconnectionEventMatched( State, DisconnectionEvent ) ->
@@ -760,10 +800,11 @@ onDisconnectionEventMatched( State, DisconnectionEvent ) ->
 
 
 
-% @doc Called (most probably by the experiment manager) to notify this unit
-% manager that an update event has been received and successfully matched
-% against a clause specified by this unit manager.
-%
+-doc """
+Called (most probably by the experiment manager) to notify this unit manager
+that an update event has been received and successfully matched against a clause
+specified by this unit manager.
+""".
 -spec processUpdateEventMatched( wooper:state(), disassociation_event(),
 								 sending_actor_pid() ) -> actor_oneway_return().
 processUpdateEventMatched( State, Event, _SendingActorPid ) ->
@@ -776,12 +817,13 @@ processUpdateEventMatched( State, Event, _SendingActorPid ) ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching update happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden (probably
-% by a non-const oneway).
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching update happened.
+
+Note: catch-all placeholder implementation, meant to be overridden (probably by
+a non-const oneway).
+""".
 -spec onUpdateEventMatched( wooper:state(), update_event() ) ->
 									const_oneway_return().
 onUpdateEventMatched( State, UpdateEvent ) ->
@@ -795,11 +837,12 @@ onUpdateEventMatched( State, UpdateEvent ) ->
 
 
 
-% @doc Creates, synchronously and while the simulation is not running, an
-% (initial) instance of the specified unit type, associated to specified
-% dataflow, using specified core construction parameters for that, and returning
-% the corresponding instance PID.
-%
+-doc """
+Creates, synchronously and while the simulation is not running, an (initial)
+instance of the specified unit type, associated to specified dataflow, using
+specified core construction parameters for that, and returning the corresponding
+instance PID.
+""".
 -spec createInitialUnitInstance( wooper:state(), managed_unit_spec(),
 				dataflow_pid(), construction_parameters() ) ->
 										request_return( unit_pid() ).
@@ -815,7 +858,7 @@ createInitialUnitInstance( State, _UnitSpec={ UnitType, _Language=erlang },
 		[ UnitType, DataflowPid, CoreConstructionParameters ] ),
 
 	FullConstructParams = list_utils:append_at_end( DataflowPid,
-												CoreConstructionParameters ),
+		CoreConstructionParameters ),
 
 	% Creating the unit with these parameters:
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
@@ -845,12 +888,14 @@ createInitialUnitInstance( State, _UnitSpec={ UnitType, Language },
 		[ UnitType, language_utils:language_to_string( Language ),
 		  DataflowPid, CoreConstructionParameters ] ),
 
-	% Per-binding generic unit type (ex: class_DataflowPythonProcessingUnit):
+	% Per-binding generic unit type (e.g. class_DataflowPythonProcessingUnit):
 	ActualUnitType = dataflow_binding_utils:get_erlang_unit_type( Language ),
 
-	% Binding manager in charge of that language (ex: the PythonBindingManager):
+	% Binding manager in charge of that language (e.g. the
+	% PythonBindingManager):
+    %
 	BindingManagerPid = binding_utils:get_binding_manager( Language,
-											?getAttr(binding_managers) ),
+		?getAttr(binding_managers) ),
 
 	FullConstructParams = [ UnitType, CoreConstructionParameters, DataflowPid,
 							BindingManagerPid ],
@@ -859,7 +904,7 @@ createInitialUnitInstance( State, _UnitSpec={ UnitType, Language },
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
 
 	UnitPid = class_Actor:create_initial_actor( ActualUnitType,
-								FullConstructParams, LoadBalancerPid ),
+		FullConstructParams, LoadBalancerPid ),
 
 	% Will register itself to its dataflow at the first diasca of this unit.
 
@@ -878,7 +923,7 @@ createInitialUnitInstance( State, _UnitSpec=UnitType, DataflowPid,
 	FullUnitSpec={ UnitType, _Language=erlang },
 
 	{ NewState, UnitPid } = createInitialUnitInstance( State, FullUnitSpec,
-					DataflowPid, CoreConstructionParameters ),
+		DataflowPid, CoreConstructionParameters ),
 
 	wooper:return_state_result( NewState, UnitPid );
 
@@ -897,10 +942,11 @@ createInitialUnitInstance( State, UnitSpec, _DataflowPid,
 
 
 
-% Creates, synchronously and while the simulation is not running, an (initial)
-% instance of the specified modk-up unit type, using specified core construction
-% parameters for that, and returning the corresponding instance PID.
-%
+-doc """
+Creates, synchronously and while the simulation is not running, an (initial)
+instance of the specified modk-up unit type, using specified core construction
+parameters for that, and returning the corresponding instance PID.
+""".
 -spec createInitialMockupUnitInstance( wooper:state(), mockup_unit_spec(),
 		dataflow_pid(), class_DataflowProcessingUnit:unit_name() ) ->
 											request_return( unit_pid() ).
@@ -920,7 +966,7 @@ createInitialMockupUnitInstance( State, MockupUnitSpec, DataflowPid,
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
 
 	UnitPid = class_Actor:create_initial_actor( class_DataflowMockupUnit,
-								FullConstructParams, LoadBalancerPid ),
+		FullConstructParams, LoadBalancerPid ),
 
 	% Will register itself to its dataflow at the first diasca of this unit.
 
@@ -934,13 +980,14 @@ createInitialMockupUnitInstance( State, MockupUnitSpec, DataflowPid,
 
 
 
-% @doc Creates, synchronously and while the simulation is not running, a set of
-% (initial) instances of the specified unit type, using the specified list of
-% core construction parameters for that, and returning the corresponding
-% instance PIDs, in the same order.
-%
+-doc """
+Creates, synchronously and while the simulation is not running, a set of
+(initial) instances of the specified unit type, using the specified list of core
+construction parameters for that, and returning the corresponding instance PIDs,
+in the same order.
+""".
 -spec createInitialUnitInstances( wooper:state(), managed_unit_spec(),
-							dataflow_pid(), [ construction_parameters() ] ) ->
+			dataflow_pid(), [ construction_parameters() ] ) ->
 										request_return( [ unit_pid() ] ).
 createInitialUnitInstances( State, _UnitSpec={ UnitType, _Language=erlang },
 							DataflowPid, CoreConstructParamLists ) ->
@@ -992,7 +1039,7 @@ createInitialUnitInstances( State, _UnitSpec={ UnitType, Language },
 	ActualUnitType = dataflow_binding_utils:get_erlang_unit_type( Language ),
 
 	BindingManagerPid = binding_utils:get_binding_manager( Language,
-												?getAttr(binding_managers) ),
+		?getAttr(binding_managers) ),
 
 	% Prepares a list of { Classname, FullConstructParams }:
 	ConstructEntries = [ { ActualUnitType,
@@ -1022,7 +1069,7 @@ createInitialUnitInstances( State, _UnitSpec=UnitType, DataflowPid,
 	FullUnitSpec={ UnitType, _Language=erlang },
 
 	{ NewState, UnitPidList } = createInitialUnitInstances( State, FullUnitSpec,
-								DataflowPid, CoreConstructParamLists ),
+		DataflowPid, CoreConstructParamLists ),
 
 	wooper:return_state_result( NewState, UnitPidList );
 
@@ -1041,11 +1088,12 @@ createInitialUnitInstances( State, UnitSpec, _DataflowPid,
 
 
 
-% @doc Creates, synchronously and while the simulation is not running, a set of
-% (initial) instances of the specified mockup unit type, using a specification
-% parameters record and the unit names for that, and returning the corresponding
-% instance PIDs, in the same order.
-%
+-doc """
+Creates, synchronously and while the simulation is not running, a set of
+(initial) instances of the specified mockup unit type, using a specification
+parameters record and the unit names for that, and returning the corresponding
+instance PIDs, in the same order.
+""".
 -spec createInitialMockupUnitInstances( wooper:state(), mockup_unit_spec(),
 			dataflow_pid(), [ class_DataflowProcessingUnit:unit_name() ] ) ->
 											request_return( [ unit_pid() ] ).
@@ -1084,13 +1132,14 @@ createInitialMockupUnitInstances( State, MockupUnitSpec, DataflowPid,
 
 
 
-% @doc Creates the specified processing unit.
-%
-% Will trigger back a call to onUnitCreated/6.
-%
-% Like create_runtime_unit/4, except operating with the changeset system (rather
-% than in a programmatic setting).
-%
+-doc """
+Creates the specified processing unit.
+
+Will trigger back a call to onUnitCreated/6.
+
+Like `create_runtime_unit/4`, except operating with the changeset system (rather
+than in a programmatic setting).
+""".
 -spec createUnit( wooper:state(), managed_unit_spec(),
 	wooper:construction_parameters(), event_id(), unit_creation_context() ) ->
 						oneway_return().
@@ -1120,9 +1169,9 @@ createUnit( State, _UnitSpec={ UnitType, erlang }, UnitConstructParams,
 										  ?getAttr(action_table) ),
 
 	FinalState = setAttributes( CreatedState, [
-					{ action_count, NewActionId },
-					{ event_table, NewEventTable },
-					{ action_table, NewActionTable } ] ),
+		{ action_count, NewActionId },
+		{ event_table, NewEventTable },
+		{ action_table, NewActionTable } ] ),
 
 	wooper:return_state( FinalState );
 
@@ -1137,12 +1186,14 @@ createUnit( State, _UnitSpec={ UnitType, Language }, UnitConstructParams,
 		[ UnitType, language_utils:language_to_string( Language ),
 		  UnitConstructParams, EventId, NewActionId, Context ] ),
 
-	% Per-binding generic unit type (ex: class_DataflowPythonProcessingUnit):
+	% Per-binding generic unit type (e.g. class_DataflowPythonProcessingUnit):
 	ActualUnitType = dataflow_binding_utils:get_erlang_unit_type( Language ),
 
-	% Binding manager in charge of that language (ex: the PythonBindingManager):
+	% Binding manager in charge of that language (e.g. the
+	% PythonBindingManager):
+    %
 	BindingManagerPid = binding_utils:get_binding_manager( Language,
-												?getAttr(binding_managers) ),
+		?getAttr(binding_managers) ),
 
 	%UnitConstructParams = [ UnitName, _Year=2020, 0.5, 1.0, DataflowPid ],
 
@@ -1160,7 +1211,7 @@ createUnit( State, _UnitSpec={ UnitType, Language }, UnitConstructParams,
 	%   [ ActualUnitType, FullUnitConstructParams ] ),
 
 	CreatedState = class_Actor:create_actor( ActualUnitType,
-					   FullUnitConstructParams, _Tag=NewActionId, State ),
+        FullUnitConstructParams, _Tag=NewActionId, State ),
 
 	% Registers the pending creation (corresponding to this new action), so that
 	% its completion makes the processing of the overall event progress:
@@ -1175,9 +1226,9 @@ createUnit( State, _UnitSpec={ UnitType, Language }, UnitConstructParams,
 										  ?getAttr(action_table) ),
 
 	FinalState = setAttributes( CreatedState, [
-					{ action_count, NewActionId },
-					{ event_table, NewEventTable },
-					{ action_table, NewActionTable } ] ),
+		{ action_count, NewActionId },
+		{ event_table, NewEventTable },
+		{ action_table, NewActionTable } ] ),
 
 	wooper:return_state( FinalState );
 
@@ -1195,10 +1246,11 @@ createUnit( State, _UnitSpec=UnitType, UnitConstructParams, EventId,
 
 
 
-% @doc Destructs the specified unit.
-%
-% Will trigger back a call to onUnitDestructed/4.
-%
+-doc """
+Destructs the specified unit.
+
+Will trigger back a call to onUnitDestructed/4.
+""".
 -spec destructUnit( wooper:state(), unit_pid(), event_id() ) -> oneway_return().
 destructUnit( State, UnitPid, EventId ) ->
 
@@ -1220,25 +1272,27 @@ destructUnit( State, UnitPid, EventId ) ->
 										  ?getAttr(action_table) ),
 
 	FinalState = setAttributes( DestructedState, [
-					{ action_count, NewActionId },
-					{ event_table, NewEventTable },
-					{ action_table, NewActionTable } ] ),
+		{ action_count, NewActionId },
+		{ event_table, NewEventTable },
+		{ action_table, NewActionTable } ] ),
 
 	wooper:return_state( FinalState ).
 
 
 
-% @doc Connects directly (that is thanks to an unsynchronised request - thus to
-% be done initially) the named output port of each of the specified upstream
-% blocks to the specified iteration of the specified downstream unit, creating
-% the corresponding iterated input ports for that.
-%
+-doc """
+Connects directly (that is thanks to an unsynchronised request - thus to be done
+initially) the named output port of each of the specified upstream blocks to the
+specified iteration of the specified downstream unit, creating the corresponding
+iterated input ports for that.
+""".
 -spec connectToIteratedInitially( wooper:state(),
 	{ [ upstream_block_pid() ], output_port_name() }, iteration_port_target() )
 					   -> const_request_return( 'connected_to_iterated' ).
 connectToIteratedInitially( State, { UpstreamBlocks, OutputPortName },
 							{ DownstreamUnitPid, InputIterationName } )
-  when is_binary( OutputPortName ) andalso is_binary( InputIterationName ) ->
+                        when is_binary( OutputPortName )
+                             andalso is_binary( InputIterationName ) ->
 
 	ChannelCount = length( UpstreamBlocks ),
 
@@ -1263,7 +1317,7 @@ connectToIteratedInitially( State, { UpstreamBlocks, OutputPortName },
 
 	% By design the waited units are exactly the upstream ones:
 	request_initial_connections_to_iterated( UpstreamBlocks, OutputPortName,
-										DownstreamUnitPid, InputPortNames ),
+		DownstreamUnitPid, InputPortNames ),
 
 	% Answers to the connectOutputPortInitially/4 requests:
 	wooper:wait_for_request_acknowledgements( ChannelCount,
@@ -1273,17 +1327,18 @@ connectToIteratedInitially( State, { UpstreamBlocks, OutputPortName },
 
 
 
-% @doc Called automatically after (generally after two diascas) this manager
-% created a unit instance.
-%
-% Parameters are:
-%
-% - CreatedUnitPid the PID of the just created unit
-%
-% - CreatedActorTag the tag used for this actor creation so that it is able to
-% discriminate among the multiple creations it might have requested; this is
-% here the identifier of the corresponding action
-%
+-doc """
+Called automatically after (generally after two diascas) this manager created a
+unit instance.
+
+Parameters are:
+
+- CreatedUnitPid the PID of the just created unit
+
+- CreatedActorTag the tag used for this actor creation so that it is able to
+discriminate among the multiple creations it might have requested; this is here
+the identifier of the corresponding action
+""".
 -spec onActorCreated( wooper:state(), unit_pid(), action_id(),
 					  load_balancer_pid() ) -> actor_oneway_return().
 onActorCreated( State, CreatedUnitPid, _CreatedActorTag=ActionId,
@@ -1317,13 +1372,8 @@ onActorCreated( State, CreatedUnitPid, _CreatedActorTag=ActionId,
 
 	% Updates already-existing unit-type entry:
 
-	case table:has_entry( UnitType, UnitTable ) of
-
-		true ->
-			ok;
-
-		false ->
-
+	table:has_entry( UnitType, UnitTable ) orelse
+        begin
 			KnownTypes = table:keys( UnitTable ),
 
 			?error_fmt( "The '~ts' unit type is not known. It shall have been "
@@ -1334,7 +1384,7 @@ onActorCreated( State, CreatedUnitPid, _CreatedActorTag=ActionId,
 
 			throw( { undeclared_unit_type, UnitType } )
 
-	end,
+        end,
 
 	NewUnitTable = table:append_to_existing_entry( _K=UnitType, CreatedUnitPid,
 												   UnitTable ),
@@ -1345,23 +1395,24 @@ onActorCreated( State, CreatedUnitPid, _CreatedActorTag=ActionId,
 
 
 
-% @doc Called whenever a unit has been created; meant to be overridden with any
-% action needed (typically creating channels between this new unit and the rest
-% of the dataflow).
-%
-% Parameters are:
-%
-% - CreatedUnitType is the type (classname) of the just created unit
-%
-% - CreatedUnitConstructionParameters is the construction parameters
-% corresponding to this new creation
-%
-% - CreatedUnitPid is the PID of the just created unit
-%
-% - EventId is the identifier of the corresponding overall world event
-%
-% - CreationContext is the context of this creation
-%
+-doc """
+Called whenever a unit has been created; meant to be overridden with any action
+needed (typically creating channels between this new unit and the rest of the
+dataflow).
+
+Parameters are:
+
+- CreatedUnitType is the type (classname) of the just created unit
+
+- CreatedUnitConstructionParameters is the construction parameters
+corresponding to this new creation
+
+- CreatedUnitPid is the PID of the just created unit
+
+- EventId is the identifier of the corresponding overall world event
+
+- CreationContext is the context of this creation
+""".
 -spec onUnitCreated( wooper:state(), dataflow_unit_type(),
 		wooper:construction_parameters(), unit_pid(), event_id(),
 		unit_creation_context() ) -> const_oneway_return().
@@ -1374,22 +1425,23 @@ onUnitCreated( State, _CreatedUnitType, _CreatedUnitConstructionParameters,
 
 
 
-% @doc Called whenever a unit has been destructed (typically from the
-% triggerDestruction/3 actor oneway of that unit).
-%
-% May be overridden if needed (in that case this base implementation shall be
-% called from there).
-%
-% Parameters are:
-%
-% - DestructedUnitPid is the PID of the just destructd unit
-%
-% - ActionId is the identifier of the corresponding action
-%
-% - CreationContext is the context of this creation
-%
-% Note: it is an actor oneway, not a mere oneway like for onUnitCreated/6.
-%
+-doc """
+Called whenever a unit has been destructed (typically from the
+`triggerDestruction/3` actor oneway of that unit).
+
+May be overridden if needed (in that case this base implementation shall be
+called from there).
+
+Parameters are:
+
+- DestructedUnitPid is the PID of the just destructd unit
+
+- ActionId is the identifier of the corresponding action
+
+- CreationContext is the context of this creation
+
+Note: it is an actor oneway, not a mere oneway like for onUnitCreated/6.
+""".
 -spec onUnitDestructed( wooper:state(), action_id(), dataflow_unit_type(),
 						unit_pid() ) -> actor_oneway_return().
 onUnitDestructed( State, ActionId, UnitType,
@@ -1415,11 +1467,11 @@ onUnitDestructed( State, ActionId, UnitType,
 
 	% Removes already-existing entry:
 	NewUnitTable = table:delete_existing_from_entry( _K=UnitType,
-							DestructedUnitPid, ?getAttr(unit_table) ),
+		DestructedUnitPid, ?getAttr(unit_table) ),
 
 	FinalState = setAttributes( DeclaredState, [
-						{ unit_table, NewUnitTable },
-						{ action_table, ShrunkActionTable } ] ),
+		{ unit_table, NewUnitTable },
+		{ action_table, ShrunkActionTable } ] ),
 
 	actor:return_state( FinalState ).
 
@@ -1431,10 +1483,11 @@ onUnitDestructed( State, ActionId, UnitType,
 
 
 
-% @doc Requests the specified upstream units to connect their output port named
-% as requested to a specific one among the provided iterated input ports of the
-% downstream unit.
-%
+-doc """
+Requests the specified upstream units to connect their output port named as
+requested to a specific one among the provided iterated input ports of the
+downstream unit.
+""".
 -spec request_initial_connections_to_iterated( [ unit_pid() ],
 			output_port_name(), unit_pid(), [ input_port_name() ] ) -> void().
 % Exhausted:
@@ -1460,7 +1513,9 @@ request_initial_connections_to_iterated( UpstreamUnits, OutputPortName,
 
 
 
-% @doc Returns a textual description of the unit instances currently managed.
+-doc """
+Returns a textual description of the unit instances currently managed.
+""".
 -spec unit_table_to_string( wooper:state() ) -> ustring().
 unit_table_to_string( State ) ->
 
@@ -1493,11 +1548,12 @@ unit_table_to_string( State ) ->
 
 
 
-% @doc Declares that specified action, in the context of specified event, has
-% been performed.
-%
-% Possibly reports that this event is fully processed by this unit manager.
-%
+-doc """
+Declares that specified action, in the context of specified event, has been
+performed.
+
+Possibly reports that this event is fully processed by this unit manager.
+""".
 -spec declare_action_performed( action_id(), event_id(), wooper:state() ) ->
 										wooper:state().
 declare_action_performed( ActionId, EventId, State ) ->
@@ -1521,7 +1577,7 @@ declare_action_performed( ActionId, EventId, State ) ->
 
 
 
-% @doc Here, all actions (if any) for said event have been processed.
+% Here, all actions (if any) for said event have been processed.
 manage_possible_event_completion( _ActionList=[], EventId, EventTable,
 								  State ) ->
 
@@ -1545,8 +1601,8 @@ manage_possible_event_completion( _ActionList=[], EventId, EventTable,
 	end,
 
 	SentState = class_Actor:send_actor_message(
-				  ?getAttr(experiment_manager_pid),
-				  { onEventProcessed, [ EventId ] }, State ),
+		?getAttr(experiment_manager_pid),
+		{ onEventProcessed, [ EventId ] }, State ),
 
 	setAttribute( SentState, event_table, NewEventTable );
 
@@ -1558,9 +1614,10 @@ manage_possible_event_completion( ActionList, EventId, EventTable, State ) ->
 
 
 
-% @doc To be called typically from one of the process*Matched/3 actor oneways,
-% to determine automatically whether the specified event is fully processed.
-%
+-doc """
+To be called typically from one of the `process*Matched/3` actor oneways, to
+determine automatically whether the specified event is fully processed.
+""".
 -spec manage_possible_event_completion( world_event(), wooper:state() ) ->
 												wooper:state().
 manage_possible_event_completion( Event, State ) ->
@@ -1580,24 +1637,25 @@ manage_possible_event_completion( Event, State ) ->
 
 
 
-% @doc Creates a set of channels, in the context of the processing of the
-% specified event, between specified upstream and downstream blocks, based on
-% the specified port names (be they the same on both sides or not, be there
-% standard or iterated ones), and returns an updated state.
-%
-% If just a name PortName is specified, then it is assumed that both endpoints
-% are standard ports, and that they bear that same port name.
-%
-% Otherwise the complete form is to be used, a pair describing the output port
-% and the input one. Not specifying the kind of port (standard or iteration)
-% defaults to standard.
-%
-% Will ultimately trigger back a call to onConnectionsCreated/5.
-%
-% Note: to be used even if a single channel is to be created.
-%
-% (exported helper)
-%
+-doc """
+Creates a set of channels, in the context of the processing of the specified
+event, between specified upstream and downstream blocks, based on the specified
+port names (be they the same on both sides or not, be there standard or iterated
+ones), and returns an updated state.
+
+If just a name PortName is specified, then it is assumed that both endpoints are
+standard ports, and that they bear that same port name.
+
+Otherwise the complete form is to be used, a pair describing the output port and
+the input one. Not specifying the kind of port (standard or iteration) defaults
+to standard.
+
+Will ultimately trigger back a call to `onConnectionsCreated/5`.
+
+Note: to be used even if a single channel is to be created.
+
+(exported helper)
+""".
 -spec create_channels_for( event_id(), upstream_block_pid(),
 		downstream_block_pid(), [ connection_spec() ], wooper:state() ) ->
 									wooper:state().
@@ -1606,7 +1664,7 @@ create_channels_for( EventId, UpstreamBlockPid, DownstreamBlockPid,
 
 	% Block endpoints and state specified to report clearer errors:
 	CanonicalConnectionSpecs = canonicalize_connection_specs( ConnectionSpecs,
-								UpstreamBlockPid, DownstreamBlockPid, State ),
+		UpstreamBlockPid, DownstreamBlockPid, State ),
 
 	?info_fmt( "Creating ~B channels in the context of event #~B, from "
 		"upstream block ~w to downstream one ~w, using ~ts",
@@ -1639,30 +1697,31 @@ create_channels_for( EventId, UpstreamBlockPid, DownstreamBlockPid,
 
 
 
-% @doc Called (by an upsteam block) once a set of channels from this upstream
-% block to a downstream one has been created, as requested by the
-% create_channels_for/5 helper of this unit manager.
-%
-% May be overridden if needed (in that case this base implementation shall be
-% called from there).
-%
-% Parameters are:
-%
-% - PortPairs is a list of the actual names of the output and input ports
-% created for the requested channels; these names correspond to standard ports,
-% possibly created from any outut or input iteration
-%
-% - DownstreamBlockPid is the PID of the target block to which all channels are
-% drawn
-%
-% - ActionId is the identifier of the corresponding action, as known by the unit
-% manager that triggered it
-%
-% - UpstreamBlockPid is the PID of the source block from which all channels are
-% drawn; it happens also to be the sending actor
-%
-% Note: it is an actor oneway, not a mere oneway like for onUnitCreated/6.
-%
+-doc """
+Called (by an upsteam block) once a set of channels from this upstream block to
+a downstream one has been created, as requested by the `create_channels_for/5`
+helper of this unit manager.
+
+May be overridden if needed (in that case this base implementation shall be
+called from there).
+
+Parameters are:
+
+- PortPairs is a list of the actual names of the output and input ports created
+for the requested channels; these names correspond to standard ports, possibly
+created from any outut or input iteration
+
+- DownstreamBlockPid is the PID of the target block to which all channels are
+drawn
+
+- ActionId is the identifier of the corresponding action, as known by the unit
+manager that triggered it
+
+- UpstreamBlockPid is the PID of the source block from which all channels are
+drawn; it happens also to be the sending actor
+
+Note: it is an actor oneway, not a mere oneway like for `onUnitCreated/6`.
+""".
 -spec onConnectionsCreated( wooper:state(), [ connection_info() ], actor_pid(),
 					action_id(), sending_actor_pid() ) -> actor_oneway_return().
 onConnectionsCreated( State, PortPairs, DownstreamBlockPid, ActionId,
@@ -1696,10 +1755,11 @@ onConnectionsCreated( State, PortPairs, DownstreamBlockPid, ActionId,
 
 
 
-% @doc Creates a set of output ports on the specified block.
-%
-% This is a synchronous call: ports are already created when it returns.
-%
+-doc """
+Creates a set of output ports on the specified block.
+
+This is a synchronous call: ports are already created when it returns.
+""".
 -spec create_output_ports( block_pid(), [ output_port_spec() ] ) -> void().
 create_output_ports( BlockPid, OutputPortSpecs ) ->
 	wooper:execute_request( BlockPid, createOutputPorts, [ OutputPortSpecs ],
@@ -1712,23 +1772,23 @@ create_output_ports( BlockPid, OutputPortSpecs ) ->
 
 
 
-% @doc Returns a textual description of the specified synchronization event
-% matches.
-%
+-doc """
+Returns a textual description of the specified synchronization event matches.
+""".
 -spec event_clauses_to_string( [ event_match() ] ) -> ustring().
 event_clauses_to_string( EventMatches ) ->
 
 	EventString = text_utils:strings_to_string(
-					[ event_clause_to_string( E ) || E <- EventMatches ] ),
+		[ event_clause_to_string( E ) || E <- EventMatches ] ),
 
 	text_utils:format( "~B synchronization event matches: ~ts",
 					   [ length( EventMatches ), EventString ] ).
 
 
 
-% @doc Returns a textual description of the specified synchronization event
-% clause.
-%
+-doc """
+Returns a textual description of the specified synchronization event clause.
+""".
 -spec event_clause_to_string( event_match() ) -> ustring().
 event_clause_to_string( EventMatch=#creation_event_match{} ) ->
 	text_utils:format( "creation clause ~p", [ EventMatch ] );
@@ -1760,7 +1820,7 @@ event_clause_to_string( _EventMatch=any_event_type ) ->
 
 
 
-% @doc Returns a textual description of the specified action.
+-doc "Returns a textual description of the specified action.".
 -spec action_to_string( action() ) -> ustring().
 action_to_string( { unit_creation, EventId, UnitType, ConstructParams,
 					Context } ) ->
@@ -1777,7 +1837,7 @@ action_to_string( { unit_connection, EventId, OutputPortId, InputPortId,
 
 
 
-% @doc Returns a textual description of this unit manager.
+-doc "Returns a textual description of this unit manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -1840,22 +1900,23 @@ to_string( State ) ->
 % Static section.
 
 
-% @doc Creates (initially, that is before the simulation is started) the
-% specified unit managers, with no specific identification server specified.
-%
-% We suppose here that they accept exactly four construction parameters, i.e.:
-%
-% - the PID of their parent manager
-%
-% - the PID of the load balancer
-%
-% - a binding_managers record referencing, for each of the supported programming
-% languages, the PID of the associated binding manager (if any)
-%
-% - the PID of any identification server in use (here: none)
-%
-% Returns the list of their PID in the same order as the one of their names.
-%
+-doc """
+Creates (initially, that is before the simulation is started) the specified unit
+managers, with no specific identification server specified.
+
+We suppose here that they accept exactly four construction parameters, i.e.:
+
+- the PID of their parent manager
+
+- the PID of the load balancer
+
+- a binding_managers record referencing, for each of the supported programming
+languages, the PID of the associated binding manager (if any)
+
+- the PID of any identification server in use (here: none)
+
+Returns the list of their PID in the same order as the one of their names.
+""".
 -spec create_managers( [ wooper:classname() ], experiment_manager_pid(),
 					   binding_managers(), load_balancer_pid() ) ->
 							static_return( [ unit_manager_pid() ] ).
@@ -1871,25 +1932,26 @@ create_managers( UnitManagerNames, ExperimentManagerPid, BindingManagers,
 
 
 
-% @doc Creates (initially, that is before the simulation is started) the
-% specified unit managers, using the specified identification server.
+-doc """
+Creates (initially, that is before the simulation is started) the specified unit
+managers, using the specified identification server.
 
-% We suppose here that they accept exactly four construction parameters, i.e.:
-%
-% - the PID of their parent manager
-%
-% - the PID of the load balancer
-%
-% - a binding_managers record referencing, for each of the supported programming
-% languages, the PID of the associated binding manager (if any)
-%
-% - the PID of the identification server in use
-%
-% Returns the list of their PID in the same order as the one of their names.
-%
+We suppose here that they accept exactly four construction parameters, i.e.:
+
+- the PID of their parent manager
+
+- the PID of the load balancer
+
+- a binding_managers record referencing, for each of the supported programming
+languages, the PID of the associated binding manager (if any)
+
+- the PID of the identification server in use
+
+Returns the list of their PID in the same order as the one of their names.
+""".
 -spec create_managers( [ wooper:classname() ], experiment_manager_pid(),
 		binding_managers(), load_balancer_pid(),
-		maybe( identification_server_pid() ) ) ->
+		option( identification_server_pid() ) ) ->
 			static_return( [ unit_manager_pid() ] ).
 create_managers( UnitManagerNames, ExperimentManagerPid, BindingManagers,
 				 LoadBalancerPid, IdentificationServerPid ) ->
@@ -1906,21 +1968,22 @@ create_managers( UnitManagerNames, ExperimentManagerPid, BindingManagers,
 
 
 
-% @doc Requests the synchronous creation by specified unit manager of an initial
-% (that is not dynamic, at runtime) instance of specified unit type, using
-% specified core construction parameters for that, and returns the PID of the
-% created unit instance.
-%
-% Note: only the core, unit-specific construction parameters shall be
-% specified; the others (actor-specific ones, dataflow PID, etc.) will be added
-% automatically.
-%
-% For example, for a call to class_Foobar:construct(State, ActorSettings, A, B,
-% C, DataflowPid) to happen, [A, B, C] shall be specified as core construction
-% parameters.
-%
-% Defined for convenience, typically when implementing a simulation case.
-%
+-doc """
+Requests the synchronous creation by specified unit manager of an initial (that
+is not dynamic, at runtime) instance of specified unit type, using specified
+core construction parameters for that, and returns the PID of the created unit
+instance.
+
+Note: only the core, unit-specific construction parameters shall be specified;
+the others (actor-specific ones, dataflow PID, etc.) will be added
+automatically.
+
+For example, for a call to `class_Foobar:construct(State, ActorSettings, A, B,
+C, DataflowPid)` to happen, `[A, B, C]` shall be specified as core construction
+parameters.
+
+Defined for convenience, typically when implementing a simulation case.
+""".
 -spec create_initial_unit( unit_manager_pid(), managed_unit_spec(),
 	dataflow_pid(), construction_parameters() ) -> static_return( unit_pid() ).
 create_initial_unit( UnitManagerPid, UnitSpec, DataflowPid,
@@ -1938,21 +2001,22 @@ create_initial_unit( UnitManagerPid, UnitSpec, DataflowPid,
 
 
 
-% @doc Requests the synchronous creation by specified unit manager of an initial
-% (that is not dynamic, at runtime) instance of specified mockup unit type,
-% using specified core construction parameters for that, and returns the PID of
-% the created mockup unit instance.
-%
-% Note: only the core, unit-specific construction parameters shall be
-% specified; the others (actor-specific ones, dataflow PID, etc.) will be added
-% automatically.
-%
-% For example, for a call to class_Foobar:construct(State, ActorSettings, A, B,
-% C, DataflowPid) to happen, [A, B, C] shall be specified as core construction
-% parameters.
-%
-% Defined for convenience, typically when implementing a simulation case.
-%
+-doc """
+Requests the synchronous creation by specified unit manager of an initial (that
+is not dynamic, at runtime) instance of specified mockup unit type, using
+specified core construction parameters for that, and returns the PID of the
+created mockup unit instance.
+
+Note: only the core, unit-specific construction parameters shall be specified;
+the others (actor-specific ones, dataflow PID, etc.) will be added
+automatically.
+
+For example, for a call to `class_Foobar:construct(State, ActorSettings, A, B,
+C, DataflowPid)` to happen, `[A, B, C]` shall be specified as core construction
+parameters.
+
+Defined for convenience, typically when implementing a simulation case.
+""".
 -spec create_initial_mockup_unit( unit_manager_pid(), mockup_unit_spec(),
 				dataflow_pid(), class_DataflowProcessingUnit:unit_name() ) ->
 										static_return( [ unit_pid() ] ).
@@ -1971,24 +2035,25 @@ create_initial_mockup_unit( UnitManagerPid, MockupUnitSpec, DataflowPid,
 
 
 
-% @doc Requests the synchronous creations by specified unit manager of a set of
-% initial (that is not dynamic, at runtime) instances of the specified unit
-% type, associated to specified dataflow, using specified list of core
-% construction parameters for that, and returns the list of the PIDs of the
-% created unit instances, in the order of their construction parameters.
-%
-% Note: only the core, unit-specific construction parameters shall be specified
-% (actor-specific ones, dataflow PID, etc.) will be added automatically.
-%
-% For example, for a call to class_Foobar:construct(State, ActorSettings, A, B,
-% C, DataflowPid) to happen, [A, B, C] shall be specified as core construction
-% parameters.
-%
-% Defined for convenience, typically when implementing a simulation case.
-%
+-doc """
+Requests the synchronous creations by specified unit manager of a set of initial
+(that is not dynamic, at runtime) instances of the specified unit type,
+associated to specified dataflow, using specified list of core construction
+parameters for that, and returns the list of the PIDs of the created unit
+instances, in the order of their construction parameters.
+
+Note: only the core, unit-specific construction parameters shall be specified
+(actor-specific ones, dataflow PID, etc.) will be added automatically.
+
+For example, for a call to `class_Foobar:construct(State, ActorSettings, A, B,
+C, DataflowPid)` to happen, `[A, B, C]` shall be specified as core construction
+parameters.
+
+Defined for convenience, typically when implementing a simulation case.
+""".
 -spec create_initial_units( unit_manager_pid(), managed_unit_spec(),
 					dataflow_pid(), [ construction_parameters() ] ) ->
-									static_return( [ unit_pid() ] ).
+                                        static_return( [ unit_pid() ] ).
 create_initial_units( UnitManagerPid, UnitSpec, DataflowPid,
 					  CoreConstructionParamLists ) ->
 
@@ -2004,21 +2069,22 @@ create_initial_units( UnitManagerPid, UnitSpec, DataflowPid,
 
 
 
-% @doc Requests the synchronous creations by specified unit manager of a set of
-% initial (that is not dynamic, at runtime) mockup instances of the specified
-% unit type, associated to specified dataflow, using specified list of core
-% construction parameters for that, and returns the list of the PIDs of the
-% created unit instances, in the order of their construction parameters.
-%
-% Note: only the core, unit-specific construction parameters shall be specified
-% (actor-specific ones, dataflow PID, etc.) will be added automatically.
-%
-% For example, for a call to class_Foobar:construct(State, ActorSettings, A, B,
-% C, DataflowPid) to happen, [A, B, C] shall be specified as core construction
-% parameters.
-%
-% Defined for convenience, typically when implementing a simulation case.
-%
+-doc """
+Requests the synchronous creations by specified unit manager of a set of initial
+(that is not dynamic, at runtime) mockup instances of the specified unit type,
+associated to specified dataflow, using specified list of core construction
+parameters for that, and returns the list of the PIDs of the created unit
+instances, in the order of their construction parameters.
+
+Note: only the core, unit-specific construction parameters shall be specified
+(actor-specific ones, dataflow PID, etc.) will be added automatically.
+
+For example, for a call to `class_Foobar:construct(State, ActorSettings, A, B,
+C, DataflowPid)` to happen, `[A, B, C]` shall be specified as core construction
+parameters.
+
+Defined for convenience, typically when implementing a simulation case.
+""".
 -spec create_initial_mockup_units( unit_manager_pid(), mockup_unit_spec(),
 			dataflow_pid(), [ class_DataflowProcessingUnit:unit_name() ] ) ->
 									static_return( [ unit_pid() ] ).
@@ -2041,14 +2107,13 @@ create_initial_mockup_units( UnitManagerPid, MockupUnitSpec, DataflowPid,
 % Creation helpers (they rely on a state).
 
 
-% @doc Creates, at runtime (that is in the course of the simulation), a unit of
-% specified type (classname), associated with specified dataflow, based on
-% specified list of core construction parameters, and returns an updated state.
-%
-% To be called from an actor, typically a specialised unit manager.
-%
-% (helper)
-%
+-doc """
+Creates, at runtime (that is in the course of the simulation), a unit of
+specified type (classname), associated with specified dataflow, based on
+specified list of core construction parameters, and returns an updated state.
+
+To be called from an actor, typically a specialised unit manager.
+""".
 -spec create_runtime_unit( managed_unit_spec(), dataflow_pid(),
 			[ construction_parameters() ], wooper:state() ) -> wooper:state().
 create_runtime_unit( _UnitSpec={ UnitType, erlang }, DataflowPid,
@@ -2080,12 +2145,14 @@ create_runtime_unit( _UnitSpec={ UnitType, Language }, DataflowPid,
 		[ UnitType, language_utils:language_to_string( Language ),
 		  DataflowPid, CoreConstructionParameters ] ),
 
-	% Per-binding generic unit type (ex: class_DataflowPythonProcessingUnit):
+	% Per-binding generic unit type (e.g. class_DataflowPythonProcessingUnit):
 	ActualUnitType = dataflow_binding_utils:get_erlang_unit_type( Language ),
 
-	% Binding manager in charge of that language (ex: the PythonBindingManager):
+	% Binding manager in charge of that language (e.g. the
+	% PythonBindingManager):
+    %
 	BindingManagerPid = binding_utils:get_binding_manager( Language,
-												?getAttr(binding_managers) ),
+		?getAttr(binding_managers) ),
 
 	% Building the full construction parameters for the new unit:
 
@@ -2108,14 +2175,14 @@ create_runtime_unit( _UnitSpec=UnitType, DataflowPid,
 
 
 
-% @doc Connects and directly (that is based on a direct request, not on an actor
-% message - thus to be done initially), thanks to the specified unit manager,
-% the named output port of the listed upstream blocks to a target port
-% iteration, specified thanks to the target (downstream) unit and the name of
-% its iteration.
-%
-% Defined for convenience.
-%
+-doc """
+Connects and directly (that is based on a direct request, not on an actor
+message - thus to be done initially), thanks to the specified unit manager, the
+named output port of the listed upstream blocks to a target port iteration,
+specified thanks to the target (downstream) unit and the name of its iteration.
+
+Defined for convenience.
+""".
 -spec connect_to_iterated_initially( unit_manager_pid(),
 	{ [ upstream_block_pid() ], output_port_string_name() },
 	iteration_port_string_target() ) -> static_void_return().
@@ -2147,13 +2214,13 @@ connect_to_iterated_initially( UnitManagerPid,
 
 
 
-% @doc Canonicalizes specified connection specs.
+-doc "Canonicalizes specified connection specs.".
 -spec canonicalize_connection_specs( [ connection_spec() ],
 			upstream_block_pid(), downstream_block_pid(), wooper:state() ) ->
 											[ canonical_connection_spec() ].
 canonicalize_connection_specs( ConnectionSpecs, UpstreamBlockPid,
 							   DownstreamBlockPid, State )
-  when is_list( ConnectionSpecs ) ->
+                        when is_list( ConnectionSpecs ) ->
 	[ canonicalize_connection_spec( Spec, UpstreamBlockPid, DownstreamBlockPid,
 									State ) || Spec <- ConnectionSpecs ];
 
@@ -2169,7 +2236,7 @@ canonicalize_connection_specs( Other, UpstreamBlockPid, DownstreamBlockPid,
 
 
 
-% @doc Canonicalizes specified connection spec.
+-doc "Canonicalizes specified connection spec.".
 -spec canonicalize_connection_spec( connection_spec(), upstream_block_pid(),
 		downstream_block_pid(), wooper:state()) -> canonical_connection_spec().
 canonicalize_connection_spec( { UpstreamSpec, DownstreamSpec },
@@ -2198,15 +2265,16 @@ canonicalize_connection_spec( Other, UpstreamBlockPid, DownstreamBlockPid,
 
 
 
-% @doc Canonicalizes specified upstream connection spec.
+-doc "Canonicalizes specified upstream connection spec.".
 canonicalize_upstream_connection_spec(
-  { output_port_name, OutputPortStringName }, _UpstreamBlockPid,
-  _DownstreamBlockPid, _State ) when is_list( OutputPortStringName ) ->
+        { output_port_name, OutputPortStringName },
+        _UpstreamBlockPid, _DownstreamBlockPid,
+        _State ) when is_list( OutputPortStringName ) ->
 	{ output_port_name, text_utils:string_to_binary( OutputPortStringName ) };
 
 canonicalize_upstream_connection_spec( { output_iteration_name,
-		   OutputIterationStringName }, _UpstreamBlockPid, _DownstreamBlockPid,
-		   _State ) when is_list( OutputIterationStringName ) ->
+		OutputIterationStringName }, _UpstreamBlockPid, _DownstreamBlockPid,
+		_State ) when is_list( OutputIterationStringName ) ->
 	{ output_iteration_name,
 	  text_utils:string_to_binary( OutputIterationStringName ) };
 
@@ -2228,10 +2296,10 @@ canonicalize_upstream_connection_spec( Other, UpstreamBlockPid,
 
 
 
-% @doc Canonicalizes specified downstream connection spec.
+-doc "Canonicalizes specified downstream connection spec.".
 canonicalize_downstream_connection_spec(
-  { input_port_name, InputPortStringName }, _UpstreamBlockPid,
-  _DownstreamBlockPid, _State ) when is_list( InputPortStringName ) ->
+        { input_port_name, InputPortStringName }, _UpstreamBlockPid,
+        _DownstreamBlockPid, _State ) when is_list( InputPortStringName ) ->
 	{ input_port_name, text_utils:string_to_binary( InputPortStringName ) };
 
 canonicalize_downstream_connection_spec( { input_iteration_name,
@@ -2243,7 +2311,7 @@ canonicalize_downstream_connection_spec( { input_iteration_name,
 % Not specified means standard port:
 canonicalize_downstream_connection_spec( InputPortStringName, UpstreamBlockPid,
 										 DownstreamBlockPid, State )
-  when is_list( InputPortStringName )->
+                                when is_list( InputPortStringName )->
 	canonicalize_downstream_connection_spec(
 		{ input_port_name, InputPortStringName }, UpstreamBlockPid,
 		DownstreamBlockPid, State );
@@ -2259,9 +2327,10 @@ canonicalize_downstream_connection_spec( Other, UpstreamBlockPid,
 
 
 
-% @doc Associates specified action identifier to specified event being
-% processed, by returning an updated event table.
-%
+-doc """
+Associates specified action identifier to specified event being processed, by
+returning an updated event table.
+""".
 -spec register_action_for_event( action_id(), event_id(), wooper:state() ) ->
 										event_table().
 register_action_for_event( ActionId, EventId, State ) ->
@@ -2271,16 +2340,9 @@ register_action_for_event( ActionId, EventId, State ) ->
 	case table:lookup_entry( EventId, EventTable ) of
 
 		{ value, ActionList } ->
-			case lists:member( ActionId, ActionList ) of
-
-				false ->
-					ok;
-
-				true ->
-					throw( { duplicated_action_id, ActionId, EventId,
-							 ActionList } )
-
-			end,
+			lists:member( ActionId, ActionList ) andalso
+				throw( { duplicated_action_id, ActionId, EventId,
+                         ActionList } ),
 
 			NewActionList = [ ActionId | ActionList ],
 			table:add_entry( EventId, NewActionList, EventTable );
@@ -2292,9 +2354,10 @@ register_action_for_event( ActionId, EventId, State ) ->
 
 
 
-% @doc Returns a (possibly empty) list of the actions associated to the
-% specified event.
-%
+-doc """
+Returns a (possibly empty) list of the actions associated to the specified
+event.
+""".
 -spec get_actions_for_event( event_id(), event_table() ) -> [ action_id() ].
 get_actions_for_event( EventId, EventTable ) ->
 

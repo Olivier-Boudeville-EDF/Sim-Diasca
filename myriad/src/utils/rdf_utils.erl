@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 Olivier Boudeville
+% Copyright (C) 2016-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,21 +25,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, September 19, 2016.
 
-
-
-
-% @doc Gathering of various facilities in relation with <b>RDF</b>,
-% namely <em>Resource Description Framework</em>.
-%
-% See also:
-%
-% - [https://en.wikipedia.org/wiki/Resource_Description_Framework]
-%
-% - [https://www.w3.org/TR/rdf11-primer/]
-%
-% See rdf_utils_test.erl for the corresponding test.
-%
 -module(rdf_utils).
+
+-moduledoc """
+Gathering of various facilities in relation with **RDF**, namely *Resource
+Description Framework*.
+
+See also:
+- [https://en.wikipedia.org/wiki/Resource_Description_Framework]
+- [https://www.w3.org/TR/rdf11-primer/]
+
+See `rdf_utils_test.erl` for the corresponding test.
+""".
+
 
 
 % See also:
@@ -54,64 +52,83 @@
 
 
 
+-doc """
+*International Resource Identifier*, in charge of, well, identifying a resource.
+
+This is a generalization of the URIs (Uniform Resource Identifier), allowing
+non-ASCII characters to be used; specified in RFC 3987 (see
+[http://www.ietf.org/rfc/rfc3987.txt]).
+
+(note: type to be used internally, for efficiency)
+""".
 -type iri() :: bin_string().
-% International Resource Identifier, in charge of, well, identifying a resource.
-%
-% This is a generalization of the URIs (Uniform Resource Identifier), allowing
-% non-ASCII characters to be used; specified in RFC 3987 (see
-% [http://www.ietf.org/rfc/rfc3987.txt]).
-%
-% (note: type to be used internally, for efficiency)
 
 
 
+-doc """
+Version of an IRI specified (typically by the user) as a plain (Unicode) string.
+""".
 -type string_iri() :: ustring().
-% Version of an IRI specified (typically by the user) as a plain (Unicode)
-% string.
 
 
 
+-doc "Any type of IRI.".
 -type any_iri () :: iri() | string_iri().
-% Any type of IRI.
 
 
+
+-doc """
+Designates all basic values that are not IRIs, often in a textual version.
+
+Examples of literals include strings such as `"La Joconde"`, dates such as `"the
+4th of July, 1990"` and numbers such as `"3.14159"`.
+
+See [https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes].
+""".
 -type literal() :: any().
-% Designates all basic values that are not IRIs, often in a textual version.
-%
-% Examples of literals include strings such as "La Joconde", dates such as "the
-% 4th of July, 1990" and numbers such as "3.14159".
-%
-% See
-% [https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes].
 
 
+
+-doc """
+Identifies uniquely what resource a RDF triplet is describing (input node).
+""".
 -type subject() :: iri().
-% Identifies uniquely what resource a RDF triplet is describing (input node).
 
 
+
+-doc """
+Defines some attribute of the subject, the nature of the relationship between
+the subject and the object (directed edge).
+""".
 -type predicate() :: iri().
-% Defines some attribute of the subject, the nature of the relationship between
-% the subject and the object (directed edge).
 
 
+
+-doc """
+The actual value specified in the triplet; defines how the subject and object
+are related (output edge).
+""".
 -type object() :: iri() | literal().
-% The actual value specified in the triplet; defines how the subject and object
-% are related (output edge).
 
 
+
+-doc "A RDF statement, a property triplet (named triple as more usual here).".
 -type triple() :: { subject(), predicate(), object() }.
-% A RDF statement, a property triplet (named triple as more usual here).
 
 
+
+-doc "A content as a list of triplets.".
 -type content() :: [ triple() ].
 
 
+
+-doc "Vocabulary, typically to be used for internal purposes.".
 -type vocabulary() :: set_utils:set( iri() ).
-% Vocabulary, typically to be used for internal purposes.
 
 
+
+-doc "Vocabulary, typically to be specified by the user (simpler form).".
 -type user_vocabulary() :: [ string_iri() ].
-% Vocabulary, typically to be specified by the user (simpler form).
 
 
 -export_type([ iri/0, string_iri/0, any_iri/0,
@@ -125,21 +142,21 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
 
 
 
-% @doc Tells whether specified term is an IRI.
+-doc "Tells whether the specified term is an IRI.".
 -spec is_iri( term() ) -> boolean().
 is_iri( Term ) ->
 	text_utils:is_bin_string( Term ).
 
 
 
-% @doc Tells whether specified term is a (RDF) literal.
+-doc "Tells whether the specified term is a (RDF) literal.".
 -spec is_literal( term() ) -> boolean().
 is_literal( _Term ) ->
 	%text_utils:is_bin_string( Term ).
@@ -148,28 +165,28 @@ is_literal( _Term ) ->
 
 
 
-% @doc Tells whether specified term is a RDF subject.
+-doc "Tells whether the specified term is a RDF subject.".
 -spec is_subject( term() ) -> boolean().
 is_subject( Term ) ->
 	is_iri( Term ).
 
 
 
-% @doc Tells whether specified term is a RDF predicate.
+-doc "Tells whether the specified term is a RDF predicate.".
 -spec is_predicate( term() ) -> boolean().
 is_predicate( Term ) ->
 	is_iri( Term ).
 
 
 
-% @doc Tells whether specified term is a RDF object.
+-doc "Tells whether the specified term is a RDF object.".
 -spec is_object( term() ) -> boolean().
 is_object( Term ) ->
 	is_iri( Term ) orelse is_literal( Term ).
 
 
 
-% @doc Evaluates specified statement, and returns whether it holds.
+-doc "Evaluates the specified statement, and returns whether it holds.".
 -spec evaluate_statement( subject(), predicate(), object() ) -> boolean().
 evaluate_statement( _Subject, _Predicate= <<"is_a">>, _Object ) ->
 	% Not implemented yet:
@@ -180,25 +197,27 @@ evaluate_statement( _Subject, Predicate, _Object ) ->
 
 
 
-% @doc Tells whether the first vocabulary is a subset of the second,
-% that is whether the first properties imply that the second ones are met.
-%
+-doc """
+Tells whether the first vocabulary is a subset of the second, that is whether
+the first properties imply that the second ones are met.
+""".
 -spec implies( vocabulary(), vocabulary() ) -> boolean().
 implies( FirstVocabulary, SecondVocabulary ) ->
 	set_utils:is_subset( SecondVocabulary, FirstVocabulary ).
 
 
 
-% @doc Returns a textual representation of specified vocabulary.
+-doc "Returns a textual representation of the specified vocabulary.".
 -spec vocabulary_to_string( vocabulary() ) -> ustring().
 vocabulary_to_string( Vocabulary ) ->
 	vocabulary_to_string( Vocabulary, _IndentationLevel=0 ).
 
 
 
-% @doc Returns a textual representation of specified vocabulary, with specified
-% indentation level.
-%
+-doc """
+Returns a textual representation of the specified vocabulary, with the specified
+indentation level.
+""".
 -spec vocabulary_to_string( vocabulary(), text_utils:indentation_level() ) ->
 									ustring().
 vocabulary_to_string( Vocabulary, IndentationLevel ) ->

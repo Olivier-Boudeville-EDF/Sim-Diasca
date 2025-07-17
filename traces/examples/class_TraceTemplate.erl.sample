@@ -2,6 +2,13 @@
 %
 -module(class_MY_CLASS).
 
+-moduledoc """
+Add your module-level documentation here.
+""".
+
+
+-define( class_description, "Class modelling XXX." ).
+
 
 % Determines what are the mother classes of this class (if any):
 -define( superclasses, [ class_TraceEmitter ] ).
@@ -22,23 +29,29 @@
 -include("class_TraceEmitter.hrl").
 
 
-% Constructs a new instance of MY_CLASS.
+% Type Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+% @doc Constructs a new instance of MY_CLASS.
 %
 % Construction parameters are:
 %
 % - Name: the name of this instance, specified as a plain string
-% -
+% - ...
 %
+-spec construct( wooper:state(), ustring(), ... ) -> wooper:state().
 construct( State, Name, ... ) ->
 
 	% First the direct mother classes:
 	TraceState = class_TraceEmitter:construct( State,
-									  ?trace_categorize( Name ) ),
+		?trace_categorize( Name ) ),
 
 	% Then the class-specific attributes:
 	setAttributes( TraceState, [
-		 { foo, 42},
-		 [...]
+		{ my_attribute, 42 },
+		[...]
 							   ] ).
 
 

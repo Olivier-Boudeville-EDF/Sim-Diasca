@@ -22,9 +22,7 @@ help-mock-simulators:
 
 
 register-version-in-header:
-	@if [ -z "$(VERSION_FILE)" ] ; then \
-	echo "Error, no version file defined." 1>&2 ; exit 54 ; else \
-	$(MAKE) register-mock ; fi
+	@if [ -z "$(VERSION_FILE)" ]; then echo "Error, no version file defined." 1>&2; exit 54; else $(MAKE) -s register-mock; fi
 
 
 register-mock:
@@ -34,7 +32,7 @@ register-mock:
 demo:
 	@echo "Running a demo of all mock simulators"
 	@cd soda-test/src && $(MAKE) -s demo
-	@cd ssi-test//src && $(MAKE) -s demo
+	@cd ssi-test/src && $(MAKE) -s demo
 	@cd city-example/src && $(MAKE) -s demo
 	@#cd dataflow-urban-example/src && $(MAKE) -s demo
 

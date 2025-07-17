@@ -1,26 +1,27 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% @doc A class to model a <b>test equipment</b>.
 -module(class_TestEquipment).
+
+-moduledoc "A class to model a **test equipment**.".
 
 
 -define( class_description, "Test Equipment class. Used by the integration "
@@ -40,7 +41,7 @@
 
 
 
-% @doc Constructs a piece of equipment.
+-doc "Constructs a piece of equipment.".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_TimeManager:tick_offset(),
 				 class_FailureModel:model_pid(),
@@ -74,10 +75,11 @@ construct( State, ActorSettings, EquipmentName, TerminationTickOffset,
 % Methods section.
 
 
-% @doc Behaviour when being in nominal state.
-%
-% Note: tick termination will be handled by act_common/1.
-%
+-doc """
+Behaviour when being in nominal state.
+
+Note: tick termination will be handled by act_common/1.
+""".
 -spec actNominal( wooper:state() ) -> oneway_return().
 actNominal( State ) ->
 
@@ -87,10 +89,11 @@ actNominal( State ) ->
 
 
 
-% @doc Behaviour when being in dysfunction state.
-%
-% Note: tick termination will be handled by act_common/1.
-%
+-doc """
+Behaviour when being in dysfunction state.
+
+Note: tick termination will be handled by act_common/1.
+""".
 -spec actInDysfunction( wooper:state() ) -> oneway_return().
 actInDysfunction( State ) ->
 
@@ -104,12 +107,13 @@ actInDysfunction( State ) ->
 % Section for helper functions (not methods).
 
 
-% @doc Manage the termination of this test equipment.
-%
-% Common to nominal and dysfunction.
-%
-% Returns an updated state.
-%
+-doc """
+Manages the termination of this test equipment.
+
+Common to nominal and dysfunction.
+
+Returns an updated state.
+""".
 -spec act_common( wooper:state() ) -> wooper:state().
 act_common( State ) ->
 
@@ -147,7 +151,7 @@ act_common( State ) ->
 
 
 
-% @doc Simply schedules this just created actor at the next tick (diasca 0).
+-doc "Simply schedules this just created actor at the next tick (diasca 0).".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->

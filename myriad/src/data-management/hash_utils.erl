@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, August 23, 2022.
 
-
-% @doc Gathering of various <b>hashing-related facilities</b>,
-% cryptographically-secure or not, to be applied either to files or directly to
-% (Erlang, binary) terms.
-%
-% See hash_utils_test.erl for testing.
-%
 -module(hash_utils).
+
+-moduledoc """
+Gathering of various **hashing-related facilities**, cryptographically-secure or
+not, to be applied either to files or directly to (Erlang, binary) terms.
+
+See hash_utils_test.erl for testing.
+""".
+
 
 
 % Current defaults:
@@ -93,7 +94,7 @@
 % $ make shell
 %  1> hash_utils:get_file_hash("foobar.txt", sha2_384).
 % <<203,0,117,63,69,163,94,139,181,160,61,105,154,198,80,7,
- % 39,44,50,171,14,222,209,99,26,139,96,90,67,...>>
+% 39,44,50,171,14,222,209,99,26,139,96,90,67,...>>
 % (formerly an integer like 191415658344158766168031473277922803570 was
 % returned)
 %
@@ -129,6 +130,12 @@
 % See also https://www.openssl.org/docs/manmaster/man1/openssl-dgst.html
 
 
+-doc """
+Designates (as an atom) a known (cryptographic) hashing algorithm.
+
+Not relying on crypto:hash_algorithm() (not clear/complete enough; moreover not
+exported); mostly translated from 'openssl list -1 -digest-algorithms'.
+""".
 -type hash_algorithm() :: 'md5'
 
 						% Not used: | 'sha0'
@@ -148,90 +155,123 @@
 						| 'sha3_256'
 						| 'sha3_384'
 						| 'sha3_512'.
-% Designates (as an atom) a known (cryptographic) hashing algorithm.
-%
-% Not relying on crypto:hash_algorithm() (not clear/complete enough; moreover
-% not exported); mostly translated from 'openssl list -1 -digest-algorithms'.
 
 
+
+-doc """
+A (positive or null) integer value obtained when hashing a piece of data.
+""".
 -type integer_hash() :: non_neg_integer().
-% A (positive or null) integer value obtained when hashing a piece of data.
 
 
+
+-doc """
+A hash value of a term that will the same regardless of machine architecture and
+ERTS version.
+""".
 -type portable_integer_hash() :: integer_hash().
-% A hash value of a term that will the same regardless of machine architecture
-% and ERTS version.
 
 
+
+-doc """
+Most hash values are, and should be, internally, binaries.
+
+For example 128-bit (16 bytes) for MD5, 160-bit hash (20 bytes) for SHA1,
+256-bit hash (32 bytes) for SHA-512/256.
+
+Use text_utils:binary_to_hexastring/2 for clear-text storage thereof.
+""".
 -type binary_hash() :: binary().
-% Most hash values are, and should be, internally, binaries.
-%
-% For example 128-bit (16 bytes) for MD5, 160-bit hash (20 bytes) for SHA1,
-% 256-bit hash (32 bytes) for SHA-512/256.
-%
-% Use text_utils:binary_to_hexastring/2 for clear-text storage thereof.
 
 
+
+-doc """
+MD5 sum, a 128-bit hash value (that is 16 bytes).
+
+MD5 is mostly obsolete for cryptographic uses.
+""".
 -type md5_sum() :: binary_hash().
-% MD5 sum, a 128-bit hash value (that is 16 bytes).
-%
-% MD5 is mostly obsolete for cryptographic uses.
 
 
+
+-doc """
+SHA1 sum (Secure Hash Algorithm 1) i, a 160-bit hash value (that is 20 bytes).
+
+SHA1 is a cryptographically broken, but still widely used, hash function.
+""".
 -type sha1_sum() :: binary_hash().
-% SHA1 sum (Secure Hash Algorithm 1) i, a 160-bit hash value (that is 20 bytes).
-%
-% SHA1 is a cryptographically broken, but still widely used, hash function.
 
 
+
+-doc """
+SHA-2 (Secure Hash Algorithm 2) is a set of 6 cryptographic hash functions whose
+hash values are 224, 256, 384 or 512 bits: SHA-224, SHA-256, SHA-384, SHA-512,
+SHA-512/224, SHA-512/256 (the last two being computed with eight 32-bit and
+64-bit words, respectively).
+""".
 -type sha2_sum() :: binary_hash().
-% SHA-2 (Secure Hash Algorithm 2) is a set of 6 cryptographic hash functions
-% whose hash values are 224, 256, 384 or 512 bits: SHA-224, SHA-256, SHA-384,
-% SHA-512, SHA-512/224, SHA-512/256 (the last two being computed with eight
-% 32-bit and 64-bit words, respectively).
 
 
+
+-doc """
+SHA-2 (Secure Hash Algorithm 2) for a cryptographic hash function whose hash
+values are 512 bits (that is 64 bytes).
+
+The corresponding algorithm name is 'sha2_512'.
+""".
 -type sha2_512_sum() :: binary_hash().
-% SHA-2 (Secure Hash Algorithm 2) for a cryptographic hash function whose hash
-% values are 512 bits (that is 64 bytes).
-%
-% The corresponding algorithm name is 'sha2_512'.
 
 
+
+-doc """
+SHA-3 (Secure Hash Algorithm 3) is a subset of the broader cryptographic
+primitive family Keccak.
+
+The size of its digests is arbitrary; it is internally different from the
+MD5-like structure of SHA-1 and SHA-2.
+""".
 -type sha3_sum() :: binary_hash().
-% SHA-3 (Secure Hash Algorithm 3) is a subset of the broader cryptographic
-% primitive family Keccak.
-%
-% The size of its digests is arbitrary; it is internally different from the
-% MD5-like structure of SHA-1 and SHA-2.
 
 
+
+-doc """
+SHA sum, a hash value of unspecified size.
+
+See <https://en.wikipedia.org/wiki/SHA-1#Comparison_of_SHA_functions>.
+""".
 -type sha_sum() :: binary_hash().
-% SHA sum, a hash value of unspecified size.
-%
-% See [https://en.wikipedia.org/wiki/SHA-1#Comparison_of_SHA_functions].
 
 
+
+-doc """
+Any kind of hash value ("digest").
+""".
 -type any_hash() :: integer_hash() | binary_hash().
-% Any kind of hash value ("digest").
 
 
+
+-doc """
+The passphrase (binary) hash value of an account.
+
+Should be salted. May be stored.
+""".
 -type passphrase_hash() :: binary_hash().
-% The passphrase (binary) hash value of an account.
-%
-% Should be salted. May be stored.
 
 
+
+-doc """
+A salt value used to generate safer hashes of passphrase.
+
+A constant, system-wide salt is pointless to mitigate attacks; it would just
+make passphrases longer.
+
+Instead a random salt should be generated each time a new credential is issued
+(login/passphrase pair); then the passphrase would not be stored, but this salt
+value and the corresponding hash of the salted passphrase would, preferably in
+different locations.
+""".
 -type salt_value() :: binary().
-% A salt value used to generate safer hashes of passphrase.
-%
-% A constant, system-wide salt is pointless to mitigate attacks; it would just
-% make passphrases longer.
-%
-% Instead a random salt should be generated each time a new credential is issued
-% (login/passphrase pair); then the passphrase would not be stored, but this
-% salt value and the corresponding hash of the salted passphrase would,
-% preferably in different locations.
+
 
 
 -export_type([ hash_algorithm/0, integer_hash/0, portable_integer_hash/0,
@@ -243,7 +283,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -253,20 +293,22 @@
 
 
 
-% @doc Returns the cryptographic algorithm that we currently recommend for
-% hashing.
-%
-% As a result, that algorithm is a moving target, it will be updated over time.
-%
+-doc """
+Returns the cryptographic algorithm that we currently recommend for hashing.
+
+As a result, that algorithm is a moving target, it will be updated over time.
+""".
 -spec get_recommended_algorithm() -> hash_algorithm().
 get_recommended_algorithm() ->
 	% Currently:
 	sha2_512.
 
 
-% @doc Returns the hash sum corresponding to the content of the specified file,
-% based on the specified cryptographic algorithm for hashing.
-%
+
+-doc """
+Returns the hash sum corresponding to the content of the specified file, based
+on the specified cryptographic algorithm for hashing.
+""".
 -spec get_file_hash( file_path(), hash_algorithm() ) -> binary_hash().
 get_file_hash( FilePath, Alg ) ->
 
@@ -293,7 +335,7 @@ get_file_hash( FilePath, Alg ) ->
 	%
 	Args = [ "dgst", "-hex", "-r", [ $- | OpenSSLAlg ],
 			 % By design no need for quoting here:
-			 %shell_utils:protect_from_shell( FilePath )
+			 %cmd_line_utils:protect_from_shell( FilePath )
 			 FilePath ],
 
 	%trace_utils:debug_fmt( "OpenSSL executable is: '~ts', arguments are ~p.",
@@ -324,11 +366,12 @@ get_file_hash( FilePath, Alg ) ->
 
 
 
-% @doc Returns the hash for the specified file, computed from the cryptographic
-% algorithm that we currently recommend.
-%
-% As a result, that algorithm is a moving target, it will be updated over time.
-%
+-doc """
+Returns the hash for the specified file, computed from the cryptographic
+algorithm that we currently recommend.
+
+As a result, that algorithm is a moving target, it will be updated over time.
+""".
 -spec get_file_recommended_hash( any_file_path() ) -> binary_hash().
 get_file_recommended_hash( FilePath ) ->
 	get_file_hash( FilePath, get_recommended_algorithm() ).
@@ -341,9 +384,11 @@ get_file_recommended_hash( FilePath ) ->
 
 % For non-cryptographic term hashing:
 
-% @doc Returns the hash value corresponding to the specified term, using an
-% hashing algorithm efficient, fair, yet not suitable for cryptographic uses.
-%
+
+-doc """
+Returns the hash value corresponding to the specified term, using an hashing
+algorithm efficient, fair, yet not suitable for cryptographic uses.
+""".
 -spec get_insecure_hash( term() ) -> portable_integer_hash().
 get_insecure_hash( Term ) ->
 	% Mostly to protect from any next change/version to happen:
@@ -354,19 +399,19 @@ get_insecure_hash( Term ) ->
 
 
 
-
 % For cryptographic term hashing:
 %
 % (strangely enough, starting crypto does not seem mandatory)
 
 
-
-% @doc Ensures that a support for cryptographic hashing is available and ready
-% to use.
-%
+-doc """
+Ensures that a support for cryptographic hashing is available and ready to use.
+""".
 -spec start_crypto_hashing() -> void().
 start_crypto_hashing() ->
-	case crypto:start() of
+
+	% Better than crypto:start/0, as FIPS-mode compliant:
+	case application:start( crypto ) of
 
 		ok ->
 			ok;
@@ -378,32 +423,35 @@ start_crypto_hashing() ->
 
 
 
-% @doc Stops the support for cryptographic hashing.
-%
-% Nevert fails.
-%
+-doc """
+Stops the support for cryptographic hashing.
+
+Never fails.
+""".
 -spec stop_crypto_hashing() -> void().
 stop_crypto_hashing() ->
-	case crypto:stop() of
+
+	case application:stop( crypto ) of
 
 		ok ->
 			ok;
 
 		{ error, Reason } ->
 			trace_bridge:error_fmt( "The stopping of the crypto hashing "
-									"service failed: ~p,", [ Reason ] )
+									"service failed: ~p.", [ Reason ] )
 
 	end.
 
 
 
-% @doc Returns the hash sum corresponding to the content of the specified term,
-% based on the specified cryptographic algorithm for hashing.
-%
-% Requires the support for cryptographic hashing to be started.
-%
-% Raises a 3-tuples exception on error.
-%
+-doc """
+Returns the hash sum corresponding to the content of the specified term, based
+on the specified cryptographic algorithm for hashing.
+
+Requires the support for cryptographic hashing to be started.
+
+Raises a triplet exception on error.
+""".
 -spec get_hash( term(), hash_algorithm() ) -> binary_hash().
 get_hash( Term, Alg ) ->
 
@@ -416,18 +464,19 @@ get_hash( Term, Alg ) ->
 
 
 
-% @doc Returns the hash for the specified file, computed from the cryptographic
-% algorithm that we currently recommend.
-%
-% As a result, that algorithm is a moving target, it will be updated over time.
-%
+-doc """
+Returns the hash for the specified file, computed from the cryptographic
+algorithm that we currently recommend.
+
+As a result, that algorithm is a moving target, it will be updated over time.
+""".
 -spec get_recommended_hash( term() ) -> binary_hash().
 get_recommended_hash( Term ) ->
 	get_hash( Term, get_recommended_algorithm() ).
 
 
 
-% @doc Returns a list of the supported hashing algorithms.
+-doc "Returns a list of the supported hashing algorithms.".
 -spec list_hash_algorithms() -> [ hash_algorithm() ].
 list_hash_algorithms() ->
 	% See the hash_algorithm() type:
@@ -436,9 +485,11 @@ list_hash_algorithms() ->
 	  sha3_224, sha3_256, sha3_384, sha3_512 ].
 
 
-% @doc Checks whether the specified atom corresponds to a supported hashing
-% algorithm; if yes, returns it, otherwise raises an exception.
-%
+
+-doc """
+Checks whether the specified atom corresponds to a supported hashing algorithm;
+if yes, returns it, otherwise raises an exception.
+""".
 -spec check_hash_algorithm( atom() ) -> hash_algorithm().
 check_hash_algorithm( Alg ) ->
 	case lists:member( Alg, list_hash_algorithms() ) of
@@ -452,14 +503,16 @@ check_hash_algorithm( Alg ) ->
 	end.
 
 
+
 % Helpers.
 
 
-% @doc Converts an hashing algorithm into one known of OpenSSL (typically used
-% for the hashing of files).
-%
-% (formerly relying on 'shashum', see 'man shasum')
-%
+-doc """
+Converts an hashing algorithm into one known of OpenSSL (typically used for the
+hashing of files).
+
+(formerly relying on 'shashum', see 'man shasum')
+""".
 -spec get_openssl_algorithm( hash_algorithm() ) -> ustring().
 get_openssl_algorithm( _Alg=md5 ) -> "md5";
 get_openssl_algorithm( _Alg=sha1 ) -> "sha1";
@@ -480,9 +533,10 @@ get_openssl_algorithm( Alg ) ->
 
 
 
-% @doc Converts an hashing algorithm into one known of the 'crypto' Erlang
-% module (typically used for the hashing of terms).
-%
+-doc """
+Converts an hashing algorithm into one known of the 'crypto' Erlang module
+(typically used for the hashing of terms).
+""".
 -spec get_crypto_algorithm( hash_algorithm() ) ->
 	% Not exported yet: crypto:hash_algorithm().
 	hash_algorithm().

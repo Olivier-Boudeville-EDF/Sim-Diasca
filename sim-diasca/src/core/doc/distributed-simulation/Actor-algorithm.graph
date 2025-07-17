@@ -59,10 +59,10 @@ digraph finite_state_machine {
 	Act -> WaitUpdateRequest [ label = " (actor-specific)" ]
 
 	WaitUpdateRequest -> WaitTerminate [ label =
-	 	" {{update_state,Tick} & stop_wanted,\nTM ! {terminated,Tick,Pid}" ]
+		" {{update_state,Tick} & stop_wanted,\nTM ! {terminated,Tick,Pid}" ]
 
 	WaitUpdateRequest -> WaitBeginTick [ label =
-	 	" {{update_state,Tick} & ! stop_wanted,\nTM ! {updated,Tick,Pid}" ]
+		" {{update_state,Tick} & ! stop_wanted,\nTM ! {updated,Tick,Pid}" ]
 
 	WaitTerminate -> Stop [ label = " {terminate,Pid}" ]
 

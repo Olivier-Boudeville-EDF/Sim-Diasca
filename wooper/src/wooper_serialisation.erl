@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2024 Olivier Boudeville
+% Copyright (C) 2012-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,15 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2012.
 
-
-% @doc Module containing facilities for the <b>serialisation and deserialisation
-% of WOOPER instances</b>.
-%
-% Offsetting as much as possible code from the counterpart class header in this
-% module allows for smaller, cache-friendly BEAMs, and shorter compilation
-% times.
-%
 -module(wooper_serialisation).
+
+-moduledoc """
+Module containing facilities for the **serialisation and deserialisation of
+WOOPER instances**.
+
+Offsetting as much as possible code from the counterpart class header in this
+module allows for smaller, cache-friendly BEAMs, and shorter compilation
+times.
+""".
 
 
 -export([ serialise_instances/1,
@@ -43,7 +44,6 @@
 
 		  synchronous_load_instances/1, synchronous_load_instances/3,
 		  synchronous_load_link_instances/1, synchronous_load_link_instances/3
-
 		]).
 
 
@@ -77,7 +77,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type user_data() :: basic_utils:user_data().
@@ -103,11 +103,11 @@
 
 
 
-% @doc Serialises the specified instances, using no specific entry transformer
-% or user data; returns a unique serialisation term, aggregating the
-% corresponding serialisations, in no specific order (as usually it does not
-% matter).
-%
+-doc """
+Serialises the specified instances, using no specific entry transformer or user
+data; returns a unique serialisation term, aggregating the corresponding
+serialisations, in no specific order (as usually it does not matter).
+""".
 -spec serialise_instances( [ instance_pid() ] ) -> serialisation().
 serialise_instances( InstPids ) ->
 	serialise_instances( InstPids, _MaybeEntryTransformer=undefined,
@@ -115,15 +115,16 @@ serialise_instances( InstPids ) ->
 
 
 
-% @doc Serialises the specified instances, using the specific entry transformer
-% and user data (if any); returns a unique serialisation term, aggregating the
-% corresponding serialisations, in no specific order (as usually it does not
-% matter).
-%
-% Note that all these serialisations will use exactly the (same) specified user
-% data, and that any updated version of it they would return will be ignored.
-%
--spec serialise_instances( [ instance_pid() ], maybe( entry_transformer() ),
+-doc """
+Serialises the specified instances, using the specific entry transformer and
+user data (if any); returns a unique serialisation term, aggregating the
+corresponding serialisations, in no specific order (as usually it does not
+matter).
+
+Note that all these serialisations will use exactly the (same) specified user
+data, and that any updated version of it they would return will be ignored.
+""".
+-spec serialise_instances( [ instance_pid() ], option( entry_transformer() ),
 						   user_data() ) -> serialisation().
 serialise_instances( InstPids, MaybeEntryTransformer, UserData ) ->
 
@@ -143,39 +144,41 @@ serialise_instances( InstPids, MaybeEntryTransformer, UserData ) ->
 
 
 
+
 % Section for asynchronous loading.
 
 
-% @doc Loads the instances stored in the specified serialisation, using no
-% specific entry transformer or user data: spawns them and returns a list of
-% their corresponding PIDs, in no specific order (as usually it does not
-% matter).
-%
-% These creations will be asynchronous: this function returns legit PIDs as soon
-% as the creations are triggered, without waiting for them to complete.
-%
-% Created instances will not be linked to the calling process.
-%
+-doc """
+Loads the instances stored in the specified serialisation, using no specific
+entry transformer or user data: spawns them and returns a list of their
+corresponding PIDs, in no specific order (as usually it does not matter).
+
+These creations will be asynchronous: this function returns legit PIDs as soon
+as the creations are triggered, without waiting for them to complete.
+
+Created instances will not be linked to the calling process.
+""".
 -spec load_instances( serialisation() ) -> [ instance_pid() ].
 load_instances( Serialisation ) ->
 	load_instances( Serialisation, _MaybeEntryTransformer=undefined,
 					_UserData=undefined ).
 
 
-% @doc Loads the instances stored in the specified serialisation, using the
-% specified entry transformer and user data: spawns them and returns a list of
-% their corresponding PIDs, in no specific order (as usually it does not
-% matter).
-%
-% These creations will be asynchronous: this function returns legit PIDs as soon
-% as the creations are triggered, without waiting for them to complete.
-%
-% Note that all these deserialisations will use the specified user data, and
-% that any updated version of it they would return will be ignored.
-%
-% Created instances will not be linked to the calling process.
-%
--spec load_instances( serialisation(), maybe( entry_transformer() ),
+
+-doc """
+Loads the instances stored in the specified serialisation, using the specified
+entry transformer and user data: spawns them and returns a list of their
+corresponding PIDs, in no specific order (as usually it does not matter).
+
+These creations will be asynchronous: this function returns legit PIDs as soon
+as the creations are triggered, without waiting for them to complete.
+
+Note that all these deserialisations will use the specified user data, and that
+any updated version of it they would return will be ignored.
+
+Created instances will not be linked to the calling process.
+""".
+-spec load_instances( serialisation(), option( entry_transformer() ),
 					  user_data() ) -> [ instance_pid() ].
 load_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
@@ -190,37 +193,38 @@ load_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
 
 
-% @doc Loads the instances stored in the specified serialisation, using no
-% specific entry transformer or user data: spawns them and returns a list of
-% their corresponding PIDs, in no specific order (as usually it does not
-% matter).
-%
-% These creations will be asynchronous: this function returns legit PIDs as soon
-% as the creations are triggered, without waiting for them to complete.
-%
-% Created instances will be linked to the calling process.
-%
+-doc """
+Loads the instances stored in the specified serialisation, using no specific
+entry transformer or user data: spawns them and returns a list of their
+corresponding PIDs, in no specific order (as usually it does not matter).
+
+These creations will be asynchronous: this function returns legit PIDs as soon
+as the creations are triggered, without waiting for them to complete.
+
+Created instances will be linked to the calling process.
+""".
 -spec load_link_instances( serialisation() ) -> [ instance_pid() ].
 load_link_instances( Serialisation ) ->
 	load_instances( Serialisation, _MaybeEntryTransformer=undefined,
 					_UserData=undefined ).
 
 
-% @doc Loads the instances stored in the specified serialisation, using the
-% specified entry transformer and user data: spawns them and returns a list of
-% their corresponding PIDs, in no specific order (as usually it does not
-% matter).
-%
-% These creations will be asynchronous: this function returns legit PIDs as soon
-% as the creations are triggered, without waiting for them to complete.
-%
-% Note that all these deserialisations will use the specified user data, and
-% that any updated version of it they would return will be ignored.
-%
-% Created instances will be linked to the calling process.
-%
--spec load_link_instances( serialisation(), maybe( entry_transformer() ),
-					  user_data() ) -> [ instance_pid() ].
+
+-doc """
+Loads the instances stored in the specified serialisation, using the specified
+entry transformer and user data: spawns them and returns a list of their
+corresponding PIDs, in no specific order (as usually it does not matter).
+
+These creations will be asynchronous: this function returns legit PIDs as soon
+as the creations are triggered, without waiting for them to complete.
+
+Note that all these deserialisations will use the specified user data, and that
+any updated version of it they would return will be ignored.
+
+Created instances will be linked to the calling process.
+""".
+-spec load_link_instances( serialisation(), option( entry_transformer() ),
+						   user_data() ) -> [ instance_pid() ].
 load_link_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
 	% The reading of the serialisation is sequential by nature (this overall
@@ -277,17 +281,17 @@ load_instances_helper( Serial, MaybeEntryTransformer, UserData, DoLink,
 % Section for synchronous loading.
 
 
+-doc """
+Loads synchronously the instances stored in the specified serialisation, using
+no specific entry transformer or user data: spawns them and returns a list of
+their corresponding loading information, in no specific order (as usually it
+does not matter).
 
-% @doc Loads synchronously the instances stored in the specified serialisation,
-% using no specific entry transformer or user data: spawns them and returns a
-% list of their corresponding loading information, in no specific order (as
-% usually it does not matter).
-%
-% These creations will be synchronous: this function returns only when all
-% created processes report that they are up and running.
-%
-% Created instances will not be linked to the calling process.
-%
+These creations will be synchronous: this function returns only when all created
+processes report that they are up and running.
+
+Created instances will not be linked to the calling process.
+""".
 -spec synchronous_load_instances( serialisation() ) -> [ load_info() ].
 synchronous_load_instances( Serialisation ) ->
 	synchronous_load_instances( Serialisation, _MaybeEntryTransformer=undefined,
@@ -295,19 +299,19 @@ synchronous_load_instances( Serialisation ) ->
 
 
 
-% @doc Loads synchronously the instances stored in the specified serialisation,
-% using the specified entry transformer and user data: spawns them and returns a
-% list of their corresponding loading information, in no specific order (as
-% usually it does not matter).
-%
-% These creations will be synchronous: this function returns only when all
-% created processes report that they are up and running.
-%
-%
-% Created instances will not be linked to the calling process.
-%
--spec synchronous_load_instances( serialisation(), maybe( entry_transformer() ),
-								  user_data() ) -> [ load_info() ].
+-doc """
+Loads synchronously the instances stored in the specified serialisation, using
+the specified entry transformer and user data: spawns them and returns a list of
+their corresponding loading information, in no specific order (as usually it
+does not matter).
+
+These creations will be synchronous: this function returns only when all
+created processes report that they are up and running.
+
+Created instances will not be linked to the calling process.
+""".
+-spec synchronous_load_instances( serialisation(),
+	option( entry_transformer() ), user_data() ) -> [ load_info() ].
 synchronous_load_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
 	% The reading of the serialisation is sequential by nature (this overall
@@ -321,16 +325,17 @@ synchronous_load_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
 
 
-% @doc Loads synchronously the instances stored in the specified serialisation,
-% using no specific entry transformer or user data: spawns them and returns a
-% list of their corresponding loading information, in no specific order (as
-% usually it does not matter).
-%
-% These creations will be synchronous: this function returns only when all
-% created processes report that they are up and running.
-%
-% Created instances will be linked to the calling process.
-%
+-doc """
+Loads synchronously the instances stored in the specified serialisation, using
+no specific entry transformer or user data: spawns them and returns a list of
+their corresponding loading information, in no specific order (as usually it
+does not matter).
+
+These creations will be synchronous: this function returns only when all created
+processes report that they are up and running.
+
+Created instances will be linked to the calling process.
+""".
 -spec synchronous_load_link_instances( serialisation() ) -> [ load_info() ].
 synchronous_load_link_instances( Serialisation ) ->
 	synchronous_load_link_instances( Serialisation,
@@ -338,18 +343,19 @@ synchronous_load_link_instances( Serialisation ) ->
 
 
 
-% @doc Loads synchronously the instances stored in the specified serialisation,
-% using the specified entry transformer and user data: spawns them and returns a
-% list of their corresponding loading information, in no specific order (as
-% usually it does not matter).
-%
-% These creations will be synchronous: this function returns only when all
-% created processes report that they are up and running.
-%
-% Created instances will be linked to the calling process.
-%
+-doc """
+Loads synchronously the instances stored in the specified serialisation, using
+the specified entry transformer and user data: spawns them and returns a list of
+their corresponding loading information, in no specific order (as usually it
+does not matter).
+
+These creations will be synchronous: this function returns only when all created
+processes report that they are up and running.
+
+Created instances will be linked to the calling process.
+""".
 -spec synchronous_load_link_instances( serialisation(),
-			maybe( entry_transformer() ), user_data() ) -> [ load_info() ].
+			option( entry_transformer() ), user_data() ) -> [ load_info() ].
 synchronous_load_link_instances( Serialisation, MaybeEntryTransformer,
 								 UserData ) ->
 
@@ -413,21 +419,22 @@ sync_load_instances_helper( Serial, MaybeEntryTransformer, UserData, DoLink,
 % Serialisation helpers.
 
 
-% @doc Replaces any PID value associated to any of the specified attribute names
-% with by 'undefined' atom.
-%
-% Handles private processes (through the name of the specified attributes),
-% which are processes that are internal to an instance that is to be serialised,
-% so that any next serialisation will see instead of their (former) PID a
-% serialisation marker.
-%
-% Returns an updated state.
-%
-% Typically used by any onPreSerialisation/2 overridden request, to avoid that
-% PIDs remain when serialising.
-%
-% (helper)
-%
+-doc """
+Replaces any PID value associated to any of the specified attribute names with
+by 'undefined' atom.
+
+Handles private processes (through the name of the specified attributes), which
+are processes that are internal to an instance that is to be serialised, so that
+any next serialisation will see instead of their (former) PID a serialisation
+marker.
+
+Returns an updated state.
+
+Typically used by any onPreSerialisation/2 overridden request, to avoid that
+PIDs remain when serialising.
+
+(helper)
+""".
 -spec handle_private_processes( [ attribute_name() ], wooper:state() ) ->
 										wooper:state().
 handle_private_processes( PrivateAttributeNames, State ) ->
@@ -457,15 +464,16 @@ handle_private_processes( PrivateAttributeNames, State ) ->
 
 
 
-% @doc Mutes the specified attributes, that is, replaces any attribute value not
-% equal to 'undefined' by a term restoration marker, so that they can escape the
-% serialisation process.
-%
-% Typically used by any onPreSerialisation/2 overridden request, to serialise
-% only relevant, useful information.
-%
-% (helper)
-%
+-doc """
+Mutes the specified attributes, that is, replaces any attribute value not equal
+to 'undefined' by a term restoration marker, so that they can escape the
+serialisation process.
+
+Typically used by any onPreSerialisation/2 overridden request, to serialise only
+relevant, useful information.
+
+(helper)
+""".
 -spec mute_attributes( [ attribute_name() ], wooper:state() ) -> wooper:state().
 mute_attributes( AttributeNames, State ) ->
 
@@ -498,11 +506,12 @@ mute_attributes( AttributeNames, State ) ->
 
 
 
-% @doc Checks that the specified attributes have the same value in the specified
-% state and in the specified entries, otherwise throws an exception.
-%
-% (helper)
-%
+-doc """
+Checks that the specified attributes have the same value in the specified state
+and in the specified entries, otherwise throws an exception.
+
+(helper)
+""".
 -spec check_attributes_equal( [ attribute_name() ], [ attribute_entry() ],
 							  wooper:state() ) -> void().
 check_attributes_equal( _AttributeNames=[], _AttributeEntries, _State ) ->
@@ -528,13 +537,14 @@ check_attributes_equal( _AttributeNames=[ AttributeName | T ], AttributeEntries,
 
 
 
-% @doc Replaces the value held in the specified state by the one of the
-% specified attribute found among the specified entries.
-%
-% Returns the remaining entries and a corresponding updated state.
-%
-% (helper)
-%
+-doc """
+Replaces the value held in the specified state by the one of the specified
+attribute found among the specified entries.
+
+Returns the remaining entries and a corresponding updated state.
+
+(helper)
+""".
 -spec replace_attribute( attribute_name(), [ attribute_entry() ],
 				wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 replace_attribute( AttributeName, AttributeEntries, State ) ->
@@ -556,13 +566,14 @@ replace_attribute( AttributeName, AttributeEntries, State ) ->
 
 
 
-% @doc Replaces the values held in the specified state by the ones of the
-% specified attributes found among the specified entries.
-%
-% Returns the remaining entries and a corresponding updated state.
-%
-% (helper)
-%
+-doc """
+Replaces the values held in the specified state by the ones of the specified
+attributes found among the specified entries.
+
+Returns the remaining entries and a corresponding updated state.
+
+(helper)
+""".
 -spec replace_attributes( [ attribute_name() ], [ attribute_entry() ],
 				wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 replace_attributes( AttributeNames, AttributeEntries, State ) ->
@@ -576,13 +587,14 @@ replace_attributes( AttributeNames, AttributeEntries, State ) ->
 
 
 
-% @doc Extracts the value (supposedly, any type of list, or a set) of the
-% specified attribute from the specified entries, and appends (combines) that
-% value to the corresponding one found in the specified state, stored under the
-% same attribute name.
-%
-% Returns the remaining entries, and an updated state.
-%
+-doc """
+Extracts the value (supposedly, any type of list, or a set) of the specified
+attribute from the specified entries, and appends (combines) that value to the
+corresponding one found in the specified state, stored under the same attribute
+name.
+
+Returns the remaining entries, and an updated state.
+""".
 -spec merge_list_for( attribute_name(), [ attribute_entry() ],
 			wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 merge_list_for( AttributeName, AttributeEntries, State ) ->
@@ -609,13 +621,14 @@ merge_list_for( AttributeName, AttributeEntries, State ) ->
 
 
 
-% @doc Extracts the value (supposedly, any type of list, or a set) of each of
-% the specified attributes from the specified entries, and appends (combines)
-% that value to the corresponding one found in the specified state, stored under
-% the same attribute name.
-%
-% Returns the remaining entries, and an updated state.
-%
+-doc """
+Extracts the value (supposedly, any type of list, or a set) of each of the
+specified attributes from the specified entries, and appends (combines) that
+value to the corresponding one found in the specified state, stored under the
+same attribute name.
+
+Returns the remaining entries, and an updated state.
+""".
 -spec merge_lists_for( [ attribute_name() ], [ attribute_entry() ],
 			wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 merge_lists_for( AttributeNames, AttributeEntries, State ) ->
@@ -629,7 +642,7 @@ merge_lists_for( AttributeNames, AttributeEntries, State ) ->
 
 
 
-% @doc Returns a textual description of the specified instance record.
+-doc "Returns a textual description of the specified instance record.".
 -spec instance_record_to_string( instance_record() ) -> ustring().
 instance_record_to_string( #wooper_serialisation_instance_record{
 		class_name=Classname,
@@ -659,13 +672,14 @@ instance_record_to_string( #wooper_serialisation_instance_record{
 % Term transformers.
 
 
-% @doc This is a term transformer (see meta_utils:term_transformer()) in charge
-% of checking that entries do not contain transient terms such as PIDs,
-% references, etc.
-%
-% Typically to be called from class_Serialisable:onPostSerialisation/3 to ensure
-% that the entries to serialise are legit.
-%
+-doc """
+This is a term transformer (see meta_utils:term_transformer()) in charge of
+checking that entries do not contain transient terms such as PIDs, references,
+etc.
+
+Typically to be called from class_Serialisable:onPostSerialisation/3 to ensure
+that the entries to serialise are legit.
+""".
 -spec check_no_transient( term(), user_data() ) -> term_transformer().
 check_no_transient( T, UserData ) ->
 	case type_utils:is_transient( T ) of

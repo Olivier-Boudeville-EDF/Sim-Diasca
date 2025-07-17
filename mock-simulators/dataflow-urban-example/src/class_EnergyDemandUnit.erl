@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Example <b>dataflow unit</b>.
 -module(class_EnergyDemandUnit).
+
+-moduledoc "Example **dataflow unit**.".
 
 
 -define( class_description,
@@ -37,7 +38,7 @@
 -define( trace_emitter_categorization, "Core.Dataflow.Urban-Example.Energy" ).
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 % For types like energy_demand():
@@ -58,26 +59,26 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a dataflow unit instance in charge of evaluating the need for
-% energy:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as assigned by the load balancer
-%
-% - UnitName is a human-readable name for that unit instance (as a plain,
-% non-empty string)
-%
-% - DataflowPid is the PID of the dataflow instance
-%
+-doc """
+Constructs a dataflow unit instance in charge of evaluating the need for energy:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as assigned by the load balancer
+
+- UnitName is a human-readable name for that unit instance (as a plain,
+non-empty string)
+
+- DataflowPid is the PID of the dataflow instance
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_DataflowProcessingUnit:unit_name(), dataflow_pid() ) ->
-					   wooper:state().
+                                            wooper:state().
 construct( State, ActorSettings, UnitName, DataflowPid ) ->
 
 	% We start with an input iteration:
@@ -96,11 +97,11 @@ construct( State, ActorSettings, UnitName, DataflowPid ) ->
 
 
 
+-doc """
+Callback executed automatically whenever this unit gets activated.
 
-% @doc Callback executed automatically whenever this unit gets activated.
-%
-% Meant to be overridden.
-%
+Meant to be overridden.
+""".
 -spec activate( wooper:state() ) -> oneway_return().
 activate( State ) ->
 
@@ -115,17 +116,17 @@ activate( State ) ->
 
 	% Let's aggregate all energy demands:
 	EnergyDemands = class_DataflowBlock:get_all_input_iteration_values(
-					    "energy_demand", State ),
+        "energy_demand", State ),
 
 	% And fetch the current efficiency:
 	TransformerEfficiency = class_DataflowBlock:get_input_port_value(
-							    "transformer_efficiency", State ),
+        "transformer_efficiency", State ),
 
 	% Finally we can determine the aggregated, building-level energy demand:
 	AggregatedEnergyDemand = lists:sum( EnergyDemands ) / TransformerEfficiency,
 
 	DemandStrings = [ text_utils:format( "value : ~p", [ D ] )
-					    || D <- EnergyDemands ],
+                                            || D <- EnergyDemands ],
 
 	?debug_fmt( "The aggregated energy demand is ~p, sum of the following ones,"
 		" once weighted by a transformation efficiency of ~f: ~ts",
@@ -139,7 +140,7 @@ activate( State ) ->
 		AggregatedEnergyDemand, [ ?energy_demand_semantics ], "kW.h", "float" ),
 
 	FirstOutputState = class_DataflowBlock:set_output_port_value(
-						    "energy_needed", TotalEnergyDemand, State ),
+        "energy_needed", TotalEnergyDemand, State ),
 
 	FinalState = FirstOutputState,
 
@@ -150,19 +151,21 @@ activate( State ) ->
 % Static section.
 
 
-% @doc Returns the specifications for the input and output ports of that
-% dataflow block.
-%
+-doc """
+Returns the specifications for the input and output ports of that dataflow
+block.
+""".
 -spec get_port_specifications() ->
-		    static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
+            static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
 get_port_specifications() ->
 	wooper:return_static( { get_input_port_specs(), get_output_port_specs() } ).
 
 
 
-% @doc Returns a list of the specifications of the (initial) input ports for
-% that dataflow block.
-%
+-doc """
+Returns a list of the specifications of the (initial) input ports for that
+dataflow block.
+""".
 -spec get_input_port_specs() -> static_return( [ input_port_spec() ] ).
 get_input_port_specs() ->
 
@@ -193,9 +196,10 @@ get_input_port_specs() ->
 
 
 
-% @doc Returns a list of the specifications of the (initial) output ports for
-% that unit.
-%
+-doc """
+Returns a list of the specifications of the (initial) output ports for that
+unit.
+""".
 -spec get_output_port_specs() -> static_return( [ output_port_spec() ] ).
 get_output_port_specs() ->
 
@@ -222,15 +226,16 @@ get_output_port_specs() ->
 
 
 
-% @doc Returns the semantics statically declared by this processing unit.
-%
-% Defining this method allows to ensure that all the ports ever created by this
-% processing unit will rely on user-level semantics among this explicitly stated
-% list.
-%
-% Otherwise the list would be deduced from the initial port specifications, with
-% no specific control.
-%
+-doc """
+Returns the semantics statically declared by this processing unit.
+
+Defining this method allows to ensure that all the ports ever created by this
+processing unit will rely on user-level semantics among this explicitly stated
+list.
+
+Otherwise the list would be deduced from the initial port specifications, with
+no specific control.
+""".
 -spec get_declared_semantics() -> static_return( user_vocabulary() ).
 get_declared_semantics() ->
 	wooper:return_static( [ ?energy_demand_semantics,
@@ -242,7 +247,7 @@ get_declared_semantics() ->
 % Helper functions.
 
 
-% @doc Returns a textual description of this unit.
+-doc "Returns a textual description of this unit.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Energy demand unit; this is a ~ts",

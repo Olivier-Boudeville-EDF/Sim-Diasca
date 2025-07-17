@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,28 +25,29 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, August 6, 2022.
 
-
-% @doc Interface class implementing the <b>Traceable trait</b>, so that the
-% instances having that trait can <b>emit traces</b> by whichever means is the
-% most appropriate, whether or not they are actually full-blown
-% class_TraceEmitter instances, or have a trace_bridge registered, or just have
-% to rely on the most basic traces.
-%
-% By providing the most lightweight way of emitting traces, such a trait favors
-% composition over multiple inheritance; otherwise many concrete classes would
-% derive more than once from the class_TraceEmitter one (this would be a minor
-% nuisance) or, worse, other traits would induce in turn a class_TraceEmitter
-% inheritance, each time they would have to send a trace (whereas interfaces
-% introducing the use of actual classes is not felt desirable; we prefer that
-% such interfaces derive from this Traceable one).
-%
-% This interface does not define attributes or methods of its own, and does not
-% require specific initialisation or termination (it is mostly useful thanks to
-% its header file). As such, it could even be omitted in the declarations of
-% superclasses and possibly any composed interfaces, although we recommend
-% listing it explicitly, for clarity reasons.
-%
 -module(class_Traceable).
+
+-moduledoc """
+Interface class implementing the **Traceable trait**, so that the instances
+having that trait can **emit traces** by whichever means is the most
+appropriate, whether or not they are actually full-blown class_TraceEmitter
+instances, or have a trace_bridge registered, or just have to rely on the most
+basic traces.
+
+By providing the most lightweight way of emitting traces, such a trait favors
+composition over multiple inheritance; otherwise many concrete classes would
+derive more than once from the class_TraceEmitter one (this would be a minor
+nuisance) or, worse, other traits would induce in turn a class_TraceEmitter
+inheritance, each time they would have to send a trace (whereas interfaces
+introducing the use of actual classes is not felt desirable; we prefer that such
+interfaces derive from this Traceable one).
+
+This interface does not define attributes or methods of its own, and does not
+require specific initialisation or termination (it is mostly useful thanks to
+its header file). As such, it could even be omitted in the declarations of
+superclasses and possibly any composed interfaces, although we recommend listing
+it explicitly, for clarity reasons.
+""".
 
 
 -define( class_description,
@@ -100,7 +101,7 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -109,13 +110,14 @@
 
 
 
-% @doc Constructs a traceable instance.
-%
-% Note: if wanting this instance to use any trace emitter machinery (that it
-% would have for any reason), this constructor (and more generally any
-% trace-sending operation) one should be called *after* the class_TraceEmitter
-% one (that is on a state that is already the one of a trace emitter).
-%
+-doc """
+Constructs a traceable instance.
+
+Note: if wanting this instance to use any trace emitter machinery (that it would
+have for any reason), this constructor (and more generally any trace-sending
+operation) one should be called *after* the class_TraceEmitter one (that is on a
+state that is already the one of a trace emitter).
+""".
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
@@ -152,12 +154,13 @@ construct( State ) ->
 % Helper section.
 
 
-% @doc Sends a trace from that traceable instance.
-%
-% Message is a plain string.
-%
-% (helper)
-%
+-doc """
+Sends a trace from that traceable instance.
+
+Message is a plain string.
+
+(helper)
+""".
 -spec send( trace_severity(), wooper:state(), message() ) -> void().
 send( Severity, State, Message ) ->
 	% Switching to the best option:
@@ -172,13 +175,15 @@ send( Severity, State, Message ) ->
 	end.
 
 
-% @doc Sends a trace from that traceable instance, echoing it through basic
-% traces as well.
-%
-% Message is a plain string.
-%
-% (helper)
-%
+
+-doc """
+Sends a trace from that traceable instance, echoing it through basic traces as
+well.
+
+Message is a plain string.
+
+(helper)
+""".
 -spec send_safe( trace_severity(), wooper:state(), message() ) -> void().
 send_safe( Severity, State, Message ) ->
 	% Switching to the best option:
@@ -198,12 +203,13 @@ send_safe( Severity, State, Message ) ->
 % whether or not it implements the Traceable interface.
 
 
-% @doc Returns a textual element of description of the corresponding instance,
-% should it implement the Traceable interface.
-%
-% (exported helper)
-%
--spec to_maybe_string( wooper:state() ) -> maybe( ustring() ).
+-doc """
+Returns a textual element of description of the corresponding instance, should
+it implement the Traceable interface.
+
+(exported helper)
+""".
+-spec to_maybe_string( wooper:state() ) -> option( ustring() ).
 to_maybe_string( State ) ->
 	case ?getMaybeAttr(name) of
 

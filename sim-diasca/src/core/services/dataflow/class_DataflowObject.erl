@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2024 EDF R&D
+% Copyright (C) 2016-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -20,11 +20,12 @@
 %          Samuel Thiriot     [samuel (dot) thiriot (at) edf (dot) fr]
 % Creation date: 2016.
 
-
-% @doc Class defining a <b>Dataflow Object</b>, corresponding to the
-% implementation of the state-related components of a dataflow.
-%
 -module(class_DataflowObject).
+
+-moduledoc """
+Class defining a **Dataflow Object**, corresponding to the implementation of the
+state-related components of a dataflow.
+""".
 
 
 -define( class_description,
@@ -106,7 +107,7 @@
 	  "tells whether initial values provided for non-existing dataflow "
 	  "attributes are allowed" },
 
-	{ identification_server_pid, maybe( identification_server_pid() ),
+	{ identification_server_pid, option( identification_server_pid() ),
 	  "PID of the identification server (if any)" } ] ).
 
 
@@ -157,21 +158,22 @@
 
 % A dataflow object may declare possible types of peers (i.e. dataflow objects
 % that are referenced by this one), each of these types being described by an
-% atom (ex: 'parent', 'children', 'components', 'wheels', 'rooms', etc.).
+% atom (e.g. 'parent', 'children', 'components', 'wheels', 'rooms', etc.).
 %
 % There are two sorts of peer types:
 %
 % - unique peer types, which can only be linked up to once, i.e. the given
 % dataflow object shall be associated to zero or one designated instance for
-% that peer type (ex: if a dataflow object has a single 'parent' object); the
+% that peer type (e.g. if a dataflow object has a single 'parent' object); the
 % corresponding value is then either 'undefined' or the PID of that (parent,
 % here) instance; additionally, a unique peer may have its external identifier
-% published as a dataflow port of that object (ex: as a port named "parent_id"),
-% so that this information can be available to the rest of the dataflow
+% published as a dataflow port of that object (e.g. as a port named
+% "parent_id"), so that this information can be available to the rest of the
+% dataflow
 %
 % - multiple peer types, any number of them being possibly associated to the
 % dataflow object of interest: it then stores a list of the PID of instances of
-% that peer type; ex: 'children')
+% that peer type; e.g. 'children')
 %
 % Unless specified otherwise, a peer is designated by a PID (i.e. the value held
 % by a peer type is of type 'pid').
@@ -183,68 +185,81 @@
 % over the dataflow rather than technical, transient identifiers like PIDs.
 
 
+-doc "The name of a dataflow object.".
 -type object_name() :: ustring().
-% Name of a dataflow object.
 
 
+-doc """
+Describes the type of a peer (e.g. 'parent', 'neighbours', 'potential_link',
+etc.).
+""".
 -type peer_type() :: atom().
-% Describes the type of a peer (ex: 'parent', 'neighbours', 'potential_link',
-% etc.).
 
 
+-doc "PID of a peer dataflow object.".
 -type peer_pid() :: object_pid().
-% PID of a peer dataflow object.
 
 
+-doc """
+The name (as a binary string) of the dataflow attribute (if any) associated to a
+given type of (unique) peer.
+""".
 -type peer_attribute_name() :: dataflow_attribute_bin_name().
-% The name (as a binary string) of the dataflow attribute (if any) associated to
-% a given type of (unique) peer.
 
 
+-doc "Designates whether a given peer type is unique or not.".
 -type peer_multiplicity() :: 'unique' | 'multiple'.
-% Designates whether a given peer type is unique or not.
 
 
+-doc "Describes how a unique peer type is to be declared.".
 -type unique_peer_spec() :: peer_type()
 						  | { peer_type(), peer_attribute_name() }.
-% Describes how a unique peer type is to be declared.
 
 
+-doc "Describes how a multiple peer type is to be declared.".
 -type multiple_peer_spec() :: peer_type().
-% Describes how a multiple peer type is to be declared.
 
 
--type unique_peer_table() :: table( peer_type(), maybe( peer_pid() ) ).
-% Table storing a potential value for the single peer attached to each of the
-% known unique peer types.
-%
-% Default values are the 'undefined' atom.
+-doc """
+Table storing a potential value for the single peer attached to each of the
+known unique peer types.
+
+Default values are the 'undefined' atom.
+""".
+-type unique_peer_table() :: table( peer_type(), option( peer_pid() ) ).
 
 
 
+-doc """
+Table storing a potential value for each peer attached to each of the known
+multiple peer types.
+""".
 -type multiple_peer_table() :: table( peer_type(), [ peer_pid() ] ).
-% Table storing a potential value for each peer attached to each of the known
-% multiple peer types.
 
 
 
+-doc """
+Associates, to a (unique) peer type, the corresponding dataflow attribute (hence
+port) name (as a plain string).
+""".
 -type peer_to_name_table() :: table( peer_type(), peer_attribute_name() ).
-% Associates, to a (unique) peer type, the corresponding dataflow attribute
-% (hence port) name (as a plain string).
 
 
 
+-doc """
+Describes an attribute update in the form of {AttributeName, AttributeNewValue}.
+""".
 -type attribute_update() :: { dataflow_attribute_name(), actual_value() }.
-% Describes an attribute update in the form of {AttributeName,
-% AttributeNewValue}.
 
 
 
+-doc """
+A dimension is a collection of symbols specialising a logical attribute into a
+set of actual ones (one per value in the dimension).
+
+For example ["2017", "2018", "2019"].
+""".
 -type dimension() :: [ text_utils:string_like() ].
-% A dimension is a collection of symbols specialising a logical attribute into
-% a set of actual ones (one per value in the dimension).
-%
-% Ex: ["2017", "2018", "2019"].
 
 
 
@@ -272,10 +287,6 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Shorthands:
--type ustring() :: text_utils:ustring().
-
-
 
 % Implementation notes:
 %
@@ -284,16 +295,28 @@
 
 
 
+% Type shorthands:
 
-% @doc First, optional stage of the construction of a dataflow object, so that
-% it can send traces and decode attributes early (before the real, second stage
-% construct/8).
-%
-% (requires the caller to inherit twice (one directly, one indirectly) from
-% TraceEmitter)
-%
-% (helper)
-%
+-type ustring() :: text_utils:ustring().
+
+-type input_port() :: class_DataflowBlock:input_port().
+-type input_port_table() :: class_DataflowBlock:input_port_table().
+-type output_port_table() :: class_DataflowBlock:output_port_table().
+
+
+
+
+
+-doc """
+First, optional stage of the construction of a dataflow object, so that it can
+send traces and decode attributes early (before the real, second stage
+construct/8).
+
+(requires the caller to inherit twice (one directly, one indirectly) from
+TraceEmitter)
+
+(helper)
+""".
 -spec pre_init( object_name(), wooper:state() ) -> wooper:state().
 pre_init( TraceEmitterName, State ) ->
 
@@ -308,35 +331,36 @@ pre_init( TraceEmitterName, State ) ->
 
 
 
-% @doc Constructs (second stage) a dataflow object, whose role is to represent
-% in the dataflow a part of the state of the target system.
-%
-% Parameters are:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - DataflowObjectName is a human-readable name for that dataflow object (as a
-% plain, non-empty string)
-%
-% - DataflowAttributeSpecs is an (ordered) list describing the dataflow
-% attributes of this dataflow object
-%
-% - InitialAttributeValues is a tuple listing the initial, direct values for
-% each of the previously defined dataflow attributes, in the same order; using a
-% tuple rather than a list allows the proper types for constructors to be
-% specified (i.e. {t1(), t2(), t3()}, not [t1() | t2() | t3()])
-%
-% - PossibleUniquePeersTypes contains a list of atoms for which one might later
-% define a unique link with another object; typically one might pass
-% [class_City] to define that this dataflow object may be contained into a City.
-%
-% - SpecForMultiplePeers contains a list of atoms for which one might later
-% define multiple links with other objects; typically one might pass
-% [class_Building] to indicate that this object can contain several buildings
-%
-% - DataflowPid is the PID of the dataflow that will own this object
-%
+-doc """
+Constructs (second stage) a dataflow object, whose role is to represent in the
+dataflow a part of the state of the target system.
+
+Parameters are:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- DataflowObjectName is a human-readable name for that dataflow object (as a
+plain, non-empty string)
+
+- DataflowAttributeSpecs is an (ordered) list describing the dataflow attributes
+of this dataflow object
+
+- InitialAttributeValues is a tuple listing the initial, direct values for each
+of the previously defined dataflow attributes, in the same order; using a tuple
+rather than a list allows the proper types for constructors to be specified
+(i.e. {t1(), t2(), t3()}, not [t1() | t2() | t3()])
+
+- PossibleUniquePeersTypes contains a list of atoms for which one might later
+define a unique link with another object; typically one might pass [class_City]
+to define that this dataflow object may be contained into a City.
+
+- SpecForMultiplePeers contains a list of atoms for which one might later define
+multiple links with other objects; typically one might pass [class_Building] to
+indicate that this object can contain several buildings
+
+- DataflowPid is the PID of the dataflow that will own this object
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(), object_name(),
 		[ dataflow_attribute_spec() ], [ actual_value() ], unique_peer_spec(),
 		multiple_peer_spec(), dataflow_pid() ) -> wooper:state().
@@ -370,14 +394,14 @@ construct( State, ActorSettings, DataflowObjectName, DataflowAttributeSpecs,
 		?trace_categorize(DataflowObjectName),
 		InputPortSpecs, OutputPortSpecs, DataflowPid ),
 
-	% Determines the initial table of unique (ex: parent) and multiple (ex:
+	% Determines the initial table of unique (e.g. parent) and multiple (e.g.
 	% children) peers:
 
 	UniquePeerTypeTable = get_unique_peer_table( SpecForUniquePeers ),
 
 	MultiplePeerTypeTable = get_multiple_peer_table( SpecForMultiplePeers ),
 
-	% If specified, unique peers can be published as dataflow ports (ex:
+	% If specified, unique peers can be published as dataflow ports (e.g.
 	% "parent_id"), as stored by this table:
 	%
 	UniquePeersToNameTable = get_peer_to_name_table( SpecForUniquePeers ),
@@ -450,7 +474,7 @@ construct( State, ActorSettings, DataflowObjectName, DataflowAttributeSpecs,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -467,7 +491,7 @@ destruct( State ) ->
 
 		StillUniques ->
 			UniqueStrings = [ text_utils:format( "peer type '~ts' to ~w",
-					[ Type, Pid ] ) || { Type, Pid } <- StillUniques ],
+				[ Type, Pid ] ) || { Type, Pid } <- StillUniques ],
 
 			?warning_fmt(
 				"At destruction, still ~B unique peers associated: ~ts",
@@ -519,11 +543,10 @@ destruct( State ) ->
 
 
 
-
-
-% @doc Returns a table whose keys are the (unique) peer types that have, as
-% values, an associated dataflow attribute name.
-%
+-doc """
+Returns a table whose keys are the (unique) peer types that have, as values, an
+associated dataflow attribute name.
+""".
 -spec get_peer_to_name_table( unique_peer_spec() ) -> peer_to_name_table().
 get_peer_to_name_table( SpecForUniquePeers ) ->
 	% Skips peer types with no associated attribute name:
@@ -532,10 +555,11 @@ get_peer_to_name_table( SpecForUniquePeers ) ->
 
 
 
-% @doc Returns a basic attribute specification, defaulting to the string type
-% (assuming it is the type of the external identifiers), and corresponding to
-% the specified peer.
-%
+-doc """
+Returns a basic attribute specification, defaulting to the string type (assuming
+it is the type of the external identifiers), and corresponding to the specified
+peer.
+""".
 -spec create_attribute_specs_for_peer( dataflow_attribute_name() ) ->
 												dataflow_attribute_spec().
 create_attribute_specs_for_peer( PeerName ) ->
@@ -544,9 +568,9 @@ create_attribute_specs_for_peer( PeerName ) ->
 
 
 
-% @doc Returns a basic attribute specification corresponding to the specified
-% peer.
-%
+-doc """
+Returns a basic attribute specification corresponding to the specified peer.
+""".
 -spec create_attribute_specs_for_peer( dataflow_attribute_name(),
 	type_utils:type_name(), peer_multiplicity() ) -> dataflow_attribute_spec().
 create_attribute_specs_for_peer( PeerName, _Typename=string,
@@ -589,16 +613,17 @@ create_attribute_specs_for_peer( PeerName, _Typename=pid,
 
 
 
-% @doc Creates the specifications for the dataflow attributes corresponding to
-% the specified peer specification.
-%
-% In this example, a string attribute of declared type "string" will be created.
-%
-% Also returns a list of tuples that can conveniently be used to initialize
-% these attributes to 'undefined'.
-%
-% Note: also enforces basic type verification.
-%
+-doc """
+Creates the specifications for the dataflow attributes corresponding to the
+specified peer specification.
+
+In this example, a string attribute of declared type "string" will be created.
+
+Also returns a list of tuples that can conveniently be used to initialize these
+attributes to 'undefined'.
+
+Note: also enforces basic type verification.
+""".
 -spec create_attribute_specs_for_unique_peers( unique_peer_spec() ) ->
 						{ [ dataflow_attribute_spec() ], [ 'undefined' ] }.
 create_attribute_specs_for_unique_peers( _SpecForUniquePeers=[] ) ->
@@ -622,15 +647,16 @@ create_attribute_specs_for_unique_peers(
 
 % Skip peer declarations with no associated port name:
 create_attribute_specs_for_unique_peers(
-  _SpecForUniquePeers=[ PeerType | T ] ) when is_atom( PeerType ) ->
+        _SpecForUniquePeers=[ PeerType | T ] ) when is_atom( PeerType ) ->
 	create_attribute_specs_for_unique_peers( T ).
 
 
 
-% @doc Returns, for the specified unique peer specification, the corresponding
-% unique peer table, associating to each (unique) peer type the 'undefined'
-% value (no initial peer link).
-%
+-doc """
+Returns, for the specified unique peer specification, the corresponding unique
+peer table, associating to each (unique) peer type the 'undefined' value (no
+initial peer link).
+""".
 -spec get_unique_peer_table( unique_peer_spec() ) -> unique_peer_table().
 get_unique_peer_table( SpecForUniquePeers ) ->
 	PeerEntries = get_unique_peer_entries( SpecForUniquePeers, _Acc=[] ),
@@ -655,12 +681,13 @@ get_unique_peer_entries( _SpecForUniquePeers=[ PeerType | T ], Acc )
 
 
 
-% @doc Returns, for the specified multiple peer specification, the corresponding
-% multiple peer table, each (multiple) peer type being associated to an
-% (initially empty) list of peer links.
-%
-% Note: also enforces basic type verification.
-%
+-doc """
+Returns, for the specified multiple peer specification, the corresponding
+multiple peer table, each (multiple) peer type being associated to an (initially
+empty) list of peer links.
+
+Note: also enforces basic type verification.
+""".
 -spec get_multiple_peer_table( multiple_peer_spec() ) -> multiple_peer_table().
 get_multiple_peer_table( SpecForMultiplePeers ) ->
 	PeerEntries = get_multiple_peer_table( SpecForMultiplePeers, _Acc=[] ),
@@ -674,7 +701,7 @@ get_multiple_peer_table( _SpecForMultiplePeers=[], Acc ) ->
 
 get_multiple_peer_table( _SpecForMultiplePeers=[ { PeerType, AttrName } | T ],
 						 Acc )
-		when is_atom( PeerType ) andalso is_list( AttrName ) ->
+            when is_atom( PeerType ) andalso is_list( AttrName ) ->
 	PeerEntry = { PeerType, [] },
 	get_multiple_peer_table( T, [ PeerEntry | Acc ] );
 
@@ -686,9 +713,10 @@ get_multiple_peer_table( _SpecForMultiplePeers=[ PeerType | T ], Acc )
 
 
 
-% @doc Translates specified attribute specs into their corresponding input and
-% output ports.
-%
+-doc """
+Translates specified attribute specs into their corresponding input and output
+ports.
+""".
 -spec get_port_specs_for( [ dataflow_attribute_spec() ] ) ->
 							{ [ input_port_spec() ], [ output_port_spec() ] }.
 get_port_specs_for( DataflowAttributeSpecs ) ->
@@ -735,15 +763,16 @@ get_port_specs_for( _DataflowAttributeSpecs=[ #dataflow_attribute_spec{
 
 
 
-% @doc Sets (assigns) the attributes (port pairs) corresponding to specified
-% attribute specs to the specified (raw, not channel) values.
-%
-% Manages the case where this object is suspended (typically at creation or
-% update time): then output ports set their timestamp to 'send_on_resume',
-% rather than propagating directly their values.
-%
-% Ex: called in the context of the construction of this dataflow object.
-%
+-doc """
+Sets (assigns) the attributes (port pairs) corresponding to specified attribute
+specs to the specified (raw, not channel) values.
+
+Manages the case where this object is suspended (typically at creation or update
+time): then output ports set their timestamp to 'send_on_resume', rather than
+propagating directly their values.
+
+For example called in the context of the construction of this dataflow object.
+""".
 -spec set_attributes( [ dataflow_attribute_spec() ], [ actual_value() ],
 					  wooper:state() ) -> wooper:state().
 set_attributes( DataflowAttributeSpecs, AttributeValues, State ) ->
@@ -813,7 +842,7 @@ set_attributes( _DataflowAttributeSpecs=[ AttrSpec=#dataflow_attribute_spec{
 
 	{ NewInputPortTable, NewOutputPortTable, AssignState } =
 		assign_channel_value_to_attribute( ChannelValue, BinAttrName,
-								InputPortTable, OutputPortTable, State ),
+			InputPortTable, OutputPortTable, State ),
 
 	set_attributes( TS, TV, NewInputPortTable, NewOutputPortTable,
 					AssignState ).
@@ -821,11 +850,12 @@ set_attributes( _DataflowAttributeSpecs=[ AttrSpec=#dataflow_attribute_spec{
 
 
 
-% @doc Assigns a raw value to the specified dataflow attribute, assuming this
-% value is compliant with it.
-%
-% (helper)
-%
+-doc """
+Assigns a raw value to the specified dataflow attribute, assuming this value is
+compliant with it.
+
+(helper)
+""".
 -spec assign_raw_value_to_attribute( actual_value(),
 			dataflow_attribute_bin_name(), wooper:state() ) -> wooper:state().
 assign_raw_value_to_attribute( RawValue, BinAttrName, State ) ->
@@ -842,9 +872,10 @@ assign_raw_value_to_attribute( RawValue, BinAttrName, State ) ->
 
 
 
-% @doc Assigns a raw value to the specified dataflow attribute, assuming this
-% value is compliant with it.
-%
+-doc """
+Assigns a raw value to the specified dataflow attribute, assuming this value is
+compliant with it.
+""".
 -spec assign_raw_value_to_attribute( actual_value(),
 		dataflow_attribute_bin_name(), input_port_table(),
 		output_port_table(), wooper:state() ) ->
@@ -863,7 +894,7 @@ assign_raw_value_to_attribute( RawValue, BinAttrName, InputPortTable,
 
 
 
-% @doc Assigns a channel value to the specified dataflow attribute.
+-doc "Assigns a channel value to the specified dataflow attribute.".
 -spec assign_channel_value_to_attribute( channel_value(),
 			dataflow_attribute_bin_name(), wooper:state() ) -> wooper:state().
 assign_channel_value_to_attribute( ChannelValue, BinAttrName, State ) ->
@@ -873,17 +904,18 @@ assign_channel_value_to_attribute( ChannelValue, BinAttrName, State ) ->
 
 	{ NewInputPortTable, NewOutputPortTable, NewState } =
 		assign_channel_value_to_attribute( ChannelValue, BinAttrName,
-								 InputPortTable, OutputPortTable, State ),
+			InputPortTable, OutputPortTable, State ),
 
 	setAttributes( NewState, [ { input_ports, NewInputPortTable },
 							   { output_ports, NewOutputPortTable } ] ).
 
 
 
-% @doc Lower-level function to assign a channel value to a dataflow attribute.
-%
-% Note: the port tables are not set yet in the returned state.
-%
+-doc """
+Lower-level function to assign a channel value to a dataflow attribute.
+
+Note: the port tables are not set yet in the returned state.
+""".
 -spec assign_channel_value_to_attribute( channel_value(),
 			dataflow_attribute_bin_name(), input_port_table(),
 			output_port_table(), wooper:state() ) ->
@@ -896,7 +928,7 @@ assign_channel_value_to_attribute( ChannelValue, BinAttrName, InputPortTable,
 													InputPortTable, State ),
 
 	NewInputPort = class_DataflowBlock:assign_input_value( ChannelValue,
-							InputPort, BinAttrName, State ),
+		InputPort, BinAttrName, State ),
 
 	NewInputPortTable = table:add_entry( BinAttrName, NewInputPort,
 										 InputPortTable ),
@@ -909,7 +941,7 @@ assign_channel_value_to_attribute( ChannelValue, BinAttrName, InputPortTable,
 	% not) is managed by this helper:
 	%
 	{ NewOutputPort, AssignState } = class_DataflowBlock:assign_output_value(
-						ChannelValue, OutputPort, BinAttrName, State ),
+		ChannelValue, OutputPort, BinAttrName, State ),
 
 	NewOutputPortTable = table:add_entry( BinAttrName, NewOutputPort,
 										  OutputPortTable ),
@@ -918,9 +950,10 @@ assign_channel_value_to_attribute( ChannelValue, BinAttrName, InputPortTable,
 
 
 
-% @doc Creates, from a raw value and an attribute specification, a dataflow
-% value that can be assigned to any corresponding attribute.
-%
+-doc """
+Creates, from a raw value and an attribute specification, a dataflow value that
+can be assigned to any corresponding attribute.
+""".
 -spec create_channel_value_for_attribute( actual_value(),
 			dataflow_attribute_spec() ) -> static_return( channel_value() ).
 create_channel_value_for_attribute( ActualValue, #dataflow_attribute_spec{
@@ -934,10 +967,12 @@ create_channel_value_for_attribute( ActualValue, #dataflow_attribute_spec{
 
 
 
-% @doc Unsets specified dataflow attribute.
-%
-% (exported helper)
-%
+-doc """
+Unsets the specified dataflow attribute.
+
+(exported helper)
+""".
+
 -spec unset_attribute( dataflow_attribute_bin_name(), wooper:state() ) ->
 							wooper:state().
 unset_attribute( BinAttrName, State ) ->
@@ -951,13 +986,13 @@ unset_attribute( BinAttrName, State ) ->
 % Member methods section.
 
 
+-doc """
+Callback executed on the first diasca of existence of this dataflow object,
+overridden in order to register specifically as an object.
 
-% @doc Callback executed on the first diasca of existence of this dataflow
-% object, overridden in order to register specifically as an object.
-%
-% Note: should this method be overridden in a child class, this version should
-% be called from there as well (as must be called in all cases).
-%
+Note: should this method be overridden in a child class, this version should be
+called from there as well (as must be called in all cases).
+""".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -976,22 +1011,23 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc Sets explicitly the specified input port to the specified fully-specified
-% channel value.
-%
-% Note: calling this method bypasses the (channel-based) dataflow system; it is
-% mostly useful in order to feed source units from outside of the dataflow
-% (typically from the experiment entry point). Such an explicit setting will
-% perform activations exactly like a standard setting.
-%
-% Counterpart, for dataflow objects, of the setInputValue/4 oneway for
-% processing units.
-%
+-doc """
+Sets explicitly the specified input port to the specified fully-specified
+channel value.
+
+Note: calling this method bypasses the (channel-based) dataflow system; it is
+mostly useful in order to feed source units from outside of the dataflow
+(typically from the experiment entry point). Such an explicit setting will
+perform activations exactly like a standard setting.
+
+Counterpart, for dataflow objects, of the setInputValue/4 oneway for processing
+units.
+""".
 -spec setAttributeValue( wooper:state(), dataflow_attribute_name(),
 	channel_value(), sending_actor_pid() ) -> actor_oneway_return().
 setAttributeValue( State, BinAttrName, ChannelValue, SendingActorPid )
-  when is_binary( BinAttrName )
-	   andalso is_record( ChannelValue, channel_value ) ->
+            when is_binary( BinAttrName )
+                andalso is_record( ChannelValue, channel_value ) ->
 
 	?debug_fmt( "Explicit setting of attribute '~ts' to the value '~ts' "
 		"for this dataflow object, as requested by process ~w.",
@@ -1010,7 +1046,7 @@ setAttributeValue( State, BinAttrName, ChannelValue, SendingActorPid )
 
 
 setAttributeValue( State, AttributeName, ChannelValue, SendingActorPid )
-  when is_list( AttributeName ) ->
+                                      when is_list( AttributeName ) ->
 
 	SetState = setAttributeValue( State,
 		text_utils:string_to_binary( AttributeName ),
@@ -1025,9 +1061,10 @@ setAttributeValue( _State, Unexpected, _ChannelValue, _SendingActorPid ) ->
 
 
 
-% @doc Associates this dataflow object to the specified (unique or multiple)
-% peer, of the specified peer type.
-%
+-doc """
+Associates this dataflow object to the specified (unique or multiple) peer, of
+the specified peer type.
+""".
 -spec registerPeerAs( wooper:state(), peer_type(), peer_pid(),
 					  sending_actor_pid() ) -> actor_oneway_return().
 registerPeerAs( State, PeerPid, PeerType, _SendingActorPid ) ->
@@ -1038,12 +1075,13 @@ registerPeerAs( State, PeerPid, PeerType, _SendingActorPid ) ->
 
 
 
-% @doc Registers specified peer, of specified type.
-%
-% Note the parameter order, different from registerPeerAs/4.
-%
-% (exported helper)
-%
+-doc """
+Registers specified peer, of specified type.
+
+Note the parameter order, different from registerPeerAs/4.
+
+(exported helper)
+""".
 -spec register_peer( peer_pid(), peer_type(), wooper:state() ) ->
 							wooper:state().
 register_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
@@ -1110,12 +1148,12 @@ register_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
 				key_not_found ->
 
 					UniqueStr = text_utils:atoms_to_string(
-									table:keys( UniquePeerTable ) ),
+						table:keys( UniquePeerTable ) ),
 
 					MultiplePeerTable = ?getAttr(multiple_peer_table),
 
 					MultipleStr = text_utils:atoms_to_string(
-									table:keys( MultiplePeerTable ) ),
+						table:keys( MultiplePeerTable ) ),
 
 					?error_fmt( "Cannot register ~w as a '~ts' peer, as "
 						"this peer type is neither declared as a unique or "
@@ -1131,10 +1169,11 @@ register_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
 
 
 
-% @doc Links with specified unique peer, supposing none is already linked.
-%
-% (sanity checks assumed already done)
-%
+-doc """
+Links with specified unique peer, supposing none is already linked.
+
+(sanity checks assumed already done)
+""".
 -spec link_with_unique( peer_type(), peer_pid(), unique_peer_table(),
 						wooper:state() ) -> wooper:state().
 link_with_unique( PeerType, PeerPid, UniquePeerTable, State ) ->
@@ -1176,9 +1215,9 @@ link_with_unique( PeerType, PeerPid, UniquePeerTable, State ) ->
 
 
 
-% @doc Disassociates this dataflow object from the specified peer, for specified
-% type.
-%
+-doc """
+Disassociates this dataflow object from the specified peer, for specified type.
+""".
 -spec unregisterPeer( wooper:state(), peer_type(), peer_pid(),
 					  sending_actor_pid() ) -> actor_oneway_return().
 unregisterPeer( State, PeerPid, PeerType, _SendingActorPid ) ->
@@ -1189,14 +1228,15 @@ unregisterPeer( State, PeerPid, PeerType, _SendingActorPid ) ->
 
 
 
-% @doc Unregisters specified peer, of specified type.
-%
-% Note the parameter order, different from unregisterPeer/4.
-%
-% (exported helper)
-%
+-doc """
+Unregisters specified peer, of specified type.
+
+Note the parameter order, different from unregisterPeer/4.
+
+(exported helper)
+""".
 -spec unregister_peer( peer_pid(), peer_type(), wooper:state() ) ->
-							wooper:state().
+                                        wooper:state().
 unregister_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
 
 	%?info_fmt( "Request to unregister a peer of type '~ts': ~w.",
@@ -1263,12 +1303,12 @@ unregister_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
 				key_not_found ->
 
 					UniqueStr = text_utils:atoms_to_string(
-								  table:keys( UniquePeerTable ) ),
+						table:keys( UniquePeerTable ) ),
 
 					MultiplePeerTable = ?getAttr(multiple_peer_table),
 
 					MultipleStr = text_utils:atoms_to_string(
-									table:keys( MultiplePeerTable ) ),
+						table:keys( MultiplePeerTable ) ),
 
 					?error_fmt( "Cannot unregister peer ~w from "
 						"peer type '~ts', as this peer type is neither "
@@ -1285,10 +1325,11 @@ unregister_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
 
 
 
-% @doc Unlinks from specified unique peer.
-%
-% (sanity checks assumed already done)
-%
+-doc """
+Unlinks from specified unique peer.
+
+(sanity checks assumed already done)
+""".
 -spec unlink_from_unique( peer_type(), peer_pid(), unique_peer_table(),
 						  wooper:state() ) -> wooper:state().
 unlink_from_unique( PeerType, PeerPid, UniquePeerTable, State ) ->
@@ -1327,7 +1368,7 @@ unlink_from_unique( PeerType, PeerPid, UniquePeerTable, State ) ->
 
 
 
-% @doc Returns the external identifier associated to specified peer.
+-doc "Returns the external identifier associated to specified peer.".
 -spec get_external_id_for( peer_pid(), wooper:state() ) -> external_id().
 get_external_id_for( PeerPid, State ) ->
 
@@ -1347,13 +1388,14 @@ get_external_id_for( PeerPid, State ) ->
 
 
 
-% @doc Returns the PID of the unique peer associated to this peer type (if any),
-% otherwise undefined.
-%
-% Will fail in case this type is not registered.
-%
+-doc """
+Returns the PID of the unique peer associated to this peer type (if any),
+otherwise undefined.
+
+Will fail in case this type is not registered.
+""".
 -spec getUniquePeerFor( wooper:state(), peer_type() ) ->
-								const_request_return( maybe( peer_pid() ) ).
+								const_request_return( option( peer_pid() ) ).
 getUniquePeerFor( State, PeerType ) ->
 
 	MaybePeerPid = get_unique_peer_for( PeerType, State ),
@@ -1362,14 +1404,16 @@ getUniquePeerFor( State, PeerType ) ->
 
 
 
-% @doc Returns the PID of the unique peer associated to this peer type (if any),
-% otherwise undefined.
-%
-% Will fail in case this type is not registered.
-%
-% (exported helper)
-%
--spec get_unique_peer_for( peer_type(), wooper:state() ) -> maybe( peer_pid() ).
+-doc """
+Returns the PID of the unique peer associated to this peer type (if any),
+otherwise undefined.
+
+Will fail in case this type is not registered.
+
+(exported helper)
+""".
+-spec get_unique_peer_for( peer_type(), wooper:state() ) ->
+                                            option( peer_pid() ).
 get_unique_peer_for( PeerType, State ) ->
 
 	case table:lookup_entry( PeerType, ?getAttr(unique_peer_table) ) of
@@ -1384,12 +1428,13 @@ get_unique_peer_for( PeerType, State ) ->
 
 
 
-% @doc Sets the specified unique peer type to the specified value (PID or
-% 'undefined'), regardless of the current value.
-%
-% (exported helper)
-%
--spec set_unique_peer_for( peer_type(), maybe( peer_pid() ),
+-doc """
+Sets the specified unique peer type to the specified value (PID or
+'undefined'), regardless of the current value.
+
+(exported helper)
+""".
+-spec set_unique_peer_for( peer_type(), option( peer_pid() ),
 						   wooper:state() ) -> wooper:state().
 set_unique_peer_for( PeerType, MaybePeerPid, State ) ->
 
@@ -1400,11 +1445,11 @@ set_unique_peer_for( PeerType, MaybePeerPid, State ) ->
 
 
 
-% @doc Returns a list of the PIDs of the multiple peers associated to this peer
-% type.
-%
-% Will fail in case this type is not registered.
-%
+-doc """
+Returns a list of the PIDs of the multiple peers associated to this peer type.
+
+Will fail in case this type is not registered.
+""".
 -spec getMultiplePeersFor( wooper:state(), peer_type() ) ->
 									const_request_return( [ peer_pid() ] ).
 getMultiplePeersFor( State, PeerType ) ->
@@ -1431,7 +1476,7 @@ get_multiple_peers_for( PeerType, State ) ->
 
 
 
-% @doc Returns the status of the specified dataflow attribute.
+-doc "Returns the status of the specified dataflow attribute.".
 -spec getAttributeStatus( wooper:state(), dataflow_attribute_bin_name() ) ->
 								const_request_return( value_status() ).
 getAttributeStatus( State, BinAttributeName )
@@ -1454,12 +1499,13 @@ getAttributeStatus( State, BinAttributeName )
 
 
 
-% @doc Updates the specified attributes of this dataflow object, implicity
-% suspending it.
-%
-% Typically called from its object manager when processing an update world
-% event.
-%
+-doc """
+Updates the specified attributes of this dataflow object, implicity suspending
+it.
+
+Typically called from its object manager when processing an update world event.
+
+""".
 -spec updateAttributes( wooper:state(), [ attribute_update() ], event_id(),
 						sending_actor_pid() ) -> actor_oneway_return().
 updateAttributes( State, AttributeUpdates, EventId, SendingActorPid ) ->
@@ -1481,23 +1527,24 @@ updateAttributes( State, AttributeUpdates, EventId, SendingActorPid ) ->
 	{ AttrNames, AttrRawValues } = lists:unzip( AttributeUpdates ),
 
 	AttrSpecs = [ get_attribute_spec_from_name( Name, SuspendedState )
-						|| Name <- AttrNames ],
+                            || Name <- AttrNames ],
 
 	% Maybe some validity checks shall be added:
 	UpdatedState = set_attributes( AttrSpecs, AttrRawValues, SuspendedState ),
 
 	SentState = class_Actor:send_actor_message( SendingActorPid,
-					{ onAttributeUpdatePerformed, [ EventId ] }, UpdatedState ),
+		{ onAttributeUpdatePerformed, [ EventId ] }, UpdatedState ),
 
 	actor:return_state( SentState ).
 
 
 
-% @doc Triggers the destruction of this dataflow object.
-%
-% Typically called from its object manager when processing a destruction world
-% event.
-%
+-doc """
+Triggers the destruction of this dataflow object.
+
+Typically called from its object manager when processing a destruction world
+event.
+""".
 -spec triggerDestruction( wooper:state(), event_id(), sending_actor_pid() ) ->
 								actor_oneway_return().
 triggerDestruction( State, EventId, SendingActorPid ) ->
@@ -1507,10 +1554,10 @@ triggerDestruction( State, EventId, SendingActorPid ) ->
 
 	% Regardless of upstream or downstream:
 	ConnectedBlocks = set_utils:to_list(
-			class_DataflowBlock:get_directly_connected_blocks( State ) ),
+		class_DataflowBlock:get_directly_connected_blocks( State ) ),
 
 	ConnectState = class_Actor:send_actor_messages( ConnectedBlocks,
-									_Oneway=disconnectFromBlock, State ),
+		_Oneway=disconnectFromBlock, State ),
 
 	ActualClassname = wooper:get_classname( ConnectState ),
 
@@ -1518,7 +1565,7 @@ triggerDestruction( State, EventId, SendingActorPid ) ->
 		{ unregisterDataflowObject, [ ActualClassname ] }, ConnectState ),
 
 	DestructState = class_Actor:send_actor_message( SendingActorPid,
-					{ onDestructionTriggered, [ EventId ] }, UnregisterState ),
+		{ onDestructionTriggered, [ EventId ] }, UnregisterState ),
 
 	DeclaredState = executeOneway( DestructState, declareTermination ),
 
@@ -1533,16 +1580,17 @@ triggerDestruction( State, EventId, SendingActorPid ) ->
 
 
 
-% @doc Notifies this dataflow object that, for specified input port, its
-% upstream block just emitted a new (channel) value.
-%
-% Note: an immediate value (with no specific metadata) could have sufficed.
-%
+-doc """
+Notifies this dataflow object that, for specified input port, its upstream block
+just emitted a new (channel) value.
+
+Note: an immediate value (with no specific metadata) could have sufficed.
+""".
 -spec notifyNewInput( wooper:state(), input_port_name(), channel_value(),
 					  block_pid() ) -> actor_oneway_return().
 notifyNewInput( State, InputPortName, ChannelValue, UpstreamBlockPid )
-  when is_binary( InputPortName )
-	   andalso is_record( ChannelValue, channel_value ) ->
+                        when is_binary( InputPortName )
+                             andalso is_record( ChannelValue, channel_value ) ->
 
 	AttributeName = InputPortName,
 
@@ -1559,7 +1607,7 @@ notifyNewInput( State, InputPortName, ChannelValue, UpstreamBlockPid )
 
 
 notifyNewInput( _State, InputPortName, _ChannelValue, _UpstreamBlockPid )
-  when is_list( InputPortName ) ->
+                                    when is_list( InputPortName ) ->
 	throw( { non_binary_port_name, InputPortName } );
 
 
@@ -1572,9 +1620,10 @@ notifyNewInput( _State, InputPortName, _ChannelValue, _UpstreamBlockPid ) ->
 % Helper functions.
 
 
-% @doc Returns the attribute specification corresponding to the specified
-% attribute name.
-%
+-doc """
+Returns the attribute specification corresponding to the specified attribute
+name.
+""".
 -spec get_attribute_spec_from_name( dataflow_attribute_name(),
 								wooper:state() ) -> dataflow_attribute_spec().
 get_attribute_spec_from_name( BinAttributeName, State )
@@ -1598,7 +1647,7 @@ get_attribute_spec_from_name( AttributeName, State ) ->
 		false ->
 
 			AttrStrings = [ attribute_spec_to_string( Attr )
-							|| Attr <- AttrSpecs ],
+                                || Attr <- AttrSpecs ],
 
 			?error_fmt( "No attribute specification found for attribute "
 				"'~ts'; known attribute specifications: ~ts",
@@ -1614,16 +1663,19 @@ get_attribute_spec_from_name( AttributeName, State ) ->
 
 
 
-% @doc Returns a textual description of this dataflow attribute specification.
+-doc """
+Returns a textual description of this dataflow attribute specification.
+""".
 -spec attribute_spec_to_string( dataflow_attribute_spec() ) -> ustring().
 attribute_spec_to_string( DataflowAttributeSpec ) ->
 	attribute_spec_to_string( DataflowAttributeSpec, _IndentationLevel=0 ).
 
 
 
-% @doc Returns a textual description of this dataflow attribute specification,
-% at specified indentation level.
-%
+-doc """
+Returns a textual description of this dataflow attribute specification, at
+specified indentation level.
+""".
 -spec attribute_spec_to_string( dataflow_attribute_spec(),
 								text_utils:indentation_level() ) -> ustring().
 attribute_spec_to_string( #dataflow_attribute_spec{
@@ -1646,7 +1698,7 @@ attribute_spec_to_string( #dataflow_attribute_spec{
 
 
 
-% @doc Returns a textual description of this dataflow object.
+-doc "Returns a textual description of this dataflow object.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -1663,8 +1715,8 @@ to_string( State ) ->
 
 	UniqueString = unique_peer_table_to_string( ?getAttr(unique_peer_table) ),
 
-	MultipleString = multiple_peer_table_to_string(
-						?getAttr(multiple_peer_table) ),
+	MultipleString =
+        multiple_peer_table_to_string( ?getAttr(multiple_peer_table) ),
 
 	NameString = peer_to_name_table_to_string( ?getAttr(peer_to_name_table) ),
 
@@ -1675,7 +1727,7 @@ to_string( State ) ->
 
 
 
-% @doc Returns a textual representation of specified unique peer table.
+-doc "Returns a textual representation of specified unique peer table.".
 -spec unique_peer_table_to_string( unique_peer_table() ) -> ustring().
 unique_peer_table_to_string( Table ) ->
 
@@ -1696,10 +1748,10 @@ unique_peer_table_to_string( Table ) ->
 
 
 
-% @doc Returns a textual representation of specified unique peer type.
--spec unique_peer_type_to_string( peer_type(), maybe( peer_pid() ) ) ->
+-doc "Returns a textual representation of specified unique peer type.".
+-spec unique_peer_type_to_string( peer_type(), option( peer_pid() ) ) ->
 										ustring().
-unique_peer_type_to_string( PeerType, undefined ) ->
+unique_peer_type_to_string( PeerType, _MaybePeerPid=undefined ) ->
 	text_utils:format( "peer type '~ts' not associated to any peer",
 					   [ PeerType ] );
 
@@ -1709,7 +1761,9 @@ unique_peer_type_to_string( PeerType, PeerPid ) ->
 
 
 
-% @doc Returns a textual representation of specified multiple peer table.
+-doc """
+Returns a textual representation of the specified multiple peer table.
+""".
 -spec multiple_peer_table_to_string( multiple_peer_table() ) -> ustring().
 multiple_peer_table_to_string( Table ) ->
 
@@ -1730,7 +1784,9 @@ multiple_peer_table_to_string( Table ) ->
 
 
 
-% @doc Returns a textual representation of specified multiple peer type.
+-doc """
+Returns a textual representation of the specified multiple peer type.
+""".
 -spec multiple_peer_type_to_string( peer_type(), [ peer_pid() ] ) -> ustring().
 multiple_peer_type_to_string( PeerType, _PidList=[] ) ->
 	text_utils:format( "peer type '~ts' not associated to any peer",
@@ -1742,7 +1798,9 @@ multiple_peer_type_to_string( PeerType, PidList ) ->
 
 
 
-% @doc Returns a textual representation of specified peer type to name table.
+-doc """
+Returns a textual representation of teh specified peer type to name table.
+""".
 -spec peer_to_name_table_to_string( peer_to_name_table() ) -> ustring().
 peer_to_name_table_to_string( PeerToNameTable ) ->
 
@@ -1763,7 +1821,9 @@ peer_to_name_table_to_string( PeerToNameTable ) ->
 
 
 
-% @doc Returns a textual representation of specified peer to name association.
+-doc """
+Returns a textual representation of specified peer to name association.
+""".
 -spec peer_attribute_name_to_string( peer_type(), peer_attribute_name() ) ->
 											ustring().
 peer_attribute_name_to_string( PeerType, AttributeName ) ->
@@ -1773,9 +1833,10 @@ peer_attribute_name_to_string( PeerType, AttributeName ) ->
 
 
 
-% @doc Returns a textual description of the specified dataflow attribute, based
-% on its associated input port.
-%
+-doc """
+Returns a textual description of the specified dataflow attribute, based on its
+associated input port.
+""".
 -spec attribute_to_string( input_port_name(), input_port()  ) -> ustring().
 attribute_to_string( InputPortName, #input_port{ value_status={ set, V } } ) ->
 	text_utils:format( "attribute '~ts' is set to value '~p'",
@@ -1786,18 +1847,20 @@ attribute_to_string( InputPortName, #input_port{ value_status=unset } ) ->
 
 
 
-% @doc Returns a textual description of the specified attribute update.
+-doc "Returns a textual description of the specified attribute update.".
 -spec attribute_update_to_string( dataflow_attribute_name(), actual_value() ) ->
 										ustring().
 attribute_update_to_string( AttributeName, AttributeValue ) ->
- text_utils:format( "attribute '~ts' being set to value '~p'",
-					[ AttributeName, AttributeValue ] ).
+    text_utils:format( "attribute '~ts' being set to value '~p'",
+                       [ AttributeName, AttributeValue ] ).
 
 
 
-% @doc Returns a textual description of the dataflow attributes of this dataflow
-% object.
-%
+-doc """
+Returns a textual description of the dataflow attributes of this dataflow
+object.
+""".
+
 -spec attributes_to_string( wooper:state() ) -> ustring().
 attributes_to_string( State ) ->
 
@@ -1812,7 +1875,7 @@ attributes_to_string( State ) ->
 
 
 
-% @doc Traces the specified initial state of this object.
+-doc "Traces the specified initial state of this object.".
 -spec trace_initial_state( [ dataflow_attribute_spec() ], [ actual_value() ],
 						   wooper:state() ) -> void().
 trace_initial_state( DataflowAttributeSpecs, InitialAttributeValues, State ) ->
@@ -1833,11 +1896,13 @@ trace_initial_state( DataflowAttributeSpecs, InitialAttributeValues, State ) ->
 
 
 
-% @doc Helps to create attributes with different modalities / dimensions.
-%
-% Based on the required properties to build an attribute, creates as many
-% attribute specificiations [foo_A, foo_B, foo_C] for a dimension [A, B, C].
-%
+-doc """
+Helps to create attributes with different modalities / dimensions.
+
+Based on the required properties to build an attribute, creates as many
+attribute specificiations [foo_A, foo_B, foo_C] for a dimension [A, B, C].
+
+""".
 -spec create_attribute_specs_with_dimension( dataflow_attribute_name(),
 		value_semantics(), unit_utils:unit_string(), value_type_description(),
 		value_constraints(), dimension() ) -> [ dataflow_attribute_spec() ].
@@ -1856,10 +1921,11 @@ create_attribute_specs_with_dimension( AttributeName, Semantics, Unit,
 
 
 
-% @doc Provided all the required properties to build an attribute, creates as
-% many attributes [foo_A_X, foo_A_Y, foo_B_X, foo_B_Y, ...] as there are
-% dimensions: [[A,B], [X,Y]].
-%
+-doc """
+Creates as many attributes [foo_A_X, foo_A_Y, foo_B_X, foo_B_Y, ...] as there
+are dimensions, based on the specified properties to build an attribute: [[A,B],
+[X,Y]].
+""".
 -spec create_attribute_specs_with_dimensions( dataflow_attribute_name(),
 		value_semantics(), unit_utils:unit_string(), value_type_description(),
 		[ value_constraints() ], [ dimension() ] ) ->
@@ -1880,19 +1946,20 @@ create_attribute_specs_with_dimensions( AttributeName, Semantics, Unit,
 
 
 
-% @doc Decodes and checks the specified values regarding initial attributes.
-%
-% Returns, from:
-%
-% - the attribute specifications of the current dataflow object
-%
-% - their initial values (provided at construction time)
-%
-% a list containing, in the right order, the relevant initial values for each
-% attribute if this value was provided, or 'undefined' otherwise
-%
-% (helper)
-%
+-doc """
+Decodes and checks the specified values regarding initial attributes.
+
+Returns, from:
+
+ - the attribute specifications of the current dataflow object
+
+ - their initial values (provided at construction time)
+
+a list containing, in the right order, the relevant initial values for each
+attribute if this value was provided, or 'undefined' otherwise
+
+(helper)
+""".
 -spec decode_initial_attribute_values( [ dataflow_attribute_spec() ],
 			dataflow_object_initial_values(), wooper:state() ) -> [ any() ].
 decode_initial_attribute_values( AttributeSpecs, NameValueAttrPairs, State ) ->
@@ -1939,12 +2006,8 @@ decode_initial_attribute_values( AttributeSpecs, NameValueAttrPairs, State ) ->
 	MissingElements = set_utils:difference( ExpectedAttrNamesSet,
 											ProvidedAttrNamesSet ),
 
-	case set_utils:is_empty( MissingElements ) of
-
-		true ->
-			ok;
-
-		false ->
+	set_utils:is_empty( MissingElements ) orelse
+        begin
 
 			% Output ports may be allowed not to have initial values, for
 			% example.
@@ -1971,9 +2034,9 @@ decode_initial_attribute_values( AttributeSpecs, NameValueAttrPairs, State ) ->
 					throw( { no_initial_value_for_attributes, MissingCount,
 							 MissingStrings } )
 
-			end
+            end
 
-	end,
+        end,
 
 	% Finally, ensure that no initial value is provided for a non-existing
 	% attribute:
@@ -1991,22 +2054,23 @@ decode_initial_attribute_values( AttributeSpecs, NameValueAttrPairs, State ) ->
 
 	?debug_fmt( "Initial value setting: ~ts", [ text_utils:strings_to_string(
 		[ text_utils:format( "attribute '~ts' set to ~p", [ N, V ] )
-		  || { N, V } <- lists:zip( ExpectedAttrNames, InitialValues ) ] ) ] ),
+            || { N, V } <- lists:zip( ExpectedAttrNames,
+                                      InitialValues ) ] ) ] ),
 
 	InitialValues.
 
 
 
-% @doc Checks that the expected attributes are legit.
+-doc "Checks that the expected attributes are legit.".
 -spec check_expected_attributes( set_utils:set( dataflow_attribute_name() ),
 		[ dataflow_attribute_name() ], basic_utils:count(), wooper:state() ) ->
 										void().
 check_expected_attributes( ExpectedAttrNamesSet, ExpectedAttrNames,
 						   ExpectedAttrCount, State ) ->
 
-	case set_utils:size( ExpectedAttrNamesSet ) < ExpectedAttrCount of
+	set_utils:size( ExpectedAttrNamesSet ) < ExpectedAttrCount andalso
 
-		true ->
+        begin
 
 			% Not expected to happen due to the uniqueness of attribute names:
 
@@ -2014,7 +2078,7 @@ check_expected_attributes( ExpectedAttrNamesSet, ExpectedAttrNames,
 
 			DuplicateStrings = [ text_utils:format(
 				"attribute '~ts' listed ~B times", [ AttrName, Count ] )
-								 || { AttrName, Count } <- DuplicatePairs ],
+                                    || { AttrName, Count } <- DuplicatePairs ],
 
 			?error_fmt( "At least one attribute name is expected more than "
 				"once: ~ts",
@@ -2022,25 +2086,22 @@ check_expected_attributes( ExpectedAttrNamesSet, ExpectedAttrNames,
 
 			ExpectedDupNames = [ Name || { Name, _Count } <- DuplicatePairs ],
 
-			throw( { expected_attribute_names_non_unique, ExpectedDupNames } );
+			throw( { expected_attribute_names_non_unique, ExpectedDupNames } )
 
-		false ->
-			ok
-
-	end.
+        end.
 
 
 
-% @doc Checks that the provided attributes are legit.
+-doc "Checks that the provided attributes are legit.".
 -spec check_provided_attributes( set_utils:set( dataflow_attribute_name() ),
 		[ dataflow_attribute_name() ], basic_utils:count(), wooper:state() ) ->
 										void().
 check_provided_attributes( ProvidedAttrNamesSet, ProvidedAttrNames,
 						   ProvidedAttrCount, State ) ->
 
-	case set_utils:size( ProvidedAttrNamesSet ) < ProvidedAttrCount of
+	set_utils:size( ProvidedAttrNamesSet ) < ProvidedAttrCount andalso
 
-		true ->
+		begin
 
 			DuplicatePairs = list_utils:get_duplicates( ProvidedAttrNames ),
 
@@ -2049,8 +2110,8 @@ check_provided_attributes( ProvidedAttrNamesSet, ProvidedAttrNames,
 									|| { AttrName, Count } <-  DuplicatePairs ],
 
 			Message = text_utils:format( "At least one attribute received "
-						"more than one initial value: ~ts",
-						[ text_utils:strings_to_string( DuplicateStrings ) ] ),
+				"more than one initial value: ~ts",
+				[ text_utils:strings_to_string( DuplicateStrings ) ] ),
 
 			case ?getAttr(accept_multiple_valued_attrs) of
 
@@ -2067,12 +2128,10 @@ check_provided_attributes( ProvidedAttrNamesSet, ProvidedAttrNames,
 
 					throw( { provided_attribute_names_non_unique,
 							 DuplicateCount, DuplicateNames } )
-			end;
 
-		false ->
-			ok
+            end
 
-	end.
+        end.
 
 
 
@@ -2084,12 +2143,8 @@ check_no_extra_initial_values( ProvidedAttrNamesSet, ExpectedAttrNamesSet,
 	ExtraAttrNames = set_utils:difference( ProvidedAttrNamesSet,
 										   ExpectedAttrNamesSet ),
 
-	case set_utils:is_empty( ExtraAttrNames ) of
-
-		true ->
-			ok;
-
-		false ->
+	set_utils:is_empty( ExtraAttrNames ) orelse
+        begin
 
 			AttrList = set_utils:to_list( ExtraAttrNames ),
 
@@ -2114,4 +2169,4 @@ check_no_extra_initial_values( ProvidedAttrNamesSet, ExpectedAttrNamesSet,
 
 			end
 
-	end.
+        end.

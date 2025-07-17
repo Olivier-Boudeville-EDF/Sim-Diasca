@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,12 +7,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2007.
 
-
-% @doc Class modelling any kind of <b>reptile</b>.
-%
-% This class allows to test serialisation for an exploratory resilience support.
-%
 -module(class_Reptile).
+
+-moduledoc """
+Class modelling any kind of **reptile**.
+
+This class allows to test serialisation for an exploratory resilience support.
+""".
+
 
 
 -define( class_description, "Class modelling any kind of reptile." ).
@@ -39,14 +41,14 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type user_data() :: class_Serialisable:user_data().
 -type serialisation() :: class_Serialisable:serialisation().
 
 
 
-% @doc Constructs a reptile.
+-doc "Constructs a reptile.".
 -spec construct( wooper:state(), age(), gender() ) -> wooper:state().
 construct( State, Age, Gender ) ->
 
@@ -79,7 +81,7 @@ construct( State, Age, Gender ) ->
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -95,12 +97,14 @@ destruct( State ) ->
 % Method implementations.
 
 
-% @doc Sets correctly the age of this Mammal (not like faulty implementation of
-% the Creature mother class).
-%
-% Overridden from Creature, useful to show the use of executeOneway.
-% Note: used to test WOOPER management of error conditions.
-%
+-doc """
+Sets correctly the age of this Mammal (not like faulty implementation of the
+Creature mother class).
+
+Overridden from Creature, useful to show the use of executeOneway.
+
+Note: used to test WOOPER management of error conditions.
+""".
 -spec setAge( wooper:state(), age() ) -> oneway_return().
 setAge( State, NewAge ) ->
 	%throw( exception_throw_test_from_oneway ),
@@ -109,10 +113,11 @@ setAge( State, NewAge ) ->
 
 
 
-% @doc All reptiles are cold-blooded.
-%
-% Note: used to test WOOPER management of error conditions.
-%
+-doc """
+All reptiles are cold-blooded.
+
+Note: used to test WOOPER management of error conditions.
+""".
 -spec isHotBlooded( wooper:state() ) -> const_request_return( boolean() ).
 isHotBlooded( State ) ->
 	%throw( exception_throw_test_from_request ),
@@ -120,7 +125,8 @@ isHotBlooded( State ) ->
 	wooper:const_return_result( false ).
 
 
-% @doc All reptiles can moult.
+
+-doc "All reptiles can moult.".
 -spec canMoult( wooper:state() ) -> const_request_return( boolean() ).
 canMoult( State ) ->
 	wooper:const_return_result( true ).
@@ -130,7 +136,7 @@ canMoult( State ) ->
 % Serialisable interface.
 
 
-% @doc Triggered just before serialisation.
+-doc "Triggered just before serialisation.".
 -spec onPreSerialisation( wooper:state(), user_data() ) ->
 					const_request_return( { wooper:state(), user_data() } ).
 onPreSerialisation( State, UserData ) ->
@@ -142,7 +148,7 @@ onPreSerialisation( State, UserData ) ->
 
 
 
-% @doc Triggered just after serialisation.
+-doc "Triggered just after serialisation.".
 -spec onPreSerialisation( wooper:state(), serialisation(), user_data() ) ->
 			const_request_return( { serialisation(), user_data() } ).
 onPreSerialisation( State, SerialisationTerm, UserData ) ->
@@ -159,7 +165,7 @@ onPreSerialisation( State, SerialisationTerm, UserData ) ->
 % available at this point.
 
 
-% @doc Triggered just after serialisation.
+-doc "Triggered just after serialisation.".
 -spec onPostDeserialisation( wooper:state(), user_data() ) ->
 			const_request_return( user_data() ).
 onPostDeserialisation( State, UserData ) ->

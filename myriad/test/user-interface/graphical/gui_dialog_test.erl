@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,29 +25,32 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, August 21, 2023.
 
-
-% @doc Unit tests for the management of <b>dialogs</b>, that are various
-% standard modal windows.
-%
 -module(gui_dialog_test).
+
+-moduledoc """
+Unit tests for the management of **dialogs**, that are various standard modal
+windows.
+""".
 
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
 
 
+-doc """
+Here the main loop just has to remember the frame whose closing is awaited for.
+""".
 -type my_test_state() :: frame().
-% Here the main loop just has to remember the frame whose closing is awaited
-% for.
 
 
-% Shorthands:
+
+% Type shorthands:
 
 -type frame() :: gui_frame:frame().
 
 
 
-% @doc Executes the actual test.
+-doc "Executes the actual test.".
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
@@ -99,11 +102,11 @@ run_gui_test() ->
 
 
 
-
-% @doc A very simple main loop, whose actual state is simply the GUI object
-% corresponding to the frame that shall be closed to stop the test
-% (i.e. CloseFrame).
-%
+-doc """
+A very simple main loop, whose actual state is simply the GUI object
+corresponding to the frame that shall be closed to stop the test
+(i.e. CloseFrame).
+""".
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( State=Frame ) ->
 
@@ -111,8 +114,8 @@ test_main_loop( State=Frame ) ->
 
 	receive
 
-		{ onButtonClicked,
-				[ _Button, _ButtonId=message_dialog_button_id, _Context ] } ->
+		{ onButtonClicked, [ _Button, _ButtonId=message_dialog_button_id,
+							 _EventContext ] } ->
 
 			MsgDialog = gui_dialog:create_for_message(
 				"This is a message dialog",
@@ -138,7 +141,7 @@ test_main_loop( State=Frame ) ->
 
 
 		{ onButtonClicked, [ _Button, _ButtonId=single_choice_dialog_button_id,
-							 _Context ] } ->
+							 _EventContext ] } ->
 
 			ChoiceSpec = [ { choice_a, "Choice A" }, { choice_b, "Choice B" },
 						   { choice_c, "Choice C" } ],
@@ -169,7 +172,7 @@ test_main_loop( State=Frame ) ->
 
 
 		{ onButtonClicked, [ _Button, _ButtonId=multi_choice_dialog_button_id,
-							 _Context ] } ->
+							 _EventContext ] } ->
 
 			ChoiceSpec = [ { choice_a, "Choice A" }, { choice_b, "Choice B" },
 						   { choice_c, "Choice C" }, { choice_d, "Choice D" },
@@ -203,7 +206,7 @@ test_main_loop( State=Frame ) ->
 
 
 		{ onButtonClicked, [ _Button, _ButtonId=text_entry_dialog_button_id,
-							 _Context ] } ->
+							 _EventContext ] } ->
 
 			TextEntDialog = gui_dialog:create_for_text_entry(
 				"This is a text-entry dialog.", _DlgOpts=[],
@@ -228,7 +231,7 @@ test_main_loop( State=Frame ) ->
 
 
 		{ onButtonClicked, [ _Button, _ButtonId=file_selection_dialog_button_id,
-							 _Context ] } ->
+							 _EventContext ] } ->
 
 			MatchFilter = "All kinds of Erlang files|*.?rl;*.beam",
 
@@ -260,7 +263,7 @@ test_main_loop( State=Frame ) ->
 
 		{ onButtonClicked,
 				[ _Button, _ButtonId=directory_selection_dialog_button_id,
-				  _Context ] } ->
+				  _EventContext ] } ->
 
 			DirectorySelDialog = gui_dialog:create_for_directory_selection(
 				_DlgOpts=[], _Parent=Frame ),
@@ -285,8 +288,7 @@ test_main_loop( State=Frame ) ->
 
 
 		{ onButtonClicked, [ _Button,
-							 _ButtonId=color_selection_dialog_button_id,
-							 _Context ] } ->
+				_ButtonId=color_selection_dialog_button_id, _EventContext ] } ->
 
 			ColorSelDialog =
 				gui_dialog:create_for_color_selection( _Parent=Frame ),
@@ -311,8 +313,7 @@ test_main_loop( State=Frame ) ->
 
 
 		{ onButtonClicked, [ _Button,
-							 _ButtonId=font_selection_dialog_button_id,
-							 _Context ] } ->
+				_ButtonId=font_selection_dialog_button_id, _EventContext ] } ->
 
 			FontSelDialog =
 				gui_dialog:create_for_font_selection( _Parent=Frame ),
@@ -342,7 +343,7 @@ test_main_loop( State=Frame ) ->
 			test_main_loop( State );
 
 
-		{ onWindowClosed, [ Frame, _FrameId, _Context ] } ->
+		{ onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
 			trace_utils:info( "Main frame has been closed; test success." ),
 			gui_frame:destruct( Frame ),
 			gui:stop();
@@ -356,7 +357,7 @@ test_main_loop( State=Frame ) ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

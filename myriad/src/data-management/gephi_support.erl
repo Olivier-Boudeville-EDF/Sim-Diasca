@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,84 +25,111 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, December 20, 2023.
 
-
-% @doc Support for the <b>Gephi</b> facilities.
-%
-% Gephi is an open source tool to visualise and explore all kinds of graphs and
-% networks.
-%
-% See gephi_support_test.erl for the corresponding test, and the Gephi official
-% website [https://gephi.org/] for further information.
-%
-% For the vast majority of the services defined here, an instance of a Gephi
-% server is expected to have been configured and launched beforehand, both
-% according to our conventions.
-%
 -module(gephi_support).
 
+-moduledoc """
+Support for the **Gephi** facilities.
 
+Gephi is an open source tool to visualise and explore all kinds of graphs and
+networks.
+
+See gephi_support_test.erl for the corresponding test, and the Gephi official
+website <https://gephi.org/> for further information.
+
+For the vast majority of the services defined here, an instance of a Gephi
+server is expected to have been configured and launched beforehand, both
+according to our conventions.
+""".
+
+
+-doc "To designate the host of a Gephi server.".
 -type gephi_server_host() :: net_utils:possibly_local_hostname().
-% To designate the host of a Gephi server.
 
+
+
+-doc "To designate internally the host of a Gephi server.".
 -type bin_gephi_server_host() :: net_utils:possibly_local_bin_hostname().
-% To designate internally the host of a Gephi server.
 
 
+
+-doc "A (TCP) port at which a Gephi instance may run.".
 -type gephi_server_port() :: net_utils:tcp_port().
-% A (TCP) port at which a Gephi instance may run.
 
 
+
+-doc """
+A user-specified path to a Gephi project file, from which a project name may be
+deduced.
+
+For example the "/tmp/foo/my_project.gephi" path is to correspond to the
+"my_project" project.
+""".
 -type project_path() :: file_path().
-% A user-specified path to a Gephi project file, from which a project name may
-% be deduced.
-%
-% For example the "/tmp/foo/my_project.gephi" path is to correspond to the
-% "my_project" project.
 
 
+
+-doc """
+A user-specified path to a Gephi project file, from which a project name may be
+deduced.
+
+For example the `<<"/tmp/foo/my_project.gephi">>` path is to correspond to the
+"my_project" project.
+""".
 -type bin_project_path() :: bin_file_path().
-% A user-specified path to a Gephi project file, from which a project name may
-% be deduced.
-%
-% For example the `<<"/tmp/foo/my_project.gephi">>' path is to correspond to the
-% "my_project" project.
 
 
+
+-doc """
+Any user-specified path to a Gephi project file, from which a project name may
+be deduced.
+
+For example the "/tmp/foo/my_project.gephi" path is to correspond to the
+"my_project" project.
+""".
 -type any_project_path() :: any_file_path().
-% Any user-specified path to a Gephi project file, from which a project name may
-% be deduced.
-%
-% For example the "/tmp/foo/my_project.gephi" path is to correspond to the
-% "my_project" project.
 
 
+
+-doc """
+The name of a Gephi project, typically one that shall be loaded. For example, a
+"Foobar" project name would refer to a "Foobar.gephi" project file.
+""".
 -type project_name() :: ustring().
-% The name of a Gephi project, typically one that shall be loaded. For example,
-% a "Foobar" project name would refer to a "Foobar.gephi" project file.
 
 
+
+-doc """
+The name of a Gephi project, typically one that shall be loaded. For example, a
+`<<"Foobar">>` project name would refer to a "Foobar.gephi" project file.
+""".
 -type bin_project_name() :: bin_string().
-% The name of a Gephi project, typically one that shall be loaded. For example,
-% a `<<"Foobar">>' project name would refer to a "Foobar.gephi" project file.
 
 
+
+-doc "The name of a Gephi project, typically one that shall be loaded.".
 -type any_project_name() :: project_name() | bin_project_name().
-% The name of a Gephi project, typically one that shall be loaded.
 
 
 
+-doc """
+The name of a Gephi workspace (for example "Siclone"), in a project.
+""".
 -type workspace_name() :: ustring().
-% The name of a Gephi workspace (for example "Siclone"), in a project.
 
+
+-doc "The name of a Gephi workspace, in a project.".
 -type bin_workspace_name() :: bin_string().
-% The name of a Gephi workspace, in a project.
 
+
+
+-doc "The name of a Gephi workspace, in a project.".
 -type any_workspace_name() :: bin_string().
-% The name of a Gephi workspace, in a project.
 
 
+
+-doc "A precomputed base URL, used to send requests more efficiently.".
 -type base_url() :: bin_url().
-% A precomputed base URL, used to send requests more efficiently.
+
 
 
 -record( gephi_server_info, {
@@ -120,7 +147,7 @@
 	% (note that this information is not needed in order to interact with an
 	% already-launched Gephi server)
 	%
-	project_path :: maybe( bin_project_path() ),
+	project_path :: option( bin_project_path() ),
 
 	% The workspace to interact with, on this Gephi server, for this project:
 	workspace :: bin_workspace_name(),
@@ -130,64 +157,87 @@
 	%
 	base_url :: base_url() } ).
 
+
+-doc """
+Information to designate an instance of a Gephi server, typically in order to
+access it from the network.
+
+Record not shared through an header file, as the get_server_info/* functions
+shall be used instead.
+""".
 -type gephi_server_info() :: #gephi_server_info{}.
-% Information to designate an instance of a Gephi server, typically in order to
-% access it from the network.
-%
-% Record not shared through an header file, as the get_server_info/* functions
-% shall be used instead.
 
 
+
+-doc "Availability outcome regarding a Gephi server lookup.".
 -type server_availability() :: 'ok' | 'time_out'.
-% Availability outcome regarding a Gephi server lookup.
 
 
--type element_id() :: string_like().
-% The identifier of a graph element.
-%
-% This is a node, an edge or a property.
+
+-doc """
+The identifier of a graph element.
+
+This is a node, an edge or a property.
+""".
+-type element_id() :: any_string().
 
 
+
+-doc "The identifier of a graph node.".
 -type node_id() :: element_id().
-% The identifier of a graph node.
 
+
+
+-doc "The identifier of a graph edge.".
 -type edge_id() :: element_id().
-% The identifier of a graph edge.
 
+
+
+-doc "A label that can be associated to a graph element.".
 -type element_label() :: any_string().
-% A label that can be associated to a graph element.
 
 
+
+-doc """
+The identifier of a node property; for example "label", `<<"color">>`.
+""".
 -type property_id() :: element_id().
-% The identifier of a node property; for example "label", `<<"color">>'.
 
+
+
+-doc "A value that can be assigned to a property.".
 -type property_value() :: graph_value().
-% A value that can be assigned to a property.
 
 
+
+-doc "A table storing a set of property id/value pairs.".
 -type property_table() :: table( property_id(), property_value() ).
-% A table storing a set of property id/value pairs.
 
 
 
--type graph_value() :: boolean() | number() | any_string().
-% A value, possibly associated to a given timestamp in a graph.
-%
-% It would be interesting to determine whether other datatypes can be accepted
-% (e.g. booleans, non-scalar types); apparently any value whose stringification
-% (with ~p) is directly a valid JSON value would do.
+-doc """
+A value associated to a given timestamp in a graph.
+
+It would be interesting to determine whether other datatypes can be accepted
+(e.g. booleans, non-scalar types); apparently any value whose stringification is
+directly a valid JSON value would do.
+""".
+-type graph_value() :: boolean() | number() | ustring().
 
 
+
+-doc """
+A color, typically of a graph element.
+
+Note that colors shall be defined like for HTML (e.g. as "#0000ff"); "blue" or
+'blue' will make Gephi fail (with a black window area).
+""".
 -type graph_color() :: rgb_hexastring().
-% A color, typically of a graph element.
-%
-% Note that colors shall be defined like for HTML (e.g. as "#0000ff"); "blue" or
-% 'blue' will make Gephi fail (with a black window area).
 
 
--type timestamp() :: graph_value().
-% Possibly a float in [0.0, 1.0], an integer number of seconds, an ISO 8601
-% string like "2000-01-01T00:00:00Z".
+
+-doc "Possibly in [0.0, 1.0].".
+-type timestamp() :: float().
 
 
 
@@ -227,9 +277,9 @@
 
 		  add_node/2, add_node/3, add_node/4,
 		  update_node_property/4, update_node_properties/3,
-		  update_node_property/5, update_node_properties/4,
+		  update_node_property/5,
 
-		  add_edge/5, add_edge/6, add_edge/7,
+		  add_edge/5, add_edge/6,
 		  update_edge_property/4, update_edge_properties/3,
 		  update_edge_property/5 ]).
 
@@ -397,11 +447,12 @@
 % made (first, last, min, max, mean, etc.).
 
 % With these conventions, in the Gephi interface, the global "Timestamp"
-% property (column) is not used. Our timestamps are stored together with each
-% value taken by a property, as <[TIMESTAMP_1,VALUE_1]; [TIMESTAMP_2,VALUE_2]>.
+% property (column) is not used. Our timestamps (as floating-point numbers) are
+% stored together with each value taken by a property, as
+% <[TIMESTAMP_1,VALUE_1]; [TIMESTAMP_2,VALUE_2]>.
 
 % Note that a malformed JSON content will be silently ignored (no error reported
-% through REST, a 200 status is still reported).
+% through REST).
 
 
 
@@ -410,7 +461,6 @@
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
 -type any_string() :: text_utils:any_string().
--type string_like() :: text_utils:string_like().
 
 -type extension() :: file_utils:extension().
 
@@ -449,9 +499,9 @@
 % launching) a Gephi server.
 
 
-% @doc Tells whether Gephi is available, that is whether its server may be
-% available.
-%
+-doc """
+Tells whether Gephi is available, that is whether its server may be available.
+""".
 -spec is_available() -> boolean().
 is_available() ->
 	executable_utils:lookup_executable(
@@ -459,22 +509,24 @@ is_available() ->
 
 
 
-% @doc Launches in the background (on the local host) a Gephi server, relying on
-% the specified project file, using the default user directory.
-%
-% Note that the server may not be immediately available.
-%
+-doc """
+Launches in the background (on the local host) a Gephi server, relying on the
+specified project file, using the default user directory.
+
+Note that the server may not be immediately available.
+""".
 -spec launch_server( project_path() ) -> void().
 launch_server( ProjectPath ) ->
 	launch_server( ProjectPath, _DefaultUserDir="myriad-gephi-user-directory" ).
 
 
 
-% @doc Launches in the background (on the local host) a Gephi server, relying on
-% the specified user directory and project file.
-%
-% Note that the server may not be immediately available.
-%
+-doc """
+Launches in the background (on the local host) a Gephi server, relying on the
+specified user directory and project file.
+
+Note that the server may not be immediately available.
+""".
 -spec launch_server( project_path(), any_directory_path() ) -> void().
 launch_server( ProjectPath, UserDir ) ->
 
@@ -564,12 +616,13 @@ launch_server( ProjectPath, UserDir ) ->
 
 
 
-% @doc Launches in the background (on the local host) a Gephi server, relying on
-% the specified project file, using the default user directory, only if needed,
-% that is if no prior instance thereof is detected.
-%
-% Note that the server may not be immediately available.
-%
+-doc """
+Launches in the background (on the local host) a Gephi server, relying on the
+specified project file, using the default user directory, only if needed, that
+is if no prior instance thereof is detected.
+
+Note that the server may not be immediately available.
+""".
 -spec launch_server_if_needed( project_path(), gephi_server_info() ) -> void().
 launch_server_if_needed( ProjectPath, SrvInfo ) ->
 	launch_server_if_needed( ProjectPath,
@@ -577,57 +630,49 @@ launch_server_if_needed( ProjectPath, SrvInfo ) ->
 
 
 
-% @doc Launches in the background (on the local host) a Gephi server, relying on
-% the specified user directory and project file, only if needed, that is if no
-% prior instance thereof is detected.
-%
-% Note that the server may not be immediately available.
-%
+-doc """
+Launches in the background (on the local host) a Gephi server, relying on the
+specified user directory and project file, only if needed, that is if no prior
+instance thereof is detected.
+
+Note that the server may not be immediately available.
+""".
 -spec launch_server_if_needed( project_path(), any_directory_path(),
 							   gephi_server_info() ) -> void().
 launch_server_if_needed( ProjectPath, UserDir, SrvInfo ) ->
 	wait_server( SrvInfo, _Timeout=10 ) orelse
 		begin
-			cond_utils:if_defined( myriad_debug_graph,
-				trace_bridge:debug( "No Gephi server found, launching one." ) ),
 			launch_server( ProjectPath, UserDir ),
 			wait_server( SrvInfo ) orelse
 				throw( gephi_server_not_found )
-		end,
-
-	cond_utils:if_defined( myriad_debug_graph,
-		trace_bridge:debug( "A Gephi server is available." ) ).
-
+		end.
 
 
 % Note that net_utils:ping/1 could be used to check that any remote server
 % responds.
 
 
-% @doc Waits until the designated (Gephi) server seems available, using a
-% default time-out: returns whether it was found available.
-%
-% Note that any server running on the corresponding TCP port will be supposed to
-% be a Gephi one.
-%
+-doc """
+Waits until the designated (Gephi) server seems available, using a default
+time-out: returns whether it was found available.
+""".
 -spec wait_server( gephi_server_info() ) -> boolean().
 wait_server( SrvInfo ) ->
 	wait_server( SrvInfo, _DefTimeout=8000 ).
 
 
-% @doc Waits until the designated (Gephi) server seems available, within the
-% specified time-out: returns whether it was found available.
-%
-% Note that any server running on the corresponding TCP port will be supposed to
-% be a Gephi one.
-%
+
+-doc """
+Waits until the designated (Gephi) server seems available, within the specified
+time-out: returns whether it was found available.
+""".
 -spec wait_server( gephi_server_info(), time_out() ) -> boolean().
 wait_server( #gephi_server_info{ host=BinHostname, port=SrvPort }, Timeout ) ->
 	net_utils:is_service_running_at( BinHostname, SrvPort, Timeout ).
 
 
 
-% @doc Cleans-up the filesystem context of the Gephi server.
+-doc "Cleans-up the filesystem context of the Gephi server.".
 -spec clean_up_server( project_path(), any_directory_path() ) -> void().
 clean_up_server( ProjectPath, UserDir ) ->
 	ActualProjectPath = get_workaround_project_path( ProjectPath ),
@@ -636,10 +681,10 @@ clean_up_server( ProjectPath, UserDir ) ->
 
 
 
-% @doc A temporary copy of the specified project path is returned (and is
-% expected to exist), as it will be corrupted afterwards, and thus ignored/wiped
-% out.
-%
+-doc """
+A temporary copy of the specified project path is returned (and is expected to
+exist), as it will be corrupted afterwards, and thus ignored/wiped out.
+""".
 -spec get_workaround_project_path( any_directory_path() ) -> directory_path().
 get_workaround_project_path( AbsProjectPath ) ->
 
@@ -655,27 +700,29 @@ get_workaround_project_path( AbsProjectPath ) ->
 %   ProjectPath.
 
 
+
 % Section for Gephi client-side support, for which a Gephi server is expected to
 % run.
 
 
 
-% @doc Returns the default TCP port expected to be used by a Gephi server.
+-doc "Returns the default TCP port expected to be used by a Gephi server.".
 -spec get_server_default_tcp_port() -> tcp_port().
 get_server_default_tcp_port() ->
 	?gephi_default_tcp_port.
 
 
-% @doc Returns the file extension that Gephi projects are expected to use.
+
+-doc "Returns the file extension that Gephi projects are expected to use.".
 -spec get_gephi_extension() -> extension().
 get_gephi_extension() ->
 	?gephi_project_extension.
 
 
 
-% @doc Deduces the Gephi project name from the path of the specified project
-% file.
-%
+-doc """
+Deduces the Gephi project name from the path of the specified project file.
+""".
 -spec get_project_name_from_path( any_project_path() ) -> project_name().
 get_project_name_from_path( BinProjectPath ) when is_binary( BinProjectPath ) ->
 	get_project_name_from_path( text_utils:binary_to_string( BinProjectPath ) );
@@ -686,7 +733,7 @@ get_project_name_from_path( ProjectPath ) ->
 
 
 
-% @doc Starts the Gephi (client-side) support.
+-doc "Starts the Gephi (client-side) support.".
 -spec start() -> void().
 start() ->
 
@@ -710,7 +757,7 @@ start() ->
 
 
 
-% @doc Stops the Gephi (client-side) support.
+-doc "Stops the Gephi (client-side) support.".
 -spec stop() -> void().
 stop() ->
 	web_utils:stop().
@@ -720,29 +767,34 @@ stop() ->
 
 
 
-% @doc Returns relevant information to connect to the specified workspace of a
-% Gephi server expected to run on the local host, on the default port (so no
-% specific project is to be specified).
-%
+-doc """
+Returns relevant information to connect to the specified workspace of a Gephi
+server expected to run on the local host, on the default port (so no specific
+project is to be specified).
+""".
 -spec get_server_info( any_workspace_name() ) -> gephi_server_info().
 get_server_info( WorkspaceName ) ->
 	get_server_info( _Hostname=localhost, WorkspaceName ).
 
 
-% @doc Returns relevant information to connect to the specified workspace of the
-% specified Gephi server, expected to run on the specified host, on the default
-% port (so no specific project is to be specified).
-%
+
+-doc """
+Returns relevant information to connect to the specified workspace of the
+specified Gephi server, expected to run on the specified host, on the default
+port (so no specific project is to be specified).
+""".
 -spec get_server_info( gephi_server_host(), any_workspace_name() ) ->
 										gephi_server_info().
 get_server_info( Hostname, WorkspaceName ) ->
 	get_server_info( Hostname, ?gephi_default_tcp_port, WorkspaceName ).
 
 
-% @doc Returns relevant information to connect to the specified workspace of the
-% specified Gephi server, expected to run on the specified host, on the
-% specified port (so no specific project is to be specified).
-%
+
+-doc """
+Returns relevant information to connect to the specified workspace of the
+specified Gephi server, expected to run on the specified host, on the specified
+port (so no specific project is to be specified).
+""".
 -spec get_server_info( gephi_server_host(), gephi_server_port(),
 					   any_workspace_name() ) -> gephi_server_info().
 get_server_info( Hostname, ServerPort, WorkspaceName ) ->
@@ -750,31 +802,35 @@ get_server_info( Hostname, ServerPort, WorkspaceName ) ->
 					 WorkspaceName ).
 
 
-% @doc Returns relevant information to connect to the specified workspace of the
-% specified Gephi server, expected to run on the specified host, on the
-% specified port, with a project path specified.
-%
-% If requested, the availability of the specified host will be checked (with
-% ping), provided it is not the local one.
-%
+
+-doc """
+Returns relevant information to connect to the specified workspace of the
+specified Gephi server, expected to run on the specified host, on the specified
+port, with a project path specified.
+
+If requested, the availability of the specified host will be checked (with
+ping), provided it is not the local one.
+""".
 -spec get_server_info( gephi_server_host(), gephi_server_port(),
-					   maybe( any_project_path() ), any_workspace_name() ) ->
+					   option( any_project_path() ), any_workspace_name() ) ->
 							gephi_server_info().
 get_server_info( Hostname, ServerPort, MaybeProjectPath, WorkspaceName ) ->
 	get_server_info( Hostname, ServerPort, MaybeProjectPath, WorkspaceName,
 					 _DoCheckServer=false ).
 
 
-% @doc Returns relevant information to connect to the specified workspace of the
-% specified Gephi server, either expected to already run on the specified host
-% (in which case specifying the project is of no use) or to be launched on that
-% host, on the specified port (with a project name possibly specified).
-%
-% If requested, the availability of the specified host will be checked (with
-% ping), provided it is not the local one.
-%
+
+-doc """
+Returns relevant information to connect to the specified workspace of the
+specified Gephi server, either expected to already run on the specified host (in
+which case specifying the project is of no use) or to be launched on that host,
+on the specified port (with a project name possibly specified).
+
+If requested, the availability of the specified host will be checked (with
+ping), provided it is not the local one.
+""".
 -spec get_server_info( gephi_server_host(), gephi_server_port(),
-	maybe( any_project_path() ), any_workspace_name(), boolean() ) ->
+	option( any_project_path() ), any_workspace_name(), boolean() ) ->
 							gephi_server_info().
 get_server_info( Hostname, ServerPort, MaybeProjectPath, WorkspaceName,
 				 DoCheckServer ) when is_integer( ServerPort ) ->
@@ -814,7 +870,7 @@ get_server_info( Hostname, ServerPort, MaybeProjectPath, WorkspaceName,
 
 
 
-% @doc Returns a textual description of the specified server information.
+-doc "Returns a textual description of the specified server information.".
 -spec server_info_to_string( gephi_server_info() ) -> ustring().
 server_info_to_string( #gephi_server_info{ host=Hostname,
 										   port=ServerPort,
@@ -842,14 +898,16 @@ server_info_to_string( #gephi_server_info{ host=Hostname,
 % Subsection for client-side operations onto the server.
 
 
-% @doc Adds a node whose identifier is specified, in the context of the
-% specified Gephi instance.
-%
+-doc """
+Adds a node whose identifier is specified, in the context of the specified Gephi
+instance.
+""".
 -spec add_node( node_id(), gephi_server_info() ) -> void().
 add_node( NodeId, SrvInfo ) ->
 
 	cond_utils:if_defined( myriad_debug_graph,
-		trace_bridge:debug_fmt( "Adding node id '~ts' (no label).", [ NodeId ] ) ),
+		trace_bridge:debug_fmt( "Adding node id '~ts' (no label).",
+								[ NodeId ] ) ),
 
 	% "an": add node
 
@@ -862,9 +920,10 @@ add_node( NodeId, SrvInfo ) ->
 
 
 
-% @doc Adds a node whose identifier and label are specified, in the context of
-% the specified Gephi instance.
-%
+-doc """
+Adds a node whose identifier and label are specified, in the context of the
+specified Gephi instance.
+""".
 -spec add_node( node_id(), element_label(), gephi_server_info() ) -> void().
 add_node( NodeId, NodeLabel, SrvInfo ) ->
 
@@ -885,9 +944,10 @@ add_node( NodeId, NodeLabel, SrvInfo ) ->
 
 
 
-% @doc Adds a node whose identifier, label or color are specified, in the
-% context of the specified Gephi instance.
-%
+-doc """
+Adds a node whose identifier, label or color are specified, in the context of
+the specified Gephi instance.
+""".
 -spec add_node( node_id(), element_label(), graph_color(),
 				gephi_server_info() ) -> void().
 add_node( NodeId, NodeLabel, NodeColor, SrvInfo ) ->
@@ -910,9 +970,10 @@ add_node( NodeId, NodeLabel, NodeColor, SrvInfo ) ->
 
 
 
-% @doc Updates the specified property of the specified node to the specified
-% constant (timestamp-less) value.
-%
+-doc """
+Updates the specified property of the specified node to the specified constant
+(timestamp-less) value.
+""".
 -spec update_node_property( node_id(), property_id(), graph_value(),
 							gephi_server_info() ) -> void().
 update_node_property( NodeId, PropertyId, PropertyValue, SrvInfo ) ->
@@ -927,40 +988,44 @@ update_node_property( NodeId, PropertyId, PropertyValue, SrvInfo ) ->
 	%JsonStr = json_utils:to_json(
 	%   #{ cn => #{ NodeId => #{ PropertyId => PropertyValue } } } ),
 
-	JsonStr = text_utils:format( "{\"cn\":{\"~ts\":{\"~ts\":~ts}}}",
-		[ NodeId, PropertyId, property_value_to_json( PropertyValue ) ] ),
+	JsonStr = text_utils:format( "{\"cn\":{\"~ts\":{\"~ts\":~p}}}",
+								 [ NodeId, PropertyId, PropertyValue ] ),
 
 	send_post( JsonStr, SrvInfo ).
 
 
 
-% @doc Updates the specified properties of the specified node to the constant
-% (timestamp-less) values defined in the specified table.
-%
+-doc """
+Updates the specified properties of the specified node to the constant
+(timestamp-less) values defined in the specified table.
+""".
 -spec update_node_properties( node_id(), property_table(),
 							  gephi_server_info() ) -> void().
 update_node_properties( NodeId, PropertyTable, SrvInfo ) ->
 
 	cond_utils:if_defined( myriad_debug_graph,
 		trace_bridge:debug_fmt( "Updating for node id '~ts' the following "
-			"properties (as constants): ~ts",
-			[ NodeId, table:to_string( PropertyTable ) ] ) ),
+			"					properties (as constants): ~ts",
+			[ NodeId, PropertyId, table:to_string( PropertyTable ) ] ) ),
 
 	% "cn": change node
 
 	%JsonStr = json_utils:to_json(
 	%   #{ cn => #{ NodeId => #{ P1Id => P1Val, P2Id => P2Val} } } ),
 
+	PropStr = properties_to_json( PropertyTable ),
+
 	JsonStr = text_utils:format( "{\"cn\":{\"~ts\":~ts}}",
-		[ NodeId, property_table_to_json( PropertyTable ) ] ),
+								 [ NodeId, PropStr ] ),
 
 	send_post( JsonStr, SrvInfo ).
 
 
 
-% @doc Updates the specified property of the specified node to the specified
-% value for the specified timestamp.
-%
+-doc """
+Updates the specified property of the specified node to the specified value for
+the specified timestamp.
+""".
 -spec update_node_property( node_id(), property_id(), graph_value(),
 							timestamp(), gephi_server_info() ) -> void().
 update_node_property( NodeId, PropertyId, PropertyValue, Timestamp, SrvInfo ) ->
@@ -973,37 +1038,18 @@ update_node_property( NodeId, PropertyId, PropertyValue, Timestamp, SrvInfo ) ->
 	% "cn": change node
 
 	JsonStr = text_utils:format(
-		"{\"t\":\"~ts\", \"cn\":{\"~ts\":{\"~ts\":~ts}}}",
-		[ timestamp_to_json( Timestamp ), NodeId, PropertyId,
-		  property_value_to_json( PropertyValue ) ] ),
+		"{\"t\":\"~ts\", \"cn\":{\"~ts\":{\"~ts\":~p}}}",
+		[ Timestamp, NodeId, PropertyId, PropertyValue ] ),
 
 	send_post( JsonStr, SrvInfo ).
 
 
 
-% @doc Updates the specified properties of the specified node to the specified
-% values for the specified timestamp.
-%
--spec update_node_properties( node_id(), property_table(), timestamp(),
-							  gephi_server_info() ) -> void().
-update_node_properties( NodeId, PropertyTable, Timestamp, SrvInfo ) ->
-
-	cond_utils:if_defined( myriad_debug_graph,
-		trace_bridge:debug_fmt( "Updating for node id '~ts' the following "
-			"properties (as constants) at timestamp ~p: ~ts",
-			[ NodeId, Timestamp, table:to_string( PropertyTable ) ] ) ),
-
-	% Currently cannot be done in a single POST:
-	[ update_node_property( NodeId, PId, PValue, Timestamp, SrvInfo )
-		|| { PId, PValue } <- table:enumerate( PropertyTable ) ].
-
-
-
-% @doc Adds an edge whose identifier is specified, together with the identifiers
-% of the first node and the second one, telling whether it is a directed edge
-% (from first node to second one), in the context of the specified Gephi
-% instance.
-%
+-doc """
+Adds an edge whose identifier is specified, together with the identifiers of the
+first node and the second one, telling whether it is a directed edge (from first
+node to second one), in the context of the specified Gephi instance.
+""".
 -spec add_edge( edge_id(), node_id(), node_id(), boolean(),
 				gephi_server_info() ) -> void().
 add_edge( EdgeId, FirstNodeId, SecondNodeId, IsDirected, SrvInfo ) ->
@@ -1028,74 +1074,42 @@ add_edge( EdgeId, FirstNodeId, SecondNodeId, IsDirected, SrvInfo ) ->
 	send_post( JsonStr, SrvInfo ).
 
 
-% @doc Adds an edge whose identifier is specified, together with the identifiers
-% of the first node and the second one, telling whether it is a directed edge
-% (from first node to second one) and what its color is, in the context of the
-% specified Gephi instance.
-%
--spec add_edge( edge_id(), graph_color(), node_id(), node_id(), boolean(),
+
+-doc """
+Adds an edge whose identifier is specified, together with the identifiers of the
+first node and the second one, telling whether it is a directed edge (from first
+node to second one) and what its color is, in the context of the specified Gephi
+instance.
+""".
+-spec add_edge( edge_id(), node_id(), node_id(), boolean(), graph_color(),
 				gephi_server_info() ) -> void().
-add_edge( EdgeId, EdgeColor, FirstNodeId, SecondNodeId, IsDirected, SrvInfo ) ->
+add_edge( EdgeId, FirstNodeId, SecondNodeId, IsDirected, NodeColor, SrvInfo ) ->
 
 	cond_utils:if_defined( myriad_debug_graph,
 		trace_bridge:debug_fmt( "Adding a (directed: ~ts) edge of id '~ts' "
 			"between nodes '~ts' and '~ts', with color '~ts'.",
-			[ IsDirected, EdgeId, FirstNodeId, SecondNodeId, EdgeColor ] ) ),
+			[ IsDirected, EdgeId, FirstNodeId, SecondNodeId, NodeColor ] ) ),
 
 	% "ae": add edge
 
 	%JsonStr = json_utils:to_json( #{ ae => #{ EdgeId => #
 	%                       { source => SourceNodeId,
 	%                         target => TargetNodeId,
-	%                         directed => IsDirected,
-	%                         color => EdgeColor } } } ),
+	%                         directed => IsDirected } } } ),
 
 	JsonStr = text_utils:format(
 		"{\"ae\":{\"~ts\":{\"source\":\"~ts\", \"target\":\"~ts\", "
 		"\"directed\": ~ts, \"color\":\"~ts\"}}}",
-		[ EdgeId, FirstNodeId, SecondNodeId, IsDirected, EdgeColor ] ),
+		[ EdgeId, FirstNodeId, SecondNodeId, IsDirected, NodeColor ] ),
 
 	send_post( JsonStr, SrvInfo ).
 
 
 
-% @doc Adds an edge whose identifier is specified, together with the identifiers
-% of the first node and the second one, telling whether it is a directed edge
-% (from first node to second one) and what its label and color are, in the
-% context of the specified Gephi instance.
-%
--spec add_edge( edge_id(), element_label(), graph_color(), node_id(), node_id(),
-				boolean(), gephi_server_info() ) -> void().
-add_edge( EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
-		  IsDirected, SrvInfo ) ->
-
-	cond_utils:if_defined( myriad_debug_graph,
-		trace_bridge:debug_fmt( "Adding a (directed: ~ts) edge of id '~ts' "
-			"between nodes '~ts' and '~ts', with label '~ts' and color '~ts'.",
-			[ IsDirected, EdgeId, FirstNodeId, SecondNodeId, EdgeLabel,
-			  EdgeColor ] ) ),
-
-	% "ae": add edge
-
-	%JsonStr = json_utils:to_json( #{ ae => #{ EdgeId => #
-	%                       { source => SourceNodeId,
-	%                         target => TargetNodeId,
-	%                         directed => IsDirected,
-	%                         label => EdgeLabel,
-	%                         color => EdgeColor } } } ),
-
-	JsonStr = text_utils:format(
-		"{\"ae\":{\"~ts\":{\"source\":\"~ts\", \"target\":\"~ts\", "
-		"\"directed\": ~ts, \"label\":\"~ts\", \"color\":\"~ts\"}}}",
-		[ EdgeId, FirstNodeId, SecondNodeId, IsDirected, EdgeLabel,
-		  EdgeColor ] ),
-
-	send_post( JsonStr, SrvInfo ).
-
-
-% @doc Updates the specified property of the specified edge to the specified
-% constant (timestamp-less) value.
-%
+-doc """
+Updates the specified property of the specified edge to the specified constant
+(timestamp-less) value.
+""".
 -spec update_edge_property( edge_id(), property_id(), graph_value(),
 							gephi_server_info() ) -> void().
 update_edge_property( EdgeId, PropertyId, PropertyValue, SrvInfo ) ->
@@ -1110,16 +1124,17 @@ update_edge_property( EdgeId, PropertyId, PropertyValue, SrvInfo ) ->
 	%JsonStr = json_utils:to_json(
 	%   #{ ce=> #{ EdgeId => #{ PropertyId => PropertyValue } } } ),
 
-	JsonStr = text_utils:format( "{\"ce\":{\"~ts\":{\"~ts\":~ts}}}",
-		[ EdgeId, PropertyId, property_value_to_json( PropertyValue ) ] ),
+	JsonStr = text_utils:format( "{\"ce\":{\"~ts\":{\"~ts\":~p}}}",
+								 [ EdgeId, PropertyId, PropertyValue ] ),
 
 	send_post( JsonStr, SrvInfo ).
 
 
 
-% @doc Updates the specified property of the specified edge to the specified
-% value for the specified timestamp.
-%
+-doc """
+Updates the specified property of the specified edge to the specified value for
+the specified timestamp.
+""".
 -spec update_edge_property( edge_id(), property_id(), graph_value(),
 							timestamp(), gephi_server_info() ) -> void().
 update_edge_property( EdgeId, PropertyId, PropertyValue, Timestamp, SrvInfo ) ->
@@ -1131,17 +1146,17 @@ update_edge_property( EdgeId, PropertyId, PropertyValue, Timestamp, SrvInfo ) ->
 
 	% "ce": change edge
 	JsonStr = text_utils:format(
-		"{\"t\":\"~ts\", \"ce\":{\"~ts\":{\"~ts\":~ts}}}",
-		[ timestamp_to_json( Timestamp ), EdgeId, PropertyId,
-		  property_value_to_json( PropertyValue ) ] ),
+		"{\"t\":\"~ts\", \"ce\":{\"~ts\":{\"~ts\":~p}}}",
+		[ Timestamp, EdgeId, PropertyId, PropertyValue ] ),
 
 	send_post( JsonStr, SrvInfo ).
 
 
 
-% @doc Updates the specified properties of the specified edge to the constant
-% (timestamp-less) values defined in the specified table.
-%
+-doc """
+Updates the specified properties of the specified edge to the constant
+(timestamp-less) values defined in the specified table.
+""".
 -spec update_edge_properties( edge_id(), property_table(),
 							gephi_server_info() ) -> void().
 update_edge_properties( EdgeId, PropertyTable, SrvInfo ) ->
@@ -1149,15 +1164,17 @@ update_edge_properties( EdgeId, PropertyTable, SrvInfo ) ->
 	cond_utils:if_defined( myriad_debug_graph,
 		trace_bridge:debug_fmt( "Updating for edge id '~ts' the following "
 			"properties (as constants): ~ts",
-			[ EdgeId, table:to_string( PropertyTable ) ] ) ),
+			[ EdgeId, PropertyId, table:to_string( PropertyTable ) ] ) ),
 
 	% "ce": change edge
 
 	%JsonStr = json_utils:to_json(
 	%   #{ ce => #{ EdgeId => #{ P1Id => P1Val, P2Id => P2Val} } } ),
 
+	PropStr = properties_to_json( PropertyTable ),
+
 	JsonStr = text_utils:format( "{\"ce\":{\"~ts\":~ts}}",
-		[ EdgeId, property_table_to_json( PropertyTable ) ] ),
+								 [ EdgeId, PropStr ] ),
 
 	send_post( JsonStr, SrvInfo ).
 
@@ -1167,63 +1184,32 @@ update_edge_properties( EdgeId, PropertyTable, SrvInfo ) ->
 % Helper section.
 
 
-% @doc Returns a string containing a JSON element corresponding to the specified
-% graph value.
-%
--spec graph_value_to_string( graph_value() ) -> string_json().
-% For string-likes; not wanting <<"foo">> in JSON, but just ultimately "foo":
-graph_value_to_string( V ) when is_binary( V ) orelse is_list( V )
-								orelse is_atom( V ) ->
-	text_utils:format( "\"~ts\"", [ V ] );
-
-% Includes integers, floats, etc. (shall not be encoded as strings):
-graph_value_to_string( V ) ->
-	text_utils:term_to_string( V ).
-
-
-
-% @doc Returns a string containing a JSON element corresponding to the specified
-% property value.
-%
-property_value_to_json( PV ) ->
-	graph_value_to_string( PV ).
-
-
-% @doc Returns an ad-hoc corresponding term.
--spec property_table_to_json( property_table() ) -> string_json().
-property_table_to_json( PropertyTable ) ->
+-doc "Returns an ad-hoc corresponding term.".
+-spec properties_to_json( property_table() ) -> string_json().
+properties_to_json( PropertyTable ) ->
 
 	% Still no JSON parser used:
 
 	% table:fold/3 not appropriate, as no last comma wanted:
-	Strs = [ text_utils:format( "\"~ts\":~ts",
-								[ PId, property_value_to_json( PVal ) ] )
+	Strs = [ text_utils:format( "\"~ts\":~p", [ PId, PVal ] )
 				|| { PId, PVal } <- table:enumerate( PropertyTable ) ],
 
 	text_utils:format( "{~ts}", [ text_utils:join( _Sep=", ", Strs ) ] ).
 
 
 
-% @doc Returns a string containing a JSON element corresponding to the specified
-% graph timestamp.
-%
--spec timestamp_to_json( timestamp() ) -> string_json().
-timestamp_to_json( T ) ->
-	graph_value_to_string( T ).
+-doc """
+Sends a POST HTTP "request" with the specified content to the specified server.
 
+The content is generally a JSON document.
 
-% @doc Sends a POST HTTP "request" with the specified content to the specified
-% server.
-%
-% The content is generally a JSON document.
-%
-% The returned body is generally a JSON document as well. Actually it is at
-% least usually the input body, in a reinterpreted form,
-% e.g. `<<"{\"an\":{\"myriad-node-id-1\":{\"label\":\"I am the label of the node
-% whose identifier is 'myriad-node-id-1'.\"}}}\r\n">>'.
-%
-% Throws an exception if the sending failed.
-%
+The returned body is generally a JSON document as well. Actually it is at least
+usually the input body, in a reinterpreted form,
+e.g. `<<"{\"an\":{\"myriad-node-id-1\":{\"label\":\"I am the label of the node
+whose identifier is 'myriad-node-id-1'.\"}}}\r\n">>`.
+
+Throws an exception if the sending failed.
+""".
 -spec send_post( body(), gephi_server_info() ) -> body().
 send_post( Body, #gephi_server_info{ base_url=BaseUrl } ) ->
 
@@ -1231,29 +1217,6 @@ send_post( Body, #gephi_server_info{ base_url=BaseUrl } ) ->
 	%trace_utils:debug_fmt( "Body: ~ts.", [ Body ] ),
 
 	case web_utils:post( _Uri=BaseUrl, _Header=[], _HttpOptions=[], Body ) of
-
-		% Example of headers:
-		%
-		% #{ <<"connection">> => <<"close">>,
-		%    <<"content-type">> => <<"text/plain">>,
-		%    <<"date">> => <<"Thu, 04 Jan 2024 12:16:59 GMT">>,
-		%    <<"last-modified">> => <<"Thu, 04 Jan 2024 12:16:59 GMT">>,
-		%    <<"server">> => <<"Gephi/0.7 alpha4">>}
-		%
-		{ _HTTPStatusCode=200, _HeaderMap, BinBody } ->
-			%trace_bridge:debug_fmt( "Send POST to Gephi server succeeded "
-			%   "(got headers: ~p, ~nbody: ~p).", [ HeaderMap, BinBody ] ),
-			BinBody;
-
-
-		{ _HTTPStatusCode=404, _HeaderMap, BinBody } ->
-
-			trace_bridge:error_fmt( "Base URL ('~ts') not found (returned body: ~p); "
-				"it may correspond to a non-Gephi server running "
-				"on the designated port.", [ BaseUrl, BinBody ] ),
-
-			throw( { base_url_not_found, text_utils:ensure_string( BaseUrl ), BinBody } );
-
 
 		{ error, { failed_connect, [ {to_address, { _Host="localhost", Port } },
 				{ inet, [ inet ], econnrefused } ] } } ->
@@ -1277,13 +1240,17 @@ send_post( Body, #gephi_server_info{ base_url=BaseUrl } ) ->
 		{ error, Reason } ->
 			throw( { send_post_failed, Reason } );
 
-
-		{ OtherStatusCode, HeaderMap, BinBody } ->
-			trace_utils:error_fmt( "Unexpected HTTP status code received: ~ts, "
-				"with body '~ts' and following headers:~n ~p",
-				[ web_utils:interpret_http_status_code( OtherStatusCode ),
-				  BinBody, HeaderMap ] ),
-
-			throw( { gephi_processing_failed, OtherStatusCode, BinBody } )
+		% Example of headers:
+		%
+		% #{ <<"connection">> => <<"close">>,
+		%    <<"content-type">> => <<"text/plain">>,
+		%    <<"date">> => <<"Thu, 04 Jan 2024 12:16:59 GMT">>,
+		%    <<"last-modified">> => <<"Thu, 04 Jan 2024 12:16:59 GMT">>,
+		%    <<"server">> => <<"Gephi/0.7 alpha4">>}
+		%
+		{ _HTTPStatusCode=200, _HeaderMap, BinBody } ->
+			%trace_bridge:debug_fmt( "Send POST to Gephi server succeeded "
+			%   "(got headers: ~p, ~nbody: ~p).", [ HeaderMap, BinBody ] ),
+			BinBody
 
 	end.

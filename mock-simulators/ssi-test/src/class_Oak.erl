@@ -1,35 +1,36 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+% Creation date: 2008.
 
-
-% This file is part of forest ecosystem test case, which is a Sim-Diasca
-% integration test example.
-
-
-% @doc The purpose of this class is to show the significant features of a
-% Sim-Diasca actor scheduled totally in passive mode.
-%
-% The passive mode scheduling means that activities are only triggered by
-% received messages (no specific spontaneous behaviour).
-%
 -module(class_Oak).
+
+-moduledoc """
+The purpose of this class is to show the significant features of a Sim-Diasca
+actor scheduled totally in passive mode.
+
+The passive mode scheduling means that activities are only triggered by received
+messages (no specific spontaneous behaviour).
+
+This file is part of forest ecosystem test case, which is a Sim-Diasca
+integration test example.
+""". 
 
 
 -define( class_description, "Class modelling an oak" ).
@@ -51,21 +52,22 @@
 
 
 
-% @doc Constructs an Oak actor:
-%
-% - local_squirrel: is a list of squirrel PIDs living in this oak
-%
-% - max_inhabitant: the maximal inhabitants that can live in this oak; when the
-% number of local squirrels is higher, the Oak actor is terminated because of
-% overload
-%
+-doc """
+Constructs an Oak actor:
+
+- local_squirrel: is a list of squirrel PIDs living in this oak
+
+- max_inhabitant: the maximal inhabitants that can live in this oak; when the
+number of local squirrels is higher, the Oak actor is terminated because of
+overload
+""". 
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), age(), pid() ) -> wooper:state().
 construct( State, ActorSettings, OakName, GivenAge, ForestPid ) ->
 
 	% Firstly, the mother class:
 	DwellerState = class_ForestDweller:construct( State, ActorSettings,
-						?trace_categorize(OakName), GivenAge, ForestPid ),
+		?trace_categorize(OakName), GivenAge, ForestPid ),
 
 	% Then the class-specific attributes:
 	UpdatedState = setAttributes( DwellerState, [
@@ -84,7 +86,9 @@ construct( State, ActorSettings, OakName, GivenAge, ForestPid ) ->
 
 
 
-% @doc Simply schedules this just created actor at the next tick (diasca 0).
+-doc """
+Simply schedules this just created actor at the next tick (diasca 0).
+""". 
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -95,7 +99,9 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The spontaneous behaviour of this Oak actor, which is mostly passive.
+-doc """
+The spontaneous behaviour of this Oak actor, which is mostly passive.
+""". 
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -169,11 +175,12 @@ actSpontaneous( State ) ->
 % Following section deals with the messages received from other actors.
 
 
-% @doc An Alert is received from other actor.
-%
-% When it is a fire alert, the oak actor will inform its forest of its
-% termination.
-%
+-doc """
+An Alert is received from other actor.
+
+When it is a fire alert, the oak actor will inform its forest of its
+termination.
+""". 
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
 						actor_oneway_return().
 beAlert( State, Alert, _SendingActorPID ) ->
@@ -195,7 +202,7 @@ beAlert( State, Alert, _SendingActorPID ) ->
 
 
 
-% @doc Called by the forest with the new affected squirrel PID.
+-doc "Called by the forest with the new affected squirrel PID.".
 -spec beAffected( wooper:state(), sending_actor_pid() ) ->
 						actor_oneway_return().
 beAffected( State, AffectedSquirrelPid ) ->
@@ -229,7 +236,7 @@ beAffected( State, AffectedSquirrelPid ) ->
 
 
 
-% @doc Removes specified squirrel from the known ones.
+-doc "Removes the specified squirrel from the known ones.".
 -spec deleteFromPeers( wooper:state(), actor_pid(), sending_actor_pid() ) ->
 							 actor_oneway_return().
 deleteFromPeers( State, SquirrelPid, _SendingActorPid ) ->
@@ -246,7 +253,7 @@ deleteFromPeers( State, SquirrelPid, _SendingActorPid ) ->
 
 
 
-% @doc Registers specified squirrel.
+-doc "Registers the specified squirrel.".
 -spec addInPeers( wooper:state(), actor_pid(), sending_actor_pid() ) ->
 						actor_oneway_return().
 addInPeers( State, SquirrelPid, _SendingActorPid ) ->
@@ -254,13 +261,13 @@ addInPeers( State, SquirrelPid, _SendingActorPid ) ->
 	?notice_fmt( "Squirrel ~w is added in Oak ~w.", [ SquirrelPid, self() ] ),
 
 	actor:return_state(
-	  appendToAttribute( State, local_squirrel, SquirrelPid ) ).
+	    appendToAttribute( State, local_squirrel, SquirrelPid ) ).
 
 
 
-% @doc Notification that the forest is destroyed.
+-doc "Notification that the forest is destroyed.".
 -spec forestDestroyed( wooper:state(), sending_actor_pid() ) ->
-							 actor_oneway_return().
+							    actor_oneway_return().
 forestDestroyed( State, SendingActorPid )->
 
 	?notice_fmt( "~w ~w will terminate, as its forest is destroyed.",
@@ -281,12 +288,8 @@ forestDestroyed( State, SendingActorPid )->
 % Helper functions
 
 
-% @doc Registers to its forest, if any.
-%
-% Returns an updated state.
-%
-% (helper)
-%
+-doc "Registers to its forest, if any.".
+-spec try_to_register( wooper:state() ) -> wooper:state().
 try_to_register( State ) ->
 
 	case ?getAttr(forest_pid) of
@@ -297,7 +300,7 @@ try_to_register( State ) ->
 		ForestPid ->
 
 			NewState = class_Actor:send_actor_message( ForestPid,
-						{ addInPeers, ?MODULE }, State ),
+				{ addInPeers, ?MODULE }, State ),
 
 			TargetPeers = ?getAttr(target_peers),
 
@@ -309,10 +312,7 @@ try_to_register( State ) ->
 
 
 
-% @doc Sending message to its forest for notifying its termination
-%
-% (helper)
-%
+-doc "Sending message to its forest for notifying its termination.".
 notify_termination( State ) ->
 
 	CurrentOffset = ?getAttr(current_tick_offset),
@@ -358,7 +358,7 @@ notify_termination( State ) ->
 
 
 
-% @doc Resets the waiting.
+-doc "Resets the waiting.".
 -spec reset_termination_waiting_ticks( wooper:state() ) -> oneway_return().
 reset_termination_waiting_ticks( State ) ->
 	wooper:return_state( setAttribute( State, termination_waiting_ticks, 3 ) ).

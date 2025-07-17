@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 Olivier Boudeville
+% Copyright (C) 2011-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2011.
 
-
-% @doc This module defines a few basic facilities for <b>applications</b> (in
-% the Myriad sense, not OTP one).
-%
-% See also the preferences module for application preferences.
-%
 -module(app_facilities).
+
+-moduledoc """
+This module defines a few basic facilities for **applications** (in the Myriad
+sense, not OTP one).
+
+See also the preferences module for application preferences.
+""".
+
+
+% Note that if this module is found missing by rebar3, this means most probably
+% that Myriad as a whole is not found ('app_facilities' being the first listed
+% in ebin/myriad.app).
 
 
 -export([ start/1, stop/0,
@@ -41,29 +47,36 @@
 
 -include("app_facilities.hrl").
 
+
+
+-doc """
+A Myriad-defined record introduced in order to store information regarding
+an application.
+
+This information can be transformed in a map that is a bit less detailed (not
+storing application name, and storing os only, instead of os_family and os_name)
+and that can be used directly by functions in the standard 'filename' module,
+such as filename:basedir/3 in order to return suitable system-specific base
+paths.
+""".
 -type app_info() :: #app_info{}.
-% A Myriad-defined record introduced in order to store information regarding any
-% application.
-%
-% This information can be transformed in a map that is a bit less detailed (not
-% storing application name, and storing os only, instead of os_family and
-% os_name) and that can be used directly by functions in the standard 'filename'
-% module, such as filename:basedir/3 in order to return suitable system-specific
-% base paths.
 
 
+
+-doc "Needed by some standard functions in the filename module.".
 -type app_info_map() :: % Not exported yet: filename:basedir_opts().
 						any().
-% Needed by some standard functions in the filename module.
 
 
+
+-doc "Information regarding an application.".
 -type any_app_info() :: app_info() | app_info_map().
 
 
 -export_type([ app_info/0, app_info_map/0, any_app_info/0 ]).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type any_version() :: basic_utils:any_version().
 
@@ -76,15 +89,16 @@
 
 
 
-% @doc Starts an application; expected to be the first application statement.
-%
-% Here we disable explicitly the trapping of EXIT events, as a function run
-% through `erl -eval' (like our cases) or through `erl -run' will be executed in
-% a process which will silently trap EXIT events, which would mean that the
-% crash of any process created from the case, even thanks to spawn_link, would
-% most probably remain unnoticed (just leading to an EXIT message happily
-% sitting in the mailbox of the case process).
-%
+-doc """
+Starts an application; expected to be the first application statement.
+
+Here we disable explicitly the trapping of EXIT events, as a function run
+through `erl -eval` (like our cases) or through `erl -run` will be executed in a
+process which will silently trap EXIT events, which would mean that the crash of
+any process created from the case, even thanks to spawn_link, would most
+probably remain unnoticed (just leading to an EXIT message happily sitting in
+the mailbox of the case process).
+""".
 -spec start( module() | [ module() ] ) -> void().
 start( Module ) when is_atom( Module ) ->
 	erlang:process_flag( trap_exit, false ),
@@ -96,9 +110,10 @@ start( Modules ) when is_list( Modules ) ->
 
 
 
-% @doc Stops an application; expected to be the last application statement in
-% the normal case.
-%
+-doc """
+Stops an application; expected to be the last application statement in the
+normal case.
+""".
 -spec stop() -> no_return().
 stop() ->
 	basic_utils:display( "\n--> Successful termination of application.\n" ),
@@ -106,28 +121,33 @@ stop() ->
 
 
 
-% @doc Returns an application information corresponding to the specified
-% application name.
-%
+-doc """
+Returns an application information corresponding to the specified application
+name.
+""".
 -spec get_app_info( string_like() ) -> app_info().
 get_app_info( AppName ) ->
 	get_app_info( AppName, _MaybeAppVersion=undefined,
 				  _MaybeAuthorDesc=undefined ).
 
 
-% @doc Returns an application information corresponding to the specified
-% application name and version.
-%
+
+-doc """
+Returns an application information corresponding to the specified application
+name and version.
+""".
 -spec get_app_info( string_like(), any_version() ) -> app_info().
 get_app_info( AppName, AppVersion ) ->
 	get_app_info( AppName, AppVersion, _MaybeAuthorDesc=undefined ).
 
 
-% @doc Returns an application information corresponding to the specified
-% application name and possibly version and author description.
-%
--spec get_app_info( string_like(), maybe( any_version() ),
-					maybe( any_string() ) ) -> app_info().
+
+-doc """
+Returns an application information corresponding to the specified application
+name and possibly version and author description.
+""".
+-spec get_app_info( string_like(), option( any_version() ),
+					option( any_string() ) ) -> app_info().
 get_app_info( AppName, MaybeAppVersion, MaybeAuthorDesc ) ->
 
 	MaybeBinAuthorDesc = case MaybeAuthorDesc of
@@ -160,7 +180,7 @@ get_app_info( AppName, MaybeAppVersion, MaybeAuthorDesc ) ->
 
 
 
-% @doc Returns a map typically relevant for filename:basedir/3.
+-doc "Returns a map typically relevant for filename:basedir/3.".
 -spec get_app_info_map( app_info() ) -> app_info_map().
 get_app_info_map( #app_info{ name=BinAppName,
 							 version=MaybeAppVersion,
@@ -187,8 +207,7 @@ get_app_info_map( #app_info{ name=BinAppName,
 
 	end,
 
-	BaseMap = #{ name => BinAppName,
-				 os => OSType },
+	BaseMap = #{ name => BinAppName, os => OSType },
 
 	VersionMap = case MaybeAppVersion of
 
@@ -216,7 +235,7 @@ get_app_info_map( #app_info{ name=BinAppName,
 
 
 
-% @doc Displays an application message.
+-doc "Displays an application message.".
 -spec display( ustring() ) -> void().
 display( Message ) ->
 	% Carriage return already added in basic_utils:display/1:
@@ -227,11 +246,13 @@ display( Message ) ->
 	basic_utils:display( lists:flatten( Message ), _Values=[] ).
 
 
-% @doc Displays an application message, once formatted.
-%
-% @param FormatString an io:format-style format string, Values is the
-% corresponding list of field values.
-%
+
+-doc """
+Displays an application message, once formatted.
+
+FormatString is an io:format-style format string, Values is the corresponding
+list of field values.
+""".
 -spec display( format_string(), format_values() ) -> void().
 display( FormatString, Values ) ->
 	basic_utils:display( FormatString, Values ).
@@ -240,7 +261,9 @@ display( FormatString, Values ) ->
 % Comment out to be able to use the interpreter after the app:
 -define(exit_after_app,).
 
-% @doc Called whenever the execution is finished.
+
+
+-doc "Called whenever the execution of the main program is finished.".
 -spec finished() -> no_return().
 
 
@@ -285,12 +308,11 @@ finished() ->
 
 
 
+-doc """
+To be called whenever an application is to fail (crash on error) immediately.
 
-% @doc To be called whenever an application is to fail (crash on error)
-% immediately.
-%
-% For example `app_facilities:fail( "server on strike" )'
-%
+For example `app_facilities:fail("server on strike")`.
+""".
 -spec fail( ustring() ) -> no_return().
 fail( Reason ) ->
 
@@ -314,15 +336,14 @@ fail( Reason ) ->
 
 
 
-% @doc To be called whenever an application is to fail (crash on error)
-% immediately.
-%
-% @param FormatString an io:format-style format string.
-%
-% @param Values the corresponding list of field values.
-%
-% For example `app_facilities:fail("server ~ts on strike", ["foobar.org"])'.
-%
+-doc """
+To be called whenever an application is to fail (crash on error) immediately.
+
+FormatString is an io:format-style format string, Values is the corresponding
+list of field values.
+
+For example `app_facilities:fail("server ~ts on strike", ["foobar.org"])`.
+""".
 -spec fail( format_string(), format_values() ) -> no_return().
 fail( FormatString, Values ) ->
 

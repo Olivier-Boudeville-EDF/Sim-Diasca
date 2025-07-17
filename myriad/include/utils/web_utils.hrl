@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2024 Olivier Boudeville
+% Copyright (C) 2015-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -59,7 +59,7 @@
 	host_identifier :: net_utils:host_identifier(),
 
 	% For example 8081; possibly undefined.
-	port = 80 :: maybe( net_utils:net_port() ),
+	port = 80 :: option( net_utils:net_port() ),
 
 	% For example 'access/login'.
 	path :: web_utils:path() } ).

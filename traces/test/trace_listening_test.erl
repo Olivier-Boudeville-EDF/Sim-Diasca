@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2024 Olivier Boudeville
+% Copyright (C) 2007-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,14 +25,16 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
 
+-module(trace_listening_test).
 
-% @doc Unit tests for the implementation of trace listening.
-%
-% See the following modules:
-%  - class_TraceListener
-%  - class_TraceSupervisor
-%  - class_TraceAggregator
+-moduledoc """
+Unit tests for the implementation of **trace listening**.
 
+See the following modules:
+ - class_TraceListener
+ - class_TraceSupervisor
+ - class_TraceAggregator
+""".
 
 
 % The mode of operation is to execute this test while the trace_mManagement_test
@@ -45,8 +47,7 @@
 %
 % One may check that the aggregator and the listener have exactly the same
 % messages (e.g. at least counts must match of both interfaces).
-%
--module(trace_listening_test).
+
 
 
 % For trace facilities:
@@ -64,7 +65,7 @@ send_traces( _Count=0 ) ->
 
 send_traces( Count ) ->
 	?test_info_fmt( "Emitting trace  #~B from listener.", [ Count ] ),
-	send_traces( Count - 1 ).
+	send_traces( Count-1 ).
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2024 Olivier Boudeville
+% Copyright (C) 2022-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,23 +25,24 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, June 4, 2022.
 
-
-% @doc Gathering of facilities to manage <b>octrees</b>, a tree datastructure in
-% which each internal node has exactly 8 children (octants, i.e. sub-octrees or
-% "cells" - a naming that is probably clearer) that partition the parent space.
-%
-% We consider here that the octree acts as a server in charge of resolving
-% spatial queries emitted by many clients having to interact in a shared space.
-%
-% A global axis-aligned right cuboid is recursively split in 8 smaller,
-% same-sized octants, (which are its direct child right cuboids), dividing the
-% space thanks to a tree until some criterion is met (volume/number of elements
-% in the resulting leaves below some threshold, maximum tree depth reached,
-% etc.).
-%
-% See https://en.wikipedia.org/wiki/Octree.
-%
 -module(octree).
+
+-moduledoc """
+Gathering of facilities to manage **octrees**, a tree datastructure in which
+each internal node has exactly 8 children (octants, i.e. sub-octrees or "cells"
+- a naming that is probably clearer) that partition the parent space.
+
+We consider here that the octree acts as a server in charge of resolving spatial
+queries emitted by many clients having to interact in a shared space.
+
+A global axis-aligned right cuboid is recursively split in 8 smaller, same-sized
+octants, (which are its direct child right cuboids), dividing the space thanks
+to a tree until some criterion is met (volume/number of elements in the
+resulting leaves below some threshold, maximum tree depth reached, etc.).
+
+See <https://en.wikipedia.org/wiki/Octree>.
+""".
+
 
 
 % Design notes:
@@ -112,12 +113,12 @@
 % overall octree in a concurrent datastructure; this module offers such an
 % octree.
 %
-% With larger global spaces, to each octant an absolute, fixed referential can
-% be associated, whose origin is defined relatively to the center/origin of its
-% parent. The corresponding transformation, possibly also together with another
-% precomputed one from the local octant to the (unique, top-level) root one,
-% would allow each object to be defined only relatively to the (fixed)
-% referential corresponding to its (current) octant; by enabling smaller
+% With larger global spaces, to each octant an absolute, fixed coordinate system
+% can be associated, whose origin is defined relatively to the center/origin of
+% its parent. The corresponding transformation, possibly also together with
+% another precomputed one from the local octant to the (unique, top-level) root
+% one, would allow each object to be defined only relatively to the (fixed)
+% coordinate system corresponding to its (current) octant; by enabling smaller
 % floating-point distances, numerical errors should be significantly lessened.
 %
 % Note that multiple, different datastructures may be used (created and updated)
@@ -177,8 +178,9 @@
 % table is maintained and used.
 
 
+%-doc "A table of all octants available at a given height of an octree.".
 %-type sibling_table() :: table( octant_short_id(), octree_designator() ).
-% A table of all octants available at a given height of an octree.
+
 
 
 % For an octree of height H (defined as the maximum number of edges (e.g. not
@@ -191,10 +193,10 @@
 % diameter is D is given by: SL = fun(H) -> D/math:pow(2,H) end.
 %
 % The total number of cells (leaves or not) for a (totally populated) octree of
-% height H is: NC(H)=(8^(H+1)-1)/7, i.e.:
-% 'NC = fun(H) -> (math:pow(8,H+1)-1)/7 end.'.
+% height H is: NC(H)=(8^(H+1)-1)/7, i.e.: `NC = fun(H) -> (math:pow(8,H+1)-1)/7
+% end.`.
 %
-% Ex: let's D be the diameter of the observable universe (8.8.10^26 m,
+% For example let's D be the diameter of the observable universe (8.8.10^26 m,
 % i.e. D=8.8e26). SL(64) is about 48 000 km, yet NC(64) is 7.1e57. Luckly the
 % universe is mostly empty.
 
@@ -303,236 +305,290 @@
 -compile( { no_auto_import, [ size/1 ] } ).
 
 
--type node_content() :: maybe( any() ).
-% The content of a node of an octree ('undefined' meaning empty content).
+-doc "The content of a node of an octree ('undefined' meaning empty content).".
+-type node_content() :: option( any() ).
+
 
 
 % For the octant records of all sorts:
-%-include("octree.hrl").
+-include("octree.hrl").
 
 
 
-%-type sequential_octants() :: #sequential_octants{}.
-% The 8 possible sequential sub-octrees.
-
-%-type sequential_octants( _T ) :: #sequential_octants{}.
-% The 8 possible sequential sub-octrees, of content T.
-
-
-%-opaque sequential_octree() ::
-%  { node_content(), maybe( sequential_octants() ) }.
-% A sequential octree is made of its own content and of up to 8 child sequential
-% octrees.
-%
-% Such an octant may have content of its own, even if it has at least one
-% non-empty child (sub-octant). This may be useful for example for planets known
-% to revolve in the current octant without being confined in any of its child
-% octants; or objects large enough/positioned so that they pertain partly to one
-% octant, partly to at least one another.
-%
-% This octree type is sequential (as opposed to concurrent), in the sense that
-% it is defined as a single term (used by a given process), unlike
-% concurrent_octree/0.
-
-
-%-opaque sequential_octree( T ) :: { T , maybe( sequential_octants( T )  ) }.
-% A typed sequential octree, polymorphic regarding its node content.
-%
-% See sequential_octree/0 for further details.
+-doc "The 8 possible sequential sub-octrees.".
+-type sequential_octants() :: #sequential_octants{}.
 
 
 
-
-%-type concurrent_octants() :: #concurrent_octants{}.
-% The 8 possible concurrent sub-octrees.
-
-%-type concurrent_octants( _T ) :: #concurrent_octants{}.
-% The 8 possible concurrent sub-octrees, of content T.
-
-
-%-opaque concurrent_octree() ::
-%  { node_content(), maybe( concurrent_octants() ) }.
-% A concurrent octree is made of its own content and of up to 8 child concurrent
-% octrees.
-%
-% Such an octant may have content of its own, even if it has at least one
-% non-empty child (sub-octant). This may be useful for example for planets known
-% to revolve in the current octant without being confined in any of its child
-% octants; or objects large enough/positioned so that they pertain partly to one
-% octant, partly to at least one another.
-%
-% This octree type is concurrent (as opposed to sequential), in the sense that
-% it is defined as a (single) process, unlike sequential_octree/0.
-
-
-%-opaque concurrent_octree( T ) :: { T , maybe( concurrent_octants( T )  ) }.
-% A typed concurrent octree, polymorphic regarding its node content.
-%
-% See concurrent_octree/0 for further details.
+-doc "The 8 possible sequential sub-octrees, of content T.".
+-type sequential_octants( _T ) :: #sequential_octants{}.
 
 
 
+-doc """
+A sequential octree is made of its own content and of up to 8 child sequential
+octrees.
 
+Such an octant may have content of its own, even if it has at least one
+non-empty child (sub-octant). This may be useful for example for planets known
+to revolve in the current octant without being confined in any of its child
+octants; or objects large enough/positioned so that they pertain partly to one
+octant, partly to at least one another.
 
-%-type hybrid_octants() :: #hybrid_octants{}.
-% The 8 possible hybrid sub-octrees.
-
-%-type hybrid_octants( _T ) :: #hybrid_octants{}.
-% The 8 possible hybrid sub-octrees, of content T.
-
-
-%-opaque hybrid_octree() ::
-%  { node_content(), maybe( hybrid_octants() ) }.
-% A hybrid octree is made of its own content and of up to 8 child hybrid
-% octrees.
-%
-% Such an octant may have content of its own, even if it has at least one
-% non-empty child (sub-octant). This may be useful for example for planets known
-% to revolve in the current octant without being confined in any of its child
-% octants; or objects large enough/positioned so that they pertain partly to one
-% octant, partly to at least one another.
-%
-% This octree type is hybrid (as opposed to purely sequential or concurrent), in
-% the sense that it is defined either as a term or as a process.
-
-
-%-opaque hybrid_octree( T ) :: { T , maybe( hybrid_octants( T )  ) }.
-% A typed hybrid octree, polymorphic regarding its node content.
-%
-% See hybrid_octree/0 for further details.
+This octree type is sequential (as opposed to concurrent), in the sense that it
+is defined as a single term (used by a given process), unlike
+concurrent_octree/0.
+""".
+-opaque sequential_octree() ::
+	{ node_content(), option( sequential_octants() ) }.
 
 
 
+-doc """
+A typed sequential octree, polymorphic regarding its node content.
+
+See sequential_octree/0 for further details.
+""".
+-opaque sequential_octree( T ) :: { T , option( sequential_octants( T )  ) }.
 
 
+
+-doc "The 8 possible concurrent sub-octrees.".
+-type concurrent_octants() :: #concurrent_octants{}.
+
+
+
+-doc "The 8 possible concurrent sub-octrees, of content T.".
+-type concurrent_octants( _T ) :: #concurrent_octants{}.
+
+
+
+-doc """
+A concurrent octree is made of its own content and of up to 8 child concurrent
+octrees.
+
+Such an octant may have content of its own, even if it has at least one
+non-empty child (sub-octant). This may be useful for example for planets known
+to revolve in the current octant without being confined in any of its child
+octants; or objects large enough/positioned so that they pertain partly to one
+octant, partly to at least one another.
+
+This octree type is concurrent (as opposed to sequential), in the sense that it
+is defined as a (single) process, unlike sequential_octree/0.
+""".
+-opaque concurrent_octree() ::
+	{ node_content(), option( concurrent_octants() ) }.
+
+
+
+-doc """
+A typed concurrent octree, polymorphic regarding its node content.
+
+See concurrent_octree/0 for further details.
+""".
+-opaque concurrent_octree( T ) :: { T , option( concurrent_octants( T )  ) }.
+
+
+
+-doc "The 8 possible hybrid sub-octrees.".
+-type hybrid_octants() :: #hybrid_octants{}.
+
+
+
+-doc "The 8 possible hybrid sub-octrees, of content T.".
+-type hybrid_octants( _T ) :: #hybrid_octants{}.
+
+
+
+-doc """
+A hybrid octree is made of its own content and of up to 8 child hybrid octrees.
+
+Such an octant may have content of its own, even if it has at least one
+non-empty child (sub-octant). This may be useful for example for planets known
+to revolve in the current octant without being confined in any of its child
+octants; or objects large enough/positioned so that they pertain partly to one
+octant, partly to at least one another.
+
+This octree type is hybrid (as opposed to purely sequential or concurrent), in
+the sense that it is defined either as a term or as a process.
+""".
+-opaque hybrid_octree() :: { node_content(), option( hybrid_octants() ) }.
+
+
+
+-doc """
+A typed hybrid octree, polymorphic regarding its node content.
+
+See hybrid_octree/0 for further details.
+""".
+-opaque hybrid_octree( T ) :: { T , option( hybrid_octants( T )  ) }.
+
+
+
+-doc """
+A (thus sequential) octree-as-a-term, containing possibly a content, an octant
+record and probably more information.
+""".
 %-type octree_term() :: #octree_term{}.
-% A (thus sequential) octree-as-a-term, containing possibly a content, an octant
-% record and probably more information.
-
-%-type octree_pid() :: pid().
-% The PID of a concurrent octree, in charge of a given octant.
+-type octree_term() :: any().
 
 
-%-type octree_designator() :: octree_term() | octree_pid().
-% Designates any octree, as a term or a process.
+-doc "The PID of a concurrent octree, in charge of a given octant.".
+-type octree_pid() :: pid().
 
 
+
+%-doc "Designates any octree, as a term or a process.".
+-type octree_designator() :: octree_term() | octree_pid().
+
+
+
+-doc """
+The height of an octree, as the maximum number of edges between the root and a
+leaf.
+""".
 -type height() :: count().
-% The height of an octree, as the maximum number of edges between the root and a
-% leaf.
 
 
+
+-doc "The index of an octant is a non-null integer.".
 -type octant_index() :: integer().
-% The index of an octant is a non-null integer.
 
+
+
+-doc "The index of an octant along the X axis.".
 -type x_index() :: octant_index().
-% The index of an octant along the X axis.
 
+
+
+-doc " The index of an octant along the Y axis.".
 -type y_index() :: octant_index().
-% The index of an octant along the Y axis.
 
+
+
+-doc "The index of an octant along the Z axis.".
 -type z_index() :: octant_index().
-% The index of an octant along the Z axis.
 
 
+
+-doc """
+The identifier of an octant, expressed in terms of octant coordinates.
+
+For example {H=2, Xi=-1, Yi=2, Zi=1}.
+
+For H=0, Xi=Yi=Zi=1.
+For H=1, Xi, Yi, Zi each are either -1 or +1.
+For H=2, Xi, Yi, Zi each are in -2, -1, +1, +2.
+For H=n, Xi, Yi, Zi each are in -n, -n+1, [...], -2, -1, +1; +2, [...], n-1, n.
+""".
 -type octant_id() ::
 		{ H :: height(), Xi :: x_index(), Yi :: y_index(), Zi :: z_index() }.
-% The identifier of an octant, expressed in terms of octant coordinates.
-%
-% For example {H=2, Xi=-1, Yi=2, Zi=1}.
-%
-% For H=0, Xi=Yi=Zi=1.
-% For H=1, Xi, Yi, Zi each are either -1 or +1.
-% For H=2, Xi, Yi, Zi each are in -2, -1, +1, +2.
-% For H=n, Xi, Yi, Zi each are in -n, -n+1, [...], -2, -1, +1; +2, [...], n-1,
-% n.
 
 
+
+-doc """
+The identifier of an octant at a given height in the octree, expressed in terms
+of octant coordinates.
+
+For example {Xi=-1, Yi=2, Zi=1}, for H=2.
+""".
 -type octant_short_id() ::
 		{ Xi :: x_index(), Yi :: y_index(), Zi :: z_index() }.
-% The identifier of an octant at a given height in the octree, expressed in
-% terms of octant coordinates.
-%
-% For example {Xi=-1, Yi=2, Zi=1}, for H=2.
 
 
 
-%-type concurrent_octree_state( T ) :: { T, concurrent_octants( T ) }.
-% The state of a concurrent octree, that is a state kept by a process in charge
-% of a concurrent octree.
+-doc """
+The state of a concurrent octree, that is a state kept by a process in charge of
+a concurrent octree.
+""".
+-type concurrent_octree_state( T ) :: { T, concurrent_octants( T ) }.
 
 
+
+-doc "Describes a function that can be folded onto the content of an octree".
 -type content_fold_fun() ::
 		fun( ( node_content(), accumulator() ) -> accumulator() ).
-% Describes a function that can be folded onto the content of an octree.
 
 
 
-%-type locatable_container() :: set( locatable_pid() ).
-% Each container node (dynamic octant) references the set of the locatable
-% elements whose center lies inside this octant.
+-doc """
+Each container node (dynamic octant) references the set of the locatable
+elements whose center lies inside this octant.
+""".
+-type locatable_container() :: set( locatable_pid() ).
 
 
 -export_type([ node_content/0,
 
-			   %sequential_octree/0, sequential_octree/1,
-			   %sequential_octants/0, sequential_octants/1,
+			   sequential_octree/0, sequential_octree/1,
+			   sequential_octants/0, sequential_octants/1,
 
-			   %concurrent_octree/0, concurrent_octree/1,
-			   %concurrent_octants/0, concurrent_octants/1,
-			   %concurrent_octree_state/1,
+			   concurrent_octree/0, concurrent_octree/1,
+			   concurrent_octants/0, concurrent_octants/1,
+			   concurrent_octree_state/1,
 
-			   %hybrid_octree/0, hybrid_octree/1,
-			   %hybrid_octants/0, hybrid_octants/1,
+			   hybrid_octree/0, hybrid_octree/1,
+			   hybrid_octants/0, hybrid_octants/1,
 
-			   %octree_term/0,
-			   %ctree_pid/0, octree_designator/0,
+			   octree_term/0,
+			   octree_pid/0, octree_designator/0,
 
 			   octant_index/0, x_index/0, y_index/0, z_index/0, octant_id/0,
 			   octant_short_id/0,
 
 			   %octree_state/1,
 
-			   content_fold_fun/0, height/0 ]).
+			   content_fold_fun/0, height/0,
+			   locatable_container/0 ]).
 
 
 -export([ new/0, new/1 ]).
+
+
 %% , new/2, set_content/2, append_child/2, append_children/2,
-%%		  map/2, fold_breadth_first/3, fold_depth_first/3,
-%%		  height/1, size/1, to_string/1 ]).
+%%  map/2, fold_breadth_first/3, fold_depth_first/3,
+%%  height/1, size/1, to_string/1 ]).
+
+
+% May actually be better defined by upper layers:
+-type locatable_pid() :: pid().
+
+
+-doc """
+Designates the center of a locatable, to be understood here as the center of the
+diameter (largest distance between two points) of this locatable.
+""".
+-type locatable_center() :: point3().
+
+
+-export_type([ locatable_pid/0, locatable_center/0 ]).
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 -type accumulator() :: basic_utils:accumulator().
 
 %-type ustring() :: text_utils:ustring().
 
-%-type set( T ) :: set_utils:set( T ).
+-type point3() :: point3:point3().
 
-
-%-type point3() :: point3:point3().
-
-
-% May actually be better defined by upper layers:
-%-type locatable_pid() :: pid().
-
-%-type locatable_center() :: point3().
-% Designates the center of a locatable, to be understood here as the center of
-% the diameter (largest distance between two points) of this locatable.
+-type set( T ) :: set_utils:set( T ).
 
 
 
-% @doc Creates an empty (regarding content and octants), sequential, octree.
--spec new() -> any().%octree().
+
+
+-doc "Creates an empty (regarding content and octants), sequential, octree.".
+-spec new() -> any(). % octreeXXX().
 new() ->
 	%{ _NodeContent=undefined, #octants{} }.
 	fixme.
 
 
-% @doc Creates a sequential, octree having specified content, and no octants.
+
+-doc "Creates a sequential, octree having specified content, and no octants.".
 -spec new( node_content() ) -> any(). %octree().
 new( NodeContent ) ->
 	{ NodeContent, _Octants=undefined }.

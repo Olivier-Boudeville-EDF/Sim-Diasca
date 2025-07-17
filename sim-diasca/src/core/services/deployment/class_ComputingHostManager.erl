@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2024 EDF R&D
+% Copyright (C) 2008-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -18,10 +18,11 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
-
-% @doc <b>Manager of a computing host</b>, notably for deployment purpose.
 -module(class_ComputingHostManager).
 
+-moduledoc """
+**Manager of a computing host**, notably for deployment purpose.
+""".
 
 -define( class_description,
 		 "Manager of a computing host, notably for deployment purpose. "
@@ -72,7 +73,7 @@
 	{ scheduler_count, basic_utils:count(),
 	  "the number of schedulers to be used to launch any new node" },
 
-	{ epmd_port, maybe( tcp_port() ),
+	{ epmd_port, option( tcp_port() ),
 	  "the EPMD (TCP) port number (if any)" },
 
 	{ tcp_port_range, net_utils:tcp_port_restriction(), "Any TCP port "
@@ -88,14 +89,14 @@
 	{ deployment_manager_pid, deployment_manager_pid(),
 	  "the PID of the (parent) deployment manager" },
 
-	{ deployment_agent_pid, maybe( deployment_agent_pid() ),
+	{ deployment_agent_pid, option( deployment_agent_pid() ),
 	  "the PID of the associated deployment agent" },
 
-	{ deployment_agent_monitor_ref, maybe( reference() ),
+	{ deployment_agent_monitor_ref, option( reference() ),
 	  "the monitoring reference (if any) towards the associated deployment "
 	   "agent" },
 
-	{ deployed_node, maybe( atom_node_name() ),
+	{ deployed_node, option( atom_node_name() ),
 	  "the name of the deployed node, as an atom" },
 
 	{ deploy_time_out, time_out(), "time-out, in milliseconds, "
@@ -117,6 +118,7 @@
 	  "deployment agent)" } ] ).
 
 
+-doc "The various reasons why a VM launch may fail.".
 -type host_failure_reason() :: 'host_not_available'
 							 | 'deployment_time_out'
 							 | 'vm_detection_abnormal'
@@ -129,12 +131,11 @@
 							 | 'one_remote_vm_detected'
 							 | 'multiple_remote_vms_detected'
 							 | 'vm_remote_detection_failed'.
-% The various reasons why a VM launch may fail.
 
 
--type host_manager_pid() :: sim_diasca:agent_pid().
+-type manager_pid() :: sim_diasca:agent_pid().
 
--export_type([ host_failure_reason/0, host_manager_pid/0 ]).
+-export_type([ host_failure_reason/0, manager_pid/0 ]).
 
 
 % Allows to define WOOPER base variables and methods for that class:
@@ -151,32 +152,6 @@
 
 % For deployment_manager_pid() and all:
 -include("engine_common_defines.hrl").
-
-
-
-% Shorthands:
-
--type count() :: basic_utils:count().
--type exit_reason() :: basic_utils:exit_reason().
-
--type ustring() :: text_utils:ustring().
--type bin_string() :: text_utils:bin_string().
-
--type milliseconds() :: unit_utils:milliseconds().
-
--type bin_file_name() :: file_utils:bin_file_name().
--type bin_file_path() :: file_utils:bin_file_path().
--type bin_directory_path() :: file_utils:bin_directory_path().
-
--type time_out() :: time_utils:time_out().
-
--type atom_node_name() :: net_utils:atom_node_name().
--type string_node_name() :: net_utils:string_node_name().
--type string_host_name() :: net_utils:string_host_name().
--type tcp_port() :: net_utils:tcp_port().
-
--type user_name() :: system_utils:user_name().
--type command() :: system_utils:command().
 
 
 
@@ -219,75 +194,102 @@
 
 
 
-% @doc Constructs a manager for a given computing host, from following
-% parameters:
-%
-% - HostnameOptions={Hostname, Username}, Hostname being either the name (as a
-% plain string) of the remote computing host to manage, or the 'localhost' atom,
-% Username being the name of the user to rely on for that host
-%
-% - NodeOptions={NodeBaseName, NodeNamingNode, NodeCleanupWanted, NodeCookie,
-% NodeSchedulerCount}, a tuple made of:
-%
-%  - NodeName, the base node name (a plain string, e.g. "my_node"), without any
-%  host name
-%
-%   - NodeNamingNode, a node naming mode (i.e. short or long names)
-%
-%   - NodeCleanupWanted, which tells whether an initial clean-up of any
-%   previously existing node with that name is wanted: it is either false, or
-%   the full path of the clean-up script to be used, as a binary (note: this
-%   path must have been already validated once for all by the caller, it is
-%   considered here as reliable)
-%
-%   - NodeCookie, the cookie that must be used to launch any new node
-%
-%   - NodeSchedulerCount :: maybe( count() ) the number of
-%   schedulers to create on the associated node
-%
-% - NetworkOptions={EpmdPort, TCPPortRestriction}, a pair made of:
-%
-%   - EpmdPort is the EPMD port specification, with can be either the
-%   'undefined' atom or the port number; note that if a non-default EPMD port is
-%   specified for a new node, this implies that the current node usually has to
-%   itself respect the same non-standard convention (e.g. see the FIREWALL_OPT
-%   make option in myriad/GNUmakevars.inc), otherwise available nodes will not
-%   be found
-%
-%   - TCPPortRestriction is the TCP port restriction, with can be either the
-%   'no_restriction' atom or a pair of integers {MinTCPPort,MaxTCPPort}; note
-%   that if using a specific TCP/IP port range for a new node, the current node
-%   may have to respect this constraint as well (see the FIREWALL_OPT make
-%   option in myriad/GNUmakevars.inc), otherwise inter-node communication could
-%   fail
-%
-% - DeployOptions is a {DeploymentManagerPid, DeployTimeOut,
-% InterNodeTickTimeOut, AdditionalBEAMDirs} tuple, where:
-%
-%   - DeploymentManagerPid: the PID of the deployment manager, which created
-%   this manager, in order to be able to interact with it later
-%
-%   - DeployTimeOut is the maximum number of milliseconds which will be left to
-%   this host to be deployed
-%
-%   - InterNodeTickTimeOut is the time-out for inter-node ticks, to be
-%   transmitted to the deployment agent later
-%
-%   - BinDeployBaseDir is the deployment base directory (as a binary)
-%
-%   - AdditionalBEAMBinDirs is a list of directories (as binaries) containing
-%   BEAM files that shall be added to the code path of each computing node
-%
-%   - SII is the identifier of the current simulation
-%
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+-type exit_reason() :: basic_utils:exit_reason().
+
+-type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+
+-type milliseconds() :: unit_utils:milliseconds().
+
+-type bin_file_name() :: file_utils:bin_file_name().
+-type bin_file_path() :: file_utils:bin_file_path().
+-type bin_directory_path() :: file_utils:bin_directory_path().
+
+-type time_out() :: time_utils:time_out().
+
+-type atom_node_name() :: net_utils:atom_node_name().
+-type string_node_name() :: net_utils:string_node_name().
+-type string_host_name() :: net_utils:string_host_name().
+-type tcp_port() :: net_utils:tcp_port().
+
+-type user_name() :: system_utils:user_name().
+-type command() :: system_utils:command().
+
+-type deployment_manager_pid() ::
+    class_DeploymentManager:deployment_manager_pid().
+
+
+
+-doc """
+Constructs a manager for a given computing host, from following parameters:
+
+- HostnameOptions={Hostname, Username}, Hostname being either the name (as a
+plain string) of the remote computing host to manage, or the 'localhost' atom,
+Username being the name of the user to rely on for that host
+
+- NodeOptions={NodeBaseName, NodeNamingNode, NodeCleanupWanted, NodeCookie,
+NodeSchedulerCount}, a tuple made of:
+
+ - NodeName, the base node name (a plain string, e.g. `"my_node"`), without any
+ host name
+
+  - NodeNamingNode, a node naming mode (i.e. short or long names)
+
+  - NodeCleanupWanted, which tells whether an initial clean-up of any previously
+  existing node with that name is wanted: it is either false, or the full path
+  of the clean-up script to be used, as a binary (note: this path must have been
+  already validated once for all by the caller, it is considered here as
+  reliable)
+
+  - NodeCookie, the cookie that must be used to launch any new node
+
+  - NodeSchedulerCount :: option(count()) the number of schedulers to create on
+  the associated node
+
+- NetworkOptions={EpmdPort, TCPPortRestriction}, a pair made of:
+
+  - EpmdPort is the EPMD port specification, with can be either the 'undefined'
+  atom or the port number; note that if a non-default EPMD port is specified for
+  a new node, this implies that the current node usually has to itself respect
+  the same non-standard convention (e.g. see the FIREWALL_OPT make option in
+  myriad/GNUmakevars.inc), otherwise available nodes will not be found
+
+  - TCPPortRestriction is the TCP port restriction, with can be either the
+  'no_restriction' atom or a pair of integers {MinTCPPort,MaxTCPPort}; note that
+  if using a specific TCP/IP port range for a new node, the current node may
+  have to respect this constraint as well (see the FIREWALL_OPT make option in
+  myriad/GNUmakevars.inc), otherwise inter-node communication could fail
+
+- DeployOptions is a {DeploymentManagerPid, DeployTimeOut, InterNodeTickTimeOut,
+AdditionalBEAMDirs} tuple, where:
+
+  - DeploymentManagerPid: the PID of the deployment manager, which created this
+  manager, in order to be able to interact with it later
+
+  - DeployTimeOut is the maximum number of milliseconds which will be left to
+  this host to be deployed
+
+  - InterNodeTickTimeOut is the time-out for inter-node ticks, to be transmitted
+  to the deployment agent later
+
+  - BinDeployBaseDir is the deployment base directory (as a binary)
+
+  - AdditionalBEAMBinDirs is a list of directories (as binaries) containing BEAM
+  files that shall be added to the code path of each computing node
+
+  - SII is the identifier of the current simulation
+""".
 -spec construct( wooper:state(),
 
 	{ 'localhost' | string_host_name(), user_name() },
 
 	{ atom_node_name(), net_utils:node_naming_mode(),
-	  'false' | bin_file_path(), net_utils:cookie(), maybe( count() ) },
+	  'false' | bin_file_path(), net_utils:cookie(), option( count() ) },
 
-	{ maybe( tcp_port() ), 'no_restriction' | net_utils:tcp_port_range() },
+	{ option( tcp_port() ), 'no_restriction' | net_utils:tcp_port_range() },
 
 	{ deployment_manager_pid(), milliseconds(), milliseconds(), bin_string(),
 	  [ bin_directory_path() ], sim_diasca:sii() } )
@@ -469,7 +471,7 @@ construct( State,
 
 
 
-% @doc Overridden destructor.
+-doc "Overridden destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -538,11 +540,11 @@ destruct( State ) ->
 
 
 
-% @doc Performs an initial set-up of the managed host, to prepare for
-% deployment.
-%
-% (oneway, as it is a long-running task)
-%
+-doc """
+Performs an initial set-up of the managed host, to prepare for deployment.
+
+(oneway, as it is a long-running task)
+""".
 -spec setUpHost( wooper:state() ) -> oneway_return().
 setUpHost( State ) ->
 
@@ -572,12 +574,12 @@ setUpHost( State ) ->
 
 
 
-% @doc Requests the simulation package to be sent to the caller, expected to be
-% the deployment agent.
-%
-% DeployedNode is the node on which the calling agent runs, specified as an
-% atom.
-%
+-doc """
+Requests the simulation package to be sent to the caller, expected to be the
+deployment agent.
+
+DeployedNode is the node on which the calling agent runs, specified as an atom.
+""".
 -spec requestPackage( wooper:state(), atom_node_name() ) ->
 						request_return( 'deploy_time_out' | bin_file_name() ).
 requestPackage( State, DeployedNode ) ->
@@ -672,7 +674,7 @@ requestPackage( State, DeployedNode ) ->
 
 
 
-% @doc Notifies this manager that the deployment agent finished its deployment.
+-doc "Notifies this manager that the deployment agent finished its deployment.".
 -spec onDeploymentReady( wooper:state(), system_utils:host_static_info() ) ->
 							const_oneway_return().
 onDeploymentReady( State, HostInfo ) ->
@@ -694,9 +696,10 @@ onDeploymentReady( State, HostInfo ) ->
 
 
 
-% @doc Starts a database agent, on the corresponding computing host, generally
-% on behalf of the deployment manager.
-%
+-doc """
+Starts a database agent, on the corresponding computing host, generally on
+behalf of the deployment manager.
+""".
 -spec startDatabase( wooper:state(), pid() ) -> const_oneway_return().
 startDatabase( State, CallerPid ) ->
 
@@ -715,9 +718,10 @@ startDatabase( State, CallerPid ) ->
 
 
 
-% @doc Stops a database agent, on the corresponding computing host, generally on
-% behalf of the deployment manager.
-%
+-doc """
+Stops a database agent, on the corresponding computing host, generally on behalf
+of the deployment manager.
+""".
 -spec stopDatabase( wooper:state(), pid() ) -> const_oneway_return().
 stopDatabase( State, CallerPid ) ->
 
@@ -741,10 +745,10 @@ stopDatabase( State, CallerPid ) ->
 
 
 
-% @doc Terminates the computing node managed, typically on error-related
-% teardowns in order to avoid that the corresponding UNIX processes remain as
-% zombis.
-%
+-doc """
+Terminates the computing node managed, typically on error-related teardowns in
+order to avoid that the corresponding UNIX processes remain as zombis.
+""".
 -spec terminateComputingNode( wooper:state() ) -> const_oneway_return().
 terminateComputingNode( State ) ->
 
@@ -762,9 +766,10 @@ terminateComputingNode( State ) ->
 % Section for static methods.
 
 
-% @doc Returns an upper bound to the duration, in milliseconds, of a host-level
-% deployment.
-%
+-doc """
+Returns an upper bound to the duration, in milliseconds, of a host-level
+deployment.
+""".
 -spec get_host_deployment_duration_upper_bound() ->
 										static_return( milliseconds() ).
 get_host_deployment_duration_upper_bound() ->
@@ -783,12 +788,12 @@ get_host_deployment_duration_upper_bound() ->
 
 
 
-% @doc Returns the estimated maximum duration, in milliseconds, of all
-% operations beyond node setup, for a host deployment.
-%
+-doc """
+Returns the estimated maximum duration, in milliseconds, of all operations
+beyond node setup, for a host deployment.
+""".
 -spec get_other_operations_duration() -> static_return( milliseconds() ).
-get_other_operations_duration() ->
-	wooper:return_static( 1000 ).
+get_other_operations_duration() -> wooper:return_static( 1000 ).
 
 
 
@@ -796,12 +801,13 @@ get_other_operations_duration() ->
 % Section for helper functions.
 
 
-% @doc Tells whether, at this point in time, this manager is already too late to
-% respect its deployment time-out. If yes, the deployment manager already
-% ignored it and possibly went through next steps, and is not listening anymore.
-%
-% (helper function)
-%
+-doc """
+Tells whether, at this point in time, this manager is already too late to
+respect its deployment time-out. If yes, the deployment manager already ignored
+it and possibly went through next steps, and is not listening anymore.
+
+(helper function)
+""".
 -spec is_already_too_late( wooper:state() ) -> 'false' | ustring().
 is_already_too_late( State ) ->
 
@@ -826,11 +832,12 @@ is_already_too_late( State ) ->
 
 
 
-% @doc Connects to the specified host, performs any required clean-up, and
-% launches a corresponding computing node.
-%
-% (helper function)
-%
+-doc """
+Connects to the specified host, performs any required clean-up, and launches a
+corresponding computing node.
+
+(helper function)
+""".
 -spec connect_to_host( string_host_name(), wooper:state() ) -> wooper:state().
 connect_to_host( Hostname, State ) ->
 
@@ -891,11 +898,12 @@ connect_to_host( Hostname, State ) ->
 
 
 
-% @doc Declares to the deployment manager that on this host the set-up failed,
-% then triggers the deletion of this manager.
-%
-% Returns an updated state.
-%
+-doc """
+Declares to the deployment manager that on this host the set-up failed, then
+triggers the deletion of this manager.
+
+Returns an updated state.
+""".
 declare_deployment_failure( Reason, State ) ->
 
 	ManagedHostname = ?getAttr(managed_host),
@@ -931,13 +939,14 @@ declare_deployment_failure( Reason, State ) ->
 
 
 
-% @doc Checks that the specified host is available and that no previous node is
-% on the way.
-%
-% Returns whether the specified host is valid.
-%
-% (helper function)
-%
+-doc """
+Checks that the specified host is available and that no previous node is on the
+way.
+
+Returns whether the specified host is valid.
+
+(helper function)
+""".
 check_availability( Hostname, State ) ->
 
 	case check_host_availability( Hostname, State ) of
@@ -955,12 +964,13 @@ check_availability( Hostname, State ) ->
 
 
 
-% @doc Returns whether specified host seems to be reachable from the network.
-%
-% Checks with a ping that the specified host is available.
-%
-% (helper function)
-%
+-doc """
+Returns whether the specified host seems to be reachable from the network.
+
+Checks with a ping that the specified host is available.
+
+(helper function)
+""".
 check_host_availability( localhost, _State ) ->
 	true;
 
@@ -998,15 +1008,15 @@ check_host_availability( Hostname, State ) ->
 
 
 
-% @doc Ensures that no lingering node with specified name exists on the target
-% host.
-%
-% The usefulness of this function is quite hypothetical now, as cookies should
-% not match on purpose (new UUID already used here), and anyway a node cleaner
-% script might be run afterwards.
-%
-% (helper function)
-%
+-doc """
+Ensures that no lingering node with specified name exists on the target host.
+
+The usefulness of this function is quite hypothetical now, as cookies should not
+match on purpose (new UUID already used here), and anyway a node cleaner script
+might be run afterwards.
+
+(helper function)
+""".
 ensure_no_lingering_node( CompleteNodeName, NodeName, Hostname, State ) ->
 
 	% 'Immediate', as it is not being launched here:
@@ -1038,25 +1048,26 @@ ensure_no_lingering_node( CompleteNodeName, NodeName, Hostname, State ) ->
 
 
 
-% @doc Performs a node-cleanup, if requested to do so.
-%
-% As we use at each simulation run, on purpose, unique (generated) cookies to
-% avoid any possibility of connecting by mistake to previously running instances
-% of the same simulation case, we are not able to connect to such a pre-existing
-% node to shutdown it.
-%
-% As a consequence it could remain on the way and prevent its host to take part
-% to the simulation (until the node performs its automatic shutdown on idle
-% time-out, which had to be set-up to a high value in order to support any
-% possible cluster slow-down).
-%
-% Therefore the cookie system ensures no connection mismatch can ever happen,
-% and the cleaner script allows to avoid at all that any such nodes gets ever in
-% the way: a (normally successful) attempt to destroy them preventively can be
-% performed.
-%
-% Returns whether the deployment shall continue afterwards.
-%
+-doc """
+Performs a node-cleanup, if requested to do so.
+
+As we use at each simulation run, on purpose, unique (generated) cookies to
+avoid any possibility of connecting by mistake to previously running instances
+of the same simulation case, we are not able to connect to such a pre-existing
+node to shutdown it.
+
+As a consequence it could remain on the way and prevent its host to take part to
+the simulation (until the node performs its automatic shutdown on idle time-out,
+which had to be set-up to a high value in order to support any possible cluster
+slow-down).
+
+Therefore the cookie system ensures no connection mismatch can ever happen, and
+the cleaner script allows to avoid at all that any such nodes gets ever in the
+way: a (normally successful) attempt to destroy them preventively can be
+performed.
+
+Returns whether the deployment shall continue afterwards.
+""".
 -spec manage_node_cleanup( wooper:state() ) -> boolean().
 manage_node_cleanup( State ) ->
 
@@ -1139,19 +1150,22 @@ manage_node_cleanup( State ) ->
 
 
 
-% @doc Cleans up the local computing node.
-%
-% We try to avoid a SSH connection from this node to itself, as it may not be
-% already in its own known hosts.
-%
+-doc """
+Cleans up the local computing node.
+
+We try to avoid a SSH connection from this node to itself, as it may not be
+already in its own known hosts.
+""".
 get_clean_up_command_for_localhost( ScriptFullPath, State ) ->
 	ScriptFullPath ++ " " ++ ?getAttr(node_name).
 
 
 
-% @doc Cleans up the specified remote computing node.
-%
-% First, copies the script, then executes it there, then removes it.
+-doc """
+Cleans up the specified remote computing node.
+
+First, copies the script, then executes it there, then removes it.
+""".
 get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 
 	% We suppose here we do not have anything to do, firewall-wise:
@@ -1219,12 +1233,12 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 
 
 
-% @doc Launches on the specified host (remote or not, i.e. local) an
-% appropriately configured Erlang node, on which first the deployment agent will
-% be run.
-%
-% Returns either 'success' or {failure, Reason}.
-%
+-doc """
+Launches on the specified host (remote or not, i.e. local) an appropriately
+configured Erlang node, on which first the deployment agent will be run.
+
+Returns either 'success' or {failure, Reason}.
+""".
 -spec launch_erlang_node( wooper:state() ) ->
 								'success' | { 'failure', ustring() }.
 launch_erlang_node( State ) ->
@@ -1394,11 +1408,12 @@ launch_erlang_node( State ) ->
 
 
 
-% @doc Helper, to try to diagnose why no answer (Erlang-level ping) from a
-% launched VM was obtained, based on the look-up of relevant UNIX processes.
-%
-% Sends a trace message and returns a reason atom.
-%
+-doc """
+Helper, to try to diagnose why no answer (Erlang-level ping) from a launched VM
+was obtained, based on the look-up of relevant UNIX processes.
+
+Sends a trace message and returns a reason atom.
+""".
 -spec interpret_launch_failure( time_out(), milliseconds(), string_node_name(),
 		user_name(), string_host_name(), command(), wooper:state() ) -> atom().
 interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
@@ -1547,9 +1562,10 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 
 
 
-% @doc Called whenever an 'EXIT' message is received, typically from the
-% associated deployment agent.
-%
+-doc """
+Called whenever an `EXIT` message is received, typically from the associated
+deployment agent.
+""".
 -spec onWOOPERExitReceived( wooper:state(), pid(), exit_reason() ) ->
 								const_oneway_return().
 onWOOPERExitReceived( State, _Pid, _ExitReason=normal ) ->
@@ -1572,9 +1588,10 @@ onWOOPERExitReceived( State, Pid, ExitReason ) ->
 
 
 
-% @doc Called whenever a 'DOWN' message is received, typically from the
-% associated deployment agent.
-%
+-doc """
+Called whenever a `DOWN` message is received, typically from the associated
+deployment agent.
+""".
 -spec onWOOPERDownNotified( wooper:state(), monitor_utils:monitor_reference(),
 	monitor_utils:monitored_element_type(), monitor_utils:monitored_element(),
 							exit_reason() ) -> const_oneway_return().
@@ -1600,12 +1617,13 @@ onWOOPERDownNotified( State, MonitorReference, MonitoredType, MonitoredElement,
 
 
 
-% @doc Returns a command suitable to the launching of the corresponding Erlang
-% node, with a relevant environment and telling whether this shall be a
-% background launch.
-%
-% (helper)
-%
+-doc """
+Returns a command suitable to the launching of the corresponding Erlang node,
+with a relevant environment and telling whether this shall be a background
+launch.
+
+(helper)
+""".
 -spec get_erlang_launch_command( string_node_name(), user_name(),
 								 string_host_name(), wooper:state() ) ->
 		{ command(), system_utils:environment(), boolean() }.
@@ -1752,13 +1770,14 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 
 
 
-% @doc Sends pioneer modules (e.g. the deployment agent with its prerequisites),
-% that will then organise the deployment, based on the simulation archive that
-% is expected to be received from the deployment manager afterwards (see the
-% deploy/5 function).
-%
-% Returns an udpated state.
-%
+-doc """
+Sends pioneer modules (e.g. the deployment agent with its prerequisites), that
+will then organise the deployment, based on the simulation archive that is
+expected to be received from the deployment manager afterwards (see the deploy/5
+function).
+
+Returns an udpated state.
+""".
 -spec send_deployment_agent( wooper:state() ) -> wooper:state().
 send_deployment_agent( State ) ->
 
@@ -1927,10 +1946,11 @@ send_deployment_agent( State ) ->
 -ifdef(exec_target_is_production).
 
 
-% @doc Returns the duration, in milliseconds, that shall be waited until
-% deciding a non-responding launched node is unavailable, depending on the value
-% returned by its launch command.
-
+-doc """
+Returns the duration, in milliseconds, that shall be waited until deciding a
+non-responding launched node is unavailable, depending on the value returned by
+its launch command.
+""".
 
 % In production mode, we want to overcome situations where a few nodes might be
 % especially long to set-up:

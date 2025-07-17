@@ -1,31 +1,32 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-
-% @doc Main entry point for the <b>dataflow services that are typically exposed
-% to the simulation cases</b>.
-%
-% Please refer to the 'Sim-Diasca Dataflow HOWTO' for further information.
-%
 -module(dataflow_support).
+
+-moduledoc """
+Main entry point for the **dataflow services that are typically exposed to the
+simulation cases**.
+
+Please refer to the `Sim-Diasca Dataflow HOWTO` for further information.
+""".
 
 
 % Basics:
@@ -49,8 +50,8 @@
 -export([ find_event_by_id/2, get_event_id/1, get_port_id/2 ]).
 
 
+-doc "An option supported by the dataflow system.".
 -type option() :: atom().
-% Options supported by dataflow system.
 
 
 -export_type([ option/0 ]).
@@ -67,40 +68,35 @@
 -define( emitter_categorization, "Core.Dataflow" ).
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 -type indentation_level() :: text_utils:indentation_level().
 
 
 
-% @doc Starts the overall dataflow support.
-%
-% Note: the engine is expected to be already initialised.
-%
+-doc """
+Starts the overall dataflow support.
+
+Note: the engine is expected to be already initialised.
+""".
 -spec start() -> dataflow_state().
 start() ->
 	start( _Opts=[] ).
 
 
 
-% @doc Starts the overall dataflow support with specified options.
-%
-% Note: the engine is expected to be already initialised.
-%
+-doc """
+Starts the overall dataflow support with the specified options.
+
+Note: the engine is expected to be already initialised.
+""".
 -spec start( [ option() ] ) -> dataflow_state().
 start( Options ) ->
 
 	% Checking that the engine is most probably launched:
-	case sim_diasca:is_running() of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { dataflow_cannot_be_started, engine_not_running } )
-
-	end,
+	sim_diasca:is_running() orelse
+		throw( { dataflow_cannot_be_started, engine_not_running } ),
 
 	OptionString = case Options of
 
@@ -146,22 +142,24 @@ start( Options ) ->
 
 
 
-% @doc Declares directly, asynchronously, a user-level vocabulary, that is a
-% list of semantic elements (as plain strings).
-%
-% Typically meant to be called directly from the simulation case.
-%
+-doc """
+Declares directly, asynchronously, a user-level vocabulary, that is a list of
+semantic elements (as plain strings).
+
+Typically meant to be called directly from the simulation case.
+""".
 -spec declare_vocabulary( user_vocabulary(), dataflow_state() ) -> void().
 declare_vocabulary( Vocabulary,
-			#dataflow_state{ semantic_server_pid=SemanticServerPid } ) ->
+		#dataflow_state{ semantic_server_pid=SemanticServerPid } ) ->
 	class_SemanticServer:declare_vocabulary( Vocabulary,  SemanticServerPid ).
 
 
 
-% @doc Declares directly, asynchronously, a type.
-%
-% Typically meant to be called directly from the simulation case.
-%
+-doc """
+Declares directly, asynchronously, a type.
+
+Typically meant to be called directly from the simulation case.
+""".
 -spec declare_type( class_TypeServer:type_name(),
 			class_TypeServer:type_definition(), dataflow_state() ) -> void().
 declare_type( TypeName, TypeDefinition,
@@ -170,10 +168,11 @@ declare_type( TypeName, TypeDefinition,
 
 
 
-% @doc Declares directly, asynchronously, a set of types.
-%
-% Typically meant to be called directly from the simulation case.
-%
+-doc """
+Declares directly, asynchronously, a set of types.
+
+Typically meant to be called directly from the simulation case.
+""".
 -spec declare_types( class_TypeServer:type_entries(), dataflow_state() ) ->
 							void().
 declare_types( TypeEntries,
@@ -182,7 +181,7 @@ declare_types( TypeEntries,
 
 
 
-% @doc Stops the dataflow support.
+-doc "Stops the dataflow support.".
 -spec stop() -> void().
 stop() ->
 	class_TypeServer:stop(),
@@ -199,7 +198,7 @@ stop() ->
 % etc.).
 
 
-% @doc Returns a textual description of the specified port comment.
+-doc "Returns a textual description of the specified port comment.".
 -spec comment_to_string( internal_comment() ) -> ustring().
 comment_to_string( _Comment=undefined ) ->
 	"uncommented";
@@ -209,10 +208,10 @@ comment_to_string( Comment ) ->
 
 
 
-% @doc Returns a textual description of the specified user-specified port
-% semantics.
-%
--spec user_semantics_to_string( maybe( value_semantics() ) ) -> ustring().
+-doc """
+Returns a textual description of the specified user-specified port semantics.
+""".
+-spec user_semantics_to_string( option( value_semantics() ) ) -> ustring().
 user_semantics_to_string( _Semantics=undefined ) ->
 	"with no semantics specified";
 
@@ -222,10 +221,10 @@ user_semantics_to_string( SemanticList ) ->
 
 		L when L > 2 ->
 			SemStrings = [ text_utils:format( "'~ts'", [ S ] )
-							|| S <- SemanticList ],
+                                || S <- SemanticList ],
 
 			text_utils:format( "relying on following ~B semantics: ~ts",
-						[ L, text_utils:strings_to_string( SemStrings ) ] );
+				[ L, text_utils:strings_to_string( SemStrings ) ] );
 
 		_ ->
 			text_utils:format( "relying on the '~p' semantics",
@@ -235,15 +234,15 @@ user_semantics_to_string( SemanticList ) ->
 
 
 
-% @doc Returns a textual description of the specified port semantics.
--spec semantics_to_string( maybe( value_semantics() ) ) -> ustring().
+-doc "Returns a textual description of the specified port semantics.".
+-spec semantics_to_string( option( value_semantics() ) ) -> ustring().
 semantics_to_string( Semantics ) ->
 	semantics_to_string( Semantics, _IndentationLevel=0 ).
 
 
 
-% @doc Returns a textual description of the specified port semantics.
--spec semantics_to_string( maybe( value_semantics() ),
+-doc "Returns a textual description of the specified port semantics.".
+-spec semantics_to_string( option( value_semantics() ),
 						   indentation_level()  ) -> ustring().
 semantics_to_string( _Semantics=undefined, _IndentationLevel ) ->
 	"with no semantics specified";
@@ -257,22 +256,22 @@ semantics_to_string( Semantics, IndentationLevel ) ->
 
 		L when L > 2 ->
 			SemStrings = [ text_utils:format( "'~ts'", [ S ] )
-							|| S <- SemanticList ],
+                                || S <- SemanticList ],
 
 			text_utils:format( "relying on following ~B semantics: ~ts",
 						 [ L, text_utils:strings_to_string( SemStrings,
-													IndentationLevel ) ] );
+								IndentationLevel ) ] );
 
 		_ ->
 			SemStrings = [ text_utils:format( "~ts", [ S ] )
-							|| S <- SemanticList ],
+                                || S <- SemanticList ],
 			text_utils:format( "relying on the '~p' semantics", [ SemStrings ] )
 
 	end.
 
 
 
-% @doc Returns a textual description of the specified value unit.
+-doc "Returns a textual description of the specified value unit.".
 -spec value_unit_to_string( value_unit() ) -> ustring().
 value_unit_to_string( _ValueUnit={ UnitBinString, CanonicalUnit } ) ->
 
@@ -283,7 +282,7 @@ value_unit_to_string( _ValueUnit={ UnitBinString, CanonicalUnit } ) ->
 
 
 
-% @doc Returns a textual description of the specified string unit.
+-doc "Returns a textual description of the specified string unit.".
 -spec string_unit_to_string( ustring() ) -> ustring().
 string_unit_to_string( UnitString ) ->
 	text_utils:format( "of unit '~ts' (as specified by the user)",
@@ -291,7 +290,7 @@ string_unit_to_string( UnitString ) ->
 
 
 
-% @doc Returns a textual description of the specified value type.
+-doc "Returns a textual description of the specified value type.".
 -spec value_type_to_string( value_type() ) -> ustring().
 value_type_to_string( _Type=undefined ) ->
 	"untyped values";
@@ -302,14 +301,14 @@ value_type_to_string( Type ) ->
 
 
 
-% @doc Returns a textual description of the specified value constraints.
+-doc "Returns a textual description of the specified value constraints.".
 -spec value_constraint_to_string( value_constraints() ) -> ustring().
 value_constraint_to_string( Constraints ) ->
 	value_constraint_to_string( Constraints, _IndentationLevel=0 ).
 
 
 
-% @doc Returns a textual description of the specified value constraints.
+-doc "Returns a textual description of the specified value constraints.".
 -spec value_constraint_to_string( value_constraints(),
 								  indentation_level() ) -> ustring().
 value_constraint_to_string( _Constraints=[], _IndentationLevel ) ->
@@ -332,7 +331,7 @@ value_constraint_to_string( Constraints, IndentationLevel ) ->
 
 
 
-% @doc Returns a textual description of the specified value constraints.
+-doc "Returns a textual description of the specified value constraints.".
 -spec value_status_to_string( value_status() ) -> ustring().
 value_status_to_string( _Status=unset ) ->
 	"not set";
@@ -342,7 +341,7 @@ value_status_to_string( _Status={ set, Value } ) ->
 
 
 
-% @doc Returns a textual description of the specified value constraints.
+-doc "Returns a textual description of the specified value constraints.".
 -spec multiplicity_to_string( iteration_multiplicity() ) -> ustring().
 multiplicity_to_string( { Current, { Min, Max } } ) ->
 	% Max can be 'unbounded':
@@ -351,21 +350,21 @@ multiplicity_to_string( { Current, { Min, Max } } ) ->
 
 
 
-% @doc Returns a textual description of the specified type description.
+-doc "Returns a textual description of the specified type description.".
 -spec type_description_to_string( value_type_description() ) -> ustring().
 type_description_to_string( TypeDescription ) ->
 	text_utils:format( "type described as '~ts'", [ TypeDescription ] ).
 
 
 
-% @doc Returns a textual description of the specified port identifier.
+-doc "Returns a textual description of the specified port identifier.".
 -spec port_id_to_string( port_id() ) -> ustring().
 port_id_to_string( _PortIdentifier={ BlockPid, PortBinName } ) ->
 	text_utils:format( "~w:'~ts'", [ BlockPid, PortBinName ] ).
 
 
 
-% @doc Returns a textual description of the specified changeset.
+-doc "Returns a textual description of the specified changeset.".
 -spec changeset_to_string( changeset(), boolean() ) -> ustring().
 changeset_to_string( WorldEvents, _IsVerbose=false ) ->
 	text_utils:format( "changeset comprising ~B world events",
@@ -376,19 +375,19 @@ changeset_to_string( WorldEvents, _IsVerbose=true ) ->
 
 
 
-% @doc Returns a textual description of the specified changeset.
+-doc "Returns a textual description of the specified changeset.".
 -spec changeset_to_string( changeset() ) -> ustring().
 changeset_to_string( _WorldEvents=[] ) ->
 	"empty changeset";
 
 changeset_to_string( _WorldEvents=[ WorldEvent ] ) ->
 	text_utils:format( "changeset comprising a single world event: ~ts",
-			   [ world_event_to_string( WorldEvent, _IsVerbose=false ) ] );
+		[ world_event_to_string( WorldEvent, _IsVerbose=false ) ] );
 
 changeset_to_string( WorldEvents ) ->
 
 	Strings = [ world_event_to_string( W, _IsVerbose=true, _IndentationLevel=1 )
-				|| W <- WorldEvents ],
+                        || W <- WorldEvents ],
 
 	text_utils:format( "changeset comprising ~B world events: ~ts",
 		[ length( WorldEvents ),
@@ -396,16 +395,17 @@ changeset_to_string( WorldEvents ) ->
 
 
 
-% @doc Returns a (verbose) textual description of the specified world event.
+-doc "Returns a (verbose) textual description of the specified world event.".
 -spec world_event_to_string( world_event() ) -> ustring().
 world_event_to_string( WorldEvent ) ->
 	world_event_to_string( WorldEvent, _IsVerbose=true ).
 
 
 
-% @doc Returns a textual description of the specified world event, with
-% specified verbosity (induced events will be described iff verbose).
-%
+-doc """
+Returns a textual description of the specified world event, with specified
+verbosity (induced events will be described iff verbose).
+""".
 -spec world_event_to_string( world_event(), boolean() ) -> ustring().
 world_event_to_string( WorldEvent, IsVerbose ) ->
 	world_event_to_string( WorldEvent, IsVerbose, _IndentationLevel=0 ).
@@ -414,7 +414,7 @@ world_event_to_string( WorldEvent, IsVerbose ) ->
 
 % (helper)
 -spec world_event_to_string( world_event(), boolean(), indentation_level() ) ->
-									ustring().
+                                                    ustring().
 world_event_to_string( #creation_event{
 		id=EventId,
 		timestamp=Timestamp,
@@ -463,7 +463,6 @@ world_event_to_string( #creation_event{
 	case IsVerbose of
 
 		true ->
-
 			InducedString = induced_events_to_string( InducedEvents,
 													  IndentationLevel+1 ),
 
@@ -917,7 +916,7 @@ world_event_to_string( #disconnection_event{
 	end,
 
 	PortString = text_utils:format( "from output port '~ts' to "
-		"input port '~ts'",	[ OutputPortName, InputPortName ] ),
+		"input port '~ts'", [ OutputPortName, InputPortName ] ),
 
 	SourceString = case SourceExternalId of
 
@@ -1063,7 +1062,7 @@ world_event_to_string( #update_event{
 		_ ->
 			UpdateStrings = [ text_utils:format( "attribute '~ts' being set "
 												 "to value '~p'", [ N, V ] )
-							  || { N, V } <- Updates ],
+                                    || { N, V } <- Updates ],
 
 			text_utils:format( "~B attribute updates: ~ts",
 				[ length( Updates ),
@@ -1100,7 +1099,7 @@ world_event_to_string( UnknownEvent, _IsVerbose, _IndentationLevel ) ->
 
 
 
-% @doc Returns a textual description of the specified induced world events.
+-doc "Returns a textual description of the specified induced world events.".
 -spec induced_events_to_string( [ world_event() ], indentation_level() ) ->
 										ustring().
 induced_events_to_string( _WorldEvents=[], _IndentationLevel ) ->
@@ -1114,16 +1113,17 @@ induced_events_to_string( _WorldEvents=[ Event ], IndentationLevel ) ->
 induced_events_to_string( WorldEvents, IndentationLevel ) ->
 
 	Strings = [ world_event_to_string( W, _IsVerbose=true, IndentationLevel )
-				|| W <- WorldEvents ],
+                        || W <- WorldEvents ],
 
 	text_utils:format( "following ~B world events: ~ts",
 		[ length( WorldEvents ), text_utils:strings_to_string( Strings ) ] ).
 
 
 
-% @doc Finds specified event, based on its specified identifier, in the
-% specified list; returns a pair made of that event and of the rest of the list.
-%
+-doc """
+Finds the specified event, based on its specified identifier, in the specified
+list; returns a pair made of that event and of the rest of the list.
+""".
 -spec find_event_by_id( event_id(), [ world_event() ] ) ->
 								{ world_event(), [ world_event() ] }.
 find_event_by_id( EventId, EventList ) ->
@@ -1145,7 +1145,7 @@ find_event_by_id( EventId, EventList ) ->
 
 
 
-% @doc Returns the identifier of specified event.
+-doc "Returns the identifier of the specified event.".
 -spec get_event_id( world_event() ) -> event_id().
 get_event_id( Event ) ->
 	% Record seen as a tuple to abstract-out the record tag:
@@ -1153,9 +1153,9 @@ get_event_id( Event ) ->
 
 
 
-% @doc Returns the port identifier corresponding to specified block and port
-% name.
-%
+-doc """
+Returns the port identifier corresponding to specified block and port name.
+""".
 -spec get_port_id( block_pid(), port_string_name() ) -> port_id().
 get_port_id( BlockPid, PortName ) ->
 	{ BlockPid, text_utils:string_to_binary( PortName ) }.

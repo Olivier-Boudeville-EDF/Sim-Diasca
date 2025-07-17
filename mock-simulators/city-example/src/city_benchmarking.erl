@@ -1,28 +1,31 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-
-
-% This module gathers various helpers in order to ease the <b>creation of
-% simulation cases</b> for the City-Example.
 %
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
+
 -module(city_benchmarking).
+
+-moduledoc """
+This module gathers various helpers in order to ease the **creation of
+simulation cases** for the City-Example.
+""".
+
 
 
 -export([ get_benchmark_settings/2, get_scale_options/0, get_duration_options/0,
@@ -35,40 +38,46 @@
 -include("class_TimeManager.hrl").
 
 
+-doc "Allows to select the intended simulation scale.".
 -type benchmarking_scale() :: 'tiny' | 'small' | 'medium' | 'large' | 'huge'.
-% Allows to select the intended simulation scale.
 
 
+-doc "Allows to select the intended simulation duration.".
 -type benchmarking_duration() :: 'brief' | 'short' | 'medium' | 'long'.
-% Allows to select the intended simulation duration.
 
 
 -export_type([ benchmarking_scale/0, benchmarking_duration/0 ]).
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type timestamp() :: time_utils:timestamp().
+
+-type virtual_seconds() :: class_TimeManager:virtual_seconds().
 
 
-% @doc Returns the duration (in simulation time) of a fundamental time-step.
+-doc """
+Returns the duration (in simulation time) of a fundamental time-step.
+""".
+-spec get_time_step_duration() -> virtual_seconds().
 get_time_step_duration() ->
-
 	% 5 seconds per time step, expressed in virtual seconds:
 	5.0.
 
 
 
-% @doc Returns the main settings to determine the size of this test, in terms of
-% scale (of the virtual city) and duration (which depends on the simulation
-% frequency and on the virtual time and date until the simulation should run,
-% starting from 1/1/2000 at 00:00).
-%
+-doc """
+Returns the main settings to determine the size of this test, in terms of scale
+(of the virtual city) and duration (which depends on the simulation frequency
+and on the virtual time and date until the simulation should run, starting from
+1/1/2000 at 00:00).
+""".
 -spec get_benchmark_settings( benchmarking_scale(), benchmarking_duration() ) ->
-	{ class_CityGenerator:city_description(), time_utils:timestamp(),
-	  class_TimeManager:virtual_seconds() }.
+	{ class_CityGenerator:city_description(), timestamp(),
+	  virtual_seconds() }.
 get_benchmark_settings( BenchmarkingScale, BenchmarkingDuration ) ->
 
 	CityName = case BenchmarkingScale of
@@ -99,18 +108,20 @@ get_benchmark_settings( BenchmarkingScale, BenchmarkingDuration ) ->
 
 
 
-% @doc Returns the list of the allowed settings in order to specify the scale of
-% this use case.
-%
+-doc """
+Returns a list of the allowed settings in order to specify the scale of this use
+case.
+""".
 -spec get_scale_options() -> [ benchmarking_scale() ].
 get_scale_options() ->
 	[ tiny, small, medium, large, huge ].
 
 
 
-% @doc Returns the list of the allowed settings in order to specify the duration
-% of this use case.
-%
+-doc """
+Returns a list of the allowed settings in order to specify the duration of this
+use case.
+""".
 -spec get_duration_options() -> [ benchmarking_duration() ].
 get_duration_options() ->
 	[ brief, short, medium, long ].
@@ -118,9 +129,10 @@ get_duration_options() ->
 
 
 
-% @doc Returns the date and time of the end (in virtual time) of the simulation.
--spec get_benchmark_ending_deadline( benchmarking_duration() ) ->
-										    time_utils:timestamp().
+-doc """
+Returns the date and time of the end (in virtual time) of the simulation.
+""".
+-spec get_benchmark_ending_deadline( benchmarking_duration() ) -> timestamp().
 get_benchmark_ending_deadline( brief ) ->
 	% Just a simulation for 8 hours:
 	{ { 2000, 1, 1 }, { 8, 0, 0 } };
@@ -139,13 +151,14 @@ get_benchmark_ending_deadline( long ) ->
 
 
 
-% @doc Returns {ScaleSetting, DurationSetting}, i.e. the scale and duration
-% settings for this simulation case.
-%
+-doc """
+Returns the scale and duration settings for this simulation case.
+""".
+-spec get_case_settings() -> { benchmarking_scale(), benchmarking_duration() }.
 get_case_settings() ->
 
 	ScaleSetting = case
-			shell_utils:get_command_arguments_for_option( '-scale' ) of
+			cmd_line_utils:get_command_arguments_for_option( '-scale' ) of
 
 		undefined ->
 			% Default:
@@ -161,7 +174,7 @@ get_case_settings() ->
 	end,
 
 	DurationSetting = case
-			shell_utils:get_command_arguments_for_option( '-duration' ) of
+			cmd_line_utils:get_command_arguments_for_option( '-duration' ) of
 
 		undefined ->
 			% Default:
@@ -182,7 +195,10 @@ get_case_settings() ->
 
 
 
-% @doc Ensures the specified scale setting is valid.
+-doc """
+Ensures that the specified scale setting is valid.
+""".
+-spec check_scale_setting( term() ) -> benchmarking_scale().
 check_scale_setting( ScaleSetting ) ->
 
 	case lists:member( ScaleSetting, get_scale_options() ) of
@@ -197,7 +213,10 @@ check_scale_setting( ScaleSetting ) ->
 
 
 
-% @doc Ensures the specified duration setting is valid.
+-doc """
+Ensures that the specified duration setting is valid.
+""".
+-spec check_duration_setting( term() ) -> benchmarking_duration().
 check_duration_setting( DurationSetting ) ->
 
 	case lists:member( DurationSetting, get_duration_options() ) of
@@ -212,9 +231,10 @@ check_duration_setting( DurationSetting ) ->
 
 
 
-% @doc Returns the name of the city that corresponds to the specified
-% benchmarking scale.
-%
+-doc """
+Returns the name of the city that corresponds to the specified benchmarking
+scale.
+""".
 -spec get_city_name_from_scale( benchmarking_scale() ) -> ustring().
 get_city_name_from_scale( _BenchmarkingScale=tiny ) ->
 	"Yzeure";

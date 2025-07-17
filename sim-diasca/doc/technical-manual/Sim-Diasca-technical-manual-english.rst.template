@@ -132,7 +132,7 @@ Some further enhancements to the Sim-Diasca engine are to be implemented (see `S
 Minimal Quick-Start For Early Technical Testing
 ===============================================
 
-For the fearless users wanting an early glance at Sim-Diasca in action, here is the shortest path to testing, provided you already have the prerequisites (including a well-compiled, recent, Erlang interpreter on a GNU/Linux box) installed.
+For the fearless users wanting an early glance at Sim-Diasca in action, here is a short path to testing, provided that you already have the prerequisites (including a well-compiled, recent, Erlang interpreter on a GNU/Linux box) installed.
 
 First, download the latest stable archive, for example: ``Sim-Diasca-x.y.z.tar.bz2``.
 
@@ -142,17 +142,19 @@ Build it: ``cd Sim-Diasca-x.y.z && make all``.
 
 Select your test case: ``cd sim-diasca/src/core/src/scheduling/tests/``, for example: ``scheduling_multiple_coupled_erratic_actors_test.erl``.
 
-Optionally, if you want to run a *distributed* simulation, create in the current directory a file named ``sim-diasca-host-candidates.txt`` which lists the computing hosts you want to take part to the simulation, with one entry by line, like (do not forget the final dot on each line):
+Optionally, if you want to run a *distributed* simulation, create in the current directory a file named ``sim-diasca-host-candidates.etf`` which lists the computing hosts you want to take part to the simulation, with one entry by line, like (do not forget the final dot on each line):
 
 .. code:: erlang
 
   {'hurricane.foobar.org', "Computer of John (this is free text)."}.
+  {'whirlwind.foobar.org', "Mary's computer."}.
+
 
 Then run the test case:
 
 .. code:: bash
 
-  make scheduling_multiple_coupled_erratic_actors_run CMD_LINE_OPT="--batch"
+  $ make scheduling_multiple_coupled_erratic_actors_run CMD_LINE_OPT="--batch"
 
 The ``CMD_LINE_OPT="--batch"`` option was added as, for the sake of this quick-start, the trace supervisor is not expected to have already been installed.
 

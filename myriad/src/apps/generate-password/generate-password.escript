@@ -7,7 +7,7 @@
 -mode(compile).
 
 
-% @doc Prefer using directly the `generate-password.sh' script.
+% @doc Prefer using directly the `generate-password.sh` script.
 
 % Not used: -pz ../../../src/utils
 
@@ -15,7 +15,7 @@
 % directory...
 
 
-% Copyright (C) 2018-2022 Olivier Boudeville
+% Copyright (C) 2018-2024 Olivier Boudeville
 % [olivier (dot) boudeville (at) esperide (dot) com]
 
 

@@ -10,8 +10,8 @@
 # Add all WOOPER-specific rules below.
 
 
-# Outside prerequisites: $(WOOPER_SRC)/wooper.hrl wooper_class_manager and the
-# modules from Ceylan-Myriad.
+# Outside prerequisites: $(WOOPER_TOP)/include/wooper.hrl wooper_class_manager
+# and the modules from Ceylan-Myriad.
 
 
 # Allows any upper layer to override as a whole the WOOPER rules used to compile

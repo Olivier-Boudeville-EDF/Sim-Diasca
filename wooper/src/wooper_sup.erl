@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 Olivier Boudeville
+% Copyright (C) 2019-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,13 +25,15 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, July 14, 2019.
 
-
-% @doc Module implementing the <b>root (OTP) supervisor</b> of WOOPER.
-%
-% In practice, it will supervise a single process, the one of the (singleton)
-% WOOPER class manager (which implements the gen_server behaviour).
-%
 -module(wooper_sup).
+
+-moduledoc """
+Module implementing the **root (OTP) supervisor** of WOOPER.
+
+In practice, it will supervise a single process, the one of the (singleton)
+WOOPER class manager (which implements the gen_server behaviour).
+""".
+
 
 
 % Implementing the OTP supervisor behaviour:
@@ -49,7 +51,8 @@
 -define( wooper_supervisor_name, ?MODULE ).
 
 
-% @doc Starts and links the WOOPER root supervisor.
+
+-doc "Starts and links the WOOPER root supervisor.".
 -spec start_link() -> supervisor:startlink_ret().
 start_link() ->
 
@@ -61,7 +64,7 @@ start_link() ->
 
 
 
-% @doc Callback to initialise this supervisor.
+-doc "Callback to initialise this supervisor.".
 -spec init( 'undefined' ) -> { 'ok',
 		{ supervisor:sup_flags(), [ supervisor:child_spec() ] } } | 'ignore'.
 init( Args=undefined ) ->
@@ -98,6 +101,5 @@ init( Args=undefined ) ->
 		modules => [ wooper_class_manager ] },
 
 	ChildrenSpec = [ ClassManagerChildSpec ],
-
 
 	{ ok, { SupSettings, ChildrenSpec } }.

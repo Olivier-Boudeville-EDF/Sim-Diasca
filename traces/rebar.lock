@@ -1,8 +1,8 @@
 [{<<"myriad">>,
   {git,"https://github.com/Olivier-Boudeville/Ceylan-Myriad.git",
-       {ref,"3e39f6df4a9b200a3783b8ea527a41683c760418"}},
+       {ref,"a698cef3ca199a9ed57118a2b675619d4d41bacf"}},
   0},
  {<<"wooper">>,
   {git,"https://github.com/Olivier-Boudeville/Ceylan-WOOPER.git",
-       {ref,"7125a010284602098ec3848e489a23510ff7fe99"}},
+       {ref,"775fc006bbbc3ac649c01fe9acbd44afced3d712"}},
   0}].

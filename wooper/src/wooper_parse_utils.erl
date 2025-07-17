@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2024 Olivier Boudeville
+% Copyright (C) 2014-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -25,24 +25,28 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, December 24, 2014.
 
-
-% @doc Centralizes, on behalf of the WOOPER parse transform, <b>some utilities
-% to transform ASTs</b>.
-%
 -module(wooper_parse_utils).
+
+-moduledoc """
+Centralises, on behalf of the WOOPER parse transform, **some utilities to
+transform ASTs**.
+""".
 
 
 -export([ get_state_type/0, get_state_var/0 ]).
 
 
+% Type shorthand:
+
 -type form_element() :: ast_base:form_element().
 
 
 
-% @doc Returns a form element corresponding to the wooper:state() type.
-%
-% (shorthand)
-%
+-doc """
+Returns a form element corresponding to the wooper:state() type.
+
+(shorthand)
+""".
 -spec get_state_type() -> form_element().
 get_state_type() ->
 	Line = 0,
@@ -50,10 +54,11 @@ get_state_type() ->
 
 
 
-% @doc Returns a form element corresponding to the State variable.
-%
-% (shorthand)
-%
+-doc """
+Returns a form element corresponding to the State variable.
+
+(shorthand)
+""".
 -spec get_state_var() -> form_element().
 get_state_var() ->
 	Line = 0,

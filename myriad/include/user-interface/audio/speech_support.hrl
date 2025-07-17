@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -32,10 +32,10 @@
 	% Information regarding any clould instance that would typically used for
 	% TTS:
 	%
-	cloud_instance_info :: maybe( web_utils:cloud_instance_info() ),
+	cloud_instance_info :: option( web_utils:cloud_instance_info() ),
 
 	% The state of the JSON parser used to interact with the cloud instance:
-	json_parser_state :: maybe( json_utils:parser_state() ),
+	json_parser_state :: option( json_utils:parser_state() ),
 
 	% The HTTP options that all requests shall use:
 	http_options :: web_utils:http_options(),
@@ -46,7 +46,7 @@
 	requester_app_name = <<"Myriad speech support">> :: text_utils:bin_string(),
 
 	% May store, as a convenience, current speech settings, for an easier reuse:
-	speech_settings :: maybe( speech_support:speech_settings() ),
+	speech_settings :: option( speech_support:speech_settings() ),
 
 	% An associated table referencing all known speech settings:
 	speech_settings_table = table:new() ::
@@ -58,8 +58,8 @@
 	% The audio settings regarding the generated output:
 	audio_settings :: audio_utils:audio_stream_settings(),
 
-	% Any associated speech referential:
-	speech_referential :: maybe( speech_support:speech_referential() ) } ).
+	% Any associated speech repository:
+	speech_repository :: option( speech_support:speech_repository() ) } ).
 
 
 
@@ -79,10 +79,10 @@
 	gender :: speech_support:voice_gender(),
 
 	% The styles of speech (if any known) supported by this voice:
-	styles :: maybe( [ speech_support:supported_style() ] ),
+	styles :: option( [ speech_support:supported_style() ] ),
 
 	% The specific roles that this voice may play:
-	roles_played :: maybe( [ speech_support:role_played() ] ),
+	roles_played :: option( [ speech_support:role_played() ] ),
 
 
 	% The (main) locale corresponding to the language spoken by this voice:
@@ -118,16 +118,16 @@
 	% Corresponds to the language to be spoken by this voice (some voices may
 	% speak multiple language):
 	%
-	language_locale :: maybe( speech_support:language_locale() ),
+	language_locale :: option( speech_support:language_locale() ),
 
 	% At least usually the voice identifier already implies a gender:
-	voice_gender :: maybe( speech_support:voice_gender() ),
+	voice_gender :: option( speech_support:voice_gender() ),
 
 	% Any style this voice may support:
-	speech_style :: maybe( speech_support:supported_style() ),
+	speech_style :: option( speech_support:supported_style() ),
 
 	% Any role this voice might be able to play:
-	role :: maybe( speech_support:role_played() ) } ).
+	role :: option( speech_support:role_played() ) } ).
 
 
 
@@ -137,7 +137,7 @@
 -record( logical_speech, {
 
 	% The identifier of that speech (intentional duplicate of the corresponding
-	% key in the speech table of any containing referential):
+	% key in the speech table of any containing repository):
 	%
 	id :: speech_support:speech_id(),
 
@@ -151,7 +151,7 @@
 	%
 	% The text information of reference (probably from which the others are
 	% translated) corresponds to the entry whose key is the reference locale of
-	% the overall speech referential.
+	% the overall speech repository.
 	%
 	locale_table :: speech_support:locale_table() } ).
 
@@ -169,14 +169,14 @@
 	speech_settings_id :: speech_support:speech_settings_id(),
 
 	% The filename, relative to the base directory of the underlying speech
-	% referential, of the corresponding audio file:
+	% repository, of the corresponding audio file:
 	%
 	audio_filename :: file_utils:bin_file_name() } ).
 
 
 
 % A datastructure collecting information regarding a set of logical speeches.
--record( speech_referential, {
+-record( speech_repository, {
 
 	% A table associating to each identifier of a logical speech the various
 	% available information about it.

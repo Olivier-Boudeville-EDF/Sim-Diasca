@@ -397,7 +397,7 @@ string_list_to_string( _ListOfStrings=[], Acc, _Bullet ) ->
 	 Acc;
 
 string_list_to_string( _ListOfStrings=[ H | T ], Acc, Bullet )
-  when is_list( H ) ->
+                                when is_list( H ) ->
 	string_list_to_string( T, Acc ++ Bullet ++ io_lib:format( "~s~n", [ H ] ),
 						   Bullet ).
 

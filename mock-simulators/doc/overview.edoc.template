@@ -1,0 +1,12 @@
+@author Olivier Boudeville <olivier (dot) boudeville (at) edf (dot) fr>
+
+@copyright COPYRIGHT_YEAR EDF R&D
+
+@version PROJECT_VERSION
+
+@title Welcome to the official documentation of the Mock-Simulators API
+
+@doc <h3>Overview</h3>
+
+<p>These bogus simulators rely on Sim-Diasca and have been added for learning purposes.
+</p>

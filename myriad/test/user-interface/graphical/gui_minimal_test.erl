@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2024 Olivier Boudeville
+% Copyright (C) 2013-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2013.
 
-
-% @doc <b>Minimal test for the MyriadGUI toolbox</b>: draws a single frame and
-% exits.
-%
-% See the gui.erl tested module.
-%
 -module(gui_minimal_test).
+
+-moduledoc """
+**Minimal test for the MyriadGUI toolbox**: draws a single frame and exits.
+
+See the gui.erl tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -39,7 +40,7 @@
 
 
 
-% @doc Actual execution of the test.
+-doc "Actual execution of the test.".
 -spec run_test_gui() -> void().
 run_test_gui() ->
 
@@ -67,11 +68,11 @@ run_test_gui() ->
 	% Not even a real main loop here, just a one-shot event waited:
 	receive
 
-		{ onWindowClosed, [ TestFrame, _TestFrameId, Context ] } ->
+		{ onWindowClosed, [ TestFrame, _TestFrameId, EventContext ] } ->
 
 			trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
 				[ gui:object_to_string( TestFrame ),
-				  gui_event:context_to_string( Context ) ] ),
+				  gui_event:context_to_string( EventContext ) ] ),
 
 			% A frame is a window:
 			gui_frame:destruct( TestFrame ),
@@ -84,7 +85,7 @@ run_test_gui() ->
 
 
 
-% @doc Runs the test.
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

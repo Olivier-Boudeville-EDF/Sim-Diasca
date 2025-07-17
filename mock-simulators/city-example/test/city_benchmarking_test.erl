@@ -1,41 +1,42 @@
-% Copyright (C) 2012-2024 EDF R&D
-
+% Copyright (C) 2012-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
-
-% @doc <b>Benchmarking case</b>, based on City-example.
-%
-% The purpose of this case is to recreate a sharable yet representative
-% simulation case that is scalable enough in order to benchmark Sim-Diasca on
-% various manycore platforms.
-%
-% The scale and duration of the test can be chosen from the command-line (both
-% are medium by default).
-%
-% Example of intended use:
-%
-% make city_benchmarking_run CMD_LINE_OPT="--batch --duration long --scale huge"
-%
-% See also benchmarking_scale() and benchmarking_duration() below, for their
-% respective allowed values.
-%
 -module(city_benchmarking_test).
+
+-moduledoc """
+**Benchmarking case**, based on City-example.
+
+The purpose of this case is to recreate a sharable yet representative simulation
+case that is scalable enough in order to benchmark Sim-Diasca on various
+manycore platforms.
+
+The scale and duration of the test can be chosen from the command-line (both are
+medium by default).
+
+Example of intended use: `make city_benchmarking_run CMD_LINE_OPT="--batch
+--duration long --scale huge"`.
+
+See also `benchmarking_scale()` and `benchmarking_duration()` below, for their
+respective allowed values.
+""".
 
 
 % Launchers specific to this case, for a run made from the shell:
@@ -77,7 +78,7 @@
 % EXECUTION_TARGET=production'
 
 
-% Shorthands:
+% Type shorthands:
 
 -type benchmarking_scale() :: city_benchmarking:benchmarking_scale().
 
@@ -85,9 +86,10 @@
 
 
 
-% @doc Runs the test, determining the settings from the command-line, otherwise
-% using defaults.
-%
+-doc """
+Runs the test, determining the settings from the command-line, otherwise using
+defaults.
+""".
 -spec run() -> no_return().
 run() ->
 
@@ -97,9 +99,9 @@ run() ->
 
 
 
-% @doc Runs a series of tests of constant scale, iterating in terms of
-% durations.
-%
+-doc """
+Runs a series of tests of constant scale, iterating in terms of durations.
+""".
 -spec run_constant_scale( benchmarking_scale() ) -> no_return().
 run_constant_scale( Scale ) ->
 
@@ -121,9 +123,9 @@ run_constant_scale( Scale ) ->
 
 
 
-% @doc Runs a series of tests of constant duration, iterating in terms of
-% scales.
-%
+-doc """
+Runs a series of tests of constant duration, iterating in terms of scales.
+""".
 -spec run_constant_duration( benchmarking_duration() ) ->
 									no_return().
 run_constant_duration( Duration ) ->
@@ -147,7 +149,7 @@ run_constant_duration( Duration ) ->
 
 
 
-% @doc Runs the test with specified settings.
+-doc "Runs the test with specified settings.".
 -spec run( benchmarking_scale(), benchmarking_duration() ) -> void().
 run( ScaleSetting, DurationSetting ) ->
 
@@ -191,7 +193,7 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts={ use_host_file_otherwise_local,
-						"sim-diasca-host-candidates-for-scale-benchmarks.txt" },
+			"sim-diasca-host-candidates-for-scale-benchmarks.txt" },
 
 		%node_availability_tolerance = fail_on_unavailable_node,
 
@@ -201,7 +203,7 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 		additional_elements_to_deploy=[ { ".", code } ],
 
 		plugin_directories=[
-					"../../../sim-diasca/src/core/src/plugins/tests/" ],
+			"../../../sim-diasca/src/core/src/plugins/tests/" ],
 
 		% Would alter wrongly the benchmark:
 		enable_performance_tracker=false },
@@ -214,7 +216,7 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	IsBatch = executable_utils:is_batch(),
 
 	GISPid = class_Actor:create_initial_actor( class_GIS,
-					 [ _DataSource=none, _PrepareRendering= not IsBatch ] ),
+		[ _DataSource=none, _PrepareRendering= not IsBatch ] ),
 
 	CityGeneratorPid =
 		class_CityGenerator:synchronous_new_link( CityDescription, GISPid ),
@@ -294,18 +296,15 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 	GISPid ! delete,
 
-	case IsBatch of
+	IsBatch orelse
+        begin
 
-		true ->
-			ok;
-
-		false ->
 			RoadNetworkPid !
 				{ displayRenderingIn, [ OutputDirectory ], self() },
 
 			test_receive( rendering_displayed )
 
-	end,
+        end,
 
 
 	?test_info( "Browsing the report results, if in batch mode." ),

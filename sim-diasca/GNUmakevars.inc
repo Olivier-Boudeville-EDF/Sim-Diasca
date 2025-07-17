@@ -89,27 +89,12 @@ ifeq ($(EXECUTION_TARGET),development)
 	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_instance_loading
 	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_runtime_creations
 	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_life_cycles
-	SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_check_graph_streaming
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_graph_streaming
 endif
 
 
-ERLANG_COMPILER_OPT_BASE += -Dsim_diasca_version=\"$(SIM_DIASCA_VERSION)\" \
-							$(SIM_DIASCA_SETTINGS_FLAGS)                   \
-							$(SIM_DIASCA_DEBUG_FLAGS)                      \
-							$(SIM_DIASCA_CHECK_FLAGS)
 
-
-
-
-# Project section.
-
-# PROJECT_NAME should be defined on a per-project basis.
-ifndef PROJECT_NAME
-	PROJECT_NAME := Sim-Diasca
-endif
-
-
-SIM_DIASCA_BASE_VERSION := 2.4.7
+SIM_DIASCA_BASE_VERSION := 2.4.8
 
 # The uniquely-defined version of this layer, for all uses (including rebar, hex
 # and the code itself, see sim_diascas:get_sim_diasca_version{_string,}/0):
@@ -120,6 +105,45 @@ SIM_DIASCA_BASE_VERSION := 2.4.7
 SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)
 
 
+
+ERLANG_COMPILER_OPT_BASE += -Dsim_diasca_version=\"$(SIM_DIASCA_VERSION)\" \
+							$(SIM_DIASCA_SETTINGS_FLAGS)                   \
+							$(SIM_DIASCA_DEBUG_FLAGS)                      \
+							$(SIM_DIASCA_CHECK_FLAGS)
+
+
+
+# Useful to target for example the root of the current layer (e.g. to locate the
+# relevant, layer-local '_build' directory):
+#
+ifndef LAYER_TOP
+	LAYER_TOP := $(SIM_DIASCA_TOP)
+endif
+
+
+# Project section.
+
+# PROJECT_NAME should be defined on a per-project basis.
+ifndef PROJECT_NAME
+	PROJECT_NAME := Sim-Diasca
+endif
+
+
+# PROJECT_SHORT_NAME should be defined on a per-project basis.
+# (no dash allowed)
+#
+ifndef PROJECT_SHORT_NAME
+	PROJECT_SHORT_NAME := sim_diasca
+endif
+
+
+# PROJECT_NAME_FOR_OTP should be defined on a per-project basis.
+ifndef PROJECT_NAME_FOR_OTP
+	PROJECT_NAME_FOR_OTP := $(PROJECT_SHORT_NAME)
+endif
+
+
+
 # PROJECT_VERSION should be defined on a per-project basis.
 ifndef PROJECT_VERSION
 	PROJECT_VERSION := $(SIM_DIASCA_VERSION)
@@ -128,7 +152,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Tuesday, February 13, 2024"
+	PROJECT_RELEASE_DATE := "Thursday, July 17, 2025"
 endif
 
 
@@ -172,7 +196,8 @@ endif
 
 # Starting from this layer, nodes are not started as distributed ones, as, for
 # the purpose of run uniqueness (see SII), Sim-Diasca has to change the name of
-# the user node at runtime - hence this non-distributed flag (that is forced now):
+# the user node at runtime - hence this non-distributed flag (that is forced
+# now):
 #
 NODE_NAMING := "--nn"
 
@@ -419,8 +444,16 @@ endif
 KILL_SIM_INTERACT_TOOLS = $(SIM_DIASCA_TOP)/priv/bin/kill-simulation-interactive-tools.sh
 
 
-# To compile a module (ex: a plugin) using a behaviour (ex: sim_diasca_plugin),
-# the BEAM of that behaviour must be found:
+# No $(LAYER_TOP) in includes, it would be misleading as edoc is run from the
+# clone root, not from doc:
+#
+ifndef EDOC_OPTS
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{$(PROJECT_EDOC_VERSION_KEY),"$(PROJECT_VERSION)"}]}, {includes,["..", "$(TRACES_TOP)/..", "$(WOOPER_TOP)/..", "$(MYRIAD_TOP)/.."]}, {overview, "doc/overview.edoc"}]'
+endif
+
+
+# To compile a module (e.g. a plugin) using a behaviour
+# (e.g. sim_diasca_plugin), the BEAM of that behaviour must be found:
 #
 ERLANG_COMPILER_OPT_BASE += -pa $(PLUGINS_BEAM)
 
@@ -497,7 +530,7 @@ endif
 
 
 # The configuration file to list the potential distributed hosts:
-SIM_DIASCA_HOST_FILE := "sim-diasca-host-candidates.txt"
+SIM_DIASCA_HOST_FILE := "sim-diasca-host-candidates.etf"
 
 
 
@@ -701,8 +734,8 @@ endif
 # them and if all the packages mentioned here are themselves dependencies (in
 # which case they are all sitting together in the _checkouts child directory).
 #
-# Note also we rely on the names of build roots (ex: myriad) as opposed to
-# project/repository names (ex: Ceylan-Myriad):
+# Note also we rely on the names of build roots (e.g. myriad) as opposed to
+# project/repository names (e.g. Ceylan-Myriad):
 #
 # First priority is an existing checkout directory:
 ifneq ($(wildcard $(SIM_DIASCA_TOP)/_checkouts/traces/.),)

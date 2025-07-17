@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2024 Olivier Boudeville
+% Copyright (C) 2010-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,13 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
 
-
-% @doc Gathering of various <b>four dimensional "linear"</b> facilities, mostly
-% dealing with homogeneous matrices for 3D.
-%
-% See `linear_4D_test.erl' for the corresponding test.
-%
 -module(linear_4D).
+
+-moduledoc """
+Gathering of various **four dimensional "linear"** facilities, mostly dealing
+with homogeneous matrices for 3D.
+
+See `linear_4D_test.erl` for the corresponding test.
+""".
 
 
 % For printout_*, inline_size, etc.:

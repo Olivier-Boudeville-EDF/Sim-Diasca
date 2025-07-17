@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2024 Olivier Boudeville
+% Copyright (C) 2021-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, October 17, 2021.
 
-
-% @doc Unit tests for the <b>specialised 3x3 matrix</b> facilities.
-%
-% See the matrix3 tested module.
-%
 -module(matrix3_test).
+
+-moduledoc """
+Unit tests for the **specialised 3x3 matrix** facilities.
+
+See the matrix3 tested module.
+""".
+
 
 
 % For run/0 export and al:
@@ -112,9 +114,9 @@ run() ->
 							 "is: ~ts", [ matrix3:to_string( RowMatrix ) ] ),
 
 	% Octave: CoordMatrix = [ 1, 2, 3; 5, 6, 7; 9, 10, 11 ]
-	CoordMatrix = matrix3:from_coordinates( 1.0,   2.0,  3.0,
-											5.0,   6.0,  7.0,
-											9.0,  10.0, 11.0 ),
+	CoordMatrix = matrix3:from_coordinates( 1.0,  2.0,  3.0,
+											5.0,  6.0,  7.0,
+											9.0, 10.0, 11.0 ),
 
 	test_facilities:display( "Matrix explicitly set from coordinates is: ~ts",
 							 [ matrix3:to_string( CoordMatrix ) ] ),
@@ -175,9 +177,9 @@ run() ->
 	% ScaledMatrix = 2.0 * CoordMatrix
 	% RowMatrix = [ 10, 25, -7; 1, 2 4; 0, 0, 5 ]
 
-	MultCanMatrix = matrix3:from_coordinates(  24.0,  58.0, 32.0,
-												 112.0, 274.0, 48.0,
-												 200.0, 490.0, 64.0 ),
+	MultCanMatrix = matrix3:from_coordinates( 24.0,  58.0, 32.0,
+											  112.0, 274.0, 48.0,
+											  200.0, 490.0, 64.0 ),
 
 	MultCanMatrix = matrix3:mult( ScaledMatrix, RowMatrix ),
 
@@ -198,16 +200,16 @@ run() ->
 	% Octave:
 	% FirstCompactMatrix = [ 30, 12, 15; 62, 42, 50; 0, 0, 1 ]
 	FirstCompactMatrix = matrix3:from_compact_coordinates(
-						   30.0, 12.0, 15.0,
-						   62.0, 42.0, 50.0 ),
+		30.0, 12.0, 15.0,
+		62.0, 42.0, 50.0 ),
 
 	%test_facilities:display( "FirstCompactMatrix = ~ts",
 	%                         [ matrix3:to_string( FirstCompactMatrix ) ] ),
 
 	% SecondCompactMatrix = [ 59, 44, 24; 97, 4, 56; 0, 0, 1 ]
 	SecondCompactMatrix = matrix3:from_compact_coordinates(
-							59.0,  44.0, 24.0,
-							97.0,   4.0, 56.0 ),
+		59.0,  44.0, 24.0,
+		97.0,   4.0, 56.0 ),
 
 	% MultCptMatrix = [ 2934, 1368, 1407; 7732, 2896, 3890; 0, 0, 1 ]
 	MultCptMatrix = matrix3:from_compact_coordinates(
@@ -220,9 +222,9 @@ run() ->
 	% Octave:
 	% MultCptCanMatrix = [ 450, 564, 678; 1444, 1752, 2060; 18, 20, 22 ]
 	MultCptCanMatrix = matrix3:from_coordinates(
-							450.0, 564.0,   678.0,
-						   1444.0, 1752.0, 2060.0,
-							 18.0,   20.0,   22.0 ),
+		450.0, 564.0,   678.0,
+	   1444.0, 1752.0, 2060.0,
+		 18.0,   20.0,   22.0 ),
 
 	%test_facilities:display( "ScaledMatrix = ~ts",
 	%						  [ matrix3:to_string( ScaledMatrix ) ] ),
@@ -238,9 +240,9 @@ run() ->
 
 	% MultCanCptMatrix = [ 308, 192, 236; 1044, 624, 764; 1780, 1056, 1292 ]
 	MultCanCptMatrix = matrix3:from_coordinates(
-						 308.0,  192.0,  236.0,
-						1044.0,  624.0,  764.0,
-						1780.0, 1056.0, 1292.0 ),
+		 308.0,  192.0,  236.0,
+		1044.0,  624.0,  764.0,
+		1780.0, 1056.0, 1292.0 ),
 
 	SecondMult = matrix3:mult( ScaledMatrix, FirstCompactMatrix ),
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2009-2024 Olivier Boudeville
+% Copyright (C) 2009-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,12 +25,14 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: 2009.
 
-
-% @doc Unit tests for the <b>ring management</b> utilities.
-%
-% See the ring_utils.erl tested module.
-%
 -module(ring_utils_test).
+
+-moduledoc """
+Unit tests for the **ring management** utilities.
+
+See the ring_utils.erl tested module.
+""".
+
 
 
 % For run/0 export and al:

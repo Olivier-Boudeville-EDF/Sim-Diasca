@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2024 EDF R&D
+% Copyright (C) 2019-2025 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -19,9 +19,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: Wednesday, June 19, 2019.
 
-
-% @doc Test web probe.
 -module(class_TestWebProbe).
+
+-moduledoc "Test **web probe**.".
 
 
 -define( class_description, "Test for web-based probes." ).
@@ -51,27 +51,26 @@
 -include("class_WebManager.hrl").
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a web probe, from NameInit, which tells about the name (and
-% possibly categorization) of this probe.
-%
-% Note: knowing that the creation of a probe has to be acknowledged by the
-% result manager, actors are not expected to create directly such a probe, they
-% ought to call declare_result_probe/1 instead.
-%
+-doc """
+Constructs a web probe, from NameInit, which tells about the name (and possibly
+categorization) of this probe.
+
+Note: knowing that the creation of a probe has to be acknowledged by the result
+manager, actors are not expected to create directly such a probe, they ought to
+call declare_result_probe/1 instead.
+""".
 -spec construct( wooper:state(), class_Probe:probe_name_init() |
 		{ class_Probe:probe_name_init(), class_WebProbe:web_probe_options() },
 				 class_ResultManager:meta_data() ) -> wooper:state().
 construct( State, NameInit, Metadata ) ->
-
 	ProbeState = class_WebProbe:construct( State, NameInit, Metadata ),
-
 	setAttribute( ProbeState, counter, 1 ).
 
 
@@ -81,20 +80,21 @@ construct( State, NameInit, Metadata ) ->
 
 
 
-% @doc Declares (synchronously) a new test (web) probe, to be seen as a result
-% producer, and to be created either from an actor or from a test case.
-%
-% - NameOptions is either:
-%
-%  - Name :: ustring(), i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions :: web_probe_options()}
-%
-% Returns either the PID of this newly created probe (if the name of that probe
-% is acknowledged as a wanted result by the result manager), or the
-% 'non_wanted_probe' atom.
-%
+-doc """
+Declares (synchronously) a new test (web) probe, to be seen as a result
+producer, and to be created either from an actor or from a test case.
+
+NameOptions is either:
+
+ - Name :: ustring(), i.e. directly the name of this probe (specified as a
+ plain string), which will be used for the generated data and command files
+
+ - or {Name :: ustring(), ProbeOptions :: web_probe_options()}
+
+Returns either the PID of this newly created probe (if the name of that probe is
+acknowledged as a wanted result by the result manager), or the
+'non_wanted_probe' atom.
+""".
 -spec declare_result_probe( class_WebProbe:name_options() ) ->
 								static_return( class_WebProbe:probe_ref() ).
 declare_result_probe( NameOptions ) ->
@@ -113,7 +113,7 @@ declare_result_probe( NameOptions ) ->
 
 
 
-% @doc Emulates the feeding of that probe.
+-doc "Emulates the feeding of that probe.".
 -spec update( wooper:state(), count() ) -> request_return( 'probe_updated' ).
 update( State, NewCount ) ->
 
@@ -131,7 +131,7 @@ update( State, NewCount ) ->
 % Helpers.
 
 
-% @doc Generates the test HTML.
+-doc "Generates the test HTML.".
 -spec generate_html( wooper:state() ) -> wooper:state().
 generate_html( State ) ->
 
@@ -144,7 +144,7 @@ generate_html( State ) ->
 
 
 
-% @doc Returns a textual description of this web probe.
+-doc "Returns a textual description of this web probe.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "test ~ts", [ class_WebProbe:to_string( State ) ] ).

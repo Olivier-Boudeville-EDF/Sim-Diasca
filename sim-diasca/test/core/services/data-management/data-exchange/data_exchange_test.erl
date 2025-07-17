@@ -1,26 +1,27 @@
-% Copyright (C) 2011-2024 EDF R&D
-
+% Copyright (C) 2011-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2011.
 
-
-% @doc Overall unit test of the Sim-Diasca data exchange facilities.
 -module(data_exchange_test).
+
+-moduledoc "Overall unit test of the Sim-Diasca **data exchange** facilities.".
 
 
 
@@ -29,7 +30,7 @@
 
 
 
-% @doc Generates some data to test the data exchange service.
+-doc "Generates some data to test the data exchange service.".
 -spec run() -> no_return().
 run() ->
 
@@ -65,10 +66,10 @@ run() ->
 		% data-exchanger that will be created:
 		%
 		%computing_hosts={ use_host_file_otherwise_local,
-		%			   "sim-diasca-host-candidates.txt", exclude_localhost },
+		%   "sim-diasca-host-candidates.etf", exclude_localhost },
 
 		computing_hosts={ use_host_file_otherwise_local,
-						  "sim-diasca-host-candidates.txt" },
+						  "sim-diasca-host-candidates.etf" },
 
 		% Will work flawlessly:
 		enable_data_exchanger=true
@@ -105,7 +106,7 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 	?test_info( "Deployment manager created, "
 				"retrieving the root data exchanger." ),
@@ -183,7 +184,7 @@ run() ->
 	%     class_DataExchanger:read_initial_data( a_non_existing_key ),
 
 	{ 1, mutable } = class_DataExchanger:read_qualified_initial_data(
-			example_key_for_actors, ExchangeSettings ),
+		example_key_for_actors, ExchangeSettings ),
 
 	?test_info( "Now setting initial data." ),
 
@@ -242,7 +243,7 @@ run() ->
 	_SecondActorPid =class_Actor:create_initial_actor(
 		class_DataExchangeTestActor,
 		[ "Second data-exchange test actor", SecondKey,
-			 _SecondTerminationTickOffset=200 ], LoadBalancerPid ),
+          _SecondTerminationTickOffset=200 ], LoadBalancerPid ),
 
 
 	RootDataExchangerPid ! { traceDistributedData, [], self() },

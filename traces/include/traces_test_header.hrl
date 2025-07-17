@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2024 Olivier Boudeville
+% Copyright (C) 2011-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -58,7 +58,7 @@
 
 -define( test_emergency_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( emergency,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -70,7 +70,7 @@
 
 -define( test_alert_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( alert,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -82,7 +82,7 @@
 
 -define( test_critical_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( critical,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -94,7 +94,7 @@
 
 -define( test_error_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( error,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -106,7 +106,7 @@
 
 -define( test_warning_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( warning,
-					text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -124,7 +124,7 @@
 
 -define( test_notice_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( notice,
-						text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -137,7 +137,7 @@
 
 -define( test_info_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( info,
-						text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -149,7 +149,7 @@
 
 -define( test_debug_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( debug,
-						text_utils:format( MessageFormat, FormatValues ) )
+			text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 

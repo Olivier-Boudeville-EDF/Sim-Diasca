@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2024 Olivier Boudeville
+% Copyright (C) 2020-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -25,21 +25,22 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Wednesday, October 21, 2020.
 
-
-% @doc Testing the <b>actual use of a trace bridge</b>, in the context of
-% Ceylan-Traces.
-%
-% See also, in Ceylan-Myriad, trace_bridge_test.erl for a similar test when no
-% specific bridge is registered.
-%
 -module(trace_bridging_test).
+
+-moduledoc """
+Testing the **actual use of a trace bridge**, in the context of Ceylan-Traces.
+
+See also, in Ceylan-Myriad, trace_bridge_test.erl for a similar test when no
+specific bridge is registered.
+""".
 
 
 % Test target:
 -include("traces_for_tests.hrl").
 
 
-% @doc Runs the test.
+
+-doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
 

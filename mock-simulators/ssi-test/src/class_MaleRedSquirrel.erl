@@ -1,34 +1,34 @@
-% Copyright (C) 2008-2024 EDF R&D
-
+% Copyright (C) 2008-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
-
-% This file is part of forest ecosystem integration test case.
 % Creation date: 2008.
 
 
-
-% @doc The objective of this module is to show the main features of an actor in
-% <b>multiple scheduling modes</b>. These instances have indeed a periodic
-% schedule and can be also triggered by messages.
-%
 -module(class_MaleRedSquirrel).
 
+-moduledoc """
+The objective of this module is to show the main features of an actor in
+**multiple scheduling modes**. These instances have indeed a periodic schedule
+and can be also triggered by messages.
+
+This file is part of forest ecosystem integration test case.
+""".
 
 -define( class_description, "Class modelling a male red squirrel." ).
 
@@ -47,26 +47,27 @@
 
 
 % Allows to use macros for trace sending:
--include("sim_diasca_for_actors.hrl").
+-include_lib("sim-diasca/include/sim_diasca_for_actors.hrl").
 
 
 -include("ssi_test_types.hrl").
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a male red squirrel actor:
-%
-% - ActorSettings corresponds to the engine settings for this actor
-% - SquirrelName is the name of the squirrel, as a plain string
-% - GivenAge is the initial age of this squirrel
-% - ForestPid is the PID of the forest this squirrel is in
-%
+-doc """
+Constructs a male red squirrel actor:
+
+- ActorSettings corresponds to the engine settings for this actor
+- SquirrelName is the name of the squirrel, as a plain string
+- GivenAge is the initial age of this squirrel
+- ForestPid is the PID of the forest this squirrel is in
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(), ustring(), age(),
 				 actor_pid() ) -> wooper:state().
 construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
@@ -93,7 +94,7 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 
 
-% @doc Simply schedules this just created actor at the next tick (diasca 0).
+-doc "Simply schedules this just created actor at the next tick (diasca 0).".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -104,7 +105,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% @doc The spontaneous behaviour of a male red squirrel instance.
+-doc "The spontaneous behaviour of a male red squirrel instance.".
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -126,11 +127,12 @@ actSpontaneous( State ) ->
 
 
 
-% @doc Called when this squirrel succeeded in a contest.
-%
-% When a youWon message is received, the squirrel switches for an arrogant
-% frame_of_mind for a defined period.
-%
+-doc """
+Called when this squirrel succeeded in a contest.
+
+When a `youWon` message is received, the squirrel switches for an arrogant
+frame_of_mind for a defined period.
+""".
 -spec youWon( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 youWon( State, _SendingActorPid ) ->
 
@@ -148,7 +150,7 @@ youWon( State, _SendingActorPid ) ->
 
 
 
-% @doc Called when this squirrel failed in a contest.
+-doc "Called when this squirrel failed in a contest.".
 -spec youLose( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 youLose( State, _SendingActorPid ) ->
 
@@ -161,7 +163,7 @@ youLose( State, _SendingActorPid ) ->
 
 
 
-% @doc Called when an alert message is received from the forest.
+-doc "Called when an alert message is received from the forest.".
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
 										actor_oneway_return().
 beAlert( State, Alert, _SendingActorPid ) ->
@@ -200,9 +202,9 @@ beAlert( State, Alert, _SendingActorPid ) ->
 
 
 
-% A competition invitation is received, the squirrel replies with its tail
-% length.
-%
+-doc """
+A competition invitation is received, the squirrel replies with its tail length.
+""".
 -spec beInvited( wooper:state(), actor_pid(), sending_actor_pid() ) ->
 											actor_oneway_return().
 beInvited( State, LauncherPid, SendingActorPid ) ->
@@ -236,7 +238,7 @@ beInvited( State, LauncherPid, SendingActorPid ) ->
 
 
 
-% @doc Once a squirrel eats, its tail gains 0.1cm.
+-doc "Once a squirrel eats, its tail gains 0.1cm.".
 eat_nuts( State ) ->
 
 	NewLength = math_utils:round_after( ?getAttr(tail_length) + 0.1,
@@ -248,19 +250,17 @@ eat_nuts( State ) ->
 
 
 
-% @doc Returns a random tail length, between 3 - 6 for a newborn.
-%
-% This function is called only one time when a male is created.
-%
+-doc """
+Returns a random tail length, between 3 - 6 for a newborn.
+
+This function is called only one time when a male is created.
+""".
 get_initial_tail_length()->
 	3 + random_utils:get_uniform_value( 3 ).
 
 
 
-% @doc This helper function groups all termination related activities.
-%
-% Returns an updated state.
-%
+-doc "This helper function groups all termination-related activities.".
 termination_relative_activities( State ) ->
 
 	WaitTicks = ?getAttr(termination_waiting_ticks),
@@ -289,10 +289,7 @@ termination_relative_activities( State ) ->
 
 
 
-% @doc This helper function groups all spontaneous activities of this actor.
-%
-% Returns an updated state.
-%
+-doc "This helper function groups all spontaneous activities of this actor.".
 spontaneous_activities( State ) ->
 
 	CurrentOffset = ?getAttr(current_tick_offset),

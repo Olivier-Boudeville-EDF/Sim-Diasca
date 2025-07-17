@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2024 Olivier Boudeville
+% Copyright (C) 2023-2025 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, June 18, 2023.
-
 
 
 % A full, GUI-related applicative state to be kept around, notably so that it
@@ -96,4 +95,4 @@
 	% application (e.g. the main frame, buttons, etc.), and possibly OpenGL
 	% elements.
 	%
-	app_specific_info :: maybe( gui_event:app_specific_info() ) } ).
+	app_specific_info :: option( gui_event:app_specific_info() ) } ).

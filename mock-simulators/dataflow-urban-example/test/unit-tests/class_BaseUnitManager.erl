@@ -1,26 +1,27 @@
-% Copyright (C) 2016-2024 EDF R&D
-
+% Copyright (C) 2016-2025 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2016.
 
-
-% @doc Unit manager defined for <b>channel testing</b>.
 -module(class_BaseUnitManager).
+
+-moduledoc "Unit manager defined for **channel testing**.".
 
 
 -define( class_description,
@@ -51,28 +52,33 @@
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
+-type load_balancer_pid() :: class_LoadBalancer:load_balancer_pid().
+
+-type binding_managers() :: binding_utils:binding_managers().
 
 
-% @doc Constructs a test unit manager, from:
-%
-% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
-% actor, as automatically assigned by the load balancer
-%
-% - ExperimentManagerPid, the PID of the (parent) experiment manager
-%
-% - LoadBalancerPid, the PID of the load balancer that may be used by this unit
-% manager
-%
-% - IdentificationServerPid, the PID of the identification server (if any)
-%
+
+-doc """
+Constructs a test unit manager, from:
+
+- ActorSettings describes the actor abstract identifier (AAI) and seed of this
+actor, as automatically assigned by the load balancer
+
+- ExperimentManagerPid, the PID of the (parent) experiment manager
+
+- LoadBalancerPid, the PID of the load balancer that may be used by this unit
+manager
+
+- IdentificationServerPid, the PID of the identification server (if any)
+""".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 experiment_manager_pid(), binding_managers(),
 				 load_balancer_pid(),
-				 maybe( identification_server_pid() ) ) -> wooper:state().
+				 option( identification_server_pid() ) ) -> wooper:state().
 construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 		   LoadBalancerPid, IdentificationServerPid ) ->
 
@@ -96,9 +102,10 @@ construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 % Methods section.
 
 
-% @doc Returns the synchronization event matches that this unit manager is
-% interested in.
-%
+-doc """
+Returns the synchronization event matches that this unit manager is interested
+in.
+""". 
 -spec get_listened_event_matches() -> static_return( [ event_match() ] ).
 get_listened_event_matches() ->
 
@@ -117,13 +124,14 @@ get_listened_event_matches() ->
 
 
 
-% @doc Called so that this unit manager can perform domain-specific actions of
-% its choice whenever a matching connection happened.
-%
-% Note: catch-all placeholder implementation, meant to be overridden.
-%
+-doc """
+Called so that this unit manager can perform domain-specific actions of its
+choice whenever a matching connection happened.
+
+Note: catch-all placeholder implementation, meant to be overridden.
+""".
 -spec onConnectionEventMatched( wooper:state(), connection_event() ) ->
-									  oneway_return().
+									        oneway_return().
 onConnectionEventMatched( State, ConnectionEvent=#connection_event{
 							id=EventId,
 							source_block_type=class_BaseTestDataflowObject,
@@ -139,18 +147,19 @@ onConnectionEventMatched( State, ConnectionEvent=#connection_event{
 	ChannelEndpoints = [ { OutputPortName, InputPortName } ],
 
 	ChannelState = class_DataflowUnitManager:create_channels_for( EventId,
-					SourceBlockPid, TargetBlockPid, ChannelEndpoints, State ),
+		SourceBlockPid, TargetBlockPid, ChannelEndpoints, State ),
 
 	wooper:return_state( ChannelState ).
 
 
 
-% @doc Registers specified test blocks.
-%
-% Typically called by the base entry point.
-%
+-doc """
+Registers the specified test blocks.
+
+Typically called by the base entry point.
+""". 
 -spec registerTestBlocks( wooper:state(), test_dataflow_object_pid(),
-				  test_processing_unit_pid(), sending_actor_pid() ) ->
+				test_processing_unit_pid(), sending_actor_pid() ) ->
 								actor_oneway_return().
 registerTestBlocks( State, TestDataflowObjectPid, TestProcessingUnitPid,
 					_SendingActorPid ) ->
@@ -166,7 +175,7 @@ registerTestBlocks( State, TestDataflowObjectPid, TestProcessingUnitPid,
 
 
 
-% @doc To create a channel between Obj1:foo and PU1:my_input_port.
+-doc "To create a channel between `Obj1:foo` and `PU1:my_input_port`.".
 -spec createTestChannel( wooper:state(), sending_actor_pid() ) ->
 								actor_oneway_return().
 createTestChannel( State, _SendingActorPid ) ->
@@ -192,7 +201,7 @@ createTestChannel( State, _SendingActorPid ) ->
 
 
 
-% @doc Returns a textual description of this unit manager
+-doc "Returns a textual description of this unit manager.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( _State ) ->
-	"Base test unit manager".
+	"base test unit manager".
