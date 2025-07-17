@@ -6,7 +6,7 @@
 	release release-zip release-bz2 release-in-clone release-doc        \
 	prepare-release remove-release-tree clean clean-checkouts           \
 	clean-prerequisites clean-generated-files                           \
-	clean-all-results real-clean real-clean-local                       \
+	clean-all-results real-clean real-clean-local clean-mathjax         \
 	install to-archive to-archive-full vcs-archive archive              \
 	update-third-party-mirror release stats stats-full                  \
 	info-context info-versions                                          \
@@ -323,9 +323,16 @@ clean-all-results:
 real-clean: remove-trace-files-in-tree real-clean-local
 
 
-real-clean-local:
+real-clean-local: clean-mathjax
 	@cd $(SIM_DIASCA_TOP) && $(MAKE) -s clean-host-candidate-files
 	@cd $(MOCK_SIMULATORS_TOP) && $(MAKE) -s clean-host-candidate-files
+
+
+
+# As any dead symlink is bound to make the action for doc export fail:
+clean-mathjax:
+	@for m in $(PREREQUISITES_DIRS); do (cd $$m/doc && $(MAKE) -f ../../$(MYRIAD_TOP)/doc/GNUmakerules-docutils.inc -s clean-mathjax-local); done
+
 
 
 # In the current process we do not use this 'install' target.
