@@ -152,7 +152,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Thursday, July 17, 2025"
+	PROJECT_RELEASE_DATE := "Friday, July 18, 2025"
 endif
 
 
