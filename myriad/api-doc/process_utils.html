@@ -10,88 +10,70 @@
 <hr>
 
 <h1>Module process_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding <b>(Erlang)
- processes</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various convenient facilities regarding <b>(Erlang)
- processes</b>.</p>
-
- See process_utils_test.erl for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><code>milliseconds() = <a href="time_utils.html#type-milliseconds">time_utils:milliseconds()</a></code></p>
+<p><code>milliseconds() = <a href="time_utils.html#type-milliseconds" docgen-rel="seetype" docgen-href="time_utils#milliseconds/0">time_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-monitor_pid">monitor_pid()</a></h3>
 <p><code>monitor_pid() = pid()</code></p>
-<p> The PID of a monitoring process.</p>
+
+
+<h3 class="typedecl"><a name="type-process_label">process_label()</a></h3>
+<p><code>process_label() = term()</code></p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#spawn_message_queue_monitor-1">spawn_message_queue_monitor/1</a></td><td>Spawns a process monitoring the length of the message queue of the 
-specified process: returns the PID of an helper process that displays a 
-warning message if, during a periodic sampling each two seconds, this length 
-is above 1000.</td></tr>
-<tr><td valign="top"><a href="#spawn_message_queue_monitor-2">spawn_message_queue_monitor/2</a></td><td>Spawns a process monitoring the length of the message queue of the 
-specified process: returns the PID of an helper process that displays a 
-warning message (with any description thereof supplied) if, during a periodic 
-sampling each two seconds, this length is above 1000.</td></tr>
-<tr><td valign="top"><a href="#spawn_message_queue_monitor-4">spawn_message_queue_monitor/4</a></td><td>Spawns a process monitoring the length of the message queue of the 
-specified process: returns the PID of an helper process that displays a 
-warning message (with any description thereof supplied) if, during a periodic 
-sampling, this length is above the specified threshold.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_label-1">get_label/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_label-1">set_label/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#spawn_message_queue_monitor-1">spawn_message_queue_monitor/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#spawn_message_queue_monitor-2">spawn_message_queue_monitor/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#spawn_message_queue_monitor-4">spawn_message_queue_monitor/4</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="get_label-1">get_label/1</a></h3>
+<div class="spec">
+<p><code>get_label(Pid::pid()) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-process_label" docgen-rel="seetype" docgen-href="#process_label/0">process_label()</a>)</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_label-1">set_label/1</a></h3>
+<div class="spec">
+<p><code>set_label(ProcessLabel::<a href="#type-process_label" docgen-rel="seetype" docgen-href="#process_label/0">process_label()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="spawn_message_queue_monitor-1">spawn_message_queue_monitor/1</a></h3>
 <div class="spec">
-<p><code>spawn_message_queue_monitor(MonitoredPid::pid()) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></code><br></p>
+<p><code>spawn_message_queue_monitor(MonitoredPid::pid()) -&gt; <a href="#type-monitor_pid" docgen-rel="seetype" docgen-href="#monitor_pid/0">monitor_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Spawns a process monitoring the length of the message queue of the 
-specified process: returns the PID of an helper process that displays a 
-warning message if, during a periodic sampling each two seconds, this length 
-is above 1000.</p>
-
- The 'terminate' atom shall be sent to the returned PID in order to terminate
- the corresponding monitoring process.
-</p>
+</div>
 
 <h3 class="function"><a name="spawn_message_queue_monitor-2">spawn_message_queue_monitor/2</a></h3>
 <div class="spec">
-<p><code>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>)) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></code><br></p>
+<p><code>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>)) -&gt; <a href="#type-monitor_pid" docgen-rel="seetype" docgen-href="#monitor_pid/0">monitor_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Spawns a process monitoring the length of the message queue of the 
-specified process: returns the PID of an helper process that displays a 
-warning message (with any description thereof supplied) if, during a periodic 
-sampling each two seconds, this length is above 1000.</p>
-
- The 'terminate' atom shall be sent to the returned PID in order to terminate
- the corresponding monitoring process.
-</p>
+</div>
 
 <h3 class="function"><a name="spawn_message_queue_monitor-4">spawn_message_queue_monitor/4</a></h3>
 <div class="spec">
-<p><code>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>), MsgThreshold::<a href="#type-count">count()</a>, SamplingPeriod::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></code><br></p>
+<p><code>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>), MsgThreshold::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, SamplingPeriod::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a>) -&gt; <a href="#type-monitor_pid" docgen-rel="seetype" docgen-href="#monitor_pid/0">monitor_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Spawns a process monitoring the length of the message queue of the 
-specified process: returns the PID of an helper process that displays a 
-warning message (with any description thereof supplied) if, during a periodic 
-sampling, this length is above the specified threshold.</p>
-
- The 'terminate' atom shall be sent to the returned PID in order to terminate
- the corresponding monitoring process.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

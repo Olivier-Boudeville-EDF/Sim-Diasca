@@ -10,83 +10,65 @@
 <hr>
 
 <h1>Module linear_3D</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>three dimensional "linear"</b> facilities.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various <b>three dimensional "linear"</b> facilities.</p>
-
- See <code>linear_3D_test.erl</code> for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_point3">any_point3()</a></h3>
-<p><code>any_point3() = <a href="point3.html#type-any_point3">point3:any_point3()</a></code></p>
+<p><code>any_point3() = <a href="point3.html#type-any_point3" docgen-rel="seetype" docgen-href="point3#any_point3/0">point3:any_point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
+<p><code>factor() = <a href="math_utils.html#type-factor" docgen-rel="seetype" docgen-href="math_utils#factor/0">math_utils:factor()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-hessian_plane3">hessian_plane3()</a></h3>
-<p><code>hessian_plane3() = {<a href="#type-unit_normal3">unit_normal3()</a>, <a href="#type-factor">factor()</a>}</code></p>
-<p><p> A plane in Hessian normal form.</p>
+<p><code>hessian_plane3() = {<a href="#type-unit_normal3" docgen-rel="seetype" docgen-href="#unit_normal3/0">unit_normal3()</a>, <a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>}</code></p>
 
- See <a href="http://mathworld.wolfram.com/HessianNormalForm.html" target="_top"><code>http://mathworld.wolfram.com/HessianNormalForm.html</code></a>.</p>
 
 <h3 class="typedecl"><a name="type-line3">line3()</a></h3>
-<p><code>line3() = {A::<a href="#type-factor">factor()</a>, B::<a href="#type-factor">factor()</a>, C::<a href="#type-factor">factor()</a>, D::<a href="#type-factor">factor()</a>}</code></p>
-<p> A 3D line, whose equation A.x + B.y + C.z + D = 0, can be defined by its four
- factors {A,B,C,D}.</p>
+<p><code>line3() = {A::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>, B::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>, C::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>, D::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-normal3">normal3()</a></h3>
-<p><code>normal3() = <a href="vector3.html#type-normal3">vector3:normal3()</a></code></p>
+<p><code>normal3() = <a href="vector3.html#type-normal3" docgen-rel="seetype" docgen-href="vector3#normal3/0">vector3:normal3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-plane3">plane3()</a></h3>
-<p><code>plane3() = {<a href="#type-normal3">normal3()</a>, <a href="#type-factor">factor()</a>}</code></p>
-<p><p> A plane, whose general equation is: A.x + B.y + C.z + D = 0, where:</p>
+<p><code>plane3() = {<a href="#type-normal3" docgen-rel="seetype" docgen-href="#normal3/0">normal3()</a>, <a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>}</code></p>
 
- <p>- P={x,y,z} is a point belonging to this plane 
-- N=[A,B,C] is a (non-necessarily unit) normal vector to this plane 
-- D= -A.x0 - B.y0 - C.z0</p>
-
- <p>See <a href="http://mathworld.wolfram.com/Plane.html" target="_top"><code>http://mathworld.wolfram.com/Plane.html</code></a>.</p>
-
- So a plane may be described as (N,D).</p>
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
+<p><code>point3() = <a href="point3.html#type-point3" docgen-rel="seetype" docgen-href="point3#point3/0">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-shape">shape()</a></h3>
 <p><code>shape() = sphere | right_cuboid</code></p>
-<p> Various types of known 3D shapes (basic geometries).</p>
+
 
 <h3 class="typedecl"><a name="type-unit_normal3">unit_normal3()</a></h3>
-<p><code>unit_normal3() = <a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a></code></p>
+<p><code>unit_normal3() = <a href="vector3.html#type-unit_normal3" docgen-rel="seetype" docgen-href="vector3#unit_normal3/0">vector3:unit_normal3()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#compute_smallest_enclosing_cuboid-1">compute_smallest_enclosing_cuboid/1</a></td><td>Computes the smallest cuboid that encloses the specified list of points.</td></tr>
-<tr><td valign="top"><a href="#get_origin-0">get_origin/0</a></td><td>Returns the origin of this referential.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#compute_smallest_enclosing_cuboid-1">compute_smallest_enclosing_cuboid/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_origin-0">get_origin/0</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="compute_smallest_enclosing_cuboid-1">compute_smallest_enclosing_cuboid/1</a></h3>
 <div class="spec">
-<p><code>compute_smallest_enclosing_cuboid(Points::[<a href="#type-any_point3">any_point3()</a>]) -&gt; {<a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>}</code><br></p>
+<p><code>compute_smallest_enclosing_cuboid(Points::[<a href="#type-any_point3" docgen-rel="seetype" docgen-href="#any_point3/0">any_point3()</a>]) -&gt; {<a href="#type-any_point3" docgen-rel="seetype" docgen-href="#any_point3/0">any_point3()</a>, <a href="#type-any_point3" docgen-rel="seetype" docgen-href="#any_point3/0">any_point3()</a>, <a href="#type-any_point3" docgen-rel="seetype" docgen-href="#any_point3/0">any_point3()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Computes the smallest cuboid that encloses the specified list of points.</p>
-
- Returns {TopLeft, BottomRight}.
-</p>
+</div>
 
 <h3 class="function"><a name="get_origin-0">get_origin/0</a></h3>
 <div class="spec">
-<p><code>get_origin() -&gt; <a href="#type-point3">point3()</a></code><br></p>
+<p><code>get_origin() -&gt; <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the origin of this referential.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

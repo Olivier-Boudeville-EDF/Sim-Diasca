@@ -10,141 +10,92 @@
 <hr>
 
 <h1>Module wooper_serialisation</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module containing facilities for the <b>serialisation and deserialisation
- of WOOPER instances</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Module containing facilities for the <b>serialisation and deserialisation
- of WOOPER instances</b>.</p>
-
- Offsetting as much as possible code from the counterpart class header in this
- module allows for smaller, cache-friendly BEAMs, and shorter compilation
- times.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-attribute_entry">attribute_entry()</a></h3>
-<p><code>attribute_entry() = <a href="wooper.html#type-attribute_entry">wooper:attribute_entry()</a></code></p>
+<p><code>attribute_entry() = <a href="wooper.html#type-attribute_entry" docgen-rel="seetype" docgen-href="wooper#attribute_entry/0">wooper:attribute_entry()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
-<p><code>attribute_name() = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a></code></p>
+<p><code>attribute_name() = <a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_value">attribute_value()</a></h3>
-<p><code>attribute_value() = <a href="wooper.html#type-attribute_value">wooper:attribute_value()</a></code></p>
+<p><code>attribute_value() = <a href="wooper.html#type-attribute_value" docgen-rel="seetype" docgen-href="wooper#attribute_value/0">wooper:attribute_value()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-entry_transformer">entry_transformer()</a></h3>
-<p><code>entry_transformer() = <a href="class_Serialisable.html#type-entry_transformer">class_Serialisable:entry_transformer()</a></code></p>
+<p><code>entry_transformer() = <a href="class_Serialisable.html#type-entry_transformer" docgen-rel="seetype" docgen-href="class_Serialisable#entry_transformer/0">class_Serialisable:entry_transformer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-instance_pid">instance_pid()</a></h3>
-<p><code>instance_pid() = <a href="wooper.html#type-instance_pid">wooper:instance_pid()</a></code></p>
+<p><code>instance_pid() = <a href="wooper.html#type-instance_pid" docgen-rel="seetype" docgen-href="wooper#instance_pid/0">wooper:instance_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-instance_record">instance_record()</a></h3>
-<p><code>instance_record() = <a href="class_Serialisable.html#type-instance_record">class_Serialisable:instance_record()</a></code></p>
+<p><code>instance_record() = <a href="class_Serialisable.html#type-instance_record" docgen-rel="seetype" docgen-href="class_Serialisable#instance_record/0">class_Serialisable:instance_record()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-load_info">load_info()</a></h3>
-<p><code>load_info() = <a href="class_Serialisable.html#type-load_info">class_Serialisable:load_info()</a></code></p>
+<p><code>load_info() = <a href="class_Serialisable.html#type-load_info" docgen-rel="seetype" docgen-href="class_Serialisable#load_info/0">class_Serialisable:load_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-serialisation">serialisation()</a></h3>
-<p><code>serialisation() = <a href="class_Serialisable.html#type-serialisation">class_Serialisable:serialisation()</a></code></p>
+<p><code>serialisation() = <a href="class_Serialisable.html#type-serialisation" docgen-rel="seetype" docgen-href="class_Serialisable#serialisation/0">class_Serialisable:serialisation()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-term_transformer">term_transformer()</a></h3>
-<p><code>term_transformer() = <a href="meta_utils.html#type-term_transformer">meta_utils:term_transformer()</a></code></p>
+<p><code>term_transformer() = <a href="meta_utils.html#type-term_transformer" docgen-rel="seetype" docgen-href="meta_utils#term_transformer/0">meta_utils:term_transformer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
-<p><code>user_data() = <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a></code></p>
+<p><code>user_data() = <a href="basic_utils.html#type-user_data" docgen-rel="seetype" docgen-href="basic_utils#user_data/0">basic_utils:user_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#addToAttribute-3">addToAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#appendToAttribute-3">appendToAttribute/3</a></td><td></td></tr>
-<tr><td valign="top"><a href="#check_attributes_equal-3">check_attributes_equal/3</a></td><td>Checks that the specified attributes have the same value in the specified 
-state and in the specified entries, otherwise throws an exception.</td></tr>
-<tr><td valign="top"><a href="#check_no_transient-2">check_no_transient/2</a></td><td>This is a term transformer (see meta_utils:term_transformer()) in charge 
-of checking that entries do not contain transient terms such as PIDs, 
-references, etc.</td></tr>
+<tr><td valign="top"><a href="#check_attributes_equal-3">check_attributes_equal/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_no_transient-2">check_no_transient/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#concatToAttribute-3">concatToAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#decrementAttribute-2">decrementAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#deleteFromAttribute-3">deleteFromAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttribute-2">getAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttributes-2">getAttributes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getMaybeAttribute-2">getMaybeAttribute/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#handle_private_processes-2">handle_private_processes/2</a></td><td>Replaces any PID value associated to any of the specified attribute names 
-with by 'undefined' atom.</td></tr>
+<tr><td valign="top"><a href="#handle_private_processes-2">handle_private_processes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#hasAttribute-2">hasAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#incrementAttribute-2">incrementAttribute/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#instance_record_to_string-1">instance_record_to_string/1</a></td><td>Returns a textual description of the specified instance record.</td></tr>
+<tr><td valign="top"><a href="#instance_record_to_string-1">instance_record_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_wooper_debug-0">is_wooper_debug/0</a></td><td></td></tr>
-<tr><td valign="top"><a href="#load_instances-1">load_instances/1</a></td><td>Loads the instances stored in the specified serialisation, using no 
-specific entry transformer or user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</td></tr>
-<tr><td valign="top"><a href="#load_instances-3">load_instances/3</a></td><td>Loads the instances stored in the specified serialisation, using the 
-specified entry transformer and user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</td></tr>
-<tr><td valign="top"><a href="#load_link_instances-1">load_link_instances/1</a></td><td>Loads the instances stored in the specified serialisation, using no 
-specific entry transformer or user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</td></tr>
-<tr><td valign="top"><a href="#load_link_instances-3">load_link_instances/3</a></td><td>Loads the instances stored in the specified serialisation, using the 
-specified entry transformer and user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</td></tr>
-<tr><td valign="top"><a href="#merge_list_for-3">merge_list_for/3</a></td><td>Extracts the value (supposedly, any type of list, or a set) of the 
-specified attribute from the specified entries, and appends (combines) that 
-value to the corresponding one found in the specified state, stored under the 
-same attribute name.</td></tr>
-<tr><td valign="top"><a href="#merge_lists_for-3">merge_lists_for/3</a></td><td>Extracts the value (supposedly, any type of list, or a set) of each of 
-the specified attributes from the specified entries, and appends (combines) 
-that value to the corresponding one found in the specified state, stored under 
-the same attribute name.</td></tr>
-<tr><td valign="top"><a href="#mute_attributes-2">mute_attributes/2</a></td><td>Mutes the specified attributes, that is, replaces any attribute value not 
-equal to 'undefined' by a term restoration marker, so that they can escape the 
-serialisation process.</td></tr>
+<tr><td valign="top"><a href="#load_instances-1">load_instances/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#load_instances-3">load_instances/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#load_link_instances-1">load_link_instances/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#load_link_instances-3">load_link_instances/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge_list_for-3">merge_list_for/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge_lists_for-3">merge_lists_for/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#mute_attributes-2">mute_attributes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#popFromAttribute-2">popFromAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#removeAttribute-2">removeAttribute/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#replace_attribute-3">replace_attribute/3</a></td><td>Replaces the value held in the specified state by the one of the 
-specified attribute found among the specified entries.</td></tr>
-<tr><td valign="top"><a href="#replace_attributes-3">replace_attributes/3</a></td><td>Replaces the values held in the specified state by the ones of the 
-specified attributes found among the specified entries.</td></tr>
-<tr><td valign="top"><a href="#serialise_instances-1">serialise_instances/1</a></td><td>Serialises the specified instances, using no specific entry transformer
- or user data; returns a unique serialisation term, aggregating the
- corresponding serialisations, in no specific order (as usually it does not
- matter).</td></tr>
+<tr><td valign="top"><a href="#replace_attribute-3">replace_attribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#replace_attributes-3">replace_attributes/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#serialise_instances-1">serialise_instances/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#setAttribute-3">setAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#setAttributes-2">setAttributes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#subtractFromAttribute-3">subtractFromAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#swapInAttribute-3">swapInAttribute/3</a></td><td></td></tr>
-<tr><td valign="top"><a href="#synchronous_load_instances-1">synchronous_load_instances/1</a></td><td>Loads synchronously the instances stored in the specified serialisation, 
-using no specific entry transformer or user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</td></tr>
-<tr><td valign="top"><a href="#synchronous_load_instances-3">synchronous_load_instances/3</a></td><td>Loads synchronously the instances stored in the specified serialisation, 
-using the specified entry transformer and user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</td></tr>
-<tr><td valign="top"><a href="#synchronous_load_link_instances-1">synchronous_load_link_instances/1</a></td><td>Loads synchronously the instances stored in the specified serialisation, 
-using no specific entry transformer or user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</td></tr>
-<tr><td valign="top"><a href="#synchronous_load_link_instances-3">synchronous_load_link_instances/3</a></td><td>Loads synchronously the instances stored in the specified serialisation, 
-using the specified entry transformer and user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</td></tr>
+<tr><td valign="top"><a href="#synchronous_load_instances-1">synchronous_load_instances/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#synchronous_load_instances-3">synchronous_load_instances/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#synchronous_load_link_instances-1">synchronous_load_link_instances/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#synchronous_load_link_instances-3">synchronous_load_link_instances/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#toggleAttribute-2">toggleAttribute/2</a></td><td></td></tr>
 </table>
 
@@ -152,117 +103,93 @@ usually it does not matter).</td></tr>
 
 <h3 class="function"><a name="addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></h3>
 <div class="spec">
-<p><code>addKeyValueToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Key::<a href="table.html#type-key">table:key()</a>, Value::<a href="table.html#type-value">table:value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>addKeyValueToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Key::<a href="table.html#type-key" docgen-rel="seetype" docgen-href="table#key/0">table:key()</a>, Value::<a href="table.html#type-value" docgen-rel="seetype" docgen-href="table#value/0">table:value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="addToAttribute-3">addToAttribute/3</a></h3>
 <div class="spec">
-<p><code>addToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>addToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Value::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="appendToAttribute-3">appendToAttribute/3</a></h3>
 <div class="spec">
-<p><code>appendToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>appendToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Element::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="check_attributes_equal-3">check_attributes_equal/3</a></h3>
 <div class="spec">
-<p><code>check_attributes_equal(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_attributes_equal(AttributeNames::[<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Checks that the specified attributes have the same value in the specified 
-state and in the specified entries, otherwise throws an exception.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="check_no_transient-2">check_no_transient/2</a></h3>
 <div class="spec">
-<p><code>check_no_transient(T::term(), UserData::<a href="#type-user_data">user_data()</a>) -&gt; <a href="#type-term_transformer">term_transformer()</a></code><br></p>
+<p><code>check_no_transient(T::term(), UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; <a href="#type-term_transformer" docgen-rel="seetype" docgen-href="#term_transformer/0">term_transformer()</a></code><br></p>
 <p> </p>
-</div><p><p>This is a term transformer (see meta_utils:term_transformer()) in charge 
-of checking that entries do not contain transient terms such as PIDs, 
-references, etc.</p>
-
- Typically to be called from class_Serialisable:onPostSerialisation/3 to ensure
- that the entries to serialise are legit.
-</p>
+</div>
 
 <h3 class="function"><a name="concatToAttribute-3">concatToAttribute/3</a></h3>
 <div class="spec">
-<p><code>concatToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, List::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>concatToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, List::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="decrementAttribute-2">decrementAttribute/2</a></h3>
 <div class="spec">
-<p><code>decrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>decrementAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="deleteFromAttribute-3">deleteFromAttribute/3</a></h3>
 <div class="spec">
-<p><code>deleteFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>deleteFromAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Element::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getAttribute-2">getAttribute/2</a></h3>
 <div class="spec">
-<p><code>getAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-attribute_value">attribute_value()</a></code><br></p>
+<p><code>getAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getAttributes-2">getAttributes/2</a></h3>
 <div class="spec">
-<p><code>getAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value">attribute_value()</a>]</code><br></p>
+<p><code>getAttributes(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>]</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getMaybeAttribute-2">getMaybeAttribute/2</a></h3>
 <div class="spec">
-<p><code>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</code><br></p>
+<p><code>getMaybeAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>)</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="handle_private_processes-2">handle_private_processes/2</a></h3>
 <div class="spec">
-<p><code>handle_private_processes(PrivateAttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>handle_private_processes(PrivateAttributeNames::[<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>], State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
-</div><p><p>Replaces any PID value associated to any of the specified attribute names 
-with by 'undefined' atom.</p>
-
- <p>Handles private processes (through the name of the specified attributes), 
-which are processes that are internal to an instance that is to be serialised, 
-so that any next serialisation will see instead of their (former) PID a 
-serialisation marker.</p>
-
- <p>Returns an updated state.</p>
-
- <p>Typically used by any onPreSerialisation/2 overridden request, to avoid that 
-PIDs remain when serialising.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="hasAttribute-2">hasAttribute/2</a></h3>
 <div class="spec">
-<p><code>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</code><br></p>
+<p><code>hasAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="incrementAttribute-2">incrementAttribute/2</a></h3>
 <div class="spec">
-<p><code>incrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>incrementAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="instance_record_to_string-1">instance_record_to_string/1</a></h3>
 <div class="spec">
-<p><code>instance_record_to_string(Wooper_serialisation_instance_record::<a href="#type-instance_record">instance_record()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>instance_record_to_string(Wooper_serialisation_instance_record::<a href="#type-instance_record" docgen-rel="seetype" docgen-href="#instance_record/0">instance_record()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified instance record.</p>
+</div>
 
 <h3 class="function"><a name="is_wooper_debug-0">is_wooper_debug/0</a></h3>
 <div class="spec">
@@ -272,242 +199,127 @@ PIDs remain when serialising.</p>
 
 <h3 class="function"><a name="load_instances-1">load_instances/1</a></h3>
 <div class="spec">
-<p><code>load_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; [<a href="#type-instance_pid">instance_pid()</a>]</code><br></p>
+<p><code>load_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>) -&gt; [<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads the instances stored in the specified serialisation, using no 
-specific entry transformer or user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</p>
-
- <p>These creations will be asynchronous: this function returns legit PIDs as soon 
-as the creations are triggered, without waiting for them to complete.</p>
-
- Created instances will not be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="load_instances-3">load_instances/3</a></h3>
 <div class="spec">
-<p><code>load_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>, MaybeEntryTransformer::<a href="#type-maybe">maybe</a>(<a href="#type-entry_transformer">entry_transformer()</a>), UserData::<a href="#type-user_data">user_data()</a>) -&gt; [<a href="#type-instance_pid">instance_pid()</a>]</code><br></p>
+<p><code>load_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>, MaybeEntryTransformer::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-entry_transformer" docgen-rel="seetype" docgen-href="#entry_transformer/0">entry_transformer()</a>), UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; [<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads the instances stored in the specified serialisation, using the 
-specified entry transformer and user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</p>
-
- <p>These creations will be asynchronous: this function returns legit PIDs as soon 
-as the creations are triggered, without waiting for them to complete.</p>
-
- <p>Note that all these deserialisations will use the specified user data, and 
-that any updated version of it they would return will be ignored.</p>
-
- Created instances will not be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="load_link_instances-1">load_link_instances/1</a></h3>
 <div class="spec">
-<p><code>load_link_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; [<a href="#type-instance_pid">instance_pid()</a>]</code><br></p>
+<p><code>load_link_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>) -&gt; [<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads the instances stored in the specified serialisation, using no 
-specific entry transformer or user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</p>
-
- <p>These creations will be asynchronous: this function returns legit PIDs as soon 
-as the creations are triggered, without waiting for them to complete.</p>
-
- Created instances will be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="load_link_instances-3">load_link_instances/3</a></h3>
 <div class="spec">
-<p><code>load_link_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>, MaybeEntryTransformer::<a href="#type-maybe">maybe</a>(<a href="#type-entry_transformer">entry_transformer()</a>), UserData::<a href="#type-user_data">user_data()</a>) -&gt; [<a href="#type-instance_pid">instance_pid()</a>]</code><br></p>
+<p><code>load_link_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>, MaybeEntryTransformer::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-entry_transformer" docgen-rel="seetype" docgen-href="#entry_transformer/0">entry_transformer()</a>), UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; [<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads the instances stored in the specified serialisation, using the 
-specified entry transformer and user data: spawns them and returns a list of 
-their corresponding PIDs, in no specific order (as usually it does not 
-matter).</p>
-
- <p>These creations will be asynchronous: this function returns legit PIDs as soon 
-as the creations are triggered, without waiting for them to complete.</p>
-
- <p>Note that all these deserialisations will use the specified user data, and 
-that any updated version of it they would return will be ignored.</p>
-
- Created instances will be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="merge_list_for-3">merge_list_for/3</a></h3>
 <div class="spec">
-<p><code>merge_list_for(AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</code><br></p>
+<p><code>merge_list_for(AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, AttributeEntries::[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Extracts the value (supposedly, any type of list, or a set) of the 
-specified attribute from the specified entries, and appends (combines) that 
-value to the corresponding one found in the specified state, stored under the 
-same attribute name.</p>
-
- Returns the remaining entries, and an updated state.
-</p>
+</div>
 
 <h3 class="function"><a name="merge_lists_for-3">merge_lists_for/3</a></h3>
 <div class="spec">
-<p><code>merge_lists_for(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</code><br></p>
+<p><code>merge_lists_for(AttributeNames::[<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Extracts the value (supposedly, any type of list, or a set) of each of 
-the specified attributes from the specified entries, and appends (combines) 
-that value to the corresponding one found in the specified state, stored under 
-the same attribute name.</p>
-
- Returns the remaining entries, and an updated state.
-</p>
+</div>
 
 <h3 class="function"><a name="mute_attributes-2">mute_attributes/2</a></h3>
 <div class="spec">
-<p><code>mute_attributes(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>mute_attributes(AttributeNames::[<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>], State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
-</div><p><p>Mutes the specified attributes, that is, replaces any attribute value not 
-equal to 'undefined' by a term restoration marker, so that they can escape the 
-serialisation process.</p>
-
- <p>Typically used by any onPreSerialisation/2 overridden request, to serialise 
-only relevant, useful information.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="popFromAttribute-2">popFromAttribute/2</a></h3>
 <div class="spec">
-<p><code>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
+<p><code>popFromAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="removeAttribute-2">removeAttribute/2</a></h3>
 <div class="spec">
-<p><code>removeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>removeAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="replace_attribute-3">replace_attribute/3</a></h3>
 <div class="spec">
-<p><code>replace_attribute(AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</code><br></p>
+<p><code>replace_attribute(AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, AttributeEntries::[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Replaces the value held in the specified state by the one of the 
-specified attribute found among the specified entries.</p>
-
- <p>Returns the remaining entries and a corresponding updated state.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="replace_attributes-3">replace_attributes/3</a></h3>
 <div class="spec">
-<p><code>replace_attributes(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</code><br></p>
+<p><code>replace_attributes(AttributeNames::[<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>], <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Replaces the values held in the specified state by the ones of the 
-specified attributes found among the specified entries.</p>
-
- <p>Returns the remaining entries and a corresponding updated state.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="serialise_instances-1">serialise_instances/1</a></h3>
 <div class="spec">
-<p><code>serialise_instances(InstPids::[<a href="#type-instance_pid">instance_pid()</a>]) -&gt; <a href="#type-serialisation">serialisation()</a></code><br></p>
+<p><code>serialise_instances(InstPids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>]) -&gt; <a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a></code><br></p>
 <p> </p>
-</div><p>Serialises the specified instances, using no specific entry transformer
- or user data; returns a unique serialisation term, aggregating the
- corresponding serialisations, in no specific order (as usually it does not
- matter).
-</p>
+</div>
 
 <h3 class="function"><a name="setAttribute-3">setAttribute/3</a></h3>
 <div class="spec">
-<p><code>setAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>setAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="setAttributes-2">setAttributes/2</a></h3>
 <div class="spec">
-<p><code>setAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>setAttributes(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="subtractFromAttribute-3">subtractFromAttribute/3</a></h3>
 <div class="spec">
-<p><code>subtractFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>subtractFromAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Value::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="swapInAttribute-3">swapInAttribute/3</a></h3>
 <div class="spec">
-<p><code>swapInAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
+<p><code>swapInAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="synchronous_load_instances-1">synchronous_load_instances/1</a></h3>
 <div class="spec">
-<p><code>synchronous_load_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; [<a href="#type-load_info">load_info()</a>]</code><br></p>
+<p><code>synchronous_load_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>) -&gt; [<a href="#type-load_info" docgen-rel="seetype" docgen-href="#load_info/0">load_info()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads synchronously the instances stored in the specified serialisation, 
-using no specific entry transformer or user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</p>
-
- <p>These creations will be synchronous: this function returns only when all 
-created processes report that they are up and running.</p>
-
- Created instances will not be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="synchronous_load_instances-3">synchronous_load_instances/3</a></h3>
 <div class="spec">
-<p><code>synchronous_load_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>, MaybeEntryTransformer::<a href="#type-maybe">maybe</a>(<a href="#type-entry_transformer">entry_transformer()</a>), UserData::<a href="#type-user_data">user_data()</a>) -&gt; [<a href="#type-load_info">load_info()</a>]</code><br></p>
+<p><code>synchronous_load_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>, MaybeEntryTransformer::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-entry_transformer" docgen-rel="seetype" docgen-href="#entry_transformer/0">entry_transformer()</a>), UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; [<a href="#type-load_info" docgen-rel="seetype" docgen-href="#load_info/0">load_info()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads synchronously the instances stored in the specified serialisation, 
-using the specified entry transformer and user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</p>
-
- <p>These creations will be synchronous: this function returns only when all 
-created processes report that they are up and running.</p>
-
-
- Created instances will not be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="synchronous_load_link_instances-1">synchronous_load_link_instances/1</a></h3>
 <div class="spec">
-<p><code>synchronous_load_link_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; [<a href="#type-load_info">load_info()</a>]</code><br></p>
+<p><code>synchronous_load_link_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>) -&gt; [<a href="#type-load_info" docgen-rel="seetype" docgen-href="#load_info/0">load_info()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads synchronously the instances stored in the specified serialisation, 
-using no specific entry transformer or user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</p>
-
- <p>These creations will be synchronous: this function returns only when all 
-created processes report that they are up and running.</p>
-
- Created instances will be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="synchronous_load_link_instances-3">synchronous_load_link_instances/3</a></h3>
 <div class="spec">
-<p><code>synchronous_load_link_instances(Serialisation::<a href="#type-serialisation">serialisation()</a>, MaybeEntryTransformer::<a href="#type-maybe">maybe</a>(<a href="#type-entry_transformer">entry_transformer()</a>), UserData::<a href="#type-user_data">user_data()</a>) -&gt; [<a href="#type-load_info">load_info()</a>]</code><br></p>
+<p><code>synchronous_load_link_instances(Serialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>, MaybeEntryTransformer::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-entry_transformer" docgen-rel="seetype" docgen-href="#entry_transformer/0">entry_transformer()</a>), UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; [<a href="#type-load_info" docgen-rel="seetype" docgen-href="#load_info/0">load_info()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Loads synchronously the instances stored in the specified serialisation, 
-using the specified entry transformer and user data: spawns them and returns a 
-list of their corresponding loading information, in no specific order (as 
-usually it does not matter).</p>
-
- <p>These creations will be synchronous: this function returns only when all 
-created processes report that they are up and running.</p>
-
- Created instances will be linked to the calling process.
-</p>
+</div>
 
 <h3 class="function"><a name="toggleAttribute-2">toggleAttribute/2</a></h3>
 <div class="spec">
-<p><code>toggleAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>toggleAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

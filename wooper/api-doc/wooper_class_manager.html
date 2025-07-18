@@ -10,21 +10,10 @@
 <hr>
 
 <h1>Module wooper_class_manager</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module corresponding to the WOOPER <b>class manager singleton</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 <p><b>Behaviours:</b> <a href="gen_server.html"><code>gen_server</code></a>.</p>
 
-<h2><a name="description">Description</a></h2><p>Module corresponding to the WOOPER <b>class manager singleton</b>.</p>
-
- <p>The purpose of this process is, on a per-node basis, to create and notably to 
-serve to instances the virtual table corresponding to the actual class they 
-are corresponding to.</p>
-
- This way each virtual table is computed only once per node, and no significant
- per-instance memory is used for the virtual table: all the instances of a
- given class just refer to a common virtual table stored by this manager, and
- each virtual table and the table of virtual tables itself are optimised, with
- regard to their respective load factor.
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-manager_pid">manager_pid()</a></h3>
@@ -32,47 +21,39 @@ are corresponding to.</p>
 
 
 <h3 class="typedecl"><a name="type-start_return">start_return()</a></h3>
-<p><code>start_return() = {ok, Child::<a href="#type-manager_pid">manager_pid()</a>}</code></p>
+<p><code>start_return() = {ok, Child::<a href="#type-manager_pid" docgen-rel="seetype" docgen-href="#manager_pid/0">manager_pid()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-state">state()</a></h3>
-<p><code>state() = <a href="table.html#type-table">table:table()</a></code></p>
-<p> State kept by the manager (a table of per-class tables).</p>
+<p><code>state() = <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#code_change-3">code_change/3</a></td><td>Handles the optional "code change" callback.</td></tr>
-<tr><td valign="top"><a href="#display-0">display/0</a></td><td>Displays runtime information about the class manager.</td></tr>
-<tr><td valign="top"><a href="#display_msg-1">display_msg/1</a></td><td>Displays specified log message.</td></tr>
-<tr><td valign="top"><a href="#display_msg-2">display_msg/2</a></td><td>Displays specified formatted log message.</td></tr>
-<tr><td valign="top"><a href="#display_state-1">display_state/1</a></td><td>Displays the manager state.</td></tr>
-<tr><td valign="top"><a href="#display_table_creation-1">display_table_creation/1</a></td><td>Displays virtual table information.</td></tr>
-<tr><td valign="top"><a href="#get_existing_manager-0">get_existing_manager/0</a></td><td>Returns (possibly after some waiting) a supposedly already-existing
- WOOPER class manager.</td></tr>
-<tr><td valign="top"><a href="#get_manager-0">get_manager/0</a></td><td>Returns the PID of the WOOPER class manager.</td></tr>
-<tr><td valign="top"><a href="#get_table_key-1">get_table_key/1</a></td><td>Returns the key corresponding to the virtual table associated to
- the specified classname.</td></tr>
-<tr><td valign="top"><a href="#handle_call-3">handle_call/3</a></td><td>Handles OTP-based call requests (gen_server callback, triggered by
- get_table_key/1 in this module).</td></tr>
-<tr><td valign="top"><a href="#handle_cast-2">handle_cast/2</a></td><td>Handles OTP-based oneways (gen_server callback).</td></tr>
-<tr><td valign="top"><a href="#handle_info-2">handle_info/2</a></td><td>Handles OTP-based info requests (gen_server callback).</td></tr>
-<tr><td valign="top"><a href="#init-1">init/1</a></td><td>Inits the manager (gen_server callback).</td></tr>
-<tr><td valign="top"><a href="#ping-1">ping/1</a></td><td>Pings the specified WOOPER instance, designated by its PID or registered 
-name (locally, otherwise, if not found, globally).</td></tr>
-<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts a new, blank, class manager, with no listening client, and returns
- its PID.</td></tr>
-<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts a new, blank, class manager, with possibly a listening client, and
- returns its PID.</td></tr>
-<tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td>Starts and links a new, blank, class manager, with no listening client,
- and returns its PID.</td></tr>
-<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td>Starts and links a new, blank, class manager, with possibly a listening 
-client, and returns its PID.</td></tr>
-<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops (the OTP-way) the class manager.</td></tr>
-<tr><td valign="top"><a href="#stop_automatic-0">stop_automatic/0</a></td><td>Stops the class manager, when not using the OTP way.</td></tr>
-<tr><td valign="top"><a href="#terminate-2">terminate/2</a></td><td>Handles the "terminate" optional callback.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#code_change-3">code_change/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display-0">display/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_msg-1">display_msg/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_msg-2">display_msg/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_state-1">display_state/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_table_creation-1">display_table_creation/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_existing_manager-0">get_existing_manager/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_manager-0">get_manager/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_table_key-1">get_table_key/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#handle_call-3">handle_call/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#handle_cast-2">handle_cast/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#handle_info-2">handle_info/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#init-1">init/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ping-1">ping/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop_automatic-0">stop_automatic/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#terminate-2">terminate/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -81,155 +62,127 @@ client, and returns its PID.</td></tr>
 <div class="spec">
 <p><code>code_change(OldVsn, State, Extra) -&gt; any()</code></p>
 <p> </p>
-</div><p>Handles the optional "code change" callback.</p>
+</div>
 
 <h3 class="function"><a name="display-0">display/0</a></h3>
 <div class="spec">
-<p><code>display() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays runtime information about the class manager.</p>
+</div>
 
 <h3 class="function"><a name="display_msg-1">display_msg/1</a></h3>
 <div class="spec">
-<p><code>display_msg(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_msg(String::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified log message.</p>
+</div>
 
 <h3 class="function"><a name="display_msg-2">display_msg/2</a></h3>
 <div class="spec">
-<p><code>display_msg(FormatString::<a href="text_utils.html#type-format_string">text_utils:format_string()</a>, Values::<a href="text_utils.html#type-format_values">text_utils:format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_msg(FormatString::<a href="text_utils.html#type-format_string" docgen-rel="seetype" docgen-href="text_utils#format_string/0">text_utils:format_string()</a>, Values::<a href="text_utils.html#type-format_values" docgen-rel="seetype" docgen-href="text_utils#format_values/0">text_utils:format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified formatted log message.</p>
+</div>
 
 <h3 class="function"><a name="display_state-1">display_state/1</a></h3>
 <div class="spec">
-<p><code>display_state(Tables::<a href="table.html#type-table">table:table()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_state(Tables::<a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays the manager state.</p>
+</div>
 
 <h3 class="function"><a name="display_table_creation-1">display_table_creation/1</a></h3>
 <div class="spec">
-<p><code>display_table_creation(Module::<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_table_creation(Module::<a href="basic_utils.html#type-module_name" docgen-rel="seetype" docgen-href="basic_utils#module_name/0">basic_utils:module_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays virtual table information.</p>
+</div>
 
 <h3 class="function"><a name="get_existing_manager-0">get_existing_manager/0</a></h3>
 <div class="spec">
-<p><code>get_existing_manager() -&gt; <a href="#type-manager_pid">manager_pid()</a></code><br></p>
+<p><code>get_existing_manager() -&gt; <a href="#type-manager_pid" docgen-rel="seetype" docgen-href="#manager_pid/0">manager_pid()</a></code><br></p>
 <p> </p>
-</div><p>Returns (possibly after some waiting) a supposedly already-existing
- WOOPER class manager.
-</p>
+</div>
 
 <h3 class="function"><a name="get_manager-0">get_manager/0</a></h3>
 <div class="spec">
-<p><code>get_manager() -&gt; <a href="#type-manager_pid">manager_pid()</a></code><br></p>
+<p><code>get_manager() -&gt; <a href="#type-manager_pid" docgen-rel="seetype" docgen-href="#manager_pid/0">manager_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the PID of the WOOPER class manager.</p>
-
- If it is already running, finds it and returns its PID, otherwise launches it
- (in an ad hoc, non-OTP way), and returns the relevant PID as well (even if
- multiple instances thereof were concurrently spawned).
-</p>
+</div>
 
 <h3 class="function"><a name="get_table_key-1">get_table_key/1</a></h3>
 <div class="spec">
-<p><code>get_table_key(Classname::<a href="wooper.html#type-classname">wooper:classname()</a>) -&gt; <a href="wooper.html#type-class_key">wooper:class_key()</a></code><br></p>
+<p><code>get_table_key(Classname::<a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>) -&gt; <a href="wooper.html#type-class_key" docgen-rel="seetype" docgen-href="wooper#class_key/0">wooper:class_key()</a></code><br></p>
 <p> </p>
-</div><p>Returns the key corresponding to the virtual table associated to
- the specified classname.
-</p>
+</div>
 
 <h3 class="function"><a name="handle_call-3">handle_call/3</a></h3>
 <div class="spec">
 <p><code>handle_call(X1, From, State) -&gt; any()</code></p>
 <p> </p>
-</div><p>Handles OTP-based call requests (gen_server callback, triggered by
- get_table_key/1 in this module).
-</p>
+</div>
 
 <h3 class="function"><a name="handle_cast-2">handle_cast/2</a></h3>
 <div class="spec">
 <p><code>handle_cast(X1, State) -&gt; any()</code></p>
 <p> </p>
-</div><p>Handles OTP-based oneways (gen_server callback).</p>
+</div>
 
 <h3 class="function"><a name="handle_info-2">handle_info/2</a></h3>
 <div class="spec">
 <p><code>handle_info(Info, State) -&gt; any()</code></p>
 <p> </p>
-</div><p>Handles OTP-based info requests (gen_server callback).</p>
+</div>
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><code>init(Args::any()) -&gt; {ok, <a href="#type-state">state()</a>}</code><br></p>
+<p><code>init(Args::any()) -&gt; {ok, <a href="#type-state" docgen-rel="seetype" docgen-href="#state/0">state()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Inits the manager (gen_server callback).</p>
-
- (also used by the non-OTP mode of operation)
-</p>
+</div>
 
 <h3 class="function"><a name="ping-1">ping/1</a></h3>
 <div class="spec">
-<p><code>ping(Target::<a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a> | <a href="wooper.html#type-instance_pid">wooper:instance_pid()</a>) -&gt; pong | pang</code><br></p>
+<p><code>ping(Target::<a href="naming_utils.html#type-registration_name" docgen-rel="seetype" docgen-href="naming_utils#registration_name/0">naming_utils:registration_name()</a> | <a href="wooper.html#type-instance_pid" docgen-rel="seetype" docgen-href="wooper#instance_pid/0">wooper:instance_pid()</a>) -&gt; pong | pang</code><br></p>
 <p> </p>
-</div><p><p>Pings the specified WOOPER instance, designated by its PID or registered 
-name (locally, otherwise, if not found, globally).</p>
-
- Returns pong if it could be successfully ping'ed, otherwise returns pang.
-</p>
+</div>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><code>start() -&gt; <a href="#type-start_return">start_return()</a></code><br></p>
+<p><code>start() -&gt; <a href="#type-start_return" docgen-rel="seetype" docgen-href="#start_return/0">start_return()</a></code><br></p>
 <p> </p>
-</div><p>Starts a new, blank, class manager, with no listening client, and returns
- its PID.
-</p>
+</div>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><code>start(MaybeClientPid::<a href="#type-maybe">maybe</a>(pid())) -&gt; <a href="#type-start_return">start_return()</a></code><br></p>
+<p><code>start(MaybeClientPid::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(pid())) -&gt; <a href="#type-start_return" docgen-rel="seetype" docgen-href="#start_return/0">start_return()</a></code><br></p>
 <p> </p>
-</div><p>Starts a new, blank, class manager, with possibly a listening client, and
- returns its PID.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link-0">start_link/0</a></h3>
 <div class="spec">
-<p><code>start_link() -&gt; <a href="#type-start_return">start_return()</a></code><br></p>
+<p><code>start_link() -&gt; <a href="#type-start_return" docgen-rel="seetype" docgen-href="#start_return/0">start_return()</a></code><br></p>
 <p> </p>
-</div><p>Starts and links a new, blank, class manager, with no listening client,
- and returns its PID.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link-1">start_link/1</a></h3>
 <div class="spec">
-<p><code>start_link(MaybeClientPid::<a href="#type-maybe">maybe</a>(pid())) -&gt; <a href="#type-start_return">start_return()</a></code><br></p>
+<p><code>start_link(MaybeClientPid::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(pid())) -&gt; <a href="#type-start_return" docgen-rel="seetype" docgen-href="#start_return/0">start_return()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts and links a new, blank, class manager, with possibly a listening 
-client, and returns its PID.</p>
-
- (same as start/1 except for the link)
-</p>
+</div>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><code>stop() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Stops (the OTP-way) the class manager.</p>
+</div>
 
 <h3 class="function"><a name="stop_automatic-0">stop_automatic/0</a></h3>
 <div class="spec">
-<p><code>stop_automatic() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop_automatic() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Stops the class manager, when not using the OTP way.</p>
+</div>
 
 <h3 class="function"><a name="terminate-2">terminate/2</a></h3>
 <div class="spec">
 <p><code>terminate(Reason, State) -&gt; any()</code></p>
 <p> </p>
-</div><p>Handles the "terminate" optional callback.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

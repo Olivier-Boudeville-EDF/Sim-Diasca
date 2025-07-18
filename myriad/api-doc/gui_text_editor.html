@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_text_editor</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_text_editor</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_color">any_color()</a></h3>
+<p><code>any_color() = <a href="gui_color.html#type-any_color" docgen-rel="seetype" docgen-href="gui_color#any_color/0">gui_color:any_color()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-char_pos">char_pos()</a></h3>
+<p><code>char_pos() = <a href="text_edit.html#type-char_pos" docgen-rel="seetype" docgen-href="text_edit#char_pos/0">text_edit:char_pos()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-font">font()</a></h3>
+<p><code>font() = <a href="gui_font.html#type-font" docgen-rel="seetype" docgen-href="gui_font#font/0">gui_font:font()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-offset_char_pos">offset_char_pos()</a></h3>
+<p><code>offset_char_pos() = <a href="text_edit.html#type-offset_char_pos" docgen-rel="seetype" docgen-href="text_edit#offset_char_pos/0">text_edit:offset_char_pos()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><code>parent() = <a href="gui.html#type-parent" docgen-rel="seetype" docgen-href="gui#parent/0">gui:parent()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><code>point() = <a href="gui.html#type-point" docgen-rel="seetype" docgen-href="gui#point/0">gui:point()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-range_settings">range_settings()</a></h3>
+<p><b>abstract datatype</b>: <code>range_settings()</code></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><code>size() = <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-text">text()</a></h3>
+<p><code>text() = <a href="ui.html#type-text" docgen-rel="seetype" docgen-href="ui#text/0">ui:text()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-text_edit">text_edit()</a></h3>
+<p><code>text_edit() = <a href="text_edit.html#type-text_edit" docgen-rel="seetype" docgen-href="text_edit#text_edit/0">text_edit:text_edit()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-text_editor">text_editor()</a></h3>
+<p><b>abstract datatype</b>: <code>text_editor()</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_editor_event_type">text_editor_event_type()</a></h3>
+<p><code>text_editor_event_type() = onTextUpdated | onEnterPressed | onTextOverflow</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_editor_option">text_editor_option()</a></h3>
+<p><code>text_editor_option() = {position, <a href="#type-point" docgen-rel="seetype" docgen-href="#point/0">point()</a>} | {size, <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>} | {text, <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>} | {validator, <a href="#type-text_validator" docgen-rel="seetype" docgen-href="#text_validator/0">text_validator()</a>} | {style, [<a href="#type-text_editor_style" docgen-rel="seetype" docgen-href="#text_editor_style/0">text_editor_style()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_editor_style">text_editor_style()</a></h3>
+<p><code>text_editor_style() = process_enter_key | process_tab_key | multiline | password | read_only | rich_text_v1 | rich_text_v2 | auto_url | always_show_selection | horiz_scrollbar | no_vert_scrollbar | left_justify | center | right_justify | char_wrap | word_wrap | best_wrap | auto_scroll</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_validator">text_validator()</a></h3>
+<p><code>text_validator() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wx.html#type-wx_object" docgen-rel="seetype" docgen-href="wx:wx#wx_object/0">wx:wx_object()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_text-2">add_text/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#clear-1">clear/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-1">create/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_cursor_position-1">get_cursor_position/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_last_position-1">get_last_position/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#offset_cursor_position-2">offset_cursor_position/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_cursor_position-2">set_cursor_position/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_cursor_position_to_end-1">set_cursor_position_to_end/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_default_background_color-2">set_default_background_color/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_default_font-2">set_default_font/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_from-2">set_from/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_text-2">set_text/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#show_position-2">show_position/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#show_text_end-1">show_text_end/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_text-2">add_text/2</a></h3>
+<div class="spec">
+<p><code>add_text(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="clear-1">clear/1</a></h3>
+<div class="spec">
+<p><code>clear(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><code>create(Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><code>create(Options::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-text_editor_option" docgen-rel="seetype" docgen-href="#text_editor_option/0">text_editor_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><code>destruct(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_cursor_position-1">get_cursor_position/1</a></h3>
+<div class="spec">
+<p><code>get_cursor_position(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>) -&gt; <a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_last_position-1">get_last_position/1</a></h3>
+<div class="spec">
+<p><code>get_last_position(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>) -&gt; <a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="offset_cursor_position-2">offset_cursor_position/2</a></h3>
+<div class="spec">
+<p><code>offset_cursor_position(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, PosOffset::<a href="#type-offset_char_pos" docgen-rel="seetype" docgen-href="#offset_char_pos/0">offset_char_pos()</a>) -&gt; <a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_cursor_position-2">set_cursor_position/2</a></h3>
+<div class="spec">
+<p><code>set_cursor_position(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, Pos::<a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_cursor_position_to_end-1">set_cursor_position_to_end/1</a></h3>
+<div class="spec">
+<p><code>set_cursor_position_to_end(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_default_background_color-2">set_default_background_color/2</a></h3>
+<div class="spec">
+<p><code>set_default_background_color(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, AnyColor::<a href="#type-any_color" docgen-rel="seetype" docgen-href="#any_color/0">any_color()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_default_font-2">set_default_font/2</a></h3>
+<div class="spec">
+<p><code>set_default_font(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, Font::<a href="#type-font" docgen-rel="seetype" docgen-href="#font/0">font()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_from-2">set_from/2</a></h3>
+<div class="spec">
+<p><code>set_from(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_text-2">set_text/2</a></h3>
+<div class="spec">
+<p><code>set_text(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, NewText::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="show_position-2">show_position/2</a></h3>
+<div class="spec">
+<p><code>show_position(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, Pos::<a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="show_text_end-1">show_text_end/1</a></h3>
+<div class="spec">
+<p><code>show_text_end(Editor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

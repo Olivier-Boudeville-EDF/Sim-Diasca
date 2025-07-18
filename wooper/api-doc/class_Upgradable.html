@@ -10,136 +10,77 @@
 <hr>
 
 <h1>Module class_Upgradable</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Interface class implementing the Upgradable trait, so that instances
- supporting that trait are able to <b>be hot-updated</b>, that is to have their 
-class definition changed at runtime (either upgraded or downgraded), with no 
-need to restart the system as a whole.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Interface class implementing the Upgradable trait, so that instances
- supporting that trait are able to <b>be hot-updated</b>, that is to have their 
-class definition changed at runtime (either upgraded or downgraded), with no 
-need to restart the system as a whole.</p>
-
- <p>So the objective is that the instances implementing this interface do not have 
-to terminate, and may update themselves on the fly (once their new class has 
-been loaded), code-wise and also state-wise.</p>
-
- <p>For that, a concreate Upgradable child class should (besides inheriting from 
-this interface):</p>
-
-  <p>- implement a relevant get_version/1 static method, whose signature is:          
--spec get_version() -&gt; static_return(any_version()).</p>
-
-  <p>- possibly override its {up,down}gradeVersion/4 member methods</p>
-
- <p>See also class_Upgradable_test.erl and the support of the 
-'freezeUntilVersionChange' special message in the WOOPER main loop (refer to 
-wooper_main_loop_functions.hrl).</p>
-
- <p>As by default no WOOPER-level instance tracking is performed (this is often an 
-application-specific topic), the PIDs of the instances to update have to be 
-provided by the caller.</p>
-
- <p>Should instances be left over (i.e. not be updated), depending on the 
-preferences specified when triggering the update, either this update will be 
-reported as failed, or these instances will be killed - not at the first 
-missed upgrade (as they will just linger then in old code), but at the next 
-one.</p>
-
- <p>To avoid unwanted calls to be processed during an update, the relevant 
-processes, notably instances, shall be frozen. When a class is updated, this 
-includes not only its direct instances but also the one of all classes 
-deriving from it.</p>
-
- <p>A difficulty is that by default nothing prevents static methods / functions 
-exported by this class to be called just before said update and to interfere / 
-have their possibly mostly unrelated process be killed. Determining the 
-culprits and freezing them until none of them gets in the way of a soft purge 
-might be a good solution.</p>
-
- <p>A question is how the PIDs of the instances of an updated class are to be 
-determined (see 
-https://erlangforums.com/t/determining-processes-lingering-in-old-code/1755 
-for a related discussion).</p>
-
- Either each class keeps track of its instances (not recommended, as incurs
- systematic overhead and may not be scalable), or a massive scan is performed
- (then preferably in a concurrent way, as done by the ERTS code purger; see
- do_soft_purge/2 in erts_code_purger.erl for that).
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
-<p><code>any_version() = <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a></code></p>
+<p><code>any_version() = <a href="basic_utils.html#type-any_version" docgen-rel="seetype" docgen-href="basic_utils#any_version/0">basic_utils:any_version()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_entry">attribute_entry()</a></h3>
-<p><code>attribute_entry() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code></p>
+<p><code>attribute_entry() = <a href="wooper.html#type-attribute_entry" docgen-rel="seetype" docgen-href="wooper#attribute_entry/0">wooper:attribute_entry()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
-<p><code>attribute_name() = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a></code></p>
+<p><code>attribute_name() = <a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_value">attribute_value()</a></h3>
-<p><code>attribute_value() = <a href="wooper.html#type-attribute_value">wooper:attribute_value()</a></code></p>
+<p><code>attribute_value() = <a href="wooper.html#type-attribute_value" docgen-rel="seetype" docgen-href="wooper#attribute_value/0">wooper:attribute_value()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-classname">classname()</a></h3>
-<p><code>classname() = <a href="wooper.html#type-classname">wooper:classname()</a></code></p>
+<p><code>classname() = <a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-error_reason">error_reason()</a></h3>
-<p><code>error_reason() = <a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a></code></p>
+<p><code>error_reason() = <a href="basic_utils.html#type-error_reason" docgen-rel="seetype" docgen-href="basic_utils#error_reason/0">basic_utils:error_reason()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-extra_data">extra_data()</a></h3>
 <p><code>extra_data() = any()</code></p>
-<p> Any extra data (akin to release-specific information) of use when performing a
- version change.</p>
+
 
 <h3 class="typedecl"><a name="type-freeze_info">freeze_info()</a></h3>
-<p><code>freeze_info() = {<a href="#type-classname">classname()</a>, <a href="#type-instance_pid">instance_pid()</a>}</code></p>
-<p> Information about an instance after it applied a freeze request.</p>
+<p><code>freeze_info() = {<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, <a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-freeze_notification">freeze_notification()</a></h3>
-<p><code>freeze_notification() = {onInstanceFrozen, <a href="#type-freeze_info">freeze_info()</a>}</code></p>
-<p><p> Message sent back to the sender of a 'freezeUntilVersionChange' special 
-message.</p>
+<p><code>freeze_notification() = {onInstanceFrozen, <a href="#type-freeze_info" docgen-rel="seetype" docgen-href="#freeze_info/0">freeze_info()</a>}</code></p>
 
- This message may be interpreted as a oneway call.</p>
 
 <h3 class="typedecl"><a name="type-instance_pid">instance_pid()</a></h3>
-<p><code>instance_pid() = pid()</code></p>
+<p><code>instance_pid() = <a href="wooper.html#type-instance_pid" docgen-rel="seetype" docgen-href="wooper#instance_pid/0">wooper:instance_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_argument">method_argument()</a></h3>
-<p><code>method_argument() = <a href="wooper.html#type-method_argument">wooper:method_argument()</a></code></p>
+<p><code>method_argument() = <a href="wooper.html#type-method_argument" docgen-rel="seetype" docgen-href="wooper#method_argument/0">wooper:method_argument()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_arguments">method_arguments()</a></h3>
-<p><code>method_arguments() = <a href="wooper.html#type-method_arguments">wooper:method_arguments()</a></code></p>
+<p><code>method_arguments() = <a href="wooper.html#type-method_arguments" docgen-rel="seetype" docgen-href="wooper#method_arguments/0">wooper:method_arguments()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_internal_result">method_internal_result()</a></h3>
-<p><code>method_internal_result() = <a href="wooper.html#type-method_internal_result">wooper:method_internal_result()</a></code></p>
+<p><code>method_internal_result() = <a href="wooper.html#type-method_internal_result" docgen-rel="seetype" docgen-href="wooper#method_internal_result/0">wooper:method_internal_result()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-method_name">method_name()</a></h3>
-<p><code>method_name() = <a href="wooper.html#type-method_name">wooper:method_name()</a></code></p>
+<p><code>method_name() = <a href="wooper.html#type-method_name" docgen-rel="seetype" docgen-href="wooper#method_name/0">wooper:method_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_name">oneway_name()</a></h3>
-<p><code>oneway_name() = <a href="wooper.html#type-oneway_name">wooper:oneway_name()</a></code></p>
+<p><code>oneway_name() = <a href="wooper.html#type-oneway_name" docgen-rel="seetype" docgen-href="wooper#oneway_name/0">wooper:oneway_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_return">oneway_return()</a></h3>
-<p><code>oneway_return() = <a href="wooper.html#type-oneway_return">wooper:oneway_return()</a></code></p>
+<p><code>oneway_return() = <a href="wooper.html#type-oneway_return" docgen-rel="seetype" docgen-href="wooper#oneway_return/0">wooper:oneway_return()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-request_name">request_name()</a></h3>
-<p><code>request_name() = <a href="wooper.html#type-request_name">wooper:request_name()</a></code></p>
+<p><code>request_name() = <a href="wooper.html#type-request_name" docgen-rel="seetype" docgen-href="wooper#request_name/0">wooper:request_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
@@ -147,40 +88,35 @@ message.</p>
 
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><code>request_result(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</code></p>
+<p><code>request_result(T) = <a href="wooper.html#type-request_result" docgen-rel="seetype" docgen-href="wooper#request_result/0">wooper:request_result</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_return">request_return()</a></h3>
-<p><code>request_return(T) = <a href="wooper.html#type-request_return">wooper:request_return</a>(T)</code></p>
+<p><code>request_return(T) = <a href="wooper.html#type-request_return" docgen-rel="seetype" docgen-href="wooper#request_return/0">wooper:request_return</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
-<p><code>requests_outcome() = <a href="wooper.html#type-requests_outcome">wooper:requests_outcome()</a></code></p>
+<p><code>requests_outcome() = <a href="wooper.html#type-requests_outcome" docgen-rel="seetype" docgen-href="wooper#requests_outcome/0">wooper:requests_outcome()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-update_failure_report">update_failure_report()</a></h3>
-<p><code>update_failure_report() = {<a href="#type-error_reason">error_reason()</a>, <a href="#type-classname">classname()</a>, <a href="#type-instance_pid">instance_pid()</a>, <a href="#type-any_version">any_version()</a>}</code></p>
-<p> A report sent by an instance that failed in updating itself and ended up in
- the specified version (most probably its pre-update one).</p>
+<p><code>update_failure_report() = {<a href="#type-error_reason" docgen-rel="seetype" docgen-href="#error_reason/0">error_reason()</a>, <a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, <a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>, <a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-update_outcome">update_outcome()</a></h3>
-<p><code>update_outcome() = {onUpdateSuccess, <a href="#type-update_success_report">update_success_report()</a>} | {onUpdateFailure, <a href="#type-update_failure_report">update_failure_report()</a>}</code></p>
-<p><p> Outcome of an instance update, which may be an upgrade or a downgrade.</p>
+<p><code>update_outcome() = {onUpdateSuccess, <a href="#type-update_success_report" docgen-rel="seetype" docgen-href="#update_success_report/0">update_success_report()</a>} | {onUpdateFailure, <a href="#type-update_failure_report" docgen-rel="seetype" docgen-href="#update_failure_report/0">update_failure_report()</a>}</code></p>
 
- This is a message (possibly interpreted as a oneway call) sent back to the
- caller by an instance having being requested to update.</p>
 
 <h3 class="typedecl"><a name="type-update_success_report">update_success_report()</a></h3>
-<p><code>update_success_report() = {<a href="#type-classname">classname()</a>, <a href="#type-instance_pid">instance_pid()</a>, <a href="#type-any_version">any_version()</a>}</code></p>
-<p> A report sent by an instance that succeeded in updating itself to the
- specified version.</p>
+<p><code>update_success_report() = {<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, <a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>, <a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-upgradable_pid">upgradable_pid()</a></h3>
 <p><code>upgradable_pid() = pid()</code></p>
-<p> The PID of an instance implementing the Upgradable interface.</p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -209,25 +145,21 @@ message.</p>
 <tr><td valign="top"><a href="#getAttribute-2">getAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttributes-2">getAttributes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getMaybeAttribute-2">getMaybeAttribute/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#get_maybe_version-1">get_maybe_version/1</a></td><td>Returns any version available for the corresponding instance.</td></tr>
-<tr><td valign="top"><a href="#get_version-1">get_version/1</a></td><td>Returns the current version of this upgradable version.</td></tr>
+<tr><td valign="top"><a href="#get_maybe_version-1">get_maybe_version/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_version-1">get_version/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#hasAttribute-2">hasAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#incrementAttribute-2">incrementAttribute/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#is_upgradable-1">is_upgradable/1</a></td><td>Tells whether the corresponding instance implements the Upgradable 
-interface.</td></tr>
+<tr><td valign="top"><a href="#is_upgradable-1">is_upgradable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_wooper_debug-0">is_wooper_debug/0</a></td><td></td></tr>
-<tr><td valign="top"><a href="#manage_version_change-4">manage_version_change/4</a></td><td>Takes in charge the instance-side part of the version update protocol: 
-freezes until the class has been updated, and then applies the corresponding 
-instance-specific state changes.</td></tr>
+<tr><td valign="top"><a href="#manage_version_change-4">manage_version_change/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#popFromAttribute-2">popFromAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#removeAttribute-2">removeAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#setAttribute-3">setAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#setAttributes-2">setAttributes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#subtractFromAttribute-3">subtractFromAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#swapInAttribute-3">swapInAttribute/3</a></td><td></td></tr>
-<tr><td valign="top"><a href="#to_maybe_string-1">to_maybe_string/1</a></td><td>Returns a textual element of description of the corresponding instance, 
-should it implement the Upgradable interface.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of this instance.</td></tr>
+<tr><td valign="top"><a href="#to_maybe_string-1">to_maybe_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#toggleAttribute-2">toggleAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wooper_destruct-1">wooper_destruct/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></td><td></td></tr>
@@ -245,196 +177,183 @@ should it implement the Upgradable interface.</td></tr>
 
 <h3 class="function"><a name="addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></h3>
 <div class="spec">
-<p><code>addKeyValueToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Key::<a href="table.html#type-key">table:key()</a>, Value::<a href="table.html#type-value">table:value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>addKeyValueToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Key::<a href="table.html#type-key" docgen-rel="seetype" docgen-href="table#key/0">table:key()</a>, Value::<a href="table.html#type-value" docgen-rel="seetype" docgen-href="table#value/0">table:value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="addToAttribute-3">addToAttribute/3</a></h3>
 <div class="spec">
-<p><code>addToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>addToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Value::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="appendToAttribute-3">appendToAttribute/3</a></h3>
 <div class="spec">
-<p><code>appendToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>appendToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Element::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="concatToAttribute-3">concatToAttribute/3</a></h3>
 <div class="spec">
-<p><code>concatToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, List::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>concatToAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, List::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="decrementAttribute-2">decrementAttribute/2</a></h3>
 <div class="spec">
-<p><code>decrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>decrementAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="deleteFromAttribute-3">deleteFromAttribute/3</a></h3>
 <div class="spec">
-<p><code>deleteFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>deleteFromAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Element::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOneway-2">executeConstOneway/2</a></h3>
 <div class="spec">
-<p><code>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>executeConstOneway(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOneway-3">executeConstOneway/3</a></h3>
 <div class="spec">
-<p><code>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>executeConstOneway(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-3">executeConstOnewayAs/3</a></h3>
 <div class="spec">
-<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-4">executeConstOnewayAs/4</a></h3>
 <div class="spec">
-<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequest-2">executeConstRequest/2</a></h3>
 <div class="spec">
-<p><code>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
+<p><code>executeConstRequest(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequest-3">executeConstRequest/3</a></h3>
 <div class="spec">
-<p><code>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
+<p><code>executeConstRequest(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-3">executeConstRequestAs/3</a></h3>
 <div class="spec">
-<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
+<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-4">executeConstRequestAs/4</a></h3>
 <div class="spec">
-<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></code><br></p>
+<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOneway-2">executeOneway/2</a></h3>
 <div class="spec">
-<p><code>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>executeOneway(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOneway-3">executeOneway/3</a></h3>
 <div class="spec">
-<p><code>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>executeOneway(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOnewayAs-3">executeOnewayAs/3</a></h3>
 <div class="spec">
-<p><code>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>executeOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOnewayAs-4">executeOnewayAs/4</a></h3>
 <div class="spec">
-<p><code>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>executeOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequest-2">executeRequest/2</a></h3>
 <div class="spec">
-<p><code>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>executeRequest(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequest-3">executeRequest/3</a></h3>
 <div class="spec">
-<p><code>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>executeRequest(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequestAs-3">executeRequestAs/3</a></h3>
 <div class="spec">
-<p><code>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>executeRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequestAs-4">executeRequestAs/4</a></h3>
 <div class="spec">
-<p><code>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>executeRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getAttribute-2">getAttribute/2</a></h3>
 <div class="spec">
-<p><code>getAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-attribute_value">attribute_value()</a></code><br></p>
+<p><code>getAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getAttributes-2">getAttributes/2</a></h3>
 <div class="spec">
-<p><code>getAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value">attribute_value()</a>]</code><br></p>
+<p><code>getAttributes(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>]</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="getMaybeAttribute-2">getMaybeAttribute/2</a></h3>
 <div class="spec">
-<p><code>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</code><br></p>
+<p><code>getMaybeAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>)</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_maybe_version-1">get_maybe_version/1</a></h3>
 <div class="spec">
-<p><code>get_maybe_version(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-any_version">any_version()</a>)</code><br></p>
+<p><code>get_maybe_version(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns any version available for the corresponding instance.</p>
-
- <p>This function is designed to apply to any WOOPER instance, whether it is a 
-Upgradable one or not.</p>
-
- (exported helper)
-</p>
+</div>
 
 <h3 class="function"><a name="get_version-1">get_version/1</a></h3>
 <div class="spec">
-<p><code>get_version(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-any_version">any_version()</a></code><br></p>
+<p><code>get_version(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the current version of this upgradable version.</p>
-
- (exported helper, defined for convenience)
-</p>
+</div>
 
 <h3 class="function"><a name="hasAttribute-2">hasAttribute/2</a></h3>
 <div class="spec">
-<p><code>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</code><br></p>
+<p><code>hasAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="incrementAttribute-2">incrementAttribute/2</a></h3>
 <div class="spec">
-<p><code>incrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>incrementAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="is_upgradable-1">is_upgradable/1</a></h3>
 <div class="spec">
-<p><code>is_upgradable(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_upgradable(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Tells whether the corresponding instance implements the Upgradable 
-interface.</p>
-
- (exported helper)
-</p>
+</div>
 
 <h3 class="function"><a name="is_wooper_debug-0">is_wooper_debug/0</a></h3>
 <div class="spec">
@@ -444,132 +363,121 @@ interface.</p>
 
 <h3 class="function"><a name="manage_version_change-4">manage_version_change/4</a></h3>
 <div class="spec">
-<p><code>manage_version_change(TargetVersion::<a href="#type-any_version">any_version()</a>, MaybeExtraData::<a href="#type-extra_data">extra_data()</a>, CallerPid::pid(), State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; deleted</code><br></p>
+<p><code>manage_version_change(TargetVersion::<a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a>, MaybeExtraData::<a href="#type-extra_data" docgen-rel="seetype" docgen-href="#extra_data/0">extra_data()</a>, CallerPid::pid(), State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; deleted</code><br></p>
 <p> </p>
-</div><p><p>Takes in charge the instance-side part of the version update protocol: 
-freezes until the class has been updated, and then applies the corresponding 
-instance-specific state changes.</p>
-
- Sends back to the caller first a freeze_notification() message, then, once
- requested to update and having attempted to do so, an update_outcome()
- message.
-</p>
+</div>
 
 <h3 class="function"><a name="popFromAttribute-2">popFromAttribute/2</a></h3>
 <div class="spec">
-<p><code>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
+<p><code>popFromAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="removeAttribute-2">removeAttribute/2</a></h3>
 <div class="spec">
-<p><code>removeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>removeAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="setAttribute-3">setAttribute/3</a></h3>
 <div class="spec">
-<p><code>setAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>setAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="setAttributes-2">setAttributes/2</a></h3>
 <div class="spec">
-<p><code>setAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>setAttributes(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry" docgen-rel="seetype" docgen-href="#attribute_entry/0">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="subtractFromAttribute-3">subtractFromAttribute/3</a></h3>
 <div class="spec">
-<p><code>subtractFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>subtractFromAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, Value::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="swapInAttribute-3">swapInAttribute/3</a></h3>
 <div class="spec">
-<p><code>swapInAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</code><br></p>
+<p><code>swapInAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="to_maybe_string-1">to_maybe_string/1</a></h3>
 <div class="spec">
-<p><code>to_maybe_string(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>)</code><br></p>
+<p><code>to_maybe_string(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns a textual element of description of the corresponding instance, 
-should it implement the Upgradable interface.</p>
-
- (exported helper)
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of this instance.</p>
+</div>
 
 <h3 class="function"><a name="toggleAttribute-2">toggleAttribute/2</a></h3>
 <div class="spec">
-<p><code>toggleAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>toggleAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_destruct-1">wooper_destruct/1</a></h3>
 <div class="spec">
-<p><code>wooper_destruct(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>wooper_destruct(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></h3>
 <div class="spec">
-<p><code>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Parameters::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method-3">wooper_execute_method/3</a></h3>
 <div class="spec">
-<p><code>wooper_execute_method(MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_execute_method(MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, Parameters::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
 <div class="spec">
-<p><code>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_execute_method_as(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, Parameters::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_get_class_specific_attributes-0">wooper_get_class_specific_attributes/0</a></h3>
 <div class="spec">
-<p><code>wooper_get_class_specific_attributes() -&gt; [<a href="wooper_info.html#type-attribute_spec">wooper_info:attribute_spec()</a>]</code><br></p>
+<p><code>wooper_get_class_specific_attributes() -&gt; [<a href="wooper_info.html#type-attribute_spec" docgen-rel="seetype" docgen-href="wooper_info#attribute_spec/0">wooper_info:attribute_spec()</a>]</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_oneway_execution-3">wooper_handle_local_oneway_execution/3</a></h3>
 <div class="spec">
-<p><code>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_request_execution-3">wooper_handle_local_request_execution/3</a></h3>
 <div class="spec">
-<p><code>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_oneway_execution-3">wooper_handle_remote_oneway_execution/3</a></h3>
 <div class="spec">
-<p><code>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_request_execution-4">wooper_handle_remote_request_execution/4</a></h3>
 <div class="spec">
-<p><code>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state">wooper:state()</a></code><br></p>
+<p><code>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_main_loop-1">wooper_main_loop/1</a></h3>
 <div class="spec">
-<p><code>wooper_main_loop(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; deleted</code><br></p>
+<p><code>wooper_main_loop(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; deleted</code><br></p>
 <p> </p>
 </div>
 <hr>

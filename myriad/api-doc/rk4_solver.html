@@ -10,100 +10,73 @@
 <hr>
 
 <h1>Module rk4_solver</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Basic <b>numerical solver based on the classic Runge–Kutta fourth-order
- method</b>, operating on three dimensions.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Basic <b>numerical solver based on the classic Runge–Kutta fourth-order
- method</b>, operating on three dimensions.</p>
-
- <p>See <a href="http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods" target="_top"><code>http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods</code></a>.</p>
-
- <p>We want to evaluate a given function f, whose spec could be: <code>f( time(),
-     vector() ) -&gt; vector()</code> that would comply to the following equation:
-     <code>dy/dt = f(t,y)</code>.</p>
-
- <p>For that we compute <code>yn+1 = yn + h.sum(bi.ki)</code> with <code>ki=f(ti,yi)</code>, with ti and 
-yi depending on the order, and h being the chosen timestep. ki and bi are 
-determined by the corresponding Butcher tableau.</p>
-
- The implementation of <code>f</code> corresponds here to the anonymous function <code>F</code>.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-f1">f1()</a></h3>
-<p><code>f1() = fun((<a href="#type-time">time()</a>, <a href="#type-scalar">scalar()</a>) -&gt; <a href="#type-scalar">scalar()</a>)</code></p>
-<p> The function f in the equation that we want to solve numerically, here in a 1D
- space, based on scalars.</p>
+<p><code>f1() = fun((<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, <a href="#type-scalar" docgen-rel="seetype" docgen-href="#scalar/0">scalar()</a>) -&gt; <a href="#type-scalar" docgen-rel="seetype" docgen-href="#scalar/0">scalar()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-f2p">f2p()</a></h3>
-<p><code>f2p() = fun((<a href="#type-time">time()</a>, <a href="#type-point2">point2()</a>) -&gt; <a href="#type-point2">point2()</a>)</code></p>
-<p> The function f in the equation that we want to solve numerically, here in a 2D
- space, based on points.</p>
+<p><code>f2p() = fun((<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-f2v">f2v()</a></h3>
-<p><code>f2v() = fun((<a href="#type-time">time()</a>, <a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a>)</code></p>
-<p> The function f in the equation that we want to solve numerically, here in a 2D
- space, based on vectors.</p>
+<p><code>f2v() = fun((<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, <a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>) -&gt; <a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-f3p">f3p()</a></h3>
-<p><code>f3p() = fun((<a href="#type-time">time()</a>, <a href="#type-point3">point3()</a>) -&gt; <a href="#type-point3">point3()</a>)</code></p>
-<p> The function f in the equation that we want to solve numerically, here in a 3D
- space, based on points.</p>
+<p><code>f3p() = fun((<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>) -&gt; <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-f3v">f3v()</a></h3>
-<p><code>f3v() = fun((<a href="#type-time">time()</a>, <a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a>)</code></p>
-<p> The function f in the equation that we want to solve numerically, here in a 3D
- space, based on vectors.</p>
+<p><code>f3v() = fun((<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, <a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-point2">point2()</a></h3>
-<p><code>point2() = <a href="point2.html#type-point2">point2:point2()</a></code></p>
+<p><code>point2() = <a href="point2.html#type-point2" docgen-rel="seetype" docgen-href="point2#point2/0">point2:point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
+<p><code>point3() = <a href="point3.html#type-point3" docgen-rel="seetype" docgen-href="point3#point3/0">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
-<p><code>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></code></p>
+<p><code>scalar() = <a href="linear.html#type-scalar" docgen-rel="seetype" docgen-href="linear#scalar/0">linear:scalar()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-time">time()</a></h3>
 <p><code>time() = float()</code></p>
-<p> Simulation time.</p>
+
 
 <h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
-<p><code>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></code></p>
+<p><code>vector2() = <a href="vector2.html#type-vector2" docgen-rel="seetype" docgen-href="vector2#vector2/0">vector2:vector2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
-<p><code>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></code></p>
+<p><code>vector3() = <a href="vector3.html#type-vector3" docgen-rel="seetype" docgen-href="vector3#vector3/0">vector3:vector3()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#compute_next_estimate3p-4">compute_next_estimate3p/4</a></td><td>Computes the next point (yn+1), based on the current one (yn), the
- function (F) and the timestep (h).</td></tr>
-<tr><td valign="top"><a href="#compute_next_estimate3v-4">compute_next_estimate3v/4</a></td><td>Computes the next vector (yn+1), based on the current one (yn), the
- function (F) and the timestep (h).</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#compute_next_estimate3p-4">compute_next_estimate3p/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compute_next_estimate3v-4">compute_next_estimate3v/4</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="compute_next_estimate3p-4">compute_next_estimate3p/4</a></h3>
 <div class="spec">
-<p><code>compute_next_estimate3p(F::<a href="#type-f3p">f3p()</a>, Point::<a href="#type-point3">point3()</a>, Time::<a href="#type-time">time()</a>, Step::<a href="#type-time">time()</a>) -&gt; <a href="#type-point3">point3()</a></code><br></p>
+<p><code>compute_next_estimate3p(F::<a href="#type-f3p" docgen-rel="seetype" docgen-href="#f3p/0">f3p()</a>, Point::<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>, Time::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, Step::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a></code><br></p>
 <p> </p>
-</div><p>Computes the next point (yn+1), based on the current one (yn), the
- function (F) and the timestep (h).
-</p>
+</div>
 
 <h3 class="function"><a name="compute_next_estimate3v-4">compute_next_estimate3v/4</a></h3>
 <div class="spec">
-<p><code>compute_next_estimate3v(F::<a href="#type-f3v">f3v()</a>, Vector::<a href="#type-vector3">vector3()</a>, Time::<a href="#type-time">time()</a>, Step::<a href="#type-time">time()</a>) -&gt; <a href="#type-vector3">vector3()</a></code><br></p>
+<p><code>compute_next_estimate3v(F::<a href="#type-f3v" docgen-rel="seetype" docgen-href="#f3v/0">f3v()</a>, Vector::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>, Time::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, Step::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a></code><br></p>
 <p> </p>
-</div><p>Computes the next vector (yn+1), based on the current one (yn), the
- function (F) and the timestep (h).
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

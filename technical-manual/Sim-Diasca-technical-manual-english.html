@@ -23,7 +23,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2024 EDF R&amp;D</td>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2025 EDF R&amp;D</td>
 </tr>
 <tr class="field"><th class="field-name">Author:</th><td class="field-body">Olivier Boudeville</td>
 </tr>
@@ -31,9 +31,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Monday, February 8, 2010</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, February 13, 2024</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Friday, July 18, 2025</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.7</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.8</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -240,18 +240,19 @@
 </div>
 <div class="section" id="minimal-quick-start-for-early-technical-testing">
 <h2><a class="toc-backref" href="#id159">Minimal Quick-Start For Early Technical Testing</a></h2>
-<p>For the fearless users wanting an early glance at Sim-Diasca in action, here is the shortest path to testing, provided you already have the prerequisites (including a well-compiled, recent, Erlang interpreter on a GNU/Linux box) installed.</p>
+<p>For the fearless users wanting an early glance at Sim-Diasca in action, here is a short path to testing, provided that you already have the prerequisites (including a well-compiled, recent, Erlang interpreter on a GNU/Linux box) installed.</p>
 <p>First, download the latest stable archive, for example: <tt class="docutils literal"><span class="pre">Sim-Diasca-x.y.z.tar.bz2</span></tt>.</p>
 <p>Extract it: <tt class="docutils literal">tar xvjf <span class="pre">Sim-Diasca-x.y.z.tar.bz2</span></tt>.</p>
 <p>Build it: <tt class="docutils literal">cd <span class="pre">Sim-Diasca-x.y.z</span> &amp;&amp; make all</tt>.</p>
 <p>Select your test case: <tt class="docutils literal">cd <span class="pre">sim-diasca/src/core/src/scheduling/tests/</span></tt>, for example: <tt class="docutils literal">scheduling_multiple_coupled_erratic_actors_test.erl</tt>.</p>
-<p>Optionally, if you want to run a <em>distributed</em> simulation, create in the current directory a file named <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.txt</span></tt> which lists the computing hosts you want to take part to the simulation, with one entry by line, like (do not forget the final dot on each line):</p>
+<p>Optionally, if you want to run a <em>distributed</em> simulation, create in the current directory a file named <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.etf</span></tt> which lists the computing hosts you want to take part to the simulation, with one entry by line, like (do not forget the final dot on each line):</p>
 <pre class="code erlang literal-block">
 <span class="p">{</span><span class="n">'hurricane.foobar.org'</span><span class="p">,</span> <span class="s">&quot;Computer of John (this is free text).&quot;</span><span class="p">}.</span>
+<span class="p">{</span><span class="n">'whirlwind.foobar.org'</span><span class="p">,</span> <span class="s">&quot;Mary's computer.&quot;</span><span class="p">}.</span>
 </pre>
 <p>Then run the test case:</p>
 <pre class="code bash literal-block">
-make scheduling_multiple_coupled_erratic_actors_run <span class="nv">CMD_LINE_OPT</span><span class="o">=</span><span class="s2">&quot;--batch&quot;</span>
+$ make scheduling_multiple_coupled_erratic_actors_run <span class="nv">CMD_LINE_OPT</span><span class="o">=</span><span class="s2">&quot;--batch&quot;</span>
 </pre>
 <p>The <tt class="docutils literal"><span class="pre">CMD_LINE_OPT=&quot;--batch&quot;</span></tt> option was added as, for the sake of this quick-start, the trace supervisor is not expected to have already been installed.</p>
 <p>For the more in-depth reference installation instructions, refer to the <tt class="docutils literal"><span class="pre">Sim-Diasca</span> Installation Guide</tt>.</p>
@@ -3345,7 +3346,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>Each simulation case is able to define how it is to be deployed or executed, simply by setting accordingly the <tt class="docutils literal">computing_hosts</tt> field in its <tt class="docutils literal">deployment_settings</tt> record (whose full definition and associated comments can be found in <tt class="docutils literal">class_DeploymentManager.hrl</tt>).</p>
 <p>Most test cases rely on default settings, which operate this way:</p>
 <ol class="arabic simple">
-<li>if a host file - named by default <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.txt</span></tt> - is found in the current directory (the one from which a test case <tt class="docutils literal">X</tt> is run, thanks to a <tt class="docutils literal">make X_run</tt> for example), then the engine will read it and try to use the hosts listed there; the (ETF) syntax is simple and described in the <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates-sample.txt</span></tt> example file, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/conf</span></tt> directory (it is also described <a class="reference external" href="http://myriad.esperide.org/#etf">here</a>)</li>
+<li>if a host file - named by default <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.etf</span></tt> - is found in the current directory (the one from which a test case <tt class="docutils literal">X</tt> is run, thanks to a <tt class="docutils literal">make X_run</tt> for example), then the engine will read it and try to use the hosts listed there; the (ETF) syntax is simple and described in the <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates-sample.etf</span></tt> example file, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/conf</span></tt> directory (it is also described <a class="reference external" href="http://myriad.esperide.org/#etf">here</a>)</li>
 <li>if this host file is not found, the simulation will run only locally</li>
 </ol>
 <p>The <tt class="docutils literal">computing_hosts</tt> field can also directly list the hosts involved, but we do not recommend doing so, as in general a simulation case should not be specific to any deployment context (hence our defaults).</p>

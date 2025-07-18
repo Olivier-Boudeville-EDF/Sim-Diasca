@@ -10,448 +10,351 @@
 <hr>
 
 <h1>Module matrix3</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for <b>3x3 matrices</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Module implementing the support for <b>3x3 matrices</b>.</p>
-
- See also:
- - the corresponding (3D) vectors, in vector3.erl
- - the (unspecialised) matrices of arbitrary dimensions, in matrix.erl
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-canonical_matrix3">canonical_matrix3()</a></h3>
-<p><code>canonical_matrix3() = #matrix3{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m13 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m23 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m31 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m32 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m33 = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</code></p>
+<p><code>canonical_matrix3() = #matrix3{m11 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m13 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m23 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m31 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m32 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m33 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-compact_matrix3">compact_matrix3()</a></h3>
-<p><code>compact_matrix3() = #compact_matrix3{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, tx = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, ty = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</code></p>
+<p><code>compact_matrix3() = #compact_matrix3{m11 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, tx = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, ty = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><code>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></code></p>
+<p><code>coordinate() = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
-<p><code>dimension() = <a href="linear.html#type-dimension">linear:dimension()</a></code></p>
+<p><code>dimension() = <a href="linear.html#type-dimension" docgen-rel="seetype" docgen-href="linear#dimension/0">linear:dimension()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><code>dimensions() = <a href="matrix.html#type-dimensions">matrix:dimensions()</a></code></p>
+<p><code>dimensions() = <a href="matrix.html#type-dimensions" docgen-rel="seetype" docgen-href="matrix#dimensions/0">matrix:dimensions()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
+<p><code>factor() = <a href="math_utils.html#type-factor" docgen-rel="seetype" docgen-href="math_utils#factor/0">math_utils:factor()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix">matrix()</a></h3>
-<p><code>matrix() = <a href="matrix.html#type-matrix">matrix:matrix()</a></code></p>
+<p><code>matrix() = <a href="matrix.html#type-matrix" docgen-rel="seetype" docgen-href="matrix#matrix/0">matrix:matrix()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix2">matrix2()</a></h3>
-<p><code>matrix2() = <a href="matrix2.html#type-matrix2">matrix2:matrix2()</a></code></p>
+<p><code>matrix2() = <a href="matrix2.html#type-matrix2" docgen-rel="seetype" docgen-href="matrix2#matrix2/0">matrix2:matrix2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix3">matrix3()</a></h3>
-<p><code>matrix3() = identity_3 | <a href="#type-canonical_matrix3">canonical_matrix3()</a> | <a href="#type-compact_matrix3">compact_matrix3()</a></code></p>
+<p><code>matrix3() = identity_3 | <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a> | <a href="#type-compact_matrix3" docgen-rel="seetype" docgen-href="#compact_matrix3/0">compact_matrix3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point2">point2()</a></h3>
-<p><code>point2() = <a href="point2.html#type-point2">point2:point2()</a></code></p>
+<p><code>point2() = <a href="point2.html#type-point2" docgen-rel="seetype" docgen-href="point2#point2/0">point2:point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
+<p><code>point3() = <a href="point3.html#type-point3" docgen-rel="seetype" docgen-href="point3#point3/0">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><code>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></code></p>
+<p><code>radians() = <a href="unit_utils.html#type-radians" docgen-rel="seetype" docgen-href="unit_utils#radians/0">unit_utils:radians()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rot_matrix3">rot_matrix3()</a></h3>
-<p><code>rot_matrix3() = <a href="#type-canonical_matrix3">canonical_matrix3()</a></code></p>
-<p> A matrix describing a 3D rotation.</p>
+<p><code>rot_matrix3() = <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
-<p><code>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></code></p>
+<p><code>scalar() = <a href="linear.html#type-scalar" docgen-rel="seetype" docgen-href="linear#scalar/0">linear:scalar()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-tuple_matrix3">tuple_matrix3()</a></h3>
-<p><code>tuple_matrix3() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-coordinate">coordinate()</a>, 9) | <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-coordinate">coordinate()</a>, 6)</code></p>
-<p> A tuple of 6 or 9 coordinates.</p>
+<p><code>tuple_matrix3() = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, 9) | <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, 6)</code></p>
+
 
 <h3 class="typedecl"><a name="type-unit_vector3">unit_vector3()</a></h3>
-<p><code>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></code></p>
+<p><code>unit_vector3() = <a href="vector3.html#type-unit_vector3" docgen-rel="seetype" docgen-href="vector3#unit_vector3/0">vector3:unit_vector3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_matrix">user_matrix()</a></h3>
-<p><code>user_matrix() = <a href="matrix.html#type-user_matrix">matrix:user_matrix()</a></code></p>
+<p><code>user_matrix() = <a href="matrix.html#type-user_matrix" docgen-rel="seetype" docgen-href="matrix#user_matrix/0">matrix:user_matrix()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_matrix3">user_matrix3()</a></h3>
-<p><code>user_matrix3() = <a href="#type-user_matrix">user_matrix()</a></code></p>
-<p> A matrix3 can be specified as a list of same-size rows (akin to a user
- arbitrary matrix) containing any kind of numerical coordinates.</p>
+<p><code>user_matrix3() = <a href="#type-user_matrix" docgen-rel="seetype" docgen-href="#user_matrix/0">user_matrix()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-user_vector3">user_vector3()</a></h3>
-<p><code>user_vector3() = <a href="vector3.html#type-user_vector3">vector3:user_vector3()</a></code></p>
+<p><code>user_vector3() = <a href="vector3.html#type-user_vector3" docgen-rel="seetype" docgen-href="vector3#user_vector3/0">vector3:user_vector3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
-<p><code>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></code></p>
+<p><code>vector2() = <a href="vector2.html#type-vector2" docgen-rel="seetype" docgen-href="vector2#vector2/0">vector2:vector2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
-<p><code>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></code></p>
+<p><code>vector3() = <a href="vector3.html#type-vector3" docgen-rel="seetype" docgen-href="vector3#vector3/0">vector3:vector3()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns the sum of the two specified matrices: M = Ma + Mb.</td></tr>
-<tr><td valign="top"><a href="#apply-2">apply/2</a></td><td>Applies (on the right) the specified 2D or 3D vector V or point P to the 
-specified matrix M: returns M.V.</td></tr>
-<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Tells whether the two specified (3x3) matrices are equal.</td></tr>
-<tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified matrix is legit, and returns it.</td></tr>
-<tr><td valign="top"><a href="#column-2">column/2</a></td><td>Returns the specified column of the specified matrix.</td></tr>
-<tr><td valign="top"><a href="#comatrix-1">comatrix/1</a></td><td>Returns the comatrix of the specified matrix (that is the matrix of its
- cofactors).</td></tr>
-<tr><td valign="top"><a href="#determinant-1">determinant/1</a></td><td>Returns the determinant of the specified matrix.</td></tr>
-<tr><td valign="top"><a href="#dimension-0">dimension/0</a></td><td>Returns the dimension of these matrices.</td></tr>
-<tr><td valign="top"><a href="#dimensions-0">dimensions/0</a></td><td>Returns the dimensions of these matrices.</td></tr>
-<tr><td valign="top"><a href="#from_2D-2">from_2D/2</a></td><td>Returns the 3x3 compact matrix obtained from specified 2x2 matrix and
- 2D (translation) vector.</td></tr>
-<tr><td valign="top"><a href="#from_arbitrary-1">from_arbitrary/1</a></td><td>Returns the 3x3 matrix corresponding to the specified
- arbitrary-dimensioned matrix.</td></tr>
-<tr><td valign="top"><a href="#from_columns-3">from_columns/3</a></td><td>Returns the 3x3 matrix whose columns correspond to the specified 3 3D 
-vectors.</td></tr>
-<tr><td valign="top"><a href="#from_compact_coordinates-6">from_compact_coordinates/6</a></td><td>Returns the "3x3" (actually 2x3) compact matrix whose 6 actual
- coordinates are the specified ones, as listed row after row.</td></tr>
-<tr><td valign="top"><a href="#from_coordinates-9">from_coordinates/9</a></td><td>Returns the (3x3, canonical) matrix whose (9) coordinates are the
- specified ones, as listed row after row.</td></tr>
-<tr><td valign="top"><a href="#from_rows-3">from_rows/3</a></td><td>Returns the 3x3 matrix whose rows correspond to the specified 3 3D 
-vectors.</td></tr>
-<tr><td valign="top"><a href="#get_element-3">get_element/3</a></td><td>Returns the element at specified row and column of the specified matrix.</td></tr>
-<tr><td valign="top"><a href="#identity-0">identity/0</a></td><td>Returns the identity (3x3) matrix.</td></tr>
-<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified matrix, if it is invertible (that is
- iff its determinant is non-null), otherwise returns undefined.</td></tr>
-<tr><td valign="top"><a href="#mult-1">mult/1</a></td><td>Multiplies (in-order) the specified matrices.</td></tr>
-<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Multiplies the first matrix by the second one: returns Mc = Ma.Mb.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a 3D (canonical) matrix corresponding to the user-specified
- matrix.</td></tr>
-<tr><td valign="top"><a href="#new-2">new/2</a></td><td>Returns a 3D compact matrix corresponding to the user-specified
- row vectors.</td></tr>
-<tr><td valign="top"><a href="#null-0">null/0</a></td><td>Returns the null (3x3) matrix.</td></tr>
-<tr><td valign="top"><a href="#rotation-2">rotation/2</a></td><td>Returns the (3x3) matrix corresponding to a rotation of the specified 
-angle around the axis specified as a unit vector.</td></tr>
-<tr><td valign="top"><a href="#row-2">row/2</a></td><td>Returns the specified row of the specified matrix.</td></tr>
-<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales specified (3D) matrix of the specified factor.</td></tr>
-<tr><td valign="top"><a href="#scaling-1">scaling/1</a></td><td>Returns the (3x3) homogeneous (thus compact) matrix corresponding to the
- scaling of the specified factors.</td></tr>
-<tr><td valign="top"><a href="#set_element-4">set_element/4</a></td><td>Returns a matrix identical to the specified one except that its specified
- element at specified location has been set to the specified value.</td></tr>
-<tr><td valign="top"><a href="#sub-2">sub/2</a></td><td>Returns the subtraction of the two specified matrices: M = Ma - Mb.</td></tr>
-<tr><td valign="top"><a href="#to_arbitrary-1">to_arbitrary/1</a></td><td>Returns the arbitrary-dimensioned matrix corresponding to the specified
- 3x3 matrix.</td></tr>
-<tr><td valign="top"><a href="#to_canonical-1">to_canonical/1</a></td><td>Returns the canonical form of the specified 3x3 matrix.</td></tr>
-<tr><td valign="top"><a href="#to_compact-1">to_compact/1</a></td><td>Returns the compact form of specified (3x3) matrix.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified (3x3) matrix.</td></tr>
-<tr><td valign="top"><a href="#translation-1">translation/1</a></td><td>Returns the (3x3) homogeneous (thus compact) matrix corresponding to a
- translation of the specified vector.</td></tr>
-<tr><td valign="top"><a href="#transpose-1">transpose/1</a></td><td>Returns the transpose of the specified matrix.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#apply-2">apply/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#column-2">column/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#comatrix-1">comatrix/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#determinant-1">determinant/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#dimension-0">dimension/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#dimensions-0">dimensions/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_2D-2">from_2D/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_arbitrary-1">from_arbitrary/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_columns-3">from_columns/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_compact_coordinates-6">from_compact_coordinates/6</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_coordinates-9">from_coordinates/9</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_rows-3">from_rows/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_element-3">get_element/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#identity-0">identity/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#mult-1">mult/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-2">new/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#null-0">null/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rotation-2">rotation/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#row-2">row/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scaling-1">scaling/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_element-4">set_element/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sub-2">sub/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_arbitrary-1">to_arbitrary/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_canonical-1">to_canonical/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_compact-1">to_compact/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#translation-1">translation/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transpose-1">transpose/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add-2">add/2</a></h3>
 <div class="spec">
-<p><code>add(Ma::<a href="#type-matrix3">matrix3()</a>, Mb::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>add(Ma::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, Mb::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the sum of the two specified matrices: M = Ma + Mb.</p>
+</div>
 
 <h3 class="function"><a name="apply-2">apply/2</a></h3>
 <div class="spec">
-<p><code>apply(M::<a href="#type-matrix3">matrix3()</a>, VorP::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a></code><br></p><p><code>apply(M::<a href="#type-matrix3">matrix3()</a>, VorP::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></code><br></p><p><code>apply(M::<a href="#type-matrix3">matrix3()</a>, VorP::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-point2">point2()</a></code><br></p><p><code>apply(M::<a href="#type-matrix3">matrix3()</a>, VorP::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-point3">point3()</a></code><br></p>
+<p><code>apply(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, VorP::<a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>) -&gt; <a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a></code><br></p><p><code>apply(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, VorP::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a></code><br></p><p><code>apply(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, VorP::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code><br></p><p><code>apply(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, VorP::<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>) -&gt; <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a></code><br></p>
 <p> </p>
 <p> </p>
 <p> </p>
 <p> </p>
-</div><p><p>Applies (on the right) the specified 2D or 3D vector V or point P to the 
-specified matrix M: returns M.V.</p>
-
- <p>If the specified vector is a 2D one (i.e. not a 3D one), we assume that its 
-third (Vz) coordinate is 0.0, whereas if the specified point is a 2D one 
-(i.e. not a 3D one), we assume that its third (Pz) coordinate is 1.0, and 
-returns a 2D point whose coordinates have been normalised regarding the Z 
-coordinate resulting from the application of that extended point.</p>
-
- Not a clause of mult/2 for an increased clarity.
-</p>
+</div>
 
 <h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
 <div class="spec">
-<p><code>are_equal(Ma::<a href="#type-matrix3">matrix3()</a>, Mb::<a href="#type-matrix3">matrix3()</a>) -&gt; boolean()</code><br></p>
+<p><code>are_equal(Ma::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, Mb::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the two specified (3x3) matrices are equal.</p>
+</div>
 
 <h3 class="function"><a name="check-1">check/1</a></h3>
 <div class="spec">
-<p><code>check(M::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>check(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified matrix is legit, and returns it.</p>
+</div>
 
 <h3 class="function"><a name="column-2">column/2</a></h3>
 <div class="spec">
-<p><code>column(ColumnCount::<a href="#type-dimension">dimension()</a>, Matrix3::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-vector3">vector3()</a></code><br></p>
+<p><code>column(ColumnCount::<a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a>, Matrix3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the specified column of the specified matrix.</p>
+</div>
 
 <h3 class="function"><a name="comatrix-1">comatrix/1</a></h3>
 <div class="spec">
-<p><code>comatrix(M::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>comatrix(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the comatrix of the specified matrix (that is the matrix of its
- cofactors).
-</p>
+</div>
 
 <h3 class="function"><a name="determinant-1">determinant/1</a></h3>
 <div class="spec">
-<p><code>determinant(M::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-scalar">scalar()</a></code><br></p>
+<p><code>determinant(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-scalar" docgen-rel="seetype" docgen-href="#scalar/0">scalar()</a></code><br></p>
 <p> </p>
-</div><p>Returns the determinant of the specified matrix.</p>
+</div>
 
 <h3 class="function"><a name="dimension-0">dimension/0</a></h3>
 <div class="spec">
-<p><code>dimension() -&gt; <a href="#type-dimension">dimension()</a></code><br></p>
+<p><code>dimension() -&gt; <a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the dimension of these matrices.</p>
-
- Not useless, when using polymorphism based on module name.
-</p>
+</div>
 
 <h3 class="function"><a name="dimensions-0">dimensions/0</a></h3>
 <div class="spec">
-<p><code>dimensions() -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
+<p><code>dimensions() -&gt; <a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the dimensions of these matrices.</p>
-
- Not useless, when using polymorphism based on module name.
-</p>
+</div>
 
 <h3 class="function"><a name="from_2D-2">from_2D/2</a></h3>
 <div class="spec">
-<p><code>from_2D(Matrix2::<a href="#type-matrix2">matrix2()</a>, Vec2::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-compact_matrix3">compact_matrix3()</a></code><br></p>
+<p><code>from_2D(Matrix2::<a href="#type-matrix2" docgen-rel="seetype" docgen-href="#matrix2/0">matrix2()</a>, Vec2::<a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>) -&gt; <a href="#type-compact_matrix3" docgen-rel="seetype" docgen-href="#compact_matrix3/0">compact_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the 3x3 compact matrix obtained from specified 2x2 matrix and
- 2D (translation) vector.
-</p>
+</div>
 
 <h3 class="function"><a name="from_arbitrary-1">from_arbitrary/1</a></h3>
 <div class="spec">
-<p><code>from_arbitrary(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>from_arbitrary(Matrix::<a href="#type-matrix" docgen-rel="seetype" docgen-href="#matrix/0">matrix()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the 3x3 matrix corresponding to the specified
- arbitrary-dimensioned matrix.
-</p>
+</div>
 
 <h3 class="function"><a name="from_columns-3">from_columns/3</a></h3>
 <div class="spec">
-<p><code>from_columns(Va::<a href="#type-vector3">vector3()</a>, Vb::<a href="#type-vector3">vector3()</a>, Vc::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-canonical_matrix3">canonical_matrix3()</a></code><br></p>
+<p><code>from_columns(Va::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>, Vb::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>, Vc::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the 3x3 matrix whose columns correspond to the specified 3 3D 
-vectors.</p>
-
- Returns thus:
-  <pre>  [ Va Vb Vc ]
-  [ |  |  |  ]
-  [ |  |  |  ]</pre>
-</p>
+</div>
 
 <h3 class="function"><a name="from_compact_coordinates-6">from_compact_coordinates/6</a></h3>
 <div class="spec">
-<p><code>from_compact_coordinates(M11::<a href="#type-coordinate">coordinate()</a>, M12::<a href="#type-coordinate">coordinate()</a>, Tx::<a href="#type-coordinate">coordinate()</a>, M21::<a href="#type-coordinate">coordinate()</a>, M22::<a href="#type-coordinate">coordinate()</a>, Ty::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-compact_matrix3">compact_matrix3()</a></code><br></p>
+<p><code>from_compact_coordinates(M11::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M12::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Tx::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M21::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M22::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Ty::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>) -&gt; <a href="#type-compact_matrix3" docgen-rel="seetype" docgen-href="#compact_matrix3/0">compact_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the "3x3" (actually 2x3) compact matrix whose 6 actual
- coordinates are the specified ones, as listed row after row.
-</p>
+</div>
 
 <h3 class="function"><a name="from_coordinates-9">from_coordinates/9</a></h3>
 <div class="spec">
-<p><code>from_coordinates(M11::<a href="#type-coordinate">coordinate()</a>, M12::<a href="#type-coordinate">coordinate()</a>, M13::<a href="#type-coordinate">coordinate()</a>, M21::<a href="#type-coordinate">coordinate()</a>, M22::<a href="#type-coordinate">coordinate()</a>, M23::<a href="#type-coordinate">coordinate()</a>, M31::<a href="#type-coordinate">coordinate()</a>, M32::<a href="#type-coordinate">coordinate()</a>, M33::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-canonical_matrix3">canonical_matrix3()</a></code><br></p>
+<p><code>from_coordinates(M11::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M12::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M13::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M21::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M22::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M23::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M31::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M32::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, M33::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>) -&gt; <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (3x3, canonical) matrix whose (9) coordinates are the
- specified ones, as listed row after row.
-</p>
+</div>
 
 <h3 class="function"><a name="from_rows-3">from_rows/3</a></h3>
 <div class="spec">
-<p><code>from_rows(Va::<a href="#type-vector3">vector3()</a>, Vb::<a href="#type-vector3">vector3()</a>, Vc::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-canonical_matrix3">canonical_matrix3()</a></code><br></p>
+<p><code>from_rows(Va::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>, Vb::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>, Vc::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the 3x3 matrix whose rows correspond to the specified 3 3D 
-vectors.</p>
-
- Returns thus:
-  <pre> [ Va - - - ]
- [ Vb - - - ]
- [ Vc - - - ]</pre>
-</p>
+</div>
 
 <h3 class="function"><a name="get_element-3">get_element/3</a></h3>
 <div class="spec">
-<p><code>get_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Matrix3::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-coordinate">coordinate()</a></code><br></p>
+<p><code>get_element(R::<a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a>, C::<a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a>, Matrix3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a></code><br></p>
 <p> </p>
-</div><p>Returns the element at specified row and column of the specified matrix.</p>
+</div>
 
 <h3 class="function"><a name="identity-0">identity/0</a></h3>
 <div class="spec">
-<p><code>identity() -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>identity() -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the identity (3x3) matrix.</p>
+</div>
 
 <h3 class="function"><a name="inverse-1">inverse/1</a></h3>
 <div class="spec">
-<p><code>inverse(M::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-matrix3">matrix3()</a>)</code><br></p>
+<p><code>inverse(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the inverse of the specified matrix, if it is invertible (that is
- iff its determinant is non-null), otherwise returns undefined.
-</p>
+</div>
 
 <h3 class="function"><a name="mult-1">mult/1</a></h3>
 <div class="spec">
-<p><code>mult(T::[<a href="#type-matrix3">matrix3()</a>]) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>mult(T::[<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>]) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p><p>Multiplies (in-order) the specified matrices.</p>
-
- Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
-</p>
+</div>
 
 <h3 class="function"><a name="mult-2">mult/2</a></h3>
 <div class="spec">
-<p><code>mult(Ma::<a href="#type-matrix3">matrix3()</a>, Mb::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>mult(Ma::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, Mb::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Multiplies the first matrix by the second one: returns Mc = Ma.Mb.</p>
+</div>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><code>new(UserMatrix::<a href="#type-user_matrix3">user_matrix3()</a>) -&gt; <a href="#type-canonical_matrix3">canonical_matrix3()</a></code><br></p>
+<p><code>new(UserMatrix::<a href="#type-user_matrix3" docgen-rel="seetype" docgen-href="#user_matrix3/0">user_matrix3()</a>) -&gt; <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns a 3D (canonical) matrix corresponding to the user-specified
- matrix.
-</p>
+</div>
 
 <h3 class="function"><a name="new-2">new/2</a></h3>
 <div class="spec">
-<p><code>new(UserVecRow1::<a href="#type-user_vector3">user_vector3()</a>, UserVecRow2::<a href="#type-user_vector3">user_vector3()</a>) -&gt; <a href="#type-compact_matrix3">compact_matrix3()</a></code><br></p>
+<p><code>new(UserVecRow1::<a href="#type-user_vector3" docgen-rel="seetype" docgen-href="#user_vector3/0">user_vector3()</a>, UserVecRow2::<a href="#type-user_vector3" docgen-rel="seetype" docgen-href="#user_vector3/0">user_vector3()</a>) -&gt; <a href="#type-compact_matrix3" docgen-rel="seetype" docgen-href="#compact_matrix3/0">compact_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns a 3D compact matrix corresponding to the user-specified
- row vectors.
-</p>
+</div>
 
 <h3 class="function"><a name="null-0">null/0</a></h3>
 <div class="spec">
-<p><code>null() -&gt; <a href="#type-canonical_matrix3">canonical_matrix3()</a></code><br></p>
+<p><code>null() -&gt; <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the null (3x3) matrix.</p>
+</div>
 
 <h3 class="function"><a name="rotation-2">rotation/2</a></h3>
 <div class="spec">
-<p><code>rotation(UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-rot_matrix3">rot_matrix3()</a></code><br></p>
+<p><code>rotation(UnitAxis::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, RadAngle::<a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a>) -&gt; <a href="#type-rot_matrix3" docgen-rel="seetype" docgen-href="#rot_matrix3/0">rot_matrix3()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the (3x3) matrix corresponding to a rotation of the specified 
-angle around the axis specified as a unit vector.</p>
-
- <p>This will be a counterclockwise rotation for an observer placed so that the 
-specified axis points towards it.</p>
-
- <p>A rotation matrix is orthogonal, its inverse is its transpose, and its 
-determinant is 1.0.</p>
-
- <p>These 3D rotation matrices form a group known as the special orthogonal group 
-SO(3).</p>
-
- See also: quaternion:rotation/2.
-</p>
+</div>
 
 <h3 class="function"><a name="row-2">row/2</a></h3>
 <div class="spec">
-<p><code>row(RowCount::<a href="#type-dimension">dimension()</a>, Matrix3::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-vector3">vector3()</a></code><br></p>
+<p><code>row(RowCount::<a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a>, Matrix3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the specified row of the specified matrix.</p>
+</div>
 
 <h3 class="function"><a name="scale-2">scale/2</a></h3>
 <div class="spec">
-<p><code>scale(Compact_matrix3::<a href="#type-matrix3">matrix3()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>scale(Compact_matrix3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, Factor::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Scales specified (3D) matrix of the specified factor.</p>
+</div>
 
 <h3 class="function"><a name="scaling-1">scaling/1</a></h3>
 <div class="spec">
-<p><code>scaling(X1::{<a href="#type-factor">factor()</a>, <a href="#type-factor">factor()</a>}) -&gt; <a href="#type-compact_matrix3">compact_matrix3()</a></code><br></p>
+<p><code>scaling(X1::{<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>, <a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>}) -&gt; <a href="#type-compact_matrix3" docgen-rel="seetype" docgen-href="#compact_matrix3/0">compact_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (3x3) homogeneous (thus compact) matrix corresponding to the
- scaling of the specified factors.
-</p>
+</div>
 
 <h3 class="function"><a name="set_element-4">set_element/4</a></h3>
 <div class="spec">
-<p><code>set_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Value::<a href="#type-coordinate">coordinate()</a>, Matrix::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>set_element(R::<a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a>, C::<a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a>, Value::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Matrix::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns a matrix identical to the specified one except that its specified
- element at specified location has been set to the specified value.
-</p>
+</div>
 
 <h3 class="function"><a name="sub-2">sub/2</a></h3>
 <div class="spec">
-<p><code>sub(Ma::<a href="#type-matrix3">matrix3()</a>, Mb::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>sub(Ma::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, Mb::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the subtraction of the two specified matrices: M = Ma - Mb.</p>
+</div>
 
 <h3 class="function"><a name="to_arbitrary-1">to_arbitrary/1</a></h3>
 <div class="spec">
-<p><code>to_arbitrary(Matrix3::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix">matrix()</a></code><br></p>
+<p><code>to_arbitrary(Matrix3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix" docgen-rel="seetype" docgen-href="#matrix/0">matrix()</a></code><br></p>
 <p> </p>
-</div><p>Returns the arbitrary-dimensioned matrix corresponding to the specified
- 3x3 matrix.
-</p>
+</div>
 
 <h3 class="function"><a name="to_canonical-1">to_canonical/1</a></h3>
 <div class="spec">
-<p><code>to_canonical(Compact_matrix3::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-canonical_matrix3">canonical_matrix3()</a></code><br></p>
+<p><code>to_canonical(Compact_matrix3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-canonical_matrix3" docgen-rel="seetype" docgen-href="#canonical_matrix3/0">canonical_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the canonical form of the specified 3x3 matrix.</p>
+</div>
 
 <h3 class="function"><a name="to_compact-1">to_compact/1</a></h3>
 <div class="spec">
-<p><code>to_compact(M::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-compact_matrix3">compact_matrix3()</a></code><br></p>
+<p><code>to_compact(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-compact_matrix3" docgen-rel="seetype" docgen-href="#compact_matrix3/0">compact_matrix3()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the compact form of specified (3x3) matrix.</p>
-
- Throws an exception if the specified matrix cannot be expressed as a compact
- one.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(Matrix::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(Matrix::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified (3x3) matrix.</p>
+</div>
 
 <h3 class="function"><a name="translation-1">translation/1</a></h3>
 <div class="spec">
-<p><code>translation(VT::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-compact_matrix3">compact_matrix3()</a></code><br></p>
+<p><code>translation(VT::<a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>) -&gt; <a href="#type-compact_matrix3" docgen-rel="seetype" docgen-href="#compact_matrix3/0">compact_matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (3x3) homogeneous (thus compact) matrix corresponding to a
- translation of the specified vector.
-</p>
+</div>
 
 <h3 class="function"><a name="transpose-1">transpose/1</a></h3>
 <div class="spec">
-<p><code>transpose(M::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-matrix3">matrix3()</a></code><br></p>
+<p><code>transpose(M::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a></code><br></p>
 <p> </p>
-</div><p>Returns the transpose of the specified matrix.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

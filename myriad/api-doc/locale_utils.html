@@ -10,79 +10,62 @@
 <hr>
 
 <h1>Module locale_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding the support of
- various <b>locales</b> (e.g.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2>Gathering of various convenient facilities regarding the support of
- various <b>locales</b> (e.g. for the management of per-country bank holidays)
- and related character sets.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_locale">any_locale()</a></h3>
-<p><code>any_locale() = <a href="#type-any_string">any_string()</a></code></p>
-<p><p> A locale as a BCP 47 plain string or binary, like "fr-FR" or <code>&lt;&lt;"fr-FR"&gt;&gt;</code>, 
-corresponding to "French (France)" here.</p>
+<p><code>any_locale() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code></p>
 
- See http://cldr.unicode.org/ and
- https://en.wikipedia.org/wiki/IETF_language_tag for further details.</p>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_locale">bin_locale()</a></h3>
-<p><code>bin_locale() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p><p> A locale as a BCP 47 binary, like <code>&lt;&lt;"fr-FR"&gt;&gt;</code>, corresponding to "French 
-(France)" here.</p>
+<p><code>bin_locale() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
- See http://cldr.unicode.org/ and
- https://en.wikipedia.org/wiki/IETF_language_tag for further details.</p>
 
 <h3 class="typedecl"><a name="type-bin_locale_description">bin_locale_description()</a></h3>
-<p><code>bin_locale_description() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> A description of a locale (e.g. <code>&lt;&lt;"Afrikaans (South Africa)"&gt;&gt;</code>).</p>
+<p><code>bin_locale_description() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-country">country()</a></h3>
-<p><code>country() = france | united_kingdom | atom()</code></p>
-<p> Type to designate all known countries.</p>
+<p><code>country() = france | united_kingdom | usa | china | japan | unreferenced_country | atom()</code></p>
+
 
 <h3 class="typedecl"><a name="type-locale_charset">locale_charset()</a></h3>
-<p><code>locale_charset() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A locale with a character set, like "fr_FR.UTF-8".</p>
+<p><code>locale_charset() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-locale_description">locale_description()</a></h3>
-<p><code>locale_description() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A description of a locale (e.g. "Afrikaans (South Africa)").</p>
+<p><code>locale_description() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-string_locale">string_locale()</a></h3>
-<p><code>string_locale() = <a href="#type-ustring">ustring()</a></code></p>
-<p><p> A locale as a BCP 47 plain string, like "fr-FR", corresponding to "French 
-(France)" here.</p>
+<p><code>string_locale() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
- See http://cldr.unicode.org/ and
- https://en.wikipedia.org/wiki/IETF_language_tag for further details.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_locale_charset-0">get_locale_charset/0</a></td><td>Returns the current locale with a character set, like "fr_FR.UTF-8".</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_locale_charset-0">get_locale_charset/0</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="get_locale_charset-0">get_locale_charset/0</a></h3>
 <div class="spec">
-<p><code>get_locale_charset() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_locale_charset() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns the current locale with a character set, like "fr_FR.UTF-8".</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

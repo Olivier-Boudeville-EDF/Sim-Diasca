@@ -10,154 +10,131 @@
 <hr>
 
 <h1>Module ast_record</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module in charge of handling <b>records defined or used within an
- AST</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Module in charge of handling <b>records defined or used within an
- AST</b>.</p>
-
- See <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><code>http://erlang.org/doc/apps/erts/absform.html</code></a> for more information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_field_id">ast_field_id()</a></h3>
-<p><code>ast_field_id() = <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a></code></p>
+<p><code>ast_field_id() = <a href="ast_base.html#type-ast_atom" docgen-rel="seetype" docgen-href="ast_base#ast_atom/0">ast_base:ast_atom()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_pattern_field">ast_pattern_field()</a></h3>
-<p><code>ast_pattern_field() = {record_field, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_field_id">ast_field_id()</a> | {var, <a href="#type-file_loc">file_loc()</a>, '_'}, <a href="ast_pattern.html#type-ast_pattern">ast_pattern:ast_pattern()</a>}</code></p>
-<p> Typically used in ast_pattern.</p>
-
-<h3 class="typedecl"><a name="type-ast_record_field_definition">ast_record_field_definition()</a></h3>
-<p><code>ast_record_field_definition(ValueType) = <a href="#type-ast_untyped_record_field_definition">ast_untyped_record_field_definition</a>(ValueType) | <a href="#type-ast_typed_record_field_definition">ast_typed_record_field_definition</a>(ValueType)</code></p>
+<p><code>ast_pattern_field() = {record_field, <a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>, <a href="#type-ast_field_id" docgen-rel="seetype" docgen-href="#ast_field_id/0">ast_field_id()</a> | {var, <a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>, '_'}, <a href="ast_pattern.html#type-ast_pattern" docgen-rel="seetype" docgen-href="ast_pattern#ast_pattern/0">ast_pattern:ast_pattern()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_record_field_definition">ast_record_field_definition()</a></h3>
-<p><code>ast_record_field_definition() = <a href="#type-ast_record_field_definition">ast_record_field_definition</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</code></p>
-<p> AST definition for a field of a record, when creating it.</p>
+<p><code>ast_record_field_definition(ValueType) = <a href="#type-ast_untyped_record_field_definition" docgen-rel="seetype" docgen-href="#ast_untyped_record_field_definition/0">ast_untyped_record_field_definition</a>(ValueType) | <a href="#type-ast_typed_record_field_definition" docgen-rel="seetype" docgen-href="#ast_typed_record_field_definition/0">ast_typed_record_field_definition</a>(ValueType)</code></p>
+
+
+<h3 class="typedecl"><a name="type-ast_record_field_definition">ast_record_field_definition()</a></h3>
+<p><code>ast_record_field_definition() = <a href="#type-ast_record_field_definition" docgen-rel="seetype" docgen-href="#ast_record_field_definition/0">ast_record_field_definition</a>(<a href="ast_base.html#type-ast_element" docgen-rel="seetype" docgen-href="ast_base#ast_element/0">ast_base:ast_element()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-ast_record_field_init">ast_record_field_init()</a></h3>
 <p><code>ast_record_field_init() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms" docgen-rel="seetype" docgen-href="ast_transform#ast_transforms/0">ast_transform:ast_transforms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_type">ast_type()</a></h3>
-<p><code>ast_type() = <a href="ast_type.html#type-ast_type">ast_type:ast_type()</a></code></p>
+<p><code>ast_type() = <a href="ast_type.html#type-ast_type" docgen-rel="seetype" docgen-href="ast_type#ast_type/0">ast_type:ast_type()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_typed_record_field_definition">ast_typed_record_field_definition()</a></h3>
-<p><code>ast_typed_record_field_definition(ValueType) = {typed_record_field, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_untyped_record_field_definition">ast_untyped_record_field_definition</a>(ValueType), <a href="#type-ast_type">ast_type()</a>}</code></p>
+<p><code>ast_typed_record_field_definition(ValueType) = {typed_record_field, <a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>, <a href="#type-ast_untyped_record_field_definition" docgen-rel="seetype" docgen-href="#ast_untyped_record_field_definition/0">ast_untyped_record_field_definition</a>(ValueType), <a href="#type-ast_type" docgen-rel="seetype" docgen-href="#ast_type/0">ast_type()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_untyped_record_field_definition">ast_untyped_record_field_definition()</a></h3>
-<p><code>ast_untyped_record_field_definition() = <a href="#type-ast_untyped_record_field_definition">ast_untyped_record_field_definition</a>(term())</code></p>
+<p><code>ast_untyped_record_field_definition() = <a href="#type-ast_untyped_record_field_definition" docgen-rel="seetype" docgen-href="#ast_untyped_record_field_definition/0">ast_untyped_record_field_definition</a>(term())</code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_untyped_record_field_definition">ast_untyped_record_field_definition()</a></h3>
-<p><code>ast_untyped_record_field_definition(ValueType) = {record_field, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_field_id">ast_field_id()</a>, ValueType}</code></p>
-<p><p> AST definition for a field of a record, when creating it.</p>
+<p><code>ast_untyped_record_field_definition(ValueType) = {record_field, <a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>, <a href="#type-ast_field_id" docgen-rel="seetype" docgen-href="#ast_field_id/0">ast_field_id()</a>, ValueType}</code></p>
 
- Precisely: {record_field, FILE_LOC, Rep(Field_1), Rep(ValueType)}
-</p>
 
 <h3 class="typedecl"><a name="type-field_definition">field_definition()</a></h3>
-<p><code>field_definition() = {<a href="#type-maybe_ast_type">maybe_ast_type()</a>, <a href="#type-maybe_ast_immediate_value">maybe_ast_immediate_value()</a>, <a href="#type-file_loc">file_loc()</a>, <a href="#type-file_loc">file_loc()</a>}</code></p>
-<p> Defines the field of a type of record (type and default value, if specified;
- lines are also stored so that the full, actual form can be recreated - far
- clearer to interpret afterwards).</p>
+<p><code>field_definition() = {<a href="#type-maybe_ast_type" docgen-rel="seetype" docgen-href="#maybe_ast_type/0">maybe_ast_type()</a>, <a href="#type-maybe_ast_immediate_value" docgen-rel="seetype" docgen-href="#maybe_ast_immediate_value/0">maybe_ast_immediate_value()</a>, <a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>, <a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-field_id">field_id()</a></h3>
-<p><code>field_id() = <a href="#type-field_name">field_name()</a> | '_'</code></p>
-<p> Field identifier, possibly '_'.</p>
+<p><code>field_id() = <a href="#type-field_name" docgen-rel="seetype" docgen-href="#field_name/0">field_name()</a> | '_'</code></p>
+
 
 <h3 class="typedecl"><a name="type-field_name">field_name()</a></h3>
-<p><code>field_name() = <a href="basic_utils.html#type-field_name">basic_utils:field_name()</a></code></p>
+<p><code>field_name() = <a href="basic_utils.html#type-field_name" docgen-rel="seetype" docgen-href="basic_utils#field_name/0">basic_utils:field_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-field_pair">field_pair()</a></h3>
-<p><code>field_pair() = {<a href="#type-field_name">field_name()</a>, <a href="#type-field_definition">field_definition()</a>}</code></p>
+<p><code>field_pair() = {<a href="#type-field_name" docgen-rel="seetype" docgen-href="#field_name/0">field_name()</a>, <a href="#type-field_definition" docgen-rel="seetype" docgen-href="#field_definition/0">field_definition()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-located_form">located_form()</a></h3>
-<p><code>located_form() = <a href="ast_info.html#type-located_form">ast_info:located_form()</a></code></p>
+<p><code>located_form() = <a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_ast_immediate_value">maybe_ast_immediate_value()</a></h3>
-<p><code>maybe_ast_immediate_value() = <a href="ast_value.html#type-maybe_ast_immediate_value">ast_value:maybe_ast_immediate_value()</a></code></p>
+<p><code>maybe_ast_immediate_value() = <a href="ast_value.html#type-maybe_ast_immediate_value" docgen-rel="seetype" docgen-href="ast_value#maybe_ast_immediate_value/0">ast_value:maybe_ast_immediate_value()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_ast_type">maybe_ast_type()</a></h3>
-<p><code>maybe_ast_type() = <a href="ast_type.html#type-maybe_ast_type">ast_type:maybe_ast_type()</a></code></p>
+<p><code>maybe_ast_type() = <a href="ast_type.html#type-maybe_ast_type" docgen-rel="seetype" docgen-href="ast_type#maybe_ast_type/0">ast_type:maybe_ast_type()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-record_definition">record_definition()</a></h3>
-<p><code>record_definition() = <a href="ast_info.html#type-record_definition">ast_info:record_definition()</a></code></p>
+<p><code>record_definition() = <a href="ast_info.html#type-record_definition" docgen-rel="seetype" docgen-href="ast_info#record_definition/0">ast_info:record_definition()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-record_name">record_name()</a></h3>
-<p><code>record_name() = <a href="basic_utils.html#type-record_name">basic_utils:record_name()</a></code></p>
+<p><code>record_name() = <a href="basic_utils.html#type-record_name" docgen-rel="seetype" docgen-href="basic_utils#record_name/0">basic_utils:record_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-record_pair">record_pair()</a></h3>
-<p><code>record_pair() = {<a href="#type-record_name">record_name()</a>, <a href="#type-record_definition">record_definition()</a>}</code></p>
+<p><code>record_pair() = {<a href="#type-record_name" docgen-rel="seetype" docgen-href="#record_name/0">record_name()</a>, <a href="#type-record_definition" docgen-rel="seetype" docgen-href="#record_definition/0">record_definition()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-record_table">record_table()</a></h3>
-<p><code>record_table() = <a href="ast_info.html#type-record_table">ast_info:record_table()</a></code></p>
+<p><code>record_table() = <a href="ast_info.html#type-record_table" docgen-rel="seetype" docgen-href="ast_info#record_table/0">ast_info:record_table()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_located_forms_for-1">get_located_forms_for/1</a></td><td>Returns the located forms corresponding to specified record table.</td></tr>
-<tr><td valign="top"><a href="#transform_record_definitions-2">transform_record_definitions/2</a></td><td>Transforms the specified record definitions (e.g.</td></tr>
-<tr><td valign="top"><a href="#transform_record_field_definition-2">transform_record_field_definition/2</a></td><td>Transforms the specified record field definition.</td></tr>
-<tr><td valign="top"><a href="#transform_record_field_definitions-2">transform_record_field_definitions/2</a></td><td>Transforms the specified record fields, at creation, applying to each 
-record field the specified function to perform the relevant transformations 
-(that depends on the context; e.g.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_located_forms_for-1">get_located_forms_for/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transform_record_definitions-2">transform_record_definitions/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transform_record_field_definition-2">transform_record_field_definition/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transform_record_field_definitions-2">transform_record_field_definitions/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="get_located_forms_for-1">get_located_forms_for/1</a></h3>
 <div class="spec">
-<p><code>get_located_forms_for(RecordTable::<a href="#type-record_table">record_table()</a>) -&gt; [<a href="#type-located_form">located_form()</a>]</code><br></p>
+<p><code>get_located_forms_for(RecordTable::<a href="#type-record_table" docgen-rel="seetype" docgen-href="#record_table/0">record_table()</a>) -&gt; [<a href="#type-located_form" docgen-rel="seetype" docgen-href="#located_form/0">located_form()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the located forms corresponding to specified record table.</p>
+</div>
 
 <h3 class="function"><a name="transform_record_definitions-2">transform_record_definitions/2</a></h3>
 <div class="spec">
-<p><code>transform_record_definitions(RecordTable::<a href="ast_info.html#type-record_table">ast_info:record_table()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="ast_info.html#type-record_table">ast_info:record_table()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
+<p><code>transform_record_definitions(RecordTable::<a href="ast_info.html#type-record_table" docgen-rel="seetype" docgen-href="ast_info#record_table/0">ast_info:record_table()</a>, Transforms::<a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>) -&gt; {<a href="ast_info.html#type-record_table" docgen-rel="seetype" docgen-href="ast_info#record_table/0">ast_info:record_table()</a>, <a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>}</code><br></p>
 <p> </p>
-</div><p>Transforms the specified record definitions (e.g. coming for the
- 'records' field of a module_info record), according to specified transforms.
-</p>
+</div>
 
 <h3 class="function"><a name="transform_record_field_definition-2">transform_record_field_definition/2</a></h3>
 <div class="spec">
-<p><code>transform_record_field_definition(RF::<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
+<p><code>transform_record_field_definition(RF::<a href="#type-ast_record_field_definition" docgen-rel="seetype" docgen-href="#ast_record_field_definition/0">ast_record_field_definition()</a>, Transforms::<a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>) -&gt; {<a href="#type-ast_record_field_definition" docgen-rel="seetype" docgen-href="#ast_record_field_definition/0">ast_record_field_definition()</a>, <a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Transforms the specified record field definition.</p>
-
- For example {record_field, FILE_LOC, Rep(Field_k), Rep(Gt_k)}.
-</p>
+</div>
 
 <h3 class="function"><a name="transform_record_field_definitions-2">transform_record_field_definitions/2</a></h3>
 <div class="spec">
-<p><code>transform_record_field_definitions(RecordFields::[<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
+<p><code>transform_record_field_definitions(RecordFields::[<a href="#type-ast_record_field_definition" docgen-rel="seetype" docgen-href="#ast_record_field_definition/0">ast_record_field_definition()</a>], Transforms::<a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>) -&gt; {[<a href="#type-ast_record_field_definition" docgen-rel="seetype" docgen-href="#ast_record_field_definition/0">ast_record_field_definition()</a>], <a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Transforms the specified record fields, at creation, applying to each 
-record field the specified function to perform the relevant transformations 
-(that depends on the context; e.g. if being in a guard, in an expression).</p>
-
- (counterpart of record_inits/1 in erl_id_trans)
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

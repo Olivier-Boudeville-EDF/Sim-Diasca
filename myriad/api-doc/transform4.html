@@ -10,179 +10,320 @@
 <hr>
 
 <h1>Module transform4</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for <b>4x4 transformations</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Module implementing the support for <b>4x4 transformations</b>.</p>
-
- See also matrix4.erl
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
+<p><code>dimension() = <a href="linear.html#type-dimension" docgen-rel="seetype" docgen-href="linear#dimension/0">linear:dimension()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><code>dimensions() = <a href="matrix.html#type-dimensions" docgen-rel="seetype" docgen-href="matrix#dimensions/0">matrix:dimensions()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><code>factor() = <a href="math_utils.html#type-factor" docgen-rel="seetype" docgen-href="math_utils#factor/0">math_utils:factor()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-homogeneous_matrix4">homogeneous_matrix4()</a></h3>
+<p><code>homogeneous_matrix4() = <a href="matrix4.html#type-homogeneous_matrix4" docgen-rel="seetype" docgen-href="matrix4#homogeneous_matrix4/0">matrix4:homogeneous_matrix4()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
-<p><code>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></code></p>
+<p><code>matrix4() = <a href="matrix4.html#type-matrix4" docgen-rel="seetype" docgen-href="matrix4#matrix4/0">matrix4:matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
+<p><code>point3() = <a href="point3.html#type-point3" docgen-rel="seetype" docgen-href="point3#point3/0">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><code>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></code></p>
+<p><code>radians() = <a href="unit_utils.html#type-radians" docgen-rel="seetype" docgen-href="unit_utils#radians/0">unit_utils:radians()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
+<p><code>scalar() = <a href="linear.html#type-scalar" docgen-rel="seetype" docgen-href="linear#scalar/0">linear:scalar()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-scale_factors">scale_factors()</a></h3>
+<p><code>scale_factors() = <a href="matrix4.html#type-scale_factors" docgen-rel="seetype" docgen-href="matrix4#scale_factors/0">matrix4:scale_factors()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-transform4">transform4()</a></h3>
-<p><code>transform4() = #transform4{matrix = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a>, inverse = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a>}</code></p>
-<p> A 4x4 transformation, storing both its corresponding 4x4 matrix and its
- inverse.</p>
+<p><code>transform4() = #transform4{reference = <a href="matrix4.html#type-homogeneous_matrix4" docgen-rel="seetype" docgen-href="matrix4#homogeneous_matrix4/0">matrix4:homogeneous_matrix4()</a>, inverse = <a href="matrix4.html#type-homogeneous_matrix4" docgen-rel="seetype" docgen-href="matrix4#homogeneous_matrix4/0">matrix4:homogeneous_matrix4()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-transition_matrix4">transition_matrix4()</a></h3>
+<p><code>transition_matrix4() = <a href="matrix4.html#type-transition_matrix4" docgen-rel="seetype" docgen-href="matrix4#transition_matrix4/0">matrix4:transition_matrix4()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-unit_vector3">unit_vector3()</a></h3>
-<p><code>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></code></p>
+<p><code>unit_vector3() = <a href="vector3.html#type-unit_vector3" docgen-rel="seetype" docgen-href="vector3#unit_vector3/0">vector3:unit_vector3()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-user_matrix4">user_matrix4()</a></h3>
+<p><code>user_matrix4() = <a href="matrix4.html#type-user_matrix4" docgen-rel="seetype" docgen-href="matrix4#user_matrix4/0">matrix4:user_matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
-<p><code>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></code></p>
+<p><code>vector3() = <a href="vector3.html#type-vector3" docgen-rel="seetype" docgen-href="vector3#vector3/0">vector3:vector3()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#basis_change-3">basis_change/3</a></td><td>Returns a transition transformation whose reference matrix is a 
-change-of-basis matrix from the current referential (R1) to one (R2) whose 
-origin, forward and up directions are the specified ones (still in the current 
-referential R1).</td></tr>
-<tr><td valign="top"><a href="#get_inverse-1">get_inverse/1</a></td><td>Returns the inverse of the matrix corresponding to the specified
- transformation.</td></tr>
-<tr><td valign="top"><a href="#get_reference-1">get_reference/1</a></td><td>Returns the reference matrix corresponding to the specified
- transformation.</td></tr>
-<tr><td valign="top"><a href="#identity-0">identity/0</a></td><td>Returns the (4D) identity transformation.</td></tr>
-<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse transformation of the specified one.</td></tr>
-<tr><td valign="top"><a href="#mult-1">mult/1</a></td><td>Returns the transformation corresponding to the in-order multiplication
- of the specified ones.</td></tr>
-<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Returns the transformation corresponding to the in-order multiplication
- of the two specified ones.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns the (4D) identity transformation whose reference matrix is the
- specified one.</td></tr>
-<tr><td valign="top"><a href="#rotate-2">rotate/2</a></td><td>Returns the specified transformation once composed with an additional
- rotation (applied last) directly specified as a matrix.</td></tr>
-<tr><td valign="top"><a href="#rotate-3">rotate/3</a></td><td>Returns the specified transformation once composed with an additional
- rotation (applied last), specified as a (unit) axis and an angle.</td></tr>
-<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Returns the specified transformation once composed with an additional
- scaling (applied last), specified as a vector (of non-null factors).</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified (4x4) transformation.</td></tr>
-<tr><td valign="top"><a href="#translate-2">translate/2</a></td><td>Returns the specified transformation once composed with an additional
- translation (applied last) of the specified 3D vector.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_left-2">apply_left/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#apply_right-2">apply_right/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#basis_change-3">basis_change/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_type-1">check_type/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#determinant-1">determinant/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#dimension-0">dimension/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#dimensions-0">dimensions/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_inverse-1">get_inverse/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_origin-1">get_origin/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_reference-1">get_reference/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#identity-0">identity/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_transform4-1">is_transform4/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#mult-1">mult/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-2">new/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rotate_left-3">rotate_left/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rotate_right-3">rotate_right/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rotation-2">rotation/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sc_rot_tr-4">sc_rot_tr/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale_left-2">scale_left/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale_right-2">scale_right/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale_x-2">scale_x/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale_y-2">scale_y/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale_z-2">scale_z/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scaling-1">scaling/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transition-4">transition/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#translate_left-2">translate_left/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#translate_right-2">translate_right/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#translation-1">translation/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="apply_left-2">apply_left/2</a></h3>
+<div class="spec">
+<p><code>apply_left(P3::<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>, Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="apply_right-2">apply_right/2</a></h3>
+<div class="spec">
+<p><code>apply_right(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, P3::<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>) -&gt; <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><code>are_equal(T1::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, T2::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="basis_change-3">basis_change/3</a></h3>
 <div class="spec">
-<p><code>basis_change(O2InR1::<a href="#type-point3">point3()</a>, FwdDir2InR1::<a href="#type-vector3">vector3()</a>, UpDir2InR1::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>basis_change(O1InR2::<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>, FwdDir1InR2::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, UpDir1InR2::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a transition transformation whose reference matrix is a 
-change-of-basis matrix from the current referential (R1) to one (R2) whose 
-origin, forward and up directions are the specified ones (still in the current 
-referential R1).</p>
+</div>
 
- <p>So returns P1-&gt;2, allowing, for an (homogeneous) point P, to convert P1, its 
-representation in current referential R1, into P2, its counterpart in R2: 
-P2 = P1-&gt;2.P1.</p>
+<h3 class="function"><a name="check-1">check/1</a></h3>
+<div class="spec">
+<p><code>check(T::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
 
- The inverse matrix in this transformation is thus P2-&gt;1.
-</p>
+<h3 class="function"><a name="check_type-1">check_type/1</a></h3>
+<div class="spec">
+<p><code>check_type(T::term()) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="determinant-1">determinant/1</a></h3>
+<div class="spec">
+<p><code>determinant(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-scalar" docgen-rel="seetype" docgen-href="#scalar/0">scalar()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="dimension-0">dimension/0</a></h3>
+<div class="spec">
+<p><code>dimension() -&gt; <a href="#type-dimension" docgen-rel="seetype" docgen-href="#dimension/0">dimension()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="dimensions-0">dimensions/0</a></h3>
+<div class="spec">
+<p><code>dimensions() -&gt; <a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="get_inverse-1">get_inverse/1</a></h3>
 <div class="spec">
-<p><code>get_inverse(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
+<p><code>get_inverse(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-homogeneous_matrix4" docgen-rel="seetype" docgen-href="#homogeneous_matrix4/0">homogeneous_matrix4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the inverse of the matrix corresponding to the specified
- transformation.
-</p>
+</div>
+
+<h3 class="function"><a name="get_origin-1">get_origin/1</a></h3>
+<div class="spec">
+<p><code>get_origin(HM::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="get_reference-1">get_reference/1</a></h3>
 <div class="spec">
-<p><code>get_reference(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
+<p><code>get_reference(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-homogeneous_matrix4" docgen-rel="seetype" docgen-href="#homogeneous_matrix4/0">homogeneous_matrix4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the reference matrix corresponding to the specified
- transformation.
-</p>
+</div>
 
 <h3 class="function"><a name="identity-0">identity/0</a></h3>
 <div class="spec">
-<p><code>identity() -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>identity() -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (4D) identity transformation.</p>
+</div>
 
 <h3 class="function"><a name="inverse-1">inverse/1</a></h3>
 <div class="spec">
-<p><code>inverse(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>inverse(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the inverse transformation of the specified one.</p>
+</div>
+
+<h3 class="function"><a name="is_transform4-1">is_transform4/1</a></h3>
+<div class="spec">
+<p><code>is_transform4(Transf4::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="mult-1">mult/1</a></h3>
 <div class="spec">
-<p><code>mult(Transforms::[<a href="#type-transform4">transform4()</a>]) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>mult(Transforms::[<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>]) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the transformation corresponding to the in-order multiplication
- of the specified ones.
-</p>
+</div>
 
 <h3 class="function"><a name="mult-2">mult/2</a></h3>
 <div class="spec">
-<p><code>mult(Transform4::<a href="#type-transform4">transform4()</a>, X2::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>mult(T1::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, T2::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the transformation corresponding to the in-order multiplication
- of the two specified ones.
-</p>
+</div>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><code>new(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>new(M::<a href="#type-user_matrix4" docgen-rel="seetype" docgen-href="#user_matrix4/0">user_matrix4()</a> | <a href="#type-matrix4" docgen-rel="seetype" docgen-href="#matrix4/0">matrix4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (4D) identity transformation whose reference matrix is the
- specified one.
-</p>
+</div>
 
-<h3 class="function"><a name="rotate-2">rotate/2</a></h3>
+<h3 class="function"><a name="new-2">new/2</a></h3>
 <div class="spec">
-<p><code>rotate(Transform4::<a href="#type-transform4">transform4()</a>, MRot::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>new(HM::<a href="#type-homogeneous_matrix4" docgen-rel="seetype" docgen-href="#homogeneous_matrix4/0">homogeneous_matrix4()</a>, InvHM::<a href="#type-homogeneous_matrix4" docgen-rel="seetype" docgen-href="#homogeneous_matrix4/0">homogeneous_matrix4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the specified transformation once composed with an additional
- rotation (applied last) directly specified as a matrix.
-</p>
+</div>
 
-<h3 class="function"><a name="rotate-3">rotate/3</a></h3>
+<h3 class="function"><a name="rotate_left-3">rotate_left/3</a></h3>
 <div class="spec">
-<p><code>rotate(Transform::<a href="#type-transform4">transform4()</a>, UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>rotate_left(UnitAxis::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, RadAngle::<a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a>, Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the specified transformation once composed with an additional
- rotation (applied last), specified as a (unit) axis and an angle.
-</p>
+</div>
+
+<h3 class="function"><a name="rotate_right-3">rotate_right/3</a></h3>
+<div class="spec">
+<p><code>rotate_right(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, UnitAxis::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, RadAngle::<a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="rotation-2">rotation/2</a></h3>
+<div class="spec">
+<p><code>rotation(UnitAxis::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, RadAngle::<a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="sc_rot_tr-4">sc_rot_tr/4</a></h3>
+<div class="spec">
+<p><code>sc_rot_tr(ScaleFactors::<a href="#type-scale_factors" docgen-rel="seetype" docgen-href="#scale_factors/0">scale_factors()</a>, RotUnitAxis::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, RotRadAngle::<a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a>, TransVec::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-transition_matrix4" docgen-rel="seetype" docgen-href="#transition_matrix4/0">transition_matrix4()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="scale-2">scale/2</a></h3>
 <div class="spec">
-<p><code>scale(Transform4::<a href="#type-transform4">transform4()</a>, VS::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>scale(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, Factor::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the specified transformation once composed with an additional
- scaling (applied last), specified as a vector (of non-null factors).
-</p>
+</div>
+
+<h3 class="function"><a name="scale_left-2">scale_left/2</a></h3>
+<div class="spec">
+<p><code>scale_left(ScaleFactors::<a href="#type-scale_factors" docgen-rel="seetype" docgen-href="#scale_factors/0">scale_factors()</a>, Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="scale_right-2">scale_right/2</a></h3>
+<div class="spec">
+<p><code>scale_right(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, ScaleFactors::<a href="#type-scale_factors" docgen-rel="seetype" docgen-href="#scale_factors/0">scale_factors()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="scale_x-2">scale_x/2</a></h3>
+<div class="spec">
+<p><code>scale_x(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, Factor::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="scale_y-2">scale_y/2</a></h3>
+<div class="spec">
+<p><code>scale_y(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, Factor::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="scale_z-2">scale_z/2</a></h3>
+<div class="spec">
+<p><code>scale_z(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, Factor::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="scaling-1">scaling/1</a></h3>
+<div class="spec">
+<p><code>scaling(ScaleFactors::<a href="#type-scale_factors" docgen-rel="seetype" docgen-href="#scale_factors/0">scale_factors()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified (4x4) transformation.</p>
+</div>
 
-<h3 class="function"><a name="translate-2">translate/2</a></h3>
+<h3 class="function"><a name="transition-4">transition/4</a></h3>
 <div class="spec">
-<p><code>translate(Transform4::<a href="#type-transform4">transform4()</a>, VT::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></code><br></p>
+<p><code>transition(Origin::<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>, X::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, Y::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>, Z::<a href="#type-unit_vector3" docgen-rel="seetype" docgen-href="#unit_vector3/0">unit_vector3()</a>) -&gt; <a href="#type-transition_matrix4" docgen-rel="seetype" docgen-href="#transition_matrix4/0">transition_matrix4()</a></code><br></p>
 <p> </p>
-</div><p>Returns the specified transformation once composed with an additional
- translation (applied last) of the specified 3D vector.
-</p>
+</div>
+
+<h3 class="function"><a name="translate_left-2">translate_left/2</a></h3>
+<div class="spec">
+<p><code>translate_left(VT::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>, Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="translate_right-2">translate_right/2</a></h3>
+<div class="spec">
+<p><code>translate_right(Transform4::<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, VT::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="translation-1">translation/1</a></h3>
+<div class="spec">
+<p><code>translation(VT::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a></code><br></p>
+<p> </p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

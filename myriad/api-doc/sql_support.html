@@ -10,354 +10,299 @@
 <hr>
 
 <h1>Module sql_support</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities regarding the management of <b>SQL
- databases</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various facilities regarding the management of <b>SQL
- databases</b>.</p>
-
- <p>The current implementation is mostly geared towards the use of:</p>
-
- <p>- <code>SQLite3</code> (an optional dependency), through the <a href="https://github.com/alexeyr/erlang-sqlite3">erlang-sqlite3</a> binding</p>
-
- <p>- <code>PostgreSQL</code>, through either its command-line client (psql; the least
- recommended approach) or the epgsql <a href="https://github.com/epgsql/epgsql" target="_top"><code>https://github.com/epgsql/epgsql</code></a> binding</p>
-
- See <code>sql_support_test.erl</code> for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_database_name">any_database_name()</a></h3>
-<p><code>any_database_name() = <a href="#type-database_name">database_name()</a> | <a href="#type-bin_database_name">bin_database_name()</a></code></p>
+<p><code>any_database_name() = <a href="#type-database_name" docgen-rel="seetype" docgen-href="#database_name/0">database_name()</a> | <a href="#type-bin_database_name" docgen-rel="seetype" docgen-href="#bin_database_name/0">bin_database_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_field_name">any_field_name()</a></h3>
-<p><code>any_field_name() = <a href="#type-field_name">field_name()</a> | <a href="#type-bin_field_name">bin_field_name()</a></code></p>
-<p> A field (also designated as 'column' or 'attribute') represents a set of data
- values of a particular type, one value for each record of the table.</p>
+<p><code>any_field_name() = <a href="#type-field_name" docgen-rel="seetype" docgen-href="#field_name/0">field_name()</a> | <a href="#type-bin_field_name" docgen-rel="seetype" docgen-href="#bin_field_name/0">bin_field_name()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-any_schema_name">any_schema_name()</a></h3>
-<p><code>any_schema_name() = <a href="#type-schema_name">schema_name()</a> | <a href="#type-bin_schema_name">bin_schema_name()</a></code></p>
+<p><code>any_schema_name() = <a href="#type-schema_name" docgen-rel="seetype" docgen-href="#schema_name/0">schema_name()</a> | <a href="#type-bin_schema_name" docgen-rel="seetype" docgen-href="#bin_schema_name/0">bin_schema_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_table_name">any_table_name()</a></h3>
-<p><code>any_table_name() = <a href="#type-table_name">table_name()</a> | <a href="#type-bin_table_name">bin_table_name()</a></code></p>
+<p><code>any_table_name() = <a href="#type-table_name" docgen-rel="seetype" docgen-href="#table_name/0">table_name()</a> | <a href="#type-bin_table_name" docgen-rel="seetype" docgen-href="#bin_table_name/0">bin_table_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-backend_name">backend_name()</a></h3>
 <p><code>backend_name() = sqlite3 | postgresql</code></p>
-<p> The supported SQL backends (as atom names).</p>
+
 
 <h3 class="typedecl"><a name="type-base_status">base_status()</a></h3>
-<p><code>base_status() = <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></code></p>
+<p><code>base_status() = <a href="basic_utils.html#type-base_status" docgen-rel="seetype" docgen-href="basic_utils#base_status/0">basic_utils:base_status()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_database_name">bin_database_name()</a></h3>
-<p><code>bin_database_name() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> The name of the target database instance. For example <code>&lt;&lt;"acme_stock_db"&gt;&gt;</code>.
- A database instance is also designated as a catalog.</p>
+<p><code>bin_database_name() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_field_name">bin_field_name()</a></h3>
-<p><code>bin_field_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A field (also designated as 'column' or 'attribute') represents a set of data
- values of a particular type, one value for each record of the table.</p>
+<p><code>bin_field_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_schema_name">bin_schema_name()</a></h3>
-<p><code>bin_schema_name() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> A schema describes the organisation of the tables of a database. It defines a
- namespace of tables, and security boundaries.
- For example <code>&lt;&lt;"customer_schema"&gt;&gt;</code>.</p>
+<p><code>bin_schema_name() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_table_name">bin_table_name()</a></h3>
-<p><code>bin_table_name() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> A table of a database contains records comprising the same number of fields.</p>
+<p><code>bin_table_name() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-connection">connection()</a></h3>
 <p><code>connection() = any()</code></p>
-<p> Designates an (opaque, and backend-dependent) connection handle.</p>
+
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-database_access_settings">database_access_settings()</a></h3>
-<p><code>database_access_settings() = {<a href="#type-database_connection_settings">database_connection_settings()</a>, <a href="#type-database_user_settings">database_user_settings()</a>}</code></p>
-<p> All settings necessary to access a database server.</p>
+<p><code>database_access_settings() = {<a href="#type-database_connection_settings" docgen-rel="seetype" docgen-href="#database_connection_settings/0">database_connection_settings()</a>, <a href="#type-database_user_settings" docgen-rel="seetype" docgen-href="#database_user_settings/0">database_user_settings()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-database_connection_settings">database_connection_settings()</a></h3>
-<p><code>database_connection_settings() = #database_connection_settings{host_name = <a href="sql_support.html#type-database_host_name">sql_support:database_host_name()</a>, port = <a href="#type-maybe">maybe</a>(<a href="sql_support.html#type-database_port">sql_support:database_port()</a>), name = <a href="sql_support.html#type-database_name">sql_support:database_name()</a>}</code></p>
-<p> The settings needed to designate a database server.</p>
+<p><code>database_connection_settings() = #database_connection_settings{host_name = <a href="sql_support.html#type-database_host_name" docgen-rel="seetype" docgen-href="sql_support#database_host_name/0">sql_support:database_host_name()</a>, port = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="sql_support.html#type-database_port" docgen-rel="seetype" docgen-href="sql_support#database_port/0">sql_support:database_port()</a>), name = <a href="sql_support.html#type-database_name" docgen-rel="seetype" docgen-href="sql_support#database_name/0">sql_support:database_name()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-database_host_name">database_host_name()</a></h3>
-<p><code>database_host_name() = <a href="net_utils.html#type-string_host_name">net_utils:string_host_name()</a></code></p>
-<p> Designates the hostname on which a target database server instance is running.
- For example "baz.foobar.org."</p>
+<p><code>database_host_name() = <a href="net_utils.html#type-string_host_name" docgen-rel="seetype" docgen-href="net_utils#string_host_name/0">net_utils:string_host_name()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-database_name">database_name()</a></h3>
-<p><code>database_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> The name of the target database instance. For example "acme_stock_db".
- A database instance is also designated as a catalog.</p>
+<p><code>database_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-database_port">database_port()</a></h3>
-<p><code>database_port() = <a href="net_utils.html#type-tcp_port">net_utils:tcp_port()</a></code></p>
-<p> The (TCP) port at which the target database server instance is running.
- For example 5432.</p>
+<p><code>database_port() = <a href="net_utils.html#type-tcp_port" docgen-rel="seetype" docgen-href="net_utils#tcp_port/0">net_utils:tcp_port()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-database_user_name">database_user_name()</a></h3>
-<p><code>database_user_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> The name of a user of a database server. For example "john_smith".</p>
+<p><code>database_user_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-database_user_password">database_user_password()</a></h3>
-<p><code>database_user_password() = <a href="#type-ustring">ustring()</a></code></p>
-<p> The password of a user of a database server.</p>
+<p><code>database_user_password() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-database_user_settings">database_user_settings()</a></h3>
-<p><code>database_user_settings() = #database_user_settings{user_name = <a href="sql_support.html#type-database_user_name">sql_support:database_user_name()</a>, user_password = <a href="sql_support.html#type-database_user_password">sql_support:database_user_password()</a>}</code></p>
-<p> The settings corresponding to a given user of a database server.</p>
+<p><code>database_user_settings() = #database_user_settings{user_name = <a href="sql_support.html#type-database_user_name" docgen-rel="seetype" docgen-href="sql_support#database_user_name/0">sql_support:database_user_name()</a>, user_password = <a href="sql_support.html#type-database_user_password" docgen-rel="seetype" docgen-href="sql_support#database_user_password/0">sql_support:database_user_password()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-delete_result">delete_result()</a></h3>
-<p><code>delete_result() = <a href="#type-operation_count">operation_count()</a></code></p>
-<p> The result of a delete operation, that is the number of operations performed.</p>
+<p><code>delete_result() = <a href="#type-operation_count" docgen-rel="seetype" docgen-href="#operation_count/0">operation_count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-field_description">field_description()</a></h3>
 <p><code>field_description() = #field_description{}</code></p>
-<p> The description of a field (a column).</p>
+
 
 <h3 class="typedecl"><a name="type-field_name">field_name()</a></h3>
-<p><code>field_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A field (also designated as 'column' or 'attribute') represents a set of data
- values of a particular type, one value for each record of the table.</p>
+<p><code>field_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-field_value">field_value()</a></h3>
-<p><code>field_value() = <a href="#type-maybe">maybe</a>(<a href="#type-read_binary">read_binary()</a>)</code></p>
-<p> The value of a field in a returned record, that may be 'null', that is
- translated here as 'undefined' (hence the maybe).</p>
+<p><code>field_value() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-read_binary" docgen-rel="seetype" docgen-href="#read_binary/0">read_binary()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-insert_result">insert_result()</a></h3>
-<p><code>insert_result() = <a href="#type-operation_count">operation_count()</a></code></p>
-<p> The result of an insert operation, that is the number of operations performed.</p>
+<p><code>insert_result() = <a href="#type-operation_count" docgen-rel="seetype" docgen-href="#operation_count/0">operation_count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-operation_count">operation_count()</a></h3>
-<p><code>operation_count() = <a href="#type-count">count()</a></code></p>
-<p> A number of database operations, typically performed in the context of a
- query.</p>
+<p><code>operation_count() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-query_format">query_format()</a></h3>
-<p><code>query_format() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
-<p> The format string to compose a query.</p>
+<p><code>query_format() = <a href="text_utils.html#type-format_string" docgen-rel="seetype" docgen-href="text_utils#format_string/0">text_utils:format_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-query_result">query_result()</a></h3>
-<p><code>query_result() = <a href="#type-select_result">select_result()</a> | <a href="#type-update_result">update_result()</a> | <a href="#type-insert_result">insert_result()</a> | <a href="#type-delete_result">delete_result()</a></code></p>
-<p> The result of the execution of a query.</p>
+<p><code>query_result() = <a href="#type-select_result" docgen-rel="seetype" docgen-href="#select_result/0">select_result()</a> | <a href="#type-update_result" docgen-rel="seetype" docgen-href="#update_result/0">update_result()</a> | <a href="#type-insert_result" docgen-rel="seetype" docgen-href="#insert_result/0">insert_result()</a> | <a href="#type-delete_result" docgen-rel="seetype" docgen-href="#delete_result/0">delete_result()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-query_string">query_string()</a></h3>
-<p><code>query_string() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A SQL query, as a string.
- For example "select * from customers".</p>
+<p><code>query_string() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-query_values">query_values()</a></h3>
-<p><code>query_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
-<p> The format values to compose a query.</p>
+<p><code>query_values() = <a href="text_utils.html#type-format_values" docgen-rel="seetype" docgen-href="text_utils#format_values/0">text_utils:format_values()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-read_binary">read_binary()</a></h3>
 <p><code>read_binary() = binary()</code></p>
-<p> Data as directly read, as a (prefixed) binary string containing hexadecimal
- values.</p>
+
 
 <h3 class="typedecl"><a name="type-record">record()</a></h3>
-<p><code>record() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-field_value">field_value()</a>)</code></p>
-<p> An actual record (a row).</p>
+<p><code>record() = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(<a href="#type-field_value" docgen-rel="seetype" docgen-href="#field_value/0">field_value()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-record_name">record_name()</a></h3>
+<p><code>record_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-schema_name">schema_name()</a></h3>
-<p><code>schema_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A schema describes the organisation of the tables of a database. It defines a
- namespace of tables, and security boundaries.
- For example "customer_schema".</p>
+<p><code>schema_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-select_result">select_result()</a></h3>
-<p><code>select_result() = {[<a href="#type-field_description">field_description()</a>], [<a href="#type-record">record()</a>]}</code></p>
-<p> The result of a select operation.</p>
+<p><code>select_result() = {[<a href="#type-field_description" docgen-rel="seetype" docgen-href="#field_description/0">field_description()</a>], [<a href="#type-record" docgen-rel="seetype" docgen-href="#record/0">record()</a>]}</code></p>
+
 
 <h3 class="typedecl"><a name="type-table_name">table_name()</a></h3>
-<p><code>table_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A table of a database contains records comprising the same number of fields.</p>
+<p><code>table_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
+<p><code>time_out() = <a href="time_utils.html#type-time_out" docgen-rel="seetype" docgen-href="time_utils#time_out/0">time_utils:time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-timestamp">timestamp()</a></h3>
-<p><code>timestamp() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A database timestamp.
- For example "2021-11-08 13:33:52.895374".</p>
+<p><code>timestamp() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-update_result">update_result()</a></h3>
-<p><code>update_result() = <a href="#type-operation_count">operation_count()</a></code></p>
-<p> The result of an update operation, that is the number of operations performed.</p>
+<p><code>update_result() = <a href="#type-operation_count" docgen-rel="seetype" docgen-href="#operation_count/0">operation_count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-user_id">user_id()</a></h3>
-<p><code>user_id() = <a href="#type-count">count()</a></code></p>
-<p> Any notion of user identifier.</p>
+<p><code>user_id() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-user_name">user_name()</a></h3>
-<p><code>user_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Any notion of user identifier.</p>
+<p><code>user_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#close-1">close/1</a></td><td>Closes the specified database connection.</td></tr>
-<tr><td valign="top"><a href="#connect-2">connect/2</a></td><td>Connects to the specified database, with a default time-out.</td></tr>
-<tr><td valign="top"><a href="#connect-3">connect/3</a></td><td>Connects to the specified database, with specified time-out.</td></tr>
-<tr><td valign="top"><a href="#connection_settings_to_string-1">connection_settings_to_string/1</a></td><td>Returns a textual description of the specified database connection
- settings.</td></tr>
-<tr><td valign="top"><a href="#execute_query-2">execute_query/2</a></td><td>Executes the specified SQL query based on the specified connection.</td></tr>
-<tr><td valign="top"><a href="#execute_query-3">execute_query/3</a></td><td>Executes the specified SQL query to formant, based on the specified
- connection.</td></tr>
-<tr><td valign="top"><a href="#get_backend_name-0">get_backend_name/0</a></td><td>Returns the type of the currently used (build-time) SQL backend (if any).</td></tr>
-<tr><td valign="top"><a href="#get_data-1">get_data/1</a></td><td>Returns the actual binary that is stored in a database data field, from 
-the one directly read (with is prefixed and in hexadecimal character).</td></tr>
-<tr><td valign="top"><a href="#has_backend-1">has_backend/1</a></td><td>Tells whether, from the point of view of Myriad, the specified SQL
- backend is available (that is currently and locally, at runtime).</td></tr>
-<tr><td valign="top"><a href="#list_database_names-1">list_database_names/1</a></td><td>Returns a list of all the database instances hosted by the database
- server designated by the specified connection.</td></tr>
-<tr><td valign="top"><a href="#list_possible_backend_names-0">list_possible_backend_names/0</a></td><td>Returns the various known SQL backend names (in general; not telling
- whether they are available locally or not).</td></tr>
-<tr><td valign="top"><a href="#list_schema_names-2">list_schema_names/2</a></td><td>Returns a list of the names of all the existing schemas in the database 
-instance of the database server designated by the specified connection.</td></tr>
-<tr><td valign="top"><a href="#list_table_names-3">list_table_names/3</a></td><td>Returns a list of the names of all the existing tables in the specified
- schema of the specified database instance of the database server designated by
- the specified connection.</td></tr>
-<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts (checks and inits) the SQL service support.</td></tr>
-<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the SQL support.</td></tr>
-<tr><td valign="top"><a href="#user_settings_to_string-1">user_settings_to_string/1</a></td><td>Returns a textual description of the specified database user settings.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#close-1">close/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#connect-2">connect/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#connect-3">connect/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#connection_settings_to_string-1">connection_settings_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#execute_query-2">execute_query/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#execute_query-3">execute_query/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_backend_name-0">get_backend_name/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_data-1">get_data/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#has_backend-1">has_backend/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#list_database_names-1">list_database_names/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#list_possible_backend_names-0">list_possible_backend_names/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#list_schema_names-2">list_schema_names/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#list_table_names-3">list_table_names/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#user_settings_to_string-1">user_settings_to_string/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="close-1">close/1</a></h3>
 <div class="spec">
-<p><code>close(Conn::<a href="#type-connection">connection()</a>) -&gt; <a href="#type-base_status">base_status()</a></code><br></p>
+<p><code>close(Conn::<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>) -&gt; <a href="#type-base_status" docgen-rel="seetype" docgen-href="#base_status/0">base_status()</a></code><br></p>
 <p> </p>
-</div><p>Closes the specified database connection.</p>
+</div>
 
 <h3 class="function"><a name="connect-2">connect/2</a></h3>
 <div class="spec">
-<p><code>connect(ConnSettings::<a href="#type-database_connection_settings">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings">database_user_settings()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-connection">connection()</a>)</code><br></p>
+<p><code>connect(ConnSettings::<a href="#type-database_connection_settings" docgen-rel="seetype" docgen-href="#database_connection_settings/0">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings" docgen-rel="seetype" docgen-href="#database_user_settings/0">database_user_settings()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>)</code><br></p>
 <p> </p>
-</div><p>Connects to the specified database, with a default time-out.</p>
+</div>
 
 <h3 class="function"><a name="connect-3">connect/3</a></h3>
 <div class="spec">
-<p><code>connect(ConnSettings::<a href="#type-database_connection_settings">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings">database_user_settings()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-connection">connection()</a>)</code><br></p>
+<p><code>connect(ConnSettings::<a href="#type-database_connection_settings" docgen-rel="seetype" docgen-href="#database_connection_settings/0">database_connection_settings()</a>, UserSettings::<a href="#type-database_user_settings" docgen-rel="seetype" docgen-href="#database_user_settings/0">database_user_settings()</a>, TimeOut::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>)</code><br></p>
 <p> </p>
-</div><p>Connects to the specified database, with specified time-out.</p>
+</div>
 
 <h3 class="function"><a name="connection_settings_to_string-1">connection_settings_to_string/1</a></h3>
 <div class="spec">
-<p><code>connection_settings_to_string(Database_connection_settings::<a href="#type-database_connection_settings">database_connection_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>connection_settings_to_string(Database_connection_settings::<a href="#type-database_connection_settings" docgen-rel="seetype" docgen-href="#database_connection_settings/0">database_connection_settings()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified database connection
- settings.
-</p>
+</div>
 
 <h3 class="function"><a name="execute_query-2">execute_query/2</a></h3>
 <div class="spec">
-<p><code>execute_query(Conn::<a href="#type-connection">connection()</a>, Query::<a href="#type-query_string">query_string()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-query_result">query_result()</a>)</code><br></p>
+<p><code>execute_query(Conn::<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>, Query::<a href="#type-query_string" docgen-rel="seetype" docgen-href="#query_string/0">query_string()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(<a href="#type-query_result" docgen-rel="seetype" docgen-href="#query_result/0">query_result()</a>)</code><br></p>
 <p> </p>
-</div><p>Executes the specified SQL query based on the specified connection.</p>
+</div>
 
 <h3 class="function"><a name="execute_query-3">execute_query/3</a></h3>
 <div class="spec">
-<p><code>execute_query(Conn::<a href="#type-connection">connection()</a>, QueryFormat::<a href="#type-query_format">query_format()</a>, QueryValues::<a href="#type-query_values">query_values()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-query_result">query_result()</a>)</code><br></p>
+<p><code>execute_query(Conn::<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>, QueryFormat::<a href="#type-query_format" docgen-rel="seetype" docgen-href="#query_format/0">query_format()</a>, QueryValues::<a href="#type-query_values" docgen-rel="seetype" docgen-href="#query_values/0">query_values()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(<a href="#type-query_result" docgen-rel="seetype" docgen-href="#query_result/0">query_result()</a>)</code><br></p>
 <p> </p>
-</div><p>Executes the specified SQL query to formant, based on the specified
- connection.
-</p>
+</div>
 
 <h3 class="function"><a name="get_backend_name-0">get_backend_name/0</a></h3>
 <div class="spec">
-<p><code>get_backend_name() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-backend_name">backend_name()</a>)</code><br></p>
+<p><code>get_backend_name() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-backend_name" docgen-rel="seetype" docgen-href="#backend_name/0">backend_name()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the type of the currently used (build-time) SQL backend (if any).</p>
+</div>
 
 <h3 class="function"><a name="get_data-1">get_data/1</a></h3>
 <div class="spec">
-<p><code>get_data(ReadBinString::<a href="#type-read_binary">read_binary()</a>) -&gt; binary()</code><br></p>
+<p><code>get_data(ReadBinString::<a href="#type-read_binary" docgen-rel="seetype" docgen-href="#read_binary/0">read_binary()</a>) -&gt; binary()</code><br></p>
 <p> </p>
-</div><p><p>Returns the actual binary that is stored in a database data field, from 
-the one directly read (with is prefixed and in hexadecimal character).</p>
-
- Refer to the 'Binary extraction' section above for further details.
-</p>
+</div>
 
 <h3 class="function"><a name="has_backend-1">has_backend/1</a></h3>
 <div class="spec">
-<p><code>has_backend(BackendName::<a href="#type-backend_name">backend_name()</a>) -&gt; boolean()</code><br></p>
+<p><code>has_backend(BackendName::<a href="#type-backend_name" docgen-rel="seetype" docgen-href="#backend_name/0">backend_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether, from the point of view of Myriad, the specified SQL
- backend is available (that is currently and locally, at runtime).
-</p>
+</div>
 
 <h3 class="function"><a name="list_database_names-1">list_database_names/1</a></h3>
 <div class="spec">
-<p><code>list_database_names(Conn::<a href="#type-connection">connection()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_database_name">bin_database_name()</a>])</code><br></p>
+<p><code>list_database_names(Conn::<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>([<a href="#type-bin_database_name" docgen-rel="seetype" docgen-href="#bin_database_name/0">bin_database_name()</a>])</code><br></p>
 <p> </p>
-</div><p>Returns a list of all the database instances hosted by the database
- server designated by the specified connection.
-</p>
+</div>
 
 <h3 class="function"><a name="list_possible_backend_names-0">list_possible_backend_names/0</a></h3>
 <div class="spec">
-<p><code>list_possible_backend_names() -&gt; [<a href="#type-backend_name">backend_name()</a>]</code><br></p>
+<p><code>list_possible_backend_names() -&gt; [<a href="#type-backend_name" docgen-rel="seetype" docgen-href="#backend_name/0">backend_name()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the various known SQL backend names (in general; not telling
- whether they are available locally or not).
-</p>
+</div>
 
 <h3 class="function"><a name="list_schema_names-2">list_schema_names/2</a></h3>
 <div class="spec">
-<p><code>list_schema_names(Conn::<a href="#type-connection">connection()</a>, DbInstanceName::<a href="#type-any_database_name">any_database_name()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_schema_name">bin_schema_name()</a>])</code><br></p>
+<p><code>list_schema_names(Conn::<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>, DbInstanceName::<a href="#type-any_database_name" docgen-rel="seetype" docgen-href="#any_database_name/0">any_database_name()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>([<a href="#type-bin_schema_name" docgen-rel="seetype" docgen-href="#bin_schema_name/0">bin_schema_name()</a>])</code><br></p>
 <p> </p>
-</div><p><p>Returns a list of the names of all the existing schemas in the database 
-instance of the database server designated by the specified connection.</p>
-
- For example <code>[&lt;&lt;"pg_catalog"&gt;&gt;, &lt;&lt;"information_schema"&gt;&gt;, &lt;&lt;"public"&gt;&gt;]</code>.
-</p>
+</div>
 
 <h3 class="function"><a name="list_table_names-3">list_table_names/3</a></h3>
 <div class="spec">
-<p><code>list_table_names(Conn::<a href="#type-connection">connection()</a>, DbInstanceName::<a href="#type-bin_database_name">bin_database_name()</a>, SchemaName::<a href="#type-bin_schema_name">bin_schema_name()</a>) -&gt; <a href="#type-fallible">fallible</a>([<a href="#type-bin_table_name">bin_table_name()</a>])</code><br></p>
+<p><code>list_table_names(Conn::<a href="#type-connection" docgen-rel="seetype" docgen-href="#connection/0">connection()</a>, DbInstanceName::<a href="#type-bin_database_name" docgen-rel="seetype" docgen-href="#bin_database_name/0">bin_database_name()</a>, SchemaName::<a href="#type-bin_schema_name" docgen-rel="seetype" docgen-href="#bin_schema_name/0">bin_schema_name()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>([<a href="#type-bin_table_name" docgen-rel="seetype" docgen-href="#bin_table_name/0">bin_table_name()</a>])</code><br></p>
 <p> </p>
-</div><p>Returns a list of the names of all the existing tables in the specified
- schema of the specified database instance of the database server designated by
- the specified connection.
-</p>
+</div>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><code>start() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Starts (checks and inits) the SQL service support.</p>
+</div>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><code>stop() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Stops the SQL support.</p>
+</div>
 
 <h3 class="function"><a name="user_settings_to_string-1">user_settings_to_string/1</a></h3>
 <div class="spec">
-<p><code>user_settings_to_string(Database_user_settings::<a href="#type-database_user_settings">database_user_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>user_settings_to_string(Database_user_settings::<a href="#type-database_user_settings" docgen-rel="seetype" docgen-href="#database_user_settings/0">database_user_settings()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified database user settings.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

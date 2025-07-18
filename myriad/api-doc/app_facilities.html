@@ -10,179 +10,128 @@
 <hr>
 
 <h1>Module app_facilities</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This module defines a few basic facilities for <b>applications</b> (in 
-the Myriad sense, not OTP one).
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>This module defines a few basic facilities for <b>applications</b> (in 
-the Myriad sense, not OTP one).</p>
-
- See also the preferences module for application preferences.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_app_info">any_app_info()</a></h3>
-<p><code>any_app_info() = <a href="#type-app_info">app_info()</a> | <a href="#type-app_info_map">app_info_map()</a></code></p>
+<p><code>any_app_info() = <a href="#type-app_info" docgen-rel="seetype" docgen-href="#app_info/0">app_info()</a> | <a href="#type-app_info_map" docgen-rel="seetype" docgen-href="#app_info_map/0">app_info_map()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
-<p><code>any_version() = <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a></code></p>
+<p><code>any_version() = <a href="basic_utils.html#type-any_version" docgen-rel="seetype" docgen-href="basic_utils#any_version/0">basic_utils:any_version()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-app_info">app_info()</a></h3>
-<p><code>app_info() = #app_info{name = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>, version = <a href="#type-maybe">maybe</a>(<a href="basic_utils.html#type-any_version">basic_utils:any_version()</a> | <a href="text_utils.html#type-ustring">text_utils:ustring()</a>), author = <a href="#type-maybe">maybe</a>(<a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>), os_family = <a href="#type-maybe">maybe</a>(<a href="system_utils.html#type-os_family">system_utils:os_family()</a>), os_name = <a href="#type-maybe">maybe</a>(<a href="system_utils.html#type-os_name">system_utils:os_name()</a>)}</code></p>
-<p><p> A Myriad-defined record introduced in order to store information regarding any 
-application.</p>
+<p><code>app_info() = #app_info{name = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a>, version = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="basic_utils.html#type-any_version" docgen-rel="seetype" docgen-href="basic_utils#any_version/0">basic_utils:any_version()</a> | <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a>), author = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a>), os_family = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="system_utils.html#type-os_family" docgen-rel="seetype" docgen-href="system_utils#os_family/0">system_utils:os_family()</a>), os_name = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="system_utils.html#type-os_name" docgen-rel="seetype" docgen-href="system_utils#os_name/0">system_utils:os_name()</a>)}</code></p>
 
- This information can be transformed in a map that is a bit less detailed (not
- storing application name, and storing os only, instead of os_family and
- os_name) and that can be used directly by functions in the standard 'filename'
- module, such as filename:basedir/3 in order to return suitable system-specific
- base paths.</p>
 
 <h3 class="typedecl"><a name="type-app_info_map">app_info_map()</a></h3>
 <p><code>app_info_map() = any()</code></p>
-<p> Needed by some standard functions in the filename module.</p>
+
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string" docgen-rel="seetype" docgen-href="text_utils#format_string/0">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values" docgen-rel="seetype" docgen-href="text_utils#format_values/0">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-string_like">string_like()</a></h3>
-<p><code>string_like() = <a href="text_utils.html#type-string_like">text_utils:string_like()</a></code></p>
+<p><code>string_like() = <a href="text_utils.html#type-string_like" docgen-rel="seetype" docgen-href="text_utils#string_like/0">text_utils:string_like()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays an application message.</td></tr>
-<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays an application message, once formatted.</td></tr>
-<tr><td valign="top"><a href="#fail-1">fail/1</a></td><td>To be called whenever an application is to fail (crash on error) 
-immediately.</td></tr>
-<tr><td valign="top"><a href="#fail-2">fail/2</a></td><td>To be called whenever an application is to fail (crash on error)
- immediately.</td></tr>
-<tr><td valign="top"><a href="#finished-0">finished/0</a></td><td>Called whenever the execution is finished.</td></tr>
-<tr><td valign="top"><a href="#get_app_info-1">get_app_info/1</a></td><td>Returns an application information corresponding to the specified
- application name.</td></tr>
-<tr><td valign="top"><a href="#get_app_info-2">get_app_info/2</a></td><td>Returns an application information corresponding to the specified
- application name and version.</td></tr>
-<tr><td valign="top"><a href="#get_app_info-3">get_app_info/3</a></td><td>Returns an application information corresponding to the specified
- application name and possibly version and author description.</td></tr>
-<tr><td valign="top"><a href="#get_app_info_map-1">get_app_info_map/1</a></td><td>Returns a map typically relevant for filename:basedir/3.</td></tr>
-<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts an application; expected to be the first application statement.</td></tr>
-<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops an application; expected to be the last application statement in
- the normal case.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#display-1">display/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#fail-1">fail/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#fail-2">fail/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#finished-0">finished/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_app_info-1">get_app_info/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_app_info-2">get_app_info/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_app_info-3">get_app_info/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_app_info_map-1">get_app_info_map/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="display-1">display/1</a></h3>
 <div class="spec">
-<p><code>display(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display(Message::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays an application message.</p>
+</div>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><code>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
-<p><code>FormatString</code>: an io:format-style format string, Values is the
- corresponding list of field values.
-<br>
-</p>
-</div><p>Displays an application message, once formatted.
-</p>
+<p><code>display(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="fail-1">fail/1</a></h3>
 <div class="spec">
-<p><code>fail(Reason::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</code><br></p>
+<p><code>fail(Reason::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
-</div><p><p>To be called whenever an application is to fail (crash on error) 
-immediately.</p>
-
- For example <code>app_facilities:fail( "server on strike" )</code>
-</p>
+</div>
 
 <h3 class="function"><a name="fail-2">fail/2</a></h3>
 <div class="spec">
-<p><code>fail(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</code><br></p>
-<p><code>FormatString</code>: an io:format-style format string.
-<br>
-<code>Values</code>: <p>the corresponding list of field values.</p>
-
- For example <code>app_facilities:fail("server ~ts on strike", ["foobar.org"])</code>.
-<br>
-</p>
-</div><p>To be called whenever an application is to fail (crash on error)
- immediately.
-</p>
+<p><code>fail(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; no_return()</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="finished-0">finished/0</a></h3>
 <div class="spec">
 <p><code>finished() -&gt; no_return()</code><br></p>
 <p> </p>
-</div><p>Called whenever the execution is finished.</p>
+</div>
 
 <h3 class="function"><a name="get_app_info-1">get_app_info/1</a></h3>
 <div class="spec">
-<p><code>get_app_info(AppName::<a href="#type-string_like">string_like()</a>) -&gt; <a href="#type-app_info">app_info()</a></code><br></p>
+<p><code>get_app_info(AppName::<a href="#type-string_like" docgen-rel="seetype" docgen-href="#string_like/0">string_like()</a>) -&gt; <a href="#type-app_info" docgen-rel="seetype" docgen-href="#app_info/0">app_info()</a></code><br></p>
 <p> </p>
-</div><p>Returns an application information corresponding to the specified
- application name.
-</p>
+</div>
 
 <h3 class="function"><a name="get_app_info-2">get_app_info/2</a></h3>
 <div class="spec">
-<p><code>get_app_info(AppName::<a href="#type-string_like">string_like()</a>, AppVersion::<a href="#type-any_version">any_version()</a>) -&gt; <a href="#type-app_info">app_info()</a></code><br></p>
+<p><code>get_app_info(AppName::<a href="#type-string_like" docgen-rel="seetype" docgen-href="#string_like/0">string_like()</a>, AppVersion::<a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a>) -&gt; <a href="#type-app_info" docgen-rel="seetype" docgen-href="#app_info/0">app_info()</a></code><br></p>
 <p> </p>
-</div><p>Returns an application information corresponding to the specified
- application name and version.
-</p>
+</div>
 
 <h3 class="function"><a name="get_app_info-3">get_app_info/3</a></h3>
 <div class="spec">
-<p><code>get_app_info(AppName::<a href="#type-string_like">string_like()</a>, MaybeAppVersion::<a href="#type-maybe">maybe</a>(<a href="#type-any_version">any_version()</a>), MaybeAuthorDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>)) -&gt; <a href="#type-app_info">app_info()</a></code><br></p>
+<p><code>get_app_info(AppName::<a href="#type-string_like" docgen-rel="seetype" docgen-href="#string_like/0">string_like()</a>, MaybeAppVersion::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a>), MaybeAuthorDesc::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>)) -&gt; <a href="#type-app_info" docgen-rel="seetype" docgen-href="#app_info/0">app_info()</a></code><br></p>
 <p> </p>
-</div><p>Returns an application information corresponding to the specified
- application name and possibly version and author description.
-</p>
+</div>
 
 <h3 class="function"><a name="get_app_info_map-1">get_app_info_map/1</a></h3>
 <div class="spec">
-<p><code>get_app_info_map(App_info::<a href="#type-app_info">app_info()</a>) -&gt; <a href="#type-app_info_map">app_info_map()</a></code><br></p>
+<p><code>get_app_info_map(App_info::<a href="#type-app_info" docgen-rel="seetype" docgen-href="#app_info/0">app_info()</a>) -&gt; <a href="#type-app_info_map" docgen-rel="seetype" docgen-href="#app_info_map/0">app_info_map()</a></code><br></p>
 <p> </p>
-</div><p>Returns a map typically relevant for filename:basedir/3.</p>
+</div>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><code>start(Module::module() | [module()]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start(Module::module() | [module()]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts an application; expected to be the first application statement.</p>
-
- Here we disable explicitly the trapping of EXIT events, as a function run
- through <code>erl -eval</code> (like our cases) or through <code>erl -run</code> will be executed in
- a process which will silently trap EXIT events, which would mean that the
- crash of any process created from the case, even thanks to spawn_link, would
- most probably remain unnoticed (just leading to an EXIT message happily
- sitting in the mailbox of the case process).
-</p>
+</div>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
 <p><code>stop() -&gt; no_return()</code><br></p>
 <p> </p>
-</div><p>Stops an application; expected to be the last application statement in
- the normal case.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

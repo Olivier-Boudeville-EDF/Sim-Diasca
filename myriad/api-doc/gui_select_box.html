@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_select_box</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_select_box</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><code>id() = <a href="gui_id.html#type-id" docgen-rel="seetype" docgen-href="gui_id#id/0">gui_id:id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-item">item()</a></h3>
+<p><code>item() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><code>parent() = <a href="gui.html#type-parent" docgen-rel="seetype" docgen-href="gui#parent/0">gui:parent()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-position">position()</a></h3>
+<p><code>position() = <a href="gui.html#type-position" docgen-rel="seetype" docgen-href="gui#position/0">gui:position()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-select_box">select_box()</a></h3>
+<p><b>abstract datatype</b>: <code>select_box()</code></p>
+
+
+<h3 class="typedecl"><a name="type-select_box_option">select_box_option()</a></h3>
+<p><code>select_box_option() = {position, <a href="#type-position" docgen-rel="seetype" docgen-href="#position/0">position()</a>} | {size, <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>} | {style, [<a href="#type-select_box_style" docgen-rel="seetype" docgen-href="#select_box_style/0">select_box_style()</a>]}</code></p>
+<p> No validator.</p>
+
+<h3 class="typedecl"><a name="type-select_box_style">select_box_style()</a></h3>
+<p><code>select_box_style() = single_selection | multiple_selection | extendable_selection | horizontal_scroll_if_needed | vertical_scroll_always | vertical_scroll_if_needed | vertical_no_scroll | sorted</code></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><code>size() = <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-text">text()</a></h3>
+<p><code>text() = <a href="ui.html#type-text" docgen-rel="seetype" docgen-href="ui#text/0">ui:text()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-4">create/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><code>create(Items::[<a href="#type-item" docgen-rel="seetype" docgen-href="#item/0">item()</a>], Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-select_box" docgen-rel="seetype" docgen-href="#select_box/0">select_box()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-3">create/3</a></h3>
+<div class="spec">
+<p><code>create(Items::[<a href="#type-item" docgen-rel="seetype" docgen-href="#item/0">item()</a>], Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-select_box" docgen-rel="seetype" docgen-href="#select_box/0">select_box()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-4">create/4</a></h3>
+<div class="spec">
+<p><code>create(Items::[<a href="#type-item" docgen-rel="seetype" docgen-href="#item/0">item()</a>], Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Opts::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-select_box_option" docgen-rel="seetype" docgen-href="#select_box_option/0">select_box_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-select_box" docgen-rel="seetype" docgen-href="#select_box/0">select_box()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><code>destruct(SelBox::<a href="#type-select_box" docgen-rel="seetype" docgen-href="#select_box/0">select_box()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module text_edit</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module text_edit</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_option">any_option()</a></h3>
+<p><code>any_option() = <a href="basic_utils.html#type-any_option" docgen-rel="seetype" docgen-href="basic_utils#any_option/0">basic_utils:any_option()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-char_pos">char_pos()</a></h3>
+<p><code>char_pos() = pos_integer()</code></p>
+
+
+<h3 class="typedecl"><a name="type-completion">completion()</a></h3>
+<p><code>completion() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-entry">entry()</a></h3>
+<p><code>entry() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-entry_id">entry_id()</a></h3>
+<p><code>entry_id() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-entry_str">entry_str()</a></h3>
+<p><code>entry_str() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-length">length()</a></h3>
+<p><code>length() = <a href="text_utils.html#type-length" docgen-rel="seetype" docgen-href="text_utils#length/0">text_utils:length()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-offset_char_pos">offset_char_pos()</a></h3>
+<p><code>offset_char_pos() = integer()</code></p>
+
+
+<h3 class="typedecl"><a name="type-prefix_info">prefix_info()</a></h3>
+<p><code>prefix_info() = {<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, <a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-process_error_reason">process_error_reason()</a></h3>
+<p><code>process_error_reason() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-process_outcome">process_outcome()</a></h3>
+<p><code>process_outcome() = {processing_success, <a href="#type-process_result" docgen-rel="seetype" docgen-href="#process_result/0">process_result()</a>, NewCurrentEntryId::<a href="#type-entry_id" docgen-rel="seetype" docgen-href="#entry_id/0">entry_id()</a>, MaybeTimestampBinStr::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-timestamp_binstring" docgen-rel="seetype" docgen-href="#timestamp_binstring/0">timestamp_binstring()</a>)} | {processing_error, <a href="#type-process_error_reason" docgen-rel="seetype" docgen-href="#process_error_reason/0">process_error_reason()</a>, NewCurrentEntryId::<a href="#type-entry_id" docgen-rel="seetype" docgen-href="#entry_id/0">entry_id()</a>, MaybeTimestampBinStr::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-timestamp_binstring" docgen-rel="seetype" docgen-href="#timestamp_binstring/0">timestamp_binstring()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-process_result">process_result()</a></h3>
+<p><code>process_result() = any()</code></p>
+
+
+<h3 class="typedecl"><a name="type-processor_pid">processor_pid()</a></h3>
+<p><code>processor_pid() = pid()</code></p>
+
+
+<h3 class="typedecl"><a name="type-text">text()</a></h3>
+<p><code>text() = <a href="ui.html#type-text" docgen-rel="seetype" docgen-href="ui#text/0">ui:text()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-text_edit">text_edit()</a></h3>
+<p><code>text_edit() = #text_edit{entry_id = <a href="text_edit.html#type-entry_id" docgen-rel="seetype" docgen-href="text_edit#entry_id/0">text_edit:entry_id()</a>, prefix = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a>, prefix_len = <a href="text_utils.html#type-length" docgen-rel="seetype" docgen-href="text_utils#length/0">text_utils:length()</a>, precursor_chars = [<a href="text_utils.html#type-uchar" docgen-rel="seetype" docgen-href="text_utils#uchar/0">text_utils:uchar()</a>], postcursor_chars = [<a href="text_utils.html#type-uchar" docgen-rel="seetype" docgen-href="text_utils#uchar/0">text_utils:uchar()</a>], prev_precursor_chars = [<a href="text_utils.html#type-uchar" docgen-rel="seetype" docgen-href="text_utils#uchar/0">text_utils:uchar()</a>], prev_postcursor_chars = [<a href="text_utils.html#type-uchar" docgen-rel="seetype" docgen-href="text_utils#uchar/0">text_utils:uchar()</a>], auto_add_trailing_dot = boolean(), wrap_cursor = boolean(), hist_entry_id = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="text_edit.html#type-entry_id" docgen-rel="seetype" docgen-href="text_edit#entry_id/0">text_edit:entry_id()</a>), current_entry = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="text_edit.html#type-entry" docgen-rel="seetype" docgen-href="text_edit#entry/0">text_edit:entry()</a>), processor_pid = <a href="text_edit.html#type-processor_pid" docgen-rel="seetype" docgen-href="text_edit#processor_pid/0">text_edit:processor_pid()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_edit_option">text_edit_option()</a></h3>
+<p><code>text_edit_option() = auto_add_trailing_dot | wrap_cursor</code></p>
+
+
+<h3 class="typedecl"><a name="type-timestamp_binstring">timestamp_binstring()</a></h3>
+<p><code>timestamp_binstring() = <a href="time_utils.html#type-timestamp_binstring" docgen-rel="seetype" docgen-href="time_utils#timestamp_binstring/0">time_utils:timestamp_binstring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-uchar">uchar()</a></h3>
+<p><code>uchar() = <a href="text_utils.html#type-uchar" docgen-rel="seetype" docgen-href="text_utils#uchar/0">text_utils:uchar()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_char-2">add_char/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_char_after-2">add_char_after/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#append_string-2">append_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#append_string_truncate-2">append_string_truncate/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#clear-1">clear/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-4">create/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-5">create/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_current_char-1">delete_current_char/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_previous_char-1">delete_previous_char/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#filter_options-1">filter_options/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_bin_entry-1">get_bin_entry/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_completions-1">get_completions/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_cursor_position-1">get_cursor_position/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_entry-1">get_entry/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_entry_for_submission-1">get_entry_for_submission/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_entry_id-1">get_entry_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_full_text-1">get_full_text/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_full_text_with_cursor-1">get_full_text_with_cursor/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_prefix-1">get_prefix/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_prefix_length-1">get_prefix_length/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#kill_from_cursor-1">kill_from_cursor/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#move_cursor_left-1">move_cursor_left/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#move_cursor_right-1">move_cursor_right/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#process-1">process/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#recall_next_entry-1">recall_next_entry/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#recall_previous_entry-1">recall_previous_entry/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#restore_previous_line-1">restore_previous_line/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_cursor_to_end_of_line-1">set_cursor_to_end_of_line/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_cursor_to_start_of_line-1">set_cursor_to_start_of_line/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_entry-2">set_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_prefix-2">set_prefix/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_char-2">add_char/2</a></h3>
+<div class="spec">
+<p><code>add_char(NewChar::<a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>, TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_char_after-2">add_char_after/2</a></h3>
+<div class="spec">
+<p><code>add_char_after(NewChar::<a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>, TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="append_string-2">append_string/2</a></h3>
+<div class="spec">
+<p><code>append_string(SuffixStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="append_string_truncate-2">append_string_truncate/2</a></h3>
+<div class="spec">
+<p><code>append_string_truncate(SuffixStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="clear-1">clear/1</a></h3>
+<div class="spec">
+<p><code>clear(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-4">create/4</a></h3>
+<div class="spec">
+<p><code>create(ProcessorPid::<a href="#type-processor_pid" docgen-rel="seetype" docgen-href="#processor_pid/0">processor_pid()</a>, NextEntryId::<a href="#type-entry_id" docgen-rel="seetype" docgen-href="#entry_id/0">entry_id()</a>, AutoAddTrailingDot::boolean(), WrapCursor::boolean()) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-5">create/5</a></h3>
+<div class="spec">
+<p><code>create(ProcessorPid::<a href="#type-processor_pid" docgen-rel="seetype" docgen-href="#processor_pid/0">processor_pid()</a>, NextEntryId::<a href="#type-entry_id" docgen-rel="seetype" docgen-href="#entry_id/0">entry_id()</a>, AutoAddTrailingDot::boolean(), WrapCursor::boolean(), Prefix::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="delete_current_char-1">delete_current_char/1</a></h3>
+<div class="spec">
+<p><code>delete_current_char(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; unchanged | <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="delete_previous_char-1">delete_previous_char/1</a></h3>
+<div class="spec">
+<p><code>delete_previous_char(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; unchanged | <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><code>destruct(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="filter_options-1">filter_options/1</a></h3>
+<div class="spec">
+<p><code>filter_options(FullOpts::[<a href="#type-any_option" docgen-rel="seetype" docgen-href="#any_option/0">any_option()</a>]) -&gt; {AutoAddTrailingDot::boolean(), WrapCursor::boolean(), [<a href="#type-any_option" docgen-rel="seetype" docgen-href="#any_option/0">any_option()</a>]}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_bin_entry-1">get_bin_entry/1</a></h3>
+<div class="spec">
+<p><code>get_bin_entry(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_completions-1">get_completions/1</a></h3>
+<div class="spec">
+<p><code>get_completions(TextEdit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; {<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>, <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-completion" docgen-rel="seetype" docgen-href="#completion/0">completion()</a>])}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_cursor_position-1">get_cursor_position/1</a></h3>
+<div class="spec">
+<p><code>get_cursor_position(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_entry-1">get_entry/1</a></h3>
+<div class="spec">
+<p><code>get_entry(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_entry_for_submission-1">get_entry_for_submission/1</a></h3>
+<div class="spec">
+<p><code>get_entry_for_submission(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_entry_id-1">get_entry_id/1</a></h3>
+<div class="spec">
+<p><code>get_entry_id(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-entry_id" docgen-rel="seetype" docgen-href="#entry_id/0">entry_id()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_full_text-1">get_full_text/1</a></h3>
+<div class="spec">
+<p><code>get_full_text(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_full_text_with_cursor-1">get_full_text_with_cursor/1</a></h3>
+<div class="spec">
+<p><code>get_full_text_with_cursor(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; {<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>, <a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_prefix-1">get_prefix/1</a></h3>
+<div class="spec">
+<p><code>get_prefix(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_prefix_length-1">get_prefix_length/1</a></h3>
+<div class="spec">
+<p><code>get_prefix_length(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="kill_from_cursor-1">kill_from_cursor/1</a></h3>
+<div class="spec">
+<p><code>kill_from_cursor(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="move_cursor_left-1">move_cursor_left/1</a></h3>
+<div class="spec">
+<p><code>move_cursor_left(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; unchanged | <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="move_cursor_right-1">move_cursor_right/1</a></h3>
+<div class="spec">
+<p><code>move_cursor_right(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; unchanged | <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="process-1">process/1</a></h3>
+<div class="spec">
+<p><code>process(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-process_outcome" docgen-rel="seetype" docgen-href="#process_outcome/0">process_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="recall_next_entry-1">recall_next_entry/1</a></h3>
+<div class="spec">
+<p><code>recall_next_entry(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; unchanged | <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="recall_previous_entry-1">recall_previous_entry/1</a></h3>
+<div class="spec">
+<p><code>recall_previous_entry(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; unchanged | <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="restore_previous_line-1">restore_previous_line/1</a></h3>
+<div class="spec">
+<p><code>restore_previous_line(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_cursor_to_end_of_line-1">set_cursor_to_end_of_line/1</a></h3>
+<div class="spec">
+<p><code>set_cursor_to_end_of_line(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_cursor_to_start_of_line-1">set_cursor_to_start_of_line/1</a></h3>
+<div class="spec">
+<p><code>set_cursor_to_start_of_line(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_entry-2">set_entry/2</a></h3>
+<div class="spec">
+<p><code>set_entry(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>, Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_prefix-2">set_prefix/2</a></h3>
+<div class="spec">
+<p><code>set_prefix(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>, PrefixInfo::<a href="#type-prefix_info" docgen-rel="seetype" docgen-href="#prefix_info/0">prefix_info()</a>) -&gt; <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><code>to_string(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

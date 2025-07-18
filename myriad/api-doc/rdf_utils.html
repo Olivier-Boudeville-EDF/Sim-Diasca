@@ -10,163 +10,130 @@
 <hr>
 
 <h1>Module rdf_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities in relation with <b>RDF</b>,
- namely <em>Resource Description Framework</em>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various facilities in relation with <b>RDF</b>,
- namely <em>Resource Description Framework</em>.</p>
-
- <p>See also:</p>
-
- <p>- <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework" target="_top"><code>https://en.wikipedia.org/wiki/Resource_Description_Framework</code></a></p>
-
- <p>- <a href="https://www.w3.org/TR/rdf11-primer/" target="_top"><code>https://www.w3.org/TR/rdf11-primer/</code></a></p>
-
- See rdf_utils_test.erl for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_iri">any_iri()</a></h3>
-<p><code>any_iri() = <a href="#type-iri">iri()</a> | <a href="#type-string_iri">string_iri()</a></code></p>
-<p> Any type of IRI.</p>
+<p><code>any_iri() = <a href="#type-iri" docgen-rel="seetype" docgen-href="#iri/0">iri()</a> | <a href="#type-string_iri" docgen-rel="seetype" docgen-href="#string_iri/0">string_iri()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-content">content()</a></h3>
-<p><code>content() = [<a href="#type-triple">triple()</a>]</code></p>
+<p><code>content() = [<a href="#type-triple" docgen-rel="seetype" docgen-href="#triple/0">triple()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-iri">iri()</a></h3>
-<p><code>iri() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p><p> International Resource Identifier, in charge of, well, identifying a resource.</p>
+<p><code>iri() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
- <p>This is a generalization of the URIs (Uniform Resource Identifier), allowing
- non-ASCII characters to be used; specified in RFC 3987 (see
- <a href="http://www.ietf.org/rfc/rfc3987.txt" target="_top"><code>http://www.ietf.org/rfc/rfc3987.txt</code></a>).</p>
-
- (note: type to be used internally, for efficiency)</p>
 
 <h3 class="typedecl"><a name="type-literal">literal()</a></h3>
 <p><code>literal() = any()</code></p>
-<p><p> Designates all basic values that are not IRIs, often in a textual version.</p>
 
- <p>Examples of literals include strings such as "La Joconde", dates such as "the 
-4th of July, 1990" and numbers such as "3.14159".</p>
-
- See
- <a href="https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes" target="_top"><code>https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes</code></a>.</p>
 
 <h3 class="typedecl"><a name="type-object">object()</a></h3>
-<p><code>object() = <a href="#type-iri">iri()</a> | <a href="#type-literal">literal()</a></code></p>
-<p> The actual value specified in the triplet; defines how the subject and object
- are related (output edge).</p>
+<p><code>object() = <a href="#type-iri" docgen-rel="seetype" docgen-href="#iri/0">iri()</a> | <a href="#type-literal" docgen-rel="seetype" docgen-href="#literal/0">literal()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-predicate">predicate()</a></h3>
-<p><code>predicate() = <a href="#type-iri">iri()</a></code></p>
-<p> Defines some attribute of the subject, the nature of the relationship between
- the subject and the object (directed edge).</p>
+<p><code>predicate() = <a href="#type-iri" docgen-rel="seetype" docgen-href="#iri/0">iri()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-string_iri">string_iri()</a></h3>
-<p><code>string_iri() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Version of an IRI specified (typically by the user) as a plain (Unicode)
- string.</p>
+<p><code>string_iri() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-subject">subject()</a></h3>
-<p><code>subject() = <a href="#type-iri">iri()</a></code></p>
-<p> Identifies uniquely what resource a RDF triplet is describing (input node).</p>
+<p><code>subject() = <a href="#type-iri" docgen-rel="seetype" docgen-href="#iri/0">iri()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-triple">triple()</a></h3>
-<p><code>triple() = {<a href="#type-subject">subject()</a>, <a href="#type-predicate">predicate()</a>, <a href="#type-object">object()</a>}</code></p>
-<p> A RDF statement, a property triplet (named triple as more usual here).</p>
+<p><code>triple() = {<a href="#type-subject" docgen-rel="seetype" docgen-href="#subject/0">subject()</a>, <a href="#type-predicate" docgen-rel="seetype" docgen-href="#predicate/0">predicate()</a>, <a href="#type-object" docgen-rel="seetype" docgen-href="#object/0">object()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-user_vocabulary">user_vocabulary()</a></h3>
-<p><code>user_vocabulary() = [<a href="#type-string_iri">string_iri()</a>]</code></p>
-<p> Vocabulary, typically to be specified by the user (simpler form).</p>
+<p><code>user_vocabulary() = [<a href="#type-string_iri" docgen-rel="seetype" docgen-href="#string_iri/0">string_iri()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vocabulary">vocabulary()</a></h3>
-<p><code>vocabulary() = <a href="set_utils.html#type-set">set_utils:set</a>(<a href="#type-iri">iri()</a>)</code></p>
-<p> Vocabulary, typically to be used for internal purposes.</p>
+<p><code>vocabulary() = <a href="set_utils.html#type-set" docgen-rel="seetype" docgen-href="set_utils#set/0">set_utils:set</a>(<a href="#type-iri" docgen-rel="seetype" docgen-href="#iri/0">iri()</a>)</code></p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#evaluate_statement-3">evaluate_statement/3</a></td><td>Evaluates specified statement, and returns whether it holds.</td></tr>
-<tr><td valign="top"><a href="#implies-2">implies/2</a></td><td>Tells whether the first vocabulary is a subset of the second,
- that is whether the first properties imply that the second ones are met.</td></tr>
-<tr><td valign="top"><a href="#is_iri-1">is_iri/1</a></td><td>Tells whether specified term is an IRI.</td></tr>
-<tr><td valign="top"><a href="#is_literal-1">is_literal/1</a></td><td>Tells whether specified term is a (RDF) literal.</td></tr>
-<tr><td valign="top"><a href="#is_object-1">is_object/1</a></td><td>Tells whether specified term is a RDF object.</td></tr>
-<tr><td valign="top"><a href="#is_predicate-1">is_predicate/1</a></td><td>Tells whether specified term is a RDF predicate.</td></tr>
-<tr><td valign="top"><a href="#is_subject-1">is_subject/1</a></td><td>Tells whether specified term is a RDF subject.</td></tr>
-<tr><td valign="top"><a href="#vocabulary_to_string-1">vocabulary_to_string/1</a></td><td>Returns a textual representation of specified vocabulary.</td></tr>
-<tr><td valign="top"><a href="#vocabulary_to_string-2">vocabulary_to_string/2</a></td><td>Returns a textual representation of specified vocabulary, with specified
- indentation level.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#evaluate_statement-3">evaluate_statement/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#implies-2">implies/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_iri-1">is_iri/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_literal-1">is_literal/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_object-1">is_object/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_predicate-1">is_predicate/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_subject-1">is_subject/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#vocabulary_to_string-1">vocabulary_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#vocabulary_to_string-2">vocabulary_to_string/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="evaluate_statement-3">evaluate_statement/3</a></h3>
 <div class="spec">
-<p><code>evaluate_statement(Subject::<a href="#type-subject">subject()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Object::<a href="#type-object">object()</a>) -&gt; boolean()</code><br></p>
+<p><code>evaluate_statement(Subject::<a href="#type-subject" docgen-rel="seetype" docgen-href="#subject/0">subject()</a>, Predicate::<a href="#type-predicate" docgen-rel="seetype" docgen-href="#predicate/0">predicate()</a>, Object::<a href="#type-object" docgen-rel="seetype" docgen-href="#object/0">object()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Evaluates specified statement, and returns whether it holds.</p>
+</div>
 
 <h3 class="function"><a name="implies-2">implies/2</a></h3>
 <div class="spec">
-<p><code>implies(FirstVocabulary::<a href="#type-vocabulary">vocabulary()</a>, SecondVocabulary::<a href="#type-vocabulary">vocabulary()</a>) -&gt; boolean()</code><br></p>
+<p><code>implies(FirstVocabulary::<a href="#type-vocabulary" docgen-rel="seetype" docgen-href="#vocabulary/0">vocabulary()</a>, SecondVocabulary::<a href="#type-vocabulary" docgen-rel="seetype" docgen-href="#vocabulary/0">vocabulary()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the first vocabulary is a subset of the second,
- that is whether the first properties imply that the second ones are met.
-</p>
+</div>
 
 <h3 class="function"><a name="is_iri-1">is_iri/1</a></h3>
 <div class="spec">
 <p><code>is_iri(Term::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether specified term is an IRI.</p>
+</div>
 
 <h3 class="function"><a name="is_literal-1">is_literal/1</a></h3>
 <div class="spec">
 <p><code>is_literal(Term::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether specified term is a (RDF) literal.</p>
+</div>
 
 <h3 class="function"><a name="is_object-1">is_object/1</a></h3>
 <div class="spec">
 <p><code>is_object(Term::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether specified term is a RDF object.</p>
+</div>
 
 <h3 class="function"><a name="is_predicate-1">is_predicate/1</a></h3>
 <div class="spec">
 <p><code>is_predicate(Term::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether specified term is a RDF predicate.</p>
+</div>
 
 <h3 class="function"><a name="is_subject-1">is_subject/1</a></h3>
 <div class="spec">
 <p><code>is_subject(Term::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether specified term is a RDF subject.</p>
+</div>
 
 <h3 class="function"><a name="vocabulary_to_string-1">vocabulary_to_string/1</a></h3>
 <div class="spec">
-<p><code>vocabulary_to_string(Vocabulary::<a href="#type-vocabulary">vocabulary()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>vocabulary_to_string(Vocabulary::<a href="#type-vocabulary" docgen-rel="seetype" docgen-href="#vocabulary/0">vocabulary()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of specified vocabulary.</p>
+</div>
 
 <h3 class="function"><a name="vocabulary_to_string-2">vocabulary_to_string/2</a></h3>
 <div class="spec">
-<p><code>vocabulary_to_string(Vocabulary::<a href="#type-vocabulary">vocabulary()</a>, IndentationLevel::<a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>vocabulary_to_string(Vocabulary::<a href="#type-vocabulary" docgen-rel="seetype" docgen-href="#vocabulary/0">vocabulary()</a>, IndentationLevel::<a href="text_utils.html#type-indentation_level" docgen-rel="seetype" docgen-href="text_utils#indentation_level/0">text_utils:indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of specified vocabulary, with specified
- indentation level.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

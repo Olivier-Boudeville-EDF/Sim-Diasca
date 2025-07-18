@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_splitter</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_splitter</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><code>id() = <a href="gui_id.html#type-id" docgen-rel="seetype" docgen-href="gui_id#id/0">gui_id:id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-length">length()</a></h3>
+<p><code>length() = <a href="gui.html#type-length" docgen-rel="seetype" docgen-href="gui#length/0">gui:length()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
+<p><code>orientation() = <a href="gui.html#type-orientation" docgen-rel="seetype" docgen-href="gui#orientation/0">gui:orientation()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-os_type">os_type()</a></h3>
+<p><code>os_type() = <a href="system_utils.html#type-os_type" docgen-rel="seetype" docgen-href="system_utils#os_type/0">system_utils:os_type()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><code>parent() = <a href="gui.html#type-parent" docgen-rel="seetype" docgen-href="gui#parent/0">gui:parent()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><code>point() = <a href="gui.html#type-point" docgen-rel="seetype" docgen-href="gui#point/0">gui:point()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-position">position()</a></h3>
+<p><code>position() = <a href="gui.html#type-position" docgen-rel="seetype" docgen-href="gui#position/0">gui:position()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-scaling_ratio">scaling_ratio()</a></h3>
+<p><code>scaling_ratio() = number()</code></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><code>size() = <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-splitter_option">splitter_option()</a></h3>
+<p><code>splitter_option() = {position, <a href="#type-point" docgen-rel="seetype" docgen-href="#point/0">point()</a>} | {size, <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>} | {style, [<a href="#type-splitter_style" docgen-rel="seetype" docgen-href="#splitter_style/0">splitter_style()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-splitter_position">splitter_position()</a></h3>
+<p><code>splitter_position() = <a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-splitter_style">splitter_style()</a></h3>
+<p><code>splitter_style() = three_dim_effect | thin_splitter | three_dim_splitter | three_dim_border | standard_border | no_border | no_xp_theme | allow_unsplit | live_update</code></p>
+
+
+<h3 class="typedecl"><a name="type-splitter_window">splitter_window()</a></h3>
+<p><b>abstract datatype</b>: <code>splitter_window()</code></p>
+
+
+<h3 class="typedecl"><a name="type-window">window()</a></h3>
+<p><code>window() = <a href="gui_window.html#type-window" docgen-rel="seetype" docgen-href="gui_window#window/0">gui_window:window()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-wx_splitter_option">wx_splitter_option()</a></h3>
+<p><code>wx_splitter_option() = term()</code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-5">create/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-6">create/6</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_first_pane-1">get_first_pane/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_minimum_pane_length-1">get_minimum_pane_length/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_orientation-1">get_orientation/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_panes-1">get_panes/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_scaling_ratio-1">get_scaling_ratio/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_second_pane-1">get_second_pane/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_splitter_position-1">get_splitter_position/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_split-1">is_split/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#replace_pane-3">replace_pane/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_minimum_pane_length-2">set_minimum_pane_length/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_orientation-2">set_orientation/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_panes-4">set_panes/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_scaling_ratio-2">set_scaling_ratio/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_splitter_position-2">set_splitter_position/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_unique_pane-2">set_unique_pane/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_splitter_options-1">to_wx_splitter_options/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unsplit-1">unsplit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_size-1">update_size/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><code>create(Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><code>create(Options::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-splitter_option" docgen-rel="seetype" docgen-href="#splitter_option/0">splitter_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-5">create/5</a></h3>
+<div class="spec">
+<p><code>create(Position::<a href="#type-position" docgen-rel="seetype" docgen-href="#position/0">position()</a>, Size::<a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>, Styles::[<a href="#type-splitter_style" docgen-rel="seetype" docgen-href="#splitter_style/0">splitter_style()</a>], Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-6">create/6</a></h3>
+<div class="spec">
+<p><code>create(Position::<a href="#type-position" docgen-rel="seetype" docgen-href="#position/0">position()</a>, Size::<a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>, Styles::[<a href="#type-splitter_style" docgen-rel="seetype" docgen-href="#splitter_style/0">splitter_style()</a>], OSType::<a href="#type-os_type" docgen-rel="seetype" docgen-href="#os_type/0">os_type()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><code>destruct(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_first_pane-1">get_first_pane/1</a></h3>
+<div class="spec">
+<p><code>get_first_pane(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>)</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_minimum_pane_length-1">get_minimum_pane_length/1</a></h3>
+<div class="spec">
+<p><code>get_minimum_pane_length(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_orientation-1">get_orientation/1</a></h3>
+<div class="spec">
+<p><code>get_orientation(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-orientation" docgen-rel="seetype" docgen-href="#orientation/0">orientation()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_panes-1">get_panes/1</a></h3>
+<div class="spec">
+<p><code>get_panes(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; {<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>)}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_scaling_ratio-1">get_scaling_ratio/1</a></h3>
+<div class="spec">
+<p><code>get_scaling_ratio(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-scaling_ratio" docgen-rel="seetype" docgen-href="#scaling_ratio/0">scaling_ratio()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_second_pane-1">get_second_pane/1</a></h3>
+<div class="spec">
+<p><code>get_second_pane(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>)</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_splitter_position-1">get_splitter_position/1</a></h3>
+<div class="spec">
+<p><code>get_splitter_position(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-splitter_position" docgen-rel="seetype" docgen-href="#splitter_position/0">splitter_position()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_split-1">is_split/1</a></h3>
+<div class="spec">
+<p><code>is_split(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="replace_pane-3">replace_pane/3</a></h3>
+<div class="spec">
+<p><code>replace_pane(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>, CurrentWindowPane::<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>, NewWindowPane::<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_minimum_pane_length-2">set_minimum_pane_length/2</a></h3>
+<div class="spec">
+<p><code>set_minimum_pane_length(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>, MinPaneLength::<a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_orientation-2">set_orientation/2</a></h3>
+<div class="spec">
+<p><code>set_orientation(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>, Orientation::<a href="#type-orientation" docgen-rel="seetype" docgen-href="#orientation/0">orientation()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_panes-4">set_panes/4</a></h3>
+<div class="spec">
+<p><code>set_panes(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>, FirstWindowPane::<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>, SecondWindowPane::<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>, Orientation::<a href="#type-orientation" docgen-rel="seetype" docgen-href="#orientation/0">orientation()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_scaling_ratio-2">set_scaling_ratio/2</a></h3>
+<div class="spec">
+<p><code>set_scaling_ratio(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>, ScalingRatio::<a href="#type-scaling_ratio" docgen-rel="seetype" docgen-href="#scaling_ratio/0">scaling_ratio()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_splitter_position-2">set_splitter_position/2</a></h3>
+<div class="spec">
+<p><code>set_splitter_position(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>, SplitterPos::<a href="#type-splitter_position" docgen-rel="seetype" docgen-href="#splitter_position/0">splitter_position()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_unique_pane-2">set_unique_pane/2</a></h3>
+<div class="spec">
+<p><code>set_unique_pane(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>, SinglePaneWin::<a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="to_wx_splitter_options-1">to_wx_splitter_options/1</a></h3>
+<div class="spec">
+<p><code>to_wx_splitter_options(Options::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-splitter_option" docgen-rel="seetype" docgen-href="#splitter_option/0">splitter_option()</a>)) -&gt; [<a href="#type-wx_splitter_option" docgen-rel="seetype" docgen-href="#wx_splitter_option/0">wx_splitter_option()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="unsplit-1">unsplit/1</a></h3>
+<div class="spec">
+<p><code>unsplit(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="update_size-1">update_size/1</a></h3>
+<div class="spec">
+<p><code>update_size(SplitterWin::<a href="#type-splitter_window" docgen-rel="seetype" docgen-href="#splitter_window/0">splitter_window()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

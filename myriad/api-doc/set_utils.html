@@ -10,329 +10,232 @@
 <hr>
 
 <h1>Module set_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities about <b>sets</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various facilities about <b>sets</b>.</p>
-
- <p>A set is a container that:</p>
-
- <p>- does not allow duplicates (adding an element more than once is like adding 
-it only once)</p>
-
- <p>- has no intrinsic order (yet can be iterated over)</p>
-
- <p>- can efficiently look-up elements, even if containing a large number of them</p>
-
- <p>Notes:</p>
-
- <p>- we provide here a basic, general-purpose set support, and do not rely on any 
-lighter, alternate level of indirection</p>
-
- <p>- if you feel the need for an associative table whose values do no matter, 
-your actual need is a set!</p>
-
- <p>See set_utils_test.erl for the corresponding test.</p>
-
- See also: list_utils.erl and set_utils_test.erl.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-element">element()</a></h3>
 <p><code>element() = term()</code></p>
-<p> Element of a set.</p>
+
 
 <h3 class="typedecl"><a name="type-iterator">iterator()</a></h3>
-<p><code>iterator() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-iter">gb_sets:iter()</a></code></p>
-<p> Internally, a kind of enumeration (list) of the elements in the set.</p>
+<p><code>iterator() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-iter" docgen-rel="seetype" docgen-href="stdlib:gb_sets#iter/0">gb_sets:iter()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-next_iteration">next_iteration()</a></h3>
-<p><code>next_iteration() = {<a href="#type-element">element()</a>, <a href="#type-iterator">iterator()</a>} | none</code></p>
+<p><code>next_iteration() = {<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, <a href="#type-iterator" docgen-rel="seetype" docgen-href="#iterator/0">iterator()</a>} | none</code></p>
 
 
 <h3 class="typedecl"><a name="type-set">set()</a></h3>
-<p><code>set(T) = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-set">gb_sets:set</a>(T)</code></p>
-<p> For homogeneous sets.</p>
+<p><code>set(T) = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-set" docgen-rel="seetype" docgen-href="stdlib:gb_sets#set/0">gb_sets:set</a>(T)</code></p>
+
 
 <h3 class="typedecl"><a name="type-set">set()</a></h3>
-<p><code>set() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-set">gb_sets:set()</a></code></p>
+<p><code>set() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-set" docgen-rel="seetype" docgen-href="stdlib:gb_sets#set/0">gb_sets:set()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns a set formed from the specified one with specified element
- inserted.</td></tr>
-<tr><td valign="top"><a href="#add_as_new-2">add_as_new/2</a></td><td>Returns a set formed from the specified one with specified element
- inserted, checking that this element was not already in the original set
- (otherwise a batmatch exception is thrown).</td></tr>
-<tr><td valign="top"><a href="#add_element_list-2">add_element_list/2</a></td><td>Returns a set made of the specified set to which the elements of the
- specified plain list have been added.</td></tr>
-<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Tells whether the two specified sets are equal (meaning that they contain 
-exactly the same elements).</td></tr>
-<tr><td valign="top"><a href="#check_set-1">check_set/1</a></td><td>Ensures that the specified term is a set and returns it; throws an
- exception if not.</td></tr>
-<tr><td valign="top"><a href="#delete-2">delete/2</a></td><td>Removes the specified element (if any) from the specified set, and 
-returns the resulting set.</td></tr>
-<tr><td valign="top"><a href="#delete_existing-2">delete_existing/2</a></td><td>Ensures that the specified element was indeed in the specified set before 
-removing it, and returning the resulting set.</td></tr>
-<tr><td valign="top"><a href="#difference-2">difference/2</a></td><td>Returns the difference between the first specified set and the second,
- that is the elements of the first set that are not in the second one.</td></tr>
-<tr><td valign="top"><a href="#differences-2">differences/2</a></td><td>Returns the differences between the first specified set and the second,
- as a pair, whose first element corresponds to the elements of the first set
- that are not in the second one, and whose second element corresponds to the
- elements of the second set that are not in the first one.</td></tr>
-<tr><td valign="top"><a href="#extract_if_existing-2">extract_if_existing/2</a></td><td>Extracts specified element (if any) from specified set: removes it from
- the returned set; otherwise (that is: if that element does not exist in the
- specified set), returns false.</td></tr>
-<tr><td valign="top"><a href="#from_list-1">from_list/1</a></td><td>Returns a set created from the specified list of elements.</td></tr>
-<tr><td valign="top"><a href="#intersection-1">intersection/1</a></td><td>Returns the intersection of the specified sets.</td></tr>
-<tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td>Returns the intersection of the two specified sets.</td></tr>
-<tr><td valign="top"><a href="#is_empty-1">is_empty/1</a></td><td>Returns whether the specified set is empty.</td></tr>
-<tr><td valign="top"><a href="#is_set-1">is_set/1</a></td><td>Returns whether the specified term appears to be a legit set.</td></tr>
-<tr><td valign="top"><a href="#is_subset-2">is_subset/2</a></td><td>Tells whether the first set is a subset of the second, that is if each
- element of the first is also in the second.</td></tr>
-<tr><td valign="top"><a href="#iterator-1">iterator/1</a></td><td>Returns an iterator that can be used for traversing the entries of the 
-specified set.</td></tr>
-<tr><td valign="top"><a href="#member-2">member/2</a></td><td>Returns true iff the specified element is an element of the specified
- set.</td></tr>
-<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new, empty, set.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a set containing the elements of the specified list (possibly 
-unordered and containing duplicates).</td></tr>
-<tr><td valign="top"><a href="#next-1">next/1</a></td><td>Returns the next element and iterator, as obtained from the specified 
-iterator.</td></tr>
-<tr><td valign="top"><a href="#singleton-1">singleton/1</a></td><td>Returns a set comprising only the specified element.</td></tr>
-<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the number of elements in the specified set.</td></tr>
-<tr><td valign="top"><a href="#to_list-1">to_list/1</a></td><td>Returns a list created from the elements of the specified set.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified set.</td></tr>
-<tr><td valign="top"><a href="#union-1">union/1</a></td><td>Returns the union of the specified sets.</td></tr>
-<tr><td valign="top"><a href="#union-2">union/2</a></td><td>Returns the union of the two specified sets.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_as_new-2">add_as_new/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_element_list-2">add_element_list/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_set-1">check_set/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete-2">delete/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_existing-2">delete_existing/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#difference-2">difference/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#differences-2">differences/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_if_existing-2">extract_if_existing/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_list-1">from_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#intersection-1">intersection/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_empty-1">is_empty/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_set-1">is_set/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_subset-2">is_subset/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#iterator-1">iterator/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#member-2">member/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#next-1">next/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#singleton-1">singleton/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_list-1">to_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#union-1">union/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#union-2">union/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add-2">add/2</a></h3>
 <div class="spec">
-<p><code>add(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>add(Element::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns a set formed from the specified one with specified element
- inserted. If this element is already in the specified set, the returned set is
- the same.
-</p>
+</div>
 
 <h3 class="function"><a name="add_as_new-2">add_as_new/2</a></h3>
 <div class="spec">
-<p><code>add_as_new(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>add_as_new(Element::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns a set formed from the specified one with specified element
- inserted, checking that this element was not already in the original set
- (otherwise a batmatch exception is thrown).
-</p>
+</div>
 
 <h3 class="function"><a name="add_element_list-2">add_element_list/2</a></h3>
 <div class="spec">
-<p><code>add_element_list(Elements::[<a href="#type-element">element()</a>], Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>add_element_list(Elements::[<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>], Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns a set made of the specified set to which the elements of the
- specified plain list have been added.
-</p>
+</div>
 
 <h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
 <div class="spec">
-<p><code>are_equal(Set1::<a href="#type-set">set()</a>, Set2::<a href="#type-set">set()</a>) -&gt; boolean()</code><br></p>
+<p><code>are_equal(Set1::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>, Set2::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Tells whether the two specified sets are equal (meaning that they contain 
-exactly the same elements).</p>
-
- Note: depending on set_impl, this function may or may not be useless, as
- using the basic '==' term-level operator may be sufficient to compare some
- types of sets (e.g. ordsets).
-</p>
+</div>
 
 <h3 class="function"><a name="check_set-1">check_set/1</a></h3>
 <div class="spec">
-<p><code>check_set(Term::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_set(Term::term()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Ensures that the specified term is a set and returns it; throws an
- exception if not.
-</p>
+</div>
 
 <h3 class="function"><a name="delete-2">delete/2</a></h3>
 <div class="spec">
-<p><code>delete(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>delete(Element::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p><p>Removes the specified element (if any) from the specified set, and 
-returns the resulting set.</p>
-
- Note: does not fail if the element was not in the set; use delete_existing/2
- to ensure that the element was present.
-</p>
+</div>
 
 <h3 class="function"><a name="delete_existing-2">delete_existing/2</a></h3>
 <div class="spec">
-<p><code>delete_existing(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>delete_existing(Element::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures that the specified element was indeed in the specified set before 
-removing it, and returning the resulting set.</p>
-
- Note: use delete/2 to delete an element without checking whether the element
- was already present in the set.
-</p>
+</div>
 
 <h3 class="function"><a name="difference-2">difference/2</a></h3>
 <div class="spec">
-<p><code>difference(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>difference(FirstSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>, SecondSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns the difference between the first specified set and the second,
- that is the elements of the first set that are not in the second one.
-</p>
+</div>
 
 <h3 class="function"><a name="differences-2">differences/2</a></h3>
 <div class="spec">
-<p><code>differences(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; {<a href="#type-set">set()</a>, <a href="#type-set">set()</a>}</code><br></p>
+<p><code>differences(FirstSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>, SecondSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; {<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>, <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>}</code><br></p>
 <p> </p>
-</div><p>Returns the differences between the first specified set and the second,
- as a pair, whose first element corresponds to the elements of the first set
- that are not in the second one, and whose second element corresponds to the
- elements of the second set that are not in the first one.
-</p>
+</div>
 
 <h3 class="function"><a name="extract_if_existing-2">extract_if_existing/2</a></h3>
 <div class="spec">
-<p><code>extract_if_existing(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; false | <a href="#type-set">set()</a></code><br></p>
+<p><code>extract_if_existing(Element::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; false | <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Extracts specified element (if any) from specified set: removes it from
- the returned set; otherwise (that is: if that element does not exist in the
- specified set), returns false.
-</p>
+</div>
 
 <h3 class="function"><a name="from_list-1">from_list/1</a></h3>
 <div class="spec">
-<p><code>from_list(List::[<a href="#type-element">element()</a>]) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>from_list(List::[<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>]) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns a set created from the specified list of elements.</p>
+</div>
 
 <h3 class="function"><a name="intersection-1">intersection/1</a></h3>
 <div class="spec">
-<p><code>intersection(ListOfSets::[<a href="#type-set">set()</a>]) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>intersection(ListOfSets::[<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>]) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns the intersection of the specified sets.</p>
+</div>
 
 <h3 class="function"><a name="intersection-2">intersection/2</a></h3>
 <div class="spec">
-<p><code>intersection(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>intersection(FirstSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>, SecondSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns the intersection of the two specified sets.</p>
+</div>
 
 <h3 class="function"><a name="is_empty-1">is_empty/1</a></h3>
 <div class="spec">
-<p><code>is_empty(Set::<a href="#type-set">set()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_empty(Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Returns whether the specified set is empty.</p>
+</div>
 
 <h3 class="function"><a name="is_set-1">is_set/1</a></h3>
 <div class="spec">
 <p><code>is_set(Term::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Returns whether the specified term appears to be a legit set.</p>
+</div>
 
 <h3 class="function"><a name="is_subset-2">is_subset/2</a></h3>
 <div class="spec">
-<p><code>is_subset(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_subset(FirstSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>, SecondSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the first set is a subset of the second, that is if each
- element of the first is also in the second.
-</p>
+</div>
 
 <h3 class="function"><a name="iterator-1">iterator/1</a></h3>
 <div class="spec">
-<p><code>iterator(Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-iterator">iterator()</a></code><br></p>
+<p><code>iterator(Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-iterator" docgen-rel="seetype" docgen-href="#iterator/0">iterator()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns an iterator that can be used for traversing the entries of the 
-specified set.</p>
-
- Note: the iterator is *not* the first iterated element of a set: next/1 shall
- be used even for the very first element.
-</p>
+</div>
 
 <h3 class="function"><a name="member-2">member/2</a></h3>
 <div class="spec">
-<p><code>member(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; boolean()</code><br></p>
+<p><code>member(Element::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Returns true iff the specified element is an element of the specified
- set.
-</p>
+</div>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>
 <div class="spec">
-<p><code>new() -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>new() -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, empty, set.</p>
+</div>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><code>new(ElementList::[<a href="#type-element">element()</a>]) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>new(ElementList::[<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>]) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a set containing the elements of the specified list (possibly 
-unordered and containing duplicates).</p>
-
- See singleton/1 if wanting to create a set with one element.
-</p>
+</div>
 
 <h3 class="function"><a name="next-1">next/1</a></h3>
 <div class="spec">
-<p><code>next(Iterator::<a href="#type-iterator">iterator()</a>) -&gt; <a href="#type-next_iteration">next_iteration()</a></code><br></p>
+<p><code>next(Iterator::<a href="#type-iterator" docgen-rel="seetype" docgen-href="#iterator/0">iterator()</a>) -&gt; <a href="#type-next_iteration" docgen-rel="seetype" docgen-href="#next_iteration/0">next_iteration()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the next element and iterator, as obtained from the specified 
-iterator.</p>
-
- Allows the iterators to be gone through.
-</p>
+</div>
 
 <h3 class="function"><a name="singleton-1">singleton/1</a></h3>
 <div class="spec">
-<p><code>singleton(Element::<a href="#type-element">element()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>singleton(Element::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a set comprising only the specified element.</p>
-
- More elegant than set_utils:add(Foo, set_utils:new()).
-</p>
+</div>
 
 <h3 class="function"><a name="size-1">size/1</a></h3>
 <div class="spec">
-<p><code>size(Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-count">count()</a></code><br></p>
+<p><code>size(Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code><br></p>
 <p> </p>
-</div><p>Returns the number of elements in the specified set.</p>
+</div>
 
 <h3 class="function"><a name="to_list-1">to_list/1</a></h3>
 <div class="spec">
-<p><code>to_list(Set::<a href="#type-set">set()</a>) -&gt; [<a href="#type-element">element()</a>]</code><br></p>
+<p><code>to_list(Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; [<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns a list created from the elements of the specified set.</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(Set::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified set.</p>
+</div>
 
 <h3 class="function"><a name="union-1">union/1</a></h3>
 <div class="spec">
-<p><code>union(ListOfSets::[<a href="#type-set">set()</a>]) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>union(ListOfSets::[<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>]) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns the union of the specified sets.</p>
+</div>
 
 <h3 class="function"><a name="union-2">union/2</a></h3>
 <div class="spec">
-<p><code>union(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></code><br></p>
+<p><code>union(FirstSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>, SecondSet::<a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a>) -&gt; <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set()</a></code><br></p>
 <p> </p>
-</div><p>Returns the union of the two specified sets.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

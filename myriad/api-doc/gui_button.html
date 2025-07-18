@@ -10,179 +10,185 @@
 <hr>
 
 <h1>Module gui_button</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>button management</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 
-<h2><a name="description">Description</a></h2>Gathering of various facilities for <b>button management</b>.
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_button">any_button()</a></h3>
+<p><b>abstract datatype</b>: <code>any_button()</code></p>
+
+
 <h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
-<p><code>bitmap() = <a href="gui_image.html#type-bitmap">gui_image:bitmap()</a></code></p>
+<p><code>bitmap() = <a href="gui_image.html#type-bitmap" docgen-rel="seetype" docgen-href="gui_image#bitmap/0">gui_image:bitmap()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bitmap_button">bitmap_button()</a></h3>
 <p><b>abstract datatype</b>: <code>bitmap_button()</code></p>
-<p> Designates an actual button instance displaying a bitmap instead of the usual
- label.</p>
+
 
 <h3 class="typedecl"><a name="type-button">button()</a></h3>
 <p><b>abstract datatype</b>: <code>button()</code></p>
-<p><p> Designates an actual button instance.</p>
 
- When such a button is clicked, it emits an onButtonClicked event.</p>
 
 <h3 class="typedecl"><a name="type-button_id">button_id()</a></h3>
-<p><code>button_id() = <a href="gui_id.html#type-button_id">gui_id:button_id()</a></code></p>
+<p><code>button_id() = <a href="gui_id.html#type-button_id" docgen-rel="seetype" docgen-href="gui_id#button_id/0">gui_id:button_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-button_option">button_option()</a></h3>
-<p><code>button_option() = {label, <a href="#type-label">label()</a>} | {style, [<a href="#type-button_style">button_style()</a>]} | {position, <a href="#type-point">point()</a>} | {size, <a href="#type-dimensions">dimensions()</a>}</code></p>
-<p> An option for the creation of a button.</p>
+<p><code>button_option() = {label, <a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>} | {style, [<a href="#type-button_style" docgen-rel="seetype" docgen-href="#button_style/0">button_style()</a>]} | {position, <a href="#type-point" docgen-rel="seetype" docgen-href="#point/0">point()</a>} | {size, <a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-button_ref">button_ref()</a></h3>
-<p><code>button_ref() = <a href="#type-button">button()</a> | <a href="#type-button_id">button_id()</a></code></p>
-<p> Any kind of reference onto a button.</p>
+<p><code>button_ref() = <a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a> | <a href="#type-button_id" docgen-rel="seetype" docgen-href="#button_id/0">button_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-button_style">button_style()</a></h3>
 <p><code>button_style() = left_justified | right_justified | top_justified | bottom_justified | exact_fit | flat</code></p>
-<p> A style element of a button, see
- <a href="http://docs.wxwidgets.org/stable/classwx_button.html" target="_top"><code>http://docs.wxwidgets.org/stable/classwx_button.html</code></a>.</p>
+
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><code>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
+<p><code>dimensions() = <a href="gui.html#type-dimensions" docgen-rel="seetype" docgen-href="gui#dimensions/0">gui:dimensions()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
-<p><code>id() = <a href="gui_id.html#type-id">gui_id:id()</a></code></p>
+<p><code>id() = <a href="gui_id.html#type-id" docgen-rel="seetype" docgen-href="gui_id#id/0">gui_id:id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><code>label() = <a href="gui.html#type-label">gui:label()</a></code></p>
+<p><code>label() = <a href="gui.html#type-label" docgen-rel="seetype" docgen-href="gui#label/0">gui:label()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-myriadgui_button_id">myriadgui_button_id()</a></h3>
+<p><code>myriadgui_button_id() = left_chevron_green_button | right_chevron_green_button | up_chevron_green_button | down_chevron_green_button</code></p>
 
 
 <h3 class="typedecl"><a name="type-parent">parent()</a></h3>
-<p><code>parent() = <a href="gui.html#type-parent">gui:parent()</a></code></p>
+<p><code>parent() = <a href="gui.html#type-parent" docgen-rel="seetype" docgen-href="gui#parent/0">gui:parent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point">point()</a></h3>
-<p><code>point() = <a href="gui.html#type-point">gui:point()</a></code></p>
+<p><code>point() = <a href="gui.html#type-point" docgen-rel="seetype" docgen-href="gui#point/0">gui:point()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
-<p><code>position() = <a href="gui.html#type-position">gui:position()</a></code></p>
+<p><code>position() = <a href="gui.html#type-position" docgen-rel="seetype" docgen-href="gui#position/0">gui:position()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-size">size()</a></h3>
-<p><code>size() = <a href="gui.html#type-size">gui:size()</a></code></p>
+<p><code>size() = <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-toggle_button">toggle_button()</a></h3>
 <p><b>abstract datatype</b>: <code>toggle_button()</code></p>
-<p><p> Designates a toggle button, that is a button that, when clicked by the user, 
-stays pressed.</p>
 
- <p>It is therefore similar to a checkbox in functionality, but looks like a 
-button.</p>
-
- When such a toggle button is clicked, it emits an onButtonToggled event.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a (labelled) button, with the specified parent.</td></tr>
-<tr><td valign="top"><a href="#create-3">create/3</a></td><td>Creates a (labelled) button, with the specified identifier and parent.</td></tr>
-<tr><td valign="top"><a href="#create-4">create/4</a></td><td>Creates a (labelled) button, with the specified identifier, option(s) and 
-parent.</td></tr>
-<tr><td valign="top"><a href="#create-6">create/6</a></td><td>Creates a button, with parent and most settings specified.</td></tr>
-<tr><td valign="top"><a href="#create_bitmap-3">create_bitmap/3</a></td><td>Creates a button with the specified identifier and that displays the
- specified bitmap.</td></tr>
-<tr><td valign="top"><a href="#create_multiple-2">create_multiple/2</a></td><td>Creates (labelled) buttons, with their (single, common) parent specified.</td></tr>
-<tr><td valign="top"><a href="#create_toggle-3">create_toggle/3</a></td><td>Creates a (labelled) toggle button with the specified identifier and
- parent.</td></tr>
-<tr><td valign="top"><a href="#create_toggle-4">create_toggle/4</a></td><td>Creates a (labelled) toggle button, with the specified identifier, 
-option(s) and parent.</td></tr>
-<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified button.</td></tr>
-<tr><td valign="top"><a href="#set_label-2">set_label/2</a></td><td>Sets the label of the specified button.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-4">create/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-6">create/6</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_bitmap-3">create_bitmap/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_multiple-2">create_multiple/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_toggle-3">create_toggle/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_toggle-4">create_toggle/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct_bitmap-1">destruct_bitmap/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct_toggle-1">destruct_toggle/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_myriadgui_identifiers-0">get_myriadgui_identifiers/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_myriadgui_identifier-1">is_myriadgui_identifier/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_label-2">set_label/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="create-2">create/2</a></h3>
 <div class="spec">
-<p><code>create(Label::<a href="#type-label">label()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></code><br></p>
+<p><code>create(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a></code><br></p>
 <p> </p>
-</div><p>Creates a (labelled) button, with the specified parent.</p>
+</div>
 
 <h3 class="function"><a name="create-3">create/3</a></h3>
 <div class="spec">
-<p><code>create(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></code><br></p>
+<p><code>create(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a></code><br></p>
 <p> </p>
-</div><p>Creates a (labelled) button, with the specified identifier and parent.</p>
+</div>
 
 <h3 class="function"><a name="create-4">create/4</a></h3>
 <div class="spec">
-<p><code>create(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Opts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-button_option">button_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></code><br></p>
+<p><code>create(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Opts::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-button_option" docgen-rel="seetype" docgen-href="#button_option/0">button_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a (labelled) button, with the specified identifier, option(s) and 
-parent.</p>
-
- No 'label' option is to be specified among the options.
-</p>
+</div>
 
 <h3 class="function"><a name="create-6">create/6</a></h3>
 <div class="spec">
-<p><code>create(Label::<a href="#type-label">label()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Styles::[<a href="#type-button_style">button_style()</a>], Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></code><br></p>
+<p><code>create(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Position::<a href="#type-position" docgen-rel="seetype" docgen-href="#position/0">position()</a>, Size::<a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>, Styles::[<a href="#type-button_style" docgen-rel="seetype" docgen-href="#button_style/0">button_style()</a>], Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-any_button" docgen-rel="seetype" docgen-href="#any_button/0">any_button()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a button, with parent and most settings specified.</p>
-
- (internal use only)
-</p>
+</div>
 
 <h3 class="function"><a name="create_bitmap-3">create_bitmap/3</a></h3>
 <div class="spec">
-<p><code>create_bitmap(Bitmap::<a href="#type-bitmap">bitmap()</a>, Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-bitmap_button">bitmap_button()</a></code><br></p>
+<p><code>create_bitmap(Bitmap::<a href="#type-bitmap" docgen-rel="seetype" docgen-href="#bitmap/0">bitmap()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-bitmap_button" docgen-rel="seetype" docgen-href="#bitmap_button/0">bitmap_button()</a></code><br></p>
 <p> </p>
-</div><p>Creates a button with the specified identifier and that displays the
- specified bitmap.
-</p>
+</div>
 
 <h3 class="function"><a name="create_multiple-2">create_multiple/2</a></h3>
 <div class="spec">
-<p><code>create_multiple(Labels::[<a href="#type-label">label()</a>], Parent::<a href="#type-parent">parent()</a>) -&gt; [<a href="#type-button">button()</a>]</code><br></p>
+<p><code>create_multiple(Labels::[<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>], Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; [<a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a>]</code><br></p>
 <p> </p>
-</div><p>Creates (labelled) buttons, with their (single, common) parent specified.</p>
+</div>
 
 <h3 class="function"><a name="create_toggle-3">create_toggle/3</a></h3>
 <div class="spec">
-<p><code>create_toggle(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-toggle_button">toggle_button()</a></code><br></p>
+<p><code>create_toggle(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-toggle_button" docgen-rel="seetype" docgen-href="#toggle_button/0">toggle_button()</a></code><br></p>
 <p> </p>
-</div><p>Creates a (labelled) toggle button with the specified identifier and
- parent.
-</p>
+</div>
 
 <h3 class="function"><a name="create_toggle-4">create_toggle/4</a></h3>
 <div class="spec">
-<p><code>create_toggle(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Opts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-button_option">button_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-toggle_button">toggle_button()</a></code><br></p>
+<p><code>create_toggle(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Opts::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-button_option" docgen-rel="seetype" docgen-href="#button_option/0">button_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-toggle_button" docgen-rel="seetype" docgen-href="#toggle_button/0">toggle_button()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a (labelled) toggle button, with the specified identifier, 
-option(s) and parent.</p>
-
- No 'label' option is to be specified among the options.
-</p>
+</div>
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><code>destruct(Button::<a href="#type-button">button()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>destruct(Button::<a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Destructs the specified button.</p>
+</div>
+
+<h3 class="function"><a name="destruct_bitmap-1">destruct_bitmap/1</a></h3>
+<div class="spec">
+<p><code>destruct_bitmap(Button::<a href="#type-bitmap_button" docgen-rel="seetype" docgen-href="#bitmap_button/0">bitmap_button()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="destruct_toggle-1">destruct_toggle/1</a></h3>
+<div class="spec">
+<p><code>destruct_toggle(Button::<a href="#type-toggle_button" docgen-rel="seetype" docgen-href="#toggle_button/0">toggle_button()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_myriadgui_identifiers-0">get_myriadgui_identifiers/0</a></h3>
+<div class="spec">
+<p><code>get_myriadgui_identifiers() -&gt; [<a href="#type-myriadgui_button_id" docgen-rel="seetype" docgen-href="#myriadgui_button_id/0">myriadgui_button_id()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_myriadgui_identifier-1">is_myriadgui_identifier/1</a></h3>
+<div class="spec">
+<p><code>is_myriadgui_identifier(Id::<a href="#type-button_id" docgen-rel="seetype" docgen-href="#button_id/0">button_id()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="set_label-2">set_label/2</a></h3>
 <div class="spec">
-<p><code>set_label(Button::<a href="#type-button">button()</a>, Label::<a href="#type-label">label()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_label(Button::<a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a>, Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the label of the specified button.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

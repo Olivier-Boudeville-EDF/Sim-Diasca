@@ -10,266 +10,178 @@
 <hr>
 
 <h1>Module meta_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various higher-level, convenient <b>meta-related
- facilities</b>, notably regarding metaprogramming, types and parse transforms.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various higher-level, convenient <b>meta-related
- facilities</b>, notably regarding metaprogramming, types and parse transforms.</p>
-
- <p>See meta_utils_test.erl for the corresponding test, and ast_info.erl for the 
-more basic services used by this module.</p>
-
- <p>Note that this module is a prerequisite of at least most of our parse 
-transforms, hence it must be bootstrapped *before* they are built, and cannot 
-use them.</p>
-
- <p>So, to compile it, just go to the root of this layer and execute for example 
-'make all'.</p>
-
- <p>To determine the other bootstrapped modules (i.e. the subset of our modules 
-that this module can use), see the BOOTSTRAP_MODULES variable in 
-GNUmakevars.inc.</p>
-
- See also: the type_utils module, about the management of datatypes themselves,
- and the ast* modules for lower-level operations.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms" docgen-rel="seetype" docgen-href="ast_transform#ast_transforms/0">ast_transform:ast_transforms()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-clause_def">clause_def()</a></h3>
-<p><code>clause_def() = <a href="#type-form">form()</a></code></p>
-<p> The form corresponding to the definition of a clause of a function, typically
- {clause, LINE, Rep(Ps), Rep(Gs), Rep(B)} for '( Ps ) when Gs -&gt; B'.</p>
+<p><code>clause_def() = <a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-form">form()</a></h3>
-<p><code>form() = <a href="ast_base.html#type-form">ast_base:form()</a></code></p>
+<p><code>form() = <a href="ast_base.html#type-form" docgen-rel="seetype" docgen-href="ast_base#form/0">ast_base:form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_arity">function_arity()</a></h3>
 <p><code>function_arity() = arity()</code></p>
-<p> The arity of a function.</p>
+
 
 <h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
-<p><code>function_id() = {<a href="#type-function_name">function_name()</a>, <a href="#type-function_arity">function_arity()</a>}</code></p>
-<p> Declaration of a function based on a name with an arity (unique function
- signature within a module).</p>
+<p><code>function_id() = {<a href="#type-function_name" docgen-rel="seetype" docgen-href="#function_name/0">function_name()</a>, <a href="#type-function_arity" docgen-rel="seetype" docgen-href="#function_arity/0">function_arity()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-function_info">function_info()</a></h3>
-<p><code>function_info() = <a href="ast_info.html#type-function_info">ast_info:function_info()</a></code></p>
+<p><code>function_info() = <a href="ast_info.html#type-function_info" docgen-rel="seetype" docgen-href="ast_info#function_info/0">ast_info:function_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
-<p><code>function_name() = <a href="basic_utils.html#type-function_name">basic_utils:function_name()</a></code></p>
-<p> The name of a function.</p>
+<p><code>function_name() = <a href="basic_utils.html#type-function_name" docgen-rel="seetype" docgen-href="basic_utils#function_name/0">basic_utils:function_name()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-function_spec">function_spec()</a></h3>
-<p><code>function_spec() = <a href="#type-form">form()</a></code></p>
-<p><p> The full type specification (if any) of that function, as an abstract form; 
-typically:</p>
+<p><code>function_spec() = <a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a></code></p>
 
- {attribute, L, spec, { {foobar,Arity}, [{type,L,'fun', [{type,L,...</p>
 
 <h3 class="typedecl"><a name="type-function_type">function_type()</a></h3>
 <p><code>function_type() = any()</code></p>
-<p> The type of a function (currenty: unclear semantics).</p>
+
 
 <h3 class="typedecl"><a name="type-module_info">module_info()</a></h3>
-<p><code>module_info() = <a href="ast_info.html#type-module_info">ast_info:module_info()</a></code></p>
+<p><code>module_info() = <a href="ast_info.html#type-module_info" docgen-rel="seetype" docgen-href="ast_info#module_info/0">ast_info:module_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
-<p> The name of a module.</p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name" docgen-rel="seetype" docgen-href="basic_utils#module_name/0">basic_utils:module_name()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-option">option()</a></h3>
+<p><code>option(T) = <a href="type_utils.html#type-option" docgen-rel="seetype" docgen-href="type_utils#option/0">type_utils:option</a>(T)</code></p>
+
 
 <h3 class="typedecl"><a name="type-parse_transform_options">parse_transform_options()</a></h3>
-<p><code>parse_transform_options() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist">proplists:proplist()</a></code></p>
-<p><p> Options specified to a parse transform at runtime, like: report_warnings, 
-beam, report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P}, 
-debug_info, warnings_as_errors, etc.</p>
+<p><code>parse_transform_options() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist" docgen-rel="seetype" docgen-href="stdlib:proplists#proplist/0">proplists:proplist()</a></code></p>
 
- (hence not a list_table, anyway not available here)</p>
 
 <h3 class="typedecl"><a name="type-primitive_type_description">primitive_type_description()</a></h3>
-<p><code>primitive_type_description() = <a href="type_utils.html#type-primitive_type_description">type_utils:primitive_type_description()</a></code></p>
+<p><code>primitive_type_description() = <a href="type_utils.html#type-primitive_type_description" docgen-rel="seetype" docgen-href="type_utils#primitive_type_description/0">type_utils:primitive_type_description()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-term_transformer">term_transformer()</a></h3>
-<p><code>term_transformer() = fun((term(), <a href="#type-user_data">user_data()</a>) -&gt; {term(), <a href="#type-user_data">user_data()</a>})</code></p>
-<p><p> Type of functions to transform terms during a recursive traversal (see 
-transform_term/4).</p>
+<p><code>term_transformer() = fun((term(), <a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; {term(), <a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>})</code></p>
 
- <p>Such a transformer can operate on ASTs, but more generally on any kind of 
-terms.</p>
-
- Note: apparently we cannot use the 'when' notation here (InputTerm ... when
- InputTerm :: term()).</p>
 
 <h3 class="typedecl"><a name="type-type_info">type_info()</a></h3>
-<p><code>type_info() = <a href="ast_info.html#type-type_info">ast_info:type_info()</a></code></p>
+<p><code>type_info() = <a href="ast_info.html#type-type_info" docgen-rel="seetype" docgen-href="ast_info#type_info/0">ast_info:type_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
-<p><code>user_data() = <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a></code></p>
+<p><code>user_data() = <a href="basic_utils.html#type-user_data" docgen-rel="seetype" docgen-href="basic_utils#user_data/0">basic_utils:user_data()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-variable_name">variable_name()</a></h3>
 <p><code>variable_name() = atom()</code></p>
-<p> The name of a variable (e.g. 'X', or '_' in some cases).</p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-3">add_function/3</a></td><td>Registers (includes exporting) the specified (spec-less) function in the
- specified module.</td></tr>
-<tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td>Registers (includes exporting) the specified (spec-less) function in the
- specified module.</td></tr>
-<tr><td valign="top"><a href="#add_type-2">add_type/2</a></td><td>Registers the specified, fully-described type in the specified module.</td></tr>
-<tr><td valign="top"><a href="#apply_ast_transforms-2">apply_ast_transforms/2</a></td><td>Applies the specified AST transformations (mostly depth-first) to the 
-specified module information.</td></tr>
-<tr><td valign="top"><a href="#check_potential_call-3">check_potential_call/3</a></td><td>Checks whether a potential upcoming call to the specified MFA
- (Module,Function,Arguments) has a chance of succeeding.</td></tr>
-<tr><td valign="top"><a href="#get_arities_for-2">get_arities_for/2</a></td><td>Returns a list of the arities for which the specified function of the
- specified module is exported.</td></tr>
-<tr><td valign="top"><a href="#get_compile_base_opts-0">get_compile_base_opts/0</a></td><td>Returns the recommended base compilation options to be used for
- code generation (that is the compilation of forms).</td></tr>
-<tr><td valign="top"><a href="#get_debug_info_settings-0">get_debug_info_settings/0</a></td><td>Returns suitable settings for the debug_info chunk in generated code.</td></tr>
-<tr><td valign="top"><a href="#is_function_exported-3">is_function_exported/3</a></td><td>Tells whether the specified function (name with arity) is exported by the
- specified module.</td></tr>
-<tr><td valign="top"><a href="#list_exported_functions-1">list_exported_functions/1</a></td><td>Lists (in the order of their definition) all the functions ({Name,Arity})
- that are exported by the specified module, expected to be found in the code
- path.</td></tr>
-<tr><td valign="top"><a href="#remove_function-2">remove_function/2</a></td><td>Unregisters the specified function from the specified module.</td></tr>
-<tr><td valign="top"><a href="#remove_type-2">remove_type/2</a></td><td>Unregisters specified type from specified module.</td></tr>
-<tr><td valign="top"><a href="#transform_term-4">transform_term/4</a></td><td>Transforms "blindly" (that is with no a-priori knowledge about its 
-structure) the specified arbitrary term (possibly with nested subterms, as the 
-function recurses in lists, tuples and maps), calling specified transformer 
-function on each instance of the specified type, in order to replace that 
-instance by the result of that function.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-3">add_function/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_type-2">add_type/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#apply_ast_transforms-2">apply_ast_transforms/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_potential_call-3">check_potential_call/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_arities_for-2">get_arities_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_compile_base_opts-0">get_compile_base_opts/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_debug_info_settings-0">get_debug_info_settings/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_function_exported-3">is_function_exported/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#list_exported_functions-1">list_exported_functions/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_function-2">remove_function/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_type-2">remove_type/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transform_term-4">transform_term/4</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add_function-3">add_function/3</a></h3>
 <div class="spec">
-<p><code>add_function(FunId::<a href="#type-function_id">function_id()</a>, Clauses::[<a href="#type-clause_def">clause_def()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
+<p><code>add_function(FunId::<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>, Clauses::[<a href="#type-clause_def" docgen-rel="seetype" docgen-href="#clause_def/0">clause_def()</a>], ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a></code><br></p>
 <p> </p>
-</div><p>Registers (includes exporting) the specified (spec-less) function in the
- specified module.
-</p>
+</div>
 
 <h3 class="function"><a name="add_function-4">add_function/4</a></h3>
 <div class="spec">
-<p><code>add_function(FunctionName::<a href="basic_utils.html#type-function_name">basic_utils:function_name()</a>, FunctionArity::<a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a>, Clauses::[<a href="#type-clause_def">clause_def()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
+<p><code>add_function(FunctionName::<a href="basic_utils.html#type-function_name" docgen-rel="seetype" docgen-href="basic_utils#function_name/0">basic_utils:function_name()</a>, FunctionArity::<a href="meta_utils.html#type-function_arity" docgen-rel="seetype" docgen-href="meta_utils#function_arity/0">meta_utils:function_arity()</a>, Clauses::[<a href="#type-clause_def" docgen-rel="seetype" docgen-href="#clause_def/0">clause_def()</a>], ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a></code><br></p>
 <p> </p>
-</div><p>Registers (includes exporting) the specified (spec-less) function in the
- specified module.
-</p>
+</div>
 
 <h3 class="function"><a name="add_type-2">add_type/2</a></h3>
 <div class="spec">
-<p><code>add_type(TypeInfo::<a href="#type-type_info">type_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
+<p><code>add_type(TypeInfo::<a href="#type-type_info" docgen-rel="seetype" docgen-href="#type_info/0">type_info()</a>, ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a></code><br></p>
 <p> </p>
-</div><p>Registers the specified, fully-described type in the specified module.</p>
+</div>
 
 <h3 class="function"><a name="apply_ast_transforms-2">apply_ast_transforms/2</a></h3>
 <div class="spec">
-<p><code>apply_ast_transforms(ModuleInfo::<a href="#type-module_info">module_info()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-module_info">module_info()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
+<p><code>apply_ast_transforms(ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>, Transforms::<a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>) -&gt; {<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>, <a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Applies the specified AST transformations (mostly depth-first) to the 
-specified module information.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="check_potential_call-3">check_potential_call/3</a></h3>
 <div class="spec">
-<p><code>check_potential_call(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arguments::[<a href="basic_utils.html#type-argument">basic_utils:argument()</a>]) -&gt; ok | module_not_found | function_not_exported</code><br></p>
+<p><code>check_potential_call(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, FunctionName::<a href="#type-function_name" docgen-rel="seetype" docgen-href="#function_name/0">function_name()</a>, Arguments::[<a href="basic_utils.html#type-argument" docgen-rel="seetype" docgen-href="basic_utils#argument/0">basic_utils:argument()</a>]) -&gt; ok | module_not_found | function_not_exported</code><br></p>
 <p> </p>
-</div><p>Checks whether a potential upcoming call to the specified MFA
- (Module,Function,Arguments) has a chance of succeeding.
-</p>
+</div>
 
 <h3 class="function"><a name="get_arities_for-2">get_arities_for/2</a></h3>
 <div class="spec">
-<p><code>get_arities_for(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>) -&gt; [arity()]</code><br></p>
+<p><code>get_arities_for(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, FunctionName::<a href="#type-function_name" docgen-rel="seetype" docgen-href="#function_name/0">function_name()</a>) -&gt; [arity()]</code><br></p>
 <p> </p>
-</div><p>Returns a list of the arities for which the specified function of the
- specified module is exported.
-</p>
+</div>
 
 <h3 class="function"><a name="get_compile_base_opts-0">get_compile_base_opts/0</a></h3>
 <div class="spec">
-<p><code>get_compile_base_opts() -&gt; [<a href="http://www.erlang.org/edoc/doc/compiler/doc/compile.html#type-option">compile:option()</a>]</code><br></p>
+<p><code>get_compile_base_opts() -&gt; [<a href="http://www.erlang.org/edoc/doc/compiler/doc/compile.html#type-option" docgen-rel="seetype" docgen-href="compiler:compile#option/0">compile:option()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the recommended base compilation options to be used for
- code generation (that is the compilation of forms).
-</p>
+</div>
 
 <h3 class="function"><a name="get_debug_info_settings-0">get_debug_info_settings/0</a></h3>
 <div class="spec">
 <p><code>get_debug_info_settings() -&gt; [tuple()]</code><br></p>
 <p> </p>
-</div><p>Returns suitable settings for the debug_info chunk in generated code.</p>
+</div>
 
 <h3 class="function"><a name="is_function_exported-3">is_function_exported/3</a></h3>
 <div class="spec">
-<p><code>is_function_exported(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; boolean()</code><br></p>
+<p><code>is_function_exported(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, FunctionName::<a href="#type-function_name" docgen-rel="seetype" docgen-href="#function_name/0">function_name()</a>, Arity::arity()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the specified function (name with arity) is exported by the
- specified module.
-</p>
+</div>
 
 <h3 class="function"><a name="list_exported_functions-1">list_exported_functions/1</a></h3>
 <div class="spec">
-<p><code>list_exported_functions(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>list_exported_functions(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>) -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Lists (in the order of their definition) all the functions ({Name,Arity})
- that are exported by the specified module, expected to be found in the code
- path.
-</p>
+</div>
 
 <h3 class="function"><a name="remove_function-2">remove_function/2</a></h3>
 <div class="spec">
-<p><code>remove_function(FunInfo::<a href="#type-function_info">function_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
+<p><code>remove_function(FunInfo::<a href="#type-function_info" docgen-rel="seetype" docgen-href="#function_info/0">function_info()</a>, ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a></code><br></p>
 <p> </p>
-</div><p>Unregisters the specified function from the specified module.</p>
+</div>
 
 <h3 class="function"><a name="remove_type-2">remove_type/2</a></h3>
 <div class="spec">
-<p><code>remove_type(TypeInfo::<a href="#type-type_info">type_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
+<p><code>remove_type(TypeInfo::<a href="#type-type_info" docgen-rel="seetype" docgen-href="#type_info/0">type_info()</a>, ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a></code><br></p>
 <p> </p>
-</div><p>Unregisters specified type from specified module.</p>
+</div>
 
 <h3 class="function"><a name="transform_term-4">transform_term/4</a></h3>
 <div class="spec">
-<p><code>transform_term(TargetTerm::term(), TypeDescription::<a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-primitive_type_description">primitive_type_description()</a>), TermTransformer::<a href="#type-term_transformer">term_transformer()</a>, UserData::<a href="#type-user_data">user_data()</a>) -&gt; {term(), <a href="#type-user_data">user_data()</a>}</code><br></p>
+<p><code>transform_term(TargetTerm::term(), TypeDescription::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a>), TermTransformer::<a href="#type-term_transformer" docgen-rel="seetype" docgen-href="#term_transformer/0">term_transformer()</a>, UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; {term(), <a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Transforms "blindly" (that is with no a-priori knowledge about its 
-structure) the specified arbitrary term (possibly with nested subterms, as the 
-function recurses in lists, tuples and maps), calling specified transformer 
-function on each instance of the specified type, in order to replace that 
-instance by the result of that function.</p>
-
- <p>Note that specifying 'undefined' as type description leads to transform 
-(exactly) all non-container types.</p>
-
- <p>Returns an updated term, with these replacements made.</p>
-
- <p>For example the input term could be <code>T={a, ["foo", {c, [2.0, 45]}]}</code> and the
- function might replace, for example, floats by <code>&lt;&lt;bar&gt;&gt;</code>; then <code>{a, ["foo",
- {c, [&lt;&lt;bar&gt;&gt;, 45]}]}</code> would be returned.</p>
-
- <p>Note: the transformed terms are themselves recursively transformed, to ensure 
-nesting is managed. Of course this implies that the term transform should not 
-result in iterating the transformation infinitely.</p>
-
- As a result it may appear that a term of the targeted type is transformed
- almost systematically twice: it is first transformed as such, and the result
- is transformed in turn. If the transformed term is the same as the original
- one, then that content will be shown as analysed twice.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

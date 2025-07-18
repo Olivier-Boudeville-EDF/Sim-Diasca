@@ -10,159 +10,103 @@
 <hr>
 
 <h1>Module option_list</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>An implementation of <b>option lists</b>, loosely based on <code>proplist</code>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>An implementation of <b>option lists</b>, loosely based on <code>proplist</code>.</p>
-
- <p>Note that our option lists only have {Key,Value} pairs (e.g. no entry is made 
-of a single atom).</p>
-
- <p>See <code>option_list_test.erl</code> for the corresponding test.</p>
-
- <p>An option list is basically a list containing key/value pairs, keys being 
-generally (hence: not necessarily) atoms, values being any Erlang term.</p>
-
- <p>In an option list, usually no duplicate keys are expected to exist. 
-Operations on option list tend to preserve the order of their entries.</p>
-
- See also the <code>proplists</code> standard module, and our very similar, richer,
- list_table module that is bound to fully supersede the current module in the
- future.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><code>entries() = <a href="hashtable.html#type-entries">hashtable:entries()</a></code></p>
+<p><code>entries() = <a href="hashtable.html#type-entries" docgen-rel="seetype" docgen-href="hashtable#entries/0">hashtable:entries()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><code>entry() = <a href="hashtable.html#type-entry">hashtable:entry()</a></code></p>
+<p><code>entry() = <a href="hashtable.html#type-entry" docgen-rel="seetype" docgen-href="hashtable#entry/0">hashtable:entry()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
-<p><code>key() = <a href="hashtable.html#type-key">hashtable:key()</a></code></p>
+<p><code>key() = <a href="hashtable.html#type-key" docgen-rel="seetype" docgen-href="hashtable#key/0">hashtable:key()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-option_list">option_list()</a></h3>
-<p><code>option_list(_K, _V) = <a href="#type-option_list">option_list()</a></code></p>
+<p><code>option_list(_K, _V) = <a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a></code></p>
 <p> For better type information (type overriding with different arity used not to
  be permitted).</p>
 
 <h3 class="typedecl"><a name="type-option_list">option_list()</a></h3>
-<p><code>option_list() = <a href="#type-entries">entries()</a></code></p>
+<p><code>option_list() = <a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
-<p><code>value() = <a href="hashtable.html#type-value">hashtable:value()</a></code></p>
+<p><code>value() = <a href="hashtable.html#type-value" docgen-rel="seetype" docgen-href="hashtable#value/0">hashtable:value()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td>Enumerates specified option list: returns an (ordered) list of {Key,
- Value} pairs, possibly with duplicates.</td></tr>
-<tr><td valign="top"><a href="#extract-2">extract/2</a></td><td>Extracts the entry that is specified by its key from the specified option
- list, and returns either 'undefined' if not entry with that key could be
- found, or {Value, RemainingOptionList} where Value is the value associated to
- this key and RemainingOptionList is the original option list from which this
- entry (the first found with the specified key) has been removed (order
- preserved).</td></tr>
-<tr><td valign="top"><a href="#get-2">get/2</a></td><td>Returns the value associated to the specified key in specified option 
-list.</td></tr>
-<tr><td valign="top"><a href="#lookup-2">lookup/2</a></td><td>Returns the value associated to the specified key in specified option 
-list, if found, otherwise (key not found), returns 'undefined'.</td></tr>
-<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns an empty option list.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Creates an option list from specified list containing {Key,Value} pairs.</td></tr>
-<tr><td valign="top"><a href="#set-2">set/2</a></td><td>Sets, in the specified option list, the specified entry.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a string describing the specified option list.</td></tr>
-<tr><td valign="top"><a href="#update_with-2">update_with/2</a></td><td>Updates BaseOptionList with the entries of UpdatingOptionList.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract-2">extract/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get-2">get/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#lookup-2">lookup/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set-2">set/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_with-2">update_with/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="enumerate-1">enumerate/1</a></h3>
 <div class="spec">
-<p><code>enumerate(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-entries">entries()</a></code><br></p>
+<p><code>enumerate(OptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>) -&gt; <a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a></code><br></p>
 <p> </p>
-</div><p>Enumerates specified option list: returns an (ordered) list of {Key,
- Value} pairs, possibly with duplicates.
-</p>
+</div>
 
 <h3 class="function"><a name="extract-2">extract/2</a></h3>
 <div class="spec">
-<p><code>extract(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-option_list">option_list()</a>}</code><br></p>
+<p><code>extract(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, OptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>) -&gt; {<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>}</code><br></p>
 <p> </p>
-</div><p>Extracts the entry that is specified by its key from the specified option
- list, and returns either 'undefined' if not entry with that key could be
- found, or {Value, RemainingOptionList} where Value is the value associated to
- this key and RemainingOptionList is the original option list from which this
- entry (the first found with the specified key) has been removed (order
- preserved).
-</p>
+</div>
 
 <h3 class="function"><a name="get-2">get/2</a></h3>
 <div class="spec">
-<p><code>get(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-value">value()</a></code><br></p>
+<p><code>get(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, OptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>) -&gt; <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the value associated to the specified key in specified option 
-list.</p>
-
- Throws an exception if an entry with that key could not be found.
-</p>
+</div>
 
 <h3 class="function"><a name="lookup-2">lookup/2</a></h3>
 <div class="spec">
-<p><code>lookup(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)</code><br></p>
+<p><code>lookup(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, OptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns the value associated to the specified key in specified option 
-list, if found, otherwise (key not found), returns 'undefined'.</p>
-
- As a result, this function is not able to discriminate between no entry
- defined, or one whose value is 'undefined'. See list_table:lookup_entry/2 for
- a better management.
-</p>
+</div>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>
 <div class="spec">
-<p><code>new() -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
+<p><code>new() -&gt; <a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a></code><br></p>
 <p> </p>
-</div><p>Returns an empty option list.</p>
+</div>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><code>new(Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
+<p><code>new(Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>) -&gt; <a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a></code><br></p>
 <p> </p>
-</div><p>Creates an option list from specified list containing {Key,Value} pairs.</p>
+</div>
 
 <h3 class="function"><a name="set-2">set/2</a></h3>
 <div class="spec">
-<p><code>set(Entry::<a href="#type-entry">entry()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
+<p><code>set(Entry::<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>, OptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>) -&gt; <a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets, in the specified option list, the specified entry.</p>
-
- <p>Returns an updated option list.</p>
-
- <p>The first previously existing entry found with Key (if any) is replaced 
-'in place' by this entry.</p>
-
- If none is found, the specified entry is put as first element.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code><br></p>
+<p><code>to_string(OptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>) -&gt; <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string describing the specified option list.</p>
+</div>
 
 <h3 class="function"><a name="update_with-2">update_with/2</a></h3>
 <div class="spec">
-<p><code>update_with(BaseOptionList::<a href="#type-option_list">option_list()</a>, UpdatingOptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-option_list">option_list()</a></code><br></p>
+<p><code>update_with(BaseOptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>, UpdatingOptionList::<a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a>) -&gt; <a href="#type-option_list" docgen-rel="seetype" docgen-href="#option_list/0">option_list()</a></code><br></p>
 <p> </p>
-</div><p><p>Updates BaseOptionList with the entries of UpdatingOptionList.</p>
-
- Merges the two specified option lists into the returned one, knowing that all
- entries found with the same key in both option lists will end up with the
- value defined in the second, UpdatingOptionList.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

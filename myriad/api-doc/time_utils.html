@@ -10,239 +10,213 @@
 <hr>
 
 <h1>Module time_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of <b>time management</b> facilities.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of <b>time management</b> facilities.</p>
-
- See time_utils_test.erl for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-absolute_month">absolute_month()</a></h3>
-<p><code>absolute_month() = <a href="unit_utils.html#type-absolute_month">unit_utils:absolute_month()</a></code></p>
+<p><code>absolute_month() = <a href="unit_utils.html#type-absolute_month" docgen-rel="seetype" docgen-href="unit_utils#absolute_month/0">unit_utils:absolute_month()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_hertz">any_hertz()</a></h3>
-<p><code>any_hertz() = <a href="unit_utils.html#type-any_hertz">unit_utils:any_hertz()</a></code></p>
+<p><code>any_hertz() = <a href="unit_utils.html#type-any_hertz" docgen-rel="seetype" docgen-href="unit_utils#any_hertz/0">unit_utils:any_hertz()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-birth_date">birth_date()</a></h3>
-<p><code>birth_date() = <a href="#type-date">date()</a></code></p>
-<p> A canonical date of birth.</p>
+<p><code>birth_date() = <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-canonical_day">canonical_day()</a></h3>
-<p><code>canonical_day() = <a href="unit_utils.html#type-canonical_day">unit_utils:canonical_day()</a></code></p>
+<p><code>canonical_day() = <a href="unit_utils.html#type-canonical_day" docgen-rel="seetype" docgen-href="unit_utils#canonical_day/0">unit_utils:canonical_day()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-canonical_hour">canonical_hour()</a></h3>
-<p><code>canonical_hour() = <a href="unit_utils.html#type-canonical_hour">unit_utils:canonical_hour()</a></code></p>
+<p><code>canonical_hour() = <a href="unit_utils.html#type-canonical_hour" docgen-rel="seetype" docgen-href="unit_utils#canonical_hour/0">unit_utils:canonical_hour()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-canonical_minute">canonical_minute()</a></h3>
-<p><code>canonical_minute() = <a href="unit_utils.html#type-canonical_minute">unit_utils:canonical_minute()</a></code></p>
+<p><code>canonical_minute() = <a href="unit_utils.html#type-canonical_minute" docgen-rel="seetype" docgen-href="unit_utils#canonical_minute/0">unit_utils:canonical_minute()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-canonical_month">canonical_month()</a></h3>
-<p><code>canonical_month() = <a href="unit_utils.html#type-canonical_month">unit_utils:canonical_month()</a></code></p>
+<p><code>canonical_month() = <a href="unit_utils.html#type-canonical_month" docgen-rel="seetype" docgen-href="unit_utils#canonical_month/0">unit_utils:canonical_month()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-canonical_second">canonical_second()</a></h3>
-<p><code>canonical_second() = <a href="unit_utils.html#type-canonical_second">unit_utils:canonical_second()</a></code></p>
+<p><code>canonical_second() = <a href="unit_utils.html#type-canonical_second" docgen-rel="seetype" docgen-href="unit_utils#canonical_second/0">unit_utils:canonical_second()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-country">country()</a></h3>
-<p><code>country() = <a href="locale_utils.html#type-country">locale_utils:country()</a></code></p>
+<p><code>country() = <a href="locale_utils.html#type-country" docgen-rel="seetype" docgen-href="locale_utils#country/0">locale_utils:country()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-date">date()</a></h3>
-<p><code>date() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</code></p>
-<p> A canonical calendar date; used instead of the less precise calendar:date/0
- type (yet with similar types and order thereof). See also: user_date/0.</p>
+<p><code>date() = {<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>, <a href="#type-canonical_month" docgen-rel="seetype" docgen-href="#canonical_month/0">canonical_month()</a>, <a href="#type-canonical_day" docgen-rel="seetype" docgen-href="#canonical_day/0">canonical_day()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-date_in_year">date_in_year()</a></h3>
-<p><code>date_in_year() = {<a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</code></p>
-<p> A calendar date within an (implicit) year.</p>
+<p><code>date_in_year() = {<a href="#type-canonical_month" docgen-rel="seetype" docgen-href="#canonical_month/0">canonical_month()</a>, <a href="#type-canonical_day" docgen-rel="seetype" docgen-href="#canonical_day/0">canonical_day()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-day">day()</a></h3>
-<p><code>day() = <a href="unit_utils.html#type-day">unit_utils:day()</a></code></p>
+<p><code>day() = <a href="unit_utils.html#type-day" docgen-rel="seetype" docgen-href="unit_utils#day/0">unit_utils:day()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-day_duration">day_duration()</a></h3>
-<p><code>day_duration() = <a href="#type-days">days()</a></code></p>
-<p> A duration expressed as a number of full days (e.g. one way to express an
- age).</p>
+<p><code>day_duration() = <a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-day_in_the_year">day_in_the_year()</a></h3>
-<p><code>day_in_the_year() = <a href="unit_utils.html#type-day_in_the_year">unit_utils:day_in_the_year()</a></code></p>
+<p><code>day_in_the_year() = <a href="unit_utils.html#type-day_in_the_year" docgen-rel="seetype" docgen-href="unit_utils#day_in_the_year/0">unit_utils:day_in_the_year()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-day_index">day_index()</a></h3>
 <p><code>day_index() = 1..7</code></p>
-<p><p> As calendar:daynum/0 is not exported.</p>
 
- <p>Monday is 1, Tuesday is 2, etc.</p>
-
- Such numerical values are useful to operate based on ranges.</p>
 
 <h3 class="typedecl"><a name="type-days">days()</a></h3>
-<p><code>days() = <a href="unit_utils.html#type-days">unit_utils:days()</a></code></p>
+<p><code>days() = <a href="unit_utils.html#type-days" docgen-rel="seetype" docgen-href="unit_utils#days/0">unit_utils:days()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dhms_duration">dhms_duration()</a></h3>
-<p><code>dhms_duration() = {D::<a href="#type-days">days()</a>, H::<a href="#type-hours">hours()</a>, M::<a href="#type-minutes">minutes()</a>, S::<a href="#type-seconds">seconds()</a>}</code></p>
-<p> Day/Hour/Minute/Second duration, for example used with MTTF (not necessarily
- in a canonical form, for example more than 24 hours or 60 minutes can be
- specified).</p>
+<p><code>dhms_duration() = {D::<a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a>, H::<a href="#type-hours" docgen-rel="seetype" docgen-href="#hours/0">hours()</a>, M::<a href="#type-minutes" docgen-rel="seetype" docgen-href="#minutes/0">minutes()</a>, S::<a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-extended_date">extended_date()</a></h3>
+<p><code>extended_date() = <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a> | yesterday | today | tomorrow</code></p>
+
+
+<h3 class="typedecl"><a name="type-extended_time">extended_time()</a></h3>
+<p><code>extended_time() = <a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a> | now</code></p>
+
+
+<h3 class="typedecl"><a name="type-extended_timestamp">extended_timestamp()</a></h3>
+<p><code>extended_timestamp() = {<a href="#type-extended_date" docgen-rel="seetype" docgen-href="#extended_date/0">extended_date()</a>, <a href="#type-extended_time" docgen-rel="seetype" docgen-href="#extended_time/0">extended_time()</a>} | {next_possible_day, <a href="#type-extended_time" docgen-rel="seetype" docgen-href="#extended_time/0">extended_time()</a>} | in_5_minutes | in_1_hour</code></p>
+
 
 <h3 class="typedecl"><a name="type-finite_second_time_out">finite_second_time_out()</a></h3>
-<p><code>finite_second_time_out() = <a href="#type-seconds">seconds()</a></code></p>
-<p><p> An actual, finite time-out, in seconds.</p>
+<p><code>finite_second_time_out() = <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code></p>
 
- <p>The finite_time_out/0 type should be preferred to this one, as conversions to 
-milliseconds (for actual use in primitives) may raise compilation issues 
-(e.g. operations like 'MySecondTimeout * 1000' or 'MyMillisecondTimeout div 
-1000', supposedly to fail with a 'badarith' exception): the compiler may not 
-able to determine that, in a clause, a given variable is necessarily an 
-integer and not 'infinity' (and thus may complain that, for example, 
-"evaluation of operator '*'/2 will fail with a 'badarith' exception").</p>
-
- Moreover all other time-outs are in milliseconds, so this current type may be
- error-prone.</p>
 
 <h3 class="typedecl"><a name="type-finite_time_out">finite_time_out()</a></h3>
-<p><code>finite_time_out() = <a href="#type-milliseconds">milliseconds()</a></code></p>
-<p> An actual, finite time-out.</p>
+<p><code>finite_time_out() = <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-float_seconds">float_seconds()</a></h3>
-<p><code>float_seconds() = <a href="unit_utils.html#type-float_seconds">unit_utils:float_seconds()</a></code></p>
+<p><code>float_seconds() = <a href="unit_utils.html#type-float_seconds" docgen-rel="seetype" docgen-href="unit_utils#float_seconds/0">unit_utils:float_seconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-hours">hours()</a></h3>
-<p><code>hours() = <a href="unit_utils.html#type-hours">unit_utils:hours()</a></code></p>
+<p><code>hours() = <a href="unit_utils.html#type-hours" docgen-rel="seetype" docgen-href="unit_utils#hours/0">unit_utils:hours()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-iso8601_bin_string">iso8601_bin_string()</a></h3>
-<p><code>iso8601_bin_string() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p><p> A binary string representing a timestamp according to ISO 8601.</p>
+<p><code>iso8601_bin_string() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
- <p>For example "2022-07-04T14:23:18Z".</p>
-
- Refer to https://en.wikipedia.org/wiki/ISO_8601 for further information.</p>
 
 <h3 class="typedecl"><a name="type-iso8601_string">iso8601_string()</a></h3>
-<p><code>iso8601_string() = <a href="#type-ustring">ustring()</a></code></p>
-<p><p> A (plain) string representing a timestamp according to ISO 8601.</p>
+<p><code>iso8601_string() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
- <p>For example "2022-07-04T14:23:18Z".</p>
-
- Refer to https://en.wikipedia.org/wiki/ISO_8601 for further information.</p>
 
 <h3 class="typedecl"><a name="type-megaseconds">megaseconds()</a></h3>
-<p><code>megaseconds() = <a href="unit_utils.html#type-megaseconds">unit_utils:megaseconds()</a></code></p>
+<p><code>megaseconds() = <a href="unit_utils.html#type-megaseconds" docgen-rel="seetype" docgen-href="unit_utils#megaseconds/0">unit_utils:megaseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-microseconds">microseconds()</a></h3>
-<p><code>microseconds() = <a href="unit_utils.html#type-microseconds">unit_utils:microseconds()</a></code></p>
+<p><code>microseconds() = <a href="unit_utils.html#type-microseconds" docgen-rel="seetype" docgen-href="unit_utils#microseconds/0">unit_utils:microseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></code></p>
+<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds" docgen-rel="seetype" docgen-href="unit_utils#milliseconds/0">unit_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-minutes">minutes()</a></h3>
-<p><code>minutes() = <a href="unit_utils.html#type-minutes">unit_utils:minutes()</a></code></p>
+<p><code>minutes() = <a href="unit_utils.html#type-minutes" docgen-rel="seetype" docgen-href="unit_utils#minutes/0">unit_utils:minutes()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-month">month()</a></h3>
-<p><code>month() = <a href="unit_utils.html#type-month">unit_utils:month()</a></code></p>
+<p><code>month() = <a href="unit_utils.html#type-month" docgen-rel="seetype" docgen-href="unit_utils#month/0">unit_utils:month()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-months">months()</a></h3>
-<p><code>months() = <a href="unit_utils.html#type-months">unit_utils:months()</a></code></p>
+<p><code>months() = <a href="unit_utils.html#type-months" docgen-rel="seetype" docgen-href="unit_utils#months/0">unit_utils:months()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ms_duration">ms_duration()</a></h3>
-<p><code>ms_duration() = <a href="#type-milliseconds">milliseconds()</a></code></p>
-<p> A (signed) duration, in milliseconds.</p>
+<p><code>ms_duration() = <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ms_monotonic">ms_monotonic()</a></h3>
-<p><code>ms_monotonic() = <a href="#type-milliseconds">milliseconds()</a></code></p>
-<p> The internal, duration-friendly monotonic time.</p>
+<p><code>ms_monotonic() = <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ms_period">ms_period()</a></h3>
-<p><code>ms_period() = <a href="#type-ms_duration">ms_duration()</a></code></p>
-<p> A period, in milliseconds.</p>
+<p><code>ms_period() = <a href="#type-ms_duration" docgen-rel="seetype" docgen-href="#ms_duration/0">ms_duration()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ms_since_epoch">ms_since_epoch()</a></h3>
-<p><code>ms_since_epoch() = <a href="#type-milliseconds">milliseconds()</a></code></p>
-<p> POSIX conventions.</p>
+<p><code>ms_since_epoch() = <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ms_since_year_0">ms_since_year_0()</a></h3>
-<p><code>ms_since_year_0() = <a href="#type-milliseconds">milliseconds()</a></code></p>
-<p> Also known as Gregorian milliseconds.</p>
+<p><code>ms_since_year_0() = <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-posix_seconds">posix_seconds()</a></h3>
 <p><code>posix_seconds() = integer()</code></p>
-<p> Designates an integer number of seconds since or before Unix time epoch, which
- is 1970-01-01 00:00 UTC.</p>
+
 
 <h3 class="typedecl"><a name="type-precise_timestamp">precise_timestamp()</a></h3>
-<p><code>precise_timestamp() = {<a href="#type-megaseconds">megaseconds()</a>, <a href="#type-seconds">seconds()</a>, <a href="#type-microseconds">microseconds()</a>}</code></p>
+<p><code>precise_timestamp() = {MegaSecs::<a href="#type-megaseconds" docgen-rel="seetype" docgen-href="#megaseconds/0">megaseconds()</a>, Secs::<a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a>, MicroSecs::<a href="#type-microseconds" docgen-rel="seetype" docgen-href="#microseconds/0">microseconds()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-second_duration">second_duration()</a></h3>
-<p><code>second_duration() = <a href="#type-seconds">seconds()</a></code></p>
-<p> A (signed) duration, in (integer) seconds.</p>
+<p><code>second_duration() = <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-second_time_out">second_time_out()</a></h3>
-<p><code>second_time_out() = infinity | <a href="#type-finite_second_time_out">finite_second_time_out()</a></code></p>
-<p><p> Any kind of time-out, finite or not, in seconds if finite.</p>
+<p><code>second_time_out() = infinity | <a href="#type-finite_second_time_out" docgen-rel="seetype" docgen-href="#finite_second_time_out/0">finite_second_time_out()</a></code></p>
 
- The millisecond version thereof, time_out/0, shall be preferred.</p>
 
 <h3 class="typedecl"><a name="type-seconds">seconds()</a></h3>
-<p><code>seconds() = <a href="unit_utils.html#type-seconds">unit_utils:seconds()</a></code></p>
+<p><code>seconds() = <a href="unit_utils.html#type-seconds" docgen-rel="seetype" docgen-href="unit_utils#seconds/0">unit_utils:seconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-time">time()</a></h3>
-<p><code>time() = {<a href="#type-canonical_hour">canonical_hour()</a>, <a href="#type-canonical_minute">canonical_minute()</a>, <a href="#type-canonical_second">canonical_second()</a>}</code></p>
-<p> A time in the day; used to be {hour(), minute(), second()} or calendar:time().</p>
+<p><code>time() = {<a href="#type-canonical_hour" docgen-rel="seetype" docgen-href="#canonical_hour/0">canonical_hour()</a>, <a href="#type-canonical_minute" docgen-rel="seetype" docgen-href="#canonical_minute/0">canonical_minute()</a>, <a href="#type-canonical_second" docgen-rel="seetype" docgen-href="#canonical_second/0">canonical_second()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-time_frame">time_frame()</a></h3>
-<p><code>time_frame() = {Begin::<a href="#type-timestamp">timestamp()</a>, End::<a href="#type-timestamp">timestamp()</a>}</code></p>
-<p> A time frame.</p>
+<p><code>time_frame() = {Begin::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>, End::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><code>time_out() = infinity | <a href="#type-finite_time_out">finite_time_out()</a></code></p>
-<p><p> Any kind of time-out, finite or not.</p>
+<p><code>time_out() = infinity | <a href="#type-finite_time_out" docgen-rel="seetype" docgen-href="#finite_time_out/0">finite_time_out()</a></code></p>
 
- The actual definition of the built-in timeout() type could not be found.</p>
 
 <h3 class="typedecl"><a name="type-timestamp">timestamp()</a></h3>
-<p><code>timestamp() = {<a href="#type-date">date()</a>, <a href="#type-time">time()</a>}</code></p>
-<p><p> Used to be calendar:datetime(), now uses our types.</p>
+<p><code>timestamp() = {<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, <a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>}</code></p>
 
- <p>A timestamp shall preferably be canonical (e.g. with a canonical month).</p>
 
- For example: {{2022,11,7}, {13,14,53}}.</p>
+<h3 class="typedecl"><a name="type-timestamp_binstring">timestamp_binstring()</a></h3>
+<p><code>timestamp_binstring() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-user_date">user_date()</a></h3>
-<p><code>user_date() = {<a href="#type-canonical_day">canonical_day()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-year">year()</a>}</code></p>
-<p> A date in a format (reversed compared to a canonical date()) that is
- considered common to most users. See also: date/0.</p>
+<p><code>user_date() = {<a href="#type-canonical_day" docgen-rel="seetype" docgen-href="#canonical_day/0">canonical_day()</a>, <a href="#type-canonical_month" docgen-rel="seetype" docgen-href="#canonical_month/0">canonical_month()</a>, <a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-user_time_frame">user_time_frame()</a></h3>
-<p><code>user_time_frame() = {Begin::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>, End::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>}</code></p>
-<p> Typically a user-defined time frame, to be transformed into a legit
- time_frame/0.</p>
+<p><code>user_time_frame() = {Begin::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a> | <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, End::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a> | <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-week_day">week_day()</a></h3>
@@ -250,1106 +224,784 @@ integer and not 'infinity' (and thus may complain that, for example,
 
 
 <h3 class="typedecl"><a name="type-weeks">weeks()</a></h3>
-<p><code>weeks() = <a href="unit_utils.html#type-weeks">unit_utils:weeks()</a></code></p>
+<p><code>weeks() = <a href="unit_utils.html#type-weeks" docgen-rel="seetype" docgen-href="unit_utils#weeks/0">unit_utils:weeks()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-year">year()</a></h3>
-<p><code>year() = <a href="unit_utils.html#type-year">unit_utils:year()</a></code></p>
+<p><code>year() = <a href="unit_utils.html#type-year" docgen-rel="seetype" docgen-href="unit_utils#year/0">unit_utils:year()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-years">years()</a></h3>
-<p><code>years() = <a href="unit_utils.html#type-years">unit_utils:years()</a></code></p>
+<p><code>years() = <a href="unit_utils.html#type-years" docgen-rel="seetype" docgen-href="unit_utils#years/0">unit_utils:years()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonical_to_user_date-1">canonical_to_user_date/1</a></td><td>Converts specified canonical date into a user one.</td></tr>
-<tr><td valign="top"><a href="#canonicalise_month-1">canonicalise_month/1</a></td><td>Canonicalises specified month.</td></tr>
-<tr><td valign="top"><a href="#canonicalise_time_frame-1">canonicalise_time_frame/1</a></td><td>Returns a legit, checked time-frame from the user specified one.</td></tr>
-<tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td>Checks that the specified date is a canonical one, and returns it.</td></tr>
-<tr><td valign="top"><a href="#check_date_order-2">check_date_order/2</a></td><td>Ensures that the starting canonical date is strictly before the stopping 
-one.</td></tr>
-<tr><td valign="top"><a href="#check_maybe_timestamp-1">check_maybe_timestamp/1</a></td><td>Checks that specified term is a maybe-timestamp (then a valid one)
- indeed.</td></tr>
-<tr><td valign="top"><a href="#check_month_canonical-1">check_month_canonical/1</a></td><td>Checks that the specified month is a canonical one.</td></tr>
-<tr><td valign="top"><a href="#check_month_order-2">check_month_order/2</a></td><td>Ensures that the starting canonical month is strictly before the stopping
- one.</td></tr>
-<tr><td valign="top"><a href="#check_time_frame-1">check_time_frame/1</a></td><td>Checks that the specified term is a time-frame of strictly positive
- duration indeed, and returns it.</td></tr>
-<tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td>Checks that the specified term is a (possibly non-canonical) valid
- timestamp indeed, and returns it.</td></tr>
-<tr><td valign="top"><a href="#check_user_date-1">check_user_date/1</a></td><td>Checks that the specified date is a user one, and returns it.</td></tr>
-<tr><td valign="top"><a href="#compare_dates-2">compare_dates/2</a></td><td>Compares the specified two dates: tells whether the first date is 
-strictly before, after or the same as the second one.</td></tr>
-<tr><td valign="top"><a href="#date_to_weekday-1">date_to_weekday/1</a></td><td>Returns the week day (e.g.</td></tr>
-<tr><td valign="top"><a href="#days_to_seconds-1">days_to_seconds/1</a></td><td>Converts a duration in days into a duration in seconds.</td></tr>
-<tr><td valign="top"><a href="#dhms_to_seconds-1">dhms_to_seconds/1</a></td><td>Converts a DHMS duration (in Days/Hours/Minutes/Seconds) into a duration
- in seconds.</td></tr>
-<tr><td valign="top"><a href="#dhms_to_string-1">dhms_to_string/1</a></td><td>Returns a textual description of the specified DHMS-based duration.</td></tr>
-<tr><td valign="top"><a href="#duration_to_french_string-1">duration_to_french_string/1</a></td><td>Returns an approximate textual, French description of the specified 
-duration, expected to be expressed as a number of milliseconds (integer; 
-otherwise, if being floating-point, it will be rounded), or as the 'infinity' 
-atom.</td></tr>
-<tr><td valign="top"><a href="#duration_to_string-1">duration_to_string/1</a></td><td>Returns an approximate textual (English) description of the specified 
-duration, expected to be expressed as a signed number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</td></tr>
-<tr><td valign="top"><a href="#duration_to_string-2">duration_to_string/2</a></td><td>Returns an approximate textual description, in the specified language, of 
-the specified duration, expected to be expressed as a number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</td></tr>
-<tr><td valign="top"><a href="#find_common_bank_holidays-3">find_common_bank_holidays/3</a></td><td>Returns the days-of-the-year that are common to the whole year range
- (start year included, stop one excluded).</td></tr>
-<tr><td valign="top"><a href="#frequency_to_period-1">frequency_to_period/1</a></td><td>Returns the non-null period, in milliseconds, corresponding to the
- specified frequency.</td></tr>
-<tr><td valign="top"><a href="#from_posix_timestamp-1">from_posix_timestamp/1</a></td><td>Converts specified POSIX timestamp (typically the one obtained through
- file-level operations such as file_utils:get_last_modification_time/1) into a
- standard timestamp.</td></tr>
-<tr><td valign="top"><a href="#get_bank_holidays_for-2">get_bank_holidays_for/2</a></td><td>Returns a (non chronologically-ordered) list of the dates of the bank 
-holidays, for specified year and country.</td></tr>
-<tr><td valign="top"><a href="#get_bin_textual_timestamp-0">get_bin_textual_timestamp/0</a></td><td>Returns a binary string corresponding to the current timestamp, like:
- <code>&lt;&lt;"2009/9/1 11:46:53"&gt;&gt;</code>.</td></tr>
-<tr><td valign="top"><a href="#get_current_year-0">get_current_year/0</a></td><td>Returns the current year.</td></tr>
-<tr><td valign="top"><a href="#get_date_after-2">get_date_after/2</a></td><td>Returns the date corresponding to the specified one augmented of the
- specified number of days (possibly a negative number).</td></tr>
-<tr><td valign="top"><a href="#get_date_difference-2">get_date_difference/2</a></td><td>Returns the signed duration, in days, between the two specified dates.</td></tr>
-<tr><td valign="top"><a href="#get_day_in_year-1">get_day_in_year/1</a></td><td>Returns the day in the year (thus in [1,366]) corresponding to the 
-specified date.</td></tr>
-<tr><td valign="top"><a href="#get_day_rank-1">get_day_rank/1</a></td><td>Returns the rank in year of the specified day, in [1,365].</td></tr>
-<tr><td valign="top"><a href="#get_daylight_saving_time-1">get_daylight_saving_time/1</a></td><td>Returns the (signed) number of hours to offset the UTC in order to obtain 
-the local time (typically the Central European Summer Time, UTC+1/UTC+2), for 
-the corresponding date.</td></tr>
-<tr><td valign="top"><a href="#get_duration-1">get_duration/1</a></td><td>Returns the (signed) duration in seconds corresponding to the specified
- time.</td></tr>
-<tr><td valign="top"><a href="#get_duration-2">get_duration/2</a></td><td>Returns the (signed) duration in seconds between the two specified
- timestamps, using the first one as starting time and the second one as
- stopping time.</td></tr>
-<tr><td valign="top"><a href="#get_duration_since-1">get_duration_since/1</a></td><td>Returns the (signed) duration in seconds between the specified start
- timestamp and the current time.</td></tr>
-<tr><td valign="top"><a href="#get_epoch_milliseconds_since_year_0-0">get_epoch_milliseconds_since_year_0/0</a></td><td>Returns the number of milliseconds of the Epoch since year 0.</td></tr>
-<tr><td valign="top"><a href="#get_epoch_timestamp-0">get_epoch_timestamp/0</a></td><td>Returns the timestamp of the (UNIX) Epoch, defined to be 00:00:00 UTC,
- 1970-01-01.</td></tr>
-<tr><td valign="top"><a href="#get_french_textual_duration-2">get_french_textual_duration/2</a></td><td>Returns a textual description, in French, of the duration between the two
- specified timestamps, using the first one as starting time and the
- second one as stopping time.</td></tr>
-<tr><td valign="top"><a href="#get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></td><td>Returns a string corresponding to the specified timestamp expressed in
- French, like: "le 1/9/2009, à 11h46m53".</td></tr>
-<tr><td valign="top"><a href="#get_intertime_duration-2">get_intertime_duration/2</a></td><td>Returns the signed duration, in integer seconds, between the two 
-specified times.</td></tr>
-<tr><td valign="top"><a href="#get_local_date-0">get_local_date/0</a></td><td>Returns the local date, as reported by the underlying operating system.</td></tr>
-<tr><td valign="top"><a href="#get_local_time-0">get_local_time/0</a></td><td>Returns the local time, as reported by the underlying operating system.</td></tr>
-<tr><td valign="top"><a href="#get_local_timestamp-0">get_local_timestamp/0</a></td><td>Returns a local timestamp (date and time), as reported by the underlying
- operating system.</td></tr>
-<tr><td valign="top"><a href="#get_monotonic_time-0">get_monotonic_time/0</a></td><td>Returns the current time, expressed in (absolute) internal time 
-(logically equivalent to a millisecond-based timestamp).</td></tr>
-<tr><td valign="top"><a href="#get_month_duration-1">get_month_duration/1</a></td><td>Returns the duration of the specified month.</td></tr>
-<tr><td valign="top"><a href="#get_month_duration-2">get_month_duration/2</a></td><td>Returns the duration of the specified month of the specified year.</td></tr>
-<tr><td valign="top"><a href="#get_month_durations-0">get_month_durations/0</a></td><td>Returns the list of the usual duration of months.</td></tr>
-<tr><td valign="top"><a href="#get_month_durations-1">get_month_durations/1</a></td><td>Returns the list of the duration of months for the specified year.</td></tr>
-<tr><td valign="top"><a href="#get_precise_duration-2">get_precise_duration/2</a></td><td>Returns the (signed) duration in milliseconds between the two specified
- precise timestamps (as obtained thanks to get_precise_duration/0), using the
- first one as starting time and the second one as stopping time.</td></tr>
-<tr><td valign="top"><a href="#get_precise_duration_since-1">get_precise_duration_since/1</a></td><td>Returns the (signed) duration in milliseconds between the specified
- precise timestamp (as obtained thanks to get_precise_duration/0) and the
- current time.</td></tr>
-<tr><td valign="top"><a href="#get_precise_timestamp-0">get_precise_timestamp/0</a></td><td>Returns a timestamp that is as precise as possible, that is {MegaSecs, 
-Secs, MicroSecs}.</td></tr>
-<tr><td valign="top"><a href="#get_system_time-0">get_system_time/0</a></td><td>Returns the (VM) system time (that is monotonic + time offset), in
- milliseconds since the Epoch.</td></tr>
-<tr><td valign="top"><a href="#get_textual_date-1">get_textual_date/1</a></td><td>Returns a string corresponding to the specified date, like: "30/11/2009".</td></tr>
-<tr><td valign="top"><a href="#get_textual_duration-2">get_textual_duration/2</a></td><td>Returns an (english), smart textual description of the duration between
- the two specified timestamps, using the first one as starting time and the
- second one as stopping time.</td></tr>
-<tr><td valign="top"><a href="#get_textual_timestamp-0">get_textual_timestamp/0</a></td><td>Returns a string corresponding to the current timestamp, like: 
-"2009/9/1 11:46:53".</td></tr>
-<tr><td valign="top"><a href="#get_textual_timestamp-1">get_textual_timestamp/1</a></td><td>Returns a (clear, non-ambiguous) string corresponding to the specified
- timestamp, like: "2009/9/1 11:46:53".</td></tr>
-<tr><td valign="top"><a href="#get_textual_timestamp_for_path-0">get_textual_timestamp_for_path/0</a></td><td>Returns a string corresponding to the current timestamp and able to be a
- part of a path, like: "2010-11-18-at-13h-30m-35s".</td></tr>
-<tr><td valign="top"><a href="#get_textual_timestamp_for_path-1">get_textual_timestamp_for_path/1</a></td><td>Returns a string corresponding to the specified timestamp and able to be
- a part of a path, like: "2010-11-18-at-13h-30m-35s".</td></tr>
-<tr><td valign="top"><a href="#get_textual_timestamp_with_dashes-1">get_textual_timestamp_with_dashes/1</a></td><td>Returns a string corresponding to the specified timestamp, with "dash"
- conventions (e.g.</td></tr>
-<tr><td valign="top"><a href="#get_time2_textual_timestamp-0">get_time2_textual_timestamp/0</a></td><td>Returns a string corresponding to the current timestamp expressed as the 
-"%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
-"2020-01-01 00-01-22".</td></tr>
-<tr><td valign="top"><a href="#get_time2_textual_timestamp-1">get_time2_textual_timestamp/1</a></td><td>Returns a string corresponding to the specified timestamp expressed as 
-the "%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
-"2020-01-01 00-01-22".</td></tr>
-<tr><td valign="top"><a href="#get_timestamp-0">get_timestamp/0</a></td><td>Returns a timestamp tuple describing now, that is the current time, the 
-time zone and Daylight Saving Time correction depending on the underlying OS.</td></tr>
-<tr><td valign="top"><a href="#get_user_friendly_textual_timestamp-1">get_user_friendly_textual_timestamp/1</a></td><td>Returns a string corresponding to the specified timestamp in a
- user-friendly manner, like: "Wednesday, January 6, 2021 at 11:46:53".</td></tr>
-<tr><td valign="top"><a href="#get_week_day-1">get_week_day/1</a></td><td>Returns the symbol (atom) corresponding to specified week day index.</td></tr>
-<tr><td valign="top"><a href="#gregorian_ms_to_timestamp-1">gregorian_ms_to_timestamp/1</a></td><td>Converts (with a bit of approximation) the specified number of Gregorian
- milliseconds into a proper, user-level (local, system) timestamp.</td></tr>
-<tr><td valign="top"><a href="#hours_to_seconds-1">hours_to_seconds/1</a></td><td>Converts a duration in hours into a duration in seconds.</td></tr>
-<tr><td valign="top"><a href="#is_bank_holiday-2">is_bank_holiday/2</a></td><td>Tells whether, for specified country, the specified date is a bank
- holiday.</td></tr>
-<tr><td valign="top"><a href="#is_canonical_date-1">is_canonical_date/1</a></td><td>Tells whether the specified term is a canonical date.</td></tr>
-<tr><td valign="top"><a href="#is_date-1">is_date/1</a></td><td>Returns whether the specified term is a legit (canonical) date.</td></tr>
-<tr><td valign="top"><a href="#is_dhms_duration-1">is_dhms_duration/1</a></td><td>Tells whether specified term is a DHMS duration.</td></tr>
-<tr><td valign="top"><a href="#is_leap_year-1">is_leap_year/1</a></td><td>Tells whether the specified year is a leap one.</td></tr>
-<tr><td valign="top"><a href="#is_time-1">is_time/1</a></td><td>Returns whether the specified term is a legit (canonical) time.</td></tr>
-<tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td>Returns whether the specified term is a legit, valid (canonical) 
-timestamp.</td></tr>
-<tr><td valign="top"><a href="#is_user_date-1">is_user_date/1</a></td><td>Tells whether the specified term is a user date.</td></tr>
-<tr><td valign="top"><a href="#local_to_universal_time-1">local_to_universal_time/1</a></td><td>Converts the specified timestamp expressed in local time (thus with time 
-zone and Daylight Saving Time) into a timestamp expressed in universal time 
-(UTC).</td></tr>
-<tr><td valign="top"><a href="#month_to_string-1">month_to_string/1</a></td><td>Converts a month (an integer in [1,12] or a 12-multiple thereof, like 23)
- into its common name.</td></tr>
-<tr><td valign="top"><a href="#months_to_seconds-1">months_to_seconds/1</a></td><td>Converts a duration in months into a duration in seconds, supposing the
- duration of a month is 1/12 of the one of an average year.</td></tr>
-<tr><td valign="top"><a href="#next_month-1">next_month/1</a></td><td>Returns the same timestamp as specified, except exactly one month later 
-(hence not translated of a fixed duration).</td></tr>
-<tr><td valign="top"><a href="#offset_time-2">offset_time/2</a></td><td>Offsets the specified time of the specified (signed) duration: returns a 
-time translated accordingly.</td></tr>
-<tr><td valign="top"><a href="#offset_timestamp-2">offset_timestamp/2</a></td><td>Offsets the specified timestamp of the specified (signed) duration:
- returns a timestamp translated accordingly.</td></tr>
-<tr><td valign="top"><a href="#seconds_to_dhms-1">seconds_to_dhms/1</a></td><td>Converts a duration in seconds into a DHMS duration (in
- Days/Hours/Minutes/Seconds).</td></tr>
-<tr><td valign="top"><a href="#short_string_to_timestamp-1">short_string_to_timestamp/1</a></td><td>Parses back a timestamp in the form of "14/4/11 18:48" ("11" for 2011,
- and with no seconds specified) into a timestamp(), that is
- {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.</td></tr>
-<tr><td valign="top"><a href="#string_to_dhms-1">string_to_dhms/1</a></td><td>Converts specified string (e.g.</td></tr>
-<tr><td valign="top"><a href="#string_to_timestamp-1">string_to_timestamp/1</a></td><td>Parses back a timestamp in the form of "14/4/2011 18:48:51" into a
- timestamp(), that is {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.</td></tr>
-<tr><td valign="top"><a href="#time_frame_to_string-1">time_frame_to_string/1</a></td><td>Returns a textual description of the specified time frame.</td></tr>
-<tr><td valign="top"><a href="#time_of_day_to_string-1">time_of_day_to_string/1</a></td><td>Returns a textual, user-friendly description of the specified time of
- day.</td></tr>
-<tr><td valign="top"><a href="#time_out_to_string-1">time_out_to_string/1</a></td><td>Returns an approximate textual (English) description of the specified 
-time-out, expected to be expressed as a signed number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</td></tr>
-<tr><td valign="top"><a href="#time_out_to_string-2">time_out_to_string/2</a></td><td>Returns an approximate textual description of the specified time-out, in 
-the specified language, expected to be expressed as a number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</td></tr>
-<tr><td valign="top"><a href="#time_to_seconds-1">time_to_seconds/1</a></td><td>Converts a HMS duration (in Hours/Minutes/Seconds) into a duration in
- seconds.</td></tr>
-<tr><td valign="top"><a href="#time_to_string-1">time_to_string/1</a></td><td>Returns a textual description of the specified time of day, like:
- "9:14:57".</td></tr>
-<tr><td valign="top"><a href="#timestamp_to_iso8601_bin_string-1">timestamp_to_iso8601_bin_string/1</a></td><td>Returns a textual ISO8601 binary description of the specified timestamp.</td></tr>
-<tr><td valign="top"><a href="#timestamp_to_iso8601_string-1">timestamp_to_iso8601_string/1</a></td><td>Returns a textual ISO8601 description of the specified timestamp.</td></tr>
-<tr><td valign="top"><a href="#timestamp_to_seconds-0">timestamp_to_seconds/0</a></td><td>Returns the number of seconds elapsed since year 0 and now.</td></tr>
-<tr><td valign="top"><a href="#timestamp_to_seconds-1">timestamp_to_seconds/1</a></td><td>Returns the number of seconds elapsed since year 0 and the specified 
-timestamp.</td></tr>
-<tr><td valign="top"><a href="#timestamp_to_string-1">timestamp_to_string/1</a></td><td>Alias of get_textual_timestamp/1; defined for clarity.</td></tr>
-<tr><td valign="top"><a href="#timestamp_to_weekday-1">timestamp_to_weekday/1</a></td><td>Returns the week day (e.g.</td></tr>
-<tr><td valign="top"><a href="#universal_to_local_time-1">universal_to_local_time/1</a></td><td>Converts the specified timestamp expressed in universal time (UTC) into a
- timestamp expressed in local time (thus with time zone and Daylight Saving
- Time).</td></tr>
-<tr><td valign="top"><a href="#user_to_canonical_date-1">user_to_canonical_date/1</a></td><td>Converts specified user date into a canonical one.</td></tr>
-<tr><td valign="top"><a href="#wait_period_ending-2">wait_period_ending/2</a></td><td>Waits (approximately) until the end of the specified period, which is 
-expected to have started at the specified monotonic timestamp - which shall 
-have been obtained thanks to get_monotonic_time/0.</td></tr>
-<tr><td valign="top"><a href="#week_day_to_string-1">week_day_to_string/1</a></td><td>Returns the common name of a week day (e.g.</td></tr>
-<tr><td valign="top"><a href="#weeks_to_seconds-1">weeks_to_seconds/1</a></td><td>Converts a duration in weeks into a duration in seconds.</td></tr>
-<tr><td valign="top"><a href="#years_to_seconds-1">years_to_seconds/1</a></td><td>Converts a duration in years into a duration in seconds, supposing a year
- has 365 days and 6 hours (that is a quarter of one day, to account for leap
- years).</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonical_to_user_date-1">canonical_to_user_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#canonicalise_month-1">canonicalise_month/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#canonicalise_time_frame-1">canonicalise_time_frame/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_canonical_time-1">check_canonical_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_date_order-2">check_date_order/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_maybe_timestamp-1">check_maybe_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_month_canonical-1">check_month_canonical/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_month_order-2">check_month_order/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_time_frame-1">check_time_frame/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_time_order-2">check_time_order/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_user_date-1">check_user_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compare_dates-2">compare_dates/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compare_times-2">compare_times/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#date_to_weekday-1">date_to_weekday/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#days_to_seconds-1">days_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#dhms_to_seconds-1">dhms_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#dhms_to_string-1">dhms_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#duration_to_french_string-1">duration_to_french_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#duration_to_string-1">duration_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#duration_to_string-2">duration_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find_common_bank_holidays-3">find_common_bank_holidays/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#frequency_to_period-1">frequency_to_period/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_posix_timestamp-1">from_posix_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_bank_holidays_for-2">get_bank_holidays_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_bin_textual_timestamp-0">get_bin_textual_timestamp/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_current_year-0">get_current_year/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_date_after-2">get_date_after/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_date_difference-2">get_date_difference/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_day_in_year-1">get_day_in_year/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_day_rank-1">get_day_rank/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_daylight_saving_time-1">get_daylight_saving_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_duration-1">get_duration/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_duration-2">get_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_duration_since-1">get_duration_since/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_epoch_milliseconds_since_year_0-0">get_epoch_milliseconds_since_year_0/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_epoch_timestamp-0">get_epoch_timestamp/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_french_textual_duration-2">get_french_textual_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_intertime_duration-2">get_intertime_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_local_date-0">get_local_date/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_local_time-0">get_local_time/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_local_timestamp-0">get_local_timestamp/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_monotonic_time-0">get_monotonic_time/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_month_duration-1">get_month_duration/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_month_duration-2">get_month_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_month_durations-0">get_month_durations/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_month_durations-1">get_month_durations/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_precise_duration-2">get_precise_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_precise_duration_since-1">get_precise_duration_since/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_precise_timestamp-0">get_precise_timestamp/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_system_time-0">get_system_time/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_date-1">get_textual_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_duration-2">get_textual_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp-0">get_textual_timestamp/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp-1">get_textual_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp_for_path-0">get_textual_timestamp_for_path/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp_for_path-1">get_textual_timestamp_for_path/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp_with_dashes-1">get_textual_timestamp_with_dashes/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_time2_textual_timestamp-0">get_time2_textual_timestamp/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_time2_textual_timestamp-1">get_time2_textual_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_time_difference-2">get_time_difference/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_timestamp-0">get_timestamp/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_friendly_textual_timestamp-1">get_user_friendly_textual_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_week_day-1">get_week_day/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#gregorian_ms_to_timestamp-1">gregorian_ms_to_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#hours_to_seconds-1">hours_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_bank_holiday-2">is_bank_holiday/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_canonical_date-1">is_canonical_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_canonical_time-1">is_canonical_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_date-1">is_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_dhms_duration-1">is_dhms_duration/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_leap_year-1">is_leap_year/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_time-1">is_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_user_date-1">is_user_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#local_to_universal_time-1">local_to_universal_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#month_to_string-1">month_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#months_to_seconds-1">months_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#next_month-1">next_month/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#offset_time-2">offset_time/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#offset_timestamp-2">offset_timestamp/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_date-1">resolve_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_time-1">resolve_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_timestamp-1">resolve_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#seconds_to_dhms-1">seconds_to_dhms/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#short_string_to_timestamp-1">short_string_to_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#string_to_dhms-1">string_to_dhms/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#string_to_timestamp-1">string_to_timestamp/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#time_frame_to_string-1">time_frame_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#time_of_day_to_string-1">time_of_day_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#time_out_to_string-1">time_out_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#time_out_to_string-2">time_out_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#time_to_seconds-1">time_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#time_to_string-1">time_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#timestamp_in-1">timestamp_in/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#timestamp_to_iso8601_bin_string-1">timestamp_to_iso8601_bin_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#timestamp_to_iso8601_string-1">timestamp_to_iso8601_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#timestamp_to_seconds-0">timestamp_to_seconds/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#timestamp_to_seconds-1">timestamp_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#timestamp_to_string-1">timestamp_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#timestamp_to_weekday-1">timestamp_to_weekday/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#universal_to_local_time-1">universal_to_local_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#user_to_canonical_date-1">user_to_canonical_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wait_period_ending-2">wait_period_ending/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#week_day_to_string-1">week_day_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#weeks_to_seconds-1">weeks_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#years_to_seconds-1">years_to_seconds/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="canonical_to_user_date-1">canonical_to_user_date/1</a></h3>
 <div class="spec">
-<p><code>canonical_to_user_date(X1::<a href="#type-date">date()</a>) -&gt; <a href="#type-user_date">user_date()</a></code><br></p>
+<p><code>canonical_to_user_date(X1::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-user_date" docgen-rel="seetype" docgen-href="#user_date/0">user_date()</a></code><br></p>
 <p> </p>
-</div><p>Converts specified canonical date into a user one.</p>
+</div>
 
 <h3 class="function"><a name="canonicalise_month-1">canonicalise_month/1</a></h3>
 <div class="spec">
-<p><code>canonicalise_month(M::<a href="#type-month">month()</a>) -&gt; <a href="#type-canonical_month">canonical_month()</a></code><br></p>
+<p><code>canonicalise_month(M::<a href="#type-month" docgen-rel="seetype" docgen-href="#month/0">month()</a>) -&gt; <a href="#type-canonical_month" docgen-rel="seetype" docgen-href="#canonical_month/0">canonical_month()</a></code><br></p>
 <p> </p>
-</div><p>Canonicalises specified month.</p>
+</div>
 
 <h3 class="function"><a name="canonicalise_time_frame-1">canonicalise_time_frame/1</a></h3>
 <div class="spec">
-<p><code>canonicalise_time_frame(Other::<a href="#type-user_time_frame">user_time_frame()</a>) -&gt; <a href="#type-time_frame">time_frame()</a></code><br></p>
+<p><code>canonicalise_time_frame(Other::<a href="#type-user_time_frame" docgen-rel="seetype" docgen-href="#user_time_frame/0">user_time_frame()</a>) -&gt; <a href="#type-time_frame" docgen-rel="seetype" docgen-href="#time_frame/0">time_frame()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a legit, checked time-frame from the user specified one.</p>
-
- If a date is specified with no corresponding time, we consider time is
- 00:00:00.
-</p>
+</div>
 
 <h3 class="function"><a name="check_canonical_date-1">check_canonical_date/1</a></h3>
 <div class="spec">
-<p><code>check_canonical_date(Date::term()) -&gt; <a href="#type-date">date()</a></code><br></p>
+<p><code>check_canonical_date(Date::term()) -&gt; <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified date is a canonical one, and returns it.</p>
+</div>
+
+<h3 class="function"><a name="check_canonical_time-1">check_canonical_time/1</a></h3>
+<div class="spec">
+<p><code>check_canonical_time(Time::term()) -&gt; <a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="check_date_order-2">check_date_order/2</a></h3>
 <div class="spec">
-<p><code>check_date_order(StartDate::<a href="#type-date">date()</a>, StopDate::<a href="#type-date">date()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_date_order(StartDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, StopDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures that the starting canonical date is strictly before the stopping 
-one.</p>
-
- Note: both dates are expected to be in canonical form (e.g. not more than 12
- months or 31 days in the specified date).
-</p>
+</div>
 
 <h3 class="function"><a name="check_maybe_timestamp-1">check_maybe_timestamp/1</a></h3>
 <div class="spec">
-<p><code>check_maybe_timestamp(Term::term()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-timestamp">timestamp()</a>)</code><br></p>
+<p><code>check_maybe_timestamp(Term::term()) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>)</code><br></p>
 <p> </p>
-</div><p>Checks that specified term is a maybe-timestamp (then a valid one)
- indeed.
-</p>
+</div>
 
 <h3 class="function"><a name="check_month_canonical-1">check_month_canonical/1</a></h3>
 <div class="spec">
-<p><code>check_month_canonical(Month::term()) -&gt; <a href="#type-month">month()</a></code><br></p>
+<p><code>check_month_canonical(Month::term()) -&gt; <a href="#type-month" docgen-rel="seetype" docgen-href="#month/0">month()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified month is a canonical one.</p>
+</div>
 
 <h3 class="function"><a name="check_month_order-2">check_month_order/2</a></h3>
 <div class="spec">
-<p><code>check_month_order(Start::<a href="#type-absolute_month">absolute_month()</a>, Stop::<a href="#type-absolute_month">absolute_month()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_month_order(Start::<a href="#type-absolute_month" docgen-rel="seetype" docgen-href="#absolute_month/0">absolute_month()</a>, Stop::<a href="#type-absolute_month" docgen-rel="seetype" docgen-href="#absolute_month/0">absolute_month()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Ensures that the starting canonical month is strictly before the stopping
- one.
-</p>
+</div>
 
 <h3 class="function"><a name="check_time_frame-1">check_time_frame/1</a></h3>
 <div class="spec">
-<p><code>check_time_frame(TF::term()) -&gt; <a href="#type-time_frame">time_frame()</a></code><br></p>
+<p><code>check_time_frame(TF::term()) -&gt; <a href="#type-time_frame" docgen-rel="seetype" docgen-href="#time_frame/0">time_frame()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified term is a time-frame of strictly positive
- duration indeed, and returns it.
-</p>
+</div>
+
+<h3 class="function"><a name="check_time_order-2">check_time_order/2</a></h3>
+<div class="spec">
+<p><code>check_time_order(StartTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, StopTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="check_timestamp-1">check_timestamp/1</a></h3>
 <div class="spec">
-<p><code>check_timestamp(Term::term()) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>check_timestamp(Term::term()) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified term is a (possibly non-canonical) valid
- timestamp indeed, and returns it.
-</p>
+</div>
 
 <h3 class="function"><a name="check_user_date-1">check_user_date/1</a></h3>
 <div class="spec">
-<p><code>check_user_date(Date::term()) -&gt; <a href="#type-user_date">user_date()</a></code><br></p>
+<p><code>check_user_date(Date::term()) -&gt; <a href="#type-user_date" docgen-rel="seetype" docgen-href="#user_date/0">user_date()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified date is a user one, and returns it.</p>
+</div>
 
 <h3 class="function"><a name="compare_dates-2">compare_dates/2</a></h3>
 <div class="spec">
-<p><code>compare_dates(FirstDate::<a href="#type-date">date()</a>, SecondDate::<a href="#type-date">date()</a>) -&gt; <a href="basic_utils.html#type-comparison_result">basic_utils:comparison_result()</a></code><br></p>
+<p><code>compare_dates(FirstDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, SecondDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="basic_utils.html#type-comparison_result" docgen-rel="seetype" docgen-href="basic_utils#comparison_result/0">basic_utils:comparison_result()</a></code><br></p>
 <p> </p>
-</div><p><p>Compares the specified two dates: tells whether the first date is 
-strictly before, after or the same as the second one.</p>
+</div>
 
- Note: both dates are expected to be in canonical form (e.g. not more 12 months
- or 31 days in the specified date).
-</p>
+<h3 class="function"><a name="compare_times-2">compare_times/2</a></h3>
+<div class="spec">
+<p><code>compare_times(FirstTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, SecondTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="basic_utils.html#type-comparison_result" docgen-rel="seetype" docgen-href="basic_utils#comparison_result/0">basic_utils:comparison_result()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="date_to_weekday-1">date_to_weekday/1</a></h3>
 <div class="spec">
-<p><code>date_to_weekday(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-week_day">week_day()</a></code><br></p>
+<p><code>date_to_weekday(Date::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-week_day" docgen-rel="seetype" docgen-href="#week_day/0">week_day()</a></code><br></p>
 <p> </p>
-</div><p>Returns the week day (e.g. 'Tuesday') corresponding to the specified
- date.
-</p>
+</div>
 
 <h3 class="function"><a name="days_to_seconds-1">days_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>days_to_seconds(DayDuration::<a href="#type-days">days()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>days_to_seconds(DayDuration::<a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Converts a duration in days into a duration in seconds.</p>
+</div>
 
 <h3 class="function"><a name="dhms_to_seconds-1">dhms_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>dhms_to_seconds(X1::<a href="#type-dhms_duration">dhms_duration()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>dhms_to_seconds(X1::<a href="#type-dhms_duration" docgen-rel="seetype" docgen-href="#dhms_duration/0">dhms_duration()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Converts a DHMS duration (in Days/Hours/Minutes/Seconds) into a duration
- in seconds.
-</p>
+</div>
 
 <h3 class="function"><a name="dhms_to_string-1">dhms_to_string/1</a></h3>
 <div class="spec">
-<p><code>dhms_to_string(DHMS::<a href="#type-dhms_duration">dhms_duration()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>dhms_to_string(DHMS::<a href="#type-dhms_duration" docgen-rel="seetype" docgen-href="#dhms_duration/0">dhms_duration()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified DHMS-based duration.</p>
+</div>
 
 <h3 class="function"><a name="duration_to_french_string-1">duration_to_french_string/1</a></h3>
 <div class="spec">
-<p><code>duration_to_french_string(Milliseconds::<a href="#type-milliseconds">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>duration_to_french_string(Milliseconds::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns an approximate textual, French description of the specified 
-duration, expected to be expressed as a number of milliseconds (integer; 
-otherwise, if being floating-point, it will be rounded), or as the 'infinity' 
-atom.</p>
-
- <p>For example for a duration of 150 012 ms, returns: 
-"2 minutes, 30 secondes et 12 millisecondes".</p>
-
- See also: basic_utils:get_textual_duration/2.
-</p>
+</div>
 
 <h3 class="function"><a name="duration_to_string-1">duration_to_string/1</a></h3>
 <div class="spec">
-<p><code>duration_to_string(Milliseconds::<a href="#type-milliseconds">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>duration_to_string(Milliseconds::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns an approximate textual (English) description of the specified 
-duration, expected to be expressed as a signed number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</p>
-
- <p>For example for a duration of 150 012 ms, returns: 
-"2 minutes, 30 seconds and 12 milliseconds".</p>
-
- See also: basic_utils:get_textual_duration/2.
-</p>
+</div>
 
 <h3 class="function"><a name="duration_to_string-2">duration_to_string/2</a></h3>
 <div class="spec">
-<p><code>duration_to_string(Duration::<a href="#type-milliseconds">milliseconds()</a> | float() | infinity, Lang::<a href="language_utils.html#type-human_language">language_utils:human_language()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>duration_to_string(Duration::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a> | float() | infinity, Lang::<a href="language_utils.html#type-human_language" docgen-rel="seetype" docgen-href="language_utils#human_language/0">language_utils:human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns an approximate textual description, in the specified language, of 
-the specified duration, expected to be expressed as a number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</p>
-
- <p>For example for a duration of 150 012 ms, returns for English: 
-"2 minutes, 30 seconds and 12 milliseconds".</p>
-
- <p>Can be fed directly with a time_out() value.</p>
-
- See also: basic_utils:get_textual_duration/2.
-</p>
+</div>
 
 <h3 class="function"><a name="find_common_bank_holidays-3">find_common_bank_holidays/3</a></h3>
 <div class="spec">
-<p><code>find_common_bank_holidays(StartYear::<a href="#type-year">year()</a>, StopYear::<a href="#type-year">year()</a>, Country::<a href="#type-country">country()</a>) -&gt; [<a href="#type-date_in_year">date_in_year()</a>]</code><br></p>
+<p><code>find_common_bank_holidays(StartYear::<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>, StopYear::<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>, Country::<a href="#type-country" docgen-rel="seetype" docgen-href="#country/0">country()</a>) -&gt; [<a href="#type-date_in_year" docgen-rel="seetype" docgen-href="#date_in_year/0">date_in_year()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the days-of-the-year that are common to the whole year range
- (start year included, stop one excluded).
-</p>
+</div>
 
 <h3 class="function"><a name="frequency_to_period-1">frequency_to_period/1</a></h3>
 <div class="spec">
-<p><code>frequency_to_period(Freq::<a href="#type-any_hertz">any_hertz()</a>) -&gt; <a href="#type-ms_period">ms_period()</a></code><br></p>
+<p><code>frequency_to_period(Freq::<a href="#type-any_hertz" docgen-rel="seetype" docgen-href="#any_hertz/0">any_hertz()</a>) -&gt; <a href="#type-ms_period" docgen-rel="seetype" docgen-href="#ms_period/0">ms_period()</a></code><br></p>
 <p> </p>
-</div><p>Returns the non-null period, in milliseconds, corresponding to the
- specified frequency.
-</p>
+</div>
 
 <h3 class="function"><a name="from_posix_timestamp-1">from_posix_timestamp/1</a></h3>
 <div class="spec">
-<p><code>from_posix_timestamp(PosixTimestamp::<a href="#type-posix_seconds">posix_seconds()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>from_posix_timestamp(PosixTimestamp::<a href="#type-posix_seconds" docgen-rel="seetype" docgen-href="#posix_seconds/0">posix_seconds()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Converts specified POSIX timestamp (typically the one obtained through
- file-level operations such as file_utils:get_last_modification_time/1) into a
- standard timestamp.
-</p>
+</div>
 
 <h3 class="function"><a name="get_bank_holidays_for-2">get_bank_holidays_for/2</a></h3>
 <div class="spec">
-<p><code>get_bank_holidays_for(Year::<a href="#type-year">year()</a>, Country::<a href="#type-country">country()</a>) -&gt; [<a href="#type-date_in_year">date_in_year()</a>]</code><br></p>
+<p><code>get_bank_holidays_for(Year::<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>, Country::<a href="#type-country" docgen-rel="seetype" docgen-href="#country/0">country()</a>) -&gt; [<a href="#type-date_in_year" docgen-rel="seetype" docgen-href="#date_in_year/0">date_in_year()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Returns a (non chronologically-ordered) list of the dates of the bank 
-holidays, for specified year and country.</p>
-
- Sources for France: https://kalendrier.ouest-france.fr/jours-feries/2020.html
- ("fixed" days have then been factored).
-</p>
+</div>
 
 <h3 class="function"><a name="get_bin_textual_timestamp-0">get_bin_textual_timestamp/0</a></h3>
 <div class="spec">
-<p><code>get_bin_textual_timestamp() -&gt; <a href="#type-bin_string">bin_string()</a></code><br></p>
+<p><code>get_bin_textual_timestamp() -&gt; <a href="#type-timestamp_binstring" docgen-rel="seetype" docgen-href="#timestamp_binstring/0">timestamp_binstring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a binary string corresponding to the current timestamp, like:
- <code>&lt;&lt;"2009/9/1 11:46:53"&gt;&gt;</code>.</p>
-
- Note that the display order here is YY-MM-DD (same as when specifying the
- timestamp), as opposed to DD-MM-YY, which is maybe more usual.
-</p>
+</div>
 
 <h3 class="function"><a name="get_current_year-0">get_current_year/0</a></h3>
 <div class="spec">
-<p><code>get_current_year() -&gt; <a href="#type-year">year()</a></code><br></p>
+<p><code>get_current_year() -&gt; <a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the current year.</p>
-
- Useful for example for copyright notices.
-</p>
+</div>
 
 <h3 class="function"><a name="get_date_after-2">get_date_after/2</a></h3>
 <div class="spec">
-<p><code>get_date_after(BaseDate::<a href="#type-date">date()</a>, DaysOffset::<a href="#type-days">days()</a>) -&gt; <a href="#type-date">date()</a></code><br></p>
+<p><code>get_date_after(BaseDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, DaysOffset::<a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a>) -&gt; <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a></code><br></p>
 <p> </p>
-</div><p>Returns the date corresponding to the specified one augmented of the
- specified number of days (possibly a negative number).
-</p>
+</div>
 
 <h3 class="function"><a name="get_date_difference-2">get_date_difference/2</a></h3>
 <div class="spec">
-<p><code>get_date_difference(FirstDate::<a href="#type-date">date()</a>, SecondDate::<a href="#type-date">date()</a>) -&gt; <a href="#type-days">days()</a></code><br></p>
+<p><code>get_date_difference(FirstDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, SecondDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a></code><br></p>
 <p> </p>
-</div><p>Returns the signed duration, in days, between the two specified dates.</p>
+</div>
 
 <h3 class="function"><a name="get_day_in_year-1">get_day_in_year/1</a></h3>
 <div class="spec">
-<p><code>get_day_in_year(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-day_in_the_year">day_in_the_year()</a></code><br></p>
+<p><code>get_day_in_year(Date::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-day_in_the_year" docgen-rel="seetype" docgen-href="#day_in_the_year/0">day_in_the_year()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the day in the year (thus in [1,366]) corresponding to the 
-specified date.</p>
-
- <p>Handles correctly leap years.</p>
-
- For example, for the tenth of February, in 2023:
- get_day_in_year({2023, 2, 10}) = 41.
-</p>
+</div>
 
 <h3 class="function"><a name="get_day_rank-1">get_day_rank/1</a></h3>
 <div class="spec">
-<p><code>get_day_rank(X1::<a href="#type-date_in_year">date_in_year()</a>) -&gt; <a href="#type-day">day()</a></code><br></p>
+<p><code>get_day_rank(X1::<a href="#type-date_in_year" docgen-rel="seetype" docgen-href="#date_in_year/0">date_in_year()</a>) -&gt; <a href="#type-day" docgen-rel="seetype" docgen-href="#day/0">day()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the rank in year of the specified day, in [1,365].</p>
-
- <p>For example, for the tenth of February: 
-get_day_rank({2, 10}) = 41.</p>
-
- Cannot take into account leap years; prefer using get_day_in_year/1 whenever
- possible.
-</p>
+</div>
 
 <h3 class="function"><a name="get_daylight_saving_time-1">get_daylight_saving_time/1</a></h3>
 <div class="spec">
-<p><code>get_daylight_saving_time(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-hours">hours()</a></code><br></p>
+<p><code>get_daylight_saving_time(Date::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-hours" docgen-rel="seetype" docgen-href="#hours/0">hours()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the (signed) number of hours to offset the UTC in order to obtain 
-the local time (typically the Central European Summer Time, UTC+1/UTC+2), for 
-the corresponding date.</p>
-
- <p>Since 1996, European Summer Time has been observed between 01:00 UTC (02:00 
-CET and 03:00 CEST) on the last Sunday of March, and 01:00 UTC on the last 
-Sunday of October.</p>
-
- For most of the dates, this function is rather cheap. It is an approximation,
- in the sense that the parameter should be a full timestamp (hence with a
- time), not simply a date.
-</p>
+</div>
 
 <h3 class="function"><a name="get_duration-1">get_duration/1</a></h3>
 <div class="spec">
-<p><code>get_duration(X1::<a href="#type-time">time()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>get_duration(X1::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (signed) duration in seconds corresponding to the specified
- time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_duration-2">get_duration/2</a></h3>
 <div class="spec">
-<p><code>get_duration(FirstTimestamp::<a href="#type-timestamp">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>get_duration(FirstTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (signed) duration in seconds between the two specified
- timestamps, using the first one as starting time and the second one as
- stopping time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_duration_since-1">get_duration_since/1</a></h3>
 <div class="spec">
-<p><code>get_duration_since(StartTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>get_duration_since(StartTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (signed) duration in seconds between the specified start
- timestamp and the current time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_epoch_milliseconds_since_year_0-0">get_epoch_milliseconds_since_year_0/0</a></h3>
 <div class="spec">
 <p><code>get_epoch_milliseconds_since_year_0() -&gt; any()</code></p>
 <p> </p>
-</div><p>Returns the number of milliseconds of the Epoch since year 0.</p>
+</div>
 
 <h3 class="function"><a name="get_epoch_timestamp-0">get_epoch_timestamp/0</a></h3>
 <div class="spec">
-<p><code>get_epoch_timestamp() -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>get_epoch_timestamp() -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Returns the timestamp of the (UNIX) Epoch, defined to be 00:00:00 UTC,
- 1970-01-01.
-</p>
+</div>
 
 <h3 class="function"><a name="get_french_textual_duration-2">get_french_textual_duration/2</a></h3>
 <div class="spec">
-<p><code>get_french_textual_duration(FirstTimestamp::<a href="#type-timestamp">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_french_textual_duration(FirstTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description, in French, of the duration between the two
- specified timestamps, using the first one as starting time and the
- second one as stopping time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></h3>
 <div class="spec">
-<p><code>get_french_textual_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_french_textual_timestamp(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string corresponding to the specified timestamp expressed in
- French, like: "le 1/9/2009, à 11h46m53".
-</p>
+</div>
 
 <h3 class="function"><a name="get_intertime_duration-2">get_intertime_duration/2</a></h3>
 <div class="spec">
-<p><code>get_intertime_duration(X1::<a href="#type-time">time()</a>, X2::<a href="#type-time">time()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>get_intertime_duration(Start::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, Stop::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the signed duration, in integer seconds, between the two 
-specified times.</p>
-
- A positive duration will be returned iff the first specified time is before
- the second one.
-</p>
+</div>
 
 <h3 class="function"><a name="get_local_date-0">get_local_date/0</a></h3>
 <div class="spec">
-<p><code>get_local_date() -&gt; <a href="#type-date">date()</a></code><br></p>
+<p><code>get_local_date() -&gt; <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a></code><br></p>
 <p> </p>
-</div><p>Returns the local date, as reported by the underlying operating system.</p>
+</div>
 
 <h3 class="function"><a name="get_local_time-0">get_local_time/0</a></h3>
 <div class="spec">
-<p><code>get_local_time() -&gt; <a href="#type-time">time()</a></code><br></p>
+<p><code>get_local_time() -&gt; <a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a></code><br></p>
 <p> </p>
-</div><p>Returns the local time, as reported by the underlying operating system.</p>
+</div>
 
 <h3 class="function"><a name="get_local_timestamp-0">get_local_timestamp/0</a></h3>
 <div class="spec">
-<p><code>get_local_timestamp() -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>get_local_timestamp() -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Returns a local timestamp (date and time), as reported by the underlying
- operating system.
-</p>
+</div>
 
 <h3 class="function"><a name="get_monotonic_time-0">get_monotonic_time/0</a></h3>
 <div class="spec">
-<p><code>get_monotonic_time() -&gt; <a href="#type-ms_monotonic">ms_monotonic()</a></code><br></p>
+<p><code>get_monotonic_time() -&gt; <a href="#type-ms_monotonic" docgen-rel="seetype" docgen-href="#ms_monotonic/0">ms_monotonic()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the current time, expressed in (absolute) internal time 
-(logically equivalent to a millisecond-based timestamp).</p>
-
- <p>This is a "cheap" yet monotonic (never going backward) time, thus used 
-internally, mostly useful to determine durations.</p>
-
- Note: due to the VM time offset, this is probably a (large) negative number
- (of milliseconds), and this is not a problem.
-</p>
+</div>
 
 <h3 class="function"><a name="get_month_duration-1">get_month_duration/1</a></h3>
 <div class="spec">
-<p><code>get_month_duration(MonthIndex::<a href="#type-canonical_month">canonical_month()</a>) -&gt; <a href="#type-days">days()</a></code><br></p>
+<p><code>get_month_duration(MonthIndex::<a href="#type-canonical_month" docgen-rel="seetype" docgen-href="#canonical_month/0">canonical_month()</a>) -&gt; <a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the duration of the specified month.</p>
-
- Here February lasts always 28 days (as if the year was not a leap one).
-</p>
+</div>
 
 <h3 class="function"><a name="get_month_duration-2">get_month_duration/2</a></h3>
 <div class="spec">
-<p><code>get_month_duration(MonthIndex::<a href="#type-canonical_month">canonical_month()</a>, Year::<a href="#type-year">year()</a>) -&gt; <a href="#type-days">days()</a></code><br></p>
+<p><code>get_month_duration(MonthIndex::<a href="#type-canonical_month" docgen-rel="seetype" docgen-href="#canonical_month/0">canonical_month()</a>, Year::<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>) -&gt; <a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the duration of the specified month of the specified year.</p>
-
- Takes into account leap years.
-</p>
+</div>
 
 <h3 class="function"><a name="get_month_durations-0">get_month_durations/0</a></h3>
 <div class="spec">
-<p><code>get_month_durations() -&gt; <a href="#type-days">days()</a></code><br></p>
+<p><code>get_month_durations() -&gt; <a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the list of the usual duration of months.</p>
-
- Here February lasts always 28 days (instead of 29 for leap years).
-</p>
+</div>
 
 <h3 class="function"><a name="get_month_durations-1">get_month_durations/1</a></h3>
 <div class="spec">
-<p><code>get_month_durations(Year::<a href="#type-year">year()</a>) -&gt; <a href="#type-days">days()</a></code><br></p>
+<p><code>get_month_durations(Year::<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>) -&gt; <a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the list of the duration of months for the specified year.</p>
-
- Handles correctly leap years.
-</p>
+</div>
 
 <h3 class="function"><a name="get_precise_duration-2">get_precise_duration/2</a></h3>
 <div class="spec">
-<p><code>get_precise_duration(FirstTimestamp::<a href="#type-precise_timestamp">precise_timestamp()</a>, SecondTimestamp::<a href="#type-precise_timestamp">precise_timestamp()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></code><br></p>
+<p><code>get_precise_duration(FirstTimestamp::<a href="#type-precise_timestamp" docgen-rel="seetype" docgen-href="#precise_timestamp/0">precise_timestamp()</a>, SecondTimestamp::<a href="#type-precise_timestamp" docgen-rel="seetype" docgen-href="#precise_timestamp/0">precise_timestamp()</a>) -&gt; <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (signed) duration in milliseconds between the two specified
- precise timestamps (as obtained thanks to get_precise_duration/0), using the
- first one as starting time and the second one as stopping time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_precise_duration_since-1">get_precise_duration_since/1</a></h3>
 <div class="spec">
-<p><code>get_precise_duration_since(StartTimestamp::<a href="#type-precise_timestamp">precise_timestamp()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></code><br></p>
+<p><code>get_precise_duration_since(StartTimestamp::<a href="#type-precise_timestamp" docgen-rel="seetype" docgen-href="#precise_timestamp/0">precise_timestamp()</a>) -&gt; <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (signed) duration in milliseconds between the specified
- precise timestamp (as obtained thanks to get_precise_duration/0) and the
- current time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_precise_timestamp-0">get_precise_timestamp/0</a></h3>
 <div class="spec">
-<p><code>get_precise_timestamp() -&gt; <a href="#type-precise_timestamp">precise_timestamp()</a></code><br></p>
+<p><code>get_precise_timestamp() -&gt; <a href="#type-precise_timestamp" docgen-rel="seetype" docgen-href="#precise_timestamp/0">precise_timestamp()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a timestamp that is as precise as possible, that is {MegaSecs, 
-Secs, MicroSecs}.</p>
-
- <p>Where:</p>
-
- <p>- MegaSecs is an integer number of millions of seconds</p>
-
- <p>- Secs is an integer number of seconds that is less than one million</p>
-
- - MicroSecs is an integer number of microseconds
-</p>
+</div>
 
 <h3 class="function"><a name="get_system_time-0">get_system_time/0</a></h3>
 <div class="spec">
-<p><code>get_system_time() -&gt; <a href="#type-ms_since_epoch">ms_since_epoch()</a></code><br></p>
+<p><code>get_system_time() -&gt; <a href="#type-ms_since_epoch" docgen-rel="seetype" docgen-href="#ms_since_epoch/0">ms_since_epoch()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (VM) system time (that is monotonic + time offset), in
- milliseconds since the Epoch.
-</p>
+</div>
 
 <h3 class="function"><a name="get_textual_date-1">get_textual_date/1</a></h3>
 <div class="spec">
-<p><code>get_textual_date(X1::<a href="#type-date">date()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_textual_date(X1::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string corresponding to the specified date, like: "30/11/2009".</p>
+</div>
 
 <h3 class="function"><a name="get_textual_duration-2">get_textual_duration/2</a></h3>
 <div class="spec">
-<p><code>get_textual_duration(FirstTimestamp::<a href="#type-timestamp">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_textual_duration(FirstTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns an (english), smart textual description of the duration between
- the two specified timestamps, using the first one as starting time and the
- second one as stopping time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_textual_timestamp-0">get_textual_timestamp/0</a></h3>
 <div class="spec">
-<p><code>get_textual_timestamp() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_textual_timestamp() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a string corresponding to the current timestamp, like: 
-"2009/9/1 11:46:53".</p>
-
- Note that the display order here is YY-MM-DD (same as when specifying the
- timestamp), as opposed to DD-MM-YY, which is maybe more usual.
-</p>
+</div>
 
 <h3 class="function"><a name="get_textual_timestamp-1">get_textual_timestamp/1</a></h3>
 <div class="spec">
-<p><code>get_textual_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_textual_timestamp(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a (clear, non-ambiguous) string corresponding to the specified
- timestamp, like: "2009/9/1 11:46:53".
-</p>
+</div>
 
 <h3 class="function"><a name="get_textual_timestamp_for_path-0">get_textual_timestamp_for_path/0</a></h3>
 <div class="spec">
-<p><code>get_textual_timestamp_for_path() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_textual_timestamp_for_path() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string corresponding to the current timestamp and able to be a
- part of a path, like: "2010-11-18-at-13h-30m-35s".
-</p>
+</div>
 
 <h3 class="function"><a name="get_textual_timestamp_for_path-1">get_textual_timestamp_for_path/1</a></h3>
 <div class="spec">
-<p><code>get_textual_timestamp_for_path(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_textual_timestamp_for_path(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string corresponding to the specified timestamp and able to be
- a part of a path, like: "2010-11-18-at-13h-30m-35s".
-</p>
+</div>
 
 <h3 class="function"><a name="get_textual_timestamp_with_dashes-1">get_textual_timestamp_with_dashes/1</a></h3>
 <div class="spec">
-<p><code>get_textual_timestamp_with_dashes(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_textual_timestamp_with_dashes(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string corresponding to the specified timestamp, with "dash"
- conventions (e.g. used by jsgantt), like: "2017-05-20 12:00:17".
-</p>
+</div>
 
 <h3 class="function"><a name="get_time2_textual_timestamp-0">get_time2_textual_timestamp/0</a></h3>
 <div class="spec">
-<p><code>get_time2_textual_timestamp() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_time2_textual_timestamp() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a string corresponding to the current timestamp expressed as the 
-"%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
-"2020-01-01 00-01-22".</p>
-
- Used by various web-related tools (see
- https://awstats.sourceforge.io/docs/awstats_config.html#LogFormat and
- https://awstats.sourceforge.io/docs/awstats_faq.html#PERSONALIZEDLOG).
-</p>
+</div>
 
 <h3 class="function"><a name="get_time2_textual_timestamp-1">get_time2_textual_timestamp/1</a></h3>
 <div class="spec">
-<p><code>get_time2_textual_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_time2_textual_timestamp(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a string corresponding to the specified timestamp expressed as 
-the "%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
-"2020-01-01 00-01-22".</p>
+</div>
 
- Used by various web-related tools (see
- https://awstats.sourceforge.io/docs/awstats_config.html#LogFormat and
- https://awstats.sourceforge.io/docs/awstats_faq.html#PERSONALIZEDLOG).
-</p>
+<h3 class="function"><a name="get_time_difference-2">get_time_difference/2</a></h3>
+<div class="spec">
+<p><code>get_time_difference(FirstTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, SecondTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="get_timestamp-0">get_timestamp/0</a></h3>
 <div class="spec">
-<p><code>get_timestamp() -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>get_timestamp() -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a timestamp tuple describing now, that is the current time, the 
-time zone and Daylight Saving Time correction depending on the underlying OS.</p>
-
- For example {{Year, Month, Day}, {Hour, Minute, Second}} = get_timestamp()
- may return {{2007,9,6}, {15,9,14}}.
-</p>
+</div>
 
 <h3 class="function"><a name="get_user_friendly_textual_timestamp-1">get_user_friendly_textual_timestamp/1</a></h3>
 <div class="spec">
 <p><code>get_user_friendly_textual_timestamp(Timestamp) -&gt; any()</code></p>
 <p> </p>
-</div><p>Returns a string corresponding to the specified timestamp in a
- user-friendly manner, like: "Wednesday, January 6, 2021 at 11:46:53".
-</p>
+</div>
 
 <h3 class="function"><a name="get_week_day-1">get_week_day/1</a></h3>
 <div class="spec">
-<p><code>get_week_day(DayIndex::<a href="#type-day_index">day_index()</a>) -&gt; <a href="#type-week_day">week_day()</a></code><br></p>
+<p><code>get_week_day(DayIndex::<a href="#type-day_index" docgen-rel="seetype" docgen-href="#day_index/0">day_index()</a>) -&gt; <a href="#type-week_day" docgen-rel="seetype" docgen-href="#week_day/0">week_day()</a></code><br></p>
 <p> </p>
-</div><p>Returns the symbol (atom) corresponding to specified week day index.</p>
+</div>
 
 <h3 class="function"><a name="gregorian_ms_to_timestamp-1">gregorian_ms_to_timestamp/1</a></h3>
 <div class="spec">
-<p><code>gregorian_ms_to_timestamp(GregorianMs::<a href="#type-ms_since_year_0">ms_since_year_0()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>gregorian_ms_to_timestamp(GregorianMs::<a href="#type-ms_since_year_0" docgen-rel="seetype" docgen-href="#ms_since_year_0/0">ms_since_year_0()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Converts (with a bit of approximation) the specified number of Gregorian
- milliseconds into a proper, user-level (local, system) timestamp.
-</p>
+</div>
 
 <h3 class="function"><a name="hours_to_seconds-1">hours_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>hours_to_seconds(HourDuration::<a href="unit_utils.html#type-hours">unit_utils:hours()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>hours_to_seconds(HourDuration::<a href="unit_utils.html#type-hours" docgen-rel="seetype" docgen-href="unit_utils#hours/0">unit_utils:hours()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Converts a duration in hours into a duration in seconds.</p>
+</div>
 
 <h3 class="function"><a name="is_bank_holiday-2">is_bank_holiday/2</a></h3>
 <div class="spec">
-<p><code>is_bank_holiday(Date::<a href="#type-date">date()</a>, Country::<a href="#type-country">country()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_bank_holiday(Date::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, Country::<a href="#type-country" docgen-rel="seetype" docgen-href="#country/0">country()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether, for specified country, the specified date is a bank
- holiday.
-</p>
+</div>
 
 <h3 class="function"><a name="is_canonical_date-1">is_canonical_date/1</a></h3>
 <div class="spec">
 <p><code>is_canonical_date(Date::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the specified term is a canonical date.</p>
+</div>
+
+<h3 class="function"><a name="is_canonical_time-1">is_canonical_time/1</a></h3>
+<div class="spec">
+<p><code>is_canonical_time(Time::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="is_date-1">is_date/1</a></h3>
 <div class="spec">
 <p><code>is_date(Term::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified term is a legit (canonical) date.</p>
-
- Useful to vet user-specified dates.
-</p>
+</div>
 
 <h3 class="function"><a name="is_dhms_duration-1">is_dhms_duration/1</a></h3>
 <div class="spec">
 <p><code>is_dhms_duration(Other::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Tells whether specified term is a DHMS duration.</p>
-
- Note: does not check whether its components are in canonical form (e.g. Hours
- in [0,23]).
-</p>
+</div>
 
 <h3 class="function"><a name="is_leap_year-1">is_leap_year/1</a></h3>
 <div class="spec">
-<p><code>is_leap_year(Year::<a href="#type-year">year()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_leap_year(Year::<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the specified year is a leap one.</p>
+</div>
 
 <h3 class="function"><a name="is_time-1">is_time/1</a></h3>
 <div class="spec">
 <p><code>is_time(Time::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified term is a legit (canonical) time.</p>
-
- Useful to vet user-specified times.
-</p>
+</div>
 
 <h3 class="function"><a name="is_timestamp-1">is_timestamp/1</a></h3>
 <div class="spec">
 <p><code>is_timestamp(Other::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified term is a legit, valid (canonical) 
-timestamp.</p>
-
- A timestamp must be valid in terms of type (a pair of triplet of integers) and
- also of semantics (e.g. {{2022,9,31}, {18,0,0}} is not valid, at not 31st
- exists in September).</p>
+</div>
 
 <h3 class="function"><a name="is_user_date-1">is_user_date/1</a></h3>
 <div class="spec">
 <p><code>is_user_date(Date::term()) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the specified term is a user date.</p>
+</div>
 
 <h3 class="function"><a name="local_to_universal_time-1">local_to_universal_time/1</a></h3>
 <div class="spec">
-<p><code>local_to_universal_time(LocalTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>local_to_universal_time(LocalTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts the specified timestamp expressed in local time (thus with time 
-zone and Daylight Saving Time) into a timestamp expressed in universal time 
-(UTC).</p>
-
- Note: designed to never fail, and performs a conversion as reasonably as
- possible (e.g. due to DST, some timestamp in local time shall not exist, like
- when leaping forward of, say, an hour at spring; on the other way round, at
- fall, a given local timestamp may exist twice: before and after, when going
- back of, say, one hour).
-</p>
+</div>
 
 <h3 class="function"><a name="month_to_string-1">month_to_string/1</a></h3>
 <div class="spec">
-<p><code>month_to_string(MonthIndex::<a href="#type-month">month()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>month_to_string(MonthIndex::<a href="#type-month" docgen-rel="seetype" docgen-href="#month/0">month()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Converts a month (an integer in [1,12] or a 12-multiple thereof, like 23)
- into its common name.
-</p>
+</div>
 
 <h3 class="function"><a name="months_to_seconds-1">months_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>months_to_seconds(MonthDuration::<a href="#type-months">months()</a>) -&gt; <a href="#type-float_seconds">float_seconds()</a></code><br></p>
+<p><code>months_to_seconds(MonthDuration::<a href="#type-months" docgen-rel="seetype" docgen-href="#months/0">months()</a>) -&gt; <a href="#type-float_seconds" docgen-rel="seetype" docgen-href="#float_seconds/0">float_seconds()</a></code><br></p>
 <p> </p>
-</div><p>Converts a duration in months into a duration in seconds, supposing the
- duration of a month is 1/12 of the one of an average year.
-</p>
+</div>
 
 <h3 class="function"><a name="next_month-1">next_month/1</a></h3>
 <div class="spec">
-<p><code>next_month(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>next_month(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the same timestamp as specified, except exactly one month later 
-(hence not translated of a fixed duration).</p>
-
- Note that this may still lead to invalid date, if the specified month has more
- days than the next (e.g. January, 31 becoming then a nonsensical February,
- 31).
-</p>
+</div>
 
 <h3 class="function"><a name="offset_time-2">offset_time/2</a></h3>
 <div class="spec">
-<p><code>offset_time(Time::<a href="#type-time">time()</a>, SecDuration::<a href="#type-second_duration">second_duration()</a>) -&gt; <a href="#type-time">time()</a></code><br></p>
+<p><code>offset_time(Time::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, SecDuration::<a href="#type-second_duration" docgen-rel="seetype" docgen-href="#second_duration/0">second_duration()</a>) -&gt; <a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a></code><br></p>
 <p> </p>
-</div><p><p>Offsets the specified time of the specified (signed) duration: returns a 
-time translated accordingly.</p>
-
- Returns ?first_time if the resulting time would be offset to the previous day,
- and ?last_time if the resulting time would be offset to the next day.
-</p>
+</div>
 
 <h3 class="function"><a name="offset_timestamp-2">offset_timestamp/2</a></h3>
 <div class="spec">
-<p><code>offset_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>, DHMS::<a href="#type-dhms_duration">dhms_duration()</a> | <a href="#type-seconds">seconds()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>offset_timestamp(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>, DHMS::<a href="#type-dhms_duration" docgen-rel="seetype" docgen-href="#dhms_duration/0">dhms_duration()</a> | <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Offsets the specified timestamp of the specified (signed) duration:
- returns a timestamp translated accordingly.
-</p>
+</div>
+
+<h3 class="function"><a name="resolve_date-1">resolve_date/1</a></h3>
+<div class="spec">
+<p><code>resolve_date(ExtDate::<a href="#type-extended_date" docgen-rel="seetype" docgen-href="#extended_date/0">extended_date()</a>) -&gt; <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="resolve_time-1">resolve_time/1</a></h3>
+<div class="spec">
+<p><code>resolve_time(ExtTime::<a href="#type-extended_time" docgen-rel="seetype" docgen-href="#extended_time/0">extended_time()</a>) -&gt; <a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="resolve_timestamp-1">resolve_timestamp/1</a></h3>
+<div class="spec">
+<p><code>resolve_timestamp(ExtTimestamp::<a href="#type-extended_timestamp" docgen-rel="seetype" docgen-href="#extended_timestamp/0">extended_timestamp()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="seconds_to_dhms-1">seconds_to_dhms/1</a></h3>
 <div class="spec">
 <p><code>seconds_to_dhms(FullSeconds) -&gt; any()</code></p>
 <p> </p>
-</div><p>Converts a duration in seconds into a DHMS duration (in
- Days/Hours/Minutes/Seconds).
-</p>
+</div>
 
 <h3 class="function"><a name="short_string_to_timestamp-1">short_string_to_timestamp/1</a></h3>
 <div class="spec">
-<p><code>short_string_to_timestamp(TimestampString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>short_string_to_timestamp(TimestampString::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Parses back a timestamp in the form of "14/4/11 18:48" ("11" for 2011,
- and with no seconds specified) into a timestamp(), that is
- {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.
-</p>
+</div>
 
 <h3 class="function"><a name="string_to_dhms-1">string_to_dhms/1</a></h3>
 <div class="spec">
-<p><code>string_to_dhms(DurationString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-dhms_duration">dhms_duration()</a></code><br></p>
+<p><code>string_to_dhms(DurationString::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-dhms_duration" docgen-rel="seetype" docgen-href="#dhms_duration/0">dhms_duration()</a></code><br></p>
 <p> </p>
-</div><p>Converts specified string (e.g. "113j0h10m3s" for a French version,
- "1d12h0m0s" for an English one) to a DHMS duration.
-</p>
+</div>
 
 <h3 class="function"><a name="string_to_timestamp-1">string_to_timestamp/1</a></h3>
 <div class="spec">
-<p><code>string_to_timestamp(TimestampString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>string_to_timestamp(TimestampString::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Parses back a timestamp in the form of "14/4/2011 18:48:51" into a
- timestamp(), that is {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.
-</p>
+</div>
 
 <h3 class="function"><a name="time_frame_to_string-1">time_frame_to_string/1</a></h3>
 <div class="spec">
-<p><code>time_frame_to_string(TimeFrame::<a href="#type-time_frame">time_frame()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>time_frame_to_string(TimeFrame::<a href="#type-time_frame" docgen-rel="seetype" docgen-href="#time_frame/0">time_frame()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified time frame.</p>
+</div>
 
 <h3 class="function"><a name="time_of_day_to_string-1">time_of_day_to_string/1</a></h3>
 <div class="spec">
-<p><code>time_of_day_to_string(Time::<a href="#type-time">time()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>time_of_day_to_string(Time::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual, user-friendly description of the specified time of
- day.
-</p>
+</div>
 
 <h3 class="function"><a name="time_out_to_string-1">time_out_to_string/1</a></h3>
 <div class="spec">
-<p><code>time_out_to_string(Timeout::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>time_out_to_string(Timeout::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns an approximate textual (English) description of the specified 
-time-out, expected to be expressed as a signed number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</p>
-
- <p>For example for a time-out of 150 012 ms, returns: 
-"time-out of 2 minutes, 30 seconds and 12 milliseconds".</p>
-
- See also: basic_utils:get_textual_duration/2.
-</p>
+</div>
 
 <h3 class="function"><a name="time_out_to_string-2">time_out_to_string/2</a></h3>
 <div class="spec">
-<p><code>time_out_to_string(Duration::<a href="#type-time_out">time_out()</a>, Lang::<a href="language_utils.html#type-human_language">language_utils:human_language()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>time_out_to_string(Duration::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>, Lang::<a href="language_utils.html#type-human_language" docgen-rel="seetype" docgen-href="language_utils#human_language/0">language_utils:human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns an approximate textual description of the specified time-out, in 
-the specified language, expected to be expressed as a number of milliseconds 
-(integer; otherwise, if being floating-point, it will be rounded), or as the 
-'infinity' atom.</p>
-
- For example for a time-out of 150 012 ms, returns for English:
- "time-out of 2 minutes, 30 seconds and 12 milliseconds".
-</p>
+</div>
 
 <h3 class="function"><a name="time_to_seconds-1">time_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>time_to_seconds(X1::<a href="#type-time">time()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>time_to_seconds(X1::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Converts a HMS duration (in Hours/Minutes/Seconds) into a duration in
- seconds.
-</p>
+</div>
 
 <h3 class="function"><a name="time_to_string-1">time_to_string/1</a></h3>
 <div class="spec">
-<p><code>time_to_string(Time::<a href="#type-time">time()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>time_to_string(Time::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified time of day, like:
- "9:14:57".
-</p>
+</div>
+
+<h3 class="function"><a name="timestamp_in-1">timestamp_in/1</a></h3>
+<div class="spec">
+<p><code>timestamp_in(Duration::<a href="#type-dhms_duration" docgen-rel="seetype" docgen-href="#dhms_duration/0">dhms_duration()</a> | <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="timestamp_to_iso8601_bin_string-1">timestamp_to_iso8601_bin_string/1</a></h3>
 <div class="spec">
-<p><code>timestamp_to_iso8601_bin_string(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-iso8601_bin_string">iso8601_bin_string()</a></code><br></p>
+<p><code>timestamp_to_iso8601_bin_string(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-iso8601_bin_string" docgen-rel="seetype" docgen-href="#iso8601_bin_string/0">iso8601_bin_string()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual ISO8601 binary description of the specified timestamp.</p>
+</div>
 
 <h3 class="function"><a name="timestamp_to_iso8601_string-1">timestamp_to_iso8601_string/1</a></h3>
 <div class="spec">
-<p><code>timestamp_to_iso8601_string(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-iso8601_string">iso8601_string()</a></code><br></p>
+<p><code>timestamp_to_iso8601_string(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-iso8601_string" docgen-rel="seetype" docgen-href="#iso8601_string/0">iso8601_string()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual ISO8601 description of the specified timestamp.</p>
+</div>
 
 <h3 class="function"><a name="timestamp_to_seconds-0">timestamp_to_seconds/0</a></h3>
 <div class="spec">
-<p><code>timestamp_to_seconds() -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>timestamp_to_seconds() -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the number of seconds elapsed since year 0 and now.</p>
-
- Useful for example to define an absolute reference in seconds and then only
- compare offsets to it.
-</p>
+</div>
 
 <h3 class="function"><a name="timestamp_to_seconds-1">timestamp_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>timestamp_to_seconds(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>timestamp_to_seconds(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the number of seconds elapsed since year 0 and the specified 
-timestamp.</p>
-
- Useful for example to define an absolute reference in seconds and then only
- compare offsets to it.
-</p>
+</div>
 
 <h3 class="function"><a name="timestamp_to_string-1">timestamp_to_string/1</a></h3>
 <div class="spec">
-<p><code>timestamp_to_string(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>timestamp_to_string(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Alias of get_textual_timestamp/1; defined for clarity.</p>
+</div>
 
 <h3 class="function"><a name="timestamp_to_weekday-1">timestamp_to_weekday/1</a></h3>
 <div class="spec">
-<p><code>timestamp_to_weekday(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-week_day">week_day()</a></code><br></p>
+<p><code>timestamp_to_weekday(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-week_day" docgen-rel="seetype" docgen-href="#week_day/0">week_day()</a></code><br></p>
 <p> </p>
-</div><p>Returns the week day (e.g. 'Tuesday') corresponding to the specified
- timestamp.
-</p>
+</div>
 
 <h3 class="function"><a name="universal_to_local_time-1">universal_to_local_time/1</a></h3>
 <div class="spec">
-<p><code>universal_to_local_time(UTCTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></code><br></p>
+<p><code>universal_to_local_time(UTCTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code><br></p>
 <p> </p>
-</div><p>Converts the specified timestamp expressed in universal time (UTC) into a
- timestamp expressed in local time (thus with time zone and Daylight Saving
- Time).
-</p>
+</div>
 
 <h3 class="function"><a name="user_to_canonical_date-1">user_to_canonical_date/1</a></h3>
 <div class="spec">
-<p><code>user_to_canonical_date(X1::<a href="#type-user_date">user_date()</a>) -&gt; <a href="#type-date">date()</a></code><br></p>
+<p><code>user_to_canonical_date(X1::<a href="#type-user_date" docgen-rel="seetype" docgen-href="#user_date/0">user_date()</a>) -&gt; <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a></code><br></p>
 <p> </p>
-</div><p>Converts specified user date into a canonical one.</p>
+</div>
 
 <h3 class="function"><a name="wait_period_ending-2">wait_period_ending/2</a></h3>
 <div class="spec">
-<p><code>wait_period_ending(StartTime::<a href="#type-ms_monotonic">ms_monotonic()</a>, Period::<a href="#type-ms_period">ms_period()</a>) -&gt; boolean()</code><br></p>
+<p><code>wait_period_ending(StartTime::<a href="#type-ms_monotonic" docgen-rel="seetype" docgen-href="#ms_monotonic/0">ms_monotonic()</a>, Period::<a href="#type-ms_period" docgen-rel="seetype" docgen-href="#ms_period/0">ms_period()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Waits (approximately) until the end of the specified period, which is 
-expected to have started at the specified monotonic timestamp - which shall 
-have been obtained thanks to get_monotonic_time/0.</p>
-
- Returns (after some relevant time) whether this waiting is expected to have
- stopped on time.
-</p>
+</div>
 
 <h3 class="function"><a name="week_day_to_string-1">week_day_to_string/1</a></h3>
 <div class="spec">
-<p><code>week_day_to_string(Date::<a href="#type-date">date()</a> | <a href="#type-day_index">day_index()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>week_day_to_string(Date::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a> | <a href="#type-day_index" docgen-rel="seetype" docgen-href="#day_index/0">day_index()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns the common name of a week day (e.g. "Tuesday") based on the
- specified date or on the specified index in the week.
-</p>
+</div>
 
 <h3 class="function"><a name="weeks_to_seconds-1">weeks_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>weeks_to_seconds(WeekDuration::<a href="#type-weeks">weeks()</a>) -&gt; <a href="#type-seconds">seconds()</a></code><br></p>
+<p><code>weeks_to_seconds(WeekDuration::<a href="#type-weeks" docgen-rel="seetype" docgen-href="#weeks/0">weeks()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
-</div><p>Converts a duration in weeks into a duration in seconds.</p>
+</div>
 
 <h3 class="function"><a name="years_to_seconds-1">years_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>years_to_seconds(YearDuration::<a href="#type-years">years()</a>) -&gt; <a href="#type-float_seconds">float_seconds()</a></code><br></p>
+<p><code>years_to_seconds(YearDuration::<a href="#type-years" docgen-rel="seetype" docgen-href="#years/0">years()</a>) -&gt; <a href="#type-float_seconds" docgen-rel="seetype" docgen-href="#float_seconds/0">float_seconds()</a></code><br></p>
 <p> </p>
-</div><p>Converts a duration in years into a duration in seconds, supposing a year
- has 365 days and 6 hours (that is a quarter of one day, to account for leap
- years).
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

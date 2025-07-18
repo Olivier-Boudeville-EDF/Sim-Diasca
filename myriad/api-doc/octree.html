@@ -10,86 +10,142 @@
 <hr>
 
 <h1>Module octree</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of facilities to manage <b>octrees</b>, a tree datastructure in 
-which each internal node has exactly 8 children (octants, i.e.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of facilities to manage <b>octrees</b>, a tree datastructure in 
-which each internal node has exactly 8 children (octants, i.e. sub-octrees or 
-"cells" - a naming that is probably clearer) that partition the parent space.</p>
-
- <p>We consider here that the octree acts as a server in charge of resolving 
-spatial queries emitted by many clients having to interact in a shared space.</p>
-
- <p>A global axis-aligned right cuboid is recursively split in 8 smaller, 
-same-sized octants, (which are its direct child right cuboids), dividing the 
-space thanks to a tree until some criterion is met (volume/number of elements 
-in the resulting leaves below some threshold, maximum tree depth reached, 
-etc.).</p>
-
- See https://en.wikipedia.org/wiki/Octree.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
-<p><code>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></code></p>
+<p><code>accumulator() = <a href="basic_utils.html#type-accumulator" docgen-rel="seetype" docgen-href="basic_utils#accumulator/0">basic_utils:accumulator()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_octants">concurrent_octants()</a></h3>
+<p><code>concurrent_octants(_T) = #concurrent_octants{o1 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o2 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o3 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o4 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o5 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o6 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o7 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o8 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_octants">concurrent_octants()</a></h3>
+<p><code>concurrent_octants() = #concurrent_octants{o1 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o2 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o3 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o4 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o5 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o6 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o7 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>), o8 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_pid" docgen-rel="seetype" docgen-href="octree#octree_pid/0">octree:octree_pid()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_octree">concurrent_octree()</a></h3>
+<p><b>abstract datatype</b>: <code>concurrent_octree(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_octree">concurrent_octree()</a></h3>
+<p><b>abstract datatype</b>: <code>concurrent_octree()</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_octree_state">concurrent_octree_state()</a></h3>
+<p><code>concurrent_octree_state(T) = {T, <a href="#type-concurrent_octants" docgen-rel="seetype" docgen-href="#concurrent_octants/0">concurrent_octants</a>(T)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-content_fold_fun">content_fold_fun()</a></h3>
-<p><code>content_fold_fun() = fun((<a href="#type-node_content">node_content()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>)</code></p>
-<p> Describes a function that can be folded onto the content of an octree.</p>
+<p><code>content_fold_fun() = fun((<a href="#type-node_content" docgen-rel="seetype" docgen-href="#node_content/0">node_content()</a>, <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>) -&gt; <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><code>height() = <a href="#type-count">count()</a></code></p>
-<p> The height of an octree, as the maximum number of edges between the root and a
- leaf.</p>
+<p><code>height() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-hybrid_octants">hybrid_octants()</a></h3>
+<p><code>hybrid_octants(_T) = #hybrid_octants{o1 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o2 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o3 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o4 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o5 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o6 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o7 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o8 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-hybrid_octants">hybrid_octants()</a></h3>
+<p><code>hybrid_octants() = #hybrid_octants{o1 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o2 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o3 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o4 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o5 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o6 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o7 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>), o8 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-octree_designator" docgen-rel="seetype" docgen-href="octree#octree_designator/0">octree:octree_designator()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-hybrid_octree">hybrid_octree()</a></h3>
+<p><b>abstract datatype</b>: <code>hybrid_octree(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-hybrid_octree">hybrid_octree()</a></h3>
+<p><b>abstract datatype</b>: <code>hybrid_octree()</code></p>
+
+
+<h3 class="typedecl"><a name="type-locatable_center">locatable_center()</a></h3>
+<p><code>locatable_center() = <a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-locatable_container">locatable_container()</a></h3>
+<p><code>locatable_container() = <a href="#type-set" docgen-rel="seetype" docgen-href="#set/0">set</a>(<a href="#type-locatable_pid" docgen-rel="seetype" docgen-href="#locatable_pid/0">locatable_pid()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-locatable_pid">locatable_pid()</a></h3>
+<p><code>locatable_pid() = pid()</code></p>
+
 
 <h3 class="typedecl"><a name="type-node_content">node_content()</a></h3>
-<p><code>node_content() = <a href="#type-maybe">maybe</a>(any())</code></p>
-<p> The content of a node of an octree ('undefined' meaning empty content).</p>
+<p><code>node_content() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(any())</code></p>
+
 
 <h3 class="typedecl"><a name="type-octant_id">octant_id()</a></h3>
-<p><code>octant_id() = {H::<a href="#type-height">height()</a>, Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</code></p>
-<p><p> The identifier of an octant, expressed in terms of octant coordinates.</p>
+<p><code>octant_id() = {H::<a href="#type-height" docgen-rel="seetype" docgen-href="#height/0">height()</a>, Xi::<a href="#type-x_index" docgen-rel="seetype" docgen-href="#x_index/0">x_index()</a>, Yi::<a href="#type-y_index" docgen-rel="seetype" docgen-href="#y_index/0">y_index()</a>, Zi::<a href="#type-z_index" docgen-rel="seetype" docgen-href="#z_index/0">z_index()</a>}</code></p>
 
- <p>For example {H=2, Xi=-1, Yi=2, Zi=1}.</p>
-
- For H=0, Xi=Yi=Zi=1.
- For H=1, Xi, Yi, Zi each are either -1 or +1.
- For H=2, Xi, Yi, Zi each are in -2, -1, +1, +2.
- For H=n, Xi, Yi, Zi each are in -n, -n+1, [...], -2, -1, +1; +2, [...], n-1,
- n.</p>
 
 <h3 class="typedecl"><a name="type-octant_index">octant_index()</a></h3>
 <p><code>octant_index() = integer()</code></p>
-<p> The index of an octant is a non-null integer.</p>
+
 
 <h3 class="typedecl"><a name="type-octant_short_id">octant_short_id()</a></h3>
-<p><code>octant_short_id() = {Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</code></p>
-<p><p> The identifier of an octant at a given height in the octree, expressed in 
-terms of octant coordinates.</p>
+<p><code>octant_short_id() = {Xi::<a href="#type-x_index" docgen-rel="seetype" docgen-href="#x_index/0">x_index()</a>, Yi::<a href="#type-y_index" docgen-rel="seetype" docgen-href="#y_index/0">y_index()</a>, Zi::<a href="#type-z_index" docgen-rel="seetype" docgen-href="#z_index/0">z_index()</a>}</code></p>
 
- For example {Xi=-1, Yi=2, Zi=1}, for H=2.</p>
+
+<h3 class="typedecl"><a name="type-octree_designator">octree_designator()</a></h3>
+<p><code>octree_designator() = <a href="#type-octree_term" docgen-rel="seetype" docgen-href="#octree_term/0">octree_term()</a> | <a href="#type-octree_pid" docgen-rel="seetype" docgen-href="#octree_pid/0">octree_pid()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-octree_pid">octree_pid()</a></h3>
+<p><code>octree_pid() = pid()</code></p>
+
+
+<h3 class="typedecl"><a name="type-octree_term">octree_term()</a></h3>
+<p><code>octree_term() = any()</code></p>
+
+
+<h3 class="typedecl"><a name="type-point3">point3()</a></h3>
+<p><code>point3() = <a href="point3.html#type-point3" docgen-rel="seetype" docgen-href="point3#point3/0">point3:point3()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-sequential_octants">sequential_octants()</a></h3>
+<p><code>sequential_octants(_T) = #sequential_octants{o1 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o2 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o3 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o4 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o5 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o6 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o7 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o8 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-sequential_octants">sequential_octants()</a></h3>
+<p><code>sequential_octants() = #sequential_octants{o1 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o2 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o3 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o4 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o5 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o6 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o7 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>), o8 = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="octree.html#type-sequential_octree" docgen-rel="seetype" docgen-href="octree#sequential_octree/0">octree:sequential_octree()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-sequential_octree">sequential_octree()</a></h3>
+<p><b>abstract datatype</b>: <code>sequential_octree(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-sequential_octree">sequential_octree()</a></h3>
+<p><b>abstract datatype</b>: <code>sequential_octree()</code></p>
+
+
+<h3 class="typedecl"><a name="type-set">set()</a></h3>
+<p><code>set(T) = <a href="set_utils.html#type-set" docgen-rel="seetype" docgen-href="set_utils#set/0">set_utils:set</a>(T)</code></p>
+
 
 <h3 class="typedecl"><a name="type-x_index">x_index()</a></h3>
-<p><code>x_index() = <a href="#type-octant_index">octant_index()</a></code></p>
-<p> The index of an octant along the X axis.</p>
+<p><code>x_index() = <a href="#type-octant_index" docgen-rel="seetype" docgen-href="#octant_index/0">octant_index()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-y_index">y_index()</a></h3>
-<p><code>y_index() = <a href="#type-octant_index">octant_index()</a></code></p>
-<p> The index of an octant along the Y axis.</p>
+<p><code>y_index() = <a href="#type-octant_index" docgen-rel="seetype" docgen-href="#octant_index/0">octant_index()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-z_index">z_index()</a></h3>
-<p><code>z_index() = <a href="#type-octant_index">octant_index()</a></code></p>
-<p> The index of an octant along the Z axis.</p>
+<p><code>z_index() = <a href="#type-octant_index" docgen-rel="seetype" docgen-href="#octant_index/0">octant_index()</a></code></p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#new-0">new/0</a></td><td>Creates an empty (regarding content and octants), sequential, octree.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Creates a sequential, octree having specified content, and no octants.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#new-0">new/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -98,13 +154,13 @@ terms of octant coordinates.</p>
 <div class="spec">
 <p><code>new() -&gt; any()</code><br></p>
 <p> </p>
-</div><p>Creates an empty (regarding content and octants), sequential, octree.</p>
+</div>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><code>new(NodeContent::<a href="#type-node_content">node_content()</a>) -&gt; any()</code><br></p>
+<p><code>new(NodeContent::<a href="#type-node_content" docgen-rel="seetype" docgen-href="#node_content/0">node_content()</a>) -&gt; any()</code><br></p>
 <p> </p>
-</div><p>Creates a sequential, octree having specified content, and no octants.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

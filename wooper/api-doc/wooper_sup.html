@@ -10,33 +10,28 @@
 <hr>
 
 <h1>Module wooper_sup</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the <b>root (OTP) supervisor</b> of WOOPER.
+<ul class="index"><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 <p><b>Behaviours:</b> <a href="supervisor.html"><code>supervisor</code></a>.</p>
 
-<h2><a name="description">Description</a></h2><p>Module implementing the <b>root (OTP) supervisor</b> of WOOPER.</p>
-
- In practice, it will supervise a single process, the one of the (singleton)
- WOOPER class manager (which implements the gen_server behaviour).
-
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#init-1">init/1</a></td><td>Callback to initialise this supervisor.</td></tr>
-<tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td>Starts and links the WOOPER root supervisor.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#init-1">init/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><code>init(Args::undefined) -&gt; {ok, {<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a>, [<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-child_spec">supervisor:child_spec()</a>]}} | ignore</code><br></p>
+<p><code>init(Args::undefined) -&gt; {ok, {<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags" docgen-rel="seetype" docgen-href="stdlib:supervisor#sup_flags/0">supervisor:sup_flags()</a>, [<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-child_spec" docgen-rel="seetype" docgen-href="stdlib:supervisor#child_spec/0">supervisor:child_spec()</a>]}} | ignore</code><br></p>
 <p> </p>
-</div><p>Callback to initialise this supervisor.</p>
+</div>
 
 <h3 class="function"><a name="start_link-0">start_link/0</a></h3>
 <div class="spec">
-<p><code>start_link() -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-startlink_ret">supervisor:startlink_ret()</a></code><br></p>
+<p><code>start_link() -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-startlink_ret" docgen-rel="seetype" docgen-href="stdlib:supervisor#startlink_ret/0">supervisor:startlink_ret()</a></code><br></p>
 <p> </p>
-</div><p>Starts and links the WOOPER root supervisor.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

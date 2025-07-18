@@ -10,220 +10,160 @@
 <hr>
 
 <h1>Module polygon</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>polygon</b> management.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>polygon</b> management.</p>
-
- <p>When used for rendering, coordinates are expected to be often integers.</p>
-
- See <code>polygon_test.erl</code> for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_point2">any_point2()</a></h3>
-<p><code>any_point2() = <a href="point2.html#type-any_point2">point2:any_point2()</a></code></p>
+<p><code>any_point2() = <a href="point2.html#type-any_point2" docgen-rel="seetype" docgen-href="point2#any_point2/0">point2:any_point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_vertex2">any_vertex2()</a></h3>
-<p><code>any_vertex2() = <a href="point2.html#type-any_vertex2">point2:any_vertex2()</a></code></p>
+<p><code>any_vertex2() = <a href="point2.html#type-any_vertex2" docgen-rel="seetype" docgen-href="point2#any_vertex2/0">point2:any_vertex2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-area">area()</a></h3>
-<p><code>area() = <a href="linear.html#type-area">linear:area()</a></code></p>
+<p><code>area() = <a href="linear.html#type-area" docgen-rel="seetype" docgen-href="linear#area/0">linear:area()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bounding_algorithm">bounding_algorithm()</a></h3>
-<p><code>bounding_algorithm() = <a href="bounding_surface.html#type-bounding_algorithm">bounding_surface:bounding_algorithm()</a></code></p>
+<p><code>bounding_algorithm() = <a href="bounding_surface.html#type-bounding_algorithm" docgen-rel="seetype" docgen-href="bounding_surface#bounding_algorithm/0">bounding_surface:bounding_algorithm()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-canvas">canvas()</a></h3>
-<p><code>canvas() = <a href="gui.html#type-canvas">gui:canvas()</a></code></p>
+<p><code>canvas() = <a href="gui_canvas.html#type-canvas" docgen-rel="seetype" docgen-href="gui_canvas#canvas/0">gui_canvas:canvas()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
-<p><code>color() = <a href="gui_color.html#type-color">gui_color:color()</a></code></p>
+<p><code>color() = <a href="gui_color.html#type-color" docgen-rel="seetype" docgen-href="gui_color#color/0">gui_color:color()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
-<p><code>distance() = <a href="linear.html#type-distance">linear:distance()</a></code></p>
+<p><code>distance() = <a href="linear.html#type-distance" docgen-rel="seetype" docgen-href="linear#distance/0">linear:distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-polygon">polygon()</a></h3>
-<p><code>polygon() = #polygon{vertices = [<a href="point2.html#type-any_vertex2">point2:any_vertex2()</a>], rendering = <a href="option_list.html#type-option_list">option_list:option_list()</a>, bounding_surface = <a href="#type-maybe">maybe</a>(<a href="bounding_surface.html#type-bounding_surface">bounding_surface:bounding_surface()</a>)}</code></p>
-<p> Describes a polygon, convex or not, simple or not.</p>
+<p><code>polygon() = #polygon{vertices = [<a href="point2.html#type-any_vertex2" docgen-rel="seetype" docgen-href="point2#any_vertex2/0">point2:any_vertex2()</a>], rendering = <a href="option_list.html#type-option_list" docgen-rel="seetype" docgen-href="option_list#option_list/0">option_list:option_list()</a>, bounding_surface = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="bounding_surface.html#type-bounding_surface" docgen-rel="seetype" docgen-href="bounding_surface#bounding_surface/0">bounding_surface:bounding_surface()</a>)}</code></p>
+
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
-<p><code>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></code></p>
+<p><code>square_distance() = <a href="linear.html#type-square_distance" docgen-rel="seetype" docgen-href="linear#square_distance/0">linear:square_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_area-1">get_area/1</a></td><td>Returns the (unsigned) area enclosed of the polygon, supposed to be 
-non-self-intersecting and having at least two vertices.</td></tr>
-<tr><td valign="top"><a href="#get_diameter-1">get_diameter/1</a></td><td>Returns a polygon diameter, that is two points in the polygon that are at 
-the maximum distance one of the other.</td></tr>
-<tr><td valign="top"><a href="#get_edge_color-1">get_edge_color/1</a></td><td>Returns the current edge color of the specified polygon, if specified,
- otherwise 'undefined'.</td></tr>
-<tr><td valign="top"><a href="#get_fill_color-1">get_fill_color/1</a></td><td>Returns the current fill color of the specified polygon, if specified,
- otherwise 'undefined'.</td></tr>
-<tr><td valign="top"><a href="#get_polygon-1">get_polygon/1</a></td><td>Returns a new polygon whose vertices are the specified ones.</td></tr>
-<tr><td valign="top"><a href="#get_smallest_enclosing_rectangle-1">get_smallest_enclosing_rectangle/1</a></td><td>Returns the smallest upright rectangle that encompasses the specified 
-polygon.</td></tr>
-<tr><td valign="top"><a href="#get_triangle-3">get_triangle/3</a></td><td>Returns a triangle (defined as a polygon) corresponding to the specified
- three vertices.</td></tr>
-<tr><td valign="top"><a href="#get_upright_square-2">get_upright_square/2</a></td><td>Returns an upright square corresponding to the specified center and edge
- length.</td></tr>
-<tr><td valign="top"><a href="#is_convex-1">is_convex/1</a></td><td>Tells whether the specified polygon is convex (iff true) or concave 
-(otherwise).</td></tr>
-<tr><td valign="top"><a href="#is_in_clockwise_order-1">is_in_clockwise_order/1</a></td><td>Tells whether the specified polygon has its vertices in clockwise order
- (otherwise they are in counter-clockwise order).</td></tr>
-<tr><td valign="top"><a href="#render-2">render/2</a></td><td>Renders specified polygon in specified canvas.</td></tr>
-<tr><td valign="top"><a href="#set_edge_color-2">set_edge_color/2</a></td><td>Sets the edge color of specified polygon.</td></tr>
-<tr><td valign="top"><a href="#set_fill_color-2">set_fill_color/2</a></td><td>Sets the fill color of the specified polygon.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified polygon.</td></tr>
-<tr><td valign="top"><a href="#update_bounding_surface-2">update_bounding_surface/2</a></td><td>Updates, for the specified polygon, its internal bounding surface, with 
-regard to the specified bounding-surface algorithm.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_area-1">get_area/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_diameter-1">get_diameter/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_edge_color-1">get_edge_color/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_fill_color-1">get_fill_color/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_polygon-1">get_polygon/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_smallest_enclosing_rectangle-1">get_smallest_enclosing_rectangle/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_triangle-3">get_triangle/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_upright_square-2">get_upright_square/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_convex-1">is_convex/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_in_clockwise_order-1">is_in_clockwise_order/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render-2">render/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_edge_color-2">set_edge_color/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_fill_color-2">set_fill_color/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_bounding_surface-2">update_bounding_surface/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="get_area-1">get_area/1</a></h3>
 <div class="spec">
-<p><code>get_area(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-area">area()</a></code><br></p>
+<p><code>get_area(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; <a href="#type-area" docgen-rel="seetype" docgen-href="#area/0">area()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the (unsigned) area enclosed of the polygon, supposed to be 
-non-self-intersecting and having at least two vertices.</p>
-
- <p>Vertices can be listed clockwise or counter-clockwise.</p>
-
- <p>Should there be no absolute value computed, and should the polygon be convex, 
-then the area would be positive iff vertices were listed in counter-clockwise 
-order.</p>
-
- See <a href="http://en.wikipedia.org/wiki/Polygon#Area_and_centroid" target="_top"><code>http://en.wikipedia.org/wiki/Polygon#Area_and_centroid</code></a>.
-</p>
+</div>
 
 <h3 class="function"><a name="get_diameter-1">get_diameter/1</a></h3>
 <div class="spec">
-<p><code>get_diameter(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-square_distance">square_distance()</a>}</code><br></p>
+<p><code>get_diameter(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; {<a href="#type-any_vertex2" docgen-rel="seetype" docgen-href="#any_vertex2/0">any_vertex2()</a>, <a href="#type-any_vertex2" docgen-rel="seetype" docgen-href="#any_vertex2/0">any_vertex2()</a>, <a href="#type-square_distance" docgen-rel="seetype" docgen-href="#square_distance/0">square_distance()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Returns a polygon diameter, that is two points in the polygon that are at 
-the maximum distance one of the other.</p>
-
- Returns {P1,P2,D} when P1 and P2 are the endpoints of a diameter and SquareD
- is its square length: <code>SquareD = square_distance(P1, P2)</code>.
-</p>
+</div>
 
 <h3 class="function"><a name="get_edge_color-1">get_edge_color/1</a></h3>
 <div class="spec">
-<p><code>get_edge_color(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-color">color()</a>)</code><br></p>
+<p><code>get_edge_color(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the current edge color of the specified polygon, if specified,
- otherwise 'undefined'.
-</p>
+</div>
 
 <h3 class="function"><a name="get_fill_color-1">get_fill_color/1</a></h3>
 <div class="spec">
-<p><code>get_fill_color(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-color">color()</a>)</code><br></p>
+<p><code>get_fill_color(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the current fill color of the specified polygon, if specified,
- otherwise 'undefined'.
-</p>
+</div>
 
 <h3 class="function"><a name="get_polygon-1">get_polygon/1</a></h3>
 <div class="spec">
-<p><code>get_polygon(Vertices::[<a href="#type-any_vertex2">any_vertex2()</a>]) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
+<p><code>get_polygon(Vertices::[<a href="#type-any_vertex2" docgen-rel="seetype" docgen-href="#any_vertex2/0">any_vertex2()</a>]) -&gt; <a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new polygon whose vertices are the specified ones.</p>
+</div>
 
 <h3 class="function"><a name="get_smallest_enclosing_rectangle-1">get_smallest_enclosing_rectangle/1</a></h3>
 <div class="spec">
-<p><code>get_smallest_enclosing_rectangle(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_point2">any_point2()</a>, <a href="#type-any_point2">any_point2()</a>}</code><br></p>
+<p><code>get_smallest_enclosing_rectangle(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; {<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Returns the smallest upright rectangle that encompasses the specified 
-polygon.</p>
-
- More precisely a {TopLeftCorner, BottomRightCorner} pair is returned, which
- defines the rectangle from two opposite points.
-</p>
+</div>
 
 <h3 class="function"><a name="get_triangle-3">get_triangle/3</a></h3>
 <div class="spec">
-<p><code>get_triangle(P1::<a href="#type-any_point2">any_point2()</a>, P2::<a href="#type-any_point2">any_point2()</a>, P3::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
+<p><code>get_triangle(P1::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, P2::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, P3::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a></code><br></p>
 <p> </p>
-</div><p>Returns a triangle (defined as a polygon) corresponding to the specified
- three vertices.
-</p>
+</div>
 
 <h3 class="function"><a name="get_upright_square-2">get_upright_square/2</a></h3>
 <div class="spec">
-<p><code>get_upright_square(Center::<a href="#type-any_vertex2">any_vertex2()</a>, EdgeLength::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
+<p><code>get_upright_square(Center::<a href="#type-any_vertex2" docgen-rel="seetype" docgen-href="#any_vertex2/0">any_vertex2()</a>, EdgeLength::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>) -&gt; <a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a></code><br></p>
 <p> </p>
-</div><p>Returns an upright square corresponding to the specified center and edge
- length.
-</p>
+</div>
 
 <h3 class="function"><a name="is_convex-1">is_convex/1</a></h3>
 <div class="spec">
-<p><code>is_convex(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_convex(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Tells whether the specified polygon is convex (iff true) or concave 
-(otherwise).</p>
-
- Polygon must have at least one vertex.
-</p>
+</div>
 
 <h3 class="function"><a name="is_in_clockwise_order-1">is_in_clockwise_order/1</a></h3>
 <div class="spec">
-<p><code>is_in_clockwise_order(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_in_clockwise_order(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the specified polygon has its vertices in clockwise order
- (otherwise they are in counter-clockwise order).
-</p>
+</div>
 
 <h3 class="function"><a name="render-2">render/2</a></h3>
 <div class="spec">
-<p><code>render(Polygon::<a href="#type-polygon">polygon()</a>, Canvas::<a href="#type-canvas">canvas()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>render(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>, Canvas::<a href="#type-canvas" docgen-rel="seetype" docgen-href="#canvas/0">canvas()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Renders specified polygon in specified canvas.</p>
-
- Throws an exception if the polygon is not valid.
-</p>
+</div>
 
 <h3 class="function"><a name="set_edge_color-2">set_edge_color/2</a></h3>
 <div class="spec">
-<p><code>set_edge_color(Color::<a href="#type-color">color()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
+<p><code>set_edge_color(Color::<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>, Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; <a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a></code><br></p>
 <p> </p>
-</div><p>Sets the edge color of specified polygon.</p>
+</div>
 
 <h3 class="function"><a name="set_fill_color-2">set_fill_color/2</a></h3>
 <div class="spec">
-<p><code>set_fill_color(Color::<a href="#type-color">color()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
+<p><code>set_fill_color(Color::<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>, Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; <a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the fill color of the specified polygon.</p>
-
- Use 'none' to disable filling.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified polygon.</p>
+</div>
 
 <h3 class="function"><a name="update_bounding_surface-2">update_bounding_surface/2</a></h3>
 <div class="spec">
-<p><code>update_bounding_surface(X1::<a href="#type-bounding_algorithm">bounding_algorithm()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></code><br></p>
+<p><code>update_bounding_surface(X1::<a href="#type-bounding_algorithm" docgen-rel="seetype" docgen-href="#bounding_algorithm/0">bounding_algorithm()</a>, Polygon::<a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a>) -&gt; <a href="#type-polygon" docgen-rel="seetype" docgen-href="#polygon/0">polygon()</a></code><br></p>
 <p> </p>
-</div><p><p>Updates, for the specified polygon, its internal bounding surface, with 
-regard to the specified bounding-surface algorithm.</p>
-
- Returns a polygon with updated information.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

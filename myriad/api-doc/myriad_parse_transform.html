@@ -10,118 +10,89 @@
 <hr>
 
 <h1>Module myriad_parse_transform</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Overall <b>parse transform for the <code>Ceylan-Myriad</code> layer</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Overall <b>parse transform for the <code>Ceylan-Myriad</code> layer</b>.</p>
-
- See <code>meta_utils.erl</code> and <code>meta_utils_test.erl</code>.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast">ast()</a></h3>
-<p><code>ast() = <a href="ast_base.html#type-ast">ast_base:ast()</a></code></p>
+<p><code>ast() = <a href="ast_base.html#type-ast" docgen-rel="seetype" docgen-href="ast_base#ast/0">ast_base:ast()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ast_expression">ast_expression()</a></h3>
+<p><code>ast_expression() = <a href="ast_expression.html#type-ast_expression" docgen-rel="seetype" docgen-href="ast_expression#ast_expression/0">ast_expression:ast_expression()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
-<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></code></p>
+<p><code>ast_transforms() = <a href="ast_transform.html#type-ast_transforms" docgen-rel="seetype" docgen-href="ast_transform#ast_transforms/0">ast_transform:ast_transforms()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name" docgen-rel="seetype" docgen-href="file_utils#file_name/0">file_utils:file_name()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-form">form()</a></h3>
+<p><code>form() = <a href="ast_base.html#type-form" docgen-rel="seetype" docgen-href="ast_base#form/0">ast_base:form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_info">module_info()</a></h3>
-<p><code>module_info() = <a href="ast_info.html#type-module_info">ast_info:module_info()</a></code></p>
+<p><code>module_info() = <a href="ast_info.html#type-module_info" docgen-rel="seetype" docgen-href="ast_info#module_info/0">ast_info:module_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-parse_transform_options">parse_transform_options()</a></h3>
-<p><code>parse_transform_options() = <a href="meta_utils.html#type-parse_transform_options">meta_utils:parse_transform_options()</a></code></p>
+<p><code>parse_transform_options() = <a href="meta_utils.html#type-parse_transform_options" docgen-rel="seetype" docgen-href="meta_utils#parse_transform_options/0">meta_utils:parse_transform_options()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_myriad_transform-2">apply_myriad_transform/2</a></td><td>Applies the Myriad parse-transform.</td></tr>
-<tr><td valign="top"><a href="#parse_transform-2">parse_transform/2</a></td><td>The parse transform itself, transforming the specified (Myriad-based) 
-Abstract Format code into another (Erlang-compliant) one.</td></tr>
-<tr><td valign="top"><a href="#run_standalone-1">run_standalone/1</a></td><td>Runs the Myriad parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compile process), with no 
-specific option.</td></tr>
-<tr><td valign="top"><a href="#run_standalone-2">run_standalone/2</a></td><td>Runs the Myriad parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compile process), with the 
-specified options.</td></tr>
-<tr><td valign="top"><a href="#transform_module_info-1">transform_module_info/1</a></td><td>Transforms (at the Myriad level) the specified module information.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_myriad_transform-2">apply_myriad_transform/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#handle_formatting_call_3p-5">handle_formatting_call_3p/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#parse_transform-2">parse_transform/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_standalone-1">run_standalone/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_standalone-2">run_standalone/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transform_module_info-1">transform_module_info/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="apply_myriad_transform-2">apply_myriad_transform/2</a></h3>
 <div class="spec">
-<p><code>apply_myriad_transform(InputAST::<a href="#type-ast">ast()</a>, Options::<a href="#type-parse_transform_options">parse_transform_options()</a>) -&gt; {<a href="#type-ast">ast()</a>, <a href="#type-module_info">module_info()</a>}</code><br></p>
+<p><code>apply_myriad_transform(InputAST::<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, Options::<a href="#type-parse_transform_options" docgen-rel="seetype" docgen-href="#parse_transform_options/0">parse_transform_options()</a>) -&gt; {<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Applies the Myriad parse-transform.</p>
+</div>
 
- Defined to be reused in multiple contexts.
-</p>
+<h3 class="function"><a name="handle_formatting_call_3p-5">handle_formatting_call_3p/5</a></h3>
+<div class="spec">
+<p><code>handle_formatting_call_3p(FileLoc::<a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>, ModNameForm::<a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a>, FunNameForm::<a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a>, ParamExprs::[<a href="#type-ast_expression" docgen-rel="seetype" docgen-href="#ast_expression/0">ast_expression()</a>], Transforms::<a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression" docgen-rel="seetype" docgen-href="#ast_expression/0">ast_expression()</a>], <a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>}</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="parse_transform-2">parse_transform/2</a></h3>
 <div class="spec">
-<p><code>parse_transform(InputAST::<a href="#type-ast">ast()</a>, Options::<a href="#type-parse_transform_options">parse_transform_options()</a>) -&gt; <a href="#type-ast">ast()</a></code><br></p>
+<p><code>parse_transform(InputAST::<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, Options::<a href="#type-parse_transform_options" docgen-rel="seetype" docgen-href="#parse_transform_options/0">parse_transform_options()</a>) -&gt; <a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a></code><br></p>
 <p> </p>
-</div><p><p>The parse transform itself, transforming the specified (Myriad-based) 
-Abstract Format code into another (Erlang-compliant) one.</p>
-
- <p>Note: the (compile) Options variable is currently ignored, as we do not know 
-what we could do with it. There is nevertheless valuable information in it, 
-like in:</p>
-
- <p>Options = [report_warnings, {d,myriad_debug_mode}, beam, report_errors,           
-{cwd,"[...]/foo"}, {outdir,"[...]/foo"}, {i,"[...]/foo/../bar"},           
-[...]           
-{parse_transform,myriad_parse_transform}, debug_info,           
-warnings_as_errors, warn_unused_import, warn_obsolete_guards,           
-warn_shadow_vars, warn_export_vars, warn_export_all,           
-encrypt_debug_info, {debug_info_key,"Ceylan-Myriad"} ]</p>
-
- Notably, short of managing specifically 'debug_info' et al., apparently in the
- resulting BEAM files there is no Core Erlang code (see the output of 'make
- generate-local-plt' for more information, like: 'Could not get Core Erlang
- code for: foo/baz.beam; Recompile with +debug_info or analyze starting from
- source code').
-</p>
+</div>
 
 <h3 class="function"><a name="run_standalone-1">run_standalone/1</a></h3>
 <div class="spec">
-<p><code>run_standalone(FileToTransform::<a href="#type-file_name">file_name()</a>) -&gt; {<a href="#type-ast">ast()</a>, <a href="#type-module_info">module_info()</a>}</code><br></p>
+<p><code>run_standalone(FileToTransform::<a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a>) -&gt; {<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Runs the Myriad parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compile process), with no 
-specific option.</p>
-
- This allows to benefit from all compilation error and warning messages,
- whereas they are seldom available from a code directly run as a parse
- transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
- a module is not found).
-</p>
+</div>
 
 <h3 class="function"><a name="run_standalone-2">run_standalone/2</a></h3>
 <div class="spec">
-<p><code>run_standalone(FileToTransform::<a href="#type-file_name">file_name()</a>, Options::<a href="#type-parse_transform_options">parse_transform_options()</a>) -&gt; {<a href="#type-ast">ast()</a>, <a href="#type-module_info">module_info()</a>}</code><br></p>
+<p><code>run_standalone(FileToTransform::<a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a>, Options::<a href="#type-parse_transform_options" docgen-rel="seetype" docgen-href="#parse_transform_options/0">parse_transform_options()</a>) -&gt; {<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Runs the Myriad parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compile process), with the 
-specified options.</p>
-
- This allows to benefit from all compilation error and warning messages,
- whereas they are seldom available from a code directly run as a parse
- transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
- a module is not found).
-</p>
+</div>
 
 <h3 class="function"><a name="transform_module_info-1">transform_module_info/1</a></h3>
 <div class="spec">
-<p><code>transform_module_info(ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; {<a href="#type-module_info">module_info()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</code><br></p>
+<p><code>transform_module_info(ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; {<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>, <a href="#type-ast_transforms" docgen-rel="seetype" docgen-href="#ast_transforms/0">ast_transforms()</a>}</code><br></p>
 <p> </p>
-</div><p>Transforms (at the Myriad level) the specified module information.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

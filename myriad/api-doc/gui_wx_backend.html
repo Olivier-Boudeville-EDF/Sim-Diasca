@@ -10,111 +10,109 @@
 <hr>
 
 <h1>Module gui_wx_backend</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathers all elements relative to the (Erlang) <b>wx backend</b> version 
-2.1 (itself based on [wxWidgets](https://www.wxwidgets.org/)).
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathers all elements relative to the (Erlang) <b>wx backend</b> version 
-2.1 (itself based on [wxWidgets](https://www.wxwidgets.org/)).</p>
-
- Now uses the gui_generated module, which is generated based on the
- gui_constants one (see gui:generate_support_modules/0) in order to be able to
- convert the identifiers / defines / constants between MyriadGUI and their
- backend (wx) counterparts.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-atom_entry">atom_entry()</a></h3>
-<p><code>atom_entry() = <a href="hashtable.html#type-atom_entry">hashtable:atom_entry()</a></code></p>
+<p><code>atom_entry() = <a href="hashtable.html#type-atom_entry" docgen-rel="seetype" docgen-href="hashtable#atom_entry/0">hashtable:atom_entry()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-device_context_attribute">device_context_attribute()</a></h3>
-<p><code>device_context_attribute() = <a href="gui_opengl.html#type-device_context_attribute">gui_opengl:device_context_attribute()</a></code></p>
+<p><code>device_context_attribute() = <a href="gui_opengl.html#type-device_context_attribute" docgen-rel="seetype" docgen-href="gui_opengl#device_context_attribute/0">gui_opengl:device_context_attribute()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-direction">direction()</a></h3>
-<p><code>direction() = <a href="gui.html#type-direction">gui:direction()</a></code></p>
+<p><code>direction() = <a href="gui.html#type-direction" docgen-rel="seetype" docgen-href="gui#direction/0">gui:direction()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-event_source">event_source()</a></h3>
-<p><code>event_source() = <a href="gui_event.html#type-event_source">gui_event:event_source()</a></code></p>
+<p><code>event_source() = <a href="gui_event.html#type-event_source" docgen-rel="seetype" docgen-href="gui_event#event_source/0">gui_event:event_source()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-event_subscription_option">event_subscription_option()</a></h3>
-<p><code>event_subscription_option() = <a href="gui_event.html#type-event_subscription_option">gui_event:event_subscription_option()</a></code></p>
+<p><code>event_subscription_option() = <a href="gui_event.html#type-event_subscription_option" docgen-rel="seetype" docgen-href="gui_event#event_subscription_option/0">gui_event:event_subscription_option()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-event_type">event_type()</a></h3>
-<p><code>event_type() = <a href="gui_event.html#type-event_type">gui_event:event_type()</a></code></p>
+<p><code>event_type() = <a href="gui_event.html#type-event_type" docgen-rel="seetype" docgen-href="gui_event#event_type/0">gui_event:event_type()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_object">gui_object()</a></h3>
-<p><code>gui_object() = <a href="gui.html#type-gui_object">gui:gui_object()</a></code></p>
+<p><code>gui_object() = <a href="gui.html#type-gui_object" docgen-rel="seetype" docgen-href="gui#gui_object/0">gui:gui_object()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-myriad_instance_id">myriad_instance_id()</a></h3>
-<p><code>myriad_instance_id() = <a href="gui_id.html#type-myriad_instance_id">gui_id:myriad_instance_id()</a></code></p>
+<p><code>myriad_instance_id() = <a href="gui_id.html#type-myriad_instance_id" docgen-rel="seetype" docgen-href="gui_id#myriad_instance_id/0">gui_id:myriad_instance_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-myriad_object_type">myriad_object_type()</a></h3>
-<p><code>myriad_object_type() = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a></code></p>
+<p><code>myriad_object_type() = <a href="gui.html#type-myriad_object_type" docgen-rel="seetype" docgen-href="gui#myriad_object_type/0">gui:myriad_object_type()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
-<p><code>orientation() = <a href="gui.html#type-orientation">gui:orientation()</a></code></p>
+<p><code>orientation() = <a href="gui.html#type-orientation" docgen-rel="seetype" docgen-href="gui#orientation/0">gui:orientation()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-other_wx_device_context_attribute">other_wx_device_context_attribute()</a></h3>
-<p><code>other_wx_device_context_attribute() = <a href="#type-atom_entry">atom_entry()</a></code></p>
+<p><code>other_wx_device_context_attribute() = <a href="#type-atom_entry" docgen-rel="seetype" docgen-href="#atom_entry/0">atom_entry()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-parent">parent()</a></h3>
-<p><code>parent() = <a href="gui.html#type-parent">gui:parent()</a></code></p>
+<p><code>parent() = <a href="gui.html#type-parent" docgen-rel="seetype" docgen-href="gui#parent/0">gui:parent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
-<p><code>position() = <a href="gui.html#type-position">gui:position()</a></code></p>
+<p><code>position() = <a href="gui.html#type-position" docgen-rel="seetype" docgen-href="gui#position/0">gui:position()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-sizing">sizing()</a></h3>
-<p><code>sizing() = <a href="gui.html#type-sizing">gui:sizing()</a></code></p>
+<p><code>sizing() = <a href="gui.html#type-sizing" docgen-rel="seetype" docgen-href="gui#sizing/0">gui:sizing()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-trap_set">trap_set()</a></h3>
-<p><code>trap_set() = <a href="gui_event.html#type-trap_set">gui_event:trap_set()</a></code></p>
+<p><code>trap_set() = <a href="gui_event.html#type-trap_set" docgen-rel="seetype" docgen-href="gui_event#trap_set/0">gui_event:trap_set()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-window">window()</a></h3>
-<p><code>window() = <a href="gui_window.html#type-window">gui_window:window()</a></code></p>
+<p><code>window() = <a href="gui_window.html#type-window" docgen-rel="seetype" docgen-href="gui_window#window/0">gui_window:window()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-wx_art_id">wx_art_id()</a></h3>
+<p><code>wx_art_id() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/unicode.html#type-chardata" docgen-rel="seetype" docgen-href="stdlib:unicode#chardata/0">unicode:chardata()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_device_context_attribute">wx_device_context_attribute()</a></h3>
-<p><code>wx_device_context_attribute() = {attribList, integer()} | <a href="#type-other_wx_device_context_attribute">other_wx_device_context_attribute()</a></code></p>
-<p> Refer to wxGLCanvas: https://www.erlang.org/doc/man/wxglcanvas#new-2.</p>
+<p><code>wx_device_context_attribute() = {attribList, integer()} | <a href="#type-other_wx_device_context_attribute" docgen-rel="seetype" docgen-href="#other_wx_device_context_attribute/0">other_wx_device_context_attribute()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-wx_direction">wx_direction()</a></h3>
 <p><code>wx_direction() = 8 | 4</code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_enum">wx_enum()</a></h3>
-<p><code>wx_enum() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wx.html#type-wx_enum">wx:wx_enum()</a></code></p>
-<p> A wxWidgets enumerated value.</p>
+<p><code>wx_enum() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wx.html#type-wx_enum" docgen-rel="seetype" docgen-href="wx:wx#wx_enum/0">wx:wx_enum()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-wx_event_handler_option">wx_event_handler_option()</a></h3>
 <p><code>wx_event_handler_option() = {id, integer()} | {lastId, integer()} | {skip, boolean()} | callback | {callback, function()} | {userData, term()}</code></p>
-<p> Refer to https://erlang.org/doc/man/wxEvtHandler.html.
- See the corresponding gui:event_subscription_option().</p>
+
+
+<h3 class="typedecl"><a name="type-wx_gl_attributes">wx_gl_attributes()</a></h3>
+<p><code>wx_gl_attributes() = [integer()]</code></p>
+
 
 <h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
-<p><code>wx_id() = <a href="#type-maybe">maybe</a>(integer())</code></p>
+<p><code>wx_id() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(integer())</code></p>
 <p><p> The identifier (ID) of a wx element is an integer (positive or not).</p>
 
  <p>This identifier (e.g. 63) is relative to a given type, like in: 
@@ -141,264 +139,186 @@ internally.</p>
 
 <h3 class="typedecl"><a name="type-wx_native_object_type">wx_native_object_type()</a></h3>
 <p><code>wx_native_object_type() = atom()</code></p>
-<p><p> Native wx object types (e.g. 'wxFrame').</p>
 
- No enumeration like 'wxWindow' | 'wxFrame' | ... found in wx.</p>
 
 <h3 class="typedecl"><a name="type-wx_object_type">wx_object_type()</a></h3>
-<p><code>wx_object_type() = <a href="gui.html#type-wx_object_type">gui:wx_object_type()</a></code></p>
+<p><code>wx_object_type() = <a href="gui.html#type-wx_object_type" docgen-rel="seetype" docgen-href="gui#wx_object_type/0">gui:wx_object_type()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_opt_pair">wx_opt_pair()</a></h3>
 <p><code>wx_opt_pair() = {atom(), term()}</code></p>
-<p> A wx option pair, like {pos, {0,0}};</p>
+
 
 <h3 class="typedecl"><a name="type-wx_orientation">wx_orientation()</a></h3>
-<p><code>wx_orientation() = <a href="#type-wx_direction">wx_direction()</a> | 12</code></p>
+<p><code>wx_orientation() = <a href="#type-wx_direction" docgen-rel="seetype" docgen-href="#wx_direction/0">wx_direction()</a> | 12</code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_position">wx_position()</a></h3>
-<p><code>wx_position() = {pos, <a href="gui.html#type-point">gui:point()</a>}</code></p>
+<p><code>wx_position() = {pos, <a href="gui.html#type-point" docgen-rel="seetype" docgen-href="gui#point/0">gui:point()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_size">wx_size()</a></h3>
-<p><code>wx_size() = {size, <a href="gui.html#type-size">gui:size()</a>}</code></p>
+<p><code>wx_size() = {size, <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a>}</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#connect-2">connect/2</a></td><td>Subscribes the current process to the specified type(s) of events 
-regarding the specified object (receiving for that a message).</td></tr>
-<tr><td valign="top"><a href="#connect-3">connect/3</a></td><td>Subscribes the current process to the specified type(s) of events 
-regarding the specified object (receiving for that a message).</td></tr>
-<tr><td valign="top"><a href="#connect-4">connect/4</a></td><td>Subscribes the current process to the specified type(s) of events 
-regarding the specified object, with the specified options; this process will 
-thus receive a gui_event() message whenever a corresponding event occurs.</td></tr>
-<tr><td valign="top"><a href="#disconnect-1">disconnect/1</a></td><td>Unsubscribes the current process from the specified object, for all event 
-types.</td></tr>
-<tr><td valign="top"><a href="#disconnect-2">disconnect/2</a></td><td>Unsubscribes the current process from the specified object, for the 
-specified event type(s).</td></tr>
-<tr><td valign="top"><a href="#from_wx_object_type-1">from_wx_object_type/1</a></td><td>Converts a wx type of object into a MyriadGUI one.</td></tr>
-<tr><td valign="top"><a href="#get_wx_version-0">get_wx_version/0</a></td><td>Returns the build-time version of wx (wxWidgets).</td></tr>
-<tr><td valign="top"><a href="#is_wx_event-1">is_wx_event/1</a></td><td>Tells whether the specified term is a wx event.</td></tr>
-<tr><td valign="top"><a href="#to_wx_connect_options-3">to_wx_connect_options/3</a></td><td>Converts MyriadGUI connect options into wx ones.</td></tr>
-<tr><td valign="top"><a href="#to_wx_debug_level-1">to_wx_debug_level/1</a></td><td>Converts the debug level from MyriadGUI to the one of wx.</td></tr>
-<tr><td valign="top"><a href="#to_wx_device_context_attributes-1">to_wx_device_context_attributes/1</a></td><td>Converts the specified MyriadGUI device context attributes to wx
- conventions.</td></tr>
-<tr><td valign="top"><a href="#to_wx_direction-1">to_wx_direction/1</a></td><td>Converts to back-end direction.</td></tr>
-<tr><td valign="top"><a href="#to_wx_id-1">to_wx_id/1</a></td><td>Converts the specified MyriadGUI identifier in a wx-specific widget 
-identifier.</td></tr>
-<tr><td valign="top"><a href="#to_wx_object_type-1">to_wx_object_type/1</a></td><td>Converts a MyriadGUI type of object into a wx one.</td></tr>
-<tr><td valign="top"><a href="#to_wx_orientation-1">to_wx_orientation/1</a></td><td>Converts to back-end orientation.</td></tr>
-<tr><td valign="top"><a href="#to_wx_parent-1">to_wx_parent/1</a></td><td>Converts the specified MyriadGUI identifier into a wx-specific parent 
-widget identifier.</td></tr>
-<tr><td valign="top"><a href="#to_wx_position-1">to_wx_position/1</a></td><td>Converts the specified MyriadGUI position in a wx-specific position (with 
-defaults).</td></tr>
-<tr><td valign="top"><a href="#to_wx_size-1">to_wx_size/1</a></td><td>Converts the specified MyriadGUI size in a wx-specific size (with 
-defaults).</td></tr>
-<tr><td valign="top"><a href="#wx_id_to_string-1">wx_id_to_string/1</a></td><td>Returns a textual representation of the specified GUI object wx
- identifier.</td></tr>
-<tr><td valign="top"><a href="#wx_id_to_window-1">wx_id_to_window/1</a></td><td>Returns the widget corresponding to the specified wx identifier.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_gl_attributes_supported-1">are_gl_attributes_supported/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#connect-2">connect/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#connect-3">connect/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#connect-4">connect/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#disconnect-1">disconnect/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#disconnect-2">disconnect/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_wx_object_type-1">from_wx_object_type/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_msaa_attributes-0">get_msaa_attributes/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_wx_version-0">get_wx_version/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_wx_event-1">is_wx_event/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_connect_options-3">to_wx_connect_options/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_debug_level-1">to_wx_debug_level/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_device_context_attributes-1">to_wx_device_context_attributes/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_direction-1">to_wx_direction/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_id-1">to_wx_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_object_type-1">to_wx_object_type/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_orientation-1">to_wx_orientation/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_parent-1">to_wx_parent/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_position-1">to_wx_position/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_wx_size-1">to_wx_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wx_id_to_string-1">wx_id_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wx_id_to_window-1">wx_id_to_window/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="are_gl_attributes_supported-1">are_gl_attributes_supported/1</a></h3>
+<div class="spec">
+<p><code>are_gl_attributes_supported(Attrs::<a href="#type-wx_gl_attributes" docgen-rel="seetype" docgen-href="#wx_gl_attributes/0">wx_gl_attributes()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="connect-2">connect/2</a></h3>
 <div class="spec">
-<p><code>connect(EventSource::<a href="#type-event_source">event_source()</a>, EventTypeOrTypes::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>)) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>connect(EventSource::<a href="#type-event_source" docgen-rel="seetype" docgen-href="#event_source/0">event_source()</a>, EventTypeOrTypes::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-event_type" docgen-rel="seetype" docgen-href="#event_type/0">event_type()</a>)) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Subscribes the current process to the specified type(s) of events 
-regarding the specified object (receiving for that a message).</p>
-
- Only useful for context-less calls; the versions of that function specifying a
- "trap set" parameter shall be preferred, as they are more efficient.
-</p>
+</div>
 
 <h3 class="function"><a name="connect-3">connect/3</a></h3>
 <div class="spec">
-<p><code>connect(EventSource::<a href="#type-event_source">event_source()</a>, EventTypeOrTypes::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), TrapSet::<a href="#type-trap_set">trap_set()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>connect(EventSource::<a href="#type-event_source" docgen-rel="seetype" docgen-href="#event_source/0">event_source()</a>, EventTypeOrTypes::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-event_type" docgen-rel="seetype" docgen-href="#event_type/0">event_type()</a>), TrapSet::<a href="#type-trap_set" docgen-rel="seetype" docgen-href="#trap_set/0">trap_set()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Subscribes the current process to the specified type(s) of events 
-regarding the specified object (receiving for that a message).</p>
-
- <p>Said otherwise: requests the specified widget to send to the current process a 
-message-based event when the specified kind of event happens, knowing that by 
-default, depending on its type, this event may also be propagated upward in 
-the widget hierarchy, through the corresponding event handlers (the trap_event 
-option allows not to propagate this event).</p>
-
- Note:
-  - apparently registering more than once a given type has no effect (not N
-  messages of that type sent afterwards)
-  - only useful internally or when bypassing the default main loop
-</p>
+</div>
 
 <h3 class="function"><a name="connect-4">connect/4</a></h3>
 <div class="spec">
-<p><code>connect(SourceGUIObject::<a href="#type-event_source">event_source()</a>, EventTypes::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), Options::[<a href="#type-event_subscription_option">event_subscription_option()</a>], TrapSet::<a href="#type-trap_set">trap_set()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>connect(SourceGUIObject::<a href="#type-event_source" docgen-rel="seetype" docgen-href="#event_source/0">event_source()</a>, EventTypes::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-event_type" docgen-rel="seetype" docgen-href="#event_type/0">event_type()</a>), Options::[<a href="#type-event_subscription_option" docgen-rel="seetype" docgen-href="#event_subscription_option/0">event_subscription_option()</a>], TrapSet::<a href="#type-trap_set" docgen-rel="seetype" docgen-href="#trap_set/0">trap_set()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Subscribes the current process to the specified type(s) of events 
-regarding the specified object, with the specified options; this process will 
-thus receive a gui_event() message whenever a corresponding event occurs.</p>
-
- <p>The {trap,propagate}_event options (or the corresponding 
-{trap,propagate}_event/1 functions) can override these defaults.</p>
-
- Refer to connect/3 for all details.
-</p>
+</div>
 
 <h3 class="function"><a name="disconnect-1">disconnect/1</a></h3>
 <div class="spec">
-<p><code>disconnect(SourceObject::<a href="#type-event_source">event_source()</a>) -&gt; boolean()</code><br></p>
+<p><code>disconnect(SourceObject::<a href="#type-event_source" docgen-rel="seetype" docgen-href="#event_source/0">event_source()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Unsubscribes the current process from the specified object, for all event 
-types.</p>
-
- The meaning of the returned boolean is not specified, presumably whether the
- operation went well.
-</p>
+</div>
 
 <h3 class="function"><a name="disconnect-2">disconnect/2</a></h3>
 <div class="spec">
-<p><code>disconnect(SourceObject::<a href="#type-event_source">event_source()</a>, EventTypes::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>)) -&gt; boolean()</code><br></p>
+<p><code>disconnect(SourceObject::<a href="#type-event_source" docgen-rel="seetype" docgen-href="#event_source/0">event_source()</a>, EventTypes::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-event_type" docgen-rel="seetype" docgen-href="#event_type/0">event_type()</a>)) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p><p>Unsubscribes the current process from the specified object, for the 
-specified event type(s).</p>
-
- The meaning of the returned boolean is not specified, presumably whether the
- operation went well.
-</p>
+</div>
 
 <h3 class="function"><a name="from_wx_object_type-1">from_wx_object_type/1</a></h3>
 <div class="spec">
-<p><code>from_wx_object_type(WxObjectType::<a href="#type-wx_object_type">wx_object_type()</a>) -&gt; <a href="#type-myriad_object_type">myriad_object_type()</a></code><br></p>
+<p><code>from_wx_object_type(WxObjectType::<a href="#type-wx_object_type" docgen-rel="seetype" docgen-href="#wx_object_type/0">wx_object_type()</a>) -&gt; <a href="#type-myriad_object_type" docgen-rel="seetype" docgen-href="#myriad_object_type/0">myriad_object_type()</a></code><br></p>
 <p> </p>
-</div><p>Converts a wx type of object into a MyriadGUI one.</p>
+</div>
+
+<h3 class="function"><a name="get_msaa_attributes-0">get_msaa_attributes/0</a></h3>
+<div class="spec">
+<p><code>get_msaa_attributes() -&gt; <a href="#type-wx_gl_attributes" docgen-rel="seetype" docgen-href="#wx_gl_attributes/0">wx_gl_attributes()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="get_wx_version-0">get_wx_version/0</a></h3>
 <div class="spec">
-<p><code>get_wx_version() -&gt; <a href="basic_utils.html#type-four_digit_version">basic_utils:four_digit_version()</a></code><br></p>
+<p><code>get_wx_version() -&gt; <a href="basic_utils.html#type-four_digit_version" docgen-rel="seetype" docgen-href="basic_utils#four_digit_version/0">basic_utils:four_digit_version()</a></code><br></p>
 <p> </p>
-</div><p>Returns the build-time version of wx (wxWidgets).</p>
+</div>
 
 <h3 class="function"><a name="is_wx_event-1">is_wx_event/1</a></h3>
 <div class="spec">
 <p><code>is_wx_event(E) -&gt; any()</code></p>
 <p> </p>
-</div><p><p>Tells whether the specified term is a wx event.</p>
-
- <p>As wxEvent() = wx:wx_object() = #wx_ref{}, for example 
-{wx_ref,131,wxPaintEvent,[]}.</p>
-
- Only in wxe.hrl:
-is_wx_event( E ) when is_record( E, wx_ref ) -&gt;</p>
+</div>
 
 <h3 class="function"><a name="to_wx_connect_options-3">to_wx_connect_options/3</a></h3>
 <div class="spec">
-<p><code>to_wx_connect_options(Opts::[<a href="#type-event_subscription_option">event_subscription_option()</a>], EventType::<a href="#type-event_type">event_type()</a>, TrapSet::<a href="#type-trap_set">trap_set()</a>) -&gt; [<a href="#type-wx_event_handler_option">wx_event_handler_option()</a>]</code><br></p>
+<p><code>to_wx_connect_options(Opts::[<a href="#type-event_subscription_option" docgen-rel="seetype" docgen-href="#event_subscription_option/0">event_subscription_option()</a>], EventType::<a href="#type-event_type" docgen-rel="seetype" docgen-href="#event_type/0">event_type()</a>, TrapSet::<a href="#type-trap_set" docgen-rel="seetype" docgen-href="#trap_set/0">trap_set()</a>) -&gt; [<a href="#type-wx_event_handler_option" docgen-rel="seetype" docgen-href="#wx_event_handler_option/0">wx_event_handler_option()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Converts MyriadGUI connect options into wx ones.</p>
-
- The corresponding event type must be specified in order to apply per-type
- defaults.
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_debug_level-1">to_wx_debug_level/1</a></h3>
 <div class="spec">
 <p><code>to_wx_debug_level(DebugLevel) -&gt; any()</code></p>
 <p> </p>
-</div><p><p>Converts the debug level from MyriadGUI to the one of wx.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_device_context_attributes-1">to_wx_device_context_attributes/1</a></h3>
 <div class="spec">
-<p><code>to_wx_device_context_attributes(Attrs::[<a href="#type-device_context_attribute">device_context_attribute()</a>]) -&gt; [<a href="#type-wx_device_context_attribute">wx_device_context_attribute()</a>]</code><br></p>
+<p><code>to_wx_device_context_attributes(Attrs::[<a href="#type-device_context_attribute" docgen-rel="seetype" docgen-href="#device_context_attribute/0">device_context_attribute()</a>]) -&gt; [<a href="#type-wx_device_context_attribute" docgen-rel="seetype" docgen-href="#wx_device_context_attribute/0">wx_device_context_attribute()</a>]</code><br></p>
 <p> </p>
-</div><p>Converts the specified MyriadGUI device context attributes to wx
- conventions.
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_direction-1">to_wx_direction/1</a></h3>
 <div class="spec">
-<p><code>to_wx_direction(Direction::<a href="#type-direction">direction()</a>) -&gt; <a href="#type-wx_direction">wx_direction()</a></code><br></p>
+<p><code>to_wx_direction(Direction::<a href="#type-direction" docgen-rel="seetype" docgen-href="#direction/0">direction()</a>) -&gt; <a href="#type-wx_direction" docgen-rel="seetype" docgen-href="#wx_direction/0">wx_direction()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts to back-end direction.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_id-1">to_wx_id/1</a></h3>
 <div class="spec">
-<p><code>to_wx_id(Other::<a href="#type-maybe">maybe</a>(<a href="#type-myriad_instance_id">myriad_instance_id()</a>)) -&gt; <a href="#type-wx_id">wx_id()</a></code><br></p>
+<p><code>to_wx_id(Other::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-myriad_instance_id" docgen-rel="seetype" docgen-href="#myriad_instance_id/0">myriad_instance_id()</a>)) -&gt; <a href="#type-wx_id" docgen-rel="seetype" docgen-href="#wx_id/0">wx_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts the specified MyriadGUI identifier in a wx-specific widget 
-identifier.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_object_type-1">to_wx_object_type/1</a></h3>
 <div class="spec">
-<p><code>to_wx_object_type(MyrObjType::<a href="#type-myriad_object_type">myriad_object_type()</a>) -&gt; <a href="#type-wx_object_type">wx_object_type()</a></code><br></p>
+<p><code>to_wx_object_type(MyrObjType::<a href="#type-myriad_object_type" docgen-rel="seetype" docgen-href="#myriad_object_type/0">myriad_object_type()</a>) -&gt; <a href="#type-wx_object_type" docgen-rel="seetype" docgen-href="#wx_object_type/0">wx_object_type()</a></code><br></p>
 <p> </p>
-</div><p>Converts a MyriadGUI type of object into a wx one.</p>
+</div>
 
 <h3 class="function"><a name="to_wx_orientation-1">to_wx_orientation/1</a></h3>
 <div class="spec">
-<p><code>to_wx_orientation(Orientation::<a href="#type-orientation">orientation()</a>) -&gt; <a href="#type-wx_orientation">wx_orientation()</a></code><br></p>
+<p><code>to_wx_orientation(Orientation::<a href="#type-orientation" docgen-rel="seetype" docgen-href="#orientation/0">orientation()</a>) -&gt; <a href="#type-wx_orientation" docgen-rel="seetype" docgen-href="#wx_orientation/0">wx_orientation()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts to back-end orientation.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_parent-1">to_wx_parent/1</a></h3>
 <div class="spec">
-<p><code>to_wx_parent(Other::<a href="#type-maybe">maybe</a>(<a href="#type-parent">parent()</a>)) -&gt; <a href="#type-gui_object">gui_object()</a></code><br></p>
+<p><code>to_wx_parent(Other::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>)) -&gt; <a href="#type-gui_object" docgen-rel="seetype" docgen-href="#gui_object/0">gui_object()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts the specified MyriadGUI identifier into a wx-specific parent 
-widget identifier.</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_position-1">to_wx_position/1</a></h3>
 <div class="spec">
-<p><code>to_wx_position(Position::<a href="#type-position">position()</a>) -&gt; <a href="#type-wx_position">wx_position()</a></code><br></p>
+<p><code>to_wx_position(Position::<a href="#type-position" docgen-rel="seetype" docgen-href="#position/0">position()</a>) -&gt; <a href="#type-wx_position" docgen-rel="seetype" docgen-href="#wx_position/0">wx_position()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts the specified MyriadGUI position in a wx-specific position (with 
-defaults).</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="to_wx_size-1">to_wx_size/1</a></h3>
 <div class="spec">
-<p><code>to_wx_size(Size::<a href="#type-sizing">sizing()</a>) -&gt; <a href="#type-wx_size">wx_size()</a></code><br></p>
+<p><code>to_wx_size(Size::<a href="#type-sizing" docgen-rel="seetype" docgen-href="#sizing/0">sizing()</a>) -&gt; <a href="#type-wx_size" docgen-rel="seetype" docgen-href="#wx_size/0">wx_size()</a></code><br></p>
 <p> </p>
-</div><p><p>Converts the specified MyriadGUI size in a wx-specific size (with 
-defaults).</p>
-
- (helper)
-</p>
+</div>
 
 <h3 class="function"><a name="wx_id_to_string-1">wx_id_to_string/1</a></h3>
 <div class="spec">
-<p><code>wx_id_to_string(Id::<a href="#type-wx_id">wx_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>wx_id_to_string(Id::<a href="#type-wx_id" docgen-rel="seetype" docgen-href="#wx_id/0">wx_id()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified GUI object wx
- identifier.
-</p>
+</div>
 
 <h3 class="function"><a name="wx_id_to_window-1">wx_id_to_window/1</a></h3>
 <div class="spec">
-<p><code>wx_id_to_window(Id::<a href="#type-wx_id">wx_id()</a>) -&gt; <a href="#type-window">window()</a></code><br></p>
+<p><code>wx_id_to_window(Id::<a href="#type-wx_id" docgen-rel="seetype" docgen-href="#wx_id/0">wx_id()</a>) -&gt; <a href="#type-window" docgen-rel="seetype" docgen-href="#window/0">window()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the widget corresponding to the specified wx identifier.</p>
-
- (internal use only)
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

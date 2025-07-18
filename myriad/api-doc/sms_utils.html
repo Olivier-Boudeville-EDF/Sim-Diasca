@@ -10,150 +10,120 @@
 <hr>
 
 <h1>Module sms_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient <b>SMS-related</b> facilities.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various convenient <b>SMS-related</b> facilities.</p>
-
- <p>They rely mostly on a web gateway for that. See <a href="http://mobile.esperide.org" target="_top"><code>http://mobile.esperide.org</code></a> 
-for one based typically on 3G devices.</p>
-
- See sms_utils_test.erl for testing.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-credits">credits()</a></h3>
-<p><code>credits() = <a href="#type-maybe">maybe</a>(<a href="#type-count">count()</a>)</code></p>
-<p> Number of credits left (if applicable).</p>
+<p><code>credits() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-diagnosis">diagnosis()</a></h3>
 <p><code>diagnosis() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-failure_reason">failure_reason()</a></h3>
-<p><code>failure_reason() = {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_phone_number, <a href="#type-ustring">ustring()</a>} | credits_exhausted | insufficient_credits | {invalid_password, <a href="#type-ustring">ustring()</a>} | {invalid_user, <a href="#type-ustring">ustring()</a>} | {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_request, <a href="#type-ustring">ustring()</a>} | {error, <a href="#type-ustring">ustring()</a>} | {request_failed, <a href="#type-ustring">ustring()</a>}</code></p>
+<p><code>failure_reason() = {invalid_content, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>} | {invalid_phone_number, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>} | credits_exhausted | insufficient_credits | {invalid_password, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>} | {invalid_user, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>} | {invalid_content, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>} | {invalid_request, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>} | {error, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>} | {request_failed, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>}</code></p>
 <p> Many steps may go wrong.</p>
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><code>message() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Message to be sent as SMS (up to 160 bytes).</p>
+<p><code>message() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-phone_number">phone_number()</a></h3>
-<p><code>phone_number() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A phone number, preferably international, preferably with no whitespaces (e.g.
- "+330616XXXXXX").</p>
+<p><code>phone_number() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-provider">provider()</a></h3>
 <p><code>provider() = verysms</code></p>
-<p> Name of a SMS provider (HTTP gateway), as an atom.</p>
+
 
 <h3 class="typedecl"><a name="type-recipient">recipient()</a></h3>
-<p><code>recipient() = <a href="#type-phone_number">phone_number()</a></code></p>
-<p> Phone number of a recipient, probably of a mobile phone
- (e.g. "+330616XXXXXX").</p>
+<p><code>recipient() = <a href="#type-phone_number" docgen-rel="seetype" docgen-href="#phone_number/0">phone_number()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-sender_description">sender_description()</a></h3>
-<p><code>sender_description() = <a href="#type-ustring">ustring()</a></code></p>
-<p><p> Any (short) alphanumerical string describing the sender, if this service is 
-provided.</p>
+<p><code>sender_description() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
- With verysms, supposedly only taken into account in the 'pro' class; but
- actually SMS always shown as sent by the number "38200".</p>
 
 <h3 class="typedecl"><a name="type-sending_outcome">sending_outcome()</a></h3>
-<p><code>sending_outcome() = success | {<a href="#type-failure_reason">failure_reason()</a>, <a href="#type-diagnosis">diagnosis()</a>}</code></p>
-<p> Describes the result of the sending, as reported by the gateway.</p>
+<p><code>sending_outcome() = success | {<a href="#type-failure_reason" docgen-rel="seetype" docgen-href="#failure_reason/0">failure_reason()</a>, <a href="#type-diagnosis" docgen-rel="seetype" docgen-href="#diagnosis/0">diagnosis()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-service_class">service_class()</a></h3>
 <p><code>service_class() = eco | pro</code></p>
-<p> Service class of a SMS being sent.</p>
+
 
 <h3 class="typedecl"><a name="type-sms">sms()</a></h3>
-<p><code>sms() = #sms{message = <a href="#type-message">message()</a>, recipient = <a href="#type-recipient">recipient()</a>, sender_description = <a href="#type-sender_description">sender_description()</a>, service_class = <a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)}</code></p>
-<p> Describes a SMS account.</p>
+<p><code>sms() = #sms{message = <a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a>, recipient = <a href="#type-recipient" docgen-rel="seetype" docgen-href="#recipient/0">recipient()</a>, sender_description = <a href="#type-sender_description" docgen-rel="seetype" docgen-href="#sender_description/0">sender_description()</a>, service_class = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-service_class" docgen-rel="seetype" docgen-href="#service_class/0">service_class()</a>)}</code></p>
+
 
 <h3 class="typedecl"><a name="type-sms_account">sms_account()</a></h3>
-<p><code>sms_account() = #sms_account{provider = <a href="#type-provider">provider()</a>, user_name = <a href="system_utils.html#type-user_name">system_utils:user_name()</a>, password = <a href="system_utils.html#type-password">system_utils:password()</a>, default_class = <a href="#type-service_class">service_class()</a>, credits = <a href="#type-credits">credits()</a>, sent_count = <a href="#type-count">count()</a>, sent_success_count = <a href="#type-count">count()</a>}</code></p>
-<p> Describes a SMS account at a provider.</p>
+<p><code>sms_account() = #sms_account{provider = <a href="#type-provider" docgen-rel="seetype" docgen-href="#provider/0">provider()</a>, user_name = <a href="system_utils.html#type-user_name" docgen-rel="seetype" docgen-href="system_utils#user_name/0">system_utils:user_name()</a>, password = <a href="system_utils.html#type-password" docgen-rel="seetype" docgen-href="system_utils#password/0">system_utils:password()</a>, default_class = <a href="#type-service_class" docgen-rel="seetype" docgen-href="#service_class/0">service_class()</a>, credits = <a href="#type-credits" docgen-rel="seetype" docgen-href="#credits/0">credits()</a>, sent_count = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, sent_success_count = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#account_to_string-1">account_to_string/1</a></td><td>Returns a textual description of the specified SMS account.</td></tr>
-<tr><td valign="top"><a href="#create_sms-3">create_sms/3</a></td><td>Creates a SMS record instance from specified information, the service
- class being not defined, so that the default class of the account will
- prevail.</td></tr>
-<tr><td valign="top"><a href="#create_sms-4">create_sms/4</a></td><td>Creates a SMS record instance from specified information.</td></tr>
-<tr><td valign="top"><a href="#send-2">send/2</a></td><td>Sends specified SMS, using specified account.</td></tr>
-<tr><td valign="top"><a href="#send-7">send/7</a></td><td>Sends specified SMS, using most detailed (explicit) settings.</td></tr>
-<tr><td valign="top"><a href="#sms_to_string-1">sms_to_string/1</a></td><td>Returns a textual description of the specified SMS.</td></tr>
-<tr><td valign="top"><a href="#update_credits-1">update_credits/1</a></td><td>Returns the specified SMS account, whose credit count has been updated, 
-telling whether the actual, provider-obtained count corresponds to the 
-recorded one ('matching') or not ('overwritten'), in which case the actual one 
-replaces the recorded one.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#account_to_string-1">account_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_sms-3">create_sms/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_sms-4">create_sms/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send-2">send/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send-7">send/7</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sms_to_string-1">sms_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_credits-1">update_credits/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="account_to_string-1">account_to_string/1</a></h3>
 <div class="spec">
-<p><code>account_to_string(Sms_account::<a href="#type-sms_account">sms_account()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>account_to_string(Sms_account::<a href="#type-sms_account" docgen-rel="seetype" docgen-href="#sms_account/0">sms_account()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified SMS account.</p>
+</div>
 
 <h3 class="function"><a name="create_sms-3">create_sms/3</a></h3>
 <div class="spec">
-<p><code>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sms">sms()</a></code><br></p>
+<p><code>create_sms(Message::<a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a>, Recipient::<a href="#type-recipient" docgen-rel="seetype" docgen-href="#recipient/0">recipient()</a>, SenderDescription::<a href="#type-sender_description" docgen-rel="seetype" docgen-href="#sender_description/0">sender_description()</a>) -&gt; <a href="#type-sms" docgen-rel="seetype" docgen-href="#sms/0">sms()</a></code><br></p>
 <p> </p>
-</div><p>Creates a SMS record instance from specified information, the service
- class being not defined, so that the default class of the account will
- prevail.
-</p>
+</div>
 
 <h3 class="function"><a name="create_sms-4">create_sms/4</a></h3>
 <div class="spec">
-<p><code>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>, ServiceClass::<a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)) -&gt; <a href="#type-sms">sms()</a></code><br></p>
+<p><code>create_sms(Message::<a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a>, Recipient::<a href="#type-recipient" docgen-rel="seetype" docgen-href="#recipient/0">recipient()</a>, SenderDescription::<a href="#type-sender_description" docgen-rel="seetype" docgen-href="#sender_description/0">sender_description()</a>, ServiceClass::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-service_class" docgen-rel="seetype" docgen-href="#service_class/0">service_class()</a>)) -&gt; <a href="#type-sms" docgen-rel="seetype" docgen-href="#sms/0">sms()</a></code><br></p>
 <p> </p>
-</div><p>Creates a SMS record instance from specified information.</p>
+</div>
 
 <h3 class="function"><a name="send-2">send/2</a></h3>
 <div class="spec">
-<p><code>send(Sms::<a href="#type-sms">sms()</a>, Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {<a href="#type-sending_outcome">sending_outcome()</a>, <a href="#type-sms_account">sms_account()</a>}</code><br></p>
+<p><code>send(Sms::<a href="#type-sms" docgen-rel="seetype" docgen-href="#sms/0">sms()</a>, Account::<a href="#type-sms_account" docgen-rel="seetype" docgen-href="#sms_account/0">sms_account()</a>) -&gt; {<a href="#type-sending_outcome" docgen-rel="seetype" docgen-href="#sending_outcome/0">sending_outcome()</a>, <a href="#type-sms_account" docgen-rel="seetype" docgen-href="#sms_account/0">sms_account()</a>}</code><br></p>
 <p> </p>
-</div><p>Sends specified SMS, using specified account.</p>
+</div>
 
 <h3 class="function"><a name="send-7">send/7</a></h3>
 <div class="spec">
-<p><code>send(Provider::<a href="#type-provider">provider()</a>, ServiceClass::<a href="#type-service_class">service_class()</a>, Username::<a href="system_utils.html#type-user_name">system_utils:user_name()</a>, Password::<a href="system_utils.html#type-password">system_utils:password()</a>, Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sending_outcome">sending_outcome()</a></code><br></p>
+<p><code>send(Provider::<a href="#type-provider" docgen-rel="seetype" docgen-href="#provider/0">provider()</a>, ServiceClass::<a href="#type-service_class" docgen-rel="seetype" docgen-href="#service_class/0">service_class()</a>, Username::<a href="system_utils.html#type-user_name" docgen-rel="seetype" docgen-href="system_utils#user_name/0">system_utils:user_name()</a>, Password::<a href="system_utils.html#type-password" docgen-rel="seetype" docgen-href="system_utils#password/0">system_utils:password()</a>, Message::<a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a>, Recipient::<a href="#type-recipient" docgen-rel="seetype" docgen-href="#recipient/0">recipient()</a>, SenderDescription::<a href="#type-sender_description" docgen-rel="seetype" docgen-href="#sender_description/0">sender_description()</a>) -&gt; <a href="#type-sending_outcome" docgen-rel="seetype" docgen-href="#sending_outcome/0">sending_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Sends specified SMS, using most detailed (explicit) settings.</p>
-
- (base, only actual sending function)
-</p>
+</div>
 
 <h3 class="function"><a name="sms_to_string-1">sms_to_string/1</a></h3>
 <div class="spec">
-<p><code>sms_to_string(Sms::<a href="#type-sms">sms()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>sms_to_string(Sms::<a href="#type-sms" docgen-rel="seetype" docgen-href="#sms/0">sms()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified SMS.</p>
+</div>
 
 <h3 class="function"><a name="update_credits-1">update_credits/1</a></h3>
 <div class="spec">
-<p><code>update_credits(Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {matching | overwritten | failed, <a href="#type-sms_account">sms_account()</a>}</code><br></p>
+<p><code>update_credits(Account::<a href="#type-sms_account" docgen-rel="seetype" docgen-href="#sms_account/0">sms_account()</a>) -&gt; {matching | overwritten | failed, <a href="#type-sms_account" docgen-rel="seetype" docgen-href="#sms_account/0">sms_account()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Returns the specified SMS account, whose credit count has been updated, 
-telling whether the actual, provider-obtained count corresponds to the 
-recorded one ('matching') or not ('overwritten'), in which case the actual one 
-replaces the recorded one.</p>
-
- If the operation failed, returns 'failed' with an unchanged account.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

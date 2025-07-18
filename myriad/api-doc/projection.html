@@ -10,153 +10,126 @@
 <hr>
 
 <h1>Module projection</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>projection management</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 
-<h2><a name="description">Description</a></h2>Gathering of various facilities for <b>projection management</b>.
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-aspect_ratio">aspect_ratio()</a></h3>
+<p><code>aspect_ratio() = <a href="gui.html#type-aspect_ratio" docgen-rel="seetype" docgen-href="gui#aspect_ratio/0">gui:aspect_ratio()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-compact_matrix4">compact_matrix4()</a></h3>
-<p><code>compact_matrix4() = <a href="matrix4.html#type-compact_matrix4">matrix4:compact_matrix4()</a></code></p>
+<p><code>compact_matrix4() = <a href="matrix4.html#type-compact_matrix4" docgen-rel="seetype" docgen-href="matrix4#compact_matrix4/0">matrix4:compact_matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><code>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></code></p>
+<p><code>coordinate() = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
-<p><code>distance() = <a href="linear.html#type-distance">linear:distance()</a></code></p>
+<p><code>distance() = <a href="linear.html#type-distance" docgen-rel="seetype" docgen-href="linear#distance/0">linear:distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
-<p><code>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></code></p>
+<p><code>matrix4() = <a href="matrix4.html#type-matrix4" docgen-rel="seetype" docgen-href="matrix4#matrix4/0">matrix4:matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-orthographic_settings">orthographic_settings()</a></h3>
-<p><code>orthographic_settings() = #orthographic_settings{left = <a href="linear.html#type-coordinate">linear:coordinate()</a>, right = <a href="linear.html#type-coordinate">linear:coordinate()</a>, bottom = <a href="linear.html#type-coordinate">linear:coordinate()</a>, top = <a href="linear.html#type-coordinate">linear:coordinate()</a>, z_near = <a href="linear.html#type-signed_distance">linear:signed_distance()</a>, z_far = <a href="linear.html#type-signed_distance">linear:signed_distance()</a>}</code></p>
+<p><code>orthographic_settings() = #orthographic_settings{left = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, right = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, bottom = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, top = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a>, z_near = <a href="linear.html#type-signed_distance" docgen-rel="seetype" docgen-href="linear#signed_distance/0">linear:signed_distance()</a>, z_far = <a href="linear.html#type-signed_distance" docgen-rel="seetype" docgen-href="linear#signed_distance/0">linear:signed_distance()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-perspective_settings">perspective_settings()</a></h3>
-<p><code>perspective_settings() = #perspective_settings{fov_y_angle = <a href="unit_utils.html#type-radians">unit_utils:radians()</a>, aspect_ratio = <a href="math_utils.html#type-ratio">math_utils:ratio()</a>, z_near = <a href="linear.html#type-distance">linear:distance()</a>, z_far = <a href="linear.html#type-distance">linear:distance()</a>}</code></p>
+<p><code>perspective_settings() = #perspective_settings{fov_y_angle = <a href="unit_utils.html#type-radians" docgen-rel="seetype" docgen-href="unit_utils#radians/0">unit_utils:radians()</a>, aspect_ratio = <a href="math_utils.html#type-ratio" docgen-rel="seetype" docgen-href="math_utils#ratio/0">math_utils:ratio()</a>, z_near = <a href="linear.html#type-distance" docgen-rel="seetype" docgen-href="linear#distance/0">linear:distance()</a>, z_far = <a href="linear.html#type-distance" docgen-rel="seetype" docgen-href="linear#distance/0">linear:distance()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-projection_settings">projection_settings()</a></h3>
-<p><code>projection_settings() = <a href="#type-orthographic_settings">orthographic_settings()</a> | <a href="#type-perspective_settings">perspective_settings()</a></code></p>
+<p><code>projection_settings() = <a href="#type-orthographic_settings" docgen-rel="seetype" docgen-href="#orthographic_settings/0">orthographic_settings()</a> | <a href="#type-perspective_settings" docgen-rel="seetype" docgen-href="#perspective_settings/0">perspective_settings()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><code>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></code></p>
+<p><code>radians() = <a href="unit_utils.html#type-radians" docgen-rel="seetype" docgen-href="unit_utils#radians/0">unit_utils:radians()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ratio">ratio()</a></h3>
-<p><code>ratio() = <a href="math_utils.html#type-ratio">math_utils:ratio()</a></code></p>
+<p><code>ratio() = <a href="math_utils.html#type-ratio" docgen-rel="seetype" docgen-href="math_utils#ratio/0">math_utils:ratio()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-signed_distance">signed_distance()</a></h3>
-<p><code>signed_distance() = <a href="linear.html#type-signed_distance">linear:signed_distance()</a></code></p>
+<p><code>signed_distance() = <a href="linear.html#type-signed_distance" docgen-rel="seetype" docgen-href="linear#signed_distance/0">linear:signed_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#frustum-6">frustum/6</a></td><td>Returns a matrix for perspective projection corresponding to the 
-specified settings.</td></tr>
-<tr><td valign="top"><a href="#orthographic-1">orthographic/1</a></td><td>Returns a matrix for orthographic projection corresponding to the
- specified settings.</td></tr>
-<tr><td valign="top"><a href="#orthographic-6">orthographic/6</a></td><td>Returns a matrix for orthographic projection corresponding to the 
-specified settings.</td></tr>
-<tr><td valign="top"><a href="#perspective-1">perspective/1</a></td><td>Returns a matrix for perspective projection corresponding to the
- specified settings.</td></tr>
-<tr><td valign="top"><a href="#perspective-4">perspective/4</a></td><td>Returns a matrix for perspective projection corresponding to the 
-specified settings.</td></tr>
-<tr><td valign="top"><a href="#projection-1">projection/1</a></td><td>Returns a matrix for projection corresponding to the specified settings.</td></tr>
-<tr><td valign="top"><a href="#settings_to_string-1">settings_to_string/1</a></td><td>Returns a textual (approximate) representation of the specified
- projection settings.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#frustum-6">frustum/6</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_base_orthographic_settings-0">get_base_orthographic_settings/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_base_perspective_settings-1">get_base_perspective_settings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#orthographic-1">orthographic/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#orthographic-6">orthographic/6</a></td><td></td></tr>
+<tr><td valign="top"><a href="#perspective-1">perspective/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#perspective-4">perspective/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#projection-1">projection/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#settings_to_string-1">settings_to_string/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="frustum-6">frustum/6</a></h3>
 <div class="spec">
-<p><code>frustum(Left::<a href="#type-coordinate">coordinate()</a>, Right::<a href="#type-coordinate">coordinate()</a>, Bottom::<a href="#type-coordinate">coordinate()</a>, Top::<a href="#type-coordinate">coordinate()</a>, ZNear::<a href="#type-distance">distance()</a>, ZFar::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
+<p><code>frustum(Left::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Right::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Bottom::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Top::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, ZNear::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>, ZFar::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>) -&gt; <a href="#type-matrix4" docgen-rel="seetype" docgen-href="#matrix4/0">matrix4()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a matrix for perspective projection corresponding to the 
-specified settings.</p>
+</div>
 
- <p>Parameters are:  
-- Left and Right are the coordinates for the left and right vertical clipping 
-planes  
-- Bottom and Top are the coordinates for the bottom and top horizontal 
-clipping planes  
-- ZNear specifies the distance from the viewer to the near clipping plane  
-(always strictly positive)  
-- ZFar specifies the distance from the viewer to the far clipping plane  
-(always positive)</p>
+<h3 class="function"><a name="get_base_orthographic_settings-0">get_base_orthographic_settings/0</a></h3>
+<div class="spec">
+<p><code>get_base_orthographic_settings() -&gt; <a href="#type-orthographic_settings" docgen-rel="seetype" docgen-href="#orthographic_settings/0">orthographic_settings()</a></code><br></p>
+<p> </p>
+</div>
 
- Note that the context is a right-handed referential with a clip space in
- [-1.0, 1.0].
-</p>
+<h3 class="function"><a name="get_base_perspective_settings-1">get_base_perspective_settings/1</a></h3>
+<div class="spec">
+<p><code>get_base_perspective_settings(AspectRatio::<a href="#type-aspect_ratio" docgen-rel="seetype" docgen-href="#aspect_ratio/0">aspect_ratio()</a>) -&gt; <a href="#type-perspective_settings" docgen-rel="seetype" docgen-href="#perspective_settings/0">perspective_settings()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="orthographic-1">orthographic/1</a></h3>
 <div class="spec">
-<p><code>orthographic(Orthographic_settings::<a href="#type-orthographic_settings">orthographic_settings()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></code><br></p>
+<p><code>orthographic(Orthographic_settings::<a href="#type-orthographic_settings" docgen-rel="seetype" docgen-href="#orthographic_settings/0">orthographic_settings()</a>) -&gt; <a href="#type-compact_matrix4" docgen-rel="seetype" docgen-href="#compact_matrix4/0">compact_matrix4()</a></code><br></p>
 <p> </p>
-</div><p>Returns a matrix for orthographic projection corresponding to the
- specified settings.
-</p>
+</div>
 
 <h3 class="function"><a name="orthographic-6">orthographic/6</a></h3>
 <div class="spec">
-<p><code>orthographic(Left::<a href="#type-coordinate">coordinate()</a>, Right::<a href="#type-coordinate">coordinate()</a>, Bottom::<a href="#type-coordinate">coordinate()</a>, Top::<a href="#type-coordinate">coordinate()</a>, ZNear::<a href="#type-signed_distance">signed_distance()</a>, ZFar::<a href="#type-signed_distance">signed_distance()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></code><br></p>
+<p><code>orthographic(Left::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Right::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Bottom::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Top::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, ZNear::<a href="#type-signed_distance" docgen-rel="seetype" docgen-href="#signed_distance/0">signed_distance()</a>, ZFar::<a href="#type-signed_distance" docgen-rel="seetype" docgen-href="#signed_distance/0">signed_distance()</a>) -&gt; <a href="#type-compact_matrix4" docgen-rel="seetype" docgen-href="#compact_matrix4/0">compact_matrix4()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a matrix for orthographic projection corresponding to the 
-specified settings.</p>
-
- <p>Parameters are:  
-- Left and Right are the coordinates for the left and right vertical clipping 
-planes  
-- Bottom and Top are the coordinates for the bottom and top horizontal 
-clipping planes  
-- ZNear and ZFar are the signed distances to the nearer and farther depth  
-clipping planes; these values are negative if the plane is to be behind the  
-viewer</p>
-
- Note that the context is a right-handed referential with a clip space in
- [-1.0, 1.0].
-</p>
+</div>
 
 <h3 class="function"><a name="perspective-1">perspective/1</a></h3>
 <div class="spec">
-<p><code>perspective(Perspective_settings::<a href="#type-perspective_settings">perspective_settings()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></code><br></p>
+<p><code>perspective(Perspective_settings::<a href="#type-perspective_settings" docgen-rel="seetype" docgen-href="#perspective_settings/0">perspective_settings()</a>) -&gt; <a href="#type-compact_matrix4" docgen-rel="seetype" docgen-href="#compact_matrix4/0">compact_matrix4()</a></code><br></p>
 <p> </p>
-</div><p>Returns a matrix for perspective projection corresponding to the
- specified settings.
-</p>
+</div>
 
 <h3 class="function"><a name="perspective-4">perspective/4</a></h3>
 <div class="spec">
-<p><code>perspective(FoVYAngle::<a href="#type-radians">radians()</a>, AspectRatio::<a href="#type-ratio">ratio()</a>, ZNear::<a href="#type-distance">distance()</a>, ZFar::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
+<p><code>perspective(FoVYAngle::<a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a>, AspectRatio::<a href="#type-ratio" docgen-rel="seetype" docgen-href="#ratio/0">ratio()</a>, ZNear::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>, ZFar::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>) -&gt; <a href="#type-matrix4" docgen-rel="seetype" docgen-href="#matrix4/0">matrix4()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a matrix for perspective projection corresponding to the 
-specified settings.</p>
-
- Parameters are:</p>
+</div>
 
 <h3 class="function"><a name="projection-1">projection/1</a></h3>
 <div class="spec">
-<p><code>projection(Settings::<a href="#type-projection_settings">projection_settings()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></code><br></p>
+<p><code>projection(Settings::<a href="#type-projection_settings" docgen-rel="seetype" docgen-href="#projection_settings/0">projection_settings()</a>) -&gt; <a href="#type-matrix4" docgen-rel="seetype" docgen-href="#matrix4/0">matrix4()</a></code><br></p>
 <p> </p>
-</div><p>Returns a matrix for projection corresponding to the specified settings.</p>
+</div>
 
 <h3 class="function"><a name="settings_to_string-1">settings_to_string/1</a></h3>
 <div class="spec">
-<p><code>settings_to_string(Orthographic_settings::<a href="#type-projection_settings">projection_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>settings_to_string(Orthographic_settings::<a href="#type-projection_settings" docgen-rel="seetype" docgen-href="#projection_settings/0">projection_settings()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual (approximate) representation of the specified
- projection settings.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

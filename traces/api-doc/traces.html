@@ -10,198 +10,148 @@
 <hr>
 
 <h1>Module traces</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module gathering all code, common to tests and applications, that allows
- to <b>lighten the trace macros, share defines and types, manage log
- handlers</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2>Module gathering all code, common to tests and applications, that allows
- to <b>lighten the trace macros, share defines and types, manage log
- handlers</b>.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-aggregator_pid">aggregator_pid()</a></h3>
-<p><code>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></code></p>
+<p><code>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid" docgen-rel="seetype" docgen-href="class_TraceAggregator#aggregator_pid/0">class_TraceAggregator:aggregator_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-app_timestamp">app_timestamp()</a></h3>
-<p><code>app_timestamp() = <a href="trace_utils.html#type-trace_timestamp">trace_utils:trace_timestamp()</a></code></p>
+<p><code>app_timestamp() = <a href="trace_utils.html#type-trace_timestamp" docgen-rel="seetype" docgen-href="trace_utils#trace_timestamp/0">trace_utils:trace_timestamp()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_emitter_categorization">bin_emitter_categorization()</a></h3>
-<p><code>bin_emitter_categorization() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> For example <code>&lt;&lt;"topics.sports.basketball"&gt;&gt;</code>.</p>
+<p><code>bin_emitter_categorization() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_emitter_name">bin_emitter_name()</a></h3>
-<p><code>bin_emitter_name() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> Name of a trace emitter.</p>
+<p><code>bin_emitter_name() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_location">bin_location()</a></h3>
-<p><code>bin_location() = <a href="#type-bin_string">bin_string()</a></code></p>
+<p><code>bin_location() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_message">bin_message()</a></h3>
-<p><code>bin_message() = <a href="trace_utils.html#type-trace_bin_message">trace_utils:trace_bin_message()</a></code></p>
-<p> An actual (binary) trace message.</p>
+<p><code>bin_message() = <a href="trace_utils.html#type-trace_bin_message" docgen-rel="seetype" docgen-href="trace_utils#trace_bin_message/0">trace_utils:trace_bin_message()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_message_categorization">bin_message_categorization()</a></h3>
-<p><code>bin_message_categorization() = <a href="trace_utils.html#type-trace_bin_message_categorization">trace_utils:trace_bin_message_categorization()</a></code></p>
+<p><code>bin_message_categorization() = <a href="trace_utils.html#type-trace_bin_message_categorization" docgen-rel="seetype" docgen-href="trace_utils#trace_bin_message_categorization/0">trace_utils:trace_bin_message_categorization()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_time">bin_time()</a></h3>
-<p><code>bin_time() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> A (binary) trace time.</p>
+<p><code>bin_time() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-emitter_any_categorization">emitter_any_categorization()</a></h3>
-<p><code>emitter_any_categorization() = <a href="#type-emitter_categorization">emitter_categorization()</a> | <a href="#type-bin_emitter_categorization">bin_emitter_categorization()</a></code></p>
-<p> Any kind of categorization of a trace emitter.</p>
+<p><code>emitter_any_categorization() = <a href="#type-emitter_categorization" docgen-rel="seetype" docgen-href="#emitter_categorization/0">emitter_categorization()</a> | <a href="#type-bin_emitter_categorization" docgen-rel="seetype" docgen-href="#bin_emitter_categorization/0">bin_emitter_categorization()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-emitter_categorization">emitter_categorization()</a></h3>
-<p><code>emitter_categorization() = <a href="#type-ustring">ustring()</a></code></p>
-<p><p> The categorization of a trace emitter.</p>
+<p><code>emitter_categorization() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
- <p>It is a plain string listing increasingly detailed trace sub-categories, 
-separated by dots.</p>
-
- For example "topics.sports.basketball".</p>
 
 <h3 class="typedecl"><a name="type-emitter_info">emitter_info()</a></h3>
-<p><code>emitter_info() = {<a href="#type-emitter_name">emitter_name()</a>, <a href="#type-emitter_categorization">emitter_categorization()</a>}</code></p>
+<p><code>emitter_info() = {<a href="#type-emitter_name" docgen-rel="seetype" docgen-href="#emitter_name/0">emitter_name()</a>, <a href="#type-emitter_categorization" docgen-rel="seetype" docgen-href="#emitter_categorization/0">emitter_categorization()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-emitter_name">emitter_name()</a></h3>
-<p><code>emitter_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Name of a trace emitter.</p>
+<p><code>emitter_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name" docgen-rel="seetype" docgen-href="file_utils#file_name/0">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-handler_config">handler_config()</a></h3>
-<p><code>handler_config() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-handler_config">logger:handler_config()</a></code></p>
+<p><code>handler_config() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-handler_config" docgen-rel="seetype" docgen-href="kernel:logger#handler_config/0">logger:handler_config()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-location">location()</a></h3>
-<p><code>location() = <a href="#type-ustring">ustring()</a></code></p>
-<p> The location (free text, typically host) of a trace emitter.</p>
+<p><code>location() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><code>message() = <a href="trace_utils.html#type-trace_message">trace_utils:trace_message()</a></code></p>
-<p> An actual trace message.</p>
+<p><code>message() = <a href="trace_utils.html#type-trace_message" docgen-rel="seetype" docgen-href="trace_utils#trace_message/0">trace_utils:trace_message()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-message_categorization">message_categorization()</a></h3>
-<p><code>message_categorization() = <a href="trace_utils.html#type-trace_message_categorization">trace_utils:trace_message_categorization()</a></code></p>
+<p><code>message_categorization() = <a href="trace_utils.html#type-trace_message_categorization" docgen-rel="seetype" docgen-href="trace_utils#trace_message_categorization/0">trace_utils:trace_message_categorization()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-priority">priority()</a></h3>
-<p><code>priority() = <a href="trace_utils.html#type-trace_priority">trace_utils:trace_priority()</a></code></p>
-<p> Numerical version of the severity of a message.</p>
+<p><code>priority() = <a href="trace_utils.html#type-trace_priority" docgen-rel="seetype" docgen-href="trace_utils#trace_priority/0">trace_utils:trace_priority()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-time">time()</a></h3>
-<p><code>time() = <a href="#type-ustring">ustring()</a></code></p>
-<p> A trace time.</p>
+<p><code>time() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-trace_severity">trace_severity()</a></h3>
-<p><code>trace_severity() = <a href="trace_utils.html#type-trace_severity">trace_utils:trace_severity()</a></code></p>
-<p> Textual version of the severity of a message: 'emergency', 'alert', and all.</p>
+<p><code>trace_severity() = <a href="trace_utils.html#type-trace_severity" docgen-rel="seetype" docgen-href="trace_utils#trace_severity/0">trace_utils:trace_severity()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-trace_supervision_type">trace_supervision_type()</a></h3>
-<p><code>trace_supervision_type() = advanced_traces | {text_traces, <a href="#type-trace_text_type">trace_text_type()</a>}</code></p>
-<p><p> A trace type must be selected so that, when the traces are aggregated, the 
-corresponding output is compliant with the tools to be used for supervision.</p>
+<p><code>trace_supervision_type() = advanced_traces | {text_traces, <a href="#type-trace_text_type" docgen-rel="seetype" docgen-href="#trace_text_type/0">trace_text_type()</a>}</code></p>
 
- <p>So the trace type to select depends on whether a dedicated, advanced trace 
-tool should be used to browse the execution traces, or just a text viewer 
-(possibly with a PDF displaying thereof); indeed it is:</p>
-
- <p>- either 'advanced_traces', for traces typically expected to be read from the 
-LogMX tool (relying then on our parser); see http://logmx.com/</p>
-
- - or {'text_traces', trace_text_type()}</p>
 
 <h3 class="typedecl"><a name="type-trace_text_type">trace_text_type()</a></h3>
 <p><code>trace_text_type() = text_only | pdf</code></p>
-<p> Text traces are either in pure, raw text, or in PDF.</p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_handler-0">add_handler/0</a></td><td>Registers this Traces logger handler as an additional one (not replacing
- the default one), based on the (supposedly already-existing) trace aggregator.</td></tr>
-<tr><td valign="top"><a href="#add_handler-1">add_handler/1</a></td><td>Registers this Traces logger handler as an additional one (not replacing
- the default one), based on the specified trace aggregator.</td></tr>
-<tr><td valign="top"><a href="#check_pending_wooper_results-0">check_pending_wooper_results/0</a></td><td>Displays and flushes all remaining WOOPER results.</td></tr>
-<tr><td valign="top"><a href="#declare_beam_dirs_for_traces-0">declare_beam_dirs_for_traces/0</a></td><td>Declares automatically the relevant BEAM directories in the code path, so 
-that Ceylan-Traces can be fully usable from then on.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_handler-0">add_handler/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_handler-1">add_handler/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_pending_wooper_results-0">check_pending_wooper_results/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_beam_dirs_for_traces-0">declare_beam_dirs_for_traces/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_execution_target-0">get_execution_target/0</a></td><td></td></tr>
-<tr><td valign="top"><a href="#get_trace_filename-1">get_trace_filename/1</a></td><td>Returns the name of the file in which traces will be written.</td></tr>
-<tr><td valign="top"><a href="#log-2">log/2</a></td><td>Mandatory callback for log handlers.</td></tr>
-<tr><td valign="top"><a href="#manage_supervision-0">manage_supervision/0</a></td><td>Manages the supervision of traces, typically in an OTP context.</td></tr>
-<tr><td valign="top"><a href="#receive_applicative_message-0">receive_applicative_message/0</a></td><td>Receives an applicative, non-trace message, to shelter user messages from
- the trace ones.</td></tr>
-<tr><td valign="top"><a href="#receive_applicative_message-1">receive_applicative_message/1</a></td><td>Receives specified applicative, non-trace message, to shelter user 
-messages from the trace ones.</td></tr>
-<tr><td valign="top"><a href="#reset_handler-0">reset_handler/0</a></td><td>Unsets the Traces logger handler, returns to the base (Myriad's)
- trace_utils one.</td></tr>
-<tr><td valign="top"><a href="#set_handler-0">set_handler/0</a></td><td>Replaces the current (probably default) logger handler with this Traces
- one (registered as 'default'), based on the (supposedly already-existing)
- trace aggregator.</td></tr>
-<tr><td valign="top"><a href="#set_handler-1">set_handler/1</a></td><td>Replaces the current (probably default) logger handler with this Traces
- one (registered as 'default'), based on the specified trace aggregator.</td></tr>
+<tr><td valign="top"><a href="#get_trace_filename-1">get_trace_filename/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#log-2">log/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#manage_supervision-0">manage_supervision/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#receive_applicative_message-0">receive_applicative_message/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#receive_applicative_message-1">receive_applicative_message/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#reset_handler-0">reset_handler/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_handler-0">set_handler/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_handler-1">set_handler/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add_handler-0">add_handler/0</a></h3>
 <div class="spec">
-<p><code>add_handler() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>add_handler() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Registers this Traces logger handler as an additional one (not replacing
- the default one), based on the (supposedly already-existing) trace aggregator.
-</p>
+</div>
 
 <h3 class="function"><a name="add_handler-1">add_handler/1</a></h3>
 <div class="spec">
-<p><code>add_handler(AggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>add_handler(AggregatorPid::<a href="#type-aggregator_pid" docgen-rel="seetype" docgen-href="#aggregator_pid/0">aggregator_pid()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Registers this Traces logger handler as an additional one (not replacing
- the default one), based on the specified trace aggregator.
-</p>
+</div>
 
 <h3 class="function"><a name="check_pending_wooper_results-0">check_pending_wooper_results/0</a></h3>
 <div class="spec">
-<p><code>check_pending_wooper_results() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_pending_wooper_results() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Displays and flushes all remaining WOOPER results.</p>
-
- Defined here, since uses a trace.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_beam_dirs_for_traces-0">declare_beam_dirs_for_traces/0</a></h3>
 <div class="spec">
-<p><code>declare_beam_dirs_for_traces() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_beam_dirs_for_traces() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Declares automatically the relevant BEAM directories in the code path, so 
-that Ceylan-Traces can be fully usable from then on.</p>
-
- <p>Note:</p>
-
- <p>- the code_utils.beam module of Ceylan-Myriad must be available from the 
-current code path</p>
-
- <p>- the CEYLAN_MYRIAD, CEYLAN_WOOPER and CEYLAN_TRACES environment variables 
-must be defined and must point to the respective root directories</p>
-
- - the determined directories are not specifically checked for existence,
- and are added at the end of the code path
-</p>
+</div>
 
 <h3 class="function"><a name="get_execution_target-0">get_execution_target/0</a></h3>
 <div class="spec">
@@ -211,77 +161,51 @@ must be defined and must point to the respective root directories</p>
 
 <h3 class="function"><a name="get_trace_filename-1">get_trace_filename/1</a></h3>
 <div class="spec">
-<p><code>get_trace_filename(ModuleName::<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
+<p><code>get_trace_filename(ModuleName::<a href="basic_utils.html#type-module_name" docgen-rel="seetype" docgen-href="basic_utils#module_name/0">basic_utils:module_name()</a>) -&gt; <a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a></code><br></p>
 <p> </p>
-</div><p>Returns the name of the file in which traces will be written.</p>
+</div>
 
 <h3 class="function"><a name="log-2">log/2</a></h3>
 <div class="spec">
-<p><code>log(LogEvent::<a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-log_event">logger:log_event()</a>, Config::<a href="#type-handler_config">handler_config()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>log(LogEvent::<a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-log_event" docgen-rel="seetype" docgen-href="kernel:logger#log_event/0">logger:log_event()</a>, Config::<a href="#type-handler_config" docgen-rel="seetype" docgen-href="#handler_config/0">handler_config()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Mandatory callback for log handlers.</p>
-
- See <a href="https://erlang.org/doc/man/logger.html#HModule:log-2" target="_top"><code>https://erlang.org/doc/man/logger.html#HModule:log-2</code></a>.
-</p>
+</div>
 
 <h3 class="function"><a name="manage_supervision-0">manage_supervision/0</a></h3>
 <div class="spec">
-<p><code>manage_supervision() -&gt; <a href="#type-maybe">maybe</a>(<a href="class_TraceSupervisor.html#type-supervisor_pid">class_TraceSupervisor:supervisor_pid()</a>)</code><br></p>
+<p><code>manage_supervision() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="class_TraceSupervisor.html#type-supervisor_pid" docgen-rel="seetype" docgen-href="class_TraceSupervisor#supervisor_pid/0">class_TraceSupervisor:supervisor_pid()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Manages the supervision of traces, typically in an OTP context.</p>
-
- <p>In this context:</p>
-
- <p>- the trace aggregator is expected to be already running</p>
-
- <p>- by default no specific trace file can be defined by the user, as 
-applications are just started or not</p>
-
- Note: currently not useful, as implicitly managed by traces_app:start/2.
-</p>
+</div>
 
 <h3 class="function"><a name="receive_applicative_message-0">receive_applicative_message/0</a></h3>
 <div class="spec">
 <p><code>receive_applicative_message() -&gt; any()</code><br></p>
 <p> </p>
-</div><p>Receives an applicative, non-trace message, to shelter user messages from
- the trace ones.
-</p>
+</div>
 
 <h3 class="function"><a name="receive_applicative_message-1">receive_applicative_message/1</a></h3>
 <div class="spec">
-<p><code>receive_applicative_message(Message::any()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>receive_applicative_message(Message::any()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Receives specified applicative, non-trace message, to shelter user 
-messages from the trace ones.</p>
-
- Used for synchronization purpose.
-</p>
+</div>
 
 <h3 class="function"><a name="reset_handler-0">reset_handler/0</a></h3>
 <div class="spec">
-<p><code>reset_handler() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>reset_handler() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Unsets the Traces logger handler, returns to the base (Myriad's)
- trace_utils one.
-</p>
+</div>
 
 <h3 class="function"><a name="set_handler-0">set_handler/0</a></h3>
 <div class="spec">
-<p><code>set_handler() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_handler() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Replaces the current (probably default) logger handler with this Traces
- one (registered as 'default'), based on the (supposedly already-existing)
- trace aggregator.
-</p>
+</div>
 
 <h3 class="function"><a name="set_handler-1">set_handler/1</a></h3>
 <div class="spec">
-<p><code>set_handler(AggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_handler(AggregatorPid::<a href="#type-aggregator_pid" docgen-rel="seetype" docgen-href="#aggregator_pid/0">aggregator_pid()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Replaces the current (probably default) logger handler with this Traces
- one (registered as 'default'), based on the specified trace aggregator.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

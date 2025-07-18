@@ -10,10 +10,9 @@
 <hr>
 
 <h1>Module pair</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Minor utilities to manage <b>pairs</b> (that is 2-element tuples).
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 
-<h2><a name="description">Description</a></h2>Minor utilities to manage <b>pairs</b> (that is 2-element tuples).
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-element">element()</a></h3>
@@ -21,78 +20,88 @@
 
 
 <h3 class="typedecl"><a name="type-pair">pair()</a></h3>
-<p><code>pair() = {<a href="#type-element">element()</a>, <a href="#type-element">element()</a>}</code></p>
+<p><code>pair(_F, _S) = <a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-pair">pair()</a></h3>
+<p><code>pair() = {<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, <a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_pair">tagged_pair()</a></h3>
+<p><code>tagged_pair() = {atom(), <a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_pair">tagged_pair()</a></h3>
+<p><code>tagged_pair(T) = {atom(), T}</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_list-1">check_list/1</a></td><td>Throws an exception if the specified list is not a list of pairs.</td></tr>
-<tr><td valign="top"><a href="#first-1">first/1</a></td><td>Returns the first element of the specified pair.</td></tr>
-<tr><td valign="top"><a href="#firsts-1">firsts/1</a></td><td>Returns the first elements of the specified list of pairs, in-order.</td></tr>
-<tr><td valign="top"><a href="#second-1">second/1</a></td><td>Returns the second element of the specified pair.</td></tr>
-<tr><td valign="top"><a href="#seconds-1">seconds/1</a></td><td>Returns the second elements of the specified list of pairs, in-order.</td></tr>
-<tr><td valign="top"><a href="#swap-1">swap/1</a></td><td>Returns a pair whose elements have been swapped compared to the specified
- one.</td></tr>
-<tr><td valign="top"><a href="#to_list-1">to_list/1</a></td><td>Returns a list of two elements corresponding to the specified pair.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified pair.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_list-1">check_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#first-1">first/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#firsts-1">firsts/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#second-1">second/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#seconds-1">seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#swap-1">swap/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_list-1">to_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unzip-1">unzip/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="check_list-1">check_list/1</a></h3>
 <div class="spec">
-<p><code>check_list(Term::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_list(Term::term()) -&gt; [<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>]</code><br></p>
 <p> </p>
-</div><p>Throws an exception if the specified list is not a list of pairs.</p>
+</div>
 
 <h3 class="function"><a name="first-1">first/1</a></h3>
 <div class="spec">
-<p><code>first(X1::<a href="#type-pair">pair()</a>) -&gt; <a href="#type-element">element()</a></code><br></p>
+<p><code>first(P::<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>) -&gt; <a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a></code><br></p>
 <p> </p>
-</div><p>Returns the first element of the specified pair.</p>
+</div>
 
 <h3 class="function"><a name="firsts-1">firsts/1</a></h3>
 <div class="spec">
-<p><code>firsts(Pairs::[<a href="#type-pair">pair()</a>]) -&gt; [<a href="#type-element">element()</a>]</code><br></p>
+<p><code>firsts(Pairs::[<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>]) -&gt; [<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Returns the first elements of the specified list of pairs, in-order.</p>
-
- Does not check whether non-pairs exist in the input list.
-</p>
+</div>
 
 <h3 class="function"><a name="second-1">second/1</a></h3>
 <div class="spec">
-<p><code>second(X1::<a href="#type-pair">pair()</a>) -&gt; <a href="#type-element">element()</a></code><br></p>
+<p><code>second(P::<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>) -&gt; <a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a></code><br></p>
 <p> </p>
-</div><p>Returns the second element of the specified pair.</p>
+</div>
 
 <h3 class="function"><a name="seconds-1">seconds/1</a></h3>
 <div class="spec">
-<p><code>seconds(Pairs::[<a href="#type-pair">pair()</a>]) -&gt; [<a href="#type-element">element()</a>]</code><br></p>
+<p><code>seconds(Pairs::[<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>]) -&gt; [<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Returns the second elements of the specified list of pairs, in-order.</p>
-
- Does not check whether non-pairs exist in the input list.
-</p>
+</div>
 
 <h3 class="function"><a name="swap-1">swap/1</a></h3>
 <div class="spec">
-<p><code>swap(X1::<a href="#type-pair">pair()</a>) -&gt; <a href="#type-pair">pair()</a></code><br></p>
+<p><code>swap(P::<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>) -&gt; <a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a></code><br></p>
 <p> </p>
-</div><p>Returns a pair whose elements have been swapped compared to the specified
- one.
-</p>
+</div>
 
 <h3 class="function"><a name="to_list-1">to_list/1</a></h3>
 <div class="spec">
-<p><code>to_list(X1::<a href="#type-pair">pair()</a>) -&gt; [<a href="#type-element">element()</a>]</code><br></p>
+<p><code>to_list(P::<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>) -&gt; [<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns a list of two elements corresponding to the specified pair.</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(X1::<a href="#type-pair">pair()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code><br></p>
+<p><code>to_string(P::<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair()</a>) -&gt; <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified pair.</p>
+</div>
+
+<h3 class="function"><a name="unzip-1">unzip/1</a></h3>
+<div class="spec">
+<p><code>unzip(Pairs::[<a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair</a>(F, S)]) -&gt; <a href="#type-pair" docgen-rel="seetype" docgen-href="#pair/0">pair</a>([F], [S])</code><br></p>
+<p> </p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

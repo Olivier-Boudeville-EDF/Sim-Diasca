@@ -10,17 +10,13 @@
 <hr>
 
 <h1>Module audio_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This module concentrates <b>audio-related elements</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>This module concentrates <b>audio-related elements</b>.</p>
-
- See speech_support.erl for TTS.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path" docgen-rel="seetype" docgen-href="file_utils#any_file_path/0">file_utils:any_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-audio_format">audio_format()</a></h3>
@@ -28,91 +24,74 @@
 
 
 <h3 class="typedecl"><a name="type-audio_stream_settings">audio_stream_settings()</a></h3>
-<p><code>audio_stream_settings() = #audio_stream_settings{sampling_rate = <a href="audio_utils.html#type-standard_sampling_rate">audio_utils:standard_sampling_rate()</a>, channel_layout = <a href="audio_utils.html#type-channel_layout">audio_utils:channel_layout()</a>, bit_level = <a href="audio_utils.html#type-bit_level">audio_utils:bit_level()</a>, container_format = <a href="audio_utils.html#type-container_format">audio_utils:container_format()</a>, audio_format = <a href="audio_utils.html#type-audio_format">audio_utils:audio_format()</a>}</code></p>
+<p><code>audio_stream_settings() = #audio_stream_settings{sampling_rate = <a href="audio_utils.html#type-standard_sampling_rate" docgen-rel="seetype" docgen-href="audio_utils#standard_sampling_rate/0">audio_utils:standard_sampling_rate()</a>, channel_layout = <a href="audio_utils.html#type-channel_layout" docgen-rel="seetype" docgen-href="audio_utils#channel_layout/0">audio_utils:channel_layout()</a>, bit_level = <a href="audio_utils.html#type-bit_level" docgen-rel="seetype" docgen-href="audio_utils#bit_level/0">audio_utils:bit_level()</a>, container_format = <a href="audio_utils.html#type-container_format" docgen-rel="seetype" docgen-href="audio_utils#container_format/0">audio_utils:container_format()</a>, audio_format = <a href="audio_utils.html#type-audio_format" docgen-rel="seetype" docgen-href="audio_utils#audio_format/0">audio_utils:audio_format()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bit_depth">bit_depth()</a></h3>
 <p><code>bit_depth() = pos_integer()</code></p>
-<p><p> The number of bits to which each audio sample is quantized.</p>
 
- For example 8-bit or 16-bit.</p>
 
 <h3 class="typedecl"><a name="type-bit_level">bit_level()</a></h3>
-<p><code>bit_level() = {bit, <a href="#type-bit_depth">bit_depth()</a>} | {kbps, <a href="#type-bit_rate">bit_rate()</a>}</code></p>
-<p> Either a bit depth or a bit rate.</p>
+<p><code>bit_level() = {bit, <a href="#type-bit_depth" docgen-rel="seetype" docgen-href="#bit_depth/0">bit_depth()</a>} | {kbps, <a href="#type-bit_rate" docgen-rel="seetype" docgen-href="#bit_rate/0">bit_rate()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-bit_rate">bit_rate()</a></h3>
 <p><code>bit_rate() = pos_integer()</code></p>
-<p> The bit rate of an audio content, in kilobits per second (e.g. 192 kbps).</p>
+
 
 <h3 class="typedecl"><a name="type-channel_layout">channel_layout()</a></h3>
 <p><code>channel_layout() = mono | stereo | '5.1'</code></p>
-<p><p> The number and layout of audio channels.</p>
 
- See the 'Standard speaker channels' section of
- https://en.wikipedia.org/wiki/Surround_sound for further details.</p>
 
 <h3 class="typedecl"><a name="type-codec">codec()</a></h3>
-<p><code>codec() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> An implementation in charge of coding/decoding an audio format (e.g. the
- codecs of FFmpeg).</p>
+<p><code>codec() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-container_format">container_format()</a></h3>
 <p><code>container_format() = raw | ogg | webm | riff</code></p>
-<p><p> Describes how to store metadata and possibly multiple audio streams in a 
-binary stream.</p>
 
- See the 'Audio coding formats support' of
- https://en.wikipedia.org/wiki/Comparison_of_video_container_formats for
- further details.</p>
 
 <h3 class="typedecl"><a name="type-sample_rate">sample_rate()</a></h3>
-<p><code>sample_rate() = <a href="unit_utils.html#type-integer_hertz">unit_utils:integer_hertz()</a></code></p>
-<p> The sample rate of an audio content (e.g. 16000 Hz).</p>
+<p><code>sample_rate() = <a href="unit_utils.html#type-integer_hertz" docgen-rel="seetype" docgen-href="unit_utils#integer_hertz/0">unit_utils:integer_hertz()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-standard_sampling_rate">standard_sampling_rate()</a></h3>
 <p><code>standard_sampling_rate() = pos_integer()</code></p>
-<p> A standard sample rate, in kHz (e.g. 24 kHz).</p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#audio_stream_settings_to_string-1">audio_stream_settings_to_string/1</a></td><td>Returns a textual description of the specified audio stream settings.</td></tr>
-<tr><td valign="top"><a href="#playback_file-2">playback_file/2</a></td><td>Performs a playblack of the specified audio file, with specified
- settings (if any), in a non-blocking (in the background) way.</td></tr>
-<tr><td valign="top"><a href="#playback_file-3">playback_file/3</a></td><td>Performs a playblack of the specified audio file, with specified
- settings, either in a blocking or in a non-blocking (in the background) way.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#audio_stream_settings_to_string-1">audio_stream_settings_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#playback_file-2">playback_file/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#playback_file-3">playback_file/3</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="audio_stream_settings_to_string-1">audio_stream_settings_to_string/1</a></h3>
 <div class="spec">
-<p><code>audio_stream_settings_to_string(Audio_stream_settings::<a href="#type-audio_stream_settings">audio_stream_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>audio_stream_settings_to_string(Audio_stream_settings::<a href="#type-audio_stream_settings" docgen-rel="seetype" docgen-href="#audio_stream_settings/0">audio_stream_settings()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified audio stream settings.</p>
+</div>
 
 <h3 class="function"><a name="playback_file-2">playback_file/2</a></h3>
 <div class="spec">
-<p><code>playback_file(AudioFilePath::<a href="#type-any_file_path">any_file_path()</a>, MaybeAudioStreamSettings::<a href="#type-maybe">maybe</a>(<a href="#type-audio_stream_settings">audio_stream_settings()</a>)) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>playback_file(AudioFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, MaybeAudioStreamSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-audio_stream_settings" docgen-rel="seetype" docgen-href="#audio_stream_settings/0">audio_stream_settings()</a>)) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Performs a playblack of the specified audio file, with specified
- settings (if any), in a non-blocking (in the background) way.
-</p>
+</div>
 
 <h3 class="function"><a name="playback_file-3">playback_file/3</a></h3>
 <div class="spec">
-<p><code>playback_file(AudioFilePath::<a href="#type-any_file_path">any_file_path()</a>, MaybeAudioStreamSettings::<a href="#type-maybe">maybe</a>(<a href="#type-audio_stream_settings">audio_stream_settings()</a>), DoBlock::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>playback_file(AudioFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, MaybeAudioStreamSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-audio_stream_settings" docgen-rel="seetype" docgen-href="#audio_stream_settings/0">audio_stream_settings()</a>), DoBlock::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Performs a playblack of the specified audio file, with specified
- settings, either in a blocking or in a non-blocking (in the background) way.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

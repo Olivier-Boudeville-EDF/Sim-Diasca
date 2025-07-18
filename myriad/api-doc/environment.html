@@ -10,124 +10,69 @@
 <hr>
 
 <h1>Module environment</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Service dedicated to the <b>management of application environments</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Service dedicated to the <b>management of application environments</b>.</p>
-
- <p>An application environment is a server-like process that stores static or 
-dynamic information (possibly initialised from an ETF file), as key/value 
-entries (not unlike an ETS table), on behalf of an application or of a subset 
-of its components, and makes it available to client processes.</p>
-
- <p>An environment entry is designated by a key (an atom), associated to a value 
-(that can be any term) in a pair.</p>
-
- <p>Environments hold application-specific or component-specific data, obtained 
-from any source (file included); they may also start blank and be exclusively 
-fed at runtime by the application or the components. Environments are used 
-afterwards to maintain these pieces of data (read/write), before possibly 
-storing them on file at application exit or component stop.</p>
-
- <p>As a whole, an environment server can be seen as a process holding state 
-information meant to be potentially common to various processes of a given 
-application or component.</p>
-
- <p>Environment data can be read from or written to file(s) in the ETF format,
- hence as a series of Erlang terms written as strings, each ending with a dot
- (i.e. it is the basic, standard format understood by <code>file:consult/1</code>).</p>
-
- Example of content of an environment file:
- <pre> {my_first_color, red}.
- {myHeight, 1.80}.
- {'My name', "Sylvester the cat"}.</pre>
-
- <p>The server process corresponding to an environment is locally registered; as a
- consequence it can be designated either directly through its PID or through
- its conventional (atom) registration name (like 'my_foobar_env_server' in
- <code>environment:get(my_first_color, my_foobar_env_server</code>). No specific global 
-registration of servers is made.</p>
-
- <p>A (single) explicit start (with one of the start* functions) shall be 
-preferred to implicit ones (typically triggered thanks to the get* functions) 
-to avoid any risk of race conditions (should multiple processes attempt 
-concurrently to create the same environment server), and also to be able to 
-request that the server is also linked to the calling process.</p>
-
- <p>See our 'preferences' module, corresponding to the user preferences, which is 
-implemented as a specific case of environment.</p>
-
- See also the (unrelated) resource module for the sharing of any kind of data
- resource.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-all_env_table">all_env_table()</a></h3>
-<p><code>all_env_table() = <a href="#type-list_table">list_table</a>(<a href="#type-env_pid">env_pid()</a>, <a href="#type-cache_info">cache_info()</a>)</code></p>
-<p> Corresponds to the value associated to the env_dictionary_key key in
- the process dictionary of a process using environment caching.</p>
+<p><code>all_env_table() = <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table</a>(<a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a>, <a href="#type-cache_info" docgen-rel="seetype" docgen-href="#cache_info/0">cache_info()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path" docgen-rel="seetype" docgen-href="file_utils#any_file_path/0">file_utils:any_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-cache_info">cache_info()</a></h3>
-<p><code>cache_info() = {<a href="#type-env_reg_name">env_reg_name()</a>, <a href="#type-env_cache_table">env_cache_table()</a>}</code></p>
-<p><p> Information stored regarding an environment, typically to be cached in the 
-process dictionary in an all_env_table() table, and indexed by the PID of the 
-corresponding environment server.</p>
+<p><code>cache_info() = {<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, <a href="#type-env_cache_table" docgen-rel="seetype" docgen-href="#env_cache_table/0">env_cache_table()</a>}</code></p>
 
- Specifying the registration name is required for caching.</p>
 
 <h3 class="typedecl"><a name="type-cache_spec">cache_spec()</a></h3>
-<p><code>cache_spec() = <a href="#type-maybe_list">maybe_list</a>([<a href="#type-key">key()</a> | <a href="#type-entry">entry()</a>])</code></p>
-<p> A specification of the environment keys (possibly with their initial values)
- that shall be cached in a client process (hence locally, in addition to the
- environment server).</p>
+<p><code>cache_spec() = <a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>([<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a> | <a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>])</code></p>
+
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><code>entries() = <a href="table.html#type-entries">table:entries()</a></code></p>
-<p> Entries are lists of entry/0 terms, i.e. lists of pairs.</p>
+<p><code>entries() = <a href="table.html#type-entries" docgen-rel="seetype" docgen-href="table#entries/0">table:entries()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><code>entry() = <a href="table.html#type-entry">table:entry()</a></code></p>
-<p> An entry is a key/value pair.</p>
+<p><code>entry() = <a href="table.html#type-entry" docgen-rel="seetype" docgen-href="table#entry/0">table:entry()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-env_cache_table">env_cache_table()</a></h3>
-<p><code>env_cache_table() = <a href="#type-table">table</a>(atom(), term())</code></p>
-<p> A table storing the (local) cached entries for a given environment.</p>
+<p><code>env_cache_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(atom(), term())</code></p>
+
 
 <h3 class="typedecl"><a name="type-env_data">env_data()</a></h3>
-<p><code>env_data() = <a href="#type-env_info">env_info()</a> | <a href="#type-env_designator">env_designator()</a></code></p>
-<p> Any element designating an environment (most general handle).</p>
+<p><code>env_data() = <a href="#type-env_info" docgen-rel="seetype" docgen-href="#env_info/0">env_info()</a> | <a href="#type-env_designator" docgen-rel="seetype" docgen-href="#env_designator/0">env_designator()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-env_designator">env_designator()</a></h3>
-<p><code>env_designator() = <a href="#type-env_pid">env_pid()</a> | <a href="#type-env_reg_name">env_reg_name()</a></code></p>
-<p> The two standard ways according to which an environment server can be
- designated: either directly thanks to its PID or to the name under which it is
- locally registered.</p>
+<p><code>env_designator() = <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a> | <a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-env_info">env_info()</a></h3>
-<p><code>env_info() = {<a href="#type-env_reg_name">env_reg_name()</a>, <a href="#type-env_pid">env_pid()</a>}</code></p>
-<p><p> The full reference to an environment.</p>
+<p><code>env_info() = {<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a>}</code></p>
 
- The registration name is needed as a key of any local cache, and the PID
- allows to spare extra naming look-ups.</p>
 
 <h3 class="typedecl"><a name="type-env_pid">env_pid()</a></h3>
 <p><code>env_pid() = pid()</code></p>
-<p> The PID of an environment server, the most direct reference to an environment.</p>
+
 
 <h3 class="typedecl"><a name="type-env_reg_name">env_reg_name()</a></h3>
-<p><code>env_reg_name() = <a href="#type-registration_name">registration_name()</a></code></p>
-<p> The name under which an environment server can be (locally) registered.</p>
+<p><code>env_reg_name() = <a href="#type-registration_name" docgen-rel="seetype" docgen-href="#registration_name/0">registration_name()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-etf_check_policy">etf_check_policy()</a></h3>
+<p><code>etf_check_policy() = no_check | strict_tagged_trace | strict_tagged_throw</code></p>
+
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
-<p><code>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></code></p>
+<p><code>file_path() = <a href="file_utils.html#type-file_path" docgen-rel="seetype" docgen-href="file_utils#file_path/0">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
@@ -135,623 +80,276 @@ corresponding environment server.</p>
 
 
 <h3 class="typedecl"><a name="type-list_table">list_table()</a></h3>
-<p><code>list_table(K, V) = <a href="list_table.html#type-list_table">list_table:list_table</a>(K, V)</code></p>
+<p><code>list_table(K, V) = <a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table</a>(K, V)</code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-registration_name">registration_name()</a></h3>
-<p><code>registration_name() = <a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a></code></p>
+<p><code>registration_name() = <a href="naming_utils.html#type-registration_name" docgen-rel="seetype" docgen-href="naming_utils#registration_name/0">naming_utils:registration_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
-<p><code>value() = <a href="table.html#type-value">table:value()</a></code></p>
-<p> Can be 'undefined' (no difference between a non-registered key and a key
- registered to 'undefined').</p>
+<p><code>value() = <a href="table.html#type-value" docgen-rel="seetype" docgen-href="table#value/0">table:value()</a></code></p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cache-2">cache/2</a></td><td>Requests the calling process to cache the entries corresponding to the 
-specified key(s), which will thus be appropriately synchronised with the 
-server from now on, in addition to any already cached keys.</td></tr>
-<tr><td valign="top"><a href="#cache_return-2">cache_return/2</a></td><td>Caches in the calling process the specified keys, and returns their 
-associated value.</td></tr>
-<tr><td valign="top"><a href="#ensure_binary-2">ensure_binary/2</a></td><td>Ensures that the specified key(s), expected to be some kind of strings, 
-are binary strings.</td></tr>
-<tr><td valign="top"><a href="#extract-2">extract/2</a></td><td>Extracts the specified entries (a single one or multiple ones) from the
- specified environment, based on the designated already-running environment
- server (specified by registration name, environment information or PID):
- removes these entries (including from any local cache) and returns their
- value.</td></tr>
-<tr><td valign="top"><a href="#get-2">get/2</a></td><td>Returns the value associated to each of the specified key(s) in the 
-environment (if any), otherwise 'undefined', based on the specified 
-environment file (and possibly launching a corresponding, non-linked, 
-environment server if needed) or on an already-running environment server 
-(specified as a registration name, an environment information or a PID).</td></tr>
-<tr><td valign="top"><a href="#get-3">get/3</a></td><td>Returns the value associated to each of the specified key(s) in the 
-environment (if any), otherwise 'undefined', based on the specified 
-registration name: uses any server registered with that name, otherwise uses 
-the specified filename to start a corresponding server.</td></tr>
-<tr><td valign="top"><a href="#get_server-1">get_server/1</a></td><td>Returns the PID of a supposedly already-running environment server,
- specified based on either its name or content filename.</td></tr>
-<tr><td valign="top"><a href="#get_server_info-1">get_server_info/1</a></td><td>Returns the server information of a supposedly already-running
- environment server, specified based on either its name or content filename.</td></tr>
-<tr><td valign="top"><a href="#remove-2">remove/2</a></td><td>Removes the specified entries (a single one or multiple ones) from the
- specified environment, based on the designated already-running environment
- server (specified by registration name, environment information or PID).</td></tr>
-<tr><td valign="top"><a href="#set-2">set/2</a></td><td>Sets (unconditionally) the specified key/value pairs (possibly 
-overwriting any previous values) in the specified environment, based on the 
-specified environment file (and possibly launching a corresponding environment 
-server if needed) or on the designated already-running environment server 
-(specified by registration name, environment information or PID).</td></tr>
-<tr><td valign="top"><a href="#set-3">set/3</a></td><td>Associates (unconditionally), in the specified environment, the specified 
-value to the specified key (possibly overwriting any previous value), based on 
-the specified environment file (and possibly launching a corresponding 
-environment server if needed) or on the designated already-running environment 
-server (specified by registration name, environment information or PID).</td></tr>
-<tr><td valign="top"><a href="#set-4">set/4</a></td><td>Associates (unconditionally), in the specified environment, the specified 
-value to the specified key (possibly overwriting any previous value), based on 
-the specified registration name: uses any server registered with that name, 
-otherwise uses the specified filename to start a corresponding server.</td></tr>
-<tr><td valign="top"><a href="#set_cond-2">set_cond/2</a></td><td>Sets conditionally the specified key/value pairs (that is, only if 
-necessary, meaning only if the specified value does not match any currently 
-cached one for that key; possibly overwriting any previous values) in the 
-specified environment, based on the specified environment file (and possibly 
-launching a corresponding environment server if needed) or on the designated 
-already-running environment server (specified by registration name, 
-environment information or PID).</td></tr>
-<tr><td valign="top"><a href="#set_cond-3">set_cond/3</a></td><td>Associates conditionally (that is, only if necessary, meaning only if the 
-specified value does not match any currently cached one for that key), in the 
-specified environment, the specified value to the specified key (possibly 
-overwriting any previous value), based on the specified environment file (and 
-possibly launching a corresponding environment server if needed) or on the 
-designated already-running environment server (specified by registration name, 
-environment information or PID).</td></tr>
-<tr><td valign="top"><a href="#set_cond-4">set_cond/4</a></td><td>Associates conditionally (that is, only if necessary, meaning only if the 
-specified value does not match any currently cached one for that key), in the 
-specified environment, the specified value to the specified key (possibly 
-overwriting any previous value), based on the specified registration name: 
-uses any server registered with that name, otherwise uses the specified 
-filename to start a corresponding server.</td></tr>
-<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Ensures explicitly that, if not running already, a specified environment 
-server is started.</td></tr>
-<tr><td valign="top"><a href="#start-2">start/2</a></td><td>Ensures explicitly that, if not running already, an environment server is 
-started with the specified registration name, and based on the specified file.</td></tr>
-<tr><td valign="top"><a href="#start_cached-2">start_cached/2</a></td><td>Ensures explicitly that, if not running already, a specified environment 
-server is started, and caches the specified elements.</td></tr>
-<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td>Ensures explicitly that, if not running already, a specified environment 
-server is started and linked.</td></tr>
-<tr><td valign="top"><a href="#start_link-2">start_link/2</a></td><td>Ensures explicitly that, if not running already, an environment server is 
-started and linked with the specified registration name, and based on the 
-specified file.</td></tr>
-<tr><td valign="top"><a href="#start_link_cached-2">start_link_cached/2</a></td><td>Ensures explicitly that, if not running already, a specified environment 
-server is started and linked, and caches the specified elements.</td></tr>
-<tr><td valign="top"><a href="#start_link_with_defaults-2">start_link_with_defaults/2</a></td><td>Starts, links and initialises an environment server based first on the 
-specified defaults.</td></tr>
-<tr><td valign="top"><a href="#start_with_defaults-2">start_with_defaults/2</a></td><td>Starts and initialises an environment server based first on the specified 
-defaults.</td></tr>
-<tr><td valign="top"><a href="#stop-1">stop/1</a></td><td>Stops (asynchronously) the environment server designated by the specified 
-registration name or file, if it is running.</td></tr>
-<tr><td valign="top"><a href="#store-1">store/1</a></td><td>Stores (asynchronously) the current state of the specified environment in
- the file whence it supposedly was loaded initially.</td></tr>
-<tr><td valign="top"><a href="#store-2">store/2</a></td><td>Stores (asynchronously) the current state of the specified environment in 
-the specified file, regardless of any file from which it was loaded.</td></tr>
-<tr><td valign="top"><a href="#sync-1">sync/1</a></td><td>Synchronises the local cache (if any) from the specified environment
- server, assuming the server entries are references (that is more recent than
- the cached ones).</td></tr>
-<tr><td valign="top"><a href="#to_bin_string-1">to_bin_string/1</a></td><td>Returns a textual description of the environment server (if any) 
-specified from an information or designator thereof, or from its environment 
-file.</td></tr>
-<tr><td valign="top"><a href="#to_string-0">to_string/0</a></td><td>Returns a textual description of the environments known of the calling
- process, based on its cache (if any).</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the environment server (if any) 
-specified from an information or designator thereof, or from its environment 
-file.</td></tr>
-<tr><td valign="top"><a href="#uncache-0">uncache/0</a></td><td>Removes all (local) environment caches (if any), resulting in all
- subsequent operations on environments to happen at the level of their server.</td></tr>
-<tr><td valign="top"><a href="#uncache-1">uncache/1</a></td><td>Removes any (local) cache regarding the specified environment, resulting
- in all subsequent operations on it to happen at the level of its server.</td></tr>
-<tr><td valign="top"><a href="#update_from_etf-2">update_from_etf/2</a></td><td>Updates the specified environment with the entries found in the specified 
-ETF file.</td></tr>
-<tr><td valign="top"><a href="#wait_available-1">wait_available/1</a></td><td>Waits (up to 5 seconds, otherwise throws an exception) until the 
-specified environment server becomes available, then returns its PID.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cache-2">cache/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#cache_return-2">cache_return/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ensure_binary-2">ensure_binary/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract-2">extract/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get-2">get/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get-3">get/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_server-1">get_server/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_server_info-1">get_server_info/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove-2">remove/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set-2">set/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set-3">set/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set-4">set/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_cond-2">set_cond/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_cond-3">set_cond/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_cond-4">set_cond/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-2">start/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_cached-2">start_cached/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link-2">start_link/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link_cached-2">start_link_cached/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link_with_defaults-2">start_link_with_defaults/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_with_defaults-2">start_with_defaults/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop-1">stop/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#store-1">store/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#store-2">store/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sync-1">sync/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_bin_string-1">to_bin_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-0">to_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#uncache-0">uncache/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#uncache-1">uncache/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_from_etf-2">update_from_etf/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_from_etf-3">update_from_etf/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wait_available-1">wait_available/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="cache-2">cache/2</a></h3>
 <div class="spec">
-<p><code>cache(AnyElem::<a href="#type-cache_spec">cache_spec()</a>, EnvInfo::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>cache(AnyElem::<a href="#type-cache_spec" docgen-rel="seetype" docgen-href="#cache_spec/0">cache_spec()</a>, EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Requests the calling process to cache the entries corresponding to the 
-specified key(s), which will thus be appropriately synchronised with the 
-server from now on, in addition to any already cached keys.</p>
-
- <p>Either single keys or full entries can be specified there. Both will lead the 
-corresponding keys to be cached, yet a single key, if it is not already cached 
-(otherwise, its update will be ignored), will trigger its value to be fetched 
-from the environment server whereas the value of a full entry will be cached 
-and also sent to the environment server (therefore being equivalent to set/2).</p>
-
- <p>Any next setting by this process of one of these cached keys will update its 
-local cache as well as the specified environment server; as a consequence, 
-here the cache is expected to start consistent with its server; afterwards by 
-default only the entries not already in cache will be requested from the 
-server.</p>
-
- The environment can be specified through its information (recommended), or
- from its registration name, otherwise directly through its PID, in which case
- at least one of its entries shall already be cached (indeed a client cache
- stores the registration name of the cached environments, which cannot be
- deduced from their PID).
-</p>
+</div>
 
 <h3 class="function"><a name="cache_return-2">cache_return/2</a></h3>
 <div class="spec">
-<p><code>cache_return(Key::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-key">key()</a>), AnyEnvData::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-maybe_list">maybe_list</a>(<a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>))</code><br></p>
+<p><code>cache_return(Key::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>), AnyEnvData::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>))</code><br></p>
 <p> </p>
-</div><p><p>Caches in the calling process the specified keys, and returns their 
-associated value.</p>
-
- Equivalent to a call to cache/2 followed by one to get/2 with the same keys.
-</p>
+</div>
 
 <h3 class="function"><a name="ensure_binary-2">ensure_binary/2</a></h3>
 <div class="spec">
-<p><code>ensure_binary(KeyMaybeList::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-key">key()</a>), EnvInfo::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>ensure_binary(KeyMaybeList::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>), EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures that the specified key(s), expected to be some kind of strings, 
-are binary strings.</p>
-
- Typically useful so that default plain strings may be specified, even if
- internally they should be binary ones.
-</p>
+</div>
 
 <h3 class="function"><a name="extract-2">extract/2</a></h3>
 <div class="spec">
-<p><code>extract(Key::<a href="#type-key">key()</a>, EnvPid::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-value">value()</a></code><br></p><p><code>extract(Key::[<a href="#type-key">key()</a>], EnvPid::<a href="#type-env_data">env_data()</a>) -&gt; [<a href="#type-value">value()</a>]</code><br></p>
+<p><code>extract(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, EnvPid::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a></code><br></p><p><code>extract(Key::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], EnvPid::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; [<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>]</code><br></p>
 <p> </p>
 <p> </p>
-</div><p>Extracts the specified entries (a single one or multiple ones) from the
- specified environment, based on the designated already-running environment
- server (specified by registration name, environment information or PID):
- removes these entries (including from any local cache) and returns their
- value.
-</p>
+</div>
 
 <h3 class="function"><a name="get-2">get/2</a></h3>
 <div class="spec">
-<p><code>get(Key::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-key">key()</a>), AnyEnvData::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-maybe_list">maybe_list</a>(<a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>))</code><br></p>
+<p><code>get(Key::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>), AnyEnvData::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>))</code><br></p>
 <p> </p>
-</div><p><p>Returns the value associated to each of the specified key(s) in the 
-environment (if any), otherwise 'undefined', based on the specified 
-environment file (and possibly launching a corresponding, non-linked, 
-environment server if needed) or on an already-running environment server 
-(specified as a registration name, an environment information or a PID).</p>
-
- <p>Any cached key will be read from the local process cache, not from the 
-environment server.</p>
-
- <p>Examples:</p>
-
-  <p>"Hello!" = environment:get(hello, "/var/foobar.etf")</p>
-
-  <p>["Hello!", 42, undefined] =     
-environment:get([hello, my_number, some_maybe], "/var/foobar.etf")</p>
-
-  <p>["Hello!", 42, undefined] =     
-environment:get([hello, my_number, some_maybe], my_env_server_name)</p>
-
-  <p>["Hello!", 42, undefined] =     
-environment:get([hello, my_number, some_maybe], MyEnvServerPid)</p>
-
-  ["Hello!", 42, undefined] =
-     environment:get([hello, my_number, some_maybe], MyEnvInfo)
-</p>
+</div>
 
 <h3 class="function"><a name="get-3">get/3</a></h3>
 <div class="spec">
-<p><code>get(KeyMaybes::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-key">key()</a>), ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>, FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-maybe_list">maybe_list</a>(<a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>))</code><br></p>
+<p><code>get(KeyMaybes::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>), ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, FilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>))</code><br></p>
 <p> </p>
-</div><p><p>Returns the value associated to each of the specified key(s) in the 
-environment (if any), otherwise 'undefined', based on the specified 
-registration name: uses any server registered with that name, otherwise uses 
-the specified filename to start a corresponding server.</p>
-
- <p>Any cached key will be read from the local process cache, not from the 
-environment server.</p>
-
- <p>Examples:</p>
-
-  <p>"Hello!" = environment:get(hello, my_env_server_name, "/var/foobar.etf")</p>
-
-  ["Hello!", 42, undefined] =
-     environment:get([hello, my_number, some_maybe], my_env_server_name,
-                      "/var/foobar.etf")
-</p>
+</div>
 
 <h3 class="function"><a name="get_server-1">get_server/1</a></h3>
 <div class="spec">
-<p><code>get_server(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>get_server(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p>Returns the PID of a supposedly already-running environment server,
- specified based on either its name or content filename.
-</p>
+</div>
 
 <h3 class="function"><a name="get_server_info-1">get_server_info/1</a></h3>
 <div class="spec">
-<p><code>get_server_info(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-env_info">env_info()</a></code><br></p>
+<p><code>get_server_info(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-env_info" docgen-rel="seetype" docgen-href="#env_info/0">env_info()</a></code><br></p>
 <p> </p>
-</div><p>Returns the server information of a supposedly already-running
- environment server, specified based on either its name or content filename.
-</p>
+</div>
 
 <h3 class="function"><a name="remove-2">remove/2</a></h3>
 <div class="spec">
-<p><code>remove(Key::<a href="#type-key">key()</a>, EnvPid::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p><p><code>remove(Key::[<a href="#type-key">key()</a>], EnvPid::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>remove(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, EnvPid::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p><p><code>remove(Key::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], EnvPid::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 <p> </p>
-</div><p>Removes the specified entries (a single one or multiple ones) from the
- specified environment, based on the designated already-running environment
- server (specified by registration name, environment information or PID).
-</p>
+</div>
 
 <h3 class="function"><a name="set-2">set/2</a></h3>
 <div class="spec">
-<p><code>set(Entries::[<a href="#type-entry">entry()</a>], EnvInfo::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set(Entries::[<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>], EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets (unconditionally) the specified key/value pairs (possibly 
-overwriting any previous values) in the specified environment, based on the 
-specified environment file (and possibly launching a corresponding environment 
-server if needed) or on the designated already-running environment server 
-(specified by registration name, environment information or PID).</p>
-
- Any cached key will be updated in the local process cache, in addition to the
- environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="set-3">set/3</a></h3>
 <div class="spec">
-<p><code>set(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, AnyEnvElem::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, AnyEnvElem::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Associates (unconditionally), in the specified environment, the specified 
-value to the specified key (possibly overwriting any previous value), based on 
-the specified environment file (and possibly launching a corresponding 
-environment server if needed) or on the designated already-running environment 
-server (specified by registration name, environment information or PID).</p>
-
- Any cached key will be updated in the local process cache, in addition to the
- environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="set-4">set/4</a></h3>
 <div class="spec">
-<p><code>set(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>, FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, FilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Associates (unconditionally), in the specified environment, the specified 
-value to the specified key (possibly overwriting any previous value), based on 
-the specified registration name: uses any server registered with that name, 
-otherwise uses the specified filename to start a corresponding server.</p>
-
- Any cached key will be updated in the local process cache, in addition to the
- environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="set_cond-2">set_cond/2</a></h3>
 <div class="spec">
-<p><code>set_cond(Entries::[<a href="#type-entry">entry()</a>], EnvInfo::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_cond(Entries::[<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>], EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets conditionally the specified key/value pairs (that is, only if 
-necessary, meaning only if the specified value does not match any currently 
-cached one for that key; possibly overwriting any previous values) in the 
-specified environment, based on the specified environment file (and possibly 
-launching a corresponding environment server if needed) or on the designated 
-already-running environment server (specified by registration name, 
-environment information or PID).</p>
-
- Any cached key will be updated in the local process cache, in addition to the
- environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="set_cond-3">set_cond/3</a></h3>
 <div class="spec">
-<p><code>set_cond(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, AnyEnvElem::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_cond(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, AnyEnvElem::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Associates conditionally (that is, only if necessary, meaning only if the 
-specified value does not match any currently cached one for that key), in the 
-specified environment, the specified value to the specified key (possibly 
-overwriting any previous value), based on the specified environment file (and 
-possibly launching a corresponding environment server if needed) or on the 
-designated already-running environment server (specified by registration name, 
-environment information or PID).</p>
-
- Any cached key will be updated in the local process cache, in addition to the
- environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="set_cond-4">set_cond/4</a></h3>
 <div class="spec">
-<p><code>set_cond(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>, FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_cond(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, FilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Associates conditionally (that is, only if necessary, meaning only if the 
-specified value does not match any currently cached one for that key), in the 
-specified environment, the specified value to the specified key (possibly 
-overwriting any previous value), based on the specified registration name: 
-uses any server registered with that name, otherwise uses the specified 
-filename to start a corresponding server.</p>
-
- Any cached key will be updated in the local process cache, in addition to the
- environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><code>start(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures explicitly that, if not running already, a specified environment 
-server is started.</p>
-
- <p>If a name is specified: if no server already registered it, starts it with a 
-blank state.</p>
-
- <p>If instead a filename is specified: if a server with a deriving name is not 
-already registered, starts a corresponding server and initialises it with the 
-corresponding file content.</p>
-
- <p>Does not link any started environment server to the calling process.</p>
-
- Returns in any case the PID of the corresponding environment server, already
- existing or not, blank or not.
-</p>
+</div>
 
 <h3 class="function"><a name="start-2">start/2</a></h3>
 <div class="spec">
-<p><code>start(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>, AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, AnyFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures explicitly that, if not running already, an environment server is 
-started with the specified registration name, and based on the specified file.</p>
-
- <p>If a server with the specified name is not already registered, starts a 
-corresponding server and initialises it with the content of the specified 
-file.</p>
-
- <p>Does not link the started environment server to the calling process.</p>
-
- Returns in any case the PID of the corresponding environment server, already
- existing or not.
-</p>
+</div>
 
 <h3 class="function"><a name="start_cached-2">start_cached/2</a></h3>
 <div class="spec">
-<p><code>start_cached(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>, CacheSpec::<a href="#type-cache_spec">cache_spec()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start_cached(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, CacheSpec::<a href="#type-cache_spec" docgen-rel="seetype" docgen-href="#cache_spec/0">cache_spec()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures explicitly that, if not running already, a specified environment 
-server is started, and caches the specified elements.</p>
-
- <p>If a name is specified: if no server already registered it, starts it with a 
-blank state.</p>
-
- <p>If instead a filename is specified: if a server with a deriving name is not 
-already registered, starts a corresponding server and initialises it with the 
-corresponding file content.</p>
-
- <p>See the cache_spec/0 type and the cache/2 function for related information 
-regarding caching.</p>
-
- <p>Does not link any started environment server to the calling process.</p>
-
- Returns in any case the PID of the corresponding environment server, already
- existing or not, and caching specified elements.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link-1">start_link/1</a></h3>
 <div class="spec">
-<p><code>start_link(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start_link(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures explicitly that, if not running already, a specified environment 
-server is started and linked.</p>
-
- <p>If a name is specified: if no server already registered it, starts it with a 
-blank state, and links that server to the calling process.</p>
-
- <p>If instead a filename is specified, if a server with a deriving name is not 
-already registered, starts a corresponding server, links it to the calling 
-process and initialises it with the file content.</p>
-
- Returns in any case the PID of the corresponding environment server, already
- existing or not, blank or not.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link-2">start_link/2</a></h3>
 <div class="spec">
-<p><code>start_link(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>, AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start_link(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, AnyFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures explicitly that, if not running already, an environment server is 
-started and linked with the specified registration name, and based on the 
-specified file.</p>
-
- <p>If a server with the specified name is not already registered, starts a 
-corresponding server, links it to the calling process and initialises it with 
-the content of the specified file.</p>
-
- Returns in any case the PID of the corresponding environment server, already
- existing or not.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link_cached-2">start_link_cached/2</a></h3>
 <div class="spec">
-<p><code>start_link_cached(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>, CacheSpec::<a href="#type-cache_spec">cache_spec()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start_link_cached(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>, CacheSpec::<a href="#type-cache_spec" docgen-rel="seetype" docgen-href="#cache_spec/0">cache_spec()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Ensures explicitly that, if not running already, a specified environment 
-server is started and linked, and caches the specified elements.</p>
-
- <p>If a name is specified: if no server already registered it, starts it with a 
-blank state.</p>
-
- <p>If instead a filename is specified: if a server with a deriving name is not 
-already registered, starts a corresponding server and initialises it with the 
-corresponding file content.</p>
-
- <p>See the cache_spec/0 type and the cache/2 function for related information 
-regarding caching.</p>
-
- <p>Links any started environment server to the calling process.</p>
-
- Returns in any case the PID of the corresponding environment server, already
- existing or not, and caching specified elements.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link_with_defaults-2">start_link_with_defaults/2</a></h3>
 <div class="spec">
-<p><code>start_link_with_defaults(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a> | <a href="#type-file_path">file_path()</a>, DefaultEntries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start_link_with_defaults(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>, DefaultEntries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts, links and initialises an environment server based first on the 
-specified defaults.</p>
-
- <p>If a name is specified: registers it under that name, and starts-linked it 
-just with the specified defaults.</p>
-
- <p>If instead a filename is specified: starts-linked a corresponding server with 
-a deriving name, and initialises it first with the specified defaults, then 
-with the corresponding file content (thus potentially overriding these 
-defaults).</p>
-
- <p>Ensures that no prior corresponding environment server already exists, as the 
-specified defaults could not then be properly taken into account.</p>
-
- Returns the PID of the corresponding, just created, environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="start_with_defaults-2">start_with_defaults/2</a></h3>
 <div class="spec">
-<p><code>start_with_defaults(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a> | <a href="#type-file_path">file_path()</a>, DefaultEntries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>start_with_defaults(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>, DefaultEntries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts and initialises an environment server based first on the specified 
-defaults.</p>
-
- <p>If a name is specified: registers it under that name, and starts it just with 
-the specified defaults.</p>
-
- <p>If instead a filename is specified: starts a corresponding server with a 
-deriving name, and initialises it first with the specified defaults, then with 
-the corresponding file content (thus potentially overriding these defaults).</p>
-
- <p>Ensures that no prior corresponding environment server already exists, as the 
-specified defaults could not then be properly taken into account.</p>
-
- <p>Does not link the started environment server to the calling process.</p>
-
- Returns the PID of the corresponding, just created, environment server.
-</p>
+</div>
 
 <h3 class="function"><a name="stop-1">stop/1</a></h3>
 <div class="spec">
-<p><code>stop(EnvInfo::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop(EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Stops (asynchronously) the environment server designated by the specified 
-registration name or file, if it is running.</p>
-
- Never fails.
-</p>
+</div>
 
 <h3 class="function"><a name="store-1">store/1</a></h3>
 <div class="spec">
-<p><code>store(EnvInfo::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>store(EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Stores (asynchronously) the current state of the specified environment in
- the file whence it supposedly was loaded initially.
-</p>
+</div>
 
 <h3 class="function"><a name="store-2">store/2</a></h3>
 <div class="spec">
-<p><code>store(EnvInfo::<a href="#type-env_data">env_data()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>store(EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>, TargetFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Stores (asynchronously) the current state of the specified environment in 
-the specified file, regardless of any file from which it was loaded.</p>
-
- The specified path becomes the reference one.
-</p>
+</div>
 
 <h3 class="function"><a name="sync-1">sync/1</a></h3>
 <div class="spec">
-<p><code>sync(EnvInfo::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>sync(EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Synchronises the local cache (if any) from the specified environment
- server, assuming the server entries are references (that is more recent than
- the cached ones).
-</p>
+</div>
 
 <h3 class="function"><a name="to_bin_string-1">to_bin_string/1</a></h3>
 <div class="spec">
-<p><code>to_bin_string(EnvInfo::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-bin_string">bin_string()</a></code><br></p>
+<p><code>to_bin_string(EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the environment server (if any) 
-specified from an information or designator thereof, or from its environment 
-file.</p>
-
- To be preferred to to_string/1.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-0">to_string/0</a></h3>
 <div class="spec">
-<p><code>to_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the environments known of the calling
- process, based on its cache (if any).
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(EnvData::<a href="#type-env_data">env_data()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(EnvData::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a> | <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the environment server (if any) 
-specified from an information or designator thereof, or from its environment 
-file.</p>
-
- Prefer calling to_bin_string/1.
-</p>
+</div>
 
 <h3 class="function"><a name="uncache-0">uncache/0</a></h3>
 <div class="spec">
-<p><code>uncache() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>uncache() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Removes all (local) environment caches (if any), resulting in all
- subsequent operations on environments to happen at the level of their server.
-</p>
+</div>
 
 <h3 class="function"><a name="uncache-1">uncache/1</a></h3>
 <div class="spec">
-<p><code>uncache(EnvInfo::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>uncache(EnvInfo::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Removes any (local) cache regarding the specified environment, resulting
- in all subsequent operations on it to happen at the level of its server.
-</p>
+</div>
 
 <h3 class="function"><a name="update_from_etf-2">update_from_etf/2</a></h3>
 <div class="spec">
-<p><code>update_from_etf(AnyETFFilePath::<a href="#type-any_file_path">any_file_path()</a>, AnyEnvData::<a href="#type-env_data">env_data()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>update_from_etf(AnyETFFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, AnyEnvData::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Updates the specified environment with the entries found in the specified 
-ETF file.</p>
+</div>
 
- Loaded entries supersede any pre-existing ("default") ones.
-</p>
+<h3 class="function"><a name="update_from_etf-3">update_from_etf/3</a></h3>
+<div class="spec">
+<p><code>update_from_etf(AnyETFFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, AnyEnvData::<a href="#type-env_data" docgen-rel="seetype" docgen-href="#env_data/0">env_data()</a>, ETFCheckPolicy::<a href="#type-etf_check_policy" docgen-rel="seetype" docgen-href="#etf_check_policy/0">etf_check_policy()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="wait_available-1">wait_available/1</a></h3>
 <div class="spec">
-<p><code>wait_available(ServerRegName::<a href="#type-env_reg_name">env_reg_name()</a>) -&gt; <a href="#type-env_pid">env_pid()</a></code><br></p>
+<p><code>wait_available(ServerRegName::<a href="#type-env_reg_name" docgen-rel="seetype" docgen-href="#env_reg_name/0">env_reg_name()</a>) -&gt; <a href="#type-env_pid" docgen-rel="seetype" docgen-href="#env_pid/0">env_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Waits (up to 5 seconds, otherwise throws an exception) until the 
-specified environment server becomes available, then returns its PID.</p>
-
- Allows to synchronise to an environment server typically launched
- concurrently, before being able to look-up values from it.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

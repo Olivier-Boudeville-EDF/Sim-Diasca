@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module cmd_line_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module cmd_line_utils</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-actual_command_line_option">actual_command_line_option()</a></h3>
+<p><code>actual_command_line_option() = atom()</code></p>
+<p> Not a string!</p>
+
+<h3 class="typedecl"><a name="type-actual_value_count">actual_value_count()</a></h3>
+<p><code>actual_value_count() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_command_line_option">any_command_line_option()</a></h3>
+<p><code>any_command_line_option() = <a href="#type-string_like" docgen-rel="seetype" docgen-href="#string_like/0">string_like()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-argument_table">argument_table()</a></h3>
+<p><code>argument_table() = <a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table</a>(<a href="#type-command_line_option" docgen-rel="seetype" docgen-href="#command_line_option/0">command_line_option()</a>, [<a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>])</code></p>
+
+
+<h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
+<p><code>command_line_argument() = {<a href="#type-command_line_option" docgen-rel="seetype" docgen-href="#command_line_option/0">command_line_option()</a>, [<a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-command_line_element">command_line_element()</a></h3>
+<p><code>command_line_element() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-command_line_option">command_line_option()</a></h3>
+<p><code>command_line_option() = <a href="#type-actual_command_line_option" docgen-rel="seetype" docgen-href="#actual_command_line_option/0">actual_command_line_option()</a> | '(none)'</code></p>
+
+
+<h3 class="typedecl"><a name="type-command_line_value">command_line_value()</a></h3>
+<p><code>command_line_value() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-command_line_values">command_line_values()</a></h3>
+<p><code>command_line_values() = [<a href="#type-command_line_value" docgen-rel="seetype" docgen-href="#command_line_value/0">command_line_value()</a>]</code></p>
+
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><code>format_string() = <a href="text_utils.html#type-format_string" docgen-rel="seetype" docgen-href="text_utils#format_string/0">text_utils:format_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><code>format_values() = <a href="text_utils.html#type-format_values" docgen-rel="seetype" docgen-href="text_utils#format_values/0">text_utils:format_values()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-option_spec">option_spec()</a></h3>
+<p><code>option_spec() = {<a href="#type-actual_command_line_option" docgen-rel="seetype" docgen-href="#actual_command_line_option/0">actual_command_line_option()</a>, <a href="#type-value_spec" docgen-rel="seetype" docgen-href="#value_spec/0">value_spec()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-return_code">return_code()</a></h3>
+<p><code>return_code() = <a href="system_utils.html#type-return_code" docgen-rel="seetype" docgen-href="system_utils#return_code/0">system_utils:return_code()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-string_like">string_like()</a></h3>
+<p><code>string_like() = <a href="text_utils.html#type-string_like" docgen-rel="seetype" docgen-href="text_utils#string_like/0">text_utils:string_like()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-unique_argument_table">unique_argument_table()</a></h3>
+<p><code>unique_argument_table() = <a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table</a>(<a href="#type-command_line_option" docgen-rel="seetype" docgen-href="#command_line_option/0">command_line_option()</a>, <a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-value_count">value_count()</a></h3>
+<p><code>value_count() = <a href="#type-actual_value_count" docgen-rel="seetype" docgen-href="#actual_value_count/0">actual_value_count()</a> | any</code></p>
+
+
+<h3 class="typedecl"><a name="type-value_spec">value_spec()</a></h3>
+<p><code>value_spec() = <a href="#type-value_count" docgen-rel="seetype" docgen-href="#value_count/0">value_count()</a> | {<a href="#type-actual_value_count" docgen-rel="seetype" docgen-href="#actual_value_count/0">actual_value_count()</a>, <a href="#type-value_count" docgen-rel="seetype" docgen-href="#value_count/0">value_count()</a>}</code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#argument_table_to_string-1">argument_table_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#error-2">error/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#error_fmt-3">error_fmt/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_command_arguments_for_option-2">extract_command_arguments_for_option/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_optionless_command_arguments-0">extract_optionless_command_arguments/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_optionless_command_arguments-1">extract_optionless_command_arguments/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_argument_table-1">generate_argument_table/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_argument_table-0">get_argument_table/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_argument_table_from_strings-1">get_argument_table_from_strings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_command_arguments_for_option-1">get_command_arguments_for_option/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_command_line_arguments-2">get_command_line_arguments/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_command_line_arguments-3">get_command_line_arguments/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_optionless_command_arguments-0">get_optionless_command_arguments/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#protect_from_shell-1">protect_from_shell/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#uniquify_argument_table-1">uniquify_argument_table/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="argument_table_to_string-1">argument_table_to_string/1</a></h3>
+<div class="spec">
+<p><code>argument_table_to_string(ArgTable::<a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="error-2">error/2</a></h3>
+<div class="spec">
+<p><code>error(ErrorCode::<a href="#type-return_code" docgen-rel="seetype" docgen-href="#return_code/0">return_code()</a>, Message::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; no_return()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="error_fmt-3">error_fmt/3</a></h3>
+<div class="spec">
+<p><code>error_fmt(ErrorCode::<a href="#type-return_code" docgen-rel="seetype" docgen-href="#return_code/0">return_code()</a>, Format::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; no_return()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></h3>
+<div class="spec">
+<p><code>extract_command_arguments_for_option(Option::<a href="#type-any_command_line_option" docgen-rel="seetype" docgen-href="#any_command_line_option/0">any_command_line_option()</a>) -&gt; {<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>]), <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_command_arguments_for_option-2">extract_command_arguments_for_option/2</a></h3>
+<div class="spec">
+<p><code>extract_command_arguments_for_option(Option::<a href="#type-any_command_line_option" docgen-rel="seetype" docgen-href="#any_command_line_option/0">any_command_line_option()</a>, ArgumentTable::<a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>) -&gt; {<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>]), <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_optionless_command_arguments-0">extract_optionless_command_arguments/0</a></h3>
+<div class="spec">
+<p><code>extract_optionless_command_arguments() -&gt; {<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>]), <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_optionless_command_arguments-1">extract_optionless_command_arguments/1</a></h3>
+<div class="spec">
+<p><code>extract_optionless_command_arguments(ArgumentTable::<a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>) -&gt; {<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>]), <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="generate_argument_table-1">generate_argument_table/1</a></h3>
+<div class="spec">
+<p><code>generate_argument_table(ArgStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_argument_table-0">get_argument_table/0</a></h3>
+<div class="spec">
+<p><code>get_argument_table() -&gt; <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_argument_table_from_strings-1">get_argument_table_from_strings/1</a></h3>
+<div class="spec">
+<p><code>get_argument_table_from_strings(ArgStrs::[<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>]) -&gt; <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_command_arguments_for_option-1">get_command_arguments_for_option/1</a></h3>
+<div class="spec">
+<p><code>get_command_arguments_for_option(Option::<a href="#type-any_command_line_option" docgen-rel="seetype" docgen-href="#any_command_line_option/0">any_command_line_option()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a>])</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_command_line_arguments-2">get_command_line_arguments/2</a></h3>
+<div class="spec">
+<p><code>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec" docgen-rel="seetype" docgen-href="#value_spec/0">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec" docgen-rel="seetype" docgen-href="#option_spec/0">option_spec()</a>]) -&gt; <a href="#type-unique_argument_table" docgen-rel="seetype" docgen-href="#unique_argument_table/0">unique_argument_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_command_line_arguments-3">get_command_line_arguments/3</a></h3>
+<div class="spec">
+<p><code>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec" docgen-rel="seetype" docgen-href="#value_spec/0">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec" docgen-rel="seetype" docgen-href="#option_spec/0">option_spec()</a>], ArgumentTable::<a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>) -&gt; <a href="#type-unique_argument_table" docgen-rel="seetype" docgen-href="#unique_argument_table/0">unique_argument_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_optionless_command_arguments-0">get_optionless_command_arguments/0</a></h3>
+<div class="spec">
+<p><code>get_optionless_command_arguments() -&gt; <a href="#type-command_line_values" docgen-rel="seetype" docgen-href="#command_line_values/0">command_line_values()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="protect_from_shell-1">protect_from_shell/1</a></h3>
+<div class="spec">
+<p><code>protect_from_shell(ArgStr::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="uniquify_argument_table-1">uniquify_argument_table/1</a></h3>
+<div class="spec">
+<p><code>uniquify_argument_table(ArgumentTable::<a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>) -&gt; <a href="#type-unique_argument_table" docgen-rel="seetype" docgen-href="#unique_argument_table/0">unique_argument_table()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

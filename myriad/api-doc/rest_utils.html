@@ -10,41 +10,33 @@
 <hr>
 
 <h1>Module rest_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of management facilities for <b>REST architectures</b>
- (<em>Representational State Transfer</em>).
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of management facilities for <b>REST architectures</b>
- (<em>Representational State Transfer</em>).</p>
-
- <p>See rest_utils_test.erl for the corresponding test.</p>
-
- See also: web_utils.erl.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-body">body()</a></h3>
-<p><code>body() = binary() | <a href="#type-ustring">ustring()</a></code></p>
+<p><code>body() = binary() | <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-content_type">content_type()</a></h3>
-<p><code>content_type() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Content type (e.g. "text/html;charset=utf-8", "application/json").</p>
+<p><code>content_type() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-context">context()</a></h3>
-<p><code>context() = {<a href="web_utils.html#type-url_info">web_utils:url_info()</a>, <a href="#type-headers">headers()</a>}</code></p>
-<p> Context of a REST exchange.</p>
+<p><code>context() = {<a href="web_utils.html#type-url_info" docgen-rel="seetype" docgen-href="web_utils#url_info/0">web_utils:url_info()</a>, <a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-field">field()</a></h3>
-<p><code>field() = <a href="#type-ustring">ustring()</a></code></p>
+<p><code>field() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-header">header()</a></h3>
-<p><code>header() = {<a href="#type-field">field()</a>, <a href="#type-value">value()</a>}</code></p>
+<p><code>header() = {<a href="#type-field" docgen-rel="seetype" docgen-href="#field/0">field()</a>, <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-headers">headers()</a></h3>
-<p><code>headers() = [<a href="#type-header">header()</a>]</code></p>
+<p><code>headers() = [<a href="#type-header" docgen-rel="seetype" docgen-href="#header/0">header()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-http_option">http_option()</a></h3>
@@ -52,37 +44,35 @@
 
 
 <h3 class="typedecl"><a name="type-http_options">http_options()</a></h3>
-<p><code>http_options() = [<a href="#type-http_option">http_option()</a>]</code></p>
+<p><code>http_options() = [<a href="#type-http_option" docgen-rel="seetype" docgen-href="#http_option/0">http_option()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-method">method()</a></h3>
 <p><code>method() = get | head | post | options | connect | trace | put | patch | delete</code></p>
-<p> HTTP/1.1 method.</p>
+
 
 <h3 class="typedecl"><a name="type-option">option()</a></h3>
 <p><code>option() = {atom(), term()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-options">options()</a></h3>
-<p><code>options() = [<a href="#type-option">option()</a>]</code></p>
+<p><code>options() = [<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-request">request()</a></h3>
-<p><code>request() = {<a href="#type-url">url()</a>, <a href="#type-headers">headers()</a>, <a href="#type-content_type">content_type()</a>, <a href="#type-body">body()</a>} | {<a href="#type-url">url()</a>, <a href="#type-headers">headers()</a>}</code></p>
-<p> Type of a request for httpc:request, see
- <a href="http://erlang.org/doc/man/httpc.html" target="_top"><code>http://erlang.org/doc/man/httpc.html</code></a>.</p>
+<p><code>request() = {<a href="#type-url" docgen-rel="seetype" docgen-href="#url/0">url()</a>, <a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, <a href="#type-content_type" docgen-rel="seetype" docgen-href="#content_type/0">content_type()</a>, <a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>} | {<a href="#type-url" docgen-rel="seetype" docgen-href="#url/0">url()</a>, <a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-result">result()</a></h3>
-<p><code>result() = {<a href="#type-status_line">status_line()</a>, <a href="#type-headers">headers()</a>, <a href="#type-body">body()</a>} | {<a href="#type-status_code">status_code()</a>, <a href="#type-body">body()</a>} | {<a href="#type-status_code">status_code()</a>, {reason_phrased_body, <a href="#type-ustring">ustring()</a>, <a href="#type-body">body()</a>}} | reference()</code></p>
-<p> Type of a result extended from httpc:request, see
- <a href="http://erlang.org/doc/man/httpc.html" target="_top"><code>http://erlang.org/doc/man/httpc.html</code></a>.</p>
+<p><code>result() = {<a href="#type-status_line" docgen-rel="seetype" docgen-href="#status_line/0">status_line()</a>, <a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, <a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>} | {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, <a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>} | {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, {reason_phrased_body, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, <a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>}} | reference()</code></p>
+
 
 <h3 class="typedecl"><a name="type-retries_count">retries_count()</a></h3>
-<p><code>retries_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>retries_count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ssl_opt">ssl_opt()</a></h3>
-<p><code>ssl_opt() = <a href="web_utils.html#type-ssl_opt">web_utils:ssl_opt()</a></code></p>
+<p><code>ssl_opt() = <a href="web_utils.html#type-ssl_opt" docgen-rel="seetype" docgen-href="web_utils#ssl_opt/0">web_utils:ssl_opt()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-status_code">status_code()</a></h3>
@@ -90,186 +80,158 @@
 
 
 <h3 class="typedecl"><a name="type-status_line">status_line()</a></h3>
-<p><code>status_line() = {<a href="#type-ustring">ustring()</a>, <a href="#type-status_code">status_code()</a>, <a href="#type-ustring">ustring()</a>}</code></p>
+<p><code>status_line() = {<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, <a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-url">url()</a></h3>
-<p><code>url() = <a href="web_utils.html#type-url">web_utils:url()</a></code></p>
+<p><code>url() = <a href="web_utils.html#type-url" docgen-rel="seetype" docgen-href="web_utils#url/0">web_utils:url()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
-<p><code>value() = <a href="#type-ustring">ustring()</a></code></p>
+<p><code>value() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#http_delete-1">http_delete/1</a></td><td>Sends a HTTP PUT request.</td></tr>
-<tr><td valign="top"><a href="#http_delete-2">http_delete/2</a></td><td>Sends a HTTP PUT request, with the specified number of retries.</td></tr>
-<tr><td valign="top"><a href="#http_delete-4">http_delete/4</a></td><td>Sends a HTTP PUT request, with the specified number of retries and (HTTP
- or not) options.</td></tr>
-<tr><td valign="top"><a href="#http_get-1">http_get/1</a></td><td>Sends a HTTP GET request.</td></tr>
-<tr><td valign="top"><a href="#http_get-2">http_get/2</a></td><td>Sends a HTTP GET request, with the specified number of retries.</td></tr>
-<tr><td valign="top"><a href="#http_get-4">http_get/4</a></td><td>Sends a HTTP GET request, with the specified number of retries and (HTTP
- or not) options.</td></tr>
-<tr><td valign="top"><a href="#http_post-1">http_post/1</a></td><td>Sends a HTTP POST request.</td></tr>
-<tr><td valign="top"><a href="#http_post-2">http_post/2</a></td><td>Sends a HTTP POST request, with the specified number of retries.</td></tr>
-<tr><td valign="top"><a href="#http_post-4">http_post/4</a></td><td>Sends a HTTP POST request, with the specified number of retries and (HTTP
- or not) options.</td></tr>
-<tr><td valign="top"><a href="#http_put-1">http_put/1</a></td><td>Sends a HTTP PUT request.</td></tr>
-<tr><td valign="top"><a href="#http_put-2">http_put/2</a></td><td>Sends a HTTP PUT request, with the specified number of retries.</td></tr>
-<tr><td valign="top"><a href="#http_put-4">http_put/4</a></td><td>Sends a HTTP PUT request, with the specified number of retries and (HTTP
- or not) options.</td></tr>
-<tr><td valign="top"><a href="#http_request-1">http_request/1</a></td><td>Sends a HTTP GET requests, as an alternate solution as suggested by the
- standard 'httpc' module of Erlang.</td></tr>
-<tr><td valign="top"><a href="#http_request-2">http_request/2</a></td><td>Sends a generic HTTP request, as an alternate solution as suggested by 
-the standard 'httpc' module of Erlang.</td></tr>
-<tr><td valign="top"><a href="#http_request-3">http_request/3</a></td><td>Sends a generic HTTP request, with the specified number of retries.</td></tr>
-<tr><td valign="top"><a href="#http_request-5">http_request/5</a></td><td>Sends a generic HTTP request, with the specified number of retries and 
-(HTTP or not) options.</td></tr>
-<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts the REST service, with default settings.</td></tr>
-<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts the REST service, with specified option.</td></tr>
-<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the REST service.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#http_delete-1">http_delete/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_delete-2">http_delete/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_delete-4">http_delete/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_get-1">http_get/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_get-2">http_get/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_get-4">http_get/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_post-1">http_post/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_post-2">http_post/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_post-4">http_post/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_put-1">http_put/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_put-2">http_put/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_put-4">http_put/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_request-1">http_request/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_request-2">http_request/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_request-3">http_request/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#http_request-5">http_request/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="http_delete-1">http_delete/1</a></h3>
 <div class="spec">
-<p><code>http_delete(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_delete(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP PUT request.</p>
+</div>
 
 <h3 class="function"><a name="http_delete-2">http_delete/2</a></h3>
 <div class="spec">
-<p><code>http_delete(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_delete(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP PUT request, with the specified number of retries.</p>
+</div>
 
 <h3 class="function"><a name="http_delete-4">http_delete/4</a></h3>
 <div class="spec">
-<p><code>http_delete(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</code><br></p>
+<p><code>http_delete(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, HTTPOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, Options::<a href="#type-options" docgen-rel="seetype" docgen-href="#options/0">options()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; term()</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP PUT request, with the specified number of retries and (HTTP
- or not) options.
-</p>
+</div>
 
 <h3 class="function"><a name="http_get-1">http_get/1</a></h3>
 <div class="spec">
-<p><code>http_get(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_get(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP GET request.</p>
+</div>
 
 <h3 class="function"><a name="http_get-2">http_get/2</a></h3>
 <div class="spec">
-<p><code>http_get(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_get(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP GET request, with the specified number of retries.</p>
+</div>
 
 <h3 class="function"><a name="http_get-4">http_get/4</a></h3>
 <div class="spec">
-<p><code>http_get(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</code><br></p>
+<p><code>http_get(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, HTTPOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, Options::<a href="#type-options" docgen-rel="seetype" docgen-href="#options/0">options()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; term()</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP GET request, with the specified number of retries and (HTTP
- or not) options.
-</p>
+</div>
 
 <h3 class="function"><a name="http_post-1">http_post/1</a></h3>
 <div class="spec">
-<p><code>http_post(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_post(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP POST request.</p>
+</div>
 
 <h3 class="function"><a name="http_post-2">http_post/2</a></h3>
 <div class="spec">
-<p><code>http_post(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_post(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP POST request, with the specified number of retries.</p>
+</div>
 
 <h3 class="function"><a name="http_post-4">http_post/4</a></h3>
 <div class="spec">
-<p><code>http_post(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</code><br></p>
+<p><code>http_post(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, HTTPOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, Options::<a href="#type-options" docgen-rel="seetype" docgen-href="#options/0">options()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; term()</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP POST request, with the specified number of retries and (HTTP
- or not) options.
-</p>
+</div>
 
 <h3 class="function"><a name="http_put-1">http_put/1</a></h3>
 <div class="spec">
-<p><code>http_put(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_put(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP PUT request.</p>
+</div>
 
 <h3 class="function"><a name="http_put-2">http_put/2</a></h3>
 <div class="spec">
-<p><code>http_put(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_put(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP PUT request, with the specified number of retries.</p>
+</div>
 
 <h3 class="function"><a name="http_put-4">http_put/4</a></h3>
 <div class="spec">
-<p><code>http_put(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</code><br></p>
+<p><code>http_put(Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, HTTPOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, Options::<a href="#type-options" docgen-rel="seetype" docgen-href="#options/0">options()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; term()</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP PUT request, with the specified number of retries and (HTTP
- or not) options.
-</p>
+</div>
 
 <h3 class="function"><a name="http_request-1">http_request/1</a></h3>
 <div class="spec">
-<p><code>http_request(URL::<a href="#type-url">url()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_request(URL::<a href="#type-url" docgen-rel="seetype" docgen-href="#url/0">url()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p>Sends a HTTP GET requests, as an alternate solution as suggested by the
- standard 'httpc' module of Erlang.
-</p>
+</div>
 
 <h3 class="function"><a name="http_request-2">http_request/2</a></h3>
 <div class="spec">
-<p><code>http_request(Method::<a href="#type-method">method()</a>, Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_request(Method::<a href="#type-method" docgen-rel="seetype" docgen-href="#method/0">method()</a>, Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p><p>Sends a generic HTTP request, as an alternate solution as suggested by 
-the standard 'httpc' module of Erlang.</p>
-
- (Basically just a call to httpc:request/4 surrounded by checking steps)
-</p>
+</div>
 
 <h3 class="function"><a name="http_request-3">http_request/3</a></h3>
 <div class="spec">
-<p><code>http_request(Method::<a href="#type-method">method()</a>, Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</code><br></p>
+<p><code>http_request(Method::<a href="#type-method" docgen-rel="seetype" docgen-href="#method/0">method()</a>, Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; {<a href="#type-status_code" docgen-rel="seetype" docgen-href="#status_code/0">status_code()</a>, term()}</code><br></p>
 <p> </p>
-</div><p><p>Sends a generic HTTP request, with the specified number of retries.</p>
-
- (Basically just a call to httpc:request/4 surrounded by checking steps)
-</p>
+</div>
 
 <h3 class="function"><a name="http_request-5">http_request/5</a></h3>
 <div class="spec">
-<p><code>http_request(Method::<a href="#type-method">method()</a>, Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</code><br></p>
+<p><code>http_request(Method::<a href="#type-method" docgen-rel="seetype" docgen-href="#method/0">method()</a>, Request::<a href="#type-request" docgen-rel="seetype" docgen-href="#request/0">request()</a>, HTTPOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, Options::<a href="#type-options" docgen-rel="seetype" docgen-href="#options/0">options()</a>, Retries::<a href="#type-retries_count" docgen-rel="seetype" docgen-href="#retries_count/0">retries_count()</a>) -&gt; term()</code><br></p>
 <p> </p>
-</div><p><p>Sends a generic HTTP request, with the specified number of retries and 
-(HTTP or not) options.</p>
-
- (Basically just a call to httpc:request/4 surrounded by checking steps)
-</p>
+</div>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><code>start() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Starts the REST service, with default settings.</p>
+</div>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><code>start(Option::<a href="#type-ssl_opt">ssl_opt()</a>) -&gt; <a href="json_utils.html#type-parser_state">json_utils:parser_state()</a></code><br></p>
+<p><code>start(Option::<a href="#type-ssl_opt" docgen-rel="seetype" docgen-href="#ssl_opt/0">ssl_opt()</a>) -&gt; <a href="json_utils.html#type-parser_state" docgen-rel="seetype" docgen-href="json_utils#parser_state/0">json_utils:parser_state()</a></code><br></p>
 <p> </p>
-</div><p>Starts the REST service, with specified option.</p>
+</div>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><code>stop() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Stops the REST service.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

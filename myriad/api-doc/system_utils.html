@@ -10,76 +10,89 @@
 <hr>
 
 <h1>Module system_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>system-level</b> (operating system) convenient 
-facilities.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various <b>system-level</b> (operating system) convenient 
-facilities.</p>
-
- See system_utils_test.erl for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-actual_filesystem_type">actual_filesystem_type()</a></h3>
-<p><code>actual_filesystem_type() = ext2 | ext3 | ext4 | vfat</code></p>
-<p> Known real, actual types of filesystems.</p>
+<p><code>actual_filesystem_type() = ext2 | ext3 | ext4 | vfat | zfs</code></p>
+
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path" docgen-rel="seetype" docgen-href="file_utils#any_directory_path/0">file_utils:any_directory_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_login">any_login()</a></h3>
+<p><code>any_login() = <a href="#type-login" docgen-rel="seetype" docgen-href="#login/0">login()</a> | <a href="#type-bin_login" docgen-rel="seetype" docgen-href="#bin_login/0">bin_login()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_password">any_password()</a></h3>
+<p><code>any_password() = <a href="#type-password" docgen-rel="seetype" docgen-href="#password/0">password()</a> | <a href="#type-bin_password" docgen-rel="seetype" docgen-href="#bin_password/0">bin_password()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
-<p><code>any_version() = <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a></code></p>
+<p><code>any_version() = <a href="basic_utils.html#type-any_version" docgen-rel="seetype" docgen-href="basic_utils#any_version/0">basic_utils:any_version()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-application_name">application_name()</a></h3>
-<p><code>application_name() = <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a></code></p>
+<p><code>application_name() = <a href="otp_utils.html#type-application_name" docgen-rel="seetype" docgen-href="otp_utils#application_name/0">otp_utils:application_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-atom_user_name">atom_user_name()</a></h3>
 <p><code>atom_user_name() = atom()</code></p>
-<p> To store (UNIX-like) user names.</p>
+
 
 <h3 class="typedecl"><a name="type-basic_credential">basic_credential()</a></h3>
-<p><code>basic_credential() = {<a href="#type-user_name">user_name()</a>, <a href="#type-password">password()</a>}</code></p>
+<p><code>basic_credential() = {<a href="#type-user_name" docgen-rel="seetype" docgen-href="#user_name/0">user_name()</a>, <a href="#type-password" docgen-rel="seetype" docgen-href="#password/0">password()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_executable_path">bin_executable_path()</a></h3>
-<p><code>bin_executable_path() = <a href="file_utils.html#type-bin_executable_path">file_utils:bin_executable_path()</a></code></p>
+<p><code>bin_executable_path() = <a href="file_utils.html#type-bin_executable_path" docgen-rel="seetype" docgen-href="file_utils#bin_executable_path/0">file_utils:bin_executable_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_login">bin_login()</a></h3>
+<p><code>bin_login() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_password">bin_password()</a></h3>
+<p><code>bin_password() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bit_size">bit_size()</a></h3>
 <p><code>bit_size() = non_neg_integer()</code></p>
-<p> Size, as a positive number of bits.</p>
+
 
 <h3 class="typedecl"><a name="type-byte_offset">byte_offset()</a></h3>
 <p><code>byte_offset() = integer()</code></p>
-<p> A (signed) offset expressed in bytes.</p>
+
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
 <p><code>byte_size() = non_neg_integer()</code></p>
-<p> Size, as a positive number of bytes.</p>
+
 
 <h3 class="typedecl"><a name="type-bytes_per_second">bytes_per_second()</a></h3>
 <p><code>bytes_per_second() = integer()</code></p>
-<p> Number of bytes per second.</p>
+
 
 <h3 class="typedecl"><a name="type-command">command()</a></h3>
-<p><code>command() = <a href="#type-any_string">any_string()</a></code></p>
-<p> Describes a command to be run (i.e. a path to an executable, with possibly
- command-line arguments).</p>
+<p><code>command() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-command_output">command_output()</a></h3>
-<p><code>command_output() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Output of the run of an executable.</p>
+<p><code>command_output() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-cpu_usage_info">cpu_usage_info()</a></h3>
@@ -87,1612 +100,902 @@ facilities.</p>
 
 
 <h3 class="typedecl"><a name="type-cpu_usage_percentages">cpu_usage_percentages()</a></h3>
-<p><code>cpu_usage_percentages() = {<a href="#type-percent">percent()</a>, <a href="#type-percent">percent()</a>, <a href="#type-percent">percent()</a>, <a href="#type-percent">percent()</a>, <a href="#type-percent">percent()</a>}</code></p>
+<p><code>cpu_usage_percentages() = {<a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a>, <a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a>, <a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a>, <a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a>, <a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path" docgen-rel="seetype" docgen-href="file_utils#directory_path/0">file_utils:directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-encoding">encoding()</a></h3>
-<p><code>encoding() = atom() | <a href="pair.html#type-pair">pair:pair()</a></code></p>
+<p><code>encoding() = atom() | <a href="pair.html#type-pair" docgen-rel="seetype" docgen-href="pair#pair/0">pair:pair()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-encoding_option">encoding_option()</a></h3>
-<p><code>encoding_option() = {encoding, <a href="#type-encoding">encoding()</a>}</code></p>
-<p> Subset of file:mode/0.</p>
+<p><code>encoding_option() = {encoding, <a href="#type-encoding" docgen-rel="seetype" docgen-href="#encoding/0">encoding()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-encoding_options">encoding_options()</a></h3>
-<p><code>encoding_options() = [<a href="#type-encoding_option">encoding_option()</a>]</code></p>
+<p><code>encoding_options() = [<a href="#type-encoding_option" docgen-rel="seetype" docgen-href="#encoding_option/0">encoding_option()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-env_variable_name">env_variable_name()</a></h3>
-<p><code>env_variable_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Name of a shell environment variable.</p>
+<p><code>env_variable_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-env_variable_value">env_variable_value()</a></h3>
-<p><code>env_variable_value() = <a href="#type-ustring">ustring()</a> | false</code></p>
-<p> Value of a shell environment variable ('false' meaning that the corresponding
- variable is not set).</p>
+<p><code>env_variable_value() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a> | false</code></p>
+
 
 <h3 class="typedecl"><a name="type-environment">environment()</a></h3>
-<p><code>environment() = [{<a href="#type-env_variable_name">env_variable_name()</a>, <a href="#type-env_variable_value">env_variable_value()</a>}]</code></p>
-<p> Represents a shell environment (a set of variable names and values).</p>
+<p><code>environment() = [{<a href="#type-env_variable_name" docgen-rel="seetype" docgen-href="#env_variable_name/0">env_variable_name()</a>, <a href="#type-env_variable_value" docgen-rel="seetype" docgen-href="#env_variable_value/0">env_variable_value()</a>}]</code></p>
+
 
 <h3 class="typedecl"><a name="type-executable_argument">executable_argument()</a></h3>
-<p><code>executable_argument() = <a href="#type-any_string">any_string()</a></code></p>
-<p><p> Describes a (single) executable argument.</p>
+<p><code>executable_argument() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code></p>
 
- <p>Specifying arguments that way is very convenient in so far as they do not need 
-to be escaped as when they are transmitted in the context of a shell command: 
-the corresponding string is passed directly as it is (like a const char* 
-pointer) to the executable, with no further transformation need.</p>
-
- <p>Note that each argument shall be unitary, "atomic"; for example "--color red" 
-is not an argument (the called executable would receive it as a whole), but 
-two: "--color" and "red".</p>
-
- Similarly, an empty argument (that is: "") is not the same as no argument, as
- this empty argument will be transmitted to the executable, and is bound to
- confuse it.</p>
 
 <h3 class="typedecl"><a name="type-executable_path">executable_path()</a></h3>
-<p><code>executable_path() = <a href="file_utils.html#type-executable_path">file_utils:executable_path()</a></code></p>
+<p><code>executable_path() = <a href="file_utils.html#type-executable_path" docgen-rel="seetype" docgen-href="file_utils#executable_path/0">file_utils:executable_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-execution_outcome">execution_outcome()</a></h3>
-<p><code>execution_outcome() = {<a href="#type-return_code">return_code()</a>, <a href="#type-command_output">command_output()</a>}</code></p>
-<p> All information returned by a shell command.</p>
+<p><code>execution_outcome() = {<a href="#type-return_code" docgen-rel="seetype" docgen-href="#return_code/0">return_code()</a>, <a href="#type-command_output" docgen-rel="seetype" docgen-href="#command_output/0">command_output()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-execution_pair">execution_pair()</a></h3>
-<p><code>execution_pair() = {<a href="#type-bin_executable_path">bin_executable_path()</a>, [<a href="#type-executable_argument">executable_argument()</a>]}</code></p>
-<p> A pair specifying a complete command-line ready to be executed by
- run_executable/n (convenient to store once for all if needing to launch it
- repeatedly). Generally more secure than command/1 as well.</p>
+<p><code>execution_pair() = {<a href="#type-bin_executable_path" docgen-rel="seetype" docgen-href="#bin_executable_path/0">bin_executable_path()</a>, [<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>]}</code></p>
+
 
 <h3 class="typedecl"><a name="type-expression_outcome">expression_outcome()</a></h3>
-<p><code>expression_outcome() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Output of the evaluation of a shell expression (at least currently, only its
- standard output; no exit status).</p>
+<p><code>expression_outcome() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-filesystem_type">filesystem_type()</a></h3>
-<p><code>filesystem_type() = <a href="#type-actual_filesystem_type">actual_filesystem_type()</a> | <a href="#type-pseudo_filesystem_type">pseudo_filesystem_type()</a> | unknown | atom()</code></p>
-<p> All the known types of filesystems (atom() type used to capture even lacking
- ones).</p>
+<p><code>filesystem_type() = <a href="#type-actual_filesystem_type" docgen-rel="seetype" docgen-href="#actual_filesystem_type/0">actual_filesystem_type()</a> | <a href="#type-pseudo_filesystem_type" docgen-rel="seetype" docgen-href="#pseudo_filesystem_type/0">pseudo_filesystem_type()</a> | unknown | atom()</code></p>
+
 
 <h3 class="typedecl"><a name="type-fs_info">fs_info()</a></h3>
-<p><code>fs_info() = #fs_info{filesystem = <a href="#type-directory_path">directory_path()</a>, mount_point = <a href="#type-directory_path">directory_path()</a>, type = <a href="#type-filesystem_type">filesystem_type()</a>, used_size = <a href="#type-byte_size">byte_size()</a>, available_size = <a href="#type-byte_size">byte_size()</a>, used_inodes = <a href="#type-count">count()</a>, available_inodes = <a href="#type-count">count()</a>}</code></p>
-<p> Stores information about a filesystem.</p>
+<p><code>fs_info() = #fs_info{filesystem = <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>, mount_point = <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>, type = <a href="#type-filesystem_type" docgen-rel="seetype" docgen-href="#filesystem_type/0">filesystem_type()</a>, used_size = <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>, available_size = <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>, used_inodes = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, available_inodes = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-group_id">group_id()</a></h3>
 <p><code>group_id() = non_neg_integer()</code></p>
-<p> The group identifier (gid) of a filesystem element.</p>
+
 
 <h3 class="typedecl"><a name="type-group_name">group_name()</a></h3>
-<p><code>group_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> For example in UNIX terms.</p>
+<p><code>group_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-host_dynamic_info">host_dynamic_info()</a></h3>
-<p><code>host_dynamic_info() = #host_dynamic_info{node_name = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a>, swap_used = <a href="basic_utils.html#type-count">basic_utils:count()</a>, ram_use = {float(), float()}, cpu_usage = <a href="#type-maybe">maybe</a>(<a href="system_utils.html#type-cpu_usage_percentages">system_utils:cpu_usage_percentages()</a>), process_count = <a href="basic_utils.html#type-count">basic_utils:count()</a>}</code></p>
-<p> Describes the dynamic information about a computing host.</p>
+<p><code>host_dynamic_info() = #host_dynamic_info{node_name = <a href="net_utils.html#type-atom_node_name" docgen-rel="seetype" docgen-href="net_utils#atom_node_name/0">net_utils:atom_node_name()</a>, swap_used = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>, ram_use = {float(), float()}, cpu_usage = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="system_utils.html#type-cpu_usage_percentages" docgen-rel="seetype" docgen-href="system_utils#cpu_usage_percentages/0">system_utils:cpu_usage_percentages()</a>), process_count = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-host_static_info">host_static_info()</a></h3>
-<p><code>host_static_info() = #host_static_info{total_ram = <a href="basic_utils.html#type-count">basic_utils:count()</a>, total_swap = <a href="basic_utils.html#type-count">basic_utils:count()</a>, core_count = <a href="basic_utils.html#type-count">basic_utils:count()</a>, erlang_version = <a href="text_utils.html#type-ustring">text_utils:ustring()</a>}</code></p>
-<p> Describes the static information about a computing host.</p>
+<p><code>host_static_info() = #host_static_info{total_ram = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>, total_swap = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>, core_count = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>, erlang_version = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-login">login()</a></h3>
+<p><code>login() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></code></p>
+<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds" docgen-rel="seetype" docgen-href="unit_utils#milliseconds/0">unit_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-os_family">os_family()</a></h3>
 <p><code>os_family() = unix | win32</code></p>
-<p> Coarse categorization of an operating system.</p>
+
 
 <h3 class="typedecl"><a name="type-os_name">os_name()</a></h3>
 <p><code>os_name() = linux | sunos | nt | atom()</code></p>
 
 
 <h3 class="typedecl"><a name="type-os_pid">os_pid()</a></h3>
-<p><code>os_pid() = <a href="#type-count">count()</a></code></p>
-<p> The PID of an operating-system process (OS-level, not Erlang-level, process
- identifier).</p>
+<p><code>os_pid() = non_neg_integer()</code></p>
+
 
 <h3 class="typedecl"><a name="type-os_type">os_type()</a></h3>
-<p><code>os_type() = {<a href="#type-os_family">os_family()</a>, <a href="#type-os_name">os_name()</a>}</code></p>
-<p> The general type of an operating system.</p>
+<p><code>os_type() = {<a href="#type-os_family" docgen-rel="seetype" docgen-href="#os_family/0">os_family()</a>, <a href="#type-os_name" docgen-rel="seetype" docgen-href="#os_name/0">os_name()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-package_name">package_name()</a></h3>
-<p><code>package_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Name of a (third-party) prerequisite package (e.g. "ErlPort", "jsx", etc.).</p>
+<p><code>package_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-password">password()</a></h3>
-<p><code>password() = <a href="#type-ustring">ustring()</a></code></p>
+<p><code>password() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-percent">percent()</a></h3>
-<p><code>percent() = <a href="math_utils.html#type-percent">math_utils:percent()</a></code></p>
+<p><code>percent() = <a href="math_utils.html#type-percent" docgen-rel="seetype" docgen-href="math_utils#percent/0">math_utils:percent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-port_option">port_option()</a></h3>
-<p><code>port_option() = {packet, 1 | 2 | 4} | stream | {line, <a href="#type-count">count()</a>} | atom() | {atom(), term()}</code></p>
-<p> An option used to spawn a port (others managed through specific parameters).</p>
+<p><code>port_option() = {packet, 1 | 2 | 4} | stream | {line, <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>} | atom() | {atom(), term()}</code></p>
+
 
 <h3 class="typedecl"><a name="type-pseudo_filesystem_type">pseudo_filesystem_type()</a></h3>
 <p><code>pseudo_filesystem_type() = devtmpfs | tmpfs</code></p>
-<p> Known pseudo filesystems.</p>
+
 
 <h3 class="typedecl"><a name="type-return_code">return_code()</a></h3>
-<p><code>return_code() = <a href="#type-count">count()</a></code></p>
-<p><p> Return the (positive integer) return code of an executable being run 
-(a.k.a. exit status).</p>
+<p><code>return_code() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
 
- (0 means success, while a strictly positive value means error)</p>
 
 <h3 class="typedecl"><a name="type-shell_expression">shell_expression()</a></h3>
-<p><code>shell_expression() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Describes a shell expression.</p>
+<p><code>shell_expression() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-user_id">user_id()</a></h3>
 <p><code>user_id() = non_neg_integer()</code></p>
-<p> The user identifier (uid) of a filesystem element.</p>
+
 
 <h3 class="typedecl"><a name="type-user_name">user_name()</a></h3>
 <p><code>user_name() = nonempty_string()</code></p>
-<p> To store (UNIX-like) user names.</p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-working_dir">working_dir()</a></h3>
-<p><code>working_dir() = <a href="#type-maybe">maybe</a>(<a href="#type-any_directory_path">any_directory_path()</a>)</code></p>
-<p> Working directory of an executed command.</p>
+<p><code>working_dir() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>)</code></p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_path_for_executable_lookup-1">add_path_for_executable_lookup/1</a></td><td>Adds the specified directory to the system's executable search paths 
-(typically the PATH environment variable), in first position.</td></tr>
-<tr><td valign="top"><a href="#add_path_for_library_lookup-1">add_path_for_library_lookup/1</a></td><td>Adds the specified directory to the system's library search paths 
-(typically the LD_LIBRARY_PATH environment variable), in first position.</td></tr>
-<tr><td valign="top"><a href="#add_paths_for_executable_lookup-1">add_paths_for_executable_lookup/1</a></td><td>Adds the specified directories to the system's executable search paths 
-(typically (typically the PATH environment variable), in first position, 
-respecting the specified path order.</td></tr>
-<tr><td valign="top"><a href="#add_paths_for_library_lookup-1">add_paths_for_library_lookup/1</a></td><td>Adds the specified directories to the system's library search paths 
-(typically the LD_LIBRARY_PATH environment variable), in first position, 
-respecting the specified path order.</td></tr>
-<tr><td valign="top"><a href="#await_output_completion-0">await_output_completion/0</a></td><td>Awaits the completion of an output operation (e.g.</td></tr>
-<tr><td valign="top"><a href="#await_output_completion-1">await_output_completion/1</a></td><td>Awaits the completion of a io:format request, with a specified time-out, 
-in milliseconds.</td></tr>
-<tr><td valign="top"><a href="#compute_cpu_usage_between-2">compute_cpu_usage_between/2</a></td><td>Returns an aggregated view of the CPU usage (a float in [0;100]) based on 
-the two specified sets of CPU counters, that is the average (on all cores of 
-all processors of the local host) percentage of CPU utilization (all kinds of 
-usage except idle) during the period which elapsed between the start and end 
-measures (in that order).</td></tr>
-<tr><td valign="top"><a href="#compute_cpu_usage_for-1">compute_cpu_usage_for/1</a></td><td>Returns an aggregated view of the CPU usage (a float in [0;100]) based on 
-the specified detailed CPU percentages, that is the average (on all cores of 
-all processors of the local host) percentage of CPU utilization (all kinds of 
-usage except idle) during the period the input percentages correspond to.</td></tr>
-<tr><td valign="top"><a href="#compute_detailed_cpu_usage-2">compute_detailed_cpu_usage/2</a></td><td>Returns a detailed view of the CPU usage, that is the average (on all 
-cores of all processors of the local host) percentage of the various kinds of 
-CPU utilization: {UserPercent, NicePercent, SystemPercent, IdlePercent, 
-OtherPercent}, respectively for user mode, user mode with low priority (nice), 
-system mode, idle task and all other usages (if any), between the two sets of 
-measures.</td></tr>
-<tr><td valign="top"><a href="#convert_byte_size_with_unit-1">convert_byte_size_with_unit/1</a></td><td>Converts the specified size, in bytes, as a value expressed in an 
-appropriate size unit.</td></tr>
-<tr><td valign="top"><a href="#display_memory_summary-0">display_memory_summary/0</a></td><td>Returns a summary of the dynamically allocated memory currently being
- used by the Erlang emulator.</td></tr>
-<tr><td valign="top"><a href="#environment_to_string-0">environment_to_string/0</a></td><td>Returns a textual description of the current shell environment.</td></tr>
-<tr><td valign="top"><a href="#environment_to_string-1">environment_to_string/1</a></td><td>Returns a textual description of the specified shell environment.</td></tr>
-<tr><td valign="top"><a href="#evaluate_background_shell_expression-1">evaluate_background_shell_expression/1</a></td><td>Executes asynchronously, in the background, specified shell expression 
-with specified environment, in current directory.</td></tr>
-<tr><td valign="top"><a href="#evaluate_background_shell_expression-2">evaluate_background_shell_expression/2</a></td><td>Executes asynchronously, in the background, specified shell expression 
-with specified environment, in current directory.</td></tr>
-<tr><td valign="top"><a href="#evaluate_shell_expression-1">evaluate_shell_expression/1</a></td><td>Evaluates specified shell (e.g.</td></tr>
-<tr><td valign="top"><a href="#evaluate_shell_expression-2">evaluate_shell_expression/2</a></td><td>Evaluates specified shell (e.g.</td></tr>
-<tr><td valign="top"><a href="#filesystem_info_to_string-1">filesystem_info_to_string/1</a></td><td>Returns a textual description of the specified filesystem information.</td></tr>
-<tr><td valign="top"><a href="#force_unicode_support-0">force_unicode_support/0</a></td><td>Forces the enabling of Unicode support.</td></tr>
-<tr><td valign="top"><a href="#get_actual_expression-2">get_actual_expression/2</a></td><td>Returns the full, actual shell expression corresponding to specified
- expression and environment.</td></tr>
-<tr><td valign="top"><a href="#get_application_version-1">get_application_version/1</a></td><td>Returns the version information (as a 2 or 3-part tuple) corresponding to 
-the specified Erlang standard application (e.g.</td></tr>
-<tr><td valign="top"><a href="#get_core_count-0">get_core_count/0</a></td><td>Returns the number of cores available on the local host.</td></tr>
-<tr><td valign="top"><a href="#get_core_count_string-0">get_core_count_string/0</a></td><td>Returns a textual description of the number of the local processing 
-cores.</td></tr>
-<tr><td valign="top"><a href="#get_cpu_usage_counters-0">get_cpu_usage_counters/0</a></td><td>Returns the instantaneous CPU counters, as maintained from boot.</td></tr>
-<tr><td valign="top"><a href="#get_current_directory_string-0">get_current_directory_string/0</a></td><td>Returns a textual description of the current working directory.</td></tr>
-<tr><td valign="top"><a href="#get_default_encoding-0">get_default_encoding/0</a></td><td>Returns the default recommended encoding, for example when needing to 
-open a file for writing.</td></tr>
-<tr><td valign="top"><a href="#get_default_encoding_option-0">get_default_encoding_option/0</a></td><td>Returns the default recommended option encoding option, for example when 
-needing to open a file for writing - should such an option be used.</td></tr>
-<tr><td valign="top"><a href="#get_default_port_options-0">get_default_port_options/0</a></td><td>Returns the default options to be used for open_port/2.</td></tr>
-<tr><td valign="top"><a href="#get_default_temporary_directory-0">get_default_temporary_directory/0</a></td><td>Returns a (probably system-dependent) base temporary directory.</td></tr>
-<tr><td valign="top"><a href="#get_dependency_base_directory-1">get_dependency_base_directory/1</a></td><td>Returns the (expected, conventional) base installation directory of the
- specified third-party, prerequisite package (e.g.</td></tr>
-<tr><td valign="top"><a href="#get_dependency_code_directory-1">get_dependency_code_directory/1</a></td><td>Returns the (expected, conventional) code installation directory of the
- specified third-party, prerequisite, Erlang package (e.g.</td></tr>
-<tr><td valign="top"><a href="#get_disk_usage-0">get_disk_usage/0</a></td><td>Returns the current usage of local disks, as a human-readable string.</td></tr>
-<tr><td valign="top"><a href="#get_disk_usage_string-0">get_disk_usage_string/0</a></td><td>Returns a textual description of the current disk usage.</td></tr>
-<tr><td valign="top"><a href="#get_environment-0">get_environment/0</a></td><td>Returns the current shell environment, sorted by variable names.</td></tr>
-<tr><td valign="top"><a href="#get_environment_prefix-1">get_environment_prefix/1</a></td><td>Returns a string that can be used as a shell prefix for commands, based
- on specified environment.</td></tr>
-<tr><td valign="top"><a href="#get_environment_variable-1">get_environment_variable/1</a></td><td>Returns the value associated to the specified environment variable (if
- any), otherwise 'false'.</td></tr>
-<tr><td valign="top"><a href="#get_environment_variable_for_executable_lookup-0">get_environment_variable_for_executable_lookup/0</a></td><td>Returns the environment variable (if any) used by the system for the
- lookup of executables.</td></tr>
-<tr><td valign="top"><a href="#get_environment_variable_for_library_lookup-0">get_environment_variable_for_library_lookup/0</a></td><td>Returns the environment variable (if any) used by the system for the
- lookup of (shared) libraries.</td></tr>
-<tr><td valign="top"><a href="#get_filesystem_info-1">get_filesystem_info/1</a></td><td>Returns information about the specified filesystem.</td></tr>
-<tr><td valign="top"><a href="#get_filesystem_info-2">get_filesystem_info/2</a></td><td>Returns information about the specified filesystem, throwing an exception
- on error if requested, otherwise displaying an error trace and returning
- 'undefined'.</td></tr>
-<tr><td valign="top"><a href="#get_group_id-0">get_group_id/0</a></td><td>Returns the (system) group identifier of the current user.</td></tr>
-<tr><td valign="top"><a href="#get_group_name-0">get_group_name/0</a></td><td>Returns the name of the group of the current user, as a plain string.</td></tr>
-<tr><td valign="top"><a href="#get_group_name_safe-0">get_group_name_safe/0</a></td><td>Returns the name of the group of the current user, as a plain string.</td></tr>
-<tr><td valign="top"><a href="#get_hdf5_unavailability_hint-0">get_hdf5_unavailability_hint/0</a></td><td>Returns a string explaining what to do in order to have the HDF5 support
- available.</td></tr>
-<tr><td valign="top"><a href="#get_interpreter_version-0">get_interpreter_version/0</a></td><td>Returns the version information of the current Erlang interpreter 
-(actually the one of the whole environment, including the VM) being used.</td></tr>
-<tr><td valign="top"><a href="#get_json_unavailability_hint-0">get_json_unavailability_hint/0</a></td><td>Returns a string explaining what to do in order to have the JSON support
- available.</td></tr>
-<tr><td valign="top"><a href="#get_json_unavailability_hint-1">get_json_unavailability_hint/1</a></td><td>Returns a string explaining what to do in order to have the JSON support
- with the specified backend available.</td></tr>
-<tr><td valign="top"><a href="#get_known_pseudo_filesystems-0">get_known_pseudo_filesystems/0</a></td><td>Returns a list of the known types of pseudo-filesystems.</td></tr>
-<tr><td valign="top"><a href="#get_line-1">get_line/1</a></td><td>Our version of io:get_line/1, as an external program so that the VM can
- be run with -noinput (and thus so that {text,term}_ui can be used with the
- same VM settings).</td></tr>
-<tr><td valign="top"><a href="#get_line-2">get_line/2</a></td><td>Our version of io:get_line/1, as an external program so that the VM can
- be run with -noinput (and thus so that {text,term}_ui can be used with the
- same VM settings).</td></tr>
-<tr><td valign="top"><a href="#get_line_helper_script-0">get_line_helper_script/0</a></td><td>Returns the path to the Myriad helper script for get_line/1 operations.</td></tr>
-<tr><td valign="top"><a href="#get_memory_used_by_vm-0">get_memory_used_by_vm/0</a></td><td>Returns the total memory used, in bytes, by this instance of the Erlang
- VM, that is the total amount of memory currently allocated by the Erlang
- processes and by this emulator.</td></tr>
-<tr><td valign="top"><a href="#get_mount_points-0">get_mount_points/0</a></td><td>Returns a list of the current, local mount points (excluding the 
-pseudo-filesystems).</td></tr>
-<tr><td valign="top"><a href="#get_mount_points-1">get_mount_points/1</a></td><td>Returns a list of the current, local mount points (excluding the
- pseudo-filesystems), throwing an exception on error if requested, otherwise
- displaying an error trace and returning 'undefined'.</td></tr>
-<tr><td valign="top"><a href="#get_operating_system_description-0">get_operating_system_description/0</a></td><td>Returns a string describing the current operating system.</td></tr>
-<tr><td valign="top"><a href="#get_operating_system_description_string-0">get_operating_system_description_string/0</a></td><td>Returns a textual description of the operating system being used.</td></tr>
-<tr><td valign="top"><a href="#get_operating_system_family-0">get_operating_system_family/0</a></td><td>Returns the family of the local operating system.</td></tr>
-<tr><td valign="top"><a href="#get_operating_system_name-0">get_operating_system_name/0</a></td><td>Returns the name of the local operating system.</td></tr>
-<tr><td valign="top"><a href="#get_operating_system_type-0">get_operating_system_type/0</a></td><td>Returns the type (family and type) of the local operating system.</td></tr>
-<tr><td valign="top"><a href="#get_process_count-0">get_process_count/0</a></td><td>Returns the number of live Erlang processes on the current node.</td></tr>
-<tr><td valign="top"><a href="#get_process_count_string-0">get_process_count_string/0</a></td><td>Returns a textual description of the number of live Erlang processes on 
-the current node.</td></tr>
-<tr><td valign="top"><a href="#get_resource_limits-0">get_resource_limits/0</a></td><td>Returns a textual description of the current limits (ulimit) in terms of
- local system resources.</td></tr>
-<tr><td valign="top"><a href="#get_resource_limits_string-0">get_resource_limits_string/0</a></td><td>Returns a textual description of the current limits (ulimit) in terms of 
-local system resources.</td></tr>
-<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of the specified term, in bytes.</td></tr>
-<tr><td valign="top"><a href="#get_size_of_vm_word-0">get_size_of_vm_word/0</a></td><td>Returns the size, in bytes, of a word of this Virtual Machine.</td></tr>
-<tr><td valign="top"><a href="#get_size_of_vm_word_string-0">get_size_of_vm_word_string/0</a></td><td>Returns a textual description of the size of a VM word.</td></tr>
-<tr><td valign="top"><a href="#get_software_base_directory-0">get_software_base_directory/0</a></td><td>Returns the (expected, conventional) base installation directory for
- third-party software.</td></tr>
-<tr><td valign="top"><a href="#get_standard_environment-0">get_standard_environment/0</a></td><td>Returns a default, standard, safe/secure environment for "porcelain"-like 
-executions, that is executions that are, as much as possible, reproducible in 
-various runtime contexts (typically: with locale-independent outputs).</td></tr>
-<tr><td valign="top"><a href="#get_swap_status-0">get_swap_status/0</a></td><td>Returns {UsedSwap, TotalSwap} where UsedSwap is the size of the used swap 
-and TotalSwap is the total amount of swap space on the local host, both 
-expressed in bytes.</td></tr>
-<tr><td valign="top"><a href="#get_swap_status_string-0">get_swap_status_string/0</a></td><td>Returns a textual description of the current swap status.</td></tr>
-<tr><td valign="top"><a href="#get_system_description-0">get_system_description/0</a></td><td>Returns a string describing the current state of the local system.</td></tr>
-<tr><td valign="top"><a href="#get_total_memory_used-0">get_total_memory_used/0</a></td><td>Returns {UsedRAM, TotalRAM} where UsedRAM is the actual total memory used 
-on the current host by all applications, in bytes, and TotalRAM is the total 
-installed RAM, in bytes.</td></tr>
-<tr><td valign="top"><a href="#get_total_physical_memory-0">get_total_physical_memory/0</a></td><td>Returns the total installed physical volatile memory (RAM) of the local
- computer, expressed in bytes.</td></tr>
-<tr><td valign="top"><a href="#get_total_physical_memory_on-1">get_total_physical_memory_on/1</a></td><td>Returns the total installed physical volatile memory (RAM) of the
- computer on which specified node (specified as an atom) is running, expressed
- in bytes.</td></tr>
-<tr><td valign="top"><a href="#get_total_physical_memory_string-0">get_total_physical_memory_string/0</a></td><td>Returns a textual description of the total installed physical memory.</td></tr>
-<tr><td valign="top"><a href="#get_user_home_directory-0">get_user_home_directory/0</a></td><td>Returns the home directory of the current user, as a plain string.</td></tr>
-<tr><td valign="top"><a href="#get_user_home_directory-1">get_user_home_directory/1</a></td><td>Returns the home directory of the specified user, as a plain string,
- according to the most usual UNIX conventions.</td></tr>
-<tr><td valign="top"><a href="#get_user_home_directory_string-0">get_user_home_directory_string/0</a></td><td>Returns a textual description of the home directory of the current user.</td></tr>
-<tr><td valign="top"><a href="#get_user_id-0">get_user_id/0</a></td><td>Returns the (system) identifier of the current user.</td></tr>
-<tr><td valign="top"><a href="#get_user_info-0">get_user_info/0</a></td><td>Returns the system information regarding the current user.</td></tr>
-<tr><td valign="top"><a href="#get_user_info_safe-0">get_user_info_safe/0</a></td><td>Returns the system information regarding the current user.</td></tr>
-<tr><td valign="top"><a href="#get_user_name-0">get_user_name/0</a></td><td>Returns the name of the current user, as a plain string.</td></tr>
-<tr><td valign="top"><a href="#get_user_name_safe-0">get_user_name_safe/0</a></td><td>Returns the name of the current user, as a plain string.</td></tr>
-<tr><td valign="top"><a href="#get_user_name_string-0">get_user_name_string/0</a></td><td>Returns a textual description of the name of the current user.</td></tr>
-<tr><td valign="top"><a href="#has_graphical_output-0">has_graphical_output/0</a></td><td>Tells whether this host has graphical output (typically a running X
- server).</td></tr>
-<tr><td valign="top"><a href="#interpret_byte_size-1">interpret_byte_size/1</a></td><td>Returns a string containing a user-friendly description of the specified 
-size expressed in bytes, using multipliers of 2^10=1024 (hence not SI kilos, 
-that is 1000-based multipliers): GiB (Gibibytes, not Gigabytes), MiB 
-(Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes) and bytes.</td></tr>
-<tr><td valign="top"><a href="#interpret_byte_size_with_unit-1">interpret_byte_size_with_unit/1</a></td><td>Returns a string containing a user-friendly description of the specified 
-size expressed in bytes, using the most appropriate unit among GiB (Gibibytes, 
-not Gigabytes), MiB (Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes) 
-and bytes, rounding that value to 1 figure after the comma (this is thus an 
-approximate value).</td></tr>
-<tr><td valign="top"><a href="#is_hdf5_support_available-0">is_hdf5_support_available/0</a></td><td>Tells whether an HDF5 support is available.</td></tr>
-<tr><td valign="top"><a href="#is_json_support_available-0">is_json_support_available/0</a></td><td>Tells whether a JSON support is available.</td></tr>
-<tr><td valign="top"><a href="#monitor_port-2">monitor_port/2</a></td><td>Monitors a port: reads command data and signals from a port, and reports
- it.</td></tr>
-<tr><td valign="top"><a href="#run_background_command-1">run_background_command/1</a></td><td>Executes asynchronously, in the background, the specified command, in a 
-standard shell environment.</td></tr>
-<tr><td valign="top"><a href="#run_background_command-2">run_background_command/2</a></td><td>Executes asynchronously, in the background, the specified command, in the 
-specified shell environment.</td></tr>
-<tr><td valign="top"><a href="#run_background_command-3">run_background_command/3</a></td><td>Executes asynchronously, in the background, the specified command, in the 
-specified shell environment and from the specified working directory.</td></tr>
-<tr><td valign="top"><a href="#run_background_executable-1">run_background_executable/1</a></td><td>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with no specific command-line argument, with a 
-standard environment, from the current working directory and using the default 
-port options.</td></tr>
-<tr><td valign="top"><a href="#run_background_executable-2">run_background_executable/2</a></td><td>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with the specified command-line arguments, with a 
-standard environment, from the current working directory and using the default 
-port options.</td></tr>
-<tr><td valign="top"><a href="#run_background_executable-3">run_background_executable/3</a></td><td>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with the specified command-line arguments and 
-environment, from the current working directory and using the default port 
-options.</td></tr>
-<tr><td valign="top"><a href="#run_background_executable-4">run_background_executable/4</a></td><td>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with the specified command-line arguments, 
-environment and working directory, and using the default port options.</td></tr>
-<tr><td valign="top"><a href="#run_background_executable-5">run_background_executable/5</a></td><td>Executes asynchronously, in the background, the specified executable,
- whose path is exactly the specified one (that is: taken verbatim, not
- looked-up through any PATH environment variable; use, in the executable_utils
- module, lookup_executable/{1,2} or find_executable/1 for that; not using any
- intermediary shell either) with the specified command-line arguments,
- environment, working directory and port options (see
- <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><code>http://erlang.org/doc/man/erlang.html#open_port-2</code></a>).</td></tr>
-<tr><td valign="top"><a href="#run_command-1">run_command/1</a></td><td>Runs (synchronously) specified command (an executable path possibly 
-followed with command-line arguments; specified as a single, standalone 
-string), with no specific port option, with a standard environment, from the 
-current working directory, and returns its return code (exit status) and its 
-outputs (both the standard and the error ones): {ReturnCode,CmdOutput}.</td></tr>
-<tr><td valign="top"><a href="#run_command-2">run_command/2</a></td><td>Executes (synchronously) specified command (an executable path possibly 
-followed with command-line arguments; specified as a single, standalone 
-string), with no specific port option, in specified shell environment and from 
-the current working directory, and returns its return code (exit status) and 
-its outputs (both the standard and the error ones): {ReturnCode,CmdOutput}.</td></tr>
-<tr><td valign="top"><a href="#run_command-3">run_command/3</a></td><td>Executes (synchronously) specified command (an executable path possibly 
-followed with command-line arguments; specified as a single, standalone 
-string), with no specific port option, in specified shell environment and 
-working directory, and returns its return code (exit status) and its outputs 
-(both the standard and the error ones): {ReturnCode,CmdOutput}.</td></tr>
-<tr><td valign="top"><a href="#run_command-4">run_command/4</a></td><td>Executes (synchronously) the specified command (an executable path
- possibly followed with command-line arguments; specified as a single,
- standalone string), in the specified shell environment and working directory,
- with specified extra port options (possibly containing any relevant
- command-line arguments; see
- <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><code>http://erlang.org/doc/man/erlang.html#open_port-2</code></a>).</td></tr>
-<tr><td valign="top"><a href="#run_executable-1">run_executable/1</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with no specific command-line argument, with a 
-standard environment, from the current working directory, using the default 
-port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-2">run_executable/2</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments, with a 
-standard environment, from the current working directory, using the default 
-port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-3">run_executable/3</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments and 
-environment variables, from the current working directory, using the default 
-port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-4">run_executable/4</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments and 
-environment variables, from any specified working directory, using the default 
-port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-5">run_executable/5</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments and 
-environment variables, from any specified working directory and any extra port 
-options.</td></tr>
-<tr><td valign="top"><a href="#set_environment_variable-2">set_environment_variable/2</a></td><td>Sets the specified environment variable to the specified value, possibly
- overwriting a past value.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_path_for_executable_lookup-1">add_path_for_executable_lookup/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_path_for_library_lookup-1">add_path_for_library_lookup/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_paths_for_executable_lookup-1">add_paths_for_executable_lookup/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_paths_for_library_lookup-1">add_paths_for_library_lookup/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#await_output_completion-0">await_output_completion/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#await_output_completion-1">await_output_completion/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compute_cpu_usage_between-2">compute_cpu_usage_between/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compute_cpu_usage_for-1">compute_cpu_usage_for/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compute_detailed_cpu_usage-2">compute_detailed_cpu_usage/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#convert_byte_size_with_unit-1">convert_byte_size_with_unit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_memory_summary-0">display_memory_summary/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#environment_to_string-0">environment_to_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#environment_to_string-1">environment_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#evaluate_background_shell_expression-1">evaluate_background_shell_expression/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#evaluate_background_shell_expression-2">evaluate_background_shell_expression/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#evaluate_shell_expression-1">evaluate_shell_expression/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#evaluate_shell_expression-2">evaluate_shell_expression/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#filesystem_info_to_string-1">filesystem_info_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#force_unicode_support-0">force_unicode_support/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_actual_expression-2">get_actual_expression/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_application_version-1">get_application_version/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_core_count-0">get_core_count/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_core_count_string-0">get_core_count_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_cpu_usage_counters-0">get_cpu_usage_counters/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_current_directory_string-0">get_current_directory_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_default_encoding-0">get_default_encoding/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_default_encoding_option-0">get_default_encoding_option/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_default_port_options-0">get_default_port_options/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_default_temporary_directory-0">get_default_temporary_directory/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dependency_base_directory-1">get_dependency_base_directory/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dependency_code_directory-1">get_dependency_code_directory/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_disk_usage-0">get_disk_usage/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_disk_usage_string-0">get_disk_usage_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_environment-0">get_environment/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_environment_prefix-1">get_environment_prefix/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_environment_variable-1">get_environment_variable/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_environment_variable_for_executable_lookup-0">get_environment_variable_for_executable_lookup/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_environment_variable_for_library_lookup-0">get_environment_variable_for_library_lookup/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_filesystem_info-1">get_filesystem_info/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_filesystem_info-2">get_filesystem_info/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_group_id-0">get_group_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_group_name-0">get_group_name/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_group_name_safe-0">get_group_name_safe/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_hdf5_unavailability_hint-0">get_hdf5_unavailability_hint/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_interpreter_version-0">get_interpreter_version/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_json_unavailability_hint-0">get_json_unavailability_hint/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_known_pseudo_filesystems-0">get_known_pseudo_filesystems/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_line-1">get_line/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_line-2">get_line/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_line_helper_script-0">get_line_helper_script/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_memory_used_by_vm-0">get_memory_used_by_vm/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_mount_points-0">get_mount_points/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_mount_points-1">get_mount_points/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_operating_system_description-0">get_operating_system_description/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_operating_system_description_string-0">get_operating_system_description_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_operating_system_family-0">get_operating_system_family/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_operating_system_name-0">get_operating_system_name/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_operating_system_type-0">get_operating_system_type/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_process_count-0">get_process_count/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_process_count_string-0">get_process_count_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_resource_limits-0">get_resource_limits/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_resource_limits_string-0">get_resource_limits_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_size_of_vm_word-0">get_size_of_vm_word/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_size_of_vm_word_string-0">get_size_of_vm_word_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_software_base_directory-0">get_software_base_directory/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_standard_environment-0">get_standard_environment/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_swap_status-0">get_swap_status/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_swap_status_string-0">get_swap_status_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_system_description-0">get_system_description/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_total_memory_used-0">get_total_memory_used/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_total_physical_memory-0">get_total_physical_memory/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_total_physical_memory_on-1">get_total_physical_memory_on/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_total_physical_memory_string-0">get_total_physical_memory_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_home_directory-0">get_user_home_directory/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_home_directory-1">get_user_home_directory/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_home_directory_string-0">get_user_home_directory_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_id-0">get_user_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_info-0">get_user_info/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_info_safe-0">get_user_info_safe/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_name-0">get_user_name/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_name_safe-0">get_user_name_safe/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_name_string-0">get_user_name_string/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#has_graphical_output-0">has_graphical_output/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_byte_size-1">interpret_byte_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_byte_size_with_unit-1">interpret_byte_size_with_unit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_hdf5_support_available-0">is_hdf5_support_available/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_json_support_available-0">is_json_support_available/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#monitor_port-2">monitor_port/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_command-1">run_background_command/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_command-2">run_background_command/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_command-3">run_background_command/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_executable-1">run_background_executable/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_executable-2">run_background_executable/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_executable-3">run_background_executable/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_executable-4">run_background_executable/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_background_executable-5">run_background_executable/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_command-1">run_command/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_command-2">run_command/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_command-3">run_command/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_command-4">run_command/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_executable-1">run_executable/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_executable-2">run_executable/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_executable-3">run_executable/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_executable-4">run_executable/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_executable-5">run_executable/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_environment_variable-2">set_environment_variable/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add_path_for_executable_lookup-1">add_path_for_executable_lookup/1</a></h3>
 <div class="spec">
-<p><code>add_path_for_executable_lookup(PathName::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>add_path_for_executable_lookup(PathName::<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Adds the specified directory to the system's executable search paths 
-(typically the PATH environment variable), in first position.</p>
-
- A relative path will be transformed into an absolute one (based on current
- directory) first.
-</p>
+</div>
 
 <h3 class="function"><a name="add_path_for_library_lookup-1">add_path_for_library_lookup/1</a></h3>
 <div class="spec">
-<p><code>add_path_for_library_lookup(PathName::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>add_path_for_library_lookup(PathName::<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Adds the specified directory to the system's library search paths 
-(typically the LD_LIBRARY_PATH environment variable), in first position.</p>
-
- A relative path will be transformed into an absolute one (based on current
- directory) first.
-</p>
+</div>
 
 <h3 class="function"><a name="add_paths_for_executable_lookup-1">add_paths_for_executable_lookup/1</a></h3>
 <div class="spec">
-<p><code>add_paths_for_executable_lookup(Paths::[<a href="#type-directory_path">directory_path()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>add_paths_for_executable_lookup(Paths::[<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Adds the specified directories to the system's executable search paths 
-(typically (typically the PATH environment variable), in first position, 
-respecting the specified path order.</p>
-
- Any relative path will be transformed into an absolute one (based on current
- directory) first.
-</p>
+</div>
 
 <h3 class="function"><a name="add_paths_for_library_lookup-1">add_paths_for_library_lookup/1</a></h3>
 <div class="spec">
-<p><code>add_paths_for_library_lookup(Paths::[<a href="#type-directory_path">directory_path()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>add_paths_for_library_lookup(Paths::[<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Adds the specified directories to the system's library search paths 
-(typically the LD_LIBRARY_PATH environment variable), in first position, 
-respecting the specified path order.</p>
-
- Any relative path will be transformed into an absolute one (based on current
- directory) first.
-</p>
+</div>
 
 <h3 class="function"><a name="await_output_completion-0">await_output_completion/0</a></h3>
 <div class="spec">
-<p><code>await_output_completion() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>await_output_completion() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Awaits the completion of an output operation (e.g. io:format/2).</p>
-
- <p>Especially useful when displaying an error message on the standard output and 
-then immediately halting the VM, in order to avoid a race condition between 
-the displaying and the halting.</p>
-
- <p>We use a relatively short waiting here, just out of safety. It may be in some 
-cases insufficient (e.g. for error traces to be sent, received and stored 
-*before* the VM is halted after a throw/1 that may be executed just after).</p>
-
- In this case, await_output_completion/1 should be used, with a larger delay.
-</p>
+</div>
 
 <h3 class="function"><a name="await_output_completion-1">await_output_completion/1</a></h3>
 <div class="spec">
-<p><code>await_output_completion(MsTimeOut::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>await_output_completion(MsTimeOut::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Awaits the completion of a io:format request, with a specified time-out, 
-in milliseconds.</p>
-
- Especially useful when displaying an error message on the standard output and
- then immediately halting the VM, in order to avoid a race condition between
- the displaying and the halting.
-</p>
+</div>
 
 <h3 class="function"><a name="compute_cpu_usage_between-2">compute_cpu_usage_between/2</a></h3>
 <div class="spec">
-<p><code>compute_cpu_usage_between(StartCounters::<a href="#type-cpu_usage_info">cpu_usage_info()</a>, EndCounters::<a href="#type-cpu_usage_info">cpu_usage_info()</a>) -&gt; <a href="#type-percent">percent()</a></code><br></p>
+<p><code>compute_cpu_usage_between(StartCounters::<a href="#type-cpu_usage_info" docgen-rel="seetype" docgen-href="#cpu_usage_info/0">cpu_usage_info()</a>, EndCounters::<a href="#type-cpu_usage_info" docgen-rel="seetype" docgen-href="#cpu_usage_info/0">cpu_usage_info()</a>) -&gt; <a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns an aggregated view of the CPU usage (a float in [0;100]) based on 
-the two specified sets of CPU counters, that is the average (on all cores of 
-all processors of the local host) percentage of CPU utilization (all kinds of 
-usage except idle) during the period which elapsed between the start and end 
-measures (in that order).</p>
-
- <p>Typical usage:</p>
-
- <p>FirstMeasure = system_utils:get_cpu_usage_counters(), 
-(do something) 
-SecondMeasure = system_utils:get_cpu_usage_counters(),</p>
-
- UsageInPercent = system_utils:compute_cpu_usage_between( FirstMeasure,
-   SecondMeasure )
-</p>
+</div>
 
 <h3 class="function"><a name="compute_cpu_usage_for-1">compute_cpu_usage_for/1</a></h3>
 <div class="spec">
-<p><code>compute_cpu_usage_for(X1::<a href="#type-maybe">maybe</a>(<a href="#type-cpu_usage_percentages">cpu_usage_percentages()</a>)) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-percent">percent()</a>)</code><br></p>
+<p><code>compute_cpu_usage_for(X1::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-cpu_usage_percentages" docgen-rel="seetype" docgen-href="#cpu_usage_percentages/0">cpu_usage_percentages()</a>)) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns an aggregated view of the CPU usage (a float in [0;100]) based on 
-the specified detailed CPU percentages, that is the average (on all cores of 
-all processors of the local host) percentage of CPU utilization (all kinds of 
-usage except idle) during the period the input percentages correspond to.</p>
-
- Returns 'undefined' iff the specified usage is itself undefined.
-</p>
+</div>
 
 <h3 class="function"><a name="compute_detailed_cpu_usage-2">compute_detailed_cpu_usage/2</a></h3>
 <div class="spec">
-<p><code>compute_detailed_cpu_usage(StartCounters::<a href="#type-cpu_usage_info">cpu_usage_info()</a>, EndCounters::<a href="#type-cpu_usage_info">cpu_usage_info()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-cpu_usage_percentages">cpu_usage_percentages()</a>)</code><br></p>
+<p><code>compute_detailed_cpu_usage(StartCounters::<a href="#type-cpu_usage_info" docgen-rel="seetype" docgen-href="#cpu_usage_info/0">cpu_usage_info()</a>, EndCounters::<a href="#type-cpu_usage_info" docgen-rel="seetype" docgen-href="#cpu_usage_info/0">cpu_usage_info()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-cpu_usage_percentages" docgen-rel="seetype" docgen-href="#cpu_usage_percentages/0">cpu_usage_percentages()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns a detailed view of the CPU usage, that is the average (on all 
-cores of all processors of the local host) percentage of the various kinds of 
-CPU utilization: {UserPercent, NicePercent, SystemPercent, IdlePercent, 
-OtherPercent}, respectively for user mode, user mode with low priority (nice), 
-system mode, idle task and all other usages (if any), between the two sets of 
-measures.</p>
-
- If the two sets of specified counters are equal, returns 'undefined', as no
- usage can be quantified then.
-</p>
+</div>
 
 <h3 class="function"><a name="convert_byte_size_with_unit-1">convert_byte_size_with_unit/1</a></h3>
 <div class="spec">
-<p><code>convert_byte_size_with_unit(SizeInBytes::<a href="#type-byte_size">byte_size()</a>) -&gt; {byte, integer()} | {kib, float()} | {mib, float()} | {gib, float()}</code><br></p>
+<p><code>convert_byte_size_with_unit(SizeInBytes::<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>) -&gt; {byte, integer()} | {kib, float()} | {mib, float()} | {gib, float()}</code><br></p>
 <p> </p>
-</div><p><p>Converts the specified size, in bytes, as a value expressed in an 
-appropriate size unit.</p>
-
- <p>Returns a { Unit, Value } pair, in which:</p>
-
- <p>- Unit is the largest size unit that can be selected so that the specified 
-size if worth at least 1 unit of it (e.g. we do not want a value 0.9, at least 
-1.0 is wanted); Unit can be 'gib', for GiB (Gibibytes), 'mib', for MiB 
-(Mebibytes), 'kib' for KiB (Kibibytes), or 'byte', for Byte</p>
-
- <p>- Value is the converted byte size, in the specified returned unit, expressed 
-either as an integer (for bytes) or as a float</p>
-
- <p>For example 1023 (bytes) translates to {byte, 1023}, 1025 translates to {kib, 
-1.0009765625}.</p>
-
- Note that the returned value cannot be expected to be exact (rounded),
- therefore this function is mostly useful for user output.
-</p>
+</div>
 
 <h3 class="function"><a name="display_memory_summary-0">display_memory_summary/0</a></h3>
 <div class="spec">
-<p><code>display_memory_summary() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_memory_summary() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Returns a summary of the dynamically allocated memory currently being
- used by the Erlang emulator.
-</p>
+</div>
 
 <h3 class="function"><a name="environment_to_string-0">environment_to_string/0</a></h3>
 <div class="spec">
-<p><code>environment_to_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>environment_to_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the current shell environment.</p>
+</div>
 
 <h3 class="function"><a name="environment_to_string-1">environment_to_string/1</a></h3>
 <div class="spec">
-<p><code>environment_to_string(Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>environment_to_string(Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified shell environment.</p>
+</div>
 
 <h3 class="function"><a name="evaluate_background_shell_expression-1">evaluate_background_shell_expression/1</a></h3>
 <div class="spec">
-<p><code>evaluate_background_shell_expression(Expression::<a href="#type-shell_expression">shell_expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>evaluate_background_shell_expression(Expression::<a href="#type-shell_expression" docgen-rel="seetype" docgen-href="#shell_expression/0">shell_expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, specified shell expression 
-with specified environment, in current directory.</p>
-
- As a consequence it returns no return code (exit status) nor output.
-</p>
+</div>
 
 <h3 class="function"><a name="evaluate_background_shell_expression-2">evaluate_background_shell_expression/2</a></h3>
 <div class="spec">
-<p><code>evaluate_background_shell_expression(Expression::<a href="#type-shell_expression">shell_expression()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>evaluate_background_shell_expression(Expression::<a href="#type-shell_expression" docgen-rel="seetype" docgen-href="#shell_expression/0">shell_expression()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, specified shell expression 
-with specified environment, in current directory.</p>
-
- As a consequence it returns no return code (exit status) nor output.
-</p>
+</div>
 
 <h3 class="function"><a name="evaluate_shell_expression-1">evaluate_shell_expression/1</a></h3>
 <div class="spec">
-<p><code>evaluate_shell_expression(Expression::<a href="#type-shell_expression">shell_expression()</a>) -&gt; <a href="#type-expression_outcome">expression_outcome()</a></code><br></p>
+<p><code>evaluate_shell_expression(Expression::<a href="#type-shell_expression" docgen-rel="seetype" docgen-href="#shell_expression/0">shell_expression()</a>) -&gt; <a href="#type-expression_outcome" docgen-rel="seetype" docgen-href="#expression_outcome/0">expression_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Evaluates specified shell (e.g. sh, bash, etc - not Erlang) expression, 
-in a standard environment.</p>
-
- No return code is available with this approach, only the output of the
- expression.
-</p>
+</div>
 
 <h3 class="function"><a name="evaluate_shell_expression-2">evaluate_shell_expression/2</a></h3>
 <div class="spec">
-<p><code>evaluate_shell_expression(Expression::<a href="#type-shell_expression">shell_expression()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-expression_outcome">expression_outcome()</a></code><br></p>
+<p><code>evaluate_shell_expression(Expression::<a href="#type-shell_expression" docgen-rel="seetype" docgen-href="#shell_expression/0">shell_expression()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-expression_outcome" docgen-rel="seetype" docgen-href="#expression_outcome/0">expression_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Evaluates specified shell (e.g. sh, bash, etc - not Erlang) expression, 
-in specified environment.</p>
-
- No return code is available with this approach, only the output of the
- expression.
-</p>
+</div>
 
 <h3 class="function"><a name="filesystem_info_to_string-1">filesystem_info_to_string/1</a></h3>
 <div class="spec">
-<p><code>filesystem_info_to_string(Fs_info::<a href="#type-fs_info">fs_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>filesystem_info_to_string(Fs_info::<a href="#type-fs_info" docgen-rel="seetype" docgen-href="#fs_info/0">fs_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified filesystem information.</p>
+</div>
 
 <h3 class="function"><a name="force_unicode_support-0">force_unicode_support/0</a></h3>
 <div class="spec">
-<p><code>force_unicode_support() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>force_unicode_support() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Forces the enabling of Unicode support.</p>
+</div>
 
 <h3 class="function"><a name="get_actual_expression-2">get_actual_expression/2</a></h3>
 <div class="spec">
-<p><code>get_actual_expression(Expression::<a href="#type-shell_expression">shell_expression()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-expression_outcome">expression_outcome()</a></code><br></p>
+<p><code>get_actual_expression(Expression::<a href="#type-shell_expression" docgen-rel="seetype" docgen-href="#shell_expression/0">shell_expression()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-expression_outcome" docgen-rel="seetype" docgen-href="#expression_outcome/0">expression_outcome()</a></code><br></p>
 <p> </p>
-</div><p>Returns the full, actual shell expression corresponding to specified
- expression and environment.
-</p>
+</div>
 
 <h3 class="function"><a name="get_application_version-1">get_application_version/1</a></h3>
 <div class="spec">
-<p><code>get_application_version(ApplicationName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-any_version">any_version()</a></code><br></p>
+<p><code>get_application_version(ApplicationName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>) -&gt; <a href="#type-any_version" docgen-rel="seetype" docgen-href="#any_version/0">any_version()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the version information (as a 2 or 3-part tuple) corresponding to 
-the specified Erlang standard application (e.g. for 'kernel', could return 
-{3,0} or {2,16,3}).</p>
-
- Throws an exception if the information could not be retrieved.
-</p>
+</div>
 
 <h3 class="function"><a name="get_core_count-0">get_core_count/0</a></h3>
 <div class="spec">
-<p><code>get_core_count() -&gt; <a href="#type-count">count()</a></code><br></p>
+<p><code>get_core_count() -&gt; <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the number of cores available on the local host.</p>
-
- Throws an exception on failure.
-</p>
+</div>
 
 <h3 class="function"><a name="get_core_count_string-0">get_core_count_string/0</a></h3>
 <div class="spec">
-<p><code>get_core_count_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_core_count_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the number of the local processing 
-cores.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_cpu_usage_counters-0">get_cpu_usage_counters/0</a></h3>
 <div class="spec">
-<p><code>get_cpu_usage_counters() -&gt; <a href="#type-cpu_usage_info">cpu_usage_info()</a></code><br></p>
+<p><code>get_cpu_usage_counters() -&gt; <a href="#type-cpu_usage_info" docgen-rel="seetype" docgen-href="#cpu_usage_info/0">cpu_usage_info()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the instantaneous CPU counters, as maintained from boot.</p>
-
- Note: mostly useful in terms of differences over time.
-</p>
+</div>
 
 <h3 class="function"><a name="get_current_directory_string-0">get_current_directory_string/0</a></h3>
 <div class="spec">
-<p><code>get_current_directory_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_current_directory_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the current working directory.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_default_encoding-0">get_default_encoding/0</a></h3>
 <div class="spec">
-<p><code>get_default_encoding() -&gt; <a href="#type-encoding">encoding()</a></code><br></p>
+<p><code>get_default_encoding() -&gt; <a href="#type-encoding" docgen-rel="seetype" docgen-href="#encoding/0">encoding()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the default recommended encoding, for example when needing to 
-open a file for writing.</p>
-
- See the notes in the 'Regarding encodings and Unicode' section of the
- file_utils module, notably about the consequences of specifying an encoding at
- file opening (generally directly writing encoded content is safer and offers
- more control).
-</p>
+</div>
 
 <h3 class="function"><a name="get_default_encoding_option-0">get_default_encoding_option/0</a></h3>
 <div class="spec">
-<p><code>get_default_encoding_option() -&gt; <a href="#type-encoding_option">encoding_option()</a></code><br></p>
+<p><code>get_default_encoding_option() -&gt; <a href="#type-encoding_option" docgen-rel="seetype" docgen-href="#encoding_option/0">encoding_option()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the default recommended option encoding option, for example when 
-needing to open a file for writing - should such an option be used.</p>
-
- See the notes in the 'Regarding encodings and Unicode' section of the
- file_utils module, notably about the consequences of specifying an encoding at
- file opening (generally directly writing encoded content is safer and offers
- more control).
-</p>
+</div>
 
 <h3 class="function"><a name="get_default_port_options-0">get_default_port_options/0</a></h3>
 <div class="spec">
-<p><code>get_default_port_options() -&gt; [<a href="#type-port_option">port_option()</a>]</code><br></p>
+<p><code>get_default_port_options() -&gt; [<a href="#type-port_option" docgen-rel="seetype" docgen-href="#port_option/0">port_option()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the default options to be used for open_port/2.</p>
+</div>
 
 <h3 class="function"><a name="get_default_temporary_directory-0">get_default_temporary_directory/0</a></h3>
 <div class="spec">
-<p><code>get_default_temporary_directory() -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_default_temporary_directory() -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns a (probably system-dependent) base temporary directory.</p>
+</div>
 
 <h3 class="function"><a name="get_dependency_base_directory-1">get_dependency_base_directory/1</a></h3>
 <div class="spec">
-<p><code>get_dependency_base_directory(PackageName::<a href="#type-package_name">package_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_dependency_base_directory(PackageName::<a href="#type-package_name" docgen-rel="seetype" docgen-href="#package_name/0">package_name()</a>) -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (expected, conventional) base installation directory of the
- specified third-party, prerequisite package (e.g. "Foobar").
-</p>
+</div>
 
 <h3 class="function"><a name="get_dependency_code_directory-1">get_dependency_code_directory/1</a></h3>
 <div class="spec">
-<p><code>get_dependency_code_directory(PackageName::<a href="#type-package_name">package_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_dependency_code_directory(PackageName::<a href="#type-package_name" docgen-rel="seetype" docgen-href="#package_name/0">package_name()</a>) -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (expected, conventional) code installation directory of the
- specified third-party, prerequisite, Erlang package (e.g. "Foobar").
-</p>
+</div>
 
 <h3 class="function"><a name="get_disk_usage-0">get_disk_usage/0</a></h3>
 <div class="spec">
-<p><code>get_disk_usage() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_disk_usage() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the current usage of local disks, as a human-readable string.</p>
-
- Limiting to disks that are local, otherwise, in the presence of a
- network/configuration issue regarding a remote filesystem, the command may
- freeze until a longer time-out (several minutes) kicks in.
-</p>
+</div>
 
 <h3 class="function"><a name="get_disk_usage_string-0">get_disk_usage_string/0</a></h3>
 <div class="spec">
-<p><code>get_disk_usage_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_disk_usage_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the current disk usage.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_environment-0">get_environment/0</a></h3>
 <div class="spec">
-<p><code>get_environment() -&gt; <a href="#type-environment">environment()</a></code><br></p>
+<p><code>get_environment() -&gt; <a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a></code><br></p>
 <p> </p>
-</div><p>Returns the current shell environment, sorted by variable names.</p>
+</div>
 
 <h3 class="function"><a name="get_environment_prefix-1">get_environment_prefix/1</a></h3>
 <div class="spec">
-<p><code>get_environment_prefix(Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_environment_prefix(Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string that can be used as a shell prefix for commands, based
- on specified environment.
-</p>
+</div>
 
 <h3 class="function"><a name="get_environment_variable-1">get_environment_variable/1</a></h3>
 <div class="spec">
-<p><code>get_environment_variable(VarName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-env_variable_value">env_variable_value()</a></code><br></p>
+<p><code>get_environment_variable(VarName::<a href="#type-env_variable_name" docgen-rel="seetype" docgen-href="#env_variable_name/0">env_variable_name()</a>) -&gt; <a href="#type-env_variable_value" docgen-rel="seetype" docgen-href="#env_variable_value/0">env_variable_value()</a></code><br></p>
 <p> </p>
-</div><p>Returns the value associated to the specified environment variable (if
- any), otherwise 'false'.
-</p>
+</div>
 
 <h3 class="function"><a name="get_environment_variable_for_executable_lookup-0">get_environment_variable_for_executable_lookup/0</a></h3>
 <div class="spec">
-<p><code>get_environment_variable_for_executable_lookup() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-env_variable_name">env_variable_name()</a>)</code><br></p>
+<p><code>get_environment_variable_for_executable_lookup() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-env_variable_name" docgen-rel="seetype" docgen-href="#env_variable_name/0">env_variable_name()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the environment variable (if any) used by the system for the
- lookup of executables.
-</p>
+</div>
 
 <h3 class="function"><a name="get_environment_variable_for_library_lookup-0">get_environment_variable_for_library_lookup/0</a></h3>
 <div class="spec">
-<p><code>get_environment_variable_for_library_lookup() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-env_variable_name">env_variable_name()</a>)</code><br></p>
+<p><code>get_environment_variable_for_library_lookup() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-env_variable_name" docgen-rel="seetype" docgen-href="#env_variable_name/0">env_variable_name()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the environment variable (if any) used by the system for the
- lookup of (shared) libraries.
-</p>
+</div>
 
 <h3 class="function"><a name="get_filesystem_info-1">get_filesystem_info/1</a></h3>
 <div class="spec">
-<p><code>get_filesystem_info(AnyFilesystemPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-fs_info">fs_info()</a></code><br></p>
+<p><code>get_filesystem_info(AnyFilesystemPath::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>) -&gt; <a href="#type-fs_info" docgen-rel="seetype" docgen-href="#fs_info/0">fs_info()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns information about the specified filesystem.</p>
-
- May throw an exception.
-</p>
+</div>
 
 <h3 class="function"><a name="get_filesystem_info-2">get_filesystem_info/2</a></h3>
 <div class="spec">
-<p><code>get_filesystem_info(BinFilesystemPath::<a href="#type-any_directory_path">any_directory_path()</a>, CanFail::boolean()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-fs_info">fs_info()</a>)</code><br></p>
+<p><code>get_filesystem_info(BinFilesystemPath::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>, CanFail::boolean()) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-fs_info" docgen-rel="seetype" docgen-href="#fs_info/0">fs_info()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns information about the specified filesystem, throwing an exception
- on error if requested, otherwise displaying an error trace and returning
- 'undefined'.
-</p>
+</div>
 
 <h3 class="function"><a name="get_group_id-0">get_group_id/0</a></h3>
 <div class="spec">
-<p><code>get_group_id() -&gt; <a href="#type-group_id">group_id()</a></code><br></p>
+<p><code>get_group_id() -&gt; <a href="#type-group_id" docgen-rel="seetype" docgen-href="#group_id/0">group_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (system) group identifier of the current user.</p>
+</div>
 
 <h3 class="function"><a name="get_group_name-0">get_group_name/0</a></h3>
 <div class="spec">
-<p><code>get_group_name() -&gt; <a href="#type-group_name">group_name()</a></code><br></p>
+<p><code>get_group_name() -&gt; <a href="#type-group_name" docgen-rel="seetype" docgen-href="#group_name/0">group_name()</a></code><br></p>
 <p> </p>
-</div><p>Returns the name of the group of the current user, as a plain string.</p>
+</div>
 
 <h3 class="function"><a name="get_group_name_safe-0">get_group_name_safe/0</a></h3>
 <div class="spec">
-<p><code>get_group_name_safe() -&gt; <a href="#type-group_name">group_name()</a></code><br></p>
+<p><code>get_group_name_safe() -&gt; <a href="#type-group_name" docgen-rel="seetype" docgen-href="#group_name/0">group_name()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the name of the group of the current user, as a plain string.</p>
-
- Not expected to fail.
-</p>
+</div>
 
 <h3 class="function"><a name="get_hdf5_unavailability_hint-0">get_hdf5_unavailability_hint/0</a></h3>
 <div class="spec">
-<p><code>get_hdf5_unavailability_hint() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_hdf5_unavailability_hint() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string explaining what to do in order to have the HDF5 support
- available.
-</p>
+</div>
 
 <h3 class="function"><a name="get_interpreter_version-0">get_interpreter_version/0</a></h3>
 <div class="spec">
-<p><code>get_interpreter_version() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_interpreter_version() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the version information of the current Erlang interpreter 
-(actually the one of the whole environment, including the VM) being used.</p>
-
- Returns a full version name (e.g. "R13B04") or, if not available, a shorter
- one (e.g. "R11B").
-</p>
+</div>
 
 <h3 class="function"><a name="get_json_unavailability_hint-0">get_json_unavailability_hint/0</a></h3>
 <div class="spec">
-<p><code>get_json_unavailability_hint() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_json_unavailability_hint() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string explaining what to do in order to have the JSON support
- available.
-</p>
-
-<h3 class="function"><a name="get_json_unavailability_hint-1">get_json_unavailability_hint/1</a></h3>
-<div class="spec">
-<p><code>get_json_unavailability_hint(Backend::<a href="json_utils.html#type-parser_backend_name">json_utils:parser_backend_name()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
-<p> </p>
-</div><p>Returns a string explaining what to do in order to have the JSON support
- with the specified backend available.
-</p>
+</div>
 
 <h3 class="function"><a name="get_known_pseudo_filesystems-0">get_known_pseudo_filesystems/0</a></h3>
 <div class="spec">
-<p><code>get_known_pseudo_filesystems() -&gt; [<a href="#type-pseudo_filesystem_type">pseudo_filesystem_type()</a>]</code><br></p>
+<p><code>get_known_pseudo_filesystems() -&gt; [<a href="#type-pseudo_filesystem_type" docgen-rel="seetype" docgen-href="#pseudo_filesystem_type/0">pseudo_filesystem_type()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns a list of the known types of pseudo-filesystems.</p>
+</div>
 
 <h3 class="function"><a name="get_line-1">get_line/1</a></h3>
 <div class="spec">
-<p><code>get_line(Prompt::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_line(Prompt::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Our version of io:get_line/1, as an external program so that the VM can
- be run with -noinput (and thus so that {text,term}_ui can be used with the
- same VM settings).
-</p>
+</div>
 
 <h3 class="function"><a name="get_line-2">get_line/2</a></h3>
 <div class="spec">
-<p><code>get_line(Prompt::<a href="#type-ustring">ustring()</a>, GetLineScriptPath::<a href="#type-executable_path">executable_path()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_line(Prompt::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, GetLineScriptPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Our version of io:get_line/1, as an external program so that the VM can
- be run with -noinput (and thus so that {text,term}_ui can be used with the
- same VM settings).
-</p>
+</div>
 
 <h3 class="function"><a name="get_line_helper_script-0">get_line_helper_script/0</a></h3>
 <div class="spec">
-<p><code>get_line_helper_script() -&gt; <a href="#type-executable_path">executable_path()</a></code><br></p>
+<p><code>get_line_helper_script() -&gt; <a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the path to the Myriad helper script for get_line/1 operations.</p>
+</div>
 
 <h3 class="function"><a name="get_memory_used_by_vm-0">get_memory_used_by_vm/0</a></h3>
 <div class="spec">
-<p><code>get_memory_used_by_vm() -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
+<p><code>get_memory_used_by_vm() -&gt; <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the total memory used, in bytes, by this instance of the Erlang
- VM, that is the total amount of memory currently allocated by the Erlang
- processes and by this emulator.
-</p>
+</div>
 
 <h3 class="function"><a name="get_mount_points-0">get_mount_points/0</a></h3>
 <div class="spec">
-<p><code>get_mount_points() -&gt; [<a href="#type-directory_path">directory_path()</a>]</code><br></p>
+<p><code>get_mount_points() -&gt; [<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Returns a list of the current, local mount points (excluding the 
-pseudo-filesystems).</p>
-
- This function may throw an exception.
-</p>
+</div>
 
 <h3 class="function"><a name="get_mount_points-1">get_mount_points/1</a></h3>
 <div class="spec">
-<p><code>get_mount_points(CanFail::boolean()) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-directory_path">directory_path()</a>])</code><br></p>
+<p><code>get_mount_points(CanFail::boolean()) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>])</code><br></p>
 <p> </p>
-</div><p>Returns a list of the current, local mount points (excluding the
- pseudo-filesystems), throwing an exception on error if requested, otherwise
- displaying an error trace and returning 'undefined'.
-</p>
+</div>
 
 <h3 class="function"><a name="get_operating_system_description-0">get_operating_system_description/0</a></h3>
 <div class="spec">
-<p><code>get_operating_system_description() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_operating_system_description() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string describing the current operating system.</p>
+</div>
 
 <h3 class="function"><a name="get_operating_system_description_string-0">get_operating_system_description_string/0</a></h3>
 <div class="spec">
-<p><code>get_operating_system_description_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_operating_system_description_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the operating system being used.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_operating_system_family-0">get_operating_system_family/0</a></h3>
 <div class="spec">
-<p><code>get_operating_system_family() -&gt; <a href="#type-os_family">os_family()</a></code><br></p>
+<p><code>get_operating_system_family() -&gt; <a href="#type-os_family" docgen-rel="seetype" docgen-href="#os_family/0">os_family()</a></code><br></p>
 <p> </p>
-</div><p>Returns the family of the local operating system.</p>
+</div>
 
 <h3 class="function"><a name="get_operating_system_name-0">get_operating_system_name/0</a></h3>
 <div class="spec">
-<p><code>get_operating_system_name() -&gt; <a href="#type-os_name">os_name()</a></code><br></p>
+<p><code>get_operating_system_name() -&gt; <a href="#type-os_name" docgen-rel="seetype" docgen-href="#os_name/0">os_name()</a></code><br></p>
 <p> </p>
-</div><p>Returns the name of the local operating system.</p>
+</div>
 
 <h3 class="function"><a name="get_operating_system_type-0">get_operating_system_type/0</a></h3>
 <div class="spec">
-<p><code>get_operating_system_type() -&gt; <a href="#type-os_type">os_type()</a></code><br></p>
+<p><code>get_operating_system_type() -&gt; <a href="#type-os_type" docgen-rel="seetype" docgen-href="#os_type/0">os_type()</a></code><br></p>
 <p> </p>
-</div><p>Returns the type (family and type) of the local operating system.</p>
+</div>
 
 <h3 class="function"><a name="get_process_count-0">get_process_count/0</a></h3>
 <div class="spec">
-<p><code>get_process_count() -&gt; <a href="#type-count">count()</a></code><br></p>
+<p><code>get_process_count() -&gt; <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code><br></p>
 <p> </p>
-</div><p>Returns the number of live Erlang processes on the current node.</p>
+</div>
 
 <h3 class="function"><a name="get_process_count_string-0">get_process_count_string/0</a></h3>
 <div class="spec">
-<p><code>get_process_count_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_process_count_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the number of live Erlang processes on 
-the current node.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_resource_limits-0">get_resource_limits/0</a></h3>
 <div class="spec">
-<p><code>get_resource_limits() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_resource_limits() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the current limits (ulimit) in terms of
- local system resources.
-</p>
+</div>
 
 <h3 class="function"><a name="get_resource_limits_string-0">get_resource_limits_string/0</a></h3>
 <div class="spec">
-<p><code>get_resource_limits_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_resource_limits_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the current limits (ulimit) in terms of 
-local system resources.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_size-1">get_size/1</a></h3>
 <div class="spec">
-<p><code>get_size(Bin::term()) -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
+<p><code>get_size(Bin::term()) -&gt; <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the size of the specified term, in bytes.</p>
-
- <p>This size is used in RAM, usually in the process heap, except for off-heap 
-data such as "large" binaries (larger than 64 bytes), which are stored in a 
-global heap (and reference-counted).</p>
-
- <p>The (flat) size of on-heap terms is incremented to account for the top term 
-word (which is kept in a register or on the stack).</p>
-
- <p>Note that the size/1 BIF is not optimized by the JIT, and its use can result 
-in worse types for Dialyzer. When one knows that the value being tested must 
-be a tuple, tuple_size/1 should always be preferred.</p>
-
- <p>When one knows that the value being tested must be a binary, byte_size/1 
-should be preferred, provided the value is not a bitstring (that are accepted 
-by byte_size/1, which rounds up size to a whole number of bytes) - so 
-is_binary/1 shall be used beforehand (note that the compiler removes redundant 
-calls to is_binary/1).</p>
-
- See also <a href="https://www.erlang.org/doc/efficiency_guide/advanced.html" target="_top"><code>https://www.erlang.org/doc/efficiency_guide/advanced.html</code></a>.
-</p>
+</div>
 
 <h3 class="function"><a name="get_size_of_vm_word-0">get_size_of_vm_word/0</a></h3>
 <div class="spec">
-<p><code>get_size_of_vm_word() -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
+<p><code>get_size_of_vm_word() -&gt; <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the size, in bytes, of a word of this Virtual Machine.</p>
+</div>
 
 <h3 class="function"><a name="get_size_of_vm_word_string-0">get_size_of_vm_word_string/0</a></h3>
 <div class="spec">
-<p><code>get_size_of_vm_word_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_size_of_vm_word_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the size of a VM word.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_software_base_directory-0">get_software_base_directory/0</a></h3>
 <div class="spec">
-<p><code>get_software_base_directory() -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_software_base_directory() -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (expected, conventional) base installation directory for
- third-party software.
-</p>
+</div>
 
 <h3 class="function"><a name="get_standard_environment-0">get_standard_environment/0</a></h3>
 <div class="spec">
-<p><code>get_standard_environment() -&gt; <a href="#type-environment">environment()</a></code><br></p>
+<p><code>get_standard_environment() -&gt; <a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a default, standard, safe/secure environment for "porcelain"-like 
-executions, that is executions that are, as much as possible, reproducible in 
-various runtime contexts (typically: with locale-independent outputs).</p>
-
- To be used with run_{command,executable}/n.
-</p>
+</div>
 
 <h3 class="function"><a name="get_swap_status-0">get_swap_status/0</a></h3>
 <div class="spec">
-<p><code>get_swap_status() -&gt; {<a href="#type-byte_size">byte_size()</a>, <a href="#type-byte_size">byte_size()</a>}</code><br></p>
+<p><code>get_swap_status() -&gt; {<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>, <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Returns {UsedSwap, TotalSwap} where UsedSwap is the size of the used swap 
-and TotalSwap is the total amount of swap space on the local host, both 
-expressed in bytes.</p>
-
- Will crash if the information cannot be retrieved properly.
-</p>
+</div>
 
 <h3 class="function"><a name="get_swap_status_string-0">get_swap_status_string/0</a></h3>
 <div class="spec">
-<p><code>get_swap_status_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_swap_status_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the current swap status.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_system_description-0">get_system_description/0</a></h3>
 <div class="spec">
-<p><code>get_system_description() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_system_description() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a string describing the current state of the local system.</p>
-
- Designed not to crash or freeze, even if some information could not be
- retrieved.
-</p>
+</div>
 
 <h3 class="function"><a name="get_total_memory_used-0">get_total_memory_used/0</a></h3>
 <div class="spec">
-<p><code>get_total_memory_used() -&gt; {<a href="#type-byte_size">byte_size()</a>, <a href="#type-byte_size">byte_size()</a>}</code><br></p>
+<p><code>get_total_memory_used() -&gt; {<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>, <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Returns {UsedRAM, TotalRAM} where UsedRAM is the actual total memory used 
-on the current host by all applications, in bytes, and TotalRAM is the total 
-installed RAM, in bytes.</p>
-
- The cached memory and the buffers used by the kernel are not taken into
- account into the returned count.
-</p>
+</div>
 
 <h3 class="function"><a name="get_total_physical_memory-0">get_total_physical_memory/0</a></h3>
 <div class="spec">
-<p><code>get_total_physical_memory() -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
+<p><code>get_total_physical_memory() -&gt; <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the total installed physical volatile memory (RAM) of the local
- computer, expressed in bytes.
-</p>
+</div>
 
 <h3 class="function"><a name="get_total_physical_memory_on-1">get_total_physical_memory_on/1</a></h3>
 <div class="spec">
-<p><code>get_total_physical_memory_on(Node::<a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
+<p><code>get_total_physical_memory_on(Node::<a href="net_utils.html#type-atom_node_name" docgen-rel="seetype" docgen-href="net_utils#atom_node_name/0">net_utils:atom_node_name()</a>) -&gt; <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the total installed physical volatile memory (RAM) of the
- computer on which specified node (specified as an atom) is running, expressed
- in bytes.
-</p>
+</div>
 
 <h3 class="function"><a name="get_total_physical_memory_string-0">get_total_physical_memory_string/0</a></h3>
 <div class="spec">
-<p><code>get_total_physical_memory_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_total_physical_memory_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the total installed physical memory.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_user_home_directory-0">get_user_home_directory/0</a></h3>
 <div class="spec">
-<p><code>get_user_home_directory() -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_user_home_directory() -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the home directory of the current user, as a plain string.</p>
+</div>
 
 <h3 class="function"><a name="get_user_home_directory-1">get_user_home_directory/1</a></h3>
 <div class="spec">
-<p><code>get_user_home_directory(Username::<a href="#type-user_name">user_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_user_home_directory(Username::<a href="#type-user_name" docgen-rel="seetype" docgen-href="#user_name/0">user_name()</a>) -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p>Returns the home directory of the specified user, as a plain string,
- according to the most usual UNIX conventions.
-</p>
+</div>
 
 <h3 class="function"><a name="get_user_home_directory_string-0">get_user_home_directory_string/0</a></h3>
 <div class="spec">
-<p><code>get_user_home_directory_string() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_user_home_directory_string() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the home directory of the current user.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="get_user_id-0">get_user_id/0</a></h3>
 <div class="spec">
-<p><code>get_user_id() -&gt; <a href="#type-user_id">user_id()</a></code><br></p>
+<p><code>get_user_id() -&gt; <a href="#type-user_id" docgen-rel="seetype" docgen-href="#user_id/0">user_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns the (system) identifier of the current user.</p>
+</div>
 
 <h3 class="function"><a name="get_user_info-0">get_user_info/0</a></h3>
 <div class="spec">
-<p><code>get_user_info() -&gt; {<a href="#type-user_name">user_name()</a>, <a href="#type-group_name">group_name()</a>}</code><br></p>
+<p><code>get_user_info() -&gt; {<a href="#type-user_name" docgen-rel="seetype" docgen-href="#user_name/0">user_name()</a>, <a href="#type-group_name" docgen-rel="seetype" docgen-href="#group_name/0">group_name()</a>}</code><br></p>
 <p> </p>
-</div><p>Returns the system information regarding the current user.</p>
+</div>
 
 <h3 class="function"><a name="get_user_info_safe-0">get_user_info_safe/0</a></h3>
 <div class="spec">
-<p><code>get_user_info_safe() -&gt; {<a href="#type-user_name">user_name()</a>, <a href="#type-group_name">group_name()</a>}</code><br></p>
+<p><code>get_user_info_safe() -&gt; {<a href="#type-user_name" docgen-rel="seetype" docgen-href="#user_name/0">user_name()</a>, <a href="#type-group_name" docgen-rel="seetype" docgen-href="#group_name/0">group_name()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Returns the system information regarding the current user.</p>
-
- Not expected to fail.
-</p>
+</div>
 
 <h3 class="function"><a name="get_user_name-0">get_user_name/0</a></h3>
 <div class="spec">
-<p><code>get_user_name() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_user_name() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns the name of the current user, as a plain string.</p>
+</div>
 
 <h3 class="function"><a name="get_user_name_safe-0">get_user_name_safe/0</a></h3>
 <div class="spec">
-<p><code>get_user_name_safe() -&gt; <a href="#type-user_name">user_name()</a></code><br></p>
+<p><code>get_user_name_safe() -&gt; <a href="#type-user_name" docgen-rel="seetype" docgen-href="#user_name/0">user_name()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the name of the current user, as a plain string.</p>
-
- Not expected to fail.
-</p>
+</div>
 
 <h3 class="function"><a name="get_user_name_string-0">get_user_name_string/0</a></h3>
 <div class="spec">
-<p><code>get_user_name_string() -&gt; <a href="#type-user_name">user_name()</a></code><br></p>
+<p><code>get_user_name_string() -&gt; <a href="#type-user_name" docgen-rel="seetype" docgen-href="#user_name/0">user_name()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the name of the current user.</p>
-
- <p>Note: to be flattened caller-side.</p>
-
- Cannot crash.
-</p>
+</div>
 
 <h3 class="function"><a name="has_graphical_output-0">has_graphical_output/0</a></h3>
 <div class="spec">
 <p><code>has_graphical_output() -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether this host has graphical output (typically a running X
- server).
-</p>
+</div>
 
 <h3 class="function"><a name="interpret_byte_size-1">interpret_byte_size/1</a></h3>
 <div class="spec">
-<p><code>interpret_byte_size(SizeInBytes::<a href="#type-byte_size">byte_size()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>interpret_byte_size(SizeInBytes::<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a string containing a user-friendly description of the specified 
-size expressed in bytes, using multipliers of 2^10=1024 (hence not SI kilos, 
-that is 1000-based multipliers): GiB (Gibibytes, not Gigabytes), MiB 
-(Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes) and bytes.</p>
-
- See <a href="http://en.wikipedia.org/wiki/Kibibyte" target="_top"><code>http://en.wikipedia.org/wiki/Kibibyte</code></a>.
-</p>
+</div>
 
 <h3 class="function"><a name="interpret_byte_size_with_unit-1">interpret_byte_size_with_unit/1</a></h3>
 <div class="spec">
-<p><code>interpret_byte_size_with_unit(Size::<a href="#type-byte_size">byte_size()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>interpret_byte_size_with_unit(Size::<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a string containing a user-friendly description of the specified 
-size expressed in bytes, using the most appropriate unit among GiB (Gibibytes, 
-not Gigabytes), MiB (Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes) 
-and bytes, rounding that value to 1 figure after the comma (this is thus an 
-approximate value).</p>
-
- See <a href="http://en.wikipedia.org/wiki/Kibibyte" target="_top"><code>http://en.wikipedia.org/wiki/Kibibyte</code></a>.
-</p>
+</div>
 
 <h3 class="function"><a name="is_hdf5_support_available-0">is_hdf5_support_available/0</a></h3>
 <div class="spec">
 <p><code>is_hdf5_support_available() -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether an HDF5 support is available.</p>
+</div>
 
 <h3 class="function"><a name="is_json_support_available-0">is_json_support_available/0</a></h3>
 <div class="spec">
 <p><code>is_json_support_available() -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether a JSON support is available.</p>
+</div>
 
 <h3 class="function"><a name="monitor_port-2">monitor_port/2</a></h3>
 <div class="spec">
 <p><code>monitor_port(Port, Data) -&gt; any()</code></p>
 <p> </p>
-</div><p>Monitors a port: reads command data and signals from a port, and reports
- it.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_command-1">run_background_command/1</a></h3>
 <div class="spec">
-<p><code>run_background_command(Command::<a href="#type-command">command()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_command(Command::<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified command, in a 
-standard shell environment.</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- If this function is expected to be called many times, to avoid the process
- leak, one should consider using evaluate_background_shell_expression/1
- instead.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_command-2">run_background_command/2</a></h3>
 <div class="spec">
-<p><code>run_background_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_command(Command::<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified command, in the 
-specified shell environment.</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- If this function is expected to be called many times, to avoid the process
- leak, one should consider using evaluate_background_shell_expression/2
- instead.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_command-3">run_background_command/3</a></h3>
 <div class="spec">
-<p><code>run_background_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_command(Command::<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>, MaybeWorkingDir::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-working_dir" docgen-rel="seetype" docgen-href="#working_dir/0">working_dir()</a>)) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified command, in the 
-specified shell environment and from the specified working directory.</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- If this function is expected to be called many times, to avoid the process
- leak, one should consider using evaluate_background_shell_expression/2
- instead.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_executable-1">run_background_executable/1</a></h3>
 <div class="spec">
-<p><code>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with no specific command-line argument, with a 
-standard environment, from the current working directory and using the default 
-port options.</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- If this function is expected to be called many times, to avoid the process
- leak, one may consider using evaluate_background_shell_expression/1 instead.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_executable-2">run_background_executable/2</a></h3>
 <div class="spec">
-<p><code>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with the specified command-line arguments, with a 
-standard environment, from the current working directory and using the default 
-port options.</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- If this function is expected to be called many times, to avoid the process
- leak, one may consider using evaluate_background_shell_expression/2 instead.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_executable-3">run_background_executable/3</a></h3>
 <div class="spec">
-<p><code>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>], Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with the specified command-line arguments and 
-environment, from the current working directory and using the default port 
-options.</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- If this function is expected to be called many times, to avoid the process
- leak, one may consider using evaluate_background_shell_expression/2 instead.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_executable-4">run_background_executable/4</a></h3>
 <div class="spec">
-<p><code>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>], Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>, MaybeWorkingDir::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-working_dir" docgen-rel="seetype" docgen-href="#working_dir/0">working_dir()</a>)) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified executable, 
-whose path is exactly the specified one (that is: taken verbatim, not 
-looked-up through any PATH environment variable; use, in the executable_utils 
-module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with the specified command-line arguments, 
-environment and working directory, and using the default port options.</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- If this function is expected to be called many times, to avoid the process
- leak, one may consider using evaluate_background_shell_expression/2 instead.
-</p>
+</div>
 
 <h3 class="function"><a name="run_background_executable-5">run_background_executable/5</a></h3>
 <div class="spec">
-<p><code>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>run_background_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>], Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>, MaybeWorkingDir::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-working_dir" docgen-rel="seetype" docgen-href="#working_dir/0">working_dir()</a>), PortOptions::[<a href="#type-port_option" docgen-rel="seetype" docgen-href="#port_option/0">port_option()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, the specified executable,
- whose path is exactly the specified one (that is: taken verbatim, not
- looked-up through any PATH environment variable; use, in the executable_utils
- module, lookup_executable/{1,2} or find_executable/1 for that; not using any
- intermediary shell either) with the specified command-line arguments,
- environment, working directory and port options (see
- <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><code>http://erlang.org/doc/man/erlang.html#open_port-2</code></a>).</p>
-
- <p>As a consequence it returns no return code (exit status) nor output.</p>
-
- <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
-is spawned (and most probably lost).</p>
-
- <p>If this function is expected to be called many times, to avoid the process 
-leak, one may consider using evaluate_background_shell_expression/2 instead.</p>
-
- This is the recommended, most complete way of running an executable in the
- background.
-</p>
+</div>
 
 <h3 class="function"><a name="run_command-1">run_command/1</a></h3>
 <div class="spec">
-<p><code>run_command(Command::<a href="#type-command">command()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_command(Command::<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Runs (synchronously) specified command (an executable path possibly 
-followed with command-line arguments; specified as a single, standalone 
-string), with no specific port option, with a standard environment, from the 
-current working directory, and returns its return code (exit status) and its 
-outputs (both the standard and the error ones): {ReturnCode,CmdOutput}.</p>
-
- <p>This function will run a specific executable, not evaluate a shell expression 
-(that would possibly run executables); see evaluate_shell_expression/{1,2} for 
-that.</p>
-
- <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
-the end to trigger a background launch - this would just be interpreted as a 
-last argument. Use run_background_command/{1,2,3} in this module instead.</p>
-
- Note: the run_executable/* functions shall be preferred (as being better
- regarding encoding and security) to the run_command/* ones, which may be
- considered available only for backward compatibility.
-</p>
+</div>
 
 <h3 class="function"><a name="run_command-2">run_command/2</a></h3>
 <div class="spec">
-<p><code>run_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_command(Command::<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified command (an executable path possibly 
-followed with command-line arguments; specified as a single, standalone 
-string), with no specific port option, in specified shell environment and from 
-the current working directory, and returns its return code (exit status) and 
-its outputs (both the standard and the error ones): {ReturnCode,CmdOutput}.</p>
-
- <p>This function will run a specific executable, not evaluate a shell expression 
-(that would possibly run executables).</p>
-
- <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
-the end to trigger a background launch - this would just be interpreted as a 
-last argument. Use run_background_command/{1,2,3} in this module instead.</p>
-
- Note: the run_executable/* functions shall be preferred (as being better
- regarding encoding and security) to the run_command/* ones, which may be
- considered available only for backward compatibility.
-</p>
+</div>
 
 <h3 class="function"><a name="run_command-3">run_command/3</a></h3>
 <div class="spec">
-<p><code>run_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_command(Command::<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>, MaybeWorkingDir::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-working_dir" docgen-rel="seetype" docgen-href="#working_dir/0">working_dir()</a>)) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified command (an executable path possibly 
-followed with command-line arguments; specified as a single, standalone 
-string), with no specific port option, in specified shell environment and 
-working directory, and returns its return code (exit status) and its outputs 
-(both the standard and the error ones): {ReturnCode,CmdOutput}.</p>
-
- <p>This function will run a specific executable, not evaluate a shell expression 
-(that would possibly run executables).</p>
-
- <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
-the end to trigger a background launch - this would just be interpreted as a 
-last argument. Use run_background_command/{1,2,3} in this module instead.</p>
-
- Note: the run_executable/* functions shall be preferred (as being better
- regarding encoding and security) to the run_command/* ones, which may be
- considered available only for backward compatibility.
-</p>
+</div>
 
 <h3 class="function"><a name="run_command-4">run_command/4</a></h3>
 <div class="spec">
-<p><code>run_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_command(Command::<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>, Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>, MaybeWorkingDir::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-working_dir" docgen-rel="seetype" docgen-href="#working_dir/0">working_dir()</a>), PortOptions::[<a href="#type-port_option" docgen-rel="seetype" docgen-href="#port_option/0">port_option()</a>]) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) the specified command (an executable path
- possibly followed with command-line arguments; specified as a single,
- standalone string), in the specified shell environment and working directory,
- with specified extra port options (possibly containing any relevant
- command-line arguments; see
- <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><code>http://erlang.org/doc/man/erlang.html#open_port-2</code></a>).</p>
-
- <p>Returns its return code (exit status) and its outputs (both the standard and 
-the error ones): {ReturnCode,CmdOutput}.</p>
-
- <p>This function will run a specific executable, not evaluate a shell expression 
-(that would possibly run executables).</p>
-
- <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
-the end to trigger a background launch - this would just be interpreted as a 
-last argument. Use run_background_command/{1,2,3} in this module instead.</p>
-
- <p>This is the most complete function to run a command.</p>
-
- Note: the run_executable/* functions shall be preferred (as being better
- regarding encoding and security) to the run_command/* ones, which may be
- considered available only for backward compatibility.
-</p>
+</div>
 
 <h3 class="function"><a name="run_executable-1">run_executable/1</a></h3>
 <div class="spec">
-<p><code>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with no specific command-line argument, with a 
-standard environment, from the current working directory, using the default 
-port options.</p>
-
- Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode, CmdOutput}.
-</p>
+</div>
 
 <h3 class="function"><a name="run_executable-2">run_executable/2</a></h3>
 <div class="spec">
-<p><code>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>]) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments, with a 
-standard environment, from the current working directory, using the default 
-port options.</p>
-
- Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode, CmdOutput}.
-</p>
+</div>
 
 <h3 class="function"><a name="run_executable-3">run_executable/3</a></h3>
 <div class="spec">
-<p><code>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>], Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments and 
-environment variables, from the current working directory, using the default 
-port options.</p>
-
- Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode, CmdOutput}.
-</p>
+</div>
 
 <h3 class="function"><a name="run_executable-4">run_executable/4</a></h3>
 <div class="spec">
-<p><code>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>], Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>, MaybeWorkingDir::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-working_dir" docgen-rel="seetype" docgen-href="#working_dir/0">working_dir()</a>)) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments and 
-environment variables, from any specified working directory, using the default 
-port options.</p>
-
- Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode, CmdOutput}.
-</p>
+</div>
 
 <h3 class="function"><a name="run_executable-5">run_executable/5</a></h3>
 <div class="spec">
-<p><code>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></code><br></p>
+<p><code>run_executable(ExecPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, Arguments::[<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>], Environment::<a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a>, MaybeWorkingDir::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-working_dir" docgen-rel="seetype" docgen-href="#working_dir/0">working_dir()</a>), PortOptions::[<a href="#type-port_option" docgen-rel="seetype" docgen-href="#port_option/0">port_option()</a>]) -&gt; <a href="#type-execution_outcome" docgen-rel="seetype" docgen-href="#execution_outcome/0">execution_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
-the specified one (that is: taken verbatim, not looked-up through any PATH 
-environment variable; use, in the executable_utils module, 
-lookup_executable/{1,2} or find_executable/1 for that; not using any 
-intermediary shell either) with specified command-line arguments and 
-environment variables, from any specified working directory and any extra port 
-options.</p>
-
- <p>Returns its return code (exit status) and its outputs (both the standard and 
-the error ones): {ReturnCode, CmdOutput}.</p>
-
- This is the recommended, most complete way of running an executable.
-</p>
+</div>
 
 <h3 class="function"><a name="set_environment_variable-2">set_environment_variable/2</a></h3>
 <div class="spec">
-<p><code>set_environment_variable(VarName::<a href="#type-env_variable_name">env_variable_name()</a>, VarValue::<a href="#type-env_variable_value">env_variable_value()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_environment_variable(VarName::<a href="#type-env_variable_name" docgen-rel="seetype" docgen-href="#env_variable_name/0">env_variable_name()</a>, VarValue::<a href="#type-env_variable_value" docgen-rel="seetype" docgen-href="#env_variable_value/0">env_variable_value()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified environment variable to the specified value, possibly
- overwriting a past value.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

@@ -10,60 +10,42 @@
 <hr>
 
 <h1>Module traces_sup</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the <b>root OTP supervisor</b> of Traces.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 <p><b>Behaviours:</b> <a href="supervisor.html"><code>supervisor</code></a>.</p>
-
-<h2><a name="description">Description</a></h2><p>Module implementing the <b>root OTP supervisor</b> of Traces.</p>
-
- <p>In practice, it will supervise a single process, the one of the (singleton) 
-trace aggregator, through a dedicated supervision bridge, defined in the 
-traces_bridge_sup module.</p>
-
- Refer to the documentation of the supervisor_bridge module for further
- details.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-init_arg_list">init_arg_list()</a></h3>
-<p><code>init_arg_list() = [boolean() | <a href="#type-registration_scope">registration_scope()</a>]</code></p>
-<p> Actually exactly [TraceSupervisorWanted, AggRegScope].</p>
+<p><code>init_arg_list() = [boolean() | <a href="#type-registration_scope" docgen-rel="seetype" docgen-href="#registration_scope/0">registration_scope()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-init_args">init_args()</a></h3>
-<p><code>init_args() = {boolean() | <a href="#type-registration_scope">registration_scope()</a>}</code></p>
+<p><code>init_args() = {boolean() | <a href="#type-registration_scope" docgen-rel="seetype" docgen-href="#registration_scope/0">registration_scope()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-registration_scope">registration_scope()</a></h3>
-<p><code>registration_scope() = <a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a></code></p>
+<p><code>registration_scope() = <a href="naming_utils.html#type-registration_scope" docgen-rel="seetype" docgen-href="naming_utils#registration_scope/0">naming_utils:registration_scope()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#init-1">init/1</a></td><td>Callback to initialise the Traces supervisor bridge (supervised by this
- root supervisor), typically in answer to start_link/1 above being executed.</td></tr>
-<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td>Starts and links the Traces root supervisor, creating in turn a proper 
-supervision bridge.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#init-1">init/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><code>init(X1::{boolean() | <a href="#type-registration_scope">registration_scope()</a>}) -&gt; {ok, {<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a>, [<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-child_spec">supervisor:child_spec()</a>]}}</code><br></p>
+<p><code>init(X1::{boolean() | <a href="#type-registration_scope" docgen-rel="seetype" docgen-href="#registration_scope/0">registration_scope()</a>}) -&gt; {ok, {<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags" docgen-rel="seetype" docgen-href="stdlib:supervisor#sup_flags/0">supervisor:sup_flags()</a>, [<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-child_spec" docgen-rel="seetype" docgen-href="stdlib:supervisor#child_spec/0">supervisor:child_spec()</a>]}}</code><br></p>
 <p> </p>
-</div><p>Callback to initialise the Traces supervisor bridge (supervised by this
- root supervisor), typically in answer to start_link/1 above being executed.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link-1">start_link/1</a></h3>
 <div class="spec">
-<p><code>start_link(TraceInitArgs::<a href="#type-init_args">init_args()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-startlink_ret">supervisor:startlink_ret()</a></code><br></p>
+<p><code>start_link(TraceInitArgs::<a href="#type-init_args" docgen-rel="seetype" docgen-href="#init_args/0">init_args()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-startlink_ret" docgen-rel="seetype" docgen-href="stdlib:supervisor#startlink_ret/0">supervisor:startlink_ret()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts and links the Traces root supervisor, creating in turn a proper 
-supervision bridge.</p>
-
- Note: typically called by traces_app:start/2, hence generally triggered by the
- application initialisation.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

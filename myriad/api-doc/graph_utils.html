@@ -10,64 +10,45 @@
 <hr>
 
 <h1>Module graph_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding <b>graphs</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various convenient facilities regarding <b>graphs</b>.</p>
-
- See graph_utils_test.erl for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-feeder">feeder()</a></h3>
-<p><code>feeder() = fun((<a href="#type-vertex">vertex()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; [<a href="#type-vertex">vertex()</a>])</code></p>
-<p> Lists the children nodes of the specified one.</p>
+<p><code>feeder() = fun((<a href="#type-vertex" docgen-rel="seetype" docgen-href="#vertex/0">vertex()</a>, <a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; [<a href="#type-vertex" docgen-rel="seetype" docgen-href="#vertex/0">vertex()</a>])</code></p>
+
 
 <h3 class="typedecl"><a name="type-predicate">predicate()</a></h3>
-<p><code>predicate() = fun((<a href="#type-vertex">vertex()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; boolean())</code></p>
-<p> Tells whether the specified node can be considered as a solution.</p>
+<p><code>predicate() = fun((<a href="#type-vertex" docgen-rel="seetype" docgen-href="#vertex/0">vertex()</a>, <a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; boolean())</code></p>
+
+
+<h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
+<p><code>user_data() = <a href="basic_utils.html#type-user_data" docgen-rel="seetype" docgen-href="basic_utils#user_data/0">basic_utils:user_data()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-vertex">vertex()</a></h3>
 <p><code>vertex() = any()</code></p>
-<p> The node of a graph of interest (can be any type).</p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#find_breadth_first-3">find_breadth_first/3</a></td><td>Tries to find, breadth-first, the first vertex to satisfy specified 
-predicate, from specified initial vertex, relying on the specified feeder 
-function to obtain outbound edges of a vertex of interest.</td></tr>
-<tr><td valign="top"><a href="#find_breadth_first-4">find_breadth_first/4</a></td><td>Tries to find, breadth-first, the first vertex to satisfy specified 
-predicate, from specified initial vertex, relying on the specified feeder 
-function to obtain outbound edges of a vertex of interest.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#find_breadth_first-3">find_breadth_first/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find_breadth_first-4">find_breadth_first/4</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="find_breadth_first-3">find_breadth_first/3</a></h3>
 <div class="spec">
-<p><code>find_breadth_first(InitialVertex::<a href="#type-vertex">vertex()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Feeder::<a href="#type-feeder">feeder()</a>) -&gt; no_path_found | [<a href="#type-vertex">vertex()</a>]</code><br></p>
+<p><code>find_breadth_first(InitialVertex::<a href="#type-vertex" docgen-rel="seetype" docgen-href="#vertex/0">vertex()</a>, Predicate::<a href="#type-predicate" docgen-rel="seetype" docgen-href="#predicate/0">predicate()</a>, Feeder::<a href="#type-feeder" docgen-rel="seetype" docgen-href="#feeder/0">feeder()</a>) -&gt; no_path_found | [<a href="#type-vertex" docgen-rel="seetype" docgen-href="#vertex/0">vertex()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Tries to find, breadth-first, the first vertex to satisfy specified 
-predicate, from specified initial vertex, relying on the specified feeder 
-function to obtain outbound edges of a vertex of interest.</p>
-
- Returns the path found, i.e. the ordered list of vertices, from the initial
- vertex to the found one.
-</p>
+</div>
 
 <h3 class="function"><a name="find_breadth_first-4">find_breadth_first/4</a></h3>
 <div class="spec">
-<p><code>find_breadth_first(InitialVertex::<a href="#type-vertex">vertex()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Feeder::<a href="#type-feeder">feeder()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; no_path_found | [<a href="#type-vertex">vertex()</a>]</code><br></p>
+<p><code>find_breadth_first(InitialVertex::<a href="#type-vertex" docgen-rel="seetype" docgen-href="#vertex/0">vertex()</a>, Predicate::<a href="#type-predicate" docgen-rel="seetype" docgen-href="#predicate/0">predicate()</a>, Feeder::<a href="#type-feeder" docgen-rel="seetype" docgen-href="#feeder/0">feeder()</a>, UserData::<a href="basic_utils.html#type-user_data" docgen-rel="seetype" docgen-href="basic_utils#user_data/0">basic_utils:user_data()</a>) -&gt; no_path_found | [<a href="#type-vertex" docgen-rel="seetype" docgen-href="#vertex/0">vertex()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Tries to find, breadth-first, the first vertex to satisfy specified 
-predicate, from specified initial vertex, relying on the specified feeder 
-function to obtain outbound edges of a vertex of interest.</p>
-
- <p>Returns the path found, i.e. the ordered list of vertices, from the initial 
-vertex to the found one.</p>
-
- The user data might be anything, from 'undefined' to a description of the
- graph structure (see graph_utils_test.erl).
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

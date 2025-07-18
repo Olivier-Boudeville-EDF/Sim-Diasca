@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_text_display</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_text_display</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-font">font()</a></h3>
+<p><code>font() = <a href="gui_font.html#type-font" docgen-rel="seetype" docgen-href="gui_font#font/0">gui_font:font()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><code>id() = <a href="gui_id.html#type-id" docgen-rel="seetype" docgen-href="gui_id#id/0">gui_id:id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-label">label()</a></h3>
+<p><code>label() = <a href="gui.html#type-label" docgen-rel="seetype" docgen-href="gui#label/0">gui:label()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><code>parent() = <a href="gui.html#type-parent" docgen-rel="seetype" docgen-href="gui#parent/0">gui:parent()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><code>point() = <a href="gui.html#type-point" docgen-rel="seetype" docgen-href="gui#point/0">gui:point()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-precise_text_extent">precise_text_extent()</a></h3>
+<p><code>precise_text_extent() = <a href="gui_font.html#type-precise_text_extent" docgen-rel="seetype" docgen-href="gui_font#precise_text_extent/0">gui_font:precise_text_extent()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><code>size() = <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-text_display">text_display()</a></h3>
+<p><b>abstract datatype</b>: <code>text_display()</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_display_option">text_display_option()</a></h3>
+<p><code>text_display_option() = {position, <a href="#type-point" docgen-rel="seetype" docgen-href="#point/0">point()</a>} | {size, <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>} | {style, [<a href="#type-text_display_style" docgen-rel="seetype" docgen-href="#text_display_style/0">text_display_style()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_display_style">text_display_style()</a></h3>
+<p><code>text_display_style() = align_left | align_right | center | fixed_size | ellipsize_begin | ellipsize_middle | ellipsize_end</code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-4">create/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_presized-3">create_presized/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_presized-4">create_presized/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_with_id-3">create_with_id/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><code>create(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-text_display" docgen-rel="seetype" docgen-href="#text_display/0">text_display()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-3">create/3</a></h3>
+<div class="spec">
+<p><code>create(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Options::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-text_display_option" docgen-rel="seetype" docgen-href="#text_display_option/0">text_display_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-text_display" docgen-rel="seetype" docgen-href="#text_display/0">text_display()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-4">create/4</a></h3>
+<div class="spec">
+<p><code>create(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Options::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-text_display_option" docgen-rel="seetype" docgen-href="#text_display_option/0">text_display_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-text_display" docgen-rel="seetype" docgen-href="#text_display/0">text_display()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create_presized-3">create_presized/3</a></h3>
+<div class="spec">
+<p><code>create_presized(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Font::<a href="#type-font" docgen-rel="seetype" docgen-href="#font/0">font()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; {<a href="#type-text_display" docgen-rel="seetype" docgen-href="#text_display/0">text_display()</a>, <a href="#type-precise_text_extent" docgen-rel="seetype" docgen-href="#precise_text_extent/0">precise_text_extent()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create_presized-4">create_presized/4</a></h3>
+<div class="spec">
+<p><code>create_presized(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Options::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-text_display_option" docgen-rel="seetype" docgen-href="#text_display_option/0">text_display_option()</a>), Font::<a href="#type-font" docgen-rel="seetype" docgen-href="#font/0">font()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; {<a href="#type-text_display" docgen-rel="seetype" docgen-href="#text_display/0">text_display()</a>, <a href="#type-precise_text_extent" docgen-rel="seetype" docgen-href="#precise_text_extent/0">precise_text_extent()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create_with_id-3">create_with_id/3</a></h3>
+<div class="spec">
+<p><code>create_with_id(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>, Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-text_display" docgen-rel="seetype" docgen-href="#text_display/0">text_display()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><code>destruct(TextDisplay::<a href="#type-text_display" docgen-rel="seetype" docgen-href="#text_display/0">text_display()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

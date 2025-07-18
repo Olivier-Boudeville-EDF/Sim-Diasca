@@ -10,56 +10,41 @@
 <hr>
 
 <h1>Module traces_bridge_sup</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the <b>OTP supervisor bridge of Traces</b>, so that
- the (singleton) trace aggregator is attached to the Traces OTP supervision
- tree, through the Traces root supervisor, defined in the traces_sup module.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 <p><b>Behaviours:</b> <a href="supervisor_bridge.html"><code>supervisor_bridge</code></a>.</p>
-
-<h2><a name="description">Description</a></h2>Module implementing the <b>OTP supervisor bridge of Traces</b>, so that
- the (singleton) trace aggregator is attached to the Traces OTP supervision
- tree, through the Traces root supervisor, defined in the traces_sup module.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-init_args">init_args()</a></h3>
-<p><code>init_args() = <a href="traces_sup.html#type-init_args">traces_sup:init_args()</a></code></p>
+<p><code>init_args() = <a href="traces_sup.html#type-init_args" docgen-rel="seetype" docgen-href="traces_sup#init_args/0">traces_sup:init_args()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#init-1">init/1</a></td><td>Callback to initialise this supervisor bridge, typically in answer to
- start_link/1 above being executed.</td></tr>
-<tr><td valign="top"><a href="#start_link-2">start_link/2</a></td><td>Starts and links the Traces supervision bridge to the trace aggregator.</td></tr>
-<tr><td valign="top"><a href="#terminate-2">terminate/2</a></td><td>Callback to terminate this supervisor bridge.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#init-1">init/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link-2">start_link/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#terminate-2">terminate/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><code>init(X1::<a href="#type-init_args">init_args()</a>) -&gt; {ok, pid(), State::term()} | ignore | {error, Error::term()}</code><br></p>
+<p><code>init(X1::<a href="#type-init_args" docgen-rel="seetype" docgen-href="#init_args/0">init_args()</a>) -&gt; {ok, pid(), State::term()} | ignore | {error, Error::<a href="basic_utils.html#type-error_reason" docgen-rel="seetype" docgen-href="basic_utils#error_reason/0">basic_utils:error_reason()</a>}</code><br></p>
 <p> </p>
-</div><p>Callback to initialise this supervisor bridge, typically in answer to
- start_link/1 above being executed.
-</p>
+</div>
 
 <h3 class="function"><a name="start_link-2">start_link/2</a></h3>
 <div class="spec">
-<p><code>start_link(TraceSupervisorWanted, AggRegScope) -&gt; any()</code></p>
+<p><code>start_link(TraceSupervisorWanted::boolean(), AggRegScope::<a href="naming_utils.html#type-registration_scope" docgen-rel="seetype" docgen-href="naming_utils#registration_scope/0">naming_utils:registration_scope()</a>) -&gt; <a href="basic_utils.html#type-start_result" docgen-rel="seetype" docgen-href="basic_utils#start_result/0">basic_utils:start_result()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts and links the Traces supervision bridge to the trace aggregator.</p>
-
- <p>Note: typically spawned as a supervised child of the Traces root supervisor 
-(see traces_sup:init/1), hence generally triggered by the application 
-initialisation.</p>
-
--spec start_link( init_arg_list() ) -&gt; term().</p>
+</div>
 
 <h3 class="function"><a name="terminate-2">terminate/2</a></h3>
 <div class="spec">
-<p><code>terminate(Reason::shutdown | term(), State::term()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>terminate(Reason::shutdown | term(), State::term()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Callback to terminate this supervisor bridge.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

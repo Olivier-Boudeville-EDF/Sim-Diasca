@@ -10,465 +10,274 @@
 <hr>
 
 <h1>Module gui_id</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Management of (higher-level) <b>widget identifiers</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Management of (higher-level) <b>widget identifiers</b>.</p>
-
- <p>User-defined, atom-based identifiers can be introduced in order to simplify 
-the GUI-related processings.</p>
-
- They can be managed thanks to a separate server (process), or directly through
- an embedded allocation table (like the MyriadGUI main loop).
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-backend_id">backend_id()</a></h3>
-<p><code>backend_id() = <a href="#type-wx_id">wx_id()</a></code></p>
-<p> Lowest-level, backend-specific identifier.</p>
+<p><code>backend_id() = <a href="#type-wx_id" docgen-rel="seetype" docgen-href="#wx_id/0">wx_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bijective_table">bijective_table()</a></h3>
-<p><code>bijective_table(F, S) = <a href="bijective_table.html#type-bijective_table">bijective_table:bijective_table</a>(F, S)</code></p>
+<p><code>bijective_table(F, S) = <a href="bijective_table.html#type-bijective_table" docgen-rel="seetype" docgen-href="bijective_table#bijective_table/0">bijective_table:bijective_table</a>(F, S)</code></p>
 
 
 <h3 class="typedecl"><a name="type-button_backend_id">button_backend_id()</a></h3>
-<p><code>button_backend_id() = <a href="#type-backend_id">backend_id()</a></code></p>
-<p> A backend-level button identifier.</p>
+<p><code>button_backend_id() = <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-button_id">button_id()</a></h3>
-<p><code>button_id() = <a href="#type-id">id()</a></code></p>
-<p> An identifier of a button.</p>
+<p><code>button_id() = <a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
-<p><code>id() = <a href="#type-maybe">maybe</a>(<a href="#type-backend_id">backend_id()</a>) | <a href="#type-name_id">name_id()</a></code></p>
-<p><p> Object identifier, backend-specific or not.</p>
+<p><code>id() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>) | <a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a></code></p>
 
- <p>Defined here so that no user-level datastructure (like the event_context 
-public record) bears any trace of any GUI actual backend.</p>
-
- <p>An 'undefined' value means that any identifier may be used, as chosen by the 
-backend rather than by the user.</p>
-
- <p>May not be defined if the actual event comes from MyriadGUI itself (and thus 
-not wx).</p>
-
- As a consequence, such an identifier can be 'undefined', 'my_action_id', 147,
- and thus shall better be printed as "~w" (see id_to_string/1).</p>
 
 <h3 class="typedecl"><a name="type-id_allocator_pid">id_allocator_pid()</a></h3>
 <p><code>id_allocator_pid() = pid()</code></p>
-<p> The PID of a MyriadGUI allocator of (unique) object identifiers.</p>
+
 
 <h3 class="typedecl"><a name="type-id_allocator_ref">id_allocator_ref()</a></h3>
-<p><code>id_allocator_ref() = <a href="#type-pid_ref">pid_ref()</a></code></p>
-<p> Any kind of reference onto a MyriadGUI allocator of (unique) object
- identifiers.</p>
+<p><code>id_allocator_ref() = <a href="#type-pid_ref" docgen-rel="seetype" docgen-href="#pid_ref/0">pid_ref()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-id_name_alloc_table">id_name_alloc_table()</a></h3>
-<p><code>id_name_alloc_table() = <a href="#type-bijective_table">bijective_table</a>(<a href="#type-name_id">name_id()</a>, <a href="#type-backend_id">backend_id()</a>)</code></p>
-<p> A table to convert between (MyriadGUI) name identifiers and backend ones.</p>
+<p><code>id_name_alloc_table() = <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table</a>(<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>, <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-myriad_instance_id">myriad_instance_id()</a></h3>
-<p><code>myriad_instance_id() = <a href="#type-count">count()</a></code></p>
-<p><p> Myriad-specific instance identifier, corresponding to a Myriad object 
-reference in the internal MyriadGUI type table.</p>
+<p><code>myriad_instance_id() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
 
- This is a different identifier from id(), name_id() or backend_id(): it is not
- a standalone, user-level symbol to be used to designate directly an instance,
- but a part of its internal technical reference, like in {myriad_object_ref,
- myr_canvas, CanvasId} (similar in spirit to the integer in wx object
- references, like {wx_ref, 35, wxFrame, []}).</p>
 
 <h3 class="typedecl"><a name="type-name_id">name_id()</a></h3>
 <p><code>name_id() = atom()</code></p>
-<p><p> A higher-level, user-defined identifier of a widget as a name (an atom, 
-e.g. 'my_file_menu_id'); internally translated transparently to a relevant 
-backend identifier (wx_id()).</p>
 
- The 'undefined' atom is reserved.</p>
 
 <h3 class="typedecl"><a name="type-pid_ref">pid_ref()</a></h3>
-<p><code>pid_ref() = <a href="type_utils.html#type-pid_ref">type_utils:pid_ref()</a></code></p>
+<p><code>pid_ref() = <a href="type_utils.html#type-pid_ref" docgen-rel="seetype" docgen-href="type_utils#pid_ref/0">type_utils:pid_ref()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
-<p><code>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></code></p>
+<p><code>wx_id() = <a href="gui_wx_backend.html#type-wx_id" docgen-rel="seetype" docgen-href="gui_wx_backend#wx_id/0">gui_wx_backend:wx_id()</a></code></p>
 <p> Just an integer.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#allocate_backend_id-0">allocate_backend_id/0</a></td><td>Returns a new, original (never used) unnamed backend object identifier,
- obtained from the MyriadGUI identifier allocator (if any).</td></tr>
-<tr><td valign="top"><a href="#allocate_backend_id-1">allocate_backend_id/1</a></td><td>Returns a new, original (never used) unnamed backend object identifier,
- obtained from the specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#allocate_backend_ids-1">allocate_backend_ids/1</a></td><td>Returns the specified number of new, original (never used) unnamed
- backend object identifiers, obtained from the MyriadGUI identifier allocator
- (if any).</td></tr>
-<tr><td valign="top"><a href="#allocate_backend_ids-2">allocate_backend_ids/2</a></td><td>Returns the specified number of new, original (never used) unnamed
- backend object identifiers, obtained from the specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#declare_any_id-1">declare_any_id/1</a></td><td>Returns a backend-specific widget identifier associated to the specified 
-new identifier, expected not to have already been declared.</td></tr>
-<tr><td valign="top"><a href="#declare_name_id-1">declare_name_id/1</a></td><td>Declares the specified named identifier, so that it becomes registered by 
-the MyriadGUI identifier allocator (if any), and returns the associated 
-backend object identifier.</td></tr>
-<tr><td valign="top"><a href="#declare_name_id-2">declare_name_id/2</a></td><td>Declares the specified named identifier, so that it becomes registered by 
-the specified identifier allocator, and returns the associated backend object 
-identifier.</td></tr>
-<tr><td valign="top"><a href="#declare_name_id_internal-3">declare_name_id_internal/3</a></td><td>Declares the specified name identifier internally (directly from the 
-current process), possibly enriching the specified name allocation table, 
-returning updated information, notably the corresponding backend identifier.</td></tr>
-<tr><td valign="top"><a href="#declare_name_ids-1">declare_name_ids/1</a></td><td>Declares the specified named identifiers, so that they become registered 
-by the MyriadGUI identifier allocator (if any).</td></tr>
-<tr><td valign="top"><a href="#declare_name_ids-2">declare_name_ids/2</a></td><td>Declares the specified named identifiers, so that they become registered 
-by the specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#embody_as_id_allocator-0">embody_as_id_allocator/0</a></td><td>Uses the calling process so that it becomes the identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#get_any_id-0">get_any_id/0</a></td><td>Returns an unconstrained identifier, whose value is left free.</td></tr>
-<tr><td valign="top"><a href="#get_best_button_id_internal-2">get_best_button_id_internal/2</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier
- supposedly of a button internally (directly from the current process): returns
- any corresponding named one, otherwise returns that backend identifier as it
- is.</td></tr>
-<tr><td valign="top"><a href="#get_best_id-1">get_best_id/1</a></td><td>Returns the best (highest-level) identifier for the specified backend
- one, from the MyriadGUI identifier allocator (if any): if able to determine a
- name identifier for it, returns it, otherwise returns said backend identifier
- as it is.</td></tr>
-<tr><td valign="top"><a href="#get_best_id-2">get_best_id/2</a></td><td>Returns the best (highest-level) identifier for the specified backend
- one, from the specified identifier allocator: if able to determine a name
- identifier for it, returns it, otherwise returns said backend identifier as it
- is.</td></tr>
-<tr><td valign="top"><a href="#get_best_id_internal-2">get_best_id_internal/2</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier,
- internally (directly from the current process): returns any corresponding
- named one, otherwise returns that backend identifier as it is.</td></tr>
-<tr><td valign="top"><a href="#get_best_menu_item_id_internal-2">get_best_menu_item_id_internal/2</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier
- supposedly of a menu item, internally (directly from the current process):
- returns any corresponding named one, otherwise returns that backend identifier
- as it is.</td></tr>
-<tr><td valign="top"><a href="#get_first_allocatable_id-0">get_first_allocatable_id/0</a></td><td>Returns the first backend-specific widget identifier that may be
- allocated by MyriadGUI.</td></tr>
-<tr><td valign="top"><a href="#get_initial_allocation_table-0">get_initial_allocation_table/0</a></td><td>Returns the initial allocation table for named identifiers.</td></tr>
-<tr><td valign="top"><a href="#get_maybe_name_id-1">get_maybe_name_id/1</a></td><td>Returns any MyriadGUI name identifier associated to the specified 
-backend-specific widget identifier.</td></tr>
-<tr><td valign="top"><a href="#id_to_string-1">id_to_string/1</a></td><td>Returns a textual representation of the specified object identifier.</td></tr>
-<tr><td valign="top"><a href="#maybe_resolve_backend_id-1">maybe_resolve_backend_id/1</a></td><td>Tries to resolve the specified backend identifier into a named one,
- otherwise returns 'undefined', based on the MyriadGUI identifier allocator (if
- any).</td></tr>
-<tr><td valign="top"><a href="#maybe_resolve_backend_id_internal-2">maybe_resolve_backend_id_internal/2</a></td><td>Tries to resolve the specified backend-specific identifier into a 
-higher-level named identifier, internally (directly from the current process): 
-returns any corresponding named one.</td></tr>
-<tr><td valign="top"><a href="#resolve_any_id-1">resolve_any_id/1</a></td><td>Returns a backend identifier corresponding to the specified identifier of 
-any type (MyriadGUI name identifier, possibly an undefined one, or already a 
-backend identifier).</td></tr>
-<tr><td valign="top"><a href="#resolve_named_id-1">resolve_named_id/1</a></td><td>Returns the low-level backend object identifier corresponding to the
- specified named identifier, which is expected to be already registered by the
- MyriadGUI identifier allocator (if any).</td></tr>
-<tr><td valign="top"><a href="#resolve_named_id-2">resolve_named_id/2</a></td><td>Returns the low-level backend object identifier corresponding to the
- specified named identifier, which is expected to be already registered by the
- specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#resolve_named_id_internal-2">resolve_named_id_internal/2</a></td><td>Resolves the specified name identifier into a backend one, internally 
-(directly from the current process), from the specified name allocation table.</td></tr>
-<tr><td valign="top"><a href="#resolve_named_ids-1">resolve_named_ids/1</a></td><td>Returns the low-level backend object identifiers corresponding to the
- specified named identifiers, which are expected to be already registered by
- the MyriadGUI identifier allocator (if any).</td></tr>
-<tr><td valign="top"><a href="#resolve_named_ids-2">resolve_named_ids/2</a></td><td>Returns the low-level backend object identifiers corresponding to the
- specified named identifiers, which are expected to be already registered by
- the specified identifier allocator.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#allocate_backend_id-0">allocate_backend_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#allocate_backend_id-1">allocate_backend_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#allocate_backend_ids-1">allocate_backend_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#allocate_backend_ids-2">allocate_backend_ids/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_any_id-1">declare_any_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_name_id-1">declare_name_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_name_id-2">declare_name_id/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_name_id_internal-3">declare_name_id_internal/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_name_ids-1">declare_name_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_name_ids-2">declare_name_ids/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#embody_as_id_allocator-0">embody_as_id_allocator/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_any_id-0">get_any_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_best_button_id_internal-2">get_best_button_id_internal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_best_id-1">get_best_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_best_id-2">get_best_id/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_best_id_internal-2">get_best_id_internal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_best_menu_item_id_internal-2">get_best_menu_item_id_internal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_first_allocatable_id-0">get_first_allocatable_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_initial_allocation_table-0">get_initial_allocation_table/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_maybe_name_id-1">get_maybe_name_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#id_to_string-1">id_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#maybe_resolve_backend_id-1">maybe_resolve_backend_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#maybe_resolve_backend_id_internal-2">maybe_resolve_backend_id_internal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_any_id-1">resolve_any_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_named_id-1">resolve_named_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_named_id-2">resolve_named_id/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_named_id_internal-2">resolve_named_id_internal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_named_ids-1">resolve_named_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_named_ids-2">resolve_named_ids/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="allocate_backend_id-0">allocate_backend_id/0</a></h3>
 <div class="spec">
-<p><code>allocate_backend_id() -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>allocate_backend_id() -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, original (never used) unnamed backend object identifier,
- obtained from the MyriadGUI identifier allocator (if any).
-</p>
+</div>
 
 <h3 class="function"><a name="allocate_backend_id-1">allocate_backend_id/1</a></h3>
 <div class="spec">
-<p><code>allocate_backend_id(IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>allocate_backend_id(IdAllocRef::<a href="#type-id_allocator_ref" docgen-rel="seetype" docgen-href="#id_allocator_ref/0">id_allocator_ref()</a>) -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, original (never used) unnamed backend object identifier,
- obtained from the specified identifier allocator.
-</p>
+</div>
 
 <h3 class="function"><a name="allocate_backend_ids-1">allocate_backend_ids/1</a></h3>
 <div class="spec">
-<p><code>allocate_backend_ids(Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</code><br></p>
+<p><code>allocate_backend_ids(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the specified number of new, original (never used) unnamed
- backend object identifiers, obtained from the MyriadGUI identifier allocator
- (if any).
-</p>
+</div>
 
 <h3 class="function"><a name="allocate_backend_ids-2">allocate_backend_ids/2</a></h3>
 <div class="spec">
-<p><code>allocate_backend_ids(Count::<a href="#type-count">count()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</code><br></p>
+<p><code>allocate_backend_ids(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, IdAllocRef::<a href="#type-id_allocator_ref" docgen-rel="seetype" docgen-href="#id_allocator_ref/0">id_allocator_ref()</a>) -&gt; [<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the specified number of new, original (never used) unnamed
- backend object identifiers, obtained from the specified identifier allocator.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_any_id-1">declare_any_id/1</a></h3>
 <div class="spec">
-<p><code>declare_any_id(Id::<a href="#type-id">id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>declare_any_id(Id::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>) -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a backend-specific widget identifier associated to the specified 
-new identifier, expected not to have already been declared.</p>
-
- Specifying a name identifier requires interacting with the MyriadGUI process
- in charge of the identifier allocation.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_name_id-1">declare_name_id/1</a></h3>
 <div class="spec">
-<p><code>declare_name_id(NameId::<a href="#type-name_id">name_id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>declare_name_id(NameId::<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>) -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Declares the specified named identifier, so that it becomes registered by 
-the MyriadGUI identifier allocator (if any), and returns the associated 
-backend object identifier.</p>
-
- Note that the standard name/id association (typically the standard menu items
- like 'undo_menu_item') are reserved (but not already registered).
-</p>
+</div>
 
 <h3 class="function"><a name="declare_name_id-2">declare_name_id/2</a></h3>
 <div class="spec">
-<p><code>declare_name_id(NameId::<a href="#type-name_id">name_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_name_id(NameId::<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref" docgen-rel="seetype" docgen-href="#id_allocator_ref/0">id_allocator_ref()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Declares the specified named identifier, so that it becomes registered by 
-the specified identifier allocator, and returns the associated backend object 
-identifier.</p>
-
- Note that the standard name/id association (typically the standard menu items
- like 'undo_menu_item') are reserved (but not already registered).
-</p>
+</div>
 
 <h3 class="function"><a name="declare_name_id_internal-3">declare_name_id_internal/3</a></h3>
 <div class="spec">
-<p><code>declare_name_id_internal(NameId::<a href="#type-name_id">name_id()</a>, NextId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; {<a href="#type-backend_id">backend_id()</a>, <a href="#type-backend_id">backend_id()</a>, <a href="#type-id_name_alloc_table">id_name_alloc_table()</a>}</code><br></p>
+<p><code>declare_name_id_internal(NameId::<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>, NextId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a>) -&gt; {<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, <a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Declares the specified name identifier internally (directly from the 
-current process), possibly enriching the specified name allocation table, 
-returning updated information, notably the corresponding backend identifier.</p>
-
- Typically called directly through the MyriadGUI main loop (thus without
- involving messages), which takes care of the identifier management as well.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_name_ids-1">declare_name_ids/1</a></h3>
 <div class="spec">
-<p><code>declare_name_ids(NameIds::[<a href="#type-name_id">name_id()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_name_ids(NameIds::[<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Declares the specified named identifiers, so that they become registered 
-by the MyriadGUI identifier allocator (if any).</p>
-
- Note that the standard name/id associations (typically the standard menu
- items, like 'undo_menu_item') are reserved and automatically registered.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_name_ids-2">declare_name_ids/2</a></h3>
 <div class="spec">
-<p><code>declare_name_ids(NameIds::[<a href="#type-name_id">name_id()</a>], IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_name_ids(NameIds::[<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>], IdAllocRef::<a href="#type-id_allocator_ref" docgen-rel="seetype" docgen-href="#id_allocator_ref/0">id_allocator_ref()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Declares the specified named identifiers, so that they become registered 
-by the specified identifier allocator.</p>
-
- Note that the standard name/id associations (typically the standard menu
- items, like 'undo_menu_item') are reserved and automatically registered.
-</p>
+</div>
 
 <h3 class="function"><a name="embody_as_id_allocator-0">embody_as_id_allocator/0</a></h3>
 <div class="spec">
 <p><code>embody_as_id_allocator() -&gt; no_return()</code><br></p>
 <p> </p>
-</div><p><p>Uses the calling process so that it becomes the identifier allocator.</p>
-
- <p>At least currently, with wx, no service seems to be provided in order to 
-generate unique user-level wx_id(), so we provide ours.</p>
-
- <p>Otherwise the user would have to hardcode their own identifiers (e.g. for menu 
-items), which is fragile and error-prone.</p>
-
- <p>Note that the standard name/id associations (typically the standard buttons / 
-menu items, like 'zoom_factor_one' or 'undo_menu_item') are reserved and 
-automatically registered.</p>
-
- This created identifier allocator shall be best looked-up thanks to the
- gui:get_id_allocator_pid/{0,1} functions.
-</p>
+</div>
 
 <h3 class="function"><a name="get_any_id-0">get_any_id/0</a></h3>
 <div class="spec">
-<p><code>get_any_id() -&gt; <a href="#type-id">id()</a></code><br></p>
+<p><code>get_any_id() -&gt; <a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a></code><br></p>
 <p> </p>
-</div><p>Returns an unconstrained identifier, whose value is left free.</p>
+</div>
 
 <h3 class="function"><a name="get_best_button_id_internal-2">get_best_button_id_internal/2</a></h3>
 <div class="spec">
-<p><code>get_best_button_id_internal(BackendId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-id">id()</a></code><br></p>
+<p><code>get_best_button_id_internal(BackendId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a>) -&gt; <a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a></code><br></p>
 <p> </p>
-</div><p>Tries to resolve the specified lower-level, backend-specific identifier
- supposedly of a button internally (directly from the current process): returns
- any corresponding named one, otherwise returns that backend identifier as it
- is.
-</p>
+</div>
 
 <h3 class="function"><a name="get_best_id-1">get_best_id/1</a></h3>
 <div class="spec">
-<p><code>get_best_id(BackendId::<a href="#type-backend_id">backend_id()</a>) -&gt; <a href="#type-id">id()</a></code><br></p>
+<p><code>get_best_id(BackendId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>) -&gt; <a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a></code><br></p>
 <p> </p>
-</div><p>Returns the best (highest-level) identifier for the specified backend
- one, from the MyriadGUI identifier allocator (if any): if able to determine a
- name identifier for it, returns it, otherwise returns said backend identifier
- as it is.
-</p>
+</div>
 
 <h3 class="function"><a name="get_best_id-2">get_best_id/2</a></h3>
 <div class="spec">
-<p><code>get_best_id(BackendId::<a href="#type-backend_id">backend_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-id">id()</a></code><br></p>
+<p><code>get_best_id(BackendId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref" docgen-rel="seetype" docgen-href="#id_allocator_ref/0">id_allocator_ref()</a>) -&gt; <a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a></code><br></p>
 <p> </p>
-</div><p>Returns the best (highest-level) identifier for the specified backend
- one, from the specified identifier allocator: if able to determine a name
- identifier for it, returns it, otherwise returns said backend identifier as it
- is.
-</p>
+</div>
 
 <h3 class="function"><a name="get_best_id_internal-2">get_best_id_internal/2</a></h3>
 <div class="spec">
-<p><code>get_best_id_internal(NameId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-id">id()</a></code><br></p>
+<p><code>get_best_id_internal(NameId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a>) -&gt; <a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a></code><br></p>
 <p> </p>
-</div><p>Tries to resolve the specified lower-level, backend-specific identifier,
- internally (directly from the current process): returns any corresponding
- named one, otherwise returns that backend identifier as it is.
-</p>
+</div>
 
 <h3 class="function"><a name="get_best_menu_item_id_internal-2">get_best_menu_item_id_internal/2</a></h3>
 <div class="spec">
-<p><code>get_best_menu_item_id_internal(BackendId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-id">id()</a></code><br></p>
+<p><code>get_best_menu_item_id_internal(BackendId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a>) -&gt; <a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a></code><br></p>
 <p> </p>
-</div><p>Tries to resolve the specified lower-level, backend-specific identifier
- supposedly of a menu item, internally (directly from the current process):
- returns any corresponding named one, otherwise returns that backend identifier
- as it is.
-</p>
+</div>
 
 <h3 class="function"><a name="get_first_allocatable_id-0">get_first_allocatable_id/0</a></h3>
 <div class="spec">
-<p><code>get_first_allocatable_id() -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>get_first_allocatable_id() -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns the first backend-specific widget identifier that may be
- allocated by MyriadGUI.
-</p>
+</div>
 
 <h3 class="function"><a name="get_initial_allocation_table-0">get_initial_allocation_table/0</a></h3>
 <div class="spec">
-<p><code>get_initial_allocation_table() -&gt; <a href="#type-id_name_alloc_table">id_name_alloc_table()</a></code><br></p>
+<p><code>get_initial_allocation_table() -&gt; <a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a></code><br></p>
 <p> </p>
-</div><p>Returns the initial allocation table for named identifiers.</p>
+</div>
 
 <h3 class="function"><a name="get_maybe_name_id-1">get_maybe_name_id/1</a></h3>
 <div class="spec">
-<p><code>get_maybe_name_id(BackendId::<a href="#type-backend_id">backend_id()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-name_id">name_id()</a>)</code><br></p>
+<p><code>get_maybe_name_id(BackendId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns any MyriadGUI name identifier associated to the specified 
-backend-specific widget identifier.</p>
-
- Not exactly the reciprocal of resolve_any_id/1.
-</p>
+</div>
 
 <h3 class="function"><a name="id_to_string-1">id_to_string/1</a></h3>
 <div class="spec">
-<p><code>id_to_string(BackendId::<a href="#type-id">id()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>id_to_string(BackendId::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified object identifier.</p>
+</div>
 
 <h3 class="function"><a name="maybe_resolve_backend_id-1">maybe_resolve_backend_id/1</a></h3>
 <div class="spec">
-<p><code>maybe_resolve_backend_id(BackendId::<a href="#type-backend_id">backend_id()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-name_id">name_id()</a>)</code><br></p>
+<p><code>maybe_resolve_backend_id(BackendId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>)</code><br></p>
 <p> </p>
-</div><p>Tries to resolve the specified backend identifier into a named one,
- otherwise returns 'undefined', based on the MyriadGUI identifier allocator (if
- any).
-</p>
+</div>
 
 <h3 class="function"><a name="maybe_resolve_backend_id_internal-2">maybe_resolve_backend_id_internal/2</a></h3>
 <div class="spec">
-<p><code>maybe_resolve_backend_id_internal(BackendId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-name_id">name_id()</a>)</code><br></p>
+<p><code>maybe_resolve_backend_id_internal(BackendId::<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Tries to resolve the specified backend-specific identifier into a 
-higher-level named identifier, internally (directly from the current process): 
-returns any corresponding named one.</p>
-
- Looks up either, for stock identifiers, first the button table, then the menu
- item one or, for MyriadGUI ones, the specified name allocation table.
-</p>
+</div>
 
 <h3 class="function"><a name="resolve_any_id-1">resolve_any_id/1</a></h3>
 <div class="spec">
-<p><code>resolve_any_id(BackendId::<a href="#type-id">id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>resolve_any_id(BackendId::<a href="#type-id" docgen-rel="seetype" docgen-href="#id/0">id()</a>) -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a backend identifier corresponding to the specified identifier of 
-any type (MyriadGUI name identifier, possibly an undefined one, or already a 
-backend identifier).</p>
-
- Throws an exception should the resolution fail.
-</p>
+</div>
 
 <h3 class="function"><a name="resolve_named_id-1">resolve_named_id/1</a></h3>
 <div class="spec">
-<p><code>resolve_named_id(NameId::<a href="#type-name_id">name_id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>resolve_named_id(NameId::<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>) -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns the low-level backend object identifier corresponding to the
- specified named identifier, which is expected to be already registered by the
- MyriadGUI identifier allocator (if any).
-</p>
+</div>
 
 <h3 class="function"><a name="resolve_named_id-2">resolve_named_id/2</a></h3>
 <div class="spec">
-<p><code>resolve_named_id(NameId::<a href="#type-name_id">name_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>resolve_named_id(NameId::<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref" docgen-rel="seetype" docgen-href="#id_allocator_ref/0">id_allocator_ref()</a>) -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns the low-level backend object identifier corresponding to the
- specified named identifier, which is expected to be already registered by the
- specified identifier allocator.
-</p>
+</div>
 
 <h3 class="function"><a name="resolve_named_id_internal-2">resolve_named_id_internal/2</a></h3>
 <div class="spec">
-<p><code>resolve_named_id_internal(NameId::<a href="#type-name_id">name_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></code><br></p>
+<p><code>resolve_named_id_internal(NameId::<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>, NameTable::<a href="#type-id_name_alloc_table" docgen-rel="seetype" docgen-href="#id_name_alloc_table/0">id_name_alloc_table()</a>) -&gt; <a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Resolves the specified name identifier into a backend one, internally 
-(directly from the current process), from the specified name allocation table.</p>
-
- <p>Throws an exception if no corresponding backend identifier can be found.</p>
-
- Typically called directly through the MyriadGUI main loop (thus without
- involving messages), which takes care of the identifier management as well.
-</p>
+</div>
 
 <h3 class="function"><a name="resolve_named_ids-1">resolve_named_ids/1</a></h3>
 <div class="spec">
-<p><code>resolve_named_ids(NameIds::[<a href="#type-name_id">name_id()</a>]) -&gt; [<a href="#type-backend_id">backend_id()</a>]</code><br></p>
+<p><code>resolve_named_ids(NameIds::[<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>]) -&gt; [<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the low-level backend object identifiers corresponding to the
- specified named identifiers, which are expected to be already registered by
- the MyriadGUI identifier allocator (if any).
-</p>
+</div>
 
 <h3 class="function"><a name="resolve_named_ids-2">resolve_named_ids/2</a></h3>
 <div class="spec">
-<p><code>resolve_named_ids(NameIds::[<a href="#type-name_id">name_id()</a>], IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</code><br></p>
+<p><code>resolve_named_ids(NameIds::[<a href="#type-name_id" docgen-rel="seetype" docgen-href="#name_id/0">name_id()</a>], IdAllocRef::<a href="#type-id_allocator_ref" docgen-rel="seetype" docgen-href="#id_allocator_ref/0">id_allocator_ref()</a>) -&gt; [<a href="#type-backend_id" docgen-rel="seetype" docgen-href="#backend_id/0">backend_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the low-level backend object identifiers corresponding to the
- specified named identifiers, which are expected to be already registered by
- the specified identifier allocator.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

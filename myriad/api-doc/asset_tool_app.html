@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module asset_tool_app</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module asset_tool_app</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-app_state">app_state()</a></h3>
+<p><code>app_state() = #app_state{main_frame = <a href="#type-frame" docgen-rel="seetype" docgen-href="#frame/0">frame()</a>, load_image_button = <a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a>, quit_button = <a href="#type-button" docgen-rel="seetype" docgen-href="#button/0">button()</a>, info_sizer = <a href="#type-sizer" docgen-rel="seetype" docgen-href="#sizer/0">sizer()</a>, left_panel = <a href="#type-panel" docgen-rel="seetype" docgen-href="#panel/0">panel()</a>, canvas = <a href="#type-canvas" docgen-rel="seetype" docgen-href="#canvas/0">canvas()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-button">button()</a></h3>
+<p><code>button() = <a href="gui_button.html#type-button" docgen-rel="seetype" docgen-href="gui_button#button/0">gui_button:button()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-canvas">canvas()</a></h3>
+<p><code>canvas() = <a href="gui_canvas.html#type-canvas" docgen-rel="seetype" docgen-href="gui_canvas#canvas/0">gui_canvas:canvas()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-frame">frame()</a></h3>
+<p><code>frame() = <a href="gui_frame.html#type-frame" docgen-rel="seetype" docgen-href="gui_frame#frame/0">gui_frame:frame()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-height">height()</a></h3>
+<p><code>height() = <a href="gui.html#type-height" docgen-rel="seetype" docgen-href="gui#height/0">gui:height()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-panel">panel()</a></h3>
+<p><code>panel() = <a href="gui_panel.html#type-panel" docgen-rel="seetype" docgen-href="gui_panel#panel/0">gui_panel:panel()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-sizer">sizer()</a></h3>
+<p><code>sizer() = <a href="gui_sizer.html#type-sizer" docgen-rel="seetype" docgen-href="gui_sizer#sizer/0">gui_sizer:sizer()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-width">width()</a></h3>
+<p><code>width() = <a href="gui.html#type-width" docgen-rel="seetype" docgen-href="gui#width/0">gui:width()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#exec-0">exec/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_canvas_height-0">get_canvas_height/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_canvas_width-0">get_canvas_width/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#load_image-1">load_image/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render_main_view-1">render_main_view/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="exec-0">exec/0</a></h3>
+<div class="spec">
+<p><code>exec() -&gt; no_return()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_canvas_height-0">get_canvas_height/0</a></h3>
+<div class="spec">
+<p><code>get_canvas_height() -&gt; <a href="#type-height" docgen-rel="seetype" docgen-href="#height/0">height()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_canvas_width-0">get_canvas_width/0</a></h3>
+<div class="spec">
+<p><code>get_canvas_width() -&gt; <a href="#type-width" docgen-rel="seetype" docgen-href="#width/0">width()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="load_image-1">load_image/1</a></h3>
+<div class="spec">
+<p><code>load_image(Canvas) -&gt; any()</code></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="render_main_view-1">render_main_view/1</a></h3>
+<div class="spec">
+<p><code>render_main_view(Canvas::<a href="#type-canvas" docgen-rel="seetype" docgen-href="#canvas/0">canvas()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

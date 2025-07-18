@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module mesh_render</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module mesh_render</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-color">color()</a></h3>
+<p><code>color() = <a href="gui_color.html#type-color" docgen-rel="seetype" docgen-href="gui_color#color/0">gui_color:color()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
+<p><code>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal" docgen-rel="seetype" docgen-href="gui_color#color_by_decimal/0">gui_color:color_by_decimal()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-face_granularity">face_granularity()</a></h3>
+<p><code>face_granularity() = per_vertex | per_face</code></p>
+
+
+<h3 class="typedecl"><a name="type-face_type">face_type()</a></h3>
+<p><code>face_type() = <a href="mesh.html#type-face_type" docgen-rel="seetype" docgen-href="mesh#face_type/0">mesh:face_type()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-indexed_face">indexed_face()</a></h3>
+<p><code>indexed_face() = <a href="mesh.html#type-indexed_face" docgen-rel="seetype" docgen-href="mesh#indexed_face/0">mesh:indexed_face()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-mesh">mesh()</a></h3>
+<p><code>mesh() = <a href="mesh.html#type-mesh" docgen-rel="seetype" docgen-href="mesh#mesh/0">mesh:mesh()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-program_id">program_id()</a></h3>
+<p><code>program_id() = <a href="gui_shader.html#type-program_id" docgen-rel="seetype" docgen-href="gui_shader#program_id/0">gui_shader:program_id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-render_element">render_element()</a></h3>
+<p><code>render_element() = <a href="#type-render_rgb_color" docgen-rel="seetype" docgen-href="#render_rgb_color/0">render_rgb_color()</a> | <a href="#type-uv_point" docgen-rel="seetype" docgen-href="#uv_point/0">uv_point()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-render_rgb_color">render_rgb_color()</a></h3>
+<p><code>render_rgb_color() = <a href="gui_color.html#type-render_rgb_color" docgen-rel="seetype" docgen-href="gui_color#render_rgb_color/0">gui_color:render_rgb_color()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-rendering_info">rendering_info()</a></h3>
+<p><code>rendering_info() = none | {wireframe, RGBEdgeColor::<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>, AreHiddenFacesRemoved::boolean()} | {colored, FaceGranularity::<a href="#type-face_granularity" docgen-rel="seetype" docgen-href="#face_granularity/0">face_granularity()</a>, FaceColors::[<a href="#type-tuploid" docgen-rel="seetype" docgen-href="#tuploid/0">tuploid</a>(<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>)]} | {textured, <a href="#type-texture_spec_id" docgen-rel="seetype" docgen-href="#texture_spec_id/0">texture_spec_id()</a>, TextureFaceInfoList::[<a href="#type-texture_face_info" docgen-rel="seetype" docgen-href="#texture_face_info/0">texture_face_info()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-rendering_state">rendering_state()</a></h3>
+<p><code>rendering_state() = #rendering_state{program_id = <a href="gui_shader.html#type-program_id" docgen-rel="seetype" docgen-href="gui_shader#program_id/0">gui_shader:program_id()</a>, vao_id = <a href="gui_shader.html#type-vao_id" docgen-rel="seetype" docgen-href="gui_shader#vao_id/0">gui_shader:vao_id()</a>, vbo_id = <a href="gui_shader.html#type-vbo_id" docgen-rel="seetype" docgen-href="gui_shader#vbo_id/0">gui_shader:vbo_id()</a>, vbo_layout = <a href="gui_shader.html#type-vbo_layout" docgen-rel="seetype" docgen-href="gui_shader#vbo_layout/0">gui_shader:vbo_layout()</a>, compound_count = <a href="gui_shader.html#type-compound_count" docgen-rel="seetype" docgen-href="gui_shader#compound_count/0">gui_shader:compound_count()</a>, ebo_id = <a href="gui_shader.html#type-ebo_id" docgen-rel="seetype" docgen-href="gui_shader#ebo_id/0">gui_shader:ebo_id()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-texture_cache">texture_cache()</a></h3>
+<p><code>texture_cache() = <a href="gui_texture.html#type-texture_cache" docgen-rel="seetype" docgen-href="gui_texture#texture_cache/0">gui_texture:texture_cache()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-texture_face_info">texture_face_info()</a></h3>
+<p><code>texture_face_info() = <a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(<a href="#type-uv_point" docgen-rel="seetype" docgen-href="#uv_point/0">uv_point()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-texture_spec_id">texture_spec_id()</a></h3>
+<p><code>texture_spec_id() = <a href="gui_texture.html#type-texture_spec_id" docgen-rel="seetype" docgen-href="gui_texture#texture_spec_id/0">gui_texture:texture_spec_id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
+<p><code>tuple(T) = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
+<p><code>tuploid(T) = <a href="type_utils.html#type-tuploid" docgen-rel="seetype" docgen-href="type_utils#tuploid/0">type_utils:tuploid</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-uv_point">uv_point()</a></h3>
+<p><code>uv_point() = <a href="gui_texture.html#type-uv_point" docgen-rel="seetype" docgen-href="gui_texture#uv_point/0">gui_texture:uv_point()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonicalise_rendering_info-2">canonicalise_rendering_info/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#cleanup_for_opengl-1">cleanup_for_opengl/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#color_to_decimal_tuples-1">color_to_decimal_tuples/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#decimal_to_render_color_tuples-1">decimal_to_render_color_tuples/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#initialise_for_opengl-2">initialise_for_opengl/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#initialise_for_opengl-3">initialise_for_opengl/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render_as_opengl-1">render_as_opengl/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rendering_info_to_compact_string-1">rendering_info_to_compact_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rendering_info_to_string-1">rendering_info_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rendering_state_to_string-1">rendering_state_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#tessellate_rendering_info-2">tessellate_rendering_info/2</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="canonicalise_rendering_info-2">canonicalise_rendering_info/2</a></h3>
+<div class="spec">
+<p><code>canonicalise_rendering_info(RenderInfo::term(), Faces::[<a href="#type-indexed_face" docgen-rel="seetype" docgen-href="#indexed_face/0">indexed_face()</a>]) -&gt; <a href="#type-rendering_info" docgen-rel="seetype" docgen-href="#rendering_info/0">rendering_info()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="cleanup_for_opengl-1">cleanup_for_opengl/1</a></h3>
+<div class="spec">
+<p><code>cleanup_for_opengl(Mesh::<a href="#type-mesh" docgen-rel="seetype" docgen-href="#mesh/0">mesh()</a>) -&gt; <a href="#type-mesh" docgen-rel="seetype" docgen-href="#mesh/0">mesh()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="color_to_decimal_tuples-1">color_to_decimal_tuples/1</a></h3>
+<div class="spec">
+<p><code>color_to_decimal_tuples(TuplesOfColors::[<a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>)]) -&gt; [<a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>)]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="decimal_to_render_color_tuples-1">decimal_to_render_color_tuples/1</a></h3>
+<div class="spec">
+<p><code>decimal_to_render_color_tuples(TuplesOfRGBColors::[<a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>)]) -&gt; [<a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(<a href="#type-render_rgb_color" docgen-rel="seetype" docgen-href="#render_rgb_color/0">render_rgb_color()</a>)]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="initialise_for_opengl-2">initialise_for_opengl/2</a></h3>
+<div class="spec">
+<p><code>initialise_for_opengl(Mesh::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-mesh" docgen-rel="seetype" docgen-href="#mesh/0">mesh()</a>), ProgramId::<a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a>) -&gt; {<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-mesh" docgen-rel="seetype" docgen-href="#mesh/0">mesh()</a>), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>)}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="initialise_for_opengl-3">initialise_for_opengl/3</a></h3>
+<div class="spec">
+<p><code>initialise_for_opengl(Mesh::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-mesh" docgen-rel="seetype" docgen-href="#mesh/0">mesh()</a>), ProgramId::<a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a>, MaybeTextureCache::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>)) -&gt; {<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-mesh" docgen-rel="seetype" docgen-href="#mesh/0">mesh()</a>), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>)}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="render_as_opengl-1">render_as_opengl/1</a></h3>
+<div class="spec">
+<p><code>render_as_opengl(Mesh::<a href="#type-mesh" docgen-rel="seetype" docgen-href="#mesh/0">mesh()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="rendering_info_to_compact_string-1">rendering_info_to_compact_string/1</a></h3>
+<div class="spec">
+<p><code>rendering_info_to_compact_string(RI::<a href="#type-rendering_info" docgen-rel="seetype" docgen-href="#rendering_info/0">rendering_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="rendering_info_to_string-1">rendering_info_to_string/1</a></h3>
+<div class="spec">
+<p><code>rendering_info_to_string(RI::<a href="#type-rendering_info" docgen-rel="seetype" docgen-href="#rendering_info/0">rendering_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="rendering_state_to_string-1">rendering_state_to_string/1</a></h3>
+<div class="spec">
+<p><code>rendering_state_to_string(Rendering_state::<a href="#type-rendering_state" docgen-rel="seetype" docgen-href="#rendering_state/0">rendering_state()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="tessellate_rendering_info-2">tessellate_rendering_info/2</a></h3>
+<div class="spec">
+<p><code>tessellate_rendering_info(OrigFaceType::<a href="#type-face_type" docgen-rel="seetype" docgen-href="#face_type/0">face_type()</a>, RenderInfo::<a href="#type-rendering_info" docgen-rel="seetype" docgen-href="#rendering_info/0">rendering_info()</a>) -&gt; <a href="#type-rendering_info" docgen-rel="seetype" docgen-href="#rendering_info/0">rendering_info()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

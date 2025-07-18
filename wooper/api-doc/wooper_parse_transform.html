@@ -10,217 +10,158 @@
 <hr>
 
 <h1>Module wooper_parse_transform</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>The <b>overall parse transform</b> for the WOOPER layer.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>The <b>overall parse transform</b> for the WOOPER layer.</p>
-
- It is meant to be applied to ASTs describing (WOOPER) classes (not standard
- modules).
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast">ast()</a></h3>
-<p><code>ast() = <a href="ast_base.html#type-ast">ast_base:ast()</a></code></p>
+<p><code>ast() = <a href="ast_base.html#type-ast" docgen-rel="seetype" docgen-href="ast_base#ast/0">ast_base:ast()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-class_info">class_info()</a></h3>
-<p><code>class_info() = <a href="wooper_info.html#type-class_info">wooper_info:class_info()</a></code></p>
+<p><code>class_info() = <a href="wooper_info.html#type-class_info" docgen-rel="seetype" docgen-href="wooper_info#class_info/0">wooper_info:class_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-compose_pair">compose_pair()</a></h3>
-<p><code>compose_pair() = {<a href="ast_info.html#type-function_table">ast_info:function_table()</a>, <a href="#type-class_info">class_info()</a>}</code></p>
-<p> Used for iterated (re)composition of class information.</p>
+<p><code>compose_pair() = {<a href="ast_info.html#type-function_table" docgen-rel="seetype" docgen-href="ast_info#function_table/0">ast_info:function_table()</a>, <a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name" docgen-rel="seetype" docgen-href="file_utils#file_name/0">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-form">form()</a></h3>
-<p><code>form() = <a href="ast_base.html#type-form">ast_base:form()</a></code></p>
+<p><code>form() = <a href="ast_base.html#type-form" docgen-rel="seetype" docgen-href="ast_base#form/0">ast_base:form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_table">function_table()</a></h3>
-<p><code>function_table() = <a href="ast_info.html#type-function_table">ast_info:function_table()</a></code></p>
+<p><code>function_table() = <a href="ast_info.html#type-function_table" docgen-rel="seetype" docgen-href="ast_info#function_table/0">ast_info:function_table()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_info">module_info()</a></h3>
-<p><code>module_info() = <a href="ast_info.html#type-module_info">ast_info:module_info()</a></code></p>
+<p><code>module_info() = <a href="ast_info.html#type-module_info" docgen-rel="seetype" docgen-href="ast_info#module_info/0">ast_info:module_info()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_table">oneway_table()</a></h3>
-<p><code>oneway_table() = <a href="wooper_info.html#type-oneway_table">wooper_info:oneway_table()</a></code></p>
+<p><code>oneway_table() = <a href="wooper_info.html#type-oneway_table" docgen-rel="seetype" docgen-href="wooper_info#oneway_table/0">wooper_info:oneway_table()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-operator_table">operator_table()</a></h3>
-<p><code>operator_table() = <a href="#type-function_table">function_table()</a></code></p>
+<p><code>operator_table() = <a href="#type-function_table" docgen-rel="seetype" docgen-href="#function_table/0">function_table()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-parse_transform_options">parse_transform_options()</a></h3>
-<p><code>parse_transform_options() = <a href="meta_utils.html#type-parse_transform_options">meta_utils:parse_transform_options()</a></code></p>
+<p><code>parse_transform_options() = <a href="meta_utils.html#type-parse_transform_options" docgen-rel="seetype" docgen-href="meta_utils#parse_transform_options/0">meta_utils:parse_transform_options()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-preprocessor_option">preprocessor_option()</a></h3>
-<p><code>preprocessor_option() = <a href="ast_utils.html#type-preprocessor_option">ast_utils:preprocessor_option()</a></code></p>
+<p><code>preprocessor_option() = <a href="ast_utils.html#type-preprocessor_option" docgen-rel="seetype" docgen-href="ast_utils#preprocessor_option/0">ast_utils:preprocessor_option()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-request_table">request_table()</a></h3>
-<p><code>request_table() = <a href="wooper_info.html#type-request_table">wooper_info:request_table()</a></code></p>
+<p><code>request_table() = <a href="wooper_info.html#type-request_table" docgen-rel="seetype" docgen-href="wooper_info#request_table/0">wooper_info:request_table()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-static_table">static_table()</a></h3>
-<p><code>static_table() = <a href="wooper_info.html#type-static_table">wooper_info:static_table()</a></code></p>
+<p><code>static_table() = <a href="wooper_info.html#type-static_table" docgen-rel="seetype" docgen-href="wooper_info#static_table/0">wooper_info:static_table()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td>Adds the specified function into the specified corresponding table.</td></tr>
-<tr><td valign="top"><a href="#add_oneway-4">add_oneway/4</a></td><td>Adds the specified oneway into the specified corresponding table.</td></tr>
-<tr><td valign="top"><a href="#add_request-4">add_request/4</a></td><td>Adds the specified request into the specified corresponding table.</td></tr>
-<tr><td valign="top"><a href="#add_static_method-4">add_static_method/4</a></td><td>Adds the specified static method in the specified corresponding table.</td></tr>
-<tr><td valign="top"><a href="#apply_wooper_transform-2">apply_wooper_transform/2</a></td><td>Transforms specified AST for WOOPER.</td></tr>
-<tr><td valign="top"><a href="#check_class_info-1">check_class_info/1</a></td><td>Ensures that the described class respects appropriate constraints for
- WOOPER generation, besides the ones checked during the AST exploration and the
- ones that will be checked by the compiler.</td></tr>
-<tr><td valign="top"><a href="#create_class_info_from-1">create_class_info_from/1</a></td><td>Recomposes (WOOPER) class information from (Myriad) module-level ones.</td></tr>
-<tr><td valign="top"><a href="#generate_class_info_from-1">generate_class_info_from/1</a></td><td>Returns the class-level information that were gathered from the specified 
-module-level ones.</td></tr>
-<tr><td valign="top"><a href="#generate_module_info_from-1">generate_module_info_from/1</a></td><td>Generates back (Myriad-level) module-level information from specified 
-class-level information.</td></tr>
-<tr><td valign="top"><a href="#get_new_variation_names-0">get_new_variation_names/0</a></td><td>Returns a list of the names of the class_X:*new* operators that are
- generated by WOOPER to branch on the construct/N and thus shall not be defined
- by the user.</td></tr>
-<tr><td valign="top"><a href="#parse_transform-2">parse_transform/2</a></td><td>The parse transform itself, transforming the specified (WOOPER-based)
- Abstract Format code first into a Myriad-based information being itself
- converted in turn into an Erlang-compliant Abstract Format code.</td></tr>
-<tr><td valign="top"><a href="#run_standalone-1">run_standalone/1</a></td><td>Runs the WOOPER parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compilation process), with no 
-specific preprocessor option.</td></tr>
-<tr><td valign="top"><a href="#run_standalone-2">run_standalone/2</a></td><td>Runs the WOOPER parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compilation process), with 
-specified preprocessor options.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_oneway-4">add_oneway/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_request-4">add_request/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_static_method-4">add_static_method/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#apply_wooper_transform-2">apply_wooper_transform/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_class_info-1">check_class_info/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_class_info_from-1">create_class_info_from/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_class_info_from-1">generate_class_info_from/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_module_info_from-1">generate_module_info_from/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_new_variation_names-0">get_new_variation_names/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#parse_transform-2">parse_transform/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_standalone-1">run_standalone/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#run_standalone-2">run_standalone/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add_function-4">add_function/4</a></h3>
 <div class="spec">
-<p><code>add_function(Name::<a href="meta_utils.html#type-function_name">meta_utils:function_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, FunctionTable::<a href="#type-function_table">function_table()</a>) -&gt; <a href="#type-function_table">function_table()</a></code><br></p>
+<p><code>add_function(Name::<a href="meta_utils.html#type-function_name" docgen-rel="seetype" docgen-href="meta_utils#function_name/0">meta_utils:function_name()</a>, Arity::arity(), Form::<a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a>, FunctionTable::<a href="#type-function_table" docgen-rel="seetype" docgen-href="#function_table/0">function_table()</a>) -&gt; <a href="#type-function_table" docgen-rel="seetype" docgen-href="#function_table/0">function_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified function into the specified corresponding table.</p>
+</div>
 
 <h3 class="function"><a name="add_oneway-4">add_oneway/4</a></h3>
 <div class="spec">
-<p><code>add_oneway(Name::<a href="wooper.html#type-oneway_name">wooper:oneway_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, OnewayTable::<a href="#type-oneway_table">oneway_table()</a>) -&gt; <a href="#type-oneway_table">oneway_table()</a></code><br></p>
+<p><code>add_oneway(Name::<a href="wooper.html#type-oneway_name" docgen-rel="seetype" docgen-href="wooper#oneway_name/0">wooper:oneway_name()</a>, Arity::arity(), Form::<a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a>, OnewayTable::<a href="#type-oneway_table" docgen-rel="seetype" docgen-href="#oneway_table/0">oneway_table()</a>) -&gt; <a href="#type-oneway_table" docgen-rel="seetype" docgen-href="#oneway_table/0">oneway_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified oneway into the specified corresponding table.</p>
+</div>
 
 <h3 class="function"><a name="add_request-4">add_request/4</a></h3>
 <div class="spec">
-<p><code>add_request(Name::<a href="wooper.html#type-request_name">wooper:request_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, RequestTable::<a href="#type-request_table">request_table()</a>) -&gt; <a href="#type-request_table">request_table()</a></code><br></p>
+<p><code>add_request(Name::<a href="wooper.html#type-request_name" docgen-rel="seetype" docgen-href="wooper#request_name/0">wooper:request_name()</a>, Arity::arity(), Form::<a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a>, RequestTable::<a href="#type-request_table" docgen-rel="seetype" docgen-href="#request_table/0">request_table()</a>) -&gt; <a href="#type-request_table" docgen-rel="seetype" docgen-href="#request_table/0">request_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified request into the specified corresponding table.</p>
+</div>
 
 <h3 class="function"><a name="add_static_method-4">add_static_method/4</a></h3>
 <div class="spec">
-<p><code>add_static_method(Name::<a href="wooper.html#type-static_name">wooper:static_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, StaticTable::<a href="#type-static_table">static_table()</a>) -&gt; <a href="#type-static_table">static_table()</a></code><br></p>
+<p><code>add_static_method(Name::<a href="wooper.html#type-static_name" docgen-rel="seetype" docgen-href="wooper#static_name/0">wooper:static_name()</a>, Arity::arity(), Form::<a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a>, StaticTable::<a href="#type-static_table" docgen-rel="seetype" docgen-href="#static_table/0">static_table()</a>) -&gt; <a href="#type-static_table" docgen-rel="seetype" docgen-href="#static_table/0">static_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified static method in the specified corresponding table.</p>
+</div>
 
 <h3 class="function"><a name="apply_wooper_transform-2">apply_wooper_transform/2</a></h3>
 <div class="spec">
-<p><code>apply_wooper_transform(InputAST::<a href="#type-ast">ast()</a>, Options::<a href="#type-parse_transform_options">parse_transform_options()</a>) -&gt; {<a href="#type-ast">ast()</a>, <a href="#type-class_info">class_info()</a> | <a href="#type-module_info">module_info()</a>}</code><br></p>
+<p><code>apply_wooper_transform(InputAST::<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, Options::<a href="#type-parse_transform_options" docgen-rel="seetype" docgen-href="#parse_transform_options/0">parse_transform_options()</a>) -&gt; {<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, <a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a> | <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Transforms specified AST for WOOPER.</p>
-
- Depending on the nature of the AST (WOOPER class or mere module), returns a
- class information or a module information.
-</p>
+</div>
 
 <h3 class="function"><a name="check_class_info-1">check_class_info/1</a></h3>
 <div class="spec">
-<p><code>check_class_info(Class_info::<a href="#type-class_info">class_info()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_class_info(Class_info::<a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Ensures that the described class respects appropriate constraints for
- WOOPER generation, besides the ones checked during the AST exploration and the
- ones that will be checked by the compiler.
-</p>
+</div>
 
 <h3 class="function"><a name="create_class_info_from-1">create_class_info_from/1</a></h3>
 <div class="spec">
-<p><code>create_class_info_from(ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-class_info">class_info()</a></code><br></p>
+<p><code>create_class_info_from(ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; <a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a></code><br></p>
 <p> </p>
-</div><p><p>Recomposes (WOOPER) class information from (Myriad) module-level ones.</p>
-
- The goal is to pick the relevant WOOPER-level information (from the module
- info), to transform them and to populate the specified class information with
- the result.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_class_info_from-1">generate_class_info_from/1</a></h3>
 <div class="spec">
-<p><code>generate_class_info_from(ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-class_info">class_info()</a></code><br></p>
+<p><code>generate_class_info_from(ModuleInfo::<a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a>) -&gt; <a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the class-level information that were gathered from the specified 
-module-level ones.</p>
-
- (reciprocal of generate_module_info_from/1)
-</p>
+</div>
 
 <h3 class="function"><a name="generate_module_info_from-1">generate_module_info_from/1</a></h3>
 <div class="spec">
-<p><code>generate_module_info_from(Class_info::<a href="#type-class_info">class_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></code><br></p>
+<p><code>generate_module_info_from(Class_info::<a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>) -&gt; <a href="#type-module_info" docgen-rel="seetype" docgen-href="#module_info/0">module_info()</a></code><br></p>
 <p> </p>
-</div><p><p>Generates back (Myriad-level) module-level information from specified 
-class-level information.</p>
-
- (reciprocal of generate_class_info_from/1)
-</p>
+</div>
 
 <h3 class="function"><a name="get_new_variation_names-0">get_new_variation_names/0</a></h3>
 <div class="spec">
 <p><code>get_new_variation_names() -&gt; any()</code></p>
 <p> </p>
-</div><p>Returns a list of the names of the class_X:*new* operators that are
- generated by WOOPER to branch on the construct/N and thus shall not be defined
- by the user.
-</p>
+</div>
 
 <h3 class="function"><a name="parse_transform-2">parse_transform/2</a></h3>
 <div class="spec">
-<p><code>parse_transform(InputAST::<a href="#type-ast">ast()</a>, Options::<a href="#type-parse_transform_options">parse_transform_options()</a>) -&gt; <a href="#type-ast">ast()</a></code><br></p>
+<p><code>parse_transform(InputAST::<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, Options::<a href="#type-parse_transform_options" docgen-rel="seetype" docgen-href="#parse_transform_options/0">parse_transform_options()</a>) -&gt; <a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a></code><br></p>
 <p> </p>
-</div><p>The parse transform itself, transforming the specified (WOOPER-based)
- Abstract Format code first into a Myriad-based information being itself
- converted in turn into an Erlang-compliant Abstract Format code.
-</p>
+</div>
 
 <h3 class="function"><a name="run_standalone-1">run_standalone/1</a></h3>
 <div class="spec">
-<p><code>run_standalone(FileToTransform::<a href="#type-file_name">file_name()</a>) -&gt; {<a href="#type-ast">ast()</a>, <a href="#type-class_info">class_info()</a>}</code><br></p>
+<p><code>run_standalone(FileToTransform::<a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a>) -&gt; {<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, <a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Runs the WOOPER parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compilation process), with no 
-specific preprocessor option.</p>
-
- This allows to benefit from all compilation error and warning messages,
- whereas they are seldom available from a code directly run as a parse
- transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
- a module is not found).
-</p>
+</div>
 
 <h3 class="function"><a name="run_standalone-2">run_standalone/2</a></h3>
 <div class="spec">
-<p><code>run_standalone(FileToTransform::<a href="#type-file_name">file_name()</a>, PreprocessorOptions::[<a href="#type-preprocessor_option">preprocessor_option()</a>]) -&gt; {<a href="#type-ast">ast()</a>, <a href="#type-class_info">class_info()</a>}</code><br></p>
+<p><code>run_standalone(FileToTransform::<a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a>, PreprocessorOptions::[<a href="#type-preprocessor_option" docgen-rel="seetype" docgen-href="#preprocessor_option/0">preprocessor_option()</a>]) -&gt; {<a href="#type-ast" docgen-rel="seetype" docgen-href="#ast/0">ast()</a>, <a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Runs the WOOPER parse transform defined here in a standalone way (that is 
-without being triggered by the usual, integrated compilation process), with 
-specified preprocessor options.</p>
-
- This allows to benefit from all compilation error and warning messages,
- whereas they are seldom available from a code directly run as a parse
- transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
- a module is not found).
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

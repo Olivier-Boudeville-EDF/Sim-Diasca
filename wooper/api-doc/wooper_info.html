@@ -10,390 +10,324 @@
 <hr>
 
 <h1>Module wooper_info</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Centralisation of <b>class-level information</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
 
-<h2><a name="description">Description</a></h2>Centralisation of <b>class-level information</b>.
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-ast_location">ast_location()</a></h3>
-<p><code>ast_location() = <a href="ast_info.html#type-ast_location">ast_info:ast_location()</a></code></p>
+<p><code>ast_location() = <a href="ast_info.html#type-ast_location" docgen-rel="seetype" docgen-href="ast_info#ast_location/0">ast_info:ast_location()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_description">attribute_description()</a></h3>
-<p><code>attribute_description() = <a href="#type-ustring">ustring()</a></code></p>
+<p><code>attribute_description() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_info">attribute_info()</a></h3>
-<p><code>attribute_info() = #attribute_info{name = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a>, type = <a href="#type-maybe">maybe</a>(<a href="type_utils.html#type-type_description">type_utils:type_description()</a>), qualifiers = <a href="#type-maybe">maybe</a>([<a href="wooper.html#type-attribute_qualifier">wooper:attribute_qualifier()</a>]), description = <a href="#type-maybe">maybe</a>(<a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>)}</code></p>
+<p><code>attribute_info() = #attribute_info{name = <a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a>, type = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="type_utils.html#type-type_description" docgen-rel="seetype" docgen-href="type_utils#type_description/0">type_utils:type_description()</a>), qualifiers = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="wooper.html#type-attribute_qualifier" docgen-rel="seetype" docgen-href="wooper#attribute_qualifier/0">wooper:attribute_qualifier()</a>]), description = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a>)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
-<p><code>attribute_name() = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a></code></p>
+<p><code>attribute_name() = <a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_qualifier">attribute_qualifier()</a></h3>
-<p><code>attribute_qualifier() = <a href="wooper.html#type-attribute_qualifier">wooper:attribute_qualifier()</a></code></p>
+<p><code>attribute_qualifier() = <a href="wooper.html#type-attribute_qualifier" docgen-rel="seetype" docgen-href="wooper#attribute_qualifier/0">wooper:attribute_qualifier()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_qualifiers">attribute_qualifiers()</a></h3>
-<p><code>attribute_qualifiers() = <a href="#type-attribute_qualifier">attribute_qualifier()</a> | [<a href="#type-attribute_qualifier">attribute_qualifier()</a>]</code></p>
+<p><code>attribute_qualifiers() = <a href="#type-attribute_qualifier" docgen-rel="seetype" docgen-href="#attribute_qualifier/0">attribute_qualifier()</a> | [<a href="#type-attribute_qualifier" docgen-rel="seetype" docgen-href="#attribute_qualifier/0">attribute_qualifier()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-attribute_spec">attribute_spec()</a></h3>
-<p><code>attribute_spec() = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a> | {<a href="wooper.html#type-attribute_name">wooper:attribute_name()</a>, <a href="#type-attribute_description">attribute_description()</a>} | {<a href="wooper.html#type-attribute_name">wooper:attribute_name()</a>, <a href="wooper.html#type-attribute_type">wooper:attribute_type()</a>, <a href="#type-attribute_description">attribute_description()</a>} | {<a href="wooper.html#type-attribute_name">wooper:attribute_name()</a>, <a href="wooper.html#type-attribute_type">wooper:attribute_type()</a>, <a href="#type-attribute_qualifiers">attribute_qualifiers()</a>, <a href="#type-attribute_description">attribute_description()</a>}</code></p>
-<p> How attributes are to be specified by the user.</p>
+<p><code>attribute_spec() = <a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a> | {<a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a>, <a href="#type-attribute_description" docgen-rel="seetype" docgen-href="#attribute_description/0">attribute_description()</a>} | {<a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a>, <a href="wooper.html#type-attribute_type" docgen-rel="seetype" docgen-href="wooper#attribute_type/0">wooper:attribute_type()</a>, <a href="#type-attribute_description" docgen-rel="seetype" docgen-href="#attribute_description/0">attribute_description()</a>} | {<a href="wooper.html#type-attribute_name" docgen-rel="seetype" docgen-href="wooper#attribute_name/0">wooper:attribute_name()</a>, <a href="wooper.html#type-attribute_type" docgen-rel="seetype" docgen-href="wooper#attribute_type/0">wooper:attribute_type()</a>, <a href="#type-attribute_qualifiers" docgen-rel="seetype" docgen-href="#attribute_qualifiers/0">attribute_qualifiers()</a>, <a href="#type-attribute_description" docgen-rel="seetype" docgen-href="#attribute_description/0">attribute_description()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-attribute_table">attribute_table()</a></h3>
-<p><code>attribute_table() = <a href="#type-table">table</a>(<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_info">attribute_info()</a>)</code></p>
-<p> Stores all class-level information (i.e. metadata) regarding attributes (class
- ones, not parse ones).</p>
+<p><code>attribute_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, <a href="#type-attribute_info" docgen-rel="seetype" docgen-href="#attribute_info/0">attribute_info()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-class_description">class_description()</a></h3>
-<p><code>class_description() = <a href="#type-ustring">ustring()</a></code></p>
-<p> The description of a class.</p>
+<p><code>class_description() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-class_entry">class_entry()</a></h3>
-<p><code>class_entry() = <a href="#type-maybe">maybe</a>({<a href="wooper.html#type-classname">wooper:classname()</a>, <a href="ast_info.html#type-located_form">ast_info:located_form()</a>})</code></p>
+<p><code>class_entry() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>({<a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>, <a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>})</code></p>
 
 
 <h3 class="typedecl"><a name="type-class_info">class_info()</a></h3>
-<p><code>class_info() = #class_info{class = <a href="#type-class_entry">class_entry()</a>, superclasses = [<a href="wooper.html#type-classname">wooper:classname()</a>], attributes = <a href="wooper_info.html#type-attribute_table">wooper_info:attribute_table()</a>, inherited_attributes = <a href="wooper_info.html#type-attribute_table">wooper_info:attribute_table()</a>, compilation_options = <a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>, compilation_option_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], parse_attributes = <a href="ast_info.html#type-attribute_table">ast_info:attribute_table()</a>, remote_spec_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], includes = [<a href="file_utils.html#type-file_name">file_utils:file_name()</a>], include_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], type_exports = <a href="ast_info.html#type-type_export_table">ast_info:type_export_table()</a>, types = <a href="ast_info.html#type-type_table">ast_info:type_table()</a>, records = <a href="ast_info.html#type-record_table">ast_info:record_table()</a>, function_imports = <a href="ast_info.html#type-function_import_table">ast_info:function_import_table()</a>, function_imports_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], function_exports = <a href="ast_info.html#type-function_export_table">ast_info:function_export_table()</a>, functions = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, constructors = <a href="wooper_info.html#type-constructor_table">wooper_info:constructor_table()</a>, new_operators = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, destructor = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-function_info">ast_info:function_info()</a>), request_exports = <a href="wooper_info.html#type-request_export_table">wooper_info:request_export_table()</a>, requests = <a href="wooper_info.html#type-request_table">wooper_info:request_table()</a>, oneway_exports = <a href="wooper_info.html#type-oneway_export_table">wooper_info:oneway_export_table()</a>, oneways = <a href="wooper_info.html#type-oneway_table">wooper_info:oneway_table()</a>, static_exports = <a href="wooper_info.html#type-static_export_table">wooper_info:static_export_table()</a>, statics = <a href="wooper_info.html#type-static_table">wooper_info:static_table()</a>, optional_callbacks_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], debug_mode = boolean(), last_file_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-located_form">ast_info:located_form()</a>), markers = <a href="ast_info.html#type-section_marker_table">ast_info:section_marker_table()</a>, errors = [<a href="ast_info.html#type-error">ast_info:error()</a>], unhandled_forms = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>]}</code></p>
+<p><code>class_info() = #class_info{class = <a href="wooper_info.html#type-class_entry" docgen-rel="seetype" docgen-href="wooper_info#class_entry/0">wooper_info:class_entry()</a>, superclasses = [<a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>], attributes = <a href="wooper_info.html#type-attribute_table" docgen-rel="seetype" docgen-href="wooper_info#attribute_table/0">wooper_info:attribute_table()</a>, inherited_attributes = <a href="wooper_info.html#type-attribute_table" docgen-rel="seetype" docgen-href="wooper_info#attribute_table/0">wooper_info:attribute_table()</a>, compilation_options = <a href="ast_info.html#type-compile_option_table" docgen-rel="seetype" docgen-href="ast_info#compile_option_table/0">ast_info:compile_option_table()</a>, compilation_option_defs = [<a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>], parse_attributes = <a href="ast_info.html#type-attribute_table" docgen-rel="seetype" docgen-href="ast_info#attribute_table/0">ast_info:attribute_table()</a>, remote_spec_defs = [<a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>], includes = [<a href="file_utils.html#type-file_name" docgen-rel="seetype" docgen-href="file_utils#file_name/0">file_utils:file_name()</a>], include_defs = [<a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>], type_exports = <a href="ast_info.html#type-type_export_table" docgen-rel="seetype" docgen-href="ast_info#type_export_table/0">ast_info:type_export_table()</a>, types = <a href="ast_info.html#type-type_table" docgen-rel="seetype" docgen-href="ast_info#type_table/0">ast_info:type_table()</a>, records = <a href="ast_info.html#type-record_table" docgen-rel="seetype" docgen-href="ast_info#record_table/0">ast_info:record_table()</a>, function_imports = <a href="ast_info.html#type-function_import_table" docgen-rel="seetype" docgen-href="ast_info#function_import_table/0">ast_info:function_import_table()</a>, function_imports_defs = [<a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>], function_exports = <a href="ast_info.html#type-function_export_table" docgen-rel="seetype" docgen-href="ast_info#function_export_table/0">ast_info:function_export_table()</a>, functions = <a href="ast_info.html#type-function_table" docgen-rel="seetype" docgen-href="ast_info#function_table/0">ast_info:function_table()</a>, constructors = <a href="wooper_info.html#type-constructor_table" docgen-rel="seetype" docgen-href="wooper_info#constructor_table/0">wooper_info:constructor_table()</a>, new_operators = <a href="ast_info.html#type-function_table" docgen-rel="seetype" docgen-href="ast_info#function_table/0">ast_info:function_table()</a>, destructor = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_info.html#type-function_info" docgen-rel="seetype" docgen-href="ast_info#function_info/0">ast_info:function_info()</a>), request_exports = <a href="wooper_info.html#type-request_export_table" docgen-rel="seetype" docgen-href="wooper_info#request_export_table/0">wooper_info:request_export_table()</a>, requests = <a href="wooper_info.html#type-request_table" docgen-rel="seetype" docgen-href="wooper_info#request_table/0">wooper_info:request_table()</a>, oneway_exports = <a href="wooper_info.html#type-oneway_export_table" docgen-rel="seetype" docgen-href="wooper_info#oneway_export_table/0">wooper_info:oneway_export_table()</a>, oneways = <a href="wooper_info.html#type-oneway_table" docgen-rel="seetype" docgen-href="wooper_info#oneway_table/0">wooper_info:oneway_table()</a>, static_exports = <a href="wooper_info.html#type-static_export_table" docgen-rel="seetype" docgen-href="wooper_info#static_export_table/0">wooper_info:static_export_table()</a>, statics = <a href="wooper_info.html#type-static_table" docgen-rel="seetype" docgen-href="wooper_info#static_table/0">wooper_info:static_table()</a>, optional_callbacks_defs = [<a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>], debug_mode = boolean(), last_file_location = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>), markers = <a href="ast_info.html#type-section_marker_table" docgen-rel="seetype" docgen-href="ast_info#section_marker_table/0">ast_info:section_marker_table()</a>, errors = [<a href="ast_info.html#type-error" docgen-rel="seetype" docgen-href="ast_info#error/0">ast_info:error()</a>], unhandled_forms = [<a href="ast_info.html#type-located_form" docgen-rel="seetype" docgen-href="ast_info#located_form/0">ast_info:located_form()</a>]}</code></p>
 
 
 <h3 class="typedecl"><a name="type-clause_def">clause_def()</a></h3>
-<p><code>clause_def() = <a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a></code></p>
+<p><code>clause_def() = <a href="meta_utils.html#type-clause_def" docgen-rel="seetype" docgen-href="meta_utils#clause_def/0">meta_utils:clause_def()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-constructor_table">constructor_table()</a></h3>
-<p><code>constructor_table() = <a href="#type-table">table</a>(arity(), <a href="ast_info.html#type-function_info">ast_info:function_info()</a>)</code></p>
-<p> A table storing information about the constructors involved, regarding a
- class.</p>
+<p><code>constructor_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(arity(), <a href="ast_info.html#type-function_info" docgen-rel="seetype" docgen-href="ast_info#function_info/0">ast_info:function_info()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
-<p><code>function_id() = <a href="meta_utils.html#type-function_id">meta_utils:function_id()</a></code></p>
+<p><code>function_id() = <a href="meta_utils.html#type-function_id" docgen-rel="seetype" docgen-href="meta_utils#function_id/0">meta_utils:function_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-indentation_level">indentation_level()</a></h3>
-<p><code>indentation_level() = <a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a></code></p>
+<p><code>indentation_level() = <a href="text_utils.html#type-indentation_level" docgen-rel="seetype" docgen-href="text_utils#indentation_level/0">text_utils:indentation_level()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-line">line()</a></h3>
-<p><code>line() = <a href="ast_base.html#type-line">ast_base:line()</a></code></p>
+<p><code>line() = <a href="ast_base.html#type-line" docgen-rel="seetype" docgen-href="ast_base#line/0">ast_base:line()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-located_method_spec">located_method_spec()</a></h3>
-<p><code>located_method_spec() = {<a href="#type-ast_location">ast_location()</a>, <a href="#type-method_spec">method_spec()</a>}</code></p>
-<p> The type specification of a method.</p>
+<p><code>located_method_spec() = {<a href="#type-ast_location" docgen-rel="seetype" docgen-href="#ast_location/0">ast_location()</a>, <a href="#type-method_spec" docgen-rel="seetype" docgen-href="#method_spec/0">method_spec()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-method_spec">method_spec()</a></h3>
-<p><code>method_spec() = <a href="ast_base.html#type-form">ast_base:form()</a></code></p>
-<p> The form corresponding to a method specification.</p>
+<p><code>method_spec() = <a href="ast_base.html#type-form" docgen-rel="seetype" docgen-href="ast_base#form/0">ast_base:form()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-oneway_export_table">oneway_export_table()</a></h3>
-<p><code>oneway_export_table() = <a href="#type-table">table</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-line">line()</a>, [<a href="wooper.html#type-oneway_id">wooper:oneway_id()</a>]})</code></p>
-<p><p> Table storing the export declarations for oneway methods.</p>
+<p><code>oneway_export_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-ast_location" docgen-rel="seetype" docgen-href="#ast_location/0">ast_location()</a>, {<a href="#type-line" docgen-rel="seetype" docgen-href="#line/0">line()</a>, [<a href="wooper.html#type-oneway_id" docgen-rel="seetype" docgen-href="wooper#oneway_id/0">wooper:oneway_id()</a>]})</code></p>
 
- Quite similar to ast_info:function_export_table().</p>
 
 <h3 class="typedecl"><a name="type-oneway_info">oneway_info()</a></h3>
-<p><code>oneway_info() = #oneway_info{name = <a href="wooper.html#type-oneway_name">wooper:oneway_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</code></p>
+<p><code>oneway_info() = #oneway_info{name = <a href="wooper.html#type-oneway_name" docgen-rel="seetype" docgen-href="wooper#oneway_name/0">wooper:oneway_name()</a>, arity = <a href="wooper.html#type-method_arity" docgen-rel="seetype" docgen-href="wooper#method_arity/0">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers" docgen-rel="seetype" docgen-href="wooper#method_qualifiers/0">wooper:method_qualifiers()</a>, ast_location = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_info.html#type-ast_location" docgen-rel="seetype" docgen-href="ast_info#ast_location/0">ast_info:ast_location()</a>), file_location = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def" docgen-rel="seetype" docgen-href="meta_utils#clause_def/0">meta_utils:clause_def()</a>], spec = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="wooper_info.html#type-located_method_spec" docgen-rel="seetype" docgen-href="wooper_info#located_method_spec/0">wooper_info:located_method_spec()</a>)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_table">oneway_table()</a></h3>
-<p><code>oneway_table() = <a href="#type-table">table</a>(<a href="wooper.html#type-oneway_id">wooper:oneway_id()</a>, <a href="#type-oneway_info">oneway_info()</a>)</code></p>
-<p><p> Table storing reference definitions of oneway methods.</p>
+<p><code>oneway_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="wooper.html#type-oneway_id" docgen-rel="seetype" docgen-href="wooper#oneway_id/0">wooper:oneway_id()</a>, <a href="#type-oneway_info" docgen-rel="seetype" docgen-href="#oneway_info/0">oneway_info()</a>)</code></p>
 
- Quite similar to ast_info:function_table().</p>
 
 <h3 class="typedecl"><a name="type-request_export_table">request_export_table()</a></h3>
-<p><code>request_export_table() = <a href="#type-table">table</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-line">line()</a>, [<a href="wooper.html#type-request_id">wooper:request_id()</a>]})</code></p>
-<p><p> Table storing the export declarations for request methods.</p>
+<p><code>request_export_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-ast_location" docgen-rel="seetype" docgen-href="#ast_location/0">ast_location()</a>, {<a href="#type-line" docgen-rel="seetype" docgen-href="#line/0">line()</a>, [<a href="wooper.html#type-request_id" docgen-rel="seetype" docgen-href="wooper#request_id/0">wooper:request_id()</a>]})</code></p>
 
- Quite similar to ast_info:function_export_table().</p>
 
 <h3 class="typedecl"><a name="type-request_info">request_info()</a></h3>
-<p><code>request_info() = #request_info{name = <a href="wooper.html#type-request_name">wooper:request_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</code></p>
+<p><code>request_info() = #request_info{name = <a href="wooper.html#type-request_name" docgen-rel="seetype" docgen-href="wooper#request_name/0">wooper:request_name()</a>, arity = <a href="wooper.html#type-method_arity" docgen-rel="seetype" docgen-href="wooper#method_arity/0">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers" docgen-rel="seetype" docgen-href="wooper#method_qualifiers/0">wooper:method_qualifiers()</a>, ast_location = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_info.html#type-ast_location" docgen-rel="seetype" docgen-href="ast_info#ast_location/0">ast_info:ast_location()</a>), file_location = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def" docgen-rel="seetype" docgen-href="meta_utils#clause_def/0">meta_utils:clause_def()</a>], spec = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="wooper_info.html#type-located_method_spec" docgen-rel="seetype" docgen-href="wooper_info#located_method_spec/0">wooper_info:located_method_spec()</a>)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-request_table">request_table()</a></h3>
-<p><code>request_table() = <a href="#type-table">table</a>(<a href="wooper.html#type-request_id">wooper:request_id()</a>, <a href="#type-request_info">request_info()</a>)</code></p>
-<p><p> Table storing reference definitions of request methods.</p>
+<p><code>request_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="wooper.html#type-request_id" docgen-rel="seetype" docgen-href="wooper#request_id/0">wooper:request_id()</a>, <a href="#type-request_info" docgen-rel="seetype" docgen-href="#request_info/0">request_info()</a>)</code></p>
 
- Quite similar to ast_info:function_table().</p>
 
 <h3 class="typedecl"><a name="type-static_export_table">static_export_table()</a></h3>
-<p><code>static_export_table() = <a href="#type-table">table</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-line">line()</a>, [<a href="wooper.html#type-static_id">wooper:static_id()</a>]})</code></p>
-<p><p> Table storing the export declarations for static methods.</p>
+<p><code>static_export_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-ast_location" docgen-rel="seetype" docgen-href="#ast_location/0">ast_location()</a>, {<a href="#type-line" docgen-rel="seetype" docgen-href="#line/0">line()</a>, [<a href="wooper.html#type-static_id" docgen-rel="seetype" docgen-href="wooper#static_id/0">wooper:static_id()</a>]})</code></p>
 
- Quite similar to ast_info:function_export_table().</p>
 
 <h3 class="typedecl"><a name="type-static_info">static_info()</a></h3>
-<p><code>static_info() = #static_info{name = <a href="wooper.html#type-static_name">wooper:static_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</code></p>
+<p><code>static_info() = #static_info{name = <a href="wooper.html#type-static_name" docgen-rel="seetype" docgen-href="wooper#static_name/0">wooper:static_name()</a>, arity = <a href="wooper.html#type-method_arity" docgen-rel="seetype" docgen-href="wooper#method_arity/0">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers" docgen-rel="seetype" docgen-href="wooper#method_qualifiers/0">wooper:method_qualifiers()</a>, ast_location = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_info.html#type-ast_location" docgen-rel="seetype" docgen-href="ast_info#ast_location/0">ast_info:ast_location()</a>), file_location = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def" docgen-rel="seetype" docgen-href="meta_utils#clause_def/0">meta_utils:clause_def()</a>], spec = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="wooper_info.html#type-located_method_spec" docgen-rel="seetype" docgen-href="wooper_info#located_method_spec/0">wooper_info:located_method_spec()</a>)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-static_table">static_table()</a></h3>
-<p><code>static_table() = <a href="#type-table">table</a>(<a href="wooper.html#type-static_id">wooper:static_id()</a>, <a href="#type-static_info">static_info()</a>)</code></p>
-<p><p> Table storing reference definitions of static methods.</p>
+<p><code>static_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="wooper.html#type-static_id" docgen-rel="seetype" docgen-href="wooper#static_id/0">wooper:static_id()</a>, <a href="#type-static_info" docgen-rel="seetype" docgen-href="#static_info/0">static_info()</a>)</code></p>
 
- Quite similar to ast_info:function_table().</p>
 
 <h3 class="typedecl"><a name="type-superclasses">superclasses()</a></h3>
-<p><code>superclasses() = [<a href="wooper.html#type-classname">wooper:classname()</a>]</code></p>
-<p> Mother classes (usually direct ones).</p>
+<p><code>superclasses() = [<a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#attribute_info_to_string-2">attribute_info_to_string/2</a></td><td>Returns a textual representation of the specified attribute information.</td></tr>
-<tr><td valign="top"><a href="#class_entry_to_string-2">class_entry_to_string/2</a></td><td>Returns a textual representation of the name of the class corresponding
- to specified entry, possibly with forms.</td></tr>
-<tr><td valign="top"><a href="#class_info_to_string-1">class_info_to_string/1</a></td><td>Returns a textual description of specified class information, not 
-including forms, and based on a default indentation level.</td></tr>
-<tr><td valign="top"><a href="#class_info_to_string-2">class_info_to_string/2</a></td><td>Returns a textual description of specified class information, including 
-forms if requested, and with specified indentation level.</td></tr>
-<tr><td valign="top"><a href="#class_info_to_string-3">class_info_to_string/3</a></td><td>Returns a textual description of specified class information, including 
-forms if requested, and with specified indentation level.</td></tr>
-<tr><td valign="top"><a href="#class_specific_attributes_to_string-3">class_specific_attributes_to_string/3</a></td><td>Returns a textual representation of the specified class-specific
- attributes.</td></tr>
-<tr><td valign="top"><a href="#constructors_to_string-3">constructors_to_string/3</a></td><td>Returns a textual representation of the specified constructor
- information.</td></tr>
-<tr><td valign="top"><a href="#definition_to_string-2">definition_to_string/2</a></td><td>Returns a textual description of the specified method definition.</td></tr>
-<tr><td valign="top"><a href="#destructor_to_string-3">destructor_to_string/3</a></td><td>Returns a textual representation of the specified destructor information.</td></tr>
-<tr><td valign="top"><a href="#get_execution_builtins-0">get_execution_builtins/0</a></td><td>Returns the function identifiers of the WOOPER builtins regarding
- behaviour (execution).</td></tr>
-<tr><td valign="top"><a href="#get_helper_builtins-0">get_helper_builtins/0</a></td><td>Returns the function identifiers of the WOOPER helper builtins.</td></tr>
-<tr><td valign="top"><a href="#get_inner_builtins-0">get_inner_builtins/0</a></td><td>Returns the function identifiers of the WOOPER inner builtins (defined
- for its own mode of operation).</td></tr>
-<tr><td valign="top"><a href="#get_metadata_builtins-0">get_metadata_builtins/0</a></td><td>Returns the function identifiers of the WOOPER builtins regarding class
- metadata.</td></tr>
-<tr><td valign="top"><a href="#get_serialisation_builtins-0">get_serialisation_builtins/0</a></td><td>Returns the function identifiers of the WOOPER serialisation builtins.</td></tr>
-<tr><td valign="top"><a href="#get_state_builtins-0">get_state_builtins/0</a></td><td>Returns the function identifiers of the WOOPER builtins regarding state.</td></tr>
-<tr><td valign="top"><a href="#get_wooper_builtins-0">get_wooper_builtins/0</a></td><td>Returns the function identifiers of all WOOPER builtins.</td></tr>
-<tr><td valign="top"><a href="#inherited_attributes_to_string-3">inherited_attributes_to_string/3</a></td><td>Returns a textual representation of the specified inherited (class)
- attributes.</td></tr>
-<tr><td valign="top"><a href="#init_class_info-0">init_class_info/0</a></td><td>Returns a new, blank instance of the class_info record, typically to be
- fed with an input AST afterwards.</td></tr>
-<tr><td valign="top"><a href="#located_spec_to_string-1">located_spec_to_string/1</a></td><td>Returns a textual description of the specified located method spec.</td></tr>
-<tr><td valign="top"><a href="#oneway_info_to_string-3">oneway_info_to_string/3</a></td><td>Returns a textual representation of the specified oneway information.</td></tr>
-<tr><td valign="top"><a href="#oneways_to_string-3">oneways_to_string/3</a></td><td>Returns a textual representation of the specified information about
- oneways.</td></tr>
-<tr><td valign="top"><a href="#qualifiers_to_string-1">qualifiers_to_string/1</a></td><td>Returns a textual description of the specified qualifiers.</td></tr>
-<tr><td valign="top"><a href="#request_info_to_string-3">request_info_to_string/3</a></td><td>Returns a textual representation of the specified request information.</td></tr>
-<tr><td valign="top"><a href="#requests_to_string-3">requests_to_string/3</a></td><td>Returns a textual representation of the specified information about
- requests.</td></tr>
-<tr><td valign="top"><a href="#static_method_info_to_string-3">static_method_info_to_string/3</a></td><td>Returns a textual representation of the specified static method
- information.</td></tr>
-<tr><td valign="top"><a href="#static_methods_to_string-3">static_methods_to_string/3</a></td><td>Returns a textual representation of the specified information about
- static methods.</td></tr>
-<tr><td valign="top"><a href="#superclasses_to_string-3">superclasses_to_string/3</a></td><td>Returns a textual representation of the specified superclasses.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#attribute_info_to_string-2">attribute_info_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#class_entry_to_string-2">class_entry_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#class_info_to_string-1">class_info_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#class_info_to_string-2">class_info_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#class_info_to_string-3">class_info_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#class_specific_attributes_to_string-3">class_specific_attributes_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#constructors_to_string-3">constructors_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#definition_to_string-2">definition_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destructor_to_string-3">destructor_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_execution_builtins-0">get_execution_builtins/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_helper_builtins-0">get_helper_builtins/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_inner_builtins-0">get_inner_builtins/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_metadata_builtins-0">get_metadata_builtins/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_serialisation_builtins-0">get_serialisation_builtins/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_state_builtins-0">get_state_builtins/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_wooper_builtins-0">get_wooper_builtins/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#inherited_attributes_to_string-3">inherited_attributes_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#init_class_info-0">init_class_info/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#located_spec_to_string-1">located_spec_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#oneway_info_to_string-3">oneway_info_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#oneways_to_string-3">oneways_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#qualifiers_to_string-1">qualifiers_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#request_info_to_string-3">request_info_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#requests_to_string-3">requests_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#static_method_info_to_string-3">static_method_info_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#static_methods_to_string-3">static_methods_to_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#superclasses_to_string-3">superclasses_to_string/3</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="attribute_info_to_string-2">attribute_info_to_string/2</a></h3>
 <div class="spec">
-<p><code>attribute_info_to_string(AttributeInfo::<a href="#type-attribute_info">attribute_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>attribute_info_to_string(AttributeInfo::<a href="#type-attribute_info" docgen-rel="seetype" docgen-href="#attribute_info/0">attribute_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified attribute information.</p>
+</div>
 
 <h3 class="function"><a name="class_entry_to_string-2">class_entry_to_string/2</a></h3>
 <div class="spec">
-<p><code>class_entry_to_string(ClassEntry::<a href="#type-class_entry">class_entry()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>class_entry_to_string(ClassEntry::<a href="#type-class_entry" docgen-rel="seetype" docgen-href="#class_entry/0">class_entry()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the name of the class corresponding
- to specified entry, possibly with forms.
-</p>
+</div>
 
 <h3 class="function"><a name="class_info_to_string-1">class_info_to_string/1</a></h3>
 <div class="spec">
-<p><code>class_info_to_string(ClassInfo::<a href="#type-class_info">class_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>class_info_to_string(ClassInfo::<a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of specified class information, not 
-including forms, and based on a default indentation level.</p>
-
- Note: here the location information is dropped for all located definitions.
-</p>
+</div>
 
 <h3 class="function"><a name="class_info_to_string-2">class_info_to_string/2</a></h3>
 <div class="spec">
-<p><code>class_info_to_string(ClassInfo::<a href="#type-class_info">class_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>class_info_to_string(ClassInfo::<a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>, DoIncludeForms::boolean()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of specified class information, including 
-forms if requested, and with specified indentation level.</p>
-
- Note: here the location information is dropped for all located definitions.
-</p>
+</div>
 
 <h3 class="function"><a name="class_info_to_string-3">class_info_to_string/3</a></h3>
 <div class="spec">
-<p><code>class_info_to_string(Class_info::<a href="#type-class_info">class_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>class_info_to_string(Class_info::<a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of specified class information, including 
-forms if requested, and with specified indentation level.</p>
-
- Note: here the location information is dropped for all located definitions.
-</p>
+</div>
 
 <h3 class="function"><a name="class_specific_attributes_to_string-3">class_specific_attributes_to_string/3</a></h3>
 <div class="spec">
-<p><code>class_specific_attributes_to_string(AttributeTable::<a href="#type-attribute_table">attribute_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>class_specific_attributes_to_string(AttributeTable::<a href="#type-attribute_table" docgen-rel="seetype" docgen-href="#attribute_table/0">attribute_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified class-specific
- attributes.
-</p>
+</div>
 
 <h3 class="function"><a name="constructors_to_string-3">constructors_to_string/3</a></h3>
 <div class="spec">
-<p><code>constructors_to_string(ConstructorTable::<a href="#type-constructor_table">constructor_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>constructors_to_string(ConstructorTable::<a href="#type-constructor_table" docgen-rel="seetype" docgen-href="#constructor_table/0">constructor_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified constructor
- information.
-</p>
+</div>
 
 <h3 class="function"><a name="definition_to_string-2">definition_to_string/2</a></h3>
 <div class="spec">
-<p><code>definition_to_string(Clauses::[<a href="#type-clause_def">clause_def()</a>], FileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-file_loc">file_loc()</a>)) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>definition_to_string(Clauses::[<a href="#type-clause_def" docgen-rel="seetype" docgen-href="#clause_def/0">clause_def()</a>], FileLoc::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>)) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified method definition.</p>
+</div>
 
 <h3 class="function"><a name="destructor_to_string-3">destructor_to_string/3</a></h3>
 <div class="spec">
-<p><code>destructor_to_string(DestructorInfo::<a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-function_info">ast_info:function_info()</a>), DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>destructor_to_string(DestructorInfo::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ast_info.html#type-function_info" docgen-rel="seetype" docgen-href="ast_info#function_info/0">ast_info:function_info()</a>), DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified destructor information.</p>
+</div>
 
 <h3 class="function"><a name="get_execution_builtins-0">get_execution_builtins/0</a></h3>
 <div class="spec">
-<p><code>get_execution_builtins() -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>get_execution_builtins() -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the function identifiers of the WOOPER builtins regarding
- behaviour (execution).
-</p>
+</div>
 
 <h3 class="function"><a name="get_helper_builtins-0">get_helper_builtins/0</a></h3>
 <div class="spec">
-<p><code>get_helper_builtins() -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>get_helper_builtins() -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the function identifiers of the WOOPER helper builtins.</p>
+</div>
 
 <h3 class="function"><a name="get_inner_builtins-0">get_inner_builtins/0</a></h3>
 <div class="spec">
-<p><code>get_inner_builtins() -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>get_inner_builtins() -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the function identifiers of the WOOPER inner builtins (defined
- for its own mode of operation).
-</p>
+</div>
 
 <h3 class="function"><a name="get_metadata_builtins-0">get_metadata_builtins/0</a></h3>
 <div class="spec">
-<p><code>get_metadata_builtins() -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>get_metadata_builtins() -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the function identifiers of the WOOPER builtins regarding class
- metadata.
-</p>
+</div>
 
 <h3 class="function"><a name="get_serialisation_builtins-0">get_serialisation_builtins/0</a></h3>
 <div class="spec">
-<p><code>get_serialisation_builtins() -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>get_serialisation_builtins() -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the function identifiers of the WOOPER serialisation builtins.</p>
+</div>
 
 <h3 class="function"><a name="get_state_builtins-0">get_state_builtins/0</a></h3>
 <div class="spec">
-<p><code>get_state_builtins() -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>get_state_builtins() -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the function identifiers of the WOOPER builtins regarding state.</p>
+</div>
 
 <h3 class="function"><a name="get_wooper_builtins-0">get_wooper_builtins/0</a></h3>
 <div class="spec">
-<p><code>get_wooper_builtins() -&gt; [<a href="#type-function_id">function_id()</a>]</code><br></p>
+<p><code>get_wooper_builtins() -&gt; [<a href="#type-function_id" docgen-rel="seetype" docgen-href="#function_id/0">function_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the function identifiers of all WOOPER builtins.</p>
+</div>
 
 <h3 class="function"><a name="inherited_attributes_to_string-3">inherited_attributes_to_string/3</a></h3>
 <div class="spec">
-<p><code>inherited_attributes_to_string(AttributeTable::<a href="#type-attribute_table">attribute_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>inherited_attributes_to_string(AttributeTable::<a href="#type-attribute_table" docgen-rel="seetype" docgen-href="#attribute_table/0">attribute_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified inherited (class)
- attributes.
-</p>
+</div>
 
 <h3 class="function"><a name="init_class_info-0">init_class_info/0</a></h3>
 <div class="spec">
-<p><code>init_class_info() -&gt; <a href="#type-class_info">class_info()</a></code><br></p>
+<p><code>init_class_info() -&gt; <a href="#type-class_info" docgen-rel="seetype" docgen-href="#class_info/0">class_info()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, blank instance of the class_info record, typically to be
- fed with an input AST afterwards.
-</p>
+</div>
 
 <h3 class="function"><a name="located_spec_to_string-1">located_spec_to_string/1</a></h3>
 <div class="spec">
-<p><code>located_spec_to_string(LocatedSpec::<a href="#type-maybe">maybe</a>(<a href="#type-located_method_spec">located_method_spec()</a>)) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>located_spec_to_string(LocatedSpec::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-located_method_spec" docgen-rel="seetype" docgen-href="#located_method_spec/0">located_method_spec()</a>)) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified located method spec.</p>
+</div>
 
 <h3 class="function"><a name="oneway_info_to_string-3">oneway_info_to_string/3</a></h3>
 <div class="spec">
-<p><code>oneway_info_to_string(Oneway_info::<a href="#type-oneway_info">oneway_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>oneway_info_to_string(Oneway_info::<a href="#type-oneway_info" docgen-rel="seetype" docgen-href="#oneway_info/0">oneway_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified oneway information.</p>
+</div>
 
 <h3 class="function"><a name="oneways_to_string-3">oneways_to_string/3</a></h3>
 <div class="spec">
-<p><code>oneways_to_string(OnewayTable::<a href="#type-oneway_table">oneway_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>oneways_to_string(OnewayTable::<a href="#type-oneway_table" docgen-rel="seetype" docgen-href="#oneway_table/0">oneway_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified information about
- oneways.
-</p>
+</div>
 
 <h3 class="function"><a name="qualifiers_to_string-1">qualifiers_to_string/1</a></h3>
 <div class="spec">
-<p><code>qualifiers_to_string(Qualifiers::[<a href="#type-attribute_qualifier">attribute_qualifier()</a>]) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>qualifiers_to_string(Qualifiers::[<a href="#type-attribute_qualifier" docgen-rel="seetype" docgen-href="#attribute_qualifier/0">attribute_qualifier()</a>]) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified qualifiers.</p>
+</div>
 
 <h3 class="function"><a name="request_info_to_string-3">request_info_to_string/3</a></h3>
 <div class="spec">
-<p><code>request_info_to_string(Request_info::<a href="#type-request_info">request_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>request_info_to_string(Request_info::<a href="#type-request_info" docgen-rel="seetype" docgen-href="#request_info/0">request_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified request information.</p>
+</div>
 
 <h3 class="function"><a name="requests_to_string-3">requests_to_string/3</a></h3>
 <div class="spec">
-<p><code>requests_to_string(RequestTable::<a href="#type-request_table">request_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>requests_to_string(RequestTable::<a href="#type-request_table" docgen-rel="seetype" docgen-href="#request_table/0">request_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified information about
- requests.
-</p>
+</div>
 
 <h3 class="function"><a name="static_method_info_to_string-3">static_method_info_to_string/3</a></h3>
 <div class="spec">
-<p><code>static_method_info_to_string(Static_info::<a href="#type-static_info">static_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>static_method_info_to_string(Static_info::<a href="#type-static_info" docgen-rel="seetype" docgen-href="#static_info/0">static_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified static method
- information.
-</p>
+</div>
 
 <h3 class="function"><a name="static_methods_to_string-3">static_methods_to_string/3</a></h3>
 <div class="spec">
-<p><code>static_methods_to_string(StaticTable::<a href="#type-static_table">static_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>static_methods_to_string(StaticTable::<a href="#type-static_table" docgen-rel="seetype" docgen-href="#static_table/0">static_table()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified information about
- static methods.
-</p>
+</div>
 
 <h3 class="function"><a name="superclasses_to_string-3">superclasses_to_string/3</a></h3>
 <div class="spec">
-<p><code>superclasses_to_string(Superclasses::<a href="#type-superclasses">superclasses()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>superclasses_to_string(Superclasses::<a href="#type-superclasses" docgen-rel="seetype" docgen-href="#superclasses/0">superclasses()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified superclasses.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

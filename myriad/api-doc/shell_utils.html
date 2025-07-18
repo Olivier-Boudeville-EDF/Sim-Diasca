@@ -10,394 +10,284 @@
 <hr>
 
 <h1>Module shell_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding the management of
- the <b>shells and command lines</b> (e.g.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various convenient facilities regarding the management of
- the <b>shells and command lines</b> (e.g. specified arguments).</p>
-
- See shell_utils_test.erl for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-actual_command_line_option">actual_command_line_option()</a></h3>
-<p><code>actual_command_line_option() = atom()</code></p>
-<p> The name of a command-line option; e.g. '-color', for an actual option that is
- "--color". For the init standard module, this is named a "flag".</p>
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path" docgen-rel="seetype" docgen-href="file_utils#any_file_path/0">file_utils:any_file_path()</a></code></p>
 
-<h3 class="typedecl"><a name="type-actual_value_count">actual_value_count()</a></h3>
-<p><code>actual_value_count() = <a href="#type-count">count()</a></code></p>
-<p> Non-null expected (otherwise meaningless).</p>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
+<p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-argument_table">argument_table()</a></h3>
-<p><code>argument_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-command_line_option">command_line_option()</a>, [<a href="#type-command_line_values">command_line_values()</a>])</code></p>
-<p><p> A table storing command-line user (plain, i.e arguments specified after either 
-"--" or, preferably, "-extra") arguments conveniently (a bit like getopt), in 
-a format exactly in the spirit of init:get_arguments/0, allowing to record 
-options possibly repeated more than once, possibly each time with a series of 
-values.</p>
+<h3 class="typedecl"><a name="type-binding">binding()</a></h3>
+<p><code>binding() = {<a href="#type-variable_name" docgen-rel="seetype" docgen-href="#variable_name/0">variable_name()</a>, <a href="#type-variable_value" docgen-rel="seetype" docgen-href="#variable_value/0">variable_value()</a>}</code></p>
 
- <p>Useful to manage arguments more easily, and also to handle uniformly the 
-arguments specified for erl-based executions and escript ones alike.</p>
 
- <p>Note: to account for repeated options (i.e. options specified more than once 
-on the command-line), a list of *lists* of values is associated to each option 
-in such argument tables.</p>
+<h3 class="typedecl"><a name="type-binding_struct">binding_struct()</a></h3>
+<p><code>binding_struct() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_eval.html#type-binding_struct" docgen-rel="seetype" docgen-href="stdlib:erl_eval#binding_struct/0">erl_eval:binding_struct()</a></code></p>
 
- For example, for actual command-line options such as:
-   some_value --foo --bar a b --width 15 --bar c
- a corresponding argument table would contain following entries:
-    '-foo' -&gt; [ [] ]
-    '-bar' -&gt; [ [ "a", "b" ], [ "c" ] ]
-    '-width -&gt; [ [ "15" ] ]
-     ?no_option_key -&gt; [ "some_value" ]</p>
 
-<h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
-<p><code>command_line_argument() = {<a href="#type-command_line_option">command_line_option()</a>, [<a href="#type-command_line_values">command_line_values()</a>]}</code></p>
-<p><p> The association between a command-line option and the various values 
-associated to its various occurrences, in a (non-unique) argument table.</p>
+<h3 class="typedecl"><a name="type-builtin_command_result">builtin_command_result()</a></h3>
+<p><code>builtin_command_result(T) = {<a href="#type-shell_state" docgen-rel="seetype" docgen-href="#shell_state/0">shell_state()</a>, T}</code></p>
 
- <p>For example if arguments were "--color blue red [...] --color yellow", then 
-the corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]} 
-(i.e. with, associated to a command-line option, a list whose elements are 
-*lists* of strings; in their order on the command-line).</p>
 
- Note that keys are atoms (with one leading dash removed), and it is advisable
- to use only the executable_utils module support rather than mixing and
- matching it with the one of the 'init' module (different keys).</p>
+<h3 class="typedecl"><a name="type-builtin_state_only">builtin_state_only()</a></h3>
+<p><code>builtin_state_only() = <a href="#type-builtin_command_result" docgen-rel="seetype" docgen-href="#builtin_command_result/0">builtin_command_result</a>(ok)</code></p>
 
-<h3 class="typedecl"><a name="type-command_line_element">command_line_element()</a></h3>
-<p><code>command_line_element() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Any element of a command-line, typically option name or value.</p>
 
-<h3 class="typedecl"><a name="type-command_line_option">command_line_option()</a></h3>
-<p><code>command_line_option() = <a href="#type-actual_command_line_option">actual_command_line_option()</a> | '(none)'</code></p>
-<p> Note the special value ?no_option_key that is associated to option-less
- arguments.</p>
+<h3 class="typedecl"><a name="type-client_pid">client_pid()</a></h3>
+<p><code>client_pid() = pid()</code></p>
 
-<h3 class="typedecl"><a name="type-command_line_value">command_line_value()</a></h3>
-<p><code>command_line_value() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
-<p> A unitary value specified in link to a command-line option.</p>
 
-<h3 class="typedecl"><a name="type-command_line_values">command_line_values()</a></h3>
-<p><code>command_line_values() = [<a href="#type-command_line_value">command_line_value()</a>]</code></p>
-<p> The command-line values specified after an occurrence of a given option (e.g.
- ["blue", "red"]).</p>
+<h3 class="typedecl"><a name="type-command">command()</a></h3>
+<p><code>command() = <a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-command_error">command_error()</a></h3>
+<p><code>command_error() = <a href="text_edit.html#type-process_error" docgen-rel="seetype" docgen-href="text_edit#process_error/0">text_edit:process_error()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-command_history">command_history()</a></h3>
+<p><code>command_history() = <a href="#type-queue" docgen-rel="seetype" docgen-href="#queue/0">queue</a>(<a href="#type-command" docgen-rel="seetype" docgen-href="#command/0">command()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-command_id">command_id()</a></h3>
+<p><code>command_id() = <a href="#type-entry_id" docgen-rel="seetype" docgen-href="#entry_id/0">entry_id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-command_outcome">command_outcome()</a></h3>
+<p><code>command_outcome() = {success, <a href="#type-command_result" docgen-rel="seetype" docgen-href="#command_result/0">command_result()</a>, ThisCmdId::<a href="#type-command_id" docgen-rel="seetype" docgen-href="#command_id/0">command_id()</a>, MaybeTimestampBinStr::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-timestamp_binstring" docgen-rel="seetype" docgen-href="#timestamp_binstring/0">timestamp_binstring()</a>)} | {error, <a href="#type-command_error" docgen-rel="seetype" docgen-href="#command_error/0">command_error()</a>, MaybeTimestampBinStr::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-timestamp_binstring" docgen-rel="seetype" docgen-href="#timestamp_binstring/0">timestamp_binstring()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-command_result">command_result()</a></h3>
+<p><code>command_result() = <a href="#type-variable_value" docgen-rel="seetype" docgen-href="#variable_value/0">variable_value()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-command_str">command_str()</a></h3>
+<p><code>command_str() = <a href="#type-entry_str" docgen-rel="seetype" docgen-href="#entry_str/0">entry_str()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
+<h3 class="typedecl"><a name="type-entry">entry()</a></h3>
+<p><code>entry() = <a href="text_edit.html#type-entry" docgen-rel="seetype" docgen-href="text_edit#entry/0">text_edit:entry()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
+<h3 class="typedecl"><a name="type-entry_id">entry_id()</a></h3>
+<p><code>entry_id() = <a href="text_edit.html#type-entry_id" docgen-rel="seetype" docgen-href="text_edit#entry_id/0">text_edit:entry_id()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-option_spec">option_spec()</a></h3>
-<p><code>option_spec() = {<a href="#type-actual_command_line_option">actual_command_line_option()</a>, <a href="#type-value_spec">value_spec()</a>}</code></p>
-<p> A specification of how many values are expected after specified option.</p>
-
-<h3 class="typedecl"><a name="type-return_code">return_code()</a></h3>
-<p><code>return_code() = <a href="system_utils.html#type-return_code">system_utils:return_code()</a></code></p>
+<h3 class="typedecl"><a name="type-entry_str">entry_str()</a></h3>
+<p><code>entry_str() = <a href="text_edit.html#type-entry_str" docgen-rel="seetype" docgen-href="text_edit#entry_str/0">text_edit:entry_str()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-unique_argument_table">unique_argument_table()</a></h3>
-<p><code>unique_argument_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-command_line_option">command_line_option()</a>, <a href="#type-command_line_values">command_line_values()</a>)</code></p>
-<p><p> A table associating to a given option a (single) list of values (thus not 
-having repeated options).</p>
+<h3 class="typedecl"><a name="type-group_pid">group_pid()</a></h3>
+<p><code>group_pid() = pid()</code></p>
 
- <p>For example, for actual command-line options such as:   
-some_value --foo --bar a b --width 15 
-a corresponding argument table would contain following entries:    
-'-foo' -&gt; []    
-'-bar' -&gt; [ "a", "b" ]    
-'-width -&gt; [ "15" ]     
-?no_option_key -&gt; [ "some_value" ]</p>
 
- For convenience, "standard" argument tables may be converted into unique ones.</p>
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-message">message()</a></h3>
+<p><code>message() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><code>module_name() = <a href="meta_utils.html#type-module_name" docgen-rel="seetype" docgen-href="meta_utils#module_name/0">meta_utils:module_name()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-processor_pid">processor_pid()</a></h3>
+<p><code>processor_pid() = <a href="text_edit.html#type-processor_pid" docgen-rel="seetype" docgen-href="text_edit#processor_pid/0">text_edit:processor_pid()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-queue">queue()</a></h3>
+<p><code>queue(T) = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/queue.html#type-queue" docgen-rel="seetype" docgen-href="stdlib:queue#queue/0">queue:queue</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-result_history">result_history()</a></h3>
+<p><code>result_history() = <a href="#type-queue" docgen-rel="seetype" docgen-href="#queue/0">queue</a>(<a href="#type-command_result" docgen-rel="seetype" docgen-href="#command_result/0">command_result()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-shell_option">shell_option()</a></h3>
+<p><code>shell_option() = timestamp | log | {log, LogPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>} | {histories, MaxCmdDepth::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>), MaxCmdDepth::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>), MaxResDepth::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>)} | no_histories | persistent_command_history | {callback_module, <a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>} | {reference_module, <a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-shell_pid">shell_pid()</a></h3>
+<p><code>shell_pid() = <a href="#type-processor_pid" docgen-rel="seetype" docgen-href="#processor_pid/0">processor_pid()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-shell_state">shell_state()</a></h3>
+<p><code>shell_state() = #shell_state{submission_count = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>, do_timestamp = boolean(), log_path = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="file_utils.html#type-bin_file_path" docgen-rel="seetype" docgen-href="file_utils#bin_file_path/0">file_utils:bin_file_path()</a>), log_file = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="file_utils.html#type-file" docgen-rel="seetype" docgen-href="file_utils#file/0">file_utils:file()</a>), cmd_history_max_depth = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>), res_history_max_depth = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>), cmd_history = <a href="shell_utils.html#type-command_history" docgen-rel="seetype" docgen-href="shell_utils#command_history/0">shell_utils:command_history()</a>, res_history = <a href="shell_utils.html#type-result_history" docgen-rel="seetype" docgen-href="shell_utils#result_history/0">shell_utils:result_history()</a>, cmd_history_file = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="file_utils.html#type-file" docgen-rel="seetype" docgen-href="file_utils#file/0">file_utils:file()</a>), bindings = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_eval.html#type-binding_struct" docgen-rel="seetype" docgen-href="stdlib:erl_eval#binding_struct/0">erl_eval:binding_struct()</a>, callback_module = <a href="meta_utils.html#type-module_name" docgen-rel="seetype" docgen-href="meta_utils#module_name/0">meta_utils:module_name()</a>, reference_module = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="meta_utils.html#type-module_name" docgen-rel="seetype" docgen-href="meta_utils#module_name/0">meta_utils:module_name()</a>), local_fun_handler = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_eval.html#type-local_function_handler" docgen-rel="seetype" docgen-href="stdlib:erl_eval#local_function_handler/0">erl_eval:local_function_handler()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-timestamp_binstring">timestamp_binstring()</a></h3>
+<p><code>timestamp_binstring() = <a href="time_utils.html#type-timestamp_binstring" docgen-rel="seetype" docgen-href="time_utils#timestamp_binstring/0">time_utils:timestamp_binstring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-value_count">value_count()</a></h3>
-<p><code>value_count() = <a href="#type-actual_value_count">actual_value_count()</a> | any</code></p>
-<p> How many values (possibly any number thereof - possibly none) are expected
- after a given command-line option.</p>
+<h3 class="typedecl"><a name="type-variable_ast_name">variable_ast_name()</a></h3>
+<p><code>variable_ast_name() = <a href="ast_base.html#type-form" docgen-rel="seetype" docgen-href="ast_base#form/0">ast_base:form()</a></code></p>
 
-<h3 class="typedecl"><a name="type-value_spec">value_spec()</a></h3>
-<p><code>value_spec() = <a href="#type-value_count">value_count()</a> | {<a href="#type-actual_value_count">actual_value_count()</a>, <a href="#type-value_count">value_count()</a>}</code></p>
+
+<h3 class="typedecl"><a name="type-variable_name">variable_name()</a></h3>
+<p><code>variable_name() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_eval.html#type-name" docgen-rel="seetype" docgen-href="stdlib:erl_eval#name/0">erl_eval:name()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-variable_string_name">variable_string_name()</a></h3>
+<p><code>variable_string_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-variable_value">variable_value()</a></h3>
+<p><code>variable_value() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_eval.html#type-value" docgen-rel="seetype" docgen-href="stdlib:erl_eval#value/0">erl_eval:value()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#argument_table_to_string-1">argument_table_to_string/1</a></td><td>Returns a textual representation of the specified argument table.</td></tr>
-<tr><td valign="top"><a href="#error-2">error/2</a></td><td>Reports a fatal error, typically in an script/escript context, with the 
-specified error return code (expected to be non-null).</td></tr>
-<tr><td valign="top"><a href="#error_fmt-3">error_fmt/3</a></td><td>Reports a formatted, fatal error, typically in an script/escript context, 
-with the specified error return code (expected to be non-null).</td></tr>
-<tr><td valign="top"><a href="#extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></td><td>Extracts, for specified command-line option (if any was specified; 
-otherwise returns 'undefined') its various in-order lists of associated 
-values, from the arguments specified to this executable.</td></tr>
-<tr><td valign="top"><a href="#extract_command_arguments_for_option-2">extract_command_arguments_for_option/2</a></td><td>Extracts, for the specified command-line option (if any was specified; 
-otherwise returns 'undefined') its various in-order lists of associated 
-values, from the specified argument table.</td></tr>
-<tr><td valign="top"><a href="#extract_optionless_command_arguments-0">extract_optionless_command_arguments/0</a></td><td>Extracts the in-order list of the arguments that were directly (that is 
-not in the context of an option) specified on the command-line for this 
-executable.</td></tr>
-<tr><td valign="top"><a href="#extract_optionless_command_arguments-1">extract_optionless_command_arguments/1</a></td><td>Extracts, for the specified command-line option (if any was specified; 
-otherwise returns 'undefined') its various in-order lists of associated 
-values, from the specified argument table.</td></tr>
-<tr><td valign="top"><a href="#generate_argument_table-1">generate_argument_table/1</a></td><td>Returns a canonical argument table, obtained from the specified single 
-string containing all options, verbatim; e.g.</td></tr>
-<tr><td valign="top"><a href="#get_argument_table-0">get_argument_table/0</a></td><td>Returns a canonical argument table, obtained from the user command-line 
-arguments supplied to the interpreter.</td></tr>
-<tr><td valign="top"><a href="#get_argument_table_from_strings-1">get_argument_table_from_strings/1</a></td><td>Returns the specified command-line arguments (simply transmitted as a 
-list of the corresponding strings) once transformed into our "canonical", more 
-convenient form, which is quite similar to the one used by Erlang for its 
-user/system flags (that is for all its non-plain options).</td></tr>
-<tr><td valign="top"><a href="#get_command_arguments_for_option-1">get_command_arguments_for_option/1</a></td><td>Returns, if this option was specified on the command-line, the in-order 
-list of the various (lists of) values (if any; no value at all being specified 
-for an option resulting thus in [ [] ]) associated to the specified option; if 
-this option was not specified on the command-line, returns 'undefined'.</td></tr>
-<tr><td valign="top"><a href="#get_command_line_arguments-2">get_command_line_arguments/2</a></td><td>Generates a table from the arguments that were specified on the 
-command-line for this executable, assigning to each of the specified 
-command-line options the corresponding number of values.</td></tr>
-<tr><td valign="top"><a href="#get_command_line_arguments-3">get_command_line_arguments/3</a></td><td>Reorganizes specified argument table, assigning to each of its 
-command-line options the corresponding number of values.</td></tr>
-<tr><td valign="top"><a href="#get_optionless_command_arguments-0">get_optionless_command_arguments/0</a></td><td>Returns the in-order list of the arguments that were directly (that is 
-not in the context of an option) specified on the command-line.</td></tr>
-<tr><td valign="top"><a href="#protect_from_shell-1">protect_from_shell/1</a></td><td>Protects specified argument from shell parsing, typically if specifying a 
-filename including a single quote.</td></tr>
-<tr><td valign="top"><a href="#uniquify_argument_table-1">uniquify_argument_table/1</a></td><td>Transforms specified argument table (possibly with repeated options) into 
-a unique argument table (thus with just a list of values associated to each 
-option).</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#binding_to_string-1">binding_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#bindings_to_command_string-1">bindings_to_command_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#bindings_to_string-1">bindings_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_history_depth-1">check_history_depth/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#command_history_to_string-1">command_history_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#command_history_to_string_with_ids-1">command_history_to_string_with_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#execute_command-2">execute_command/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#filter_bindings-1">filter_bindings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_history_file_path-0">get_history_file_path/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_result-2">get_result/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#recall_command-2">recall_command/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#result_history_to_string-1">result_history_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#result_history_to_string_with_ids-1">result_history_to_string_with_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#shell_state_to_string-1">shell_state_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#shell_state_to_string-2">shell_state_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link_shell-0">start_link_shell/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_link_shell-1">start_link_shell/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_shell-0">start_shell/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_shell-1">start_shell/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
-<h3 class="function"><a name="argument_table_to_string-1">argument_table_to_string/1</a></h3>
+<h3 class="function"><a name="binding_to_string-1">binding_to_string/1</a></h3>
 <div class="spec">
-<p><code>argument_table_to_string(ArgTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>binding_to_string(Binding::<a href="#type-binding" docgen-rel="seetype" docgen-href="#binding/0">binding()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified argument table.</p>
+</div>
 
-<h3 class="function"><a name="error-2">error/2</a></h3>
+<h3 class="function"><a name="bindings_to_command_string-1">bindings_to_command_string/1</a></h3>
 <div class="spec">
-<p><code>error(ErrorCode::<a href="#type-return_code">return_code()</a>, Message::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</code><br></p>
+<p><code>bindings_to_command_string(BindingStruct::<a href="#type-binding_struct" docgen-rel="seetype" docgen-href="#binding_struct/0">binding_struct()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Reports a fatal error, typically in an script/escript context, with the 
-specified error return code (expected to be non-null).</p>
+</div>
 
- <p>The message shall preferably not begin with an uppercase letter.</p>
-
- Halts on error the current program.
-</p>
-
-<h3 class="function"><a name="error_fmt-3">error_fmt/3</a></h3>
+<h3 class="function"><a name="bindings_to_string-1">bindings_to_string/1</a></h3>
 <div class="spec">
-<p><code>error_fmt(ErrorCode::<a href="#type-return_code">return_code()</a>, Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</code><br></p>
+<p><code>bindings_to_string(BindingStruct::<a href="#type-binding_struct" docgen-rel="seetype" docgen-href="#binding_struct/0">binding_struct()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Reports a formatted, fatal error, typically in an script/escript context, 
-with the specified error return code (expected to be non-null).</p>
+</div>
 
- <p>The message shall preferably not begin with an uppercase letter.</p>
-
- Halts on error the current program.
-</p>
-
-<h3 class="function"><a name="extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></h3>
+<h3 class="function"><a name="check_history_depth-1">check_history_depth/1</a></h3>
 <div class="spec">
-<p><code>extract_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
+<p><code>check_history_depth(MaxDepth) -&gt; any()</code></p>
 <p> </p>
-</div><p><p>Extracts, for specified command-line option (if any was specified; 
-otherwise returns 'undefined') its various in-order lists of associated 
-values, from the arguments specified to this executable.</p>
+</div>
 
- <p>Returns a pair made of these lists of (lists of) values and of the shrunk 
-corresponding argument table.</p>
-
- Note: a value set to 'undefined' means that the specified option is not in the
- specified table, whereas a value set to [ [] ] means that this option is in
- the table, yet that no parameter has been specified for it.
-</p>
-
-<h3 class="function"><a name="extract_command_arguments_for_option-2">extract_command_arguments_for_option/2</a></h3>
+<h3 class="function"><a name="command_history_to_string-1">command_history_to_string/1</a></h3>
 <div class="spec">
-<p><code>extract_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>, ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
+<p><code>command_history_to_string(History::<a href="#type-command_history" docgen-rel="seetype" docgen-href="#command_history/0">command_history()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Extracts, for the specified command-line option (if any was specified; 
-otherwise returns 'undefined') its various in-order lists of associated 
-values, from the specified argument table.</p>
+</div>
 
- <p>Returns a pair made of these lists of (lists of) values and of the shrunk 
-corresponding argument table.</p>
-
- Note: a value set to 'undefined' means that the specified option is not in the
- specified table, whereas a value set to [ [] ] means that this option is in
- the table, yet that no parameter has been specified for it.
-</p>
-
-<h3 class="function"><a name="extract_optionless_command_arguments-0">extract_optionless_command_arguments/0</a></h3>
+<h3 class="function"><a name="command_history_to_string_with_ids-1">command_history_to_string_with_ids/1</a></h3>
 <div class="spec">
-<p><code>extract_optionless_command_arguments() -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
+<p><code>command_history_to_string_with_ids(Shell_state::<a href="#type-shell_state" docgen-rel="seetype" docgen-href="#shell_state/0">shell_state()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Extracts the in-order list of the arguments that were directly (that is 
-not in the context of an option) specified on the command-line for this 
-executable.</p>
+</div>
 
- Returns a pair made of these lists of values and of the shrunk corresponding
- argument table.
-</p>
-
-<h3 class="function"><a name="extract_optionless_command_arguments-1">extract_optionless_command_arguments/1</a></h3>
+<h3 class="function"><a name="execute_command-2">execute_command/2</a></h3>
 <div class="spec">
-<p><code>extract_optionless_command_arguments(ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</code><br></p>
+<p><code>execute_command(CmdAnyStr::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>, ShellPid::<a href="#type-shell_pid" docgen-rel="seetype" docgen-href="#shell_pid/0">shell_pid()</a>) -&gt; <a href="#type-command_outcome" docgen-rel="seetype" docgen-href="#command_outcome/0">command_outcome()</a></code><br></p>
 <p> </p>
-</div><p><p>Extracts, for the specified command-line option (if any was specified; 
-otherwise returns 'undefined') its various in-order lists of associated 
-values, from the specified argument table.</p>
+</div>
 
- <p>Returns a pair made of these lists of (lists of) values and of the shrunk 
-corresponding argument table.</p>
-
- Note: a value set to 'undefined' means that the specified option is not in the
- specified table, whereas a value set to [ [] ] means that this option is in
- the table, yet that no parameter has been specified for it.
-</p>
-
-<h3 class="function"><a name="generate_argument_table-1">generate_argument_table/1</a></h3>
+<h3 class="function"><a name="filter_bindings-1">filter_bindings/1</a></h3>
 <div class="spec">
-<p><code>generate_argument_table(ArgString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
+<p><code>filter_bindings(BindingStruct::<a href="#type-binding_struct" docgen-rel="seetype" docgen-href="#binding_struct/0">binding_struct()</a>) -&gt; [<a href="#type-binding" docgen-rel="seetype" docgen-href="#binding/0">binding()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Returns a canonical argument table, obtained from the specified single 
-string containing all options, verbatim; e.g. "--color red --set-foo".</p>
+</div>
 
- Note: useful for testing, to introduce specific command lines.
-</p>
-
-<h3 class="function"><a name="get_argument_table-0">get_argument_table/0</a></h3>
+<h3 class="function"><a name="get_history_file_path-0">get_history_file_path/0</a></h3>
 <div class="spec">
-<p><code>get_argument_table() -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
+<p><code>get_history_file_path() -&gt; any()</code></p>
 <p> </p>
-</div><p><p>Returns a canonical argument table, obtained from the user command-line 
-arguments supplied to the interpreter.</p>
+</div>
 
- <p>Note:</p>
-
- <p>- only the arguments specified on the command-line after the '-extra' marker 
-will be taken into account; e.g.    
-make ui_run CMD_LINE_OPT="-a -extra some_value -b --use-ui-backend text_ui" 
-(here "-a" and, of course, "-extra", will be ignored)</p>
-
- - this function is to be called in the context of a standard erl execution (as
- opposed to an escript one, which shall use script_utils:get_arguments/1)
-</p>
-
-<h3 class="function"><a name="get_argument_table_from_strings-1">get_argument_table_from_strings/1</a></h3>
+<h3 class="function"><a name="get_result-2">get_result/2</a></h3>
 <div class="spec">
-<p><code>get_argument_table_from_strings(ArgStrings::[<a href="#type-ustring">ustring()</a>]) -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
+<p><code>get_result(ShellState::<a href="#type-shell_state" docgen-rel="seetype" docgen-href="#shell_state/0">shell_state()</a>, CmdId::<a href="#type-command_id" docgen-rel="seetype" docgen-href="#command_id/0">command_id()</a>) -&gt; <a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a> | <a href="#type-command_result" docgen-rel="seetype" docgen-href="#command_result/0">command_result()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the specified command-line arguments (simply transmitted as a 
-list of the corresponding strings) once transformed into our "canonical", more 
-convenient form, which is quite similar to the one used by Erlang for its 
-user/system flags (that is for all its non-plain options).</p>
+</div>
 
- <p>In this form, options start with a dash, may have any number of arguments, and 
-may be specified more than once in the command-line; non-option arguments are 
-collected as well (refer to the no_option_key define).</p>
-
- Note: switches to the Unicode encoding (e.g. use "~tp" then).
-</p>
-
-<h3 class="function"><a name="get_command_arguments_for_option-1">get_command_arguments_for_option/1</a></h3>
+<h3 class="function"><a name="recall_command-2">recall_command/2</a></h3>
 <div class="spec">
-<p><code>get_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>])</code><br></p>
+<p><code>recall_command(ShellState::<a href="#type-shell_state" docgen-rel="seetype" docgen-href="#shell_state/0">shell_state()</a>, CmdId::<a href="#type-command_id" docgen-rel="seetype" docgen-href="#command_id/0">command_id()</a>) -&gt; <a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a> | {update_command_prompt, <a href="#type-command_str" docgen-rel="seetype" docgen-href="#command_str/0">command_str()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Returns, if this option was specified on the command-line, the in-order 
-list of the various (lists of) values (if any; no value at all being specified 
-for an option resulting thus in [ [] ]) associated to the specified option; if 
-this option was not specified on the command-line, returns 'undefined'.</p>
+</div>
 
- Note: generally the extract_command_arguments_for_option/{1,2} functions are
- more relevant to use.
-</p>
-
-<h3 class="function"><a name="get_command_line_arguments-2">get_command_line_arguments/2</a></h3>
+<h3 class="function"><a name="result_history_to_string-1">result_history_to_string/1</a></h3>
 <div class="spec">
-<p><code>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec">option_spec()</a>]) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></code><br></p>
+<p><code>result_history_to_string(History::<a href="#type-result_history" docgen-rel="seetype" docgen-href="#result_history/0">result_history()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Generates a table from the arguments that were specified on the 
-command-line for this executable, assigning to each of the specified 
-command-line options the corresponding number of values.</p>
+</div>
 
- <p>Should, for a given option, less values be found on the command-line than 
-declared, an error will be raised; should more values be found, the extra ones 
-will be considered as option-less arguments, and stored as such. Should a 
-non-declared option be found, raises an error as well.</p>
-
- Note: the order of the declared options spec does not matter.
-</p>
-
-<h3 class="function"><a name="get_command_line_arguments-3">get_command_line_arguments/3</a></h3>
+<h3 class="function"><a name="result_history_to_string_with_ids-1">result_history_to_string_with_ids/1</a></h3>
 <div class="spec">
-<p><code>get_command_line_arguments(OptionlessSpec::<a href="#type-value_spec">value_spec()</a>, OptionSpecs::[<a href="#type-option_spec">option_spec()</a>], ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></code><br></p>
+<p><code>result_history_to_string_with_ids(Shell_state::<a href="#type-shell_state" docgen-rel="seetype" docgen-href="#shell_state/0">shell_state()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Reorganizes specified argument table, assigning to each of its 
-command-line options the corresponding number of values.</p>
+</div>
 
- <p>Should, for a given option, less values be found than declared, an error will 
-be raised; should more values be found, the extra ones will be considered as 
-option-less arguments, and stored as such. Should a non-declared option be 
-found, an error is raised.</p>
-
- Note: the order of the declared options spec does not matter.
-</p>
-
-<h3 class="function"><a name="get_optionless_command_arguments-0">get_optionless_command_arguments/0</a></h3>
+<h3 class="function"><a name="shell_state_to_string-1">shell_state_to_string/1</a></h3>
 <div class="spec">
-<p><code>get_optionless_command_arguments() -&gt; <a href="#type-command_line_values">command_line_values()</a></code><br></p>
+<p><code>shell_state_to_string(ShellState::<a href="#type-shell_state" docgen-rel="seetype" docgen-href="#shell_state/0">shell_state()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the in-order list of the arguments that were directly (that is 
-not in the context of an option) specified on the command-line.</p>
+</div>
 
- Note: generally the extract_optionless_command_arguments/{0,1} functions are
- more relevant to use.
-</p>
-
-<h3 class="function"><a name="protect_from_shell-1">protect_from_shell/1</a></h3>
+<h3 class="function"><a name="shell_state_to_string-2">shell_state_to_string/2</a></h3>
 <div class="spec">
-<p><code>protect_from_shell(ArgString::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_string">any_string()</a></code><br></p>
+<p><code>shell_state_to_string(Shell_state::<a href="#type-shell_state" docgen-rel="seetype" docgen-href="#shell_state/0">shell_state()</a>, Verbose::boolean()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Protects specified argument from shell parsing, typically if specifying a 
-filename including a single quote.</p>
+</div>
 
- <p>Note: currently does not transform binary arguments (double conversion with 
-improperly encoded strings might be tricky).</p>
-
- When executing third-party programs, in order to avoid any need of protecting
- their arguments, a system_utils:run_executable/n variation ought to be used.
-</p>
-
-<h3 class="function"><a name="uniquify_argument_table-1">uniquify_argument_table/1</a></h3>
+<h3 class="function"><a name="start_link_shell-0">start_link_shell/0</a></h3>
 <div class="spec">
-<p><code>uniquify_argument_table(ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-unique_argument_table">unique_argument_table()</a></code><br></p>
+<p><code>start_link_shell() -&gt; <a href="#type-shell_pid" docgen-rel="seetype" docgen-href="#shell_pid/0">shell_pid()</a></code><br></p>
 <p> </p>
-</div><p><p>Transforms specified argument table (possibly with repeated options) into 
-a unique argument table (thus with just a list of values associated to each 
-option).</p>
+</div>
 
- Should options be repeated in the specified table, their values will be merged
- (concatenated in-order into a single list, rather than the prior list of
- lists).
-</p>
+<h3 class="function"><a name="start_link_shell-1">start_link_shell/1</a></h3>
+<div class="spec">
+<p><code>start_link_shell(Opts::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-shell_option" docgen-rel="seetype" docgen-href="#shell_option/0">shell_option()</a>)) -&gt; <a href="#type-shell_pid" docgen-rel="seetype" docgen-href="#shell_pid/0">shell_pid()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="start_shell-0">start_shell/0</a></h3>
+<div class="spec">
+<p><code>start_shell() -&gt; <a href="#type-shell_pid" docgen-rel="seetype" docgen-href="#shell_pid/0">shell_pid()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="start_shell-1">start_shell/1</a></h3>
+<div class="spec">
+<p><code>start_shell(Opts::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-shell_option" docgen-rel="seetype" docgen-href="#shell_option/0">shell_option()</a>)) -&gt; <a href="#type-shell_pid" docgen-rel="seetype" docgen-href="#shell_pid/0">shell_pid()</a></code><br></p>
+<p> </p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

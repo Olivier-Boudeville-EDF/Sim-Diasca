@@ -10,23 +10,21 @@
 <hr>
 
 <h1>Module gui_shader</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for the <b>support of (OpenGL) shaders
- and programs</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various facilities for the <b>support of (OpenGL) shaders
- and programs</b>.</p>
-
- Based on GLSL.
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path" docgen-rel="seetype" docgen-href="file_utils#any_directory_path/0">file_utils:any_directory_path()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path" docgen-rel="seetype" docgen-href="file_utils#any_file_path/0">file_utils:any_file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_vertex3">any_vertex3()</a></h3>
-<p><code>any_vertex3() = <a href="point3.html#type-any_vertex3">point3:any_vertex3()</a></code></p>
+<p><code>any_vertex3() = <a href="point3.html#type-any_vertex3" docgen-rel="seetype" docgen-href="point3#any_vertex3/0">point3:any_vertex3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-array_bind_target">array_bind_target()</a></h3>
@@ -34,1387 +32,985 @@
 
 
 <h3 class="typedecl"><a name="type-array_buffer">array_buffer()</a></h3>
-<p><code>array_buffer() = <a href="#type-gl_buffer">gl_buffer()</a></code></p>
-<p> An OpenGL/GLSL array buffer; for example a VBO or an EBO.</p>
+<p><code>array_buffer() = <a href="#type-gl_buffer" docgen-rel="seetype" docgen-href="#gl_buffer/0">gl_buffer()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-array_buffer_id">array_buffer_id()</a></h3>
-<p><code>array_buffer_id() = <a href="#type-gl_buffer_id">gl_buffer_id()</a></code></p>
-<p> The identifier of an (OpenGL/GLSL) array buffer, i.e. a "array buffer object
- name".</p>
+<p><code>array_buffer_id() = <a href="#type-gl_buffer_id" docgen-rel="seetype" docgen-href="#gl_buffer_id/0">gl_buffer_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-buffer_usage_hint">buffer_usage_hint()</a></h3>
-<p><code>buffer_usage_hint() = <a href="gui_opengl.html#type-buffer_usage_hint">gui_opengl:buffer_usage_hint()</a></code></p>
+<p><code>buffer_usage_hint() = <a href="gui_opengl.html#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="gui_opengl#buffer_usage_hint/0">gui_opengl:buffer_usage_hint()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size" docgen-rel="seetype" docgen-href="system_utils#byte_size/0">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-comp_pairs">comp_pairs()</a></h3>
-<p><code>comp_pairs() = [{<a href="#type-component_type">component_type()</a>, <a href="#type-component_count">component_count()</a>}]</code></p>
+<p><code>comp_pairs() = [{<a href="#type-component_type" docgen-rel="seetype" docgen-href="#component_type/0">component_type()</a>, <a href="#type-component_count" docgen-rel="seetype" docgen-href="#component_count/0">component_count()</a>}]</code></p>
 
 
 <h3 class="typedecl"><a name="type-component_count">component_count()</a></h3>
-<p><code>component_count() = <a href="#type-count">count()</a></code></p>
-<p><p> The number of component values (separate values of the same type) in a given 
-vertex attribute.</p>
+<p><code>component_count() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
 
- Must be in [1, 2, 3, 4].</p>
 
 <h3 class="typedecl"><a name="type-component_type">component_type()</a></h3>
-<p><code>component_type() = <a href="#type-gl_base_type">gl_base_type()</a></code></p>
-<p> The (OpenGL) type of a component of an actual vertex attribute.</p>
+<p><code>component_type() = <a href="#type-gl_base_type" docgen-rel="seetype" docgen-href="#gl_base_type/0">gl_base_type()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-component_value">component_value()</a></h3>
 <p><code>component_value() = integer() | float()</code></p>
-<p><p> A value of a component of an actual vertex attribute.</p>
 
- For example one of the coordinates of a vertex position, normal, or texel.</p>
+
+<h3 class="typedecl"><a name="type-compound_count">compound_count()</a></h3>
+<p><code>compound_count() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-compute_shader_id">compute_shader_id()</a></h3>
-<p><code>compute_shader_id() = <a href="#type-shader_id">shader_id()</a></code></p>
+<p><code>compute_shader_id() = <a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a></code></p>
 <p> The identifier of a compute shader, to run on a programmable compute
  processor.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ebo">ebo()</a></h3>
-<p><code>ebo() = <a href="#type-array_buffer">array_buffer()</a></code></p>
-<p><p> An Element Buffer Object, a (GLSL) buffer storing indices to vertex data.</p>
+<p><code>ebo() = <a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a></code></p>
 
- Up to one is bound in a VAO. Usually input data is organised uniformly so that
- a single EBO is needed for a given object.</p>
 
 <h3 class="typedecl"><a name="type-ebo_id">ebo_id()</a></h3>
-<p><code>ebo_id() = <a href="#type-gl_buffer_id">gl_buffer_id()</a></code></p>
-<p><p> The identifier of an Element Buffer Object (EBO).</p>
+<p><code>ebo_id() = <a href="#type-gl_buffer_id" docgen-rel="seetype" docgen-href="#gl_buffer_id/0">gl_buffer_id()</a></code></p>
 
- <p>It is an array of indices to vertex data.</p>
 
- Indices start at zero, and by default are of the ?GL_UNSIGNED_INT type.</p>
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><code>file_path() = <a href="file_utils.html#type-file_path" docgen-rel="seetype" docgen-href="file_utils#file_path/0">file_utils:file_path()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-fragment_shader_id">fragment_shader_id()</a></h3>
-<p><code>fragment_shader_id() = <a href="#type-shader_id">shader_id()</a></code></p>
-<p> The identifier of a fragment shader, to run on a programmable fragment
- processor.</p>
+<p><code>fragment_shader_id() = <a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-geometry_shader_id">geometry_shader_id()</a></h3>
-<p><code>geometry_shader_id() = <a href="#type-shader_id">shader_id()</a></code></p>
-<p> The identifier of a geometry shader, to run on a programmable geometry
- processor.</p>
+<p><code>geometry_shader_id() = <a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-gl_base_type">gl_base_type()</a></h3>
-<p><code>gl_base_type() = <a href="gui_opengl.html#type-gl_base_type">gui_opengl:gl_base_type()</a></code></p>
+<p><code>gl_base_type() = <a href="gui_opengl.html#type-gl_base_type" docgen-rel="seetype" docgen-href="gui_opengl#gl_base_type/0">gui_opengl:gl_base_type()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gl_buffer">gl_buffer()</a></h3>
-<p><code>gl_buffer() = <a href="gui_opengl.html#type-gl_buffer">gui_opengl:gl_buffer()</a></code></p>
+<p><code>gl_buffer() = <a href="gui_opengl.html#type-gl_buffer" docgen-rel="seetype" docgen-href="gui_opengl#gl_buffer/0">gui_opengl:gl_buffer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gl_buffer_id">gl_buffer_id()</a></h3>
-<p><code>gl_buffer_id() = <a href="gui_opengl.html#type-gl_buffer_id">gui_opengl:gl_buffer_id()</a></code></p>
+<p><code>gl_buffer_id() = <a href="gui_opengl.html#type-gl_buffer_id" docgen-rel="seetype" docgen-href="gui_opengl#gl_buffer_id/0">gui_opengl:gl_buffer_id()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gl_primitive_type">gl_primitive_type()</a></h3>
 <p><code>gl_primitive_type() = 0 | 3 | 2 | 1 | 11 | 10 | 5 | 6 | 4 | 13 | 12 | 14</code></p>
-<p> A type of OpenGL primitive for rendering.</p>
+
 
 <h3 class="typedecl"><a name="type-gl_vec2">gl_vec2()</a></h3>
 <p><code>gl_vec2() = {float(), float()}</code></p>
-<p> A 2D vector directly suitable for use with the gl module.</p>
+
 
 <h3 class="typedecl"><a name="type-gl_vec3">gl_vec3()</a></h3>
 <p><code>gl_vec3() = {float(), float(), float()}</code></p>
-<p> A 3D vector directly suitable for use with the gl module.</p>
+
 
 <h3 class="typedecl"><a name="type-gl_vec4">gl_vec4()</a></h3>
 <p><code>gl_vec4() = {float(), float(), float(), float()}</code></p>
-<p> A 4D vector directly suitable for use with the gl module.</p>
+
 
 <h3 class="typedecl"><a name="type-gl_vector">gl_vector()</a></h3>
-<p><code>gl_vector() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(float())</code></p>
-<p> A vector of any dimension directly suitable for use with the gl module.</p>
+<p><code>gl_vector() = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(float())</code></p>
+
+
+<h3 class="typedecl"><a name="type-glsl_search_paths">glsl_search_paths()</a></h3>
+<p><code>glsl_search_paths() = [<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-index">index()</a></h3>
-<p><code>index() = <a href="#type-count">count()</a></code></p>
-<p><p> An index in an array, typically of an element in a VBO (then, a vertex index) 
-or directly contained in an EBO.</p>
+<p><code>index() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
 
- Starts at zero.</p>
 
 <h3 class="typedecl"><a name="type-matrix2">matrix2()</a></h3>
-<p><code>matrix2() = <a href="matrix2.html#type-matrix2">matrix2:matrix2()</a></code></p>
+<p><code>matrix2() = <a href="matrix2.html#type-matrix2" docgen-rel="seetype" docgen-href="matrix2#matrix2/0">matrix2:matrix2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix3">matrix3()</a></h3>
-<p><code>matrix3() = <a href="matrix3.html#type-matrix3">matrix3:matrix3()</a></code></p>
+<p><code>matrix3() = <a href="matrix3.html#type-matrix3" docgen-rel="seetype" docgen-href="matrix3#matrix3/0">matrix3:matrix3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
-<p><code>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></code></p>
+<p><code>matrix4() = <a href="matrix4.html#type-matrix4" docgen-rel="seetype" docgen-href="matrix4#matrix4/0">matrix4:matrix4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-offset">offset()</a></h3>
-<p><code>offset() = <a href="#type-byte_size">byte_size()</a></code></p>
-<p><p> Offset (possibly null) at which the first vertex attribute begins in the 
-buffer.</p>
+<p><code>offset() = <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code></p>
 
- This generally corresponds to the sum of the sizes of all previous attributes
- defined for a given vertex.</p>
 
 <h3 class="typedecl"><a name="type-point2">point2()</a></h3>
-<p><code>point2() = <a href="point2.html#type-point2">point2:point2()</a></code></p>
+<p><code>point2() = <a href="point2.html#type-point2" docgen-rel="seetype" docgen-href="point2#point2/0">point2:point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><code>point3() = <a href="point3.html#type-point3">point3:point3()</a></code></p>
+<p><code>point3() = <a href="point3.html#type-point3" docgen-rel="seetype" docgen-href="point3#point3/0">point3:point3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-point4">point4()</a></h3>
-<p><code>point4() = <a href="point4.html#type-point4">point4:point4()</a></code></p>
+<p><code>point4() = <a href="point4.html#type-point4" docgen-rel="seetype" docgen-href="point4#point4/0">point4:point4()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-program_id">program_id()</a></h3>
 <p><code>program_id() = non_neg_integer()</code></p>
-<p> The identifier of GLSL, shader-based program.</p>
+
 
 <h3 class="typedecl"><a name="type-shader_id">shader_id()</a></h3>
 <p><code>shader_id() = non_neg_integer()</code></p>
-<p> The identifier of (any kind of) a shader.</p>
+
 
 <h3 class="typedecl"><a name="type-stride">stride()</a></h3>
-<p><code>stride() = <a href="#type-byte_size">byte_size()</a></code></p>
-<p><p> The number of bytes between two vertex attributes of a given type (comprising 
-its own size).</p>
+<p><code>stride() = <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code></p>
 
- A null stride means that the buffer is tightly packed and that OpenGL will
- determine by itself the actual stride, equal here to the size of such a vertex
- attribute.</p>
 
 <h3 class="typedecl"><a name="type-tessellation_control_shader_id">tessellation_control_shader_id()</a></h3>
-<p><code>tessellation_control_shader_id() = <a href="#type-shader_id">shader_id()</a></code></p>
-<p> The identifier of a tessellation shader, to run on a programmable tessellation
- processor in the control stage.</p>
+<p><code>tessellation_control_shader_id() = <a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-tessellation_evaluation_shader_id">tessellation_evaluation_shader_id()</a></h3>
-<p><code>tessellation_evaluation_shader_id() = <a href="#type-shader_id">shader_id()</a></code></p>
-<p> The identifier of a tessellation shader, to run on a programmable tessellation
- processor in the evaluation stage.</p>
+<p><code>tessellation_evaluation_shader_id() = <a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-uniform_id">uniform_id()</a></h3>
 <p><code>uniform_id() = integer()</code></p>
-<p> The identifier of a uniform variable; it represents the location of a specific
- uniform variable within an installed program object.</p>
+
 
 <h3 class="typedecl"><a name="type-uniform_name">uniform_name()</a></h3>
-<p><code>uniform_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p><p> The name of a uniform variable.</p>
+<p><code>uniform_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
- <p>It must not be a structure, an array of structures, or a subcomponent of a 
-vector or a matrix.</p>
-
- No user-defined uniform name shall start with the reserved prefix "gl_".</p>
 
 <h3 class="typedecl"><a name="type-uniform_value">uniform_value()</a></h3>
 <p><code>uniform_value() = any()</code></p>
-<p> A value that can be assigned or read from a uniform variable.</p>
+
 
 <h3 class="typedecl"><a name="type-user_vertex_attribute">user_vertex_attribute()</a></h3>
-<p><code>user_vertex_attribute() = {<a href="#type-vertex_attribute_name">vertex_attribute_name()</a>, <a href="#type-vertex_attribute_index">vertex_attribute_index()</a>}</code></p>
-<p> A user-defined vertex attribute variable, meant to be associated to a generic
- vertex attribute index in a GLSL program.</p>
+<p><code>user_vertex_attribute() = {<a href="#type-vertex_attribute_name" docgen-rel="seetype" docgen-href="#vertex_attribute_name/0">vertex_attribute_name()</a>, <a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-uv_point">uv_point()</a></h3>
-<p><code>uv_point() = <a href="gui_texture.html#type-uv_point">gui_texture:uv_point()</a></code></p>
+<p><code>uv_point() = <a href="gui_texture.html#type-uv_point" docgen-rel="seetype" docgen-href="gui_texture#uv_point/0">gui_texture:uv_point()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vao_id">vao_id()</a></h3>
 <p><code>vao_id() = non_neg_integer()</code></p>
-<p><p> The identifier of a "Vertex Array Object" (VAO).</p>
 
- <p>A VAO is able to reference "vertex information": 
-- the specification of multiple (enabled) vertex attributes 
-- multiple VBOs (up to one for vertices, the others for per-vertex attributes) 
-- up to one EOB</p>
-
- <p>The core profile requires a VAO to be explicitly used; a default VAO (number 
-0) exists only with the compatibility profile, so we recommend not using it.</p>
-
- Once made active (bound) and until being unbound, a VAO keeps track of the
- VBOs that are bound. So if a VBO is still bound when a VAO is unbound, the VBO
- will be tracked by this VAO and be automatically bound when this VAO will be
- bound next. The same applies to the EBO and to the specifications of vertex
- attributes.</p>
 
 <h3 class="typedecl"><a name="type-vbo">vbo()</a></h3>
-<p><code>vbo() = <a href="#type-array_buffer">array_buffer()</a></code></p>
-<p><p> A "Vertex Buffer Object", that is a (GLSL) buffer storing a specific piece of 
-information (vertex coordinates, or normals, or colors, or texture 
-coordinates, etc.) for each element of a series of vertices (a.k.a. vertex 
-stream).</p>
+<p><code>vbo() = <a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a></code></p>
 
- <p>"VBO" designates buffer objects of all sorts - not only those storing vertex 
-coordinates.</p>
-
- <p>A VBO corresponds to an homogeneous chunk (an array) of data, sent from the 
-CPU-space, in order to be stored (possibly durably) in the GPU-space.</p>
-
- <p>So a 3D object may have a VBO for its vertices, one for its normals, etc.</p>
-
- <p>The key point is that the data is retrieved once per vertex and passed to a 
-given shader instance. If a buffer contains 3 elements, each will be sent to a 
-different shader instance, all of them processing their data in 
-parallel.</p>
-
- Furthermore interpolation may be done, for example from the outputs of the
- vertex shader (one such output per vertex) to the many fragments placed as
- input to the fragment shaders (one per pixel).</p>
 
 <h3 class="typedecl"><a name="type-vbo_id">vbo_id()</a></h3>
-<p><code>vbo_id() = <a href="#type-gl_buffer_id">gl_buffer_id()</a></code></p>
-<p> The identifier of a Vertex Buffer Object (VBO).</p>
+<p><code>vbo_id() = <a href="#type-gl_buffer_id" docgen-rel="seetype" docgen-href="#gl_buffer_id/0">gl_buffer_id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-vbo_layout">vbo_layout()</a></h3>
+<p><code>vbo_layout() = vtx3 | vtx3_nrm | vtx3_rgb | vtx3_uv | vtx3_nrm_rgb | vtx3_nrm_uv</code></p>
+
+
+<h3 class="typedecl"><a name="type-vbo_layout_id">vbo_layout_id()</a></h3>
+<p><code>vbo_layout_id() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-vector">vector()</a></h3>
-<p><code>vector() = <a href="vector.html#type-vector">vector:vector()</a></code></p>
+<p><code>vector() = <a href="vector.html#type-vector" docgen-rel="seetype" docgen-href="vector#vector/0">vector:vector()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
-<p><code>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></code></p>
+<p><code>vector2() = <a href="vector2.html#type-vector2" docgen-rel="seetype" docgen-href="vector2#vector2/0">vector2:vector2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
-<p><code>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></code></p>
+<p><code>vector3() = <a href="vector3.html#type-vector3" docgen-rel="seetype" docgen-href="vector3#vector3/0">vector3:vector3()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector4">vector4()</a></h3>
-<p><code>vector4() = <a href="vector4.html#type-vector4">vector4:vector4()</a></code></p>
+<p><code>vector4() = <a href="vector4.html#type-vector4" docgen-rel="seetype" docgen-href="vector4#vector4/0">vector4:vector4()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-vertex_attribute_compound">vertex_attribute_compound()</a></h3>
+<p><code>vertex_attribute_compound() = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(<a href="#type-vertex_attribute_value" docgen-rel="seetype" docgen-href="#vertex_attribute_value/0">vertex_attribute_value()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-vertex_attribute_float_series">vertex_attribute_float_series()</a></h3>
-<p><code>vertex_attribute_float_series() = [<a href="#type-vertex_attribute_float_value">vertex_attribute_float_value()</a>]</code></p>
-<p> A (usually homogeneous) list of float-based vertex attribute values, like a
- list of vertices, normals, texture coordinates, colors, etc.</p>
+<p><code>vertex_attribute_float_series() = [<a href="#type-vertex_attribute_float_value" docgen-rel="seetype" docgen-href="#vertex_attribute_float_value/0">vertex_attribute_float_value()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-vertex_attribute_float_value">vertex_attribute_float_value()</a></h3>
-<p><code>vertex_attribute_float_value() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(float())</code></p>
-<p><p> A value of a float-based vertex attribute.</p>
+<p><code>vertex_attribute_float_value() = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(float())</code></p>
 
- For example a triplet of floats corresponding to a 3D vertex or a RGB color.</p>
 
 <h3 class="typedecl"><a name="type-vertex_attribute_index">vertex_attribute_index()</a></h3>
 <p><code>vertex_attribute_index() = non_neg_integer()</code></p>
-<p><p> The index of a vertex attribute, in each data conveyed through the vertex 
-stream.</p>
 
- <p>Such an index corresponds to a location for a shader (like in <code>layout
- (location = 0)</code>).</p>
-
- When specifying such an attribute, it is done relatively to the currently
- active VBO.</p>
 
 <h3 class="typedecl"><a name="type-vertex_attribute_name">vertex_attribute_name()</a></h3>
-<p><code>vertex_attribute_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p><p> The name of a user-defined attribute, meant to be set through an associated 
-index.</p>
+<p><code>vertex_attribute_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
- By default a vertex attribute is disabled.</p>
 
 <h3 class="typedecl"><a name="type-vertex_attribute_series">vertex_attribute_series()</a></h3>
-<p><code>vertex_attribute_series() = [<a href="#type-vertex_attribute_value">vertex_attribute_value()</a>]</code></p>
-<p><p> A (usually homogeneous) list of vertex attribute values, like a list of 
-vertices, normals, texture coordinates, colors, etc.</p>
+<p><code>vertex_attribute_series() = [<a href="#type-vertex_attribute_value" docgen-rel="seetype" docgen-href="#vertex_attribute_value/0">vertex_attribute_value()</a>]</code></p>
 
- Series is a way of not mentioning "list" again, so that a list of series is
- easier to understand.</p>
 
 <h3 class="typedecl"><a name="type-vertex_attribute_value">vertex_attribute_value()</a></h3>
-<p><code>vertex_attribute_value() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-component_value">component_value()</a>)</code></p>
-<p><p> A value of a vertex attribute.</p>
+<p><code>vertex_attribute_value() = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(<a href="#type-component_value" docgen-rel="seetype" docgen-href="#component_value/0">component_value()</a>)</code></p>
 
- <p>For example a float triplet corresponding to a 3D vertex or a RGB color.</p>
-
- A vertex attribute is typically abbreviated as VAttr.</p>
 
 <h3 class="typedecl"><a name="type-vertex_shader_id">vertex_shader_id()</a></h3>
-<p><code>vertex_shader_id() = <a href="#type-shader_id">shader_id()</a></code></p>
-<p> The identifier of a vertex shader, to run on a programmable vertex processor.</p>
+<p><code>vertex_shader_id() = <a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a></code></p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#assign_array-3">assign_array/3</a></td><td>Assigns the specified buffer to the specified array in the OpenGL
- context, based on the specified usage hint.</td></tr>
-<tr><td valign="top"><a href="#assign_current_ebo-1">assign_current_ebo/1</a></td><td>Assigns the specified buffer to the currently active EBO, and associates 
-it a default usage profile.</td></tr>
-<tr><td valign="top"><a href="#assign_current_ebo-2">assign_current_ebo/2</a></td><td>Assigns the specified buffer and associated usage settings to the 
-currently active EBO.</td></tr>
-<tr><td valign="top"><a href="#assign_current_vbo-1">assign_current_vbo/1</a></td><td>Assigns the specified buffer to the currently active VBO, and associates 
-it a default usage profile.</td></tr>
-<tr><td valign="top"><a href="#assign_current_vbo-2">assign_current_vbo/2</a></td><td>Assigns the specified buffer and associated usage settings to the 
-currently active VBO.</td></tr>
-<tr><td valign="top"><a href="#assign_indices_to_new_ebo-1">assign_indices_to_new_ebo/1</a></td><td>Assigns the specified vertices to a new EBO (associated to a default
- usage profile), whose identifier is returned.</td></tr>
-<tr><td valign="top"><a href="#assign_indices_to_new_ebo-2">assign_indices_to_new_ebo/2</a></td><td>Assigns the specified vertices to a new EBO, associates the specified
- usage profile, and returns the identifier of this EBO.</td></tr>
-<tr><td valign="top"><a href="#assign_new_vbo-1">assign_new_vbo/1</a></td><td>Assigns the specified buffer to a new VBO that is made the currently 
-active one, and associates it a default usage profile.</td></tr>
-<tr><td valign="top"><a href="#assign_new_vbo-2">assign_new_vbo/2</a></td><td>Assigns the specified buffer and associated usage settings to a new VBO 
-that is made the currently active one.</td></tr>
-<tr><td valign="top"><a href="#assign_new_vbo_from_attribute_series-1">assign_new_vbo_from_attribute_series/1</a></td><td>Assigns a new VBO that is made the currently active one, and which is 
-created from the specified list of vertex attribute series once merged, and 
-declares the corresponding vertex attributes, starting with vertex attribute 
-of index #0.</td></tr>
-<tr><td valign="top"><a href="#assign_new_vbo_from_attribute_series-2">assign_new_vbo_from_attribute_series/2</a></td><td>Assigns a new VBO that is made the currently active one, and which is 
-created from the specified list of vertex attribute series once merged, and 
-declares the corresponding vertex attributes, starting from the specified 
-vertex attribute index.</td></tr>
-<tr><td valign="top"><a href="#assign_texcoords_to_new_vbo-1">assign_texcoords_to_new_vbo/1</a></td><td>Assigns the specified (2D) texture coordinates to a new VBO (associated
- to a default usage profile) that is made the currently active one, and whose
- identifier is returned.</td></tr>
-<tr><td valign="top"><a href="#assign_texcoords_to_new_vbo-2">assign_texcoords_to_new_vbo/2</a></td><td>Assigns the specified (2D) texture coordinates to a new VBO that is made
- the currently active one, associates the specified usage profile, and returns
- the identifier of this VBO.</td></tr>
-<tr><td valign="top"><a href="#assign_vertex_attribute_as-2">assign_vertex_attribute_as/2</a></td><td>Assigns the specified series of homogeneous vertex attribute values to a 
-new VBO with a default usage profile - a VBO that is made the currently active 
-one, and declares and enables a corresponding vertex attribute for the 
-specified index.</td></tr>
-<tr><td valign="top"><a href="#assign_vertex_attribute_as-3">assign_vertex_attribute_as/3</a></td><td>Assigns the specified series of homogeneous vertex attribute values to a 
-new VBO with the specified usage profile - a VBO that is made the currently 
-active one, and declares and enables a corresponding vertex attribute for the 
-specified index.</td></tr>
-<tr><td valign="top"><a href="#assign_vertices_to_new_vbo-1">assign_vertices_to_new_vbo/1</a></td><td>Assigns the specified (3D) vertices to a new VBO (associated to a default
- usage profile) that is made the currently active one, and whose identifier is
- returned.</td></tr>
-<tr><td valign="top"><a href="#assign_vertices_to_new_vbo-2">assign_vertices_to_new_vbo/2</a></td><td>Assigns the specified (3D) vertices to a new VBO that is made the
- currently active one, associates the specified usage profile, and returns the
- identifier of this VBO.</td></tr>
-<tr><td valign="top"><a href="#compile_compute_shader-1">compile_compute_shader/1</a></td><td>Loads and compiles a compute shader from the specified source file 
-(whose extension is typically .compute.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_fragment_shader-1">compile_fragment_shader/1</a></td><td>Loads and compiles a fragment shader from the specified source file 
-(whose extension is typically fragment.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_geometry_shader-1">compile_geometry_shader/1</a></td><td>Loads and compiles a geometry shader from the specified source file 
-(whose extension is typically .geometry.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_tessellation_control_shader-1">compile_tessellation_control_shader/1</a></td><td>Loads and compiles a tessellation control shader from the specified 
-source file (whose extension is typically .tess-ctrl.glsl), and returns its 
-identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_tessellation_evaluation_shader-1">compile_tessellation_evaluation_shader/1</a></td><td>Loads and compiles a tessellation evaluation shader from the specified 
-source file (whose extension is typically .tess-eval.glsl), and returns its 
-identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_vertex_shader-1">compile_vertex_shader/1</a></td><td>Loads and compiles a vertex shader from the specified source file (whose 
-extension is typically .vertex.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#declare_vertex_attribute-1">declare_vertex_attribute/1</a></td><td>Tells OpenGL how the specified vertex attribute shall be interpreted in
- the currently active VBO, supposing 3 floats per vertex attribute directly in
- a tightly-packed buffer, and enables this attribute.</td></tr>
-<tr><td valign="top"><a href="#declare_vertex_attribute-2">declare_vertex_attribute/2</a></td><td>Tells OpenGL how the specified vertex attribute shall be interpreted in
- the currently active VBO, supposing the specified number of floats per vertex
- attribute directly in a tightly-packed buffer, and enables this attribute.</td></tr>
-<tr><td valign="top"><a href="#declare_vertex_attribute-7">declare_vertex_attribute/7</a></td><td>Tells OpenGL how the specified vertex attribute shall be interpreted in 
-the currently active VBO, and enables this attribute if requested.</td></tr>
-<tr><td valign="top"><a href="#declare_vertex_attribute_for-2">declare_vertex_attribute_for/2</a></td><td>Declares and enables, for the specified index of the currently active 
-VBO, a vertex attribute that is automatically parametrised based on the 
-specified data to which it is to correspond (typically an homogeneous, 
-tightly-packed VBO).</td></tr>
-<tr><td valign="top"><a href="#declare_vertex_attribute_for-3">declare_vertex_attribute_for/3</a></td><td>Declares - and, if requested, enables - for the specified index of the 
-currently active VBO, a vertex attribute that is automatically parametrised 
-based on the specified data to which it is to correspond (typically an 
-homogeneous, tightly-packed VBO).</td></tr>
-<tr><td valign="top"><a href="#declare_vertex_attributes_from-4">declare_vertex_attributes_from/4</a></td><td>Declares the vertex attributes corresponding to the specified information
- about vertex attribute series in the currently active VBO, starting from the
- specified vertex attribute index, supposing a tightly-packed buffer, and
- enables these attributes.</td></tr>
-<tr><td valign="top"><a href="#declare_vertex_attributes_from-5">declare_vertex_attributes_from/5</a></td><td>Declares the vertex attributes corresponding to the specified information
- about vertex attribute series in the currently active VBO, starting from the
- specified vertex attribute index, supposing a tightly-packed buffer, and
- enabling these attributes if requested.</td></tr>
-<tr><td valign="top"><a href="#delete_buffer-1">delete_buffer/1</a></td><td>Deletes the specified buffer.</td></tr>
-<tr><td valign="top"><a href="#delete_buffers-1">delete_buffers/1</a></td><td>Deletes the specified buffers.</td></tr>
-<tr><td valign="top"><a href="#delete_ebo-1">delete_ebo/1</a></td><td>Deletes the specified EBO.</td></tr>
-<tr><td valign="top"><a href="#delete_ebos-1">delete_ebos/1</a></td><td>Deletes the specified EBOs.</td></tr>
-<tr><td valign="top"><a href="#delete_program-1">delete_program/1</a></td><td>Deletes the specified GLSL program.</td></tr>
-<tr><td valign="top"><a href="#delete_vao-1">delete_vao/1</a></td><td>Deletes the specified VAO.</td></tr>
-<tr><td valign="top"><a href="#delete_vaos-1">delete_vaos/1</a></td><td>Deletes the specified VAOs.</td></tr>
-<tr><td valign="top"><a href="#delete_vbo-1">delete_vbo/1</a></td><td>Deletes the specified VBO.</td></tr>
-<tr><td valign="top"><a href="#delete_vbos-1">delete_vbos/1</a></td><td>Deletes the specified VBOs.</td></tr>
-<tr><td valign="top"><a href="#disable_vertex_attribute-1">disable_vertex_attribute/1</a></td><td>Disables the specified vertex attribute.</td></tr>
-<tr><td valign="top"><a href="#enable_vertex_attribute-1">enable_vertex_attribute/1</a></td><td>Enables the specified vertex attribute.</td></tr>
-<tr><td valign="top"><a href="#generate_buffer_id-0">generate_buffer_id/0</a></td><td>Returns a new, unique, buffer identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_buffer_ids-1">generate_buffer_ids/1</a></td><td>Returns the specified number of new, unique, buffer identifier.s.</td></tr>
-<tr><td valign="top"><a href="#generate_ebo_id-0">generate_ebo_id/0</a></td><td>Returns a new, unique, EBO identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_ebo_ids-1">generate_ebo_ids/1</a></td><td>Returns the specified number of new, unique, EBO identifiers.</td></tr>
-<tr><td valign="top"><a href="#generate_program-1">generate_program/1</a></td><td>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with no user-specified attributes defined: 
-links these shaders in a corresponding program, and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_program-2">generate_program/2</a></td><td>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with user-specified attributes: links these 
-shaders in a corresponding program, and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_program_from-2">generate_program_from/2</a></td><td>Generates a GLSL program from the shaders whose source files are
- specified: loads and compiles the specified vertex and fragment shaders (with
- no user-specified attributes defined), links them in a corresponding program,
- and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_program_from-3">generate_program_from/3</a></td><td>Generates a GLSL program from the shaders whose source files are
- specified: loads and compiles the specified vertex and fragment shaders, with
- user-specified attributes, links them in a corresponding program, and returns
- its identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_vao_id-0">generate_vao_id/0</a></td><td>Returns a new, unique, VAO identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_vao_ids-1">generate_vao_ids/1</a></td><td>Returns the specified number of new, unique, VAO identifiers.</td></tr>
-<tr><td valign="top"><a href="#generate_vbo_id-0">generate_vbo_id/0</a></td><td>Returns a new, unique, VBO identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_vbo_ids-1">generate_vbo_ids/1</a></td><td>Returns the specified number of new, unique, VBO identifiers.</td></tr>
-<tr><td valign="top"><a href="#get_maybe_uniform_id-2">get_maybe_uniform_id/2</a></td><td>Returns the identifier of the active uniform variable (if any) that is 
-specified by its name in the specified program.</td></tr>
-<tr><td valign="top"><a href="#get_shading_language_version-0">get_shading_language_version/0</a></td><td>Returns the version /release number of the currently used OpenGL 
-shading language.</td></tr>
-<tr><td valign="top"><a href="#get_uniform_id-2">get_uniform_id/2</a></td><td>Returns the identifier of the active uniform variable that is specified 
-by its name in the specified program.</td></tr>
-<tr><td valign="top"><a href="#infer_gl_component_type-1">infer_gl_component_type/1</a></td><td>Deduces, according to MyriadGUI's conventions, the OpenGL data type
- corresponding to the specified component in an array (like a VBO).</td></tr>
-<tr><td valign="top"><a href="#install_program-1">install_program/1</a></td><td>Installs the specified GLSL program as part of current rendering state.</td></tr>
-<tr><td valign="top"><a href="#render_from_enabled_ebo-2">render_from_enabled_ebo/2</a></td><td>Renders the specified primitives based on the enabled EBO, not using any
- specific offset.</td></tr>
-<tr><td valign="top"><a href="#render_from_enabled_vbos-2">render_from_enabled_vbos/2</a></td><td>Renders the specified primitives based on the enabled VBOs, starting from 
-their first index.</td></tr>
-<tr><td valign="top"><a href="#render_from_enabled_vbos-3">render_from_enabled_vbos/3</a></td><td>Renders the specified primitives based on the enabled VBOs.</td></tr>
-<tr><td valign="top"><a href="#set_current_ebo_from_id-1">set_current_ebo_from_id/1</a></td><td>Sets the specified EBO as the currently active one.</td></tr>
-<tr><td valign="top"><a href="#set_current_vao_from_id-1">set_current_vao_from_id/1</a></td><td>Sets the specified VBO as the currently active one.</td></tr>
-<tr><td valign="top"><a href="#set_current_vbo_from_id-1">set_current_vbo_from_id/1</a></td><td>Sets the specified VBO as the currently active one.</td></tr>
-<tr><td valign="top"><a href="#set_new_ebo-0">set_new_ebo/0</a></td><td>Creates a EBO identifier, sets it as the currently active one, and 
-returns it.</td></tr>
-<tr><td valign="top"><a href="#set_new_vao-0">set_new_vao/0</a></td><td>Creates a VAO identifier, sets it as the currently active one, and 
-returns it.</td></tr>
-<tr><td valign="top"><a href="#set_new_vbo-0">set_new_vbo/0</a></td><td>Creates a VBO identifier, sets it as the currently active one, and 
-returns it.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_2f-3">set_uniform_2f/3</a></td><td>Sets the specified uniform variable to the two specified floats, as GLSL
- floats, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_3f-4">set_uniform_3f/4</a></td><td>Sets the specified uniform variable to the three specified floats, as
- GLSL floats, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_4f-5">set_uniform_4f/5</a></td><td>Sets the specified uniform variable to the four specified floats, as GLSL
- floats, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_f-2">set_uniform_f/2</a></td><td>Sets the specified uniform variable to the specified float, as a GLSL
- float, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_fs-2">set_uniform_fs/2</a></td><td>Sets the specified uniform variable to the specified list of floats, as
- GLSL floats, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_i-2">set_uniform_i/2</a></td><td>Sets the specified uniform variable to the specified integer, as a signed
- GLSL integer, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_matrix2-2">set_uniform_matrix2/2</a></td><td>Sets the specified uniform variable to the specified matrix2, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_matrix2-3">set_uniform_matrix2/3</a></td><td>Sets the specified uniform variable to the specified matrix2, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_matrix3-2">set_uniform_matrix3/2</a></td><td>Sets the specified uniform variable to the specified matrix3, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_matrix3-3">set_uniform_matrix3/3</a></td><td>Sets the specified uniform variable to the specified matrix3 - once
- transposed if requested, in the context of the currently installed shader
- program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_matrix4-2">set_uniform_matrix4/2</a></td><td>Sets the specified uniform variable to the specified matrix4, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_matrix4-3">set_uniform_matrix4/3</a></td><td>Sets the specified uniform variable to the specified matrix4 - once
- transposed if requested, in the context of the currently installed shader
- program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_point2-2">set_uniform_point2/2</a></td><td>Sets the specified uniform variable to the specified point2, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_point2s-2">set_uniform_point2s/2</a></td><td>Sets the specified uniform array variable to the specified list of
- point2, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_point3-2">set_uniform_point3/2</a></td><td>Sets the specified uniform variable to the specified point3, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_point3s-2">set_uniform_point3s/2</a></td><td>Sets the specified uniform array variable to the specified list of
- point3, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_point4-2">set_uniform_point4/2</a></td><td>Sets the specified uniform variable to the specified point4, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_point4s-2">set_uniform_point4s/2</a></td><td>Sets the specified uniform array variable to the specified list of
- point4, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_ui-2">set_uniform_ui/2</a></td><td>Sets the specified uniform variable to the specified integer, as a GLSL
- unsigned integer, in the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_vector2-2">set_uniform_vector2/2</a></td><td>Sets the specified uniform variable to the specified vector2, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_vector2s-2">set_uniform_vector2s/2</a></td><td>Sets the specified uniform variable to the specified list of vector2, in
- the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_vector3-2">set_uniform_vector3/2</a></td><td>Sets the specified uniform variable to the specified vector3, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_vector3s-2">set_uniform_vector3s/2</a></td><td>Sets the specified uniform variable to the specified list of vector3, in
- the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_vector4-2">set_uniform_vector4/2</a></td><td>Sets the specified uniform variable to the specified vector4, in the
- context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#set_uniform_vector4s-2">set_uniform_vector4s/2</a></td><td>Sets the specified uniform variable to the specified list of vector4, in
- the context of the currently installed shader program.</td></tr>
-<tr><td valign="top"><a href="#to_gl_vectors-1">to_gl_vectors/1</a></td><td>Converts the specified list of (Myriad) vectors (hence lists of 
-coordinate lists) of any dimension into a list of vectors suitable for the gl 
-API (hence tuples).</td></tr>
-<tr><td valign="top"><a href="#unset_current_vao-0">unset_current_vao/0</a></td><td>Unsets the current VAO from the context.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#assign_array-3">assign_array/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_current_ebo-1">assign_current_ebo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_current_ebo-2">assign_current_ebo/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_current_vbo-1">assign_current_vbo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_current_vbo-2">assign_current_vbo/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_indices_to_new_ebo-1">assign_indices_to_new_ebo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_indices_to_new_ebo-2">assign_indices_to_new_ebo/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_new_vbo-1">assign_new_vbo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_new_vbo-2">assign_new_vbo/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_new_vbo_from_attribute_series-1">assign_new_vbo_from_attribute_series/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_new_vbo_from_attribute_series_from-2">assign_new_vbo_from_attribute_series_from/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_new_vbo_from_attribute_series_with-2">assign_new_vbo_from_attribute_series_with/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_texcoords_to_new_vbo-1">assign_texcoords_to_new_vbo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_texcoords_to_new_vbo-2">assign_texcoords_to_new_vbo/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_vertex_attribute_as-2">assign_vertex_attribute_as/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_vertex_attribute_as-3">assign_vertex_attribute_as/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_vertices_to_new_vbo-1">assign_vertices_to_new_vbo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_vertices_to_new_vbo-2">assign_vertices_to_new_vbo/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compile_compute_shader-1">compile_compute_shader/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compile_fragment_shader-1">compile_fragment_shader/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compile_geometry_shader-1">compile_geometry_shader/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compile_tessellation_control_shader-1">compile_tessellation_control_shader/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compile_tessellation_evaluation_shader-1">compile_tessellation_evaluation_shader/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compile_vertex_shader-1">compile_vertex_shader/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_vertex_attribute-1">declare_vertex_attribute/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_vertex_attribute-2">declare_vertex_attribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_vertex_attribute-7">declare_vertex_attribute/7</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_vertex_attribute_for-2">declare_vertex_attribute_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_vertex_attribute_for-3">declare_vertex_attribute_for/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_vertex_attributes_from-4">declare_vertex_attributes_from/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_vertex_attributes_from-5">declare_vertex_attributes_from/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_buffer-1">delete_buffer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_buffers-1">delete_buffers/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_ebo-1">delete_ebo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_ebos-1">delete_ebos/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_program-1">delete_program/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_vao-1">delete_vao/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_vaos-1">delete_vaos/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_vbo-1">delete_vbo/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_vbos-1">delete_vbos/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#deploy_base_program-0">deploy_base_program/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#disable_vertex_attribute-1">disable_vertex_attribute/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#enable_vertex_attribute-1">enable_vertex_attribute/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_buffer_id-0">generate_buffer_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_buffer_ids-1">generate_buffer_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_ebo_id-0">generate_ebo_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_ebo_ids-1">generate_ebo_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_program-1">generate_program/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_program-2">generate_program/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_program_from-2">generate_program_from/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_program_from-3">generate_program_from/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_program_from-4">generate_program_from/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_vao_id-0">generate_vao_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_vao_ids-1">generate_vao_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_vbo_id-0">generate_vbo_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_vbo_ids-1">generate_vbo_ids/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_base_glsl_include_paths-0">get_base_glsl_include_paths/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_base_shader_filenames-0">get_base_shader_filenames/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_base_user_attributes-0">get_base_user_attributes/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_maybe_uniform_id-2">get_maybe_uniform_id/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_shading_language_version-0">get_shading_language_version/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_uniform_id-2">get_uniform_id/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_vbo_layout-1">get_vbo_layout/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_vbo_layout_id-1">get_vbo_layout_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_vbo_layouts-0">get_vbo_layouts/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#infer_gl_component_type-1">infer_gl_component_type/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#install_program-1">install_program/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render_from_enabled_ebo-2">render_from_enabled_ebo/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render_from_enabled_vbos-2">render_from_enabled_vbos/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render_from_enabled_vbos-3">render_from_enabled_vbos/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_current_ebo_from_id-1">set_current_ebo_from_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_current_vao_from_id-1">set_current_vao_from_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_current_vbo_from_id-1">set_current_vbo_from_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_new_ebo-0">set_new_ebo/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_new_vao-0">set_new_vao/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_new_vbo-0">set_new_vbo/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_2f-3">set_uniform_2f/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_3f-4">set_uniform_3f/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_4f-5">set_uniform_4f/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_f-2">set_uniform_f/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_fs-2">set_uniform_fs/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_i-2">set_uniform_i/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_matrix2-2">set_uniform_matrix2/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_matrix2-3">set_uniform_matrix2/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_matrix3-2">set_uniform_matrix3/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_matrix3-3">set_uniform_matrix3/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_matrix4-2">set_uniform_matrix4/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_matrix4-3">set_uniform_matrix4/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_point2-2">set_uniform_point2/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_point2s-2">set_uniform_point2s/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_point3-2">set_uniform_point3/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_point3s-2">set_uniform_point3s/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_point4-2">set_uniform_point4/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_point4s-2">set_uniform_point4s/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_ui-2">set_uniform_ui/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_vector2-2">set_uniform_vector2/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_vector2s-2">set_uniform_vector2s/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_vector3-2">set_uniform_vector3/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_vector3s-2">set_uniform_vector3s/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_vector4-2">set_uniform_vector4/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_uniform_vector4s-2">set_uniform_vector4s/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_vbo_layout-2">set_vbo_layout/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_gl_vectors-1">to_gl_vectors/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unset_current_vao-0">unset_current_vao/0</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="assign_array-3">assign_array/3</a></h3>
 <div class="spec">
-<p><code>assign_array(ArrayBuffer::<a href="#type-array_buffer">array_buffer()</a>, BindTarget::<a href="#type-array_bind_target">array_bind_target()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assign_array(ArrayBuffer::<a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a>, BindTarget::<a href="#type-array_bind_target" docgen-rel="seetype" docgen-href="#array_bind_target/0">array_bind_target()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified buffer to the specified array in the OpenGL
- context, based on the specified usage hint.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_current_ebo-1">assign_current_ebo/1</a></h3>
 <div class="spec">
-<p><code>assign_current_ebo(ArrayBuffer::<a href="#type-array_buffer">array_buffer()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assign_current_ebo(ArrayBuffer::<a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified buffer to the currently active EBO, and associates 
-it a default usage profile.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_current_ebo-2">assign_current_ebo/2</a></h3>
 <div class="spec">
-<p><code>assign_current_ebo(ArrayBuffer::<a href="#type-array_buffer">array_buffer()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assign_current_ebo(ArrayBuffer::<a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified buffer and associated usage settings to the 
-currently active EBO.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_current_vbo-1">assign_current_vbo/1</a></h3>
 <div class="spec">
-<p><code>assign_current_vbo(ArrayBuffer::<a href="#type-array_buffer">array_buffer()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assign_current_vbo(ArrayBuffer::<a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified buffer to the currently active VBO, and associates 
-it a default usage profile.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_current_vbo-2">assign_current_vbo/2</a></h3>
 <div class="spec">
-<p><code>assign_current_vbo(ArrayBuffer::<a href="#type-array_buffer">array_buffer()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assign_current_vbo(ArrayBuffer::<a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified buffer and associated usage settings to the 
-currently active VBO.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_indices_to_new_ebo-1">assign_indices_to_new_ebo/1</a></h3>
 <div class="spec">
-<p><code>assign_indices_to_new_ebo(Indices::[<a href="#type-index">index()</a>]) -&gt; <a href="#type-ebo_id">ebo_id()</a></code><br></p>
+<p><code>assign_indices_to_new_ebo(Indices::[<a href="#type-index" docgen-rel="seetype" docgen-href="#index/0">index()</a>]) -&gt; <a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified vertices to a new EBO (associated to a default
- usage profile), whose identifier is returned.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_indices_to_new_ebo-2">assign_indices_to_new_ebo/2</a></h3>
 <div class="spec">
-<p><code>assign_indices_to_new_ebo(Indices::[<a href="#type-index">index()</a>], BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-ebo_id">ebo_id()</a></code><br></p>
+<p><code>assign_indices_to_new_ebo(Indices::[<a href="#type-index" docgen-rel="seetype" docgen-href="#index/0">index()</a>], BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified vertices to a new EBO, associates the specified
- usage profile, and returns the identifier of this EBO.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_new_vbo-1">assign_new_vbo/1</a></h3>
 <div class="spec">
-<p><code>assign_new_vbo(ArrayBuffer::<a href="#type-array_buffer">array_buffer()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_new_vbo(ArrayBuffer::<a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified buffer to a new VBO that is made the currently 
-active one, and associates it a default usage profile.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_new_vbo-2">assign_new_vbo/2</a></h3>
 <div class="spec">
-<p><code>assign_new_vbo(ArrayBuffer::<a href="#type-array_buffer">array_buffer()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_new_vbo(ArrayBuffer::<a href="#type-array_buffer" docgen-rel="seetype" docgen-href="#array_buffer/0">array_buffer()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified buffer and associated usage settings to a new VBO 
-that is made the currently active one.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_new_vbo_from_attribute_series-1">assign_new_vbo_from_attribute_series/1</a></h3>
 <div class="spec">
-<p><code>assign_new_vbo_from_attribute_series(ListOfVAttrSeries::[<a href="#type-vertex_attribute_series">vertex_attribute_series()</a>]) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_new_vbo_from_attribute_series(ListOfVAttrSeries::[<a href="#type-vertex_attribute_series" docgen-rel="seetype" docgen-href="#vertex_attribute_series/0">vertex_attribute_series()</a>]) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns a new VBO that is made the currently active one, and which is 
-created from the specified list of vertex attribute series once merged, and 
-declares the corresponding vertex attributes, starting with vertex attribute 
-of index #0.</p>
+</div>
 
- The parameters of the vertex attributes are automatically determined, declared
- and enabled.
-</p>
-
-<h3 class="function"><a name="assign_new_vbo_from_attribute_series-2">assign_new_vbo_from_attribute_series/2</a></h3>
+<h3 class="function"><a name="assign_new_vbo_from_attribute_series_from-2">assign_new_vbo_from_attribute_series_from/2</a></h3>
 <div class="spec">
-<p><code>assign_new_vbo_from_attribute_series(ListOfVAttrSeries::[<a href="#type-vertex_attribute_series">vertex_attribute_series()</a>], StartVAttrStartIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_new_vbo_from_attribute_series_from(ListOfVAttrSeries::[<a href="#type-vertex_attribute_series" docgen-rel="seetype" docgen-href="#vertex_attribute_series/0">vertex_attribute_series()</a>], StartVAttrStartIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns a new VBO that is made the currently active one, and which is 
-created from the specified list of vertex attribute series once merged, and 
-declares the corresponding vertex attributes, starting from the specified 
-vertex attribute index.</p>
+</div>
 
- The parameters of the vertex attributes are automatically determined, declared
- and enabled.
-</p>
+<h3 class="function"><a name="assign_new_vbo_from_attribute_series_with-2">assign_new_vbo_from_attribute_series_with/2</a></h3>
+<div class="spec">
+<p><code>assign_new_vbo_from_attribute_series_with(ListOfVAttrSeries::[<a href="#type-vertex_attribute_series" docgen-rel="seetype" docgen-href="#vertex_attribute_series/0">vertex_attribute_series()</a>], ListOfVAIs::[<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>]) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="assign_texcoords_to_new_vbo-1">assign_texcoords_to_new_vbo/1</a></h3>
 <div class="spec">
-<p><code>assign_texcoords_to_new_vbo(TexCoords::[<a href="#type-uv_point">uv_point()</a>]) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_texcoords_to_new_vbo(TexCoords::[<a href="#type-uv_point" docgen-rel="seetype" docgen-href="#uv_point/0">uv_point()</a>]) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified (2D) texture coordinates to a new VBO (associated
- to a default usage profile) that is made the currently active one, and whose
- identifier is returned.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_texcoords_to_new_vbo-2">assign_texcoords_to_new_vbo/2</a></h3>
 <div class="spec">
-<p><code>assign_texcoords_to_new_vbo(TexCoords::[<a href="#type-uv_point">uv_point()</a>], BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_texcoords_to_new_vbo(TexCoords::[<a href="#type-uv_point" docgen-rel="seetype" docgen-href="#uv_point/0">uv_point()</a>], BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified (2D) texture coordinates to a new VBO that is made
- the currently active one, associates the specified usage profile, and returns
- the identifier of this VBO.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_vertex_attribute_as-2">assign_vertex_attribute_as/2</a></h3>
 <div class="spec">
-<p><code>assign_vertex_attribute_as(VAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series">vertex_attribute_series()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_vertex_attribute_as(VAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series" docgen-rel="seetype" docgen-href="#vertex_attribute_series/0">vertex_attribute_series()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified series of homogeneous vertex attribute values to a 
-new VBO with a default usage profile - a VBO that is made the currently active 
-one, and declares and enables a corresponding vertex attribute for the 
-specified index.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_vertex_attribute_as-3">assign_vertex_attribute_as/3</a></h3>
 <div class="spec">
-<p><code>assign_vertex_attribute_as(VAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series">vertex_attribute_series()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_vertex_attribute_as(VAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series" docgen-rel="seetype" docgen-href="#vertex_attribute_series/0">vertex_attribute_series()</a>, BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Assigns the specified series of homogeneous vertex attribute values to a 
-new VBO with the specified usage profile - a VBO that is made the currently 
-active one, and declares and enables a corresponding vertex attribute for the 
-specified index.</p>
-
- The specified data will thus typically be transferred to the graphic card.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_vertices_to_new_vbo-1">assign_vertices_to_new_vbo/1</a></h3>
 <div class="spec">
-<p><code>assign_vertices_to_new_vbo(Vertices::[<a href="#type-any_vertex3">any_vertex3()</a>]) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_vertices_to_new_vbo(Vertices::[<a href="#type-any_vertex3" docgen-rel="seetype" docgen-href="#any_vertex3/0">any_vertex3()</a>]) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified (3D) vertices to a new VBO (associated to a default
- usage profile) that is made the currently active one, and whose identifier is
- returned.
-</p>
+</div>
 
 <h3 class="function"><a name="assign_vertices_to_new_vbo-2">assign_vertices_to_new_vbo/2</a></h3>
 <div class="spec">
-<p><code>assign_vertices_to_new_vbo(Vertices::[<a href="#type-any_vertex3">any_vertex3()</a>], BufferUsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>assign_vertices_to_new_vbo(Vertices::[<a href="#type-any_vertex3" docgen-rel="seetype" docgen-href="#any_vertex3/0">any_vertex3()</a>], BufferUsageHint::<a href="#type-buffer_usage_hint" docgen-rel="seetype" docgen-href="#buffer_usage_hint/0">buffer_usage_hint()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified (3D) vertices to a new VBO that is made the
- currently active one, associates the specified usage profile, and returns the
- identifier of this VBO.
-</p>
+</div>
 
 <h3 class="function"><a name="compile_compute_shader-1">compile_compute_shader/1</a></h3>
 <div class="spec">
-<p><code>compile_compute_shader(ComputeShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-compute_shader_id">compute_shader_id()</a></code><br></p>
+<p><code>compile_compute_shader(ComputeShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-compute_shader_id" docgen-rel="seetype" docgen-href="#compute_shader_id/0">compute_shader_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Loads and compiles a compute shader from the specified source file 
-(whose extension is typically .compute.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
+</div>
 
 <h3 class="function"><a name="compile_fragment_shader-1">compile_fragment_shader/1</a></h3>
 <div class="spec">
-<p><code>compile_fragment_shader(FragmentShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-fragment_shader_id">fragment_shader_id()</a></code><br></p>
+<p><code>compile_fragment_shader(FragmentShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-fragment_shader_id" docgen-rel="seetype" docgen-href="#fragment_shader_id/0">fragment_shader_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Loads and compiles a fragment shader from the specified source file 
-(whose extension is typically fragment.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
+</div>
 
 <h3 class="function"><a name="compile_geometry_shader-1">compile_geometry_shader/1</a></h3>
 <div class="spec">
-<p><code>compile_geometry_shader(GeometryShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-geometry_shader_id">geometry_shader_id()</a></code><br></p>
+<p><code>compile_geometry_shader(GeometryShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-geometry_shader_id" docgen-rel="seetype" docgen-href="#geometry_shader_id/0">geometry_shader_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Loads and compiles a geometry shader from the specified source file 
-(whose extension is typically .geometry.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
+</div>
 
 <h3 class="function"><a name="compile_tessellation_control_shader-1">compile_tessellation_control_shader/1</a></h3>
 <div class="spec">
-<p><code>compile_tessellation_control_shader(TessCtrlShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-tessellation_control_shader_id">tessellation_control_shader_id()</a></code><br></p>
+<p><code>compile_tessellation_control_shader(TessCtrlShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-tessellation_control_shader_id" docgen-rel="seetype" docgen-href="#tessellation_control_shader_id/0">tessellation_control_shader_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Loads and compiles a tessellation control shader from the specified 
-source file (whose extension is typically .tess-ctrl.glsl), and returns its 
-identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
+</div>
 
 <h3 class="function"><a name="compile_tessellation_evaluation_shader-1">compile_tessellation_evaluation_shader/1</a></h3>
 <div class="spec">
-<p><code>compile_tessellation_evaluation_shader(TessEvalShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-tessellation_evaluation_shader_id">tessellation_evaluation_shader_id()</a></code><br></p>
+<p><code>compile_tessellation_evaluation_shader(TessEvalShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-tessellation_evaluation_shader_id" docgen-rel="seetype" docgen-href="#tessellation_evaluation_shader_id/0">tessellation_evaluation_shader_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Loads and compiles a tessellation evaluation shader from the specified 
-source file (whose extension is typically .tess-eval.glsl), and returns its 
-identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
+</div>
 
 <h3 class="function"><a name="compile_vertex_shader-1">compile_vertex_shader/1</a></h3>
 <div class="spec">
-<p><code>compile_vertex_shader(VertexShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-vertex_shader_id">vertex_shader_id()</a></code><br></p>
+<p><code>compile_vertex_shader(VertexShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-vertex_shader_id" docgen-rel="seetype" docgen-href="#vertex_shader_id/0">vertex_shader_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Loads and compiles a vertex shader from the specified source file (whose 
-extension is typically .vertex.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_vertex_attribute-1">declare_vertex_attribute/1</a></h3>
 <div class="spec">
-<p><code>declare_vertex_attribute(TargetVAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_vertex_attribute(TargetVAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Tells OpenGL how the specified vertex attribute shall be interpreted in
- the currently active VBO, supposing 3 floats per vertex attribute directly in
- a tightly-packed buffer, and enables this attribute.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_vertex_attribute-2">declare_vertex_attribute/2</a></h3>
 <div class="spec">
-<p><code>declare_vertex_attribute(TargetVAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, ComponentCount::<a href="#type-component_count">component_count()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_vertex_attribute(TargetVAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>, ComponentCount::<a href="#type-component_count" docgen-rel="seetype" docgen-href="#component_count/0">component_count()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Tells OpenGL how the specified vertex attribute shall be interpreted in
- the currently active VBO, supposing the specified number of floats per vertex
- attribute directly in a tightly-packed buffer, and enables this attribute.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_vertex_attribute-7">declare_vertex_attribute/7</a></h3>
 <div class="spec">
-<p><code>declare_vertex_attribute(TargetVAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, ComponentCount::<a href="#type-component_count">component_count()</a>, ComponentType::<a href="#type-gl_base_type">gl_base_type()</a>, DoNormalise::boolean(), AttrStride::<a href="#type-stride">stride()</a>, Offset::<a href="#type-offset">offset()</a>, DoEnable::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_vertex_attribute(TargetVAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>, ComponentCount::<a href="#type-component_count" docgen-rel="seetype" docgen-href="#component_count/0">component_count()</a>, ComponentType::<a href="#type-gl_base_type" docgen-rel="seetype" docgen-href="#gl_base_type/0">gl_base_type()</a>, DoNormalise::boolean(), AttrStride::<a href="#type-stride" docgen-rel="seetype" docgen-href="#stride/0">stride()</a>, Offset::<a href="#type-offset" docgen-rel="seetype" docgen-href="#offset/0">offset()</a>, DoEnable::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Tells OpenGL how the specified vertex attribute shall be interpreted in 
-the currently active VBO, and enables this attribute if requested.</p>
-
- <p>The various components corresponding to a single vertex shall be described in 
-terms of component count (e.g. 3 coordinates for a 3D position, a normal or a 
-RGB value) and component type (e.g. floats for coordinates, integers for color 
-element, etc.).</p>
-
- <p>Normalisation applies only to (fixed-point) integer components.</p>
-
- Will be stored in any already-bound VAO.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_vertex_attribute_for-2">declare_vertex_attribute_for/2</a></h3>
 <div class="spec">
-<p><code>declare_vertex_attribute_for(TargetVAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series">vertex_attribute_series()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_vertex_attribute_for(TargetVAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series" docgen-rel="seetype" docgen-href="#vertex_attribute_series/0">vertex_attribute_series()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Declares and enables, for the specified index of the currently active 
-VBO, a vertex attribute that is automatically parametrised based on the 
-specified data to which it is to correspond (typically an homogeneous, 
-tightly-packed VBO).</p>
-
- Will be stored in any already-bound VAO.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_vertex_attribute_for-3">declare_vertex_attribute_for/3</a></h3>
 <div class="spec">
-<p><code>declare_vertex_attribute_for(VAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series">vertex_attribute_series()</a>, DoEnable::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_vertex_attribute_for(VAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>, VAttrSeries::<a href="#type-vertex_attribute_series" docgen-rel="seetype" docgen-href="#vertex_attribute_series/0">vertex_attribute_series()</a>, DoEnable::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Declares - and, if requested, enables - for the specified index of the 
-currently active VBO, a vertex attribute that is automatically parametrised 
-based on the specified data to which it is to correspond (typically an 
-homogeneous, tightly-packed VBO).</p>
-
- Will be stored in any already-bound VAO.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_vertex_attributes_from-4">declare_vertex_attributes_from/4</a></h3>
 <div class="spec">
-<p><code>declare_vertex_attributes_from(CompPairs::<a href="#type-comp_pairs">comp_pairs()</a>, Stride::<a href="#type-stride">stride()</a>, Offsets::[<a href="#type-offset">offset()</a>], StartVAttrStartIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_vertex_attributes_from(CompPairs::<a href="#type-comp_pairs" docgen-rel="seetype" docgen-href="#comp_pairs/0">comp_pairs()</a>, Stride::<a href="#type-stride" docgen-rel="seetype" docgen-href="#stride/0">stride()</a>, Offsets::[<a href="#type-offset" docgen-rel="seetype" docgen-href="#offset/0">offset()</a>], StartVAttrStartIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Declares the vertex attributes corresponding to the specified information
- about vertex attribute series in the currently active VBO, starting from the
- specified vertex attribute index, supposing a tightly-packed buffer, and
- enables these attributes.
-</p>
+</div>
 
 <h3 class="function"><a name="declare_vertex_attributes_from-5">declare_vertex_attributes_from/5</a></h3>
 <div class="spec">
-<p><code>declare_vertex_attributes_from(CompPairs::<a href="#type-comp_pairs">comp_pairs()</a>, Stride::<a href="#type-stride">stride()</a>, Offsets::[<a href="#type-offset">offset()</a>], StartVAttrStartIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, DoEnable::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>declare_vertex_attributes_from(CompPairs::<a href="#type-comp_pairs" docgen-rel="seetype" docgen-href="#comp_pairs/0">comp_pairs()</a>, Stride::<a href="#type-stride" docgen-rel="seetype" docgen-href="#stride/0">stride()</a>, Offsets::[<a href="#type-offset" docgen-rel="seetype" docgen-href="#offset/0">offset()</a>], StartVAttrStartIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>, DoEnable::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Declares the vertex attributes corresponding to the specified information
- about vertex attribute series in the currently active VBO, starting from the
- specified vertex attribute index, supposing a tightly-packed buffer, and
- enabling these attributes if requested.
-</p>
+</div>
 
 <h3 class="function"><a name="delete_buffer-1">delete_buffer/1</a></h3>
 <div class="spec">
-<p><code>delete_buffer(BufferId::<a href="#type-array_buffer_id">array_buffer_id()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>delete_buffer(BufferId::<a href="#type-array_buffer_id" docgen-rel="seetype" docgen-href="#array_buffer_id/0">array_buffer_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Deletes the specified buffer.</p>
+</div>
 
 <h3 class="function"><a name="delete_buffers-1">delete_buffers/1</a></h3>
 <div class="spec">
-<p><code>delete_buffers(BufferIds::[<a href="#type-array_buffer_id">array_buffer_id()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>delete_buffers(BufferIds::[<a href="#type-array_buffer_id" docgen-rel="seetype" docgen-href="#array_buffer_id/0">array_buffer_id()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Deletes the specified buffers.</p>
+</div>
 
 <h3 class="function"><a name="delete_ebo-1">delete_ebo/1</a></h3>
 <div class="spec">
-<p><code>delete_ebo(EBOId) -&gt; any()</code></p>
+<p><code>delete_ebo(EBOId::<a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Deletes the specified EBO.</p>
+</div>
 
 <h3 class="function"><a name="delete_ebos-1">delete_ebos/1</a></h3>
 <div class="spec">
-<p><code>delete_ebos(EBOIds::[<a href="#type-ebo_id">ebo_id()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>delete_ebos(EBOIds::[<a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Deletes the specified EBOs.</p>
+</div>
 
 <h3 class="function"><a name="delete_program-1">delete_program/1</a></h3>
 <div class="spec">
-<p><code>delete_program(ProgramId::<a href="#type-program_id">program_id()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>delete_program(ProgramId::<a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Deletes the specified GLSL program.</p>
+</div>
 
 <h3 class="function"><a name="delete_vao-1">delete_vao/1</a></h3>
 <div class="spec">
-<p><code>delete_vao(VAOId) -&gt; any()</code></p>
+<p><code>delete_vao(VAOId::<a href="#type-vao_id" docgen-rel="seetype" docgen-href="#vao_id/0">vao_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Deletes the specified VAO.</p>
-
- If a currently bound VAO is deleted, the binding for that object reverts to
- zero and the default VAO becomes current.
-</p>
+</div>
 
 <h3 class="function"><a name="delete_vaos-1">delete_vaos/1</a></h3>
 <div class="spec">
-<p><code>delete_vaos(VAOIds::[<a href="#type-vao_id">vao_id()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>delete_vaos(VAOIds::[<a href="#type-vao_id" docgen-rel="seetype" docgen-href="#vao_id/0">vao_id()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Deletes the specified VAOs.</p>
-
- If a currently bound VAO is deleted, the binding for that object reverts to
- zero and the default VAO becomes current.
-</p>
+</div>
 
 <h3 class="function"><a name="delete_vbo-1">delete_vbo/1</a></h3>
 <div class="spec">
-<p><code>delete_vbo(VBOId) -&gt; any()</code></p>
+<p><code>delete_vbo(VBOId::<a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Deletes the specified VBO.</p>
+</div>
 
 <h3 class="function"><a name="delete_vbos-1">delete_vbos/1</a></h3>
 <div class="spec">
-<p><code>delete_vbos(VBOIds::[<a href="#type-vbo_id">vbo_id()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>delete_vbos(VBOIds::[<a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Deletes the specified VBOs.</p>
+</div>
+
+<h3 class="function"><a name="deploy_base_program-0">deploy_base_program/0</a></h3>
+<div class="spec">
+<p><code>deploy_base_program() -&gt; <a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="disable_vertex_attribute-1">disable_vertex_attribute/1</a></h3>
 <div class="spec">
-<p><code>disable_vertex_attribute(VAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>disable_vertex_attribute(VAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Disables the specified vertex attribute.</p>
+</div>
 
 <h3 class="function"><a name="enable_vertex_attribute-1">enable_vertex_attribute/1</a></h3>
 <div class="spec">
-<p><code>enable_vertex_attribute(VAttrIndex::<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>enable_vertex_attribute(VAttrIndex::<a href="#type-vertex_attribute_index" docgen-rel="seetype" docgen-href="#vertex_attribute_index/0">vertex_attribute_index()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Enables the specified vertex attribute.</p>
-
- If enabled, the values in the generic vertex attribute array will be accessed
- and used for rendering when calls are made to vertex array commands.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_buffer_id-0">generate_buffer_id/0</a></h3>
 <div class="spec">
-<p><code>generate_buffer_id() -&gt; <a href="#type-gl_buffer_id">gl_buffer_id()</a></code><br></p>
+<p><code>generate_buffer_id() -&gt; <a href="#type-gl_buffer_id" docgen-rel="seetype" docgen-href="#gl_buffer_id/0">gl_buffer_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a new, unique, buffer identifier.</p>
-
- Operates for all kinds of arrays.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_buffer_ids-1">generate_buffer_ids/1</a></h3>
 <div class="spec">
-<p><code>generate_buffer_ids(Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-gl_buffer_id">gl_buffer_id()</a>]</code><br></p>
+<p><code>generate_buffer_ids(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [<a href="#type-gl_buffer_id" docgen-rel="seetype" docgen-href="#gl_buffer_id/0">gl_buffer_id()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Returns the specified number of new, unique, buffer identifier.s</p>
-
- Operates for all kinds of arrays.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_ebo_id-0">generate_ebo_id/0</a></h3>
 <div class="spec">
-<p><code>generate_ebo_id() -&gt; <a href="#type-ebo_id">ebo_id()</a></code><br></p>
+<p><code>generate_ebo_id() -&gt; <a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, unique, EBO identifier.</p>
+</div>
 
 <h3 class="function"><a name="generate_ebo_ids-1">generate_ebo_ids/1</a></h3>
 <div class="spec">
-<p><code>generate_ebo_ids(Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-ebo_id">ebo_id()</a>]</code><br></p>
+<p><code>generate_ebo_ids(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [<a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the specified number of new, unique, EBO identifiers.</p>
+</div>
 
 <h3 class="function"><a name="generate_program-1">generate_program/1</a></h3>
 <div class="spec">
-<p><code>generate_program(ShaderIds::[<a href="#type-shader_id">shader_id()</a>]) -&gt; <a href="#type-program_id">program_id()</a></code><br></p>
+<p><code>generate_program(ShaderIds::[<a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a>]) -&gt; <a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with no user-specified attributes defined: 
-links these shaders in a corresponding program, and returns its identifier.</p>
-
- Deletes the specified shaders once the program is generated.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_program-2">generate_program/2</a></h3>
 <div class="spec">
-<p><code>generate_program(ShaderIds::[<a href="#type-shader_id">shader_id()</a>], UserAttributes::[<a href="#type-user_vertex_attribute">user_vertex_attribute()</a>]) -&gt; <a href="#type-program_id">program_id()</a></code><br></p>
+<p><code>generate_program(ShaderIds::[<a href="#type-shader_id" docgen-rel="seetype" docgen-href="#shader_id/0">shader_id()</a>], UserAttributes::[<a href="#type-user_vertex_attribute" docgen-rel="seetype" docgen-href="#user_vertex_attribute/0">user_vertex_attribute()</a>]) -&gt; <a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with user-specified attributes: links these 
-shaders in a corresponding program, and returns its identifier.</p>
-
- Deletes the specified shaders once the program is generated.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_program_from-2">generate_program_from/2</a></h3>
 <div class="spec">
-<p><code>generate_program_from(VertexShaderPath::<a href="#type-any_file_path">any_file_path()</a>, FragmentShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-program_id">program_id()</a></code><br></p>
+<p><code>generate_program_from(VertexShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, FragmentShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a></code><br></p>
 <p> </p>
-</div><p>Generates a GLSL program from the shaders whose source files are
- specified: loads and compiles the specified vertex and fragment shaders (with
- no user-specified attributes defined), links them in a corresponding program,
- and returns its identifier.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_program_from-3">generate_program_from/3</a></h3>
 <div class="spec">
-<p><code>generate_program_from(VertexShaderPath::<a href="#type-any_file_path">any_file_path()</a>, FragmentShaderPath::<a href="#type-any_file_path">any_file_path()</a>, UserAttributes::[<a href="#type-user_vertex_attribute">user_vertex_attribute()</a>]) -&gt; <a href="#type-program_id">program_id()</a></code><br></p>
+<p><code>generate_program_from(VertexShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, FragmentShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, UserAttributes::[<a href="#type-user_vertex_attribute" docgen-rel="seetype" docgen-href="#user_vertex_attribute/0">user_vertex_attribute()</a>]) -&gt; <a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a></code><br></p>
 <p> </p>
-</div><p>Generates a GLSL program from the shaders whose source files are
- specified: loads and compiles the specified vertex and fragment shaders, with
- user-specified attributes, links them in a corresponding program, and returns
- its identifier.
-</p>
+</div>
+
+<h3 class="function"><a name="generate_program_from-4">generate_program_from/4</a></h3>
+<div class="spec">
+<p><code>generate_program_from(VertexShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, FragmentShaderPath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, UserAttributes::[<a href="#type-user_vertex_attribute" docgen-rel="seetype" docgen-href="#user_vertex_attribute/0">user_vertex_attribute()</a>], ExtraGLSLSearchPaths::<a href="#type-glsl_search_paths" docgen-rel="seetype" docgen-href="#glsl_search_paths/0">glsl_search_paths()</a>) -&gt; <a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="generate_vao_id-0">generate_vao_id/0</a></h3>
 <div class="spec">
-<p><code>generate_vao_id() -&gt; <a href="#type-vao_id">vao_id()</a></code><br></p>
+<p><code>generate_vao_id() -&gt; <a href="#type-vao_id" docgen-rel="seetype" docgen-href="#vao_id/0">vao_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, unique, VAO identifier.</p>
+</div>
 
 <h3 class="function"><a name="generate_vao_ids-1">generate_vao_ids/1</a></h3>
 <div class="spec">
-<p><code>generate_vao_ids(Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-vao_id">vao_id()</a>]</code><br></p>
+<p><code>generate_vao_ids(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [<a href="#type-vao_id" docgen-rel="seetype" docgen-href="#vao_id/0">vao_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the specified number of new, unique, VAO identifiers.</p>
+</div>
 
 <h3 class="function"><a name="generate_vbo_id-0">generate_vbo_id/0</a></h3>
 <div class="spec">
-<p><code>generate_vbo_id() -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>generate_vbo_id() -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, unique, VBO identifier.</p>
+</div>
 
 <h3 class="function"><a name="generate_vbo_ids-1">generate_vbo_ids/1</a></h3>
 <div class="spec">
-<p><code>generate_vbo_ids(Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-vbo_id">vbo_id()</a>]</code><br></p>
+<p><code>generate_vbo_ids(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [<a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the specified number of new, unique, VBO identifiers.</p>
+</div>
+
+<h3 class="function"><a name="get_base_glsl_include_paths-0">get_base_glsl_include_paths/0</a></h3>
+<div class="spec">
+<p><code>get_base_glsl_include_paths() -&gt; any()</code></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_base_shader_filenames-0">get_base_shader_filenames/0</a></h3>
+<div class="spec">
+<p><code>get_base_shader_filenames() -&gt; {<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>, <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_base_user_attributes-0">get_base_user_attributes/0</a></h3>
+<div class="spec">
+<p><code>get_base_user_attributes() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="get_maybe_uniform_id-2">get_maybe_uniform_id/2</a></h3>
 <div class="spec">
-<p><code>get_maybe_uniform_id(UniformName::<a href="#type-uniform_name">uniform_name()</a>, ProgId::<a href="#type-program_id">program_id()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-uniform_id">uniform_id()</a>)</code><br></p>
+<p><code>get_maybe_uniform_id(UniformName::<a href="#type-uniform_name" docgen-rel="seetype" docgen-href="#uniform_name/0">uniform_name()</a>, ProgId::<a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns the identifier of the active uniform variable (if any) that is 
-specified by its name in the specified program.</p>
-
- Refer to get_uniform_id/2 for further details.
-</p>
+</div>
 
 <h3 class="function"><a name="get_shading_language_version-0">get_shading_language_version/0</a></h3>
 <div class="spec">
-<p><code>get_shading_language_version() -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>get_shading_language_version() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the version /release number of the currently used OpenGL 
-shading language.</p>
-
- <p>Example: "4.60 FOOBAR".</p>
-
- Since OpenGL 3.3, the version numbers of GLSL match the version of OpenGL
- (GLSL version 420 corresponds to OpenGL version 4.2 for example).
-</p>
+</div>
 
 <h3 class="function"><a name="get_uniform_id-2">get_uniform_id/2</a></h3>
 <div class="spec">
-<p><code>get_uniform_id(UniformName::<a href="#type-uniform_name">uniform_name()</a>, ProgId::<a href="#type-program_id">program_id()</a>) -&gt; <a href="#type-uniform_id">uniform_id()</a></code><br></p>
+<p><code>get_uniform_id(UniformName::<a href="#type-uniform_name" docgen-rel="seetype" docgen-href="#uniform_name/0">uniform_name()</a>, ProgId::<a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a>) -&gt; <a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the identifier of the active uniform variable that is specified 
-by its name in the specified program. Throws an exception if such a variable 
-does not exist.</p>
+</div>
 
- <p>The actual locations assigned to uniform variables are not known until the 
-program object is linked successfully.</p>
+<h3 class="function"><a name="get_vbo_layout-1">get_vbo_layout/1</a></h3>
+<div class="spec">
+<p><code>get_vbo_layout(LayoutId::<a href="#type-vbo_layout_id" docgen-rel="seetype" docgen-href="#vbo_layout_id/0">vbo_layout_id()</a>) -&gt; <a href="#type-vbo_layout" docgen-rel="seetype" docgen-href="#vbo_layout/0">vbo_layout()</a></code><br></p>
+<p> </p>
+</div>
 
- A uniform variable that is declared in shader(s) yet is not used will be
- removed during the linking step, and thus cannot be found afterwards.
-</p>
+<h3 class="function"><a name="get_vbo_layout_id-1">get_vbo_layout_id/1</a></h3>
+<div class="spec">
+<p><code>get_vbo_layout_id(Layout::<a href="#type-vbo_layout" docgen-rel="seetype" docgen-href="#vbo_layout/0">vbo_layout()</a>) -&gt; <a href="#type-vbo_layout_id" docgen-rel="seetype" docgen-href="#vbo_layout_id/0">vbo_layout_id()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_vbo_layouts-0">get_vbo_layouts/0</a></h3>
+<div class="spec">
+<p><code>get_vbo_layouts() -&gt; [<a href="#type-vbo_layout" docgen-rel="seetype" docgen-href="#vbo_layout/0">vbo_layout()</a>]</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="infer_gl_component_type-1">infer_gl_component_type/1</a></h3>
 <div class="spec">
-<p><code>infer_gl_component_type(F::term()) -&gt; <a href="#type-gl_base_type">gl_base_type()</a></code><br></p>
+<p><code>infer_gl_component_type(F::term()) -&gt; <a href="#type-gl_base_type" docgen-rel="seetype" docgen-href="#gl_base_type/0">gl_base_type()</a></code><br></p>
 <p> </p>
-</div><p>Deduces, according to MyriadGUI's conventions, the OpenGL data type
- corresponding to the specified component in an array (like a VBO).
-</p>
+</div>
 
 <h3 class="function"><a name="install_program-1">install_program/1</a></h3>
 <div class="spec">
-<p><code>install_program(ProgramId::<a href="#type-program_id">program_id()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>install_program(ProgramId::<a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Installs the specified GLSL program as part of current rendering state.</p>
+</div>
 
 <h3 class="function"><a name="render_from_enabled_ebo-2">render_from_enabled_ebo/2</a></h3>
 <div class="spec">
-<p><code>render_from_enabled_ebo(PrimType::<a href="#type-gl_primitive_type">gl_primitive_type()</a>, VertexCount::<a href="#type-count">count()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>render_from_enabled_ebo(PrimType::<a href="#type-gl_primitive_type" docgen-rel="seetype" docgen-href="#gl_primitive_type/0">gl_primitive_type()</a>, VertexCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Renders the specified primitives based on the enabled EBO, not using any
- specific offset.
-</p>
+</div>
 
 <h3 class="function"><a name="render_from_enabled_vbos-2">render_from_enabled_vbos/2</a></h3>
 <div class="spec">
-<p><code>render_from_enabled_vbos(PrimType::<a href="#type-gl_primitive_type">gl_primitive_type()</a>, VertexCount::<a href="#type-count">count()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>render_from_enabled_vbos(PrimType::<a href="#type-gl_primitive_type" docgen-rel="seetype" docgen-href="#gl_primitive_type/0">gl_primitive_type()</a>, VertexCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Renders the specified primitives based on the enabled VBOs, starting from 
-their first index.</p>
-
- The vertex count corresponds to the vertices that the rendering will have to
- actually take into account, typically the number of vertex attributes in the
- VBO(s); it is not necessarily the number of vertices of the original geometry
- (for example a square has 4 vertices, yet rendering it as a series of two
- basic triangles will lead to specify here a count of 6 vertex indices).
-</p>
+</div>
 
 <h3 class="function"><a name="render_from_enabled_vbos-3">render_from_enabled_vbos/3</a></h3>
 <div class="spec">
-<p><code>render_from_enabled_vbos(PrimType::<a href="#type-gl_primitive_type">gl_primitive_type()</a>, StartIndex::<a href="#type-index">index()</a>, VertexCount::<a href="#type-count">count()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>render_from_enabled_vbos(PrimType::<a href="#type-gl_primitive_type" docgen-rel="seetype" docgen-href="#gl_primitive_type/0">gl_primitive_type()</a>, StartIndex::<a href="#type-index" docgen-rel="seetype" docgen-href="#index/0">index()</a>, VertexCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Renders the specified primitives based on the enabled VBOs.</p>
-
- See render_from_enabled_vbos/3 for the vertex count.
-</p>
+</div>
 
 <h3 class="function"><a name="set_current_ebo_from_id-1">set_current_ebo_from_id/1</a></h3>
 <div class="spec">
-<p><code>set_current_ebo_from_id(EBOId::<a href="#type-ebo_id">ebo_id()</a>) -&gt; <a href="#type-ebo_id">ebo_id()</a></code><br></p>
+<p><code>set_current_ebo_from_id(EBOId::<a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a>) -&gt; <a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the specified EBO as the currently active one.</p>
-
- <p>From now on, all operations done regarding the ?GL_ELEMENT_ARRAY_BUFFER target 
-will be applied to this buffer.</p>
-
- <p>Lower-level, defined to centralise calls.</p>
-
- Returns, if useful, the specified identifier, for chaining.
-</p>
+</div>
 
 <h3 class="function"><a name="set_current_vao_from_id-1">set_current_vao_from_id/1</a></h3>
 <div class="spec">
-<p><code>set_current_vao_from_id(VAOId::<a href="#type-vao_id">vao_id()</a>) -&gt; <a href="#type-vao_id">vao_id()</a></code><br></p>
+<p><code>set_current_vao_from_id(VAOId::<a href="#type-vao_id" docgen-rel="seetype" docgen-href="#vao_id/0">vao_id()</a>) -&gt; <a href="#type-vao_id" docgen-rel="seetype" docgen-href="#vao_id/0">vao_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the specified VBO as the currently active one.</p>
-
- Returns, if useful, the specified identifier, for chaining.
-</p>
+</div>
 
 <h3 class="function"><a name="set_current_vbo_from_id-1">set_current_vbo_from_id/1</a></h3>
 <div class="spec">
-<p><code>set_current_vbo_from_id(VBOId::<a href="#type-vbo_id">vbo_id()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>set_current_vbo_from_id(VBOId::<a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a>) -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the specified VBO as the currently active one.</p>
-
- <p>From now on, all operations done regarding the ?GL_ARRAY_BUFFER target will be 
-applied to this buffer.</p>
-
- <p>Lower-level, defined to centralise calls.</p>
-
- Returns, if useful, the specified identifier, for chaining.
-</p>
+</div>
 
 <h3 class="function"><a name="set_new_ebo-0">set_new_ebo/0</a></h3>
 <div class="spec">
-<p><code>set_new_ebo() -&gt; <a href="#type-ebo_id">ebo_id()</a></code><br></p>
+<p><code>set_new_ebo() -&gt; <a href="#type-ebo_id" docgen-rel="seetype" docgen-href="#ebo_id/0">ebo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a EBO identifier, sets it as the currently active one, and 
-returns it.</p>
-
- From now on, all operations done regarding the ?GL_ELEMENT_ARRAY_BUFFER target
- will be applied to this EBO.
-</p>
+</div>
 
 <h3 class="function"><a name="set_new_vao-0">set_new_vao/0</a></h3>
 <div class="spec">
-<p><code>set_new_vao() -&gt; <a href="#type-vao_id">vao_id()</a></code><br></p>
+<p><code>set_new_vao() -&gt; <a href="#type-vao_id" docgen-rel="seetype" docgen-href="#vao_id/0">vao_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a VAO identifier, sets it as the currently active one, and 
-returns it.</p>
-
- From now on, all operations done regarding VAOs will be applied to this one.
-</p>
+</div>
 
 <h3 class="function"><a name="set_new_vbo-0">set_new_vbo/0</a></h3>
 <div class="spec">
-<p><code>set_new_vbo() -&gt; <a href="#type-vbo_id">vbo_id()</a></code><br></p>
+<p><code>set_new_vbo() -&gt; <a href="#type-vbo_id" docgen-rel="seetype" docgen-href="#vbo_id/0">vbo_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a VBO identifier, sets it as the currently active one, and 
-returns it.</p>
-
- From now on, all operations done regarding the ?GL_ARRAY_BUFFER target will be
- applied to this VBO.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_2f-3">set_uniform_2f/3</a></h3>
 <div class="spec">
-<p><code>set_uniform_2f(UniformId::<a href="#type-uniform_id">uniform_id()</a>, F1::float(), F2::float()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_2f(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, F1::float(), F2::float()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the two specified floats, as GLSL
- floats, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_3f-4">set_uniform_3f/4</a></h3>
 <div class="spec">
-<p><code>set_uniform_3f(UniformId::<a href="#type-uniform_id">uniform_id()</a>, F1::float(), F2::float(), F3::float()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_3f(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, F1::float(), F2::float(), F3::float()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the three specified floats, as
- GLSL floats, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_4f-5">set_uniform_4f/5</a></h3>
 <div class="spec">
-<p><code>set_uniform_4f(UniformId::<a href="#type-uniform_id">uniform_id()</a>, F1::float(), F2::float(), F3::float(), F4::float()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_4f(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, F1::float(), F2::float(), F3::float(), F4::float()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the four specified floats, as GLSL
- floats, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_f-2">set_uniform_f/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_f(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Float::float()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_f(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Float::float()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified float, as a GLSL
- float, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_fs-2">set_uniform_fs/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_fs(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Floats::[float()]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_fs(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Floats::[float()]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified list of floats, as
- GLSL floats, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_i-2">set_uniform_i/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_i(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Int::integer()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_i(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Int::integer()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified integer, as a signed
- GLSL integer, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_matrix2-2">set_uniform_matrix2/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_matrix2(UniformId::<a href="#type-uniform_id">uniform_id()</a>, M2::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_matrix2(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, M2::<a href="#type-matrix2" docgen-rel="seetype" docgen-href="#matrix2/0">matrix2()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified matrix2, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_matrix2-3">set_uniform_matrix2/3</a></h3>
 <div class="spec">
-<p><code>set_uniform_matrix2(UniformId::<a href="#type-uniform_id">uniform_id()</a>, M2::<a href="#type-matrix2">matrix2()</a>, DoTranspose::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_matrix2(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, M2::<a href="#type-matrix2" docgen-rel="seetype" docgen-href="#matrix2/0">matrix2()</a>, DoTranspose::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified matrix2, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_matrix3-2">set_uniform_matrix3/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_matrix3(UniformId::<a href="#type-uniform_id">uniform_id()</a>, M3::<a href="#type-matrix3">matrix3()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_matrix3(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, M3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified matrix3, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_matrix3-3">set_uniform_matrix3/3</a></h3>
 <div class="spec">
-<p><code>set_uniform_matrix3(UniformId::<a href="#type-uniform_id">uniform_id()</a>, M3::<a href="#type-matrix3">matrix3()</a>, DoTranspose::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_matrix3(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, M3::<a href="#type-matrix3" docgen-rel="seetype" docgen-href="#matrix3/0">matrix3()</a>, DoTranspose::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified matrix3 - once
- transposed if requested, in the context of the currently installed shader
- program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_matrix4-2">set_uniform_matrix4/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_matrix4(UniformId::<a href="#type-uniform_id">uniform_id()</a>, M4::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_matrix4(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, M4::<a href="#type-matrix4" docgen-rel="seetype" docgen-href="#matrix4/0">matrix4()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified matrix4, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_matrix4-3">set_uniform_matrix4/3</a></h3>
 <div class="spec">
-<p><code>set_uniform_matrix4(UniformId::<a href="#type-uniform_id">uniform_id()</a>, M4::<a href="#type-matrix4">matrix4()</a>, DoTranspose::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_matrix4(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, M4::<a href="#type-matrix4" docgen-rel="seetype" docgen-href="#matrix4/0">matrix4()</a>, DoTranspose::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified matrix4 - once
- transposed if requested, in the context of the currently installed shader
- program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_point2-2">set_uniform_point2/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_point2(UniformId::<a href="#type-uniform_id">uniform_id()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_point2(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified point2, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_point2s-2">set_uniform_point2s/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_point2s(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Point2s::[<a href="#type-point2">point2()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_point2s(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Point2s::[<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform array variable to the specified list of
- point2, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_point3-2">set_uniform_point3/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_point3(UniformId::<a href="#type-uniform_id">uniform_id()</a>, P3::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_point3(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, P3::<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified point3, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_point3s-2">set_uniform_point3s/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_point3s(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Point3s::[<a href="#type-point3">point3()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_point3s(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Point3s::[<a href="#type-point3" docgen-rel="seetype" docgen-href="#point3/0">point3()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform array variable to the specified list of
- point3, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_point4-2">set_uniform_point4/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_point4(UniformId::<a href="#type-uniform_id">uniform_id()</a>, P4::<a href="#type-point4">point4()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_point4(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, P4::<a href="#type-point4" docgen-rel="seetype" docgen-href="#point4/0">point4()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified point4, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_point4s-2">set_uniform_point4s/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_point4s(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Point4s::[<a href="#type-point4">point4()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_point4s(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Point4s::[<a href="#type-point4" docgen-rel="seetype" docgen-href="#point4/0">point4()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform array variable to the specified list of
- point4, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_ui-2">set_uniform_ui/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_ui(UniformId::<a href="#type-uniform_id">uniform_id()</a>, NonNegInt::non_neg_integer()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_ui(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, NonNegInt::non_neg_integer()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified integer, as a GLSL
- unsigned integer, in the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_vector2-2">set_uniform_vector2/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_vector2(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Vec2::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_vector2(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Vec2::<a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified vector2, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_vector2s-2">set_uniform_vector2s/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_vector2s(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Vec2s::[<a href="#type-vector2">vector2()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_vector2s(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Vec2s::[<a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified list of vector2, in
- the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_vector3-2">set_uniform_vector3/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_vector3(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Vec3::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_vector3(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Vec3::<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified vector3, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_vector3s-2">set_uniform_vector3s/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_vector3s(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Vec3s::[<a href="#type-vector3">vector3()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_vector3s(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Vec3s::[<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified list of vector3, in
- the context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_vector4-2">set_uniform_vector4/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_vector4(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Vec4::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_vector4(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Vec4::<a href="#type-vector4" docgen-rel="seetype" docgen-href="#vector4/0">vector4()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified vector4, in the
- context of the currently installed shader program.
-</p>
+</div>
 
 <h3 class="function"><a name="set_uniform_vector4s-2">set_uniform_vector4s/2</a></h3>
 <div class="spec">
-<p><code>set_uniform_vector4s(UniformId::<a href="#type-uniform_id">uniform_id()</a>, Vec4s::[<a href="#type-vector4">vector4()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_uniform_vector4s(UniformId::<a href="#type-uniform_id" docgen-rel="seetype" docgen-href="#uniform_id/0">uniform_id()</a>, Vec4s::[<a href="#type-vector4" docgen-rel="seetype" docgen-href="#vector4/0">vector4()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified uniform variable to the specified list of vector4, in
- the context of the currently installed shader program.
-</p>
+</div>
+
+<h3 class="function"><a name="set_vbo_layout-2">set_vbo_layout/2</a></h3>
+<div class="spec">
+<p><code>set_vbo_layout(VBOLayout::<a href="#type-vbo_layout" docgen-rel="seetype" docgen-href="#vbo_layout/0">vbo_layout()</a>, ProgramId::<a href="#type-program_id" docgen-rel="seetype" docgen-href="#program_id/0">program_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="to_gl_vectors-1">to_gl_vectors/1</a></h3>
 <div class="spec">
-<p><code>to_gl_vectors(Vecs::[<a href="#type-vector2">vector2()</a>]) -&gt; [<a href="#type-gl_vec2">gl_vec2()</a>]</code><br></p><p><code>to_gl_vectors(Vecs::[<a href="#type-vector3">vector3()</a>]) -&gt; [<a href="#type-gl_vec3">gl_vec3()</a>]</code><br></p><p><code>to_gl_vectors(Vecs::[<a href="#type-vector4">vector4()</a>]) -&gt; [<a href="#type-gl_vec4">gl_vec4()</a>]</code><br></p><p><code>to_gl_vectors(Vecs::[<a href="#type-vector">vector()</a>]) -&gt; [<a href="#type-gl_vector">gl_vector()</a>]</code><br></p>
+<p><code>to_gl_vectors(Vecs::[<a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>]) -&gt; [<a href="#type-gl_vec2" docgen-rel="seetype" docgen-href="#gl_vec2/0">gl_vec2()</a>]</code><br></p><p><code>to_gl_vectors(Vecs::[<a href="#type-vector3" docgen-rel="seetype" docgen-href="#vector3/0">vector3()</a>]) -&gt; [<a href="#type-gl_vec3" docgen-rel="seetype" docgen-href="#gl_vec3/0">gl_vec3()</a>]</code><br></p><p><code>to_gl_vectors(Vecs::[<a href="#type-vector4" docgen-rel="seetype" docgen-href="#vector4/0">vector4()</a>]) -&gt; [<a href="#type-gl_vec4" docgen-rel="seetype" docgen-href="#gl_vec4/0">gl_vec4()</a>]</code><br></p><p><code>to_gl_vectors(Vecs::[<a href="#type-vector" docgen-rel="seetype" docgen-href="#vector/0">vector()</a>]) -&gt; [<a href="#type-gl_vector" docgen-rel="seetype" docgen-href="#gl_vector/0">gl_vector()</a>]</code><br></p>
 <p> </p>
 <p> </p>
 <p> </p>
 <p> </p>
-</div><p><p>Converts the specified list of (Myriad) vectors (hence lists of 
-coordinate lists) of any dimension into a list of vectors suitable for the gl 
-API (hence tuples).</p>
-
- Note: points (vertices), hence tuples, shall be preferred wherever relevant.
-</p>
+</div>
 
 <h3 class="function"><a name="unset_current_vao-0">unset_current_vao/0</a></h3>
 <div class="spec">
-<p><code>unset_current_vao() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>unset_current_vao() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Unsets the current VAO from the context.</p>
-
- This is the moment when this VAO records the vertex information that has been
- set since it was bound, in order to be able to set again that information at
- its next binding.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

@@ -10,386 +10,291 @@
 <hr>
 
 <h1>Module point2</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for <b>2D points</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Module implementing the support for <b>2D points</b>.</p>
-
- See also:
- - the corresponding vectors (in vector2.erl) and matrices (in matrix3.erl)
- - the (unspecialised) points of arbitrary dimensions, in point.erl
- - the various 2D services in linear_2D.erl
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_point2">any_point2()</a></h3>
-<p><code>any_point2() = <a href="#type-point2">point2()</a> | <a href="#type-integer_point2">integer_point2()</a></code></p>
-<p> A point in a 2D space, with any numerical coordinates (2 of them).</p>
+<p><code>any_point2() = <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a> | <a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-any_vector2">any_vector2()</a></h3>
-<p><code>any_vector2() = <a href="vector2.html#type-any_vector2">vector2:any_vector2()</a></code></p>
+<p><code>any_vector2() = <a href="vector2.html#type-any_vector2" docgen-rel="seetype" docgen-href="vector2#any_vector2/0">vector2:any_vector2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_vertex2">any_vertex2()</a></h3>
-<p><code>any_vertex2() = <a href="#type-any_point2">any_point2()</a></code></p>
-<p> A 2D vertex of a polygon, with any numerical coordinates (2 of them).</p>
+<p><code>any_vertex2() = <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><code>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></code></p>
+<p><code>coordinate() = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
-<p><code>distance() = <a href="linear.html#type-distance">linear:distance()</a></code></p>
+<p><code>distance() = <a href="linear.html#type-distance" docgen-rel="seetype" docgen-href="linear#distance/0">linear:distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
+<p><code>factor() = <a href="math_utils.html#type-factor" docgen-rel="seetype" docgen-href="math_utils#factor/0">math_utils:factor()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
-<p><code>integer_coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></code></p>
+<p><code>integer_coordinate() = <a href="linear.html#type-integer_coordinate" docgen-rel="seetype" docgen-href="linear#integer_coordinate/0">linear:integer_coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_point2">integer_point2()</a></h3>
-<p><code>integer_point2() = {X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>}</code></p>
-<p> A point in a 2D space, with (exactly) 2 integer coordinates.</p>
+<p><code>integer_point2() = {X::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-integer_vector2">integer_vector2()</a></h3>
-<p><code>integer_vector2() = <a href="vector2.html#type-integer_vector2">vector2:integer_vector2()</a></code></p>
+<p><code>integer_vector2() = <a href="vector2.html#type-integer_vector2" docgen-rel="seetype" docgen-href="vector2#integer_vector2/0">vector2:integer_vector2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_vertex2">integer_vertex2()</a></h3>
-<p><code>integer_vertex2() = <a href="#type-point2">point2()</a></code></p>
-<p> A 2D integer vertex of a polygon.</p>
+<p><code>integer_vertex2() = <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-point2">point2()</a></h3>
-<p><code>point2() = {X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>}</code></p>
-<p> A point in a 2D space, with (exactly) 2 floating-point coordinates.</p>
+<p><code>point2() = {X::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Y::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
-<p><code>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></code></p>
+<p><code>square_distance() = <a href="linear.html#type-square_distance" docgen-rel="seetype" docgen-href="linear#square_distance/0">linear:square_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_coordinate">user_coordinate()</a></h3>
-<p><code>user_coordinate() = <a href="linear.html#type-user_coordinate">linear:user_coordinate()</a></code></p>
+<p><code>user_coordinate() = <a href="linear.html#type-user_coordinate" docgen-rel="seetype" docgen-href="linear#user_coordinate/0">linear:user_coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-user_point2">user_point2()</a></h3>
-<p><code>user_point2() = <a href="#type-any_point2">any_point2()</a> | [<a href="#type-coordinate">coordinate()</a>] | [<a href="#type-integer_coordinate">integer_coordinate()</a>]</code></p>
-<p> A user-specified point, preferably as a tuple, otherwise as a list (hence as a
- vector), with two integer or floating-point coordinates.</p>
+<p><code>user_point2() = <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a> | [<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>] | [<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
-<p><code>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></code></p>
+<p><code>vector2() = <a href="vector2.html#type-vector2" docgen-rel="seetype" docgen-href="vector2#vector2/0">vector2:vector2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-vertex2">vertex2()</a></h3>
-<p><code>vertex2() = <a href="#type-point2">point2()</a></code></p>
-<p> A 2D (floating-point) vertex of a polygon.</p>
+<p><code>vertex2() = <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code></p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns a point corresponding to the specified point translated of the 
-specified point, to be understood as a vector.</td></tr>
-<tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns whether the two specified 2D points are close, that is if they
- could be considered as representing the same point (equality operator on
- points).</td></tr>
-<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns whether the two specified 2D points are equal, that is if they
- could be considered as representing the same point (equality operator on
- points).</td></tr>
-<tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified 2D point is legit, and returns it.</td></tr>
-<tr><td valign="top"><a href="#distance-2">distance/2</a></td><td>Returns the distance between the two specified 2D points.</td></tr>
-<tr><td valign="top"><a href="#draw_integer_random-2">draw_integer_random/2</a></td><td>Draws a random point between specified (included) bounds (for both
- dimensions).</td></tr>
-<tr><td valign="top"><a href="#draw_integer_random-3">draw_integer_random/3</a></td><td>Draws the specified number of random points between specified (included)
- bounds (for both dimensions).</td></tr>
-<tr><td valign="top"><a href="#from_vector-1">from_vector/1</a></td><td>Returns a 2D point corresponding to the specified vector (expected to be
- type-homogeneous).</td></tr>
-<tr><td valign="top"><a href="#get_center-2">get_center/2</a></td><td>Returns a point corresponding the midpoint (middle) of the two specified
- points.</td></tr>
-<tr><td valign="top"><a href="#get_integer_center-2">get_integer_center/2</a></td><td>Returns a point corresponding the middle of the two specified points,
- returned with integer coordinates.</td></tr>
-<tr><td valign="top"><a href="#is_within-3">is_within/3</a></td><td>Tells whether the specified 2D point P1 is within a distance D from 2D
- point P2, using some margin to overcome numerical errors.</td></tr>
-<tr><td valign="top"><a href="#is_within_square-3">is_within_square/3</a></td><td>Tells whether the specified 2D point P1 is within a square distance
- SquareD from 2D point P2.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a 2D point corresponding to the user-specified one (preferably a 
-tuple rather than a list).</td></tr>
-<tr><td valign="top"><a href="#new-2">new/2</a></td><td>Returns a 2D point corresponding to the user-specified one.</td></tr>
-<tr><td valign="top"><a href="#new_integer-2">new_integer/2</a></td><td>Returns an integer 2D point corresponding to the user-specified one.</td></tr>
-<tr><td valign="top"><a href="#null-0">null/0</a></td><td>Returns a 2D point whose coordinates are all null, that is the origin of
- the local referential.</td></tr>
-<tr><td valign="top"><a href="#roundify-1">roundify/1</a></td><td>Returns a point whose floating-point coordinates have been rounded to the
- respective nearest integers.</td></tr>
-<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales the specified 2D point of the specified scalar factor.</td></tr>
-<tr><td valign="top"><a href="#square_distance-2">square_distance/2</a></td><td>Returns the square of the distance between the two specified 2D points.</td></tr>
-<tr><td valign="top"><a href="#to_any_vector-1">to_any_vector/1</a></td><td>Returns a 2D vector (with coordinates of the same type) corresponding to
- the specified 2D point.</td></tr>
-<tr><td valign="top"><a href="#to_basic_string-1">to_basic_string/1</a></td><td>Returns a basic, not even fixed-width for floating-point coordinates (see
- linear.hrl for width and precision) representation of the specified 2D point.</td></tr>
-<tr><td valign="top"><a href="#to_buffer-1">to_buffer/1</a></td><td>Returns a binary buffer of floats, corresponding to the specified points.</td></tr>
-<tr><td valign="top"><a href="#to_compact_string-1">to_compact_string/1</a></td><td>Returns a compact, textual, informal representation of the specified
- 2D point.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified 2D point; full float
- precision is shown.</td></tr>
-<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td>Returns a human-friendly, approximated textual representation of
- specified point, based on specified print-out precision (number of digits
- after the comma).</td></tr>
-<tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified 
-2D point; full float precision is shown.</td></tr>
-<tr><td valign="top"><a href="#to_vector-1">to_vector/1</a></td><td>Returns a 2D vector (with floating-vector coordinates) corresponding to
- the specified 2D point.</td></tr>
-<tr><td valign="top"><a href="#translate-2">translate/2</a></td><td>Returns a point corresponding to the specified point translated of the
- specified vector.</td></tr>
-<tr><td valign="top"><a href="#vectorize-2">vectorize/2</a></td><td>Returns a vector V made from the specified two points P1 and P2: V=P2-P1.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#distance-2">distance/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#draw_integer_random-2">draw_integer_random/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#draw_integer_random-3">draw_integer_random/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#from_vector-1">from_vector/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_center-2">get_center/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_integer_center-2">get_integer_center/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_within-3">is_within/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_within_square-3">is_within_square/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-2">new/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new_integer-2">new_integer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#null-0">null/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#roundify-1">roundify/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#square_distance-2">square_distance/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_any_vector-1">to_any_vector/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_basic_string-1">to_basic_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_buffer-1">to_buffer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_compact_string-1">to_compact_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_vector-1">to_vector/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#translate-2">translate/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#vectorize-2">vectorize/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add-2">add/2</a></h3>
 <div class="spec">
-<p><code>add(P1::<a href="#type-any_point2">any_point2()</a>, P2::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-any_point2">any_point2()</a></code><br></p>
+<p><code>add(P1::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, P2::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a point corresponding to the specified point translated of the 
-specified point, to be understood as a vector.</p>
-
- May be useful to offset points by sizes.
-</p>
+</div>
 
 <h3 class="function"><a name="are_close-2">are_close/2</a></h3>
 <div class="spec">
-<p><code>are_close(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; boolean()</code><br></p>
+<p><code>are_close(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Returns whether the two specified 2D points are close, that is if they
- could be considered as representing the same point (equality operator on
- points).
-</p>
+</div>
 
 <h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
 <div class="spec">
-<p><code>are_equal(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; boolean()</code><br></p>
+<p><code>are_equal(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Returns whether the two specified 2D points are equal, that is if they
- could be considered as representing the same point (equality operator on
- points).
-</p>
+</div>
 
 <h3 class="function"><a name="check-1">check/1</a></h3>
 <div class="spec">
-<p><code>check(P::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-point2">point2()</a></code><br></p>
+<p><code>check(P::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified 2D point is legit, and returns it.</p>
+</div>
 
 <h3 class="function"><a name="distance-2">distance/2</a></h3>
 <div class="spec">
-<p><code>distance(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-distance">distance()</a></code><br></p>
+<p><code>distance(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the distance between the two specified 2D points.</p>
-
- Note: just for comparison purposes, computing the square root is useless.
-</p>
+</div>
 
 <h3 class="function"><a name="draw_integer_random-2">draw_integer_random/2</a></h3>
 <div class="spec">
-<p><code>draw_integer_random(Min::<a href="#type-integer_coordinate">integer_coordinate()</a>, Max::<a href="#type-integer_coordinate">integer_coordinate()</a>) -&gt; <a href="#type-integer_point2">integer_point2()</a></code><br></p>
+<p><code>draw_integer_random(Min::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>, Max::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>) -&gt; <a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a></code><br></p>
 <p> </p>
-</div><p>Draws a random point between specified (included) bounds (for both
- dimensions).
-</p>
+</div>
 
 <h3 class="function"><a name="draw_integer_random-3">draw_integer_random/3</a></h3>
 <div class="spec">
-<p><code>draw_integer_random(Min::<a href="#type-integer_coordinate">integer_coordinate()</a>, Max::<a href="#type-integer_coordinate">integer_coordinate()</a>, Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-integer_point2">integer_point2()</a>]</code><br></p>
+<p><code>draw_integer_random(Min::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>, Max::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>, Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>]</code><br></p>
 <p> </p>
-</div><p>Draws the specified number of random points between specified (included)
- bounds (for both dimensions).
-</p>
+</div>
 
 <h3 class="function"><a name="from_vector-1">from_vector/1</a></h3>
 <div class="spec">
-<p><code>from_vector(X1::<a href="#type-any_vector2">any_vector2()</a>) -&gt; <a href="#type-any_point2">any_point2()</a></code><br></p>
+<p><code>from_vector(X1::<a href="#type-any_vector2" docgen-rel="seetype" docgen-href="#any_vector2/0">any_vector2()</a>) -&gt; <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a 2D point corresponding to the specified vector (expected to be
- type-homogeneous).
-</p>
+</div>
 
 <h3 class="function"><a name="get_center-2">get_center/2</a></h3>
 <div class="spec">
-<p><code>get_center(P1::<a href="#type-any_point2">any_point2()</a>, P2::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-point2">point2()</a></code><br></p>
+<p><code>get_center(P1::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, P2::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a point corresponding the midpoint (middle) of the two specified
- points.
-</p>
+</div>
 
 <h3 class="function"><a name="get_integer_center-2">get_integer_center/2</a></h3>
 <div class="spec">
-<p><code>get_integer_center(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-integer_point2">integer_point2()</a></code><br></p>
+<p><code>get_integer_center(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a point corresponding the middle of the two specified points,
- returned with integer coordinates.
-</p>
+</div>
 
 <h3 class="function"><a name="is_within-3">is_within/3</a></h3>
 <div class="spec">
-<p><code>is_within(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>, D::<a href="#type-distance">distance()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_within(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, D::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the specified 2D point P1 is within a distance D from 2D
- point P2, using some margin to overcome numerical errors.
-</p>
+</div>
 
 <h3 class="function"><a name="is_within_square-3">is_within_square/3</a></h3>
 <div class="spec">
-<p><code>is_within_square(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>, SquareD::<a href="#type-square_distance">square_distance()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_within_square(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, SquareD::<a href="#type-square_distance" docgen-rel="seetype" docgen-href="#square_distance/0">square_distance()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Tells whether the specified 2D point P1 is within a square distance
- SquareD from 2D point P2.
-</p>
+</div>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><code>new(UserPoint2::<a href="#type-user_point2">user_point2()</a>) -&gt; <a href="#type-any_point2">any_point2()</a></code><br></p>
+<p><code>new(UserPoint2::<a href="#type-user_point2" docgen-rel="seetype" docgen-href="#user_point2/0">user_point2()</a>) -&gt; <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a 2D point corresponding to the user-specified one (preferably a 
-tuple rather than a list).</p>
-
- We do not check whether all coordinates are either integer or floating-point
- ones.
-</p>
+</div>
 
 <h3 class="function"><a name="new-2">new/2</a></h3>
 <div class="spec">
-<p><code>new(X::<a href="#type-user_coordinate">user_coordinate()</a>, Y::<a href="#type-user_coordinate">user_coordinate()</a>) -&gt; <a href="#type-point2">point2()</a></code><br></p>
+<p><code>new(X::<a href="#type-user_coordinate" docgen-rel="seetype" docgen-href="#user_coordinate/0">user_coordinate()</a>, Y::<a href="#type-user_coordinate" docgen-rel="seetype" docgen-href="#user_coordinate/0">user_coordinate()</a>) -&gt; <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a 2D point corresponding to the user-specified one.</p>
+</div>
 
 <h3 class="function"><a name="new_integer-2">new_integer/2</a></h3>
 <div class="spec">
-<p><code>new_integer(X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>) -&gt; <a href="#type-integer_point2">integer_point2()</a></code><br></p>
+<p><code>new_integer(X::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate" docgen-rel="seetype" docgen-href="#integer_coordinate/0">integer_coordinate()</a>) -&gt; <a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns an integer 2D point corresponding to the user-specified one.</p>
+</div>
 
 <h3 class="function"><a name="null-0">null/0</a></h3>
 <div class="spec">
-<p><code>null() -&gt; <a href="#type-point2">point2()</a></code><br></p>
+<p><code>null() -&gt; <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a 2D point whose coordinates are all null, that is the origin of
- the local referential.
-</p>
+</div>
 
 <h3 class="function"><a name="roundify-1">roundify/1</a></h3>
 <div class="spec">
-<p><code>roundify(P::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-integer_point2">integer_point2()</a></code><br></p>
+<p><code>roundify(P::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a point whose floating-point coordinates have been rounded to the
- respective nearest integers.
-</p>
+</div>
 
 <h3 class="function"><a name="scale-2">scale/2</a></h3>
 <div class="spec">
-<p><code>scale(P::<a href="#type-any_point2">any_point2()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-point2">point2()</a></code><br></p>
+<p><code>scale(P::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, Factor::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>) -&gt; <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code><br></p>
 <p> </p>
-</div><p>Scales the specified 2D point of the specified scalar factor.</p>
+</div>
 
 <h3 class="function"><a name="square_distance-2">square_distance/2</a></h3>
 <div class="spec">
-<p><code>square_distance(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></code><br></p>
+<p><code>square_distance(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-square_distance" docgen-rel="seetype" docgen-href="#square_distance/0">square_distance()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the square of the distance between the two specified 2D points.</p>
-
- <p>For comparison purposes, computing the square root is useless.</p>
-
- Could rely on vectorize and square_magnitude as well.
-</p>
+</div>
 
 <h3 class="function"><a name="to_any_vector-1">to_any_vector/1</a></h3>
 <div class="spec">
-<p><code>to_any_vector(X1::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-any_vector2">any_vector2()</a></code><br></p>
+<p><code>to_any_vector(X1::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-any_vector2" docgen-rel="seetype" docgen-href="#any_vector2/0">any_vector2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a 2D vector (with coordinates of the same type) corresponding to
- the specified 2D point.
-</p>
+</div>
 
 <h3 class="function"><a name="to_basic_string-1">to_basic_string/1</a></h3>
 <div class="spec">
-<p><code>to_basic_string(Point::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_basic_string(Point::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a basic, not even fixed-width for floating-point coordinates (see
- linear.hrl for width and precision) representation of the specified 2D point.
-</p>
+</div>
 
 <h3 class="function"><a name="to_buffer-1">to_buffer/1</a></h3>
 <div class="spec">
-<p><code>to_buffer(Points::[<a href="#type-any_point2">any_point2()</a>]) -&gt; binary()</code><br></p>
+<p><code>to_buffer(Points::[<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>]) -&gt; binary()</code><br></p>
 <p> </p>
-</div><p><p>Returns a binary buffer of floats, corresponding to the specified points.</p>
-
- Typically suitable for OpenGL.
-</p>
+</div>
 
 <h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>
 <div class="spec">
-<p><code>to_compact_string(Point2::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_compact_string(Point2::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a compact, textual, informal representation of the specified
- 2D point.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(Point2::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(Point2::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of the specified 2D point; full float
- precision is shown.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-2">to_string/2</a></h3>
 <div class="spec">
-<p><code>to_string(X1::<a href="#type-point2">point2()</a>, DigitCountAfterComma::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(X1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, DigitCountAfterComma::<a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a human-friendly, approximated textual representation of
- specified point, based on specified print-out precision (number of digits
- after the comma).
-</p>
+</div>
 
 <h3 class="function"><a name="to_user_string-1">to_user_string/1</a></h3>
 <div class="spec">
-<p><code>to_user_string(Point::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_user_string(Point::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns a textual, more user-friendly representation of the specified 
-2D point; full float precision is shown.</p>
-
- This is the recommended representation.
-</p>
+</div>
 
 <h3 class="function"><a name="to_vector-1">to_vector/1</a></h3>
 <div class="spec">
-<p><code>to_vector(X1::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-vector2">vector2()</a></code><br></p>
+<p><code>to_vector(X1::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a 2D vector (with floating-vector coordinates) corresponding to
- the specified 2D point.
-</p>
+</div>
 
 <h3 class="function"><a name="translate-2">translate/2</a></h3>
 <div class="spec">
-<p><code>translate(P::<a href="#type-any_point2">any_point2()</a>, V::<a href="#type-any_vector2">any_vector2()</a>) -&gt; <a href="#type-any_point2">any_point2()</a></code><br></p>
+<p><code>translate(P::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, V::<a href="#type-any_vector2" docgen-rel="seetype" docgen-href="#any_vector2/0">any_vector2()</a>) -&gt; <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a></code><br></p>
 <p> </p>
-</div><p>Returns a point corresponding to the specified point translated of the
- specified vector.
-</p>
+</div>
 
 <h3 class="function"><a name="vectorize-2">vectorize/2</a></h3>
 <div class="spec">
-<p><code>vectorize(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-vector2">vector2()</a></code><br></p><p><code>vectorize(P1::<a href="#type-integer_point2">integer_point2()</a>, P2::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-integer_vector2">integer_vector2()</a></code><br></p>
+<p><code>vectorize(P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a></code><br></p><p><code>vectorize(P1::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, P2::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>) -&gt; <a href="#type-integer_vector2" docgen-rel="seetype" docgen-href="#integer_vector2/0">integer_vector2()</a></code><br></p>
 <p> </p>
 <p> </p>
-</div><p>Returns a vector V made from the specified two points P1 and P2: V=P2-P1.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

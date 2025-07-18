@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module reference_tree</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module reference_tree</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-child_ids">child_ids()</a></h3>
+<p><code>child_ids() = [<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>]</code></p>
+
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-designated_ref">designated_ref()</a></h3>
+<p><code>designated_ref() = <a href="reference_frame.html#type-designated_ref" docgen-rel="seetype" docgen-href="reference_frame#designated_ref/0">reference_frame:designated_ref()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-id_path">id_path()</a></h3>
+<p><code>id_path() = {Up::[<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>], Down::[<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-path_endpoints">path_endpoints()</a></h3>
+<p><code>path_endpoints() = {From::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, To::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-path_table">path_table()</a></h3>
+<p><code>path_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-path_endpoints" docgen-rel="seetype" docgen-href="#path_endpoints/0">path_endpoints()</a>, <a href="#type-id_path" docgen-rel="seetype" docgen-href="#id_path/0">id_path()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-ref3_id">ref3_id()</a></h3>
+<p><code>ref3_id() = <a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ref_id">ref_id()</a></h3>
+<p><code>ref_id() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ref_table">ref_table()</a></h3>
+<p><code>ref_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, <a href="#type-designated_ref" docgen-rel="seetype" docgen-href="#designated_ref/0">designated_ref()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-reference_frame">reference_frame()</a></h3>
+<p><code>reference_frame() = <a href="reference_frame.html#type-reference_frame" docgen-rel="seetype" docgen-href="reference_frame#reference_frame/0">reference_frame:reference_frame()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-reference_tree">reference_tree()</a></h3>
+<p><code>reference_tree() = #reference_tree{ref_table = <a href="reference_tree.html#type-ref_table" docgen-rel="seetype" docgen-href="reference_tree#ref_table/0">reference_tree:ref_table()</a>, path_table = <a href="reference_tree.html#type-path_table" docgen-rel="seetype" docgen-href="reference_tree#path_table/0">reference_tree:path_table()</a>, next_ref_id = <a href="reference_tree.html#type-ref_id" docgen-rel="seetype" docgen-href="reference_tree#ref_id/0">reference_tree:ref_id()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-transform4">transform4()</a></h3>
+<p><code>transform4() = <a href="transform4.html#type-transform4" docgen-rel="seetype" docgen-href="transform4#transform4/0">transform4:transform4()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-verbosity_level">verbosity_level()</a></h3>
+<p><code>verbosity_level() = <a href="text_utils.html#type-verbosity_level" docgen-rel="seetype" docgen-href="text_utils#verbosity_level/0">text_utils:verbosity_level()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check-1">check/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_children_direct-2">get_children_direct/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_path_from_root-2">get_path_from_root/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_reference_table-1">get_reference_table/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_transform-3">get_transform/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#id_path_to_string-2">id_path_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ref3_to_short_string-2">ref3_to_short_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ref3_to_string-2">ref3_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#register-2">register/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_path-3">resolve_path/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_reference_table-2">set_reference_table/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_full_string-1">to_full_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="check-1">check/1</a></h3>
+<div class="spec">
+<p><code>check(Reference_tree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_children_direct-2">get_children_direct/2</a></h3>
+<div class="spec">
+<p><code>get_children_direct(RefId::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, RefTable::<a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a>) -&gt; <a href="#type-child_ids" docgen-rel="seetype" docgen-href="#child_ids/0">child_ids()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_path_from_root-2">get_path_from_root/2</a></h3>
+<div class="spec">
+<p><code>get_path_from_root(TargetRefId::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, RefTable::<a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a>) -&gt; {<a href="#type-id_path" docgen-rel="seetype" docgen-href="#id_path/0">id_path()</a>, <a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_reference_table-1">get_reference_table/1</a></h3>
+<div class="spec">
+<p><code>get_reference_table(Reference_tree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; <a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_transform-3">get_transform/3</a></h3>
+<div class="spec">
+<p><code>get_transform(FromRefId::<a href="#type-designated_ref" docgen-rel="seetype" docgen-href="#designated_ref/0">designated_ref()</a>, ToRefId::<a href="#type-designated_ref" docgen-rel="seetype" docgen-href="#designated_ref/0">designated_ref()</a>, RefTree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; {<a href="#type-transform4" docgen-rel="seetype" docgen-href="#transform4/0">transform4()</a>, <a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="id_path_to_string-2">id_path_to_string/2</a></h3>
+<div class="spec">
+<p><code>id_path_to_string(IdPath::<a href="#type-id_path" docgen-rel="seetype" docgen-href="#id_path/0">id_path()</a>, RefTable::<a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><code>new() -&gt; <a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="ref3_to_short_string-2">ref3_to_short_string/2</a></h3>
+<div class="spec">
+<p><code>ref3_to_short_string(RefId::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, RefTable::<a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="ref3_to_string-2">ref3_to_string/2</a></h3>
+<div class="spec">
+<p><code>ref3_to_string(RefId::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, RefTable::<a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="register-2">register/2</a></h3>
+<div class="spec">
+<p><code>register(Ref3::<a href="#type-reference_frame" docgen-rel="seetype" docgen-href="#reference_frame/0">reference_frame()</a>, RefTree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; {<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, <a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>}</code><br></p><p><code>register(Ref3::[<a href="#type-reference_frame" docgen-rel="seetype" docgen-href="#reference_frame/0">reference_frame()</a>], RefTree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; {[<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>], <a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>}</code><br></p>
+<p> </p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="resolve_path-3">resolve_path/3</a></h3>
+<div class="spec">
+<p><code>resolve_path(FromRefId::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, ToRefId::<a href="#type-ref_id" docgen-rel="seetype" docgen-href="#ref_id/0">ref_id()</a>, RefTree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; {<a href="#type-id_path" docgen-rel="seetype" docgen-href="#id_path/0">id_path()</a>, <a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_reference_table-2">set_reference_table/2</a></h3>
+<div class="spec">
+<p><code>set_reference_table(RefTable::<a href="#type-ref_table" docgen-rel="seetype" docgen-href="#ref_table/0">ref_table()</a>, RefTree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; <a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="to_full_string-1">to_full_string/1</a></h3>
+<div class="spec">
+<p><code>to_full_string(RT::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><code>to_string(RefTree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="to_string-2">to_string/2</a></h3>
+<div class="spec">
+<p><code>to_string(Reference_tree::<a href="#type-reference_tree" docgen-rel="seetype" docgen-href="#reference_tree/0">reference_tree()</a>, VerbLevel::<a href="#type-verbosity_level" docgen-rel="seetype" docgen-href="#verbosity_level/0">verbosity_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

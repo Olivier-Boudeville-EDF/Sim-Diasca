@@ -10,149 +10,122 @@
 <hr>
 
 <h1>Module gui_statusbar</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for the management of <b>status bars</b>,
- a thin space at the bottom of a frame where texts are typically displayed.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2>Gathering of various facilities for the management of <b>status bars</b>,
- a thin space at the bottom of a frame where texts are typically displayed.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-field_count">field_count()</a></h3>
-<p><code>field_count() = <a href="#type-count">count()</a></code></p>
-<p> A number of fields, typically in a status bar.</p>
+<p><code>field_count() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-field_index">field_index()</a></h3>
-<p><code>field_index() = <a href="#type-positive_index">positive_index()</a></code></p>
-<p> The index (1 or more) of a field in a status bar.</p>
+<p><code>field_index() = <a href="#type-positive_index" docgen-rel="seetype" docgen-href="#positive_index/0">positive_index()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-field_width">field_width()</a></h3>
 <p><code>field_width() = integer()</code></p>
-<p><p> The width of a field in a status bar.</p>
 
- If positive, designates a fixed width, in pixels.
- If negative, designates a width ratio among all variable-width fields.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string" docgen-rel="seetype" docgen-href="text_utils#format_string/0">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values" docgen-rel="seetype" docgen-href="text_utils#format_values/0">text_utils:format_values()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-frame">frame()</a></h3>
-<p><code>frame() = <a href="gui_window.html#type-frame">gui_window:frame()</a></code></p>
+<p><code>frame() = <a href="gui_frame.html#type-frame" docgen-rel="seetype" docgen-href="gui_frame#frame/0">gui_frame:frame()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
-<p><code>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></code></p>
+<p><code>positive_index() = <a href="basic_utils.html#type-positive_index" docgen-rel="seetype" docgen-href="basic_utils#positive_index/0">basic_utils:positive_index()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-status_bar">status_bar()</a></h3>
 <p><b>abstract datatype</b>: <code>status_bar()</code></p>
-<p><p> A thin space at the bottom of a frame where texts are typically displayed.</p>
 
- They are very useful to trace events, and can be split in separate fields.</p>
 
 <h3 class="typedecl"><a name="type-status_bar_style">status_bar_style()</a></h3>
-<p><code>status_bar_style() = normal | flat | raised | sunken</code></p>
-<p> A style element of a status bar.</p>
+<p><code>status_bar_style() = normal | flat | raised | sunken | default | ellipsize_begin | ellipsize_middle | ellipsize_end | show_tips | show_gripper</code></p>
+
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
-<p><code>text() = <a href="gui_text.html#type-text">gui_text:text()</a></code></p>
+<p><code>text() = <a href="ui.html#type-text" docgen-rel="seetype" docgen-href="ui#text/0">ui:text()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates and attaches a status bar at the bottom of the specified frame.</td></tr>
-<tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates and attaches a status bar of the specified style at the bottom of
- the specified frame.</td></tr>
-<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified status bar.</td></tr>
-<tr><td valign="top"><a href="#push_field_text-3">push_field_text/3</a></td><td>Pushes the specified text in the specified field of the specified status
- bar.</td></tr>
-<tr><td valign="top"><a href="#push_field_text-4">push_field_text/4</a></td><td>Pushes the specified formatted text in the specified status bar.</td></tr>
-<tr><td valign="top"><a href="#push_text-2">push_text/2</a></td><td>Pushes the specified text in the (first field of the) specified status
- bar.</td></tr>
-<tr><td valign="top"><a href="#push_text-3">push_text/3</a></td><td>Pushes the specified formatted text in the (first field of the) specified
- status bar.</td></tr>
-<tr><td valign="top"><a href="#set_field_count-2">set_field_count/2</a></td><td>Sets the number of fields in which the specified status bar is to be
- (evenly) split.</td></tr>
-<tr><td valign="top"><a href="#set_field_widths-2">set_field_widths/2</a></td><td>Sets the width of the fields of the specified status bar (and thus
- determines their number as well).</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#push_field_text-3">push_field_text/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#push_field_text-4">push_field_text/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#push_text-2">push_text/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#push_text-3">push_text/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_field_count-2">set_field_count/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_field_widths-2">set_field_widths/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="create-1">create/1</a></h3>
 <div class="spec">
-<p><code>create(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-status_bar">status_bar()</a></code><br></p>
+<p><code>create(Frame::<a href="#type-frame" docgen-rel="seetype" docgen-href="#frame/0">frame()</a>) -&gt; <a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a></code><br></p>
 <p> </p>
-</div><p>Creates and attaches a status bar at the bottom of the specified frame.</p>
+</div>
 
 <h3 class="function"><a name="create-2">create/2</a></h3>
 <div class="spec">
-<p><code>create(Frame::<a href="#type-frame">frame()</a>, StatusBarStyles::[<a href="#type-status_bar_style">status_bar_style()</a>]) -&gt; <a href="#type-status_bar">status_bar()</a></code><br></p>
+<p><code>create(Frame::<a href="#type-frame" docgen-rel="seetype" docgen-href="#frame/0">frame()</a>, StatusBarStyles::[<a href="#type-status_bar_style" docgen-rel="seetype" docgen-href="#status_bar_style/0">status_bar_style()</a>]) -&gt; <a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a></code><br></p>
 <p> </p>
-</div><p>Creates and attaches a status bar of the specified style at the bottom of
- the specified frame.
-</p>
+</div>
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><code>destruct(StatusBar::<a href="#type-status_bar">status_bar()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>destruct(StatusBar::<a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Destructs the specified status bar.</p>
+</div>
 
 <h3 class="function"><a name="push_field_text-3">push_field_text/3</a></h3>
 <div class="spec">
-<p><code>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>push_field_text(StatusBar::<a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a>, Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>, FieldIndex::<a href="#type-field_index" docgen-rel="seetype" docgen-href="#field_index/0">field_index()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Pushes the specified text in the specified field of the specified status
- bar.
-</p>
+</div>
 
 <h3 class="function"><a name="push_field_text-4">push_field_text/4</a></h3>
 <div class="spec">
-<p><code>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>push_field_text(StatusBar::<a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a>, FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, FormatValues::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>, FieldIndex::<a href="#type-field_index" docgen-rel="seetype" docgen-href="#field_index/0">field_index()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Pushes the specified formatted text in the specified status bar.</p>
+</div>
 
 <h3 class="function"><a name="push_text-2">push_text/2</a></h3>
 <div class="spec">
-<p><code>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>push_text(StatusBar::<a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a>, Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Pushes the specified text in the (first field of the) specified status
- bar.
-</p>
+</div>
 
 <h3 class="function"><a name="push_text-3">push_text/3</a></h3>
 <div class="spec">
-<p><code>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>push_text(StatusBar::<a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a>, FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, FormatValues::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Pushes the specified formatted text in the (first field of the) specified
- status bar.
-</p>
+</div>
 
 <h3 class="function"><a name="set_field_count-2">set_field_count/2</a></h3>
 <div class="spec">
-<p><code>set_field_count(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldCount::<a href="#type-field_count">field_count()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_field_count(StatusBar::<a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a>, FieldCount::<a href="#type-field_count" docgen-rel="seetype" docgen-href="#field_count/0">field_count()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the number of fields in which the specified status bar is to be
- (evenly) split.
-</p>
+</div>
 
 <h3 class="function"><a name="set_field_widths-2">set_field_widths/2</a></h3>
 <div class="spec">
-<p><code>set_field_widths(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldWidths::[<a href="#type-field_width">field_width()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_field_widths(StatusBar::<a href="#type-status_bar" docgen-rel="seetype" docgen-href="#status_bar/0">status_bar()</a>, FieldWidths::[<a href="#type-field_width" docgen-rel="seetype" docgen-href="#field_width/0">field_width()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the width of the fields of the specified status bar (and thus
- determines their number as well).
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

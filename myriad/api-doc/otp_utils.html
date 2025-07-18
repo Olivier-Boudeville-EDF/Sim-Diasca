@@ -10,446 +10,265 @@
 <hr>
 
 <h1>Module otp_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Various helpers for <b>OTP applications, releases</b>, and so on.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Various helpers for <b>OTP applications, releases</b>, and so on.</p>
-
- <p>Useful notably to test an OTP application from within it, from a non-OTP 
-context, i.e. from a simple test without needing to create a separate, 
-dedicated OTP release for that.</p>
-
- <p>See myriad_otp_application_test.erl as an example.</p>
-
- Following convention is supposed to apply for testing: all applications
- (i.e. the tested one and its prerequisites) are expected to have their build
- trees (typically GIT clones) located in the same parent directory (as
- siblings), each named as its application (e.g. "myriad" root directory for the
- myriad application, not for example "Ceylan-Myriad"), so that, from the build
- tree of a tested application, the build trees of its prerequisites can be
- found (e.g. as "../myriad").
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_application_name">any_application_name()</a></h3>
-<p><code>any_application_name() = <a href="#type-application_name">application_name()</a> | <a href="#type-string_application_name">string_application_name()</a></code></p>
-<p> Name of an OTP application, as any legit type.</p>
+<p><code>any_application_name() = <a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a> | <a href="#type-string_application_name" docgen-rel="seetype" docgen-href="#string_application_name/0">string_application_name()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-app_info">app_info()</a></h3>
-<p><code>app_info() = #app_info{app_name = <a href="#type-application_name">application_name()</a>, root_dir = <a href="#type-bin_directory_path">bin_directory_path()</a>, ebin_dir = <a href="#type-bin_directory_path">bin_directory_path()</a>, start_mod_args = <a href="#type-maybe">maybe</a>({<a href="#type-module_name">module_name()</a>, <a href="basic_utils.html#type-arguments">basic_utils:arguments()</a>}), spec = <a href="#type-app_spec">app_spec()</a>}</code></p>
-<p> Information regarding a (generally prerequisite, OTP) application.</p>
+<p><code>app_info() = #app_info{app_name = <a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>, root_dir = <a href="#type-bin_directory_path" docgen-rel="seetype" docgen-href="#bin_directory_path/0">bin_directory_path()</a>, ebin_dir = <a href="#type-bin_directory_path" docgen-rel="seetype" docgen-href="#bin_directory_path/0">bin_directory_path()</a>, start_mod_args = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>({<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, [<a href="basic_utils.html#type-argument" docgen-rel="seetype" docgen-href="basic_utils#argument/0">basic_utils:argument()</a>]}), spec = <a href="#type-app_spec" docgen-rel="seetype" docgen-href="#app_spec/0">app_spec()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-app_spec">app_spec()</a></h3>
-<p><code>app_spec() = <a href="list_table.html#type-list_table">list_table:list_table()</a></code></p>
-<p> Entries corresponding to the application specifications (see
- <a href="https://erlang.org/doc/man/app.html" target="_top"><code>https://erlang.org/doc/man/app.html</code></a>) read from a .app file.</p>
+<p><code>app_spec() = <a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-application_name">application_name()</a></h3>
 <p><code>application_name() = atom()</code></p>
-<p> Name of an OTP application (e.g. 'myriad').</p>
+
 
 <h3 class="typedecl"><a name="type-application_run_context">application_run_context()</a></h3>
 <p><code>application_run_context() = as_native | as_otp_release</code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_directory_path">bin_directory_path()</a></h3>
-<p><code>bin_directory_path() = <a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a></code></p>
+<p><code>bin_directory_path() = <a href="file_utils.html#type-bin_directory_path" docgen-rel="seetype" docgen-href="file_utils#bin_directory_path/0">file_utils:bin_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-continue_data">continue_data()</a></h3>
 <p><code>continue_data() = term()</code></p>
-<p> Data specified to be used in a continue callback.</p>
+
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><code>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></code></p>
+<p><code>directory_path() = <a href="file_utils.html#type-directory_path" docgen-rel="seetype" docgen-href="file_utils#directory_path/0">file_utils:directory_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-error_reason">error_reason()</a></h3>
+<p><code>error_reason() = <a href="basic_utils.html#type-error_reason" docgen-rel="seetype" docgen-href="basic_utils#error_reason/0">basic_utils:error_reason()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-execution_target">execution_target()</a></h3>
-<p><code>execution_target() = <a href="basic_utils.html#type-execution_target">basic_utils:execution_target()</a></code></p>
+<p><code>execution_target() = <a href="basic_utils.html#type-execution_target" docgen-rel="seetype" docgen-href="basic_utils#execution_target/0">basic_utils:execution_target()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-handle_return">handle_return()</a></h3>
-<p><code>handle_return() = {noreply, <a href="#type-otp_state">otp_state()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, <a href="#type-time_out">time_out()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, hibernate} | {noreply, <a href="#type-otp_state">otp_state()</a>, {continue, <a href="#type-continue_data">continue_data()</a>}} | {stop, <a href="#type-termination_reason">termination_reason()</a>, <a href="#type-otp_state">otp_state()</a>}</code></p>
-<p> The type corresponding to the values to be returned by
- gen_server:handle_{cast,continue,info}/2.</p>
+<p><code>handle_return() = {noreply, <a href="#type-otp_state" docgen-rel="seetype" docgen-href="#otp_state/0">otp_state()</a>} | {noreply, <a href="#type-otp_state" docgen-rel="seetype" docgen-href="#otp_state/0">otp_state()</a>, <a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>} | {noreply, <a href="#type-otp_state" docgen-rel="seetype" docgen-href="#otp_state/0">otp_state()</a>, hibernate} | {noreply, <a href="#type-otp_state" docgen-rel="seetype" docgen-href="#otp_state/0">otp_state()</a>, {continue, <a href="#type-continue_data" docgen-rel="seetype" docgen-href="#continue_data/0">continue_data()</a>}} | {stop, <a href="#type-termination_reason" docgen-rel="seetype" docgen-href="#termination_reason/0">termination_reason()</a>, <a href="#type-otp_state" docgen-rel="seetype" docgen-href="#otp_state/0">otp_state()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
-<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></code></p>
+<p><code>milliseconds() = <a href="unit_utils.html#type-milliseconds" docgen-rel="seetype" docgen-href="unit_utils#milliseconds/0">unit_utils:milliseconds()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name" docgen-rel="seetype" docgen-href="basic_utils#module_name/0">basic_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-otp_state">otp_state()</a></h3>
 <p><code>otp_state() = term()</code></p>
-<p> The state of a process implementing an OTP behaviour, typically the gen_server
- one.</p>
+
 
 <h3 class="typedecl"><a name="type-restart_type">restart_type()</a></h3>
 <p><code>restart_type() = permanent | transient | temporary</code></p>
 
 
+<h3 class="typedecl"><a name="type-start_result">start_result()</a></h3>
+<p><code>start_result() = {ok, pid()} | ignore | {error, <a href="#type-error_reason" docgen-rel="seetype" docgen-href="#error_reason/0">error_reason()</a>}</code></p>
+
+
 <h3 class="typedecl"><a name="type-string_application_name">string_application_name()</a></h3>
-<p><code>string_application_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> Name of an OTP application as a string (e.g. "myriad").</p>
+<p><code>string_application_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-supervisor_pid">supervisor_pid()</a></h3>
 <p><code>supervisor_pid() = pid()</code></p>
-<p> The PID of an OTP supervisor.</p>
+
 
 <h3 class="typedecl"><a name="type-supervisor_restart">supervisor_restart()</a></h3>
 <p><code>supervisor_restart() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-supervisor_settings">supervisor_settings()</a></h3>
-<p><code>supervisor_settings() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></code></p>
-<p> Settings of an OTP supervisor.</p>
+<p><code>supervisor_settings() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags" docgen-rel="seetype" docgen-href="stdlib:supervisor#sup_flags/0">supervisor:sup_flags()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-termination_reason">termination_reason()</a></h3>
 <p><code>termination_reason() = normal | shutdown | {shutdown, term()} | term()</code></p>
-<p> Denotes the reason for stopping.</p>
+
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><code>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></code></p>
+<p><code>time_out() = <a href="time_utils.html#type-time_out" docgen-rel="seetype" docgen-href="time_utils#time_out/0">time_utils:time_out()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-worker_pid">worker_pid()</a></h3>
 <p><code>worker_pid() = pid()</code></p>
-<p> The PID of an OTP worker, managed by a supervisor.</p>
+
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#app_info_to_string-1">app_info_to_string/1</a></td><td>Returns a textual representation of specified application information.</td></tr>
-<tr><td valign="top"><a href="#application_run_context_to_string-1">application_run_context_to_string/1</a></td><td>Returns a textual representation of specified application run context.</td></tr>
-<tr><td valign="top"><a href="#check_application_run_context-1">check_application_run_context/1</a></td><td>Checks that the specified application run context is legit.</td></tr>
-<tr><td valign="top"><a href="#get_application_root-1">get_application_root/1</a></td><td>Returns the path to the root of the specified OTP application (i.e.</td></tr>
-<tr><td valign="top"><a href="#get_child_supervisor_settings-1">get_child_supervisor_settings/1</a></td><td>Returns supervisor-level settings for a supervisor that would be 
-supervised by a supervisor relying on the specified settings.</td></tr>
-<tr><td valign="top"><a href="#get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></td><td>Returns a default, reasonable shutdown maximum duration to be used by a
- supervisor for its basic OTP workers, depending on the specified execution
- target.</td></tr>
-<tr><td valign="top"><a href="#get_priv_root-1">get_priv_root/1</a></td><td>Returns the root directory of the application-private tree ('priv'), 
-based on specified module (expected to belong to that application).</td></tr>
-<tr><td valign="top"><a href="#get_priv_root-2">get_priv_root/2</a></td><td>Returns the root directory of the application-private tree ('priv'), 
-based on specified module (expected to belong to that application), being 
-silent (no trace) if requested.</td></tr>
-<tr><td valign="top"><a href="#get_restart_setting-1">get_restart_setting/1</a></td><td>Returns default, base restart settings depending on the specified 
-execution target.</td></tr>
-<tr><td valign="top"><a href="#get_string_application_name-1">get_string_application_name/1</a></td><td>Returns a string version of the specified application name.</td></tr>
-<tr><td valign="top"><a href="#get_supervisor_settings-2">get_supervisor_settings/2</a></td><td>Returns the supervisor-level settings corresponding to the specified 
-restart strategy and execution context.</td></tr>
-<tr><td valign="top"><a href="#prepare_for_execution-2">prepare_for_execution/2</a></td><td>Prepares the VM environment so that the specified top-level prerequisite
- application(s) to be involved in a non-OTP execution - and also all their own
- prerequisites recursively in turn - can be later started, based on the
- specified current base tree.</td></tr>
-<tr><td valign="top"><a href="#prepare_for_execution-3">prepare_for_execution/3</a></td><td>Prepares the VM environment so that the specified top-level prerequisite 
-application(s) to be involved in a non-OTP execution - and also all their own 
-prerequisites recursively in turn - can be later started, based on the 
-specified current base tree, provided that they are not blacklisted.</td></tr>
-<tr><td valign="top"><a href="#start_application-1">start_application/1</a></td><td>Starts the specified OTP application, with the 'temporary' restart type.</td></tr>
-<tr><td valign="top"><a href="#start_application-2">start_application/2</a></td><td>Starts the specified OTP application, with the specified restart type.</td></tr>
-<tr><td valign="top"><a href="#start_application-3">start_application/3</a></td><td>Starts the specified OTP application, with the specified restart type, 
-blacklisting specified applications.</td></tr>
-<tr><td valign="top"><a href="#start_applications-1">start_applications/1</a></td><td>Starts each of the specified OTP applications (if not started yet), 
-sequentially and in the specified order, all with the 'temporary' restart 
-type.</td></tr>
-<tr><td valign="top"><a href="#start_applications-2">start_applications/2</a></td><td>Starts each of the specified OTP applications (if not started yet), 
-sequentially and in the specified order, all with the specified restart type, 
-while not blacklisting any specific application.</td></tr>
-<tr><td valign="top"><a href="#start_applications-3">start_applications/3</a></td><td>Starts each of the specified OTP applications (if not started yet, and 
-provided it is not blacklisted), sequentially and in the specified order, all 
-with the specified restart type.</td></tr>
-<tr><td valign="top"><a href="#stop_application-1">stop_application/1</a></td><td>Stops the specified OTP application.</td></tr>
-<tr><td valign="top"><a href="#stop_applications-1">stop_applications/1</a></td><td>Stops the specified OTP applications, sequentially and in the *reverse* 
-order of the specified one (so that the same list of prerequisite applications 
-can be used both for starting and stopping).</td></tr>
-<tr><td valign="top"><a href="#stop_user_applications-1">stop_user_applications/1</a></td><td>Stops the specified user (non-VM essential) OTP applications, 
-sequentially and in the *reverse* order of the specified one (so that the same 
-list of prerequisite applications can be used both for starting and stopping).</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#app_info_to_string-1">app_info_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#application_run_context_to_string-1">application_run_context_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_application_run_context-1">check_application_run_context/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_application_root-1">get_application_root/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_child_supervisor_settings-1">get_child_supervisor_settings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_priv_root-1">get_priv_root/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_priv_root-2">get_priv_root/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_restart_setting-1">get_restart_setting/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_string_application_name-1">get_string_application_name/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_supervisor_settings-2">get_supervisor_settings/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#prepare_for_execution-2">prepare_for_execution/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#prepare_for_execution-3">prepare_for_execution/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_application-1">start_application/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_application-2">start_application/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_application-3">start_application/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_applications-1">start_applications/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_applications-2">start_applications/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_applications-3">start_applications/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop_application-1">stop_application/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop_applications-1">stop_applications/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop_user_applications-1">stop_user_applications/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="app_info_to_string-1">app_info_to_string/1</a></h3>
 <div class="spec">
-<p><code>app_info_to_string(App_info::<a href="#type-app_info">app_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>app_info_to_string(App_info::<a href="#type-app_info" docgen-rel="seetype" docgen-href="#app_info/0">app_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of specified application information.</p>
+</div>
 
 <h3 class="function"><a name="application_run_context_to_string-1">application_run_context_to_string/1</a></h3>
 <div class="spec">
-<p><code>application_run_context_to_string(AppRunContext::<a href="#type-application_run_context">application_run_context()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>application_run_context_to_string(AppRunContext::<a href="#type-application_run_context" docgen-rel="seetype" docgen-href="#application_run_context/0">application_run_context()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual representation of specified application run context.</p>
+</div>
 
 <h3 class="function"><a name="check_application_run_context-1">check_application_run_context/1</a></h3>
 <div class="spec">
-<p><code>check_application_run_context(AppRunContext::<a href="#type-application_run_context">application_run_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>check_application_run_context(AppRunContext::<a href="#type-application_run_context" docgen-rel="seetype" docgen-href="#application_run_context/0">application_run_context()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Checks that the specified application run context is legit.</p>
+</div>
 
 <h3 class="function"><a name="get_application_root-1">get_application_root/1</a></h3>
 <div class="spec">
-<p><code>get_application_root(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_application_root(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>) -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the path to the root of the specified OTP application (i.e. its 
-top directory, a.k.a. its "library directory"), for an application located 
-under $OTPROOT/lib or on a directory referred to with environment variable 
-ERL_LIBS.</p>
-
- <p>For example 
-"/home/bond/Software/Erlang/Erlang-24.2/lib/erlang/lib/mnesia-4.20.1" = 
-otp_utils:get_application_root( mnesia ).</p>
-
- For this look-up, it is expected that an application named 'foobar' defined a
- module of the same name (which is thus expected to be compiled as
- "foobar.beam").
-</p>
+</div>
 
 <h3 class="function"><a name="get_child_supervisor_settings-1">get_child_supervisor_settings/1</a></h3>
 <div class="spec">
-<p><code>get_child_supervisor_settings(ParentSupSettings::<a href="#type-supervisor_settings">supervisor_settings()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></code><br></p>
+<p><code>get_child_supervisor_settings(ParentSupSettings::<a href="#type-supervisor_settings" docgen-rel="seetype" docgen-href="#supervisor_settings/0">supervisor_settings()</a>) -&gt; <a href="#type-supervisor_settings" docgen-rel="seetype" docgen-href="#supervisor_settings/0">supervisor_settings()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns supervisor-level settings for a supervisor that would be 
-supervised by a supervisor relying on the specified settings.</p>
-
- Not tremendously useful.
-</p>
+</div>
 
 <h3 class="function"><a name="get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></h3>
 <div class="spec">
-<p><code>get_maximum_shutdown_duration(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></code><br></p>
+<p><code>get_maximum_shutdown_duration(ExecutionTarget::<a href="#type-execution_target" docgen-rel="seetype" docgen-href="#execution_target/0">execution_target()</a>) -&gt; <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code><br></p>
 <p> </p>
-</div><p>Returns a default, reasonable shutdown maximum duration to be used by a
- supervisor for its basic OTP workers, depending on the specified execution
- target.
-</p>
+</div>
 
 <h3 class="function"><a name="get_priv_root-1">get_priv_root/1</a></h3>
 <div class="spec">
-<p><code>get_priv_root(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_priv_root(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>) -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the root directory of the application-private tree ('priv'), 
-based on specified module (expected to belong to that application).</p>
-
- <p>It may be useful to fetch data or NIF code for example.</p>
-
- One may specify ?MODULE as argument, provided that this module belongs to the
- application of interest.
-</p>
+</div>
 
 <h3 class="function"><a name="get_priv_root-2">get_priv_root/2</a></h3>
 <div class="spec">
-<p><code>get_priv_root(ModuleName::<a href="#type-module_name">module_name()</a>, BeSilent::boolean()) -&gt; <a href="#type-directory_path">directory_path()</a></code><br></p>
+<p><code>get_priv_root(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, BeSilent::boolean()) -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the root directory of the application-private tree ('priv'), 
-based on specified module (expected to belong to that application), being 
-silent (no trace) if requested.</p>
-
- <p>It may be useful to fetch data or NIF code for example.</p>
-
- One may specify ?MODULE as argument, provided that this module belongs to the
- application of interest.
-</p>
+</div>
 
 <h3 class="function"><a name="get_restart_setting-1">get_restart_setting/1</a></h3>
 <div class="spec">
-<p><code>get_restart_setting(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_restart">supervisor_restart()</a></code><br></p>
+<p><code>get_restart_setting(ExecutionTarget::<a href="#type-execution_target" docgen-rel="seetype" docgen-href="#execution_target/0">execution_target()</a>) -&gt; <a href="#type-supervisor_restart" docgen-rel="seetype" docgen-href="#supervisor_restart/0">supervisor_restart()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns default, base restart settings depending on the specified 
-execution target.</p>
-
- Note that the execution context must be explicitly specified here (typically
- by calling a get_execution_target/0 function defined in a key module of that
- layer, based on Myriad's basic_utils.hrl), as otherwise the one that would
- apply is the one of Myriad - not the one of the calling layer.
-</p>
+</div>
 
 <h3 class="function"><a name="get_string_application_name-1">get_string_application_name/1</a></h3>
 <div class="spec">
-<p><code>get_string_application_name(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-string_application_name">string_application_name()</a></code><br></p>
+<p><code>get_string_application_name(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>) -&gt; <a href="#type-string_application_name" docgen-rel="seetype" docgen-href="#string_application_name/0">string_application_name()</a></code><br></p>
 <p> </p>
-</div><p>Returns a string version of the specified application name.</p>
+</div>
 
 <h3 class="function"><a name="get_supervisor_settings-2">get_supervisor_settings/2</a></h3>
 <div class="spec">
-<p><code>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy">supervisor:strategy()</a>, ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></code><br></p>
+<p><code>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy" docgen-rel="seetype" docgen-href="stdlib:supervisor#strategy/0">supervisor:strategy()</a>, ExecutionTarget::<a href="#type-execution_target" docgen-rel="seetype" docgen-href="#execution_target/0">execution_target()</a>) -&gt; <a href="#type-supervisor_settings" docgen-rel="seetype" docgen-href="#supervisor_settings/0">supervisor_settings()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the supervisor-level settings corresponding to the specified 
-restart strategy and execution context.</p>
-
- <p>Note that the execution context must be explicitly specified here (typically 
-by calling a get_execution_target/0 function defined in a key module of that 
-layer, based on Myriad's basic_utils.hrl), as otherwise the one that would 
-apply is the one of Myriad - not the one of the calling layer.</p>
-
- See <a href="https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags" target="_top"><code>https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags</code></a>
- for further information.
-</p>
+</div>
 
 <h3 class="function"><a name="prepare_for_execution-2">prepare_for_execution/2</a></h3>
 <div class="spec">
-<p><code>prepare_for_execution(AppName::<a href="#type-application_name">application_name()</a> | [<a href="#type-application_name">application_name()</a>], BaseDir::<a href="#type-directory_path">directory_path()</a>) -&gt; [<a href="#type-application_name">application_name()</a>]</code><br></p>
+<p><code>prepare_for_execution(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a> | [<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>], BaseDir::<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>) -&gt; [<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]</code><br></p>
 <p> </p>
-</div><p>Prepares the VM environment so that the specified top-level prerequisite
- application(s) to be involved in a non-OTP execution - and also all their own
- prerequisites recursively in turn - can be later started, based on the
- specified current base tree.
-</p>
-<p><b>See also:</b> <a href="#prepare_for_execution-2">prepare_for_execution/2</a>.</p>
+</div>
 
 <h3 class="function"><a name="prepare_for_execution-3">prepare_for_execution/3</a></h3>
 <div class="spec">
-<p><code>prepare_for_execution(AppName::<a href="#type-application_name">application_name()</a> | [<a href="#type-application_name">application_name()</a>], BaseDir::<a href="#type-directory_path">directory_path()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; [<a href="#type-application_name">application_name()</a>]</code><br></p>
+<p><code>prepare_for_execution(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a> | [<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>], BaseDir::<a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a>, BlacklistedApps::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]) -&gt; [<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Prepares the VM environment so that the specified top-level prerequisite 
-application(s) to be involved in a non-OTP execution - and also all their own 
-prerequisites recursively in turn - can be later started, based on the 
-specified current base tree, provided that they are not blacklisted.</p>
-
- <p>Ensures that their .app can be found (supposing thus that they are available 
-and built, checks being performed), including afterwards by OTP, when starting 
-them (thanks to updates to the current code path).</p>
-
- <p>The possibility of blacklisting an application is useful whenever a .app file 
-lists applications that are actually not useful for the current application, 
-or that even may induce clashes among prerequisites. Blacklisting them allows 
-not searching for them, not modifying the overall code path accordingly, and 
-ignoring their own dependencies. They shall then be blacklisted with 
-start_applications/3 as well (otherwise an attempt of starting them will be 
-done and will fail).</p>
-
- <p>Returns an ordered, complete list (with no duplicates) of applications names 
-that shall be started in turn (otherwise throws an exception), so that each 
-application is started once if active (or not at all if non-active), and after 
-all its prerequisites.</p>
-
- <p>The specified, ordered, application list is somehow semantically similar to 
-the 'deps' entry of a rebar.config file.</p>
-
- <p>Prerequisites that are common to multiple dependencies are supposed to be of a 
-single version.</p>
-
- <p>Note that our previous implementation (refer to commit 5fffa10) used to 
-discriminate between applications that are active or not, and to collect their 
-start module/arguments; this is not necessary though, as application:start/1 
-seems able to support non-active applications, and for active ones to trigger 
-by itself the right start call.</p>
-
- Application information is now cached, so that base applications (e.g. kernel)
- are not repeatedly searched, but just once.
-</p>
+</div>
 
 <h3 class="function"><a name="start_application-1">start_application/1</a></h3>
 <div class="spec">
-<p><code>start_application(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start_application(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts the specified OTP application, with the 'temporary' restart type.</p>
-
- Note: all prerequisite applications shall have been started beforehand
- (not relying on OTP here, hence no automatic start of dependencies).
-</p>
+</div>
 
 <h3 class="function"><a name="start_application-2">start_application/2</a></h3>
 <div class="spec">
-<p><code>start_application(AppName::<a href="#type-application_name">application_name()</a>, RestartType::<a href="#type-restart_type">restart_type()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start_application(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>, RestartType::<a href="#type-restart_type" docgen-rel="seetype" docgen-href="#restart_type/0">restart_type()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts the specified OTP application, with the specified restart type.</p>
-
- Note: all prerequisite applications shall have been started beforehand
- (not relying on OTP here, hence no automatic start of dependencies).
-</p>
+</div>
 
 <h3 class="function"><a name="start_application-3">start_application/3</a></h3>
 <div class="spec">
-<p><code>start_application(AppName::<a href="#type-application_name">application_name()</a>, RestartType::<a href="#type-restart_type">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start_application(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>, RestartType::<a href="#type-restart_type" docgen-rel="seetype" docgen-href="#restart_type/0">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts the specified OTP application, with the specified restart type, 
-blacklisting specified applications.</p>
-
- Note: all prerequisite applications shall have been started beforehand
- (not relying on OTP here, hence no automatic start of dependencies).
-</p>
+</div>
 
 <h3 class="function"><a name="start_applications-1">start_applications/1</a></h3>
 <div class="spec">
-<p><code>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start_applications(AppNames::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts each of the specified OTP applications (if not started yet), 
-sequentially and in the specified order, all with the 'temporary' restart 
-type.</p>
-
- Note: any non-included prerequisite application shall have been started
- beforehand (not relying on OTP here, hence no automatic start of
- dependencies).
-</p>
+</div>
 
 <h3 class="function"><a name="start_applications-2">start_applications/2</a></h3>
 <div class="spec">
-<p><code>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start_applications(AppNames::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>], RestartType::<a href="#type-restart_type" docgen-rel="seetype" docgen-href="#restart_type/0">restart_type()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts each of the specified OTP applications (if not started yet), 
-sequentially and in the specified order, all with the specified restart type, 
-while not blacklisting any specific application.</p>
-
- Note: any non-included prerequisite application shall have been started
- beforehand (not relying on OTP here, hence no automatic start of
- dependencies).
-</p>
+</div>
 
 <h3 class="function"><a name="start_applications-3">start_applications/3</a></h3>
 <div class="spec">
-<p><code>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start_applications(AppNames::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>], RestartType::<a href="#type-restart_type" docgen-rel="seetype" docgen-href="#restart_type/0">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts each of the specified OTP applications (if not started yet, and 
-provided it is not blacklisted), sequentially and in the specified order, all 
-with the specified restart type.</p>
-
- Note: any non-included prerequisite application shall have been started
- beforehand (not relying on OTP here, hence no automatic start of
- dependencies).
-</p>
+</div>
 
 <h3 class="function"><a name="stop_application-1">stop_application/1</a></h3>
 <div class="spec">
-<p><code>stop_application(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop_application(AppName::<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Stops the specified OTP application.</p>
-
- Note: not relying on OTP here, hence dependencies shall be explicitly stopped,
- in the reverse order of the starting of these applications.
-</p>
+</div>
 
 <h3 class="function"><a name="stop_applications-1">stop_applications/1</a></h3>
 <div class="spec">
-<p><code>stop_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop_applications(AppNames::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Stops the specified OTP applications, sequentially and in the *reverse* 
-order of the specified one (so that the same list of prerequisite applications 
-can be used both for starting and stopping).</p>
-
- Note: not relying on OTP here, hence dependencies shall be explicitly stopped,
- in the reverse order of the starting of these applications.
-</p>
+</div>
 
 <h3 class="function"><a name="stop_user_applications-1">stop_user_applications/1</a></h3>
 <div class="spec">
-<p><code>stop_user_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop_user_applications(AppNames::[<a href="#type-application_name" docgen-rel="seetype" docgen-href="#application_name/0">application_name()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Stops the specified user (non-VM essential) OTP applications, 
-sequentially and in the *reverse* order of the specified one (so that the same 
-list of prerequisite applications can be used both for starting and stopping).</p>
-
- <p>Not stopping the base Erlang applications allows to remain with a functional 
-VM (e.g. able to finish a test, to perform console outputs, etc.).</p>
-
- Note: not relying on OTP here, hence dependencies shall be explicitly stopped,
- in the reverse order of the starting of these applications.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

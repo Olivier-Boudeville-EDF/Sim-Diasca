@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module tagged_list</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module tagged_list</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-duplicate_info">duplicate_info()</a></h3>
+<p><code>duplicate_info() = <a href="list_utils.html#type-duplicate_info" docgen-rel="seetype" docgen-href="list_utils#duplicate_info/0">list_utils:duplicate_info()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-element">element()</a></h3>
+<p><code>element() = <a href="pair.html#type-element" docgen-rel="seetype" docgen-href="pair#element/0">pair:element()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-invalid_strict_tagged_list_reason">invalid_strict_tagged_list_reason()</a></h3>
+<p><code>invalid_strict_tagged_list_reason() = non_atom_tag | not_tagged_pair | not_list</code></p>
+
+
+<h3 class="typedecl"><a name="type-invalid_tagged_list_reason">invalid_tagged_list_reason()</a></h3>
+<p><code>invalid_tagged_list_reason() = non_atom_tag | not_atom_or_tagged_pair | not_list</code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-strict_tagged_list">strict_tagged_list()</a></h3>
+<p><code>strict_tagged_list() = [<a href="#type-tagged_pair" docgen-rel="seetype" docgen-href="#tagged_pair/0">tagged_pair</a>(<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>)]</code></p>
+
+
+<h3 class="typedecl"><a name="type-strict_tagged_list">strict_tagged_list()</a></h3>
+<p><code>strict_tagged_list(T) = [<a href="#type-tagged_pair" docgen-rel="seetype" docgen-href="#tagged_pair/0">tagged_pair</a>(T)]</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_element">tagged_element()</a></h3>
+<p><code>tagged_element() = atom() | <a href="#type-tagged_pair" docgen-rel="seetype" docgen-href="#tagged_pair/0">tagged_pair()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_element">tagged_element()</a></h3>
+<p><code>tagged_element(T) = atom() | <a href="#type-tagged_pair" docgen-rel="seetype" docgen-href="#tagged_pair/0">tagged_pair</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_list">tagged_list()</a></h3>
+<p><code>tagged_list() = <a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list</a>(<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_list">tagged_list()</a></h3>
+<p><code>tagged_list(T) = [<a href="#type-tagged_element" docgen-rel="seetype" docgen-href="#tagged_element/0">tagged_element</a>(T)]</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_pair">tagged_pair()</a></h3>
+<p><code>tagged_pair() = <a href="pair.html#type-tagged_pair" docgen-rel="seetype" docgen-href="pair#tagged_pair/0">pair:tagged_pair()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_pair">tagged_pair()</a></h3>
+<p><code>tagged_pair(T) = <a href="pair.html#type-tagged_pair" docgen-rel="seetype" docgen-href="pair#tagged_pair/0">pair:tagged_pair</a>(T)</code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_duplicate_keys-1">check_duplicate_keys/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_strict_duplicate_keys-1">check_strict_duplicate_keys/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_strict_tagged_list-1">check_strict_tagged_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_tagged_list-1">check_tagged_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ensure_strict_tagged_list-1">ensure_strict_tagged_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ensure_tagged_list-1">ensure_tagged_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_atom_if_existing-2">extract_atom_if_existing/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_atom_with_default-3">extract_atom_with_default/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_pair_if_existing-2">extract_pair_if_existing/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_pair_if_existing_strict-2">extract_pair_if_existing_strict/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_pair_with_default-3">extract_pair_with_default/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_pair_with_default_strict-3">extract_pair_with_default_strict/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_strict_tagged_list-1">is_strict_tagged_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_tagged_list-1">is_tagged_list/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="check_duplicate_keys-1">check_duplicate_keys/1</a></h3>
+<div class="spec">
+<p><code>check_duplicate_keys(TaggedList::<a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>) -&gt; <a href="#type-duplicate_info" docgen-rel="seetype" docgen-href="#duplicate_info/0">duplicate_info()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_strict_duplicate_keys-1">check_strict_duplicate_keys/1</a></h3>
+<div class="spec">
+<p><code>check_strict_duplicate_keys(StrictTaggedList::<a href="#type-strict_tagged_list" docgen-rel="seetype" docgen-href="#strict_tagged_list/0">strict_tagged_list()</a>) -&gt; <a href="#type-duplicate_info" docgen-rel="seetype" docgen-href="#duplicate_info/0">duplicate_info()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_strict_tagged_list-1">check_strict_tagged_list/1</a></h3>
+<div class="spec">
+<p><code>check_strict_tagged_list(Term::term()) -&gt; <a href="#type-strict_tagged_list" docgen-rel="seetype" docgen-href="#strict_tagged_list/0">strict_tagged_list()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_tagged_list-1">check_tagged_list/1</a></h3>
+<div class="spec">
+<p><code>check_tagged_list(Term::term()) -&gt; <a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="ensure_strict_tagged_list-1">ensure_strict_tagged_list/1</a></h3>
+<div class="spec">
+<p><code>ensure_strict_tagged_list(P::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-tagged_pair" docgen-rel="seetype" docgen-href="#tagged_pair/0">tagged_pair()</a>)) -&gt; <a href="#type-strict_tagged_list" docgen-rel="seetype" docgen-href="#strict_tagged_list/0">strict_tagged_list()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="ensure_tagged_list-1">ensure_tagged_list/1</a></h3>
+<div class="spec">
+<p><code>ensure_tagged_list(Atom::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(atom() | <a href="#type-tagged_pair" docgen-rel="seetype" docgen-href="#tagged_pair/0">tagged_pair()</a>)) -&gt; <a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_atom_if_existing-2">extract_atom_if_existing/2</a></h3>
+<div class="spec">
+<p><code>extract_atom_if_existing(Atom::atom(), TaggedList::<a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>) -&gt; not_found | <a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_atom_with_default-3">extract_atom_with_default/3</a></h3>
+<div class="spec">
+<p><code>extract_atom_with_default(Atom::atom(), DefaultValue::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, TaggedList::<a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>) -&gt; {<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, <a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_pair_if_existing-2">extract_pair_if_existing/2</a></h3>
+<div class="spec">
+<p><code>extract_pair_if_existing(KeyAtom::atom(), TaggedList::<a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>) -&gt; false | {<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, <a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_pair_if_existing_strict-2">extract_pair_if_existing_strict/2</a></h3>
+<div class="spec">
+<p><code>extract_pair_if_existing_strict(KeyAtom::atom(), StrictTaggedList::<a href="#type-strict_tagged_list" docgen-rel="seetype" docgen-href="#strict_tagged_list/0">strict_tagged_list()</a>) -&gt; false | {<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, <a href="#type-strict_tagged_list" docgen-rel="seetype" docgen-href="#strict_tagged_list/0">strict_tagged_list()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_pair_with_default-3">extract_pair_with_default/3</a></h3>
+<div class="spec">
+<p><code>extract_pair_with_default(KeyAtom::atom(), DefaultValue::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, TaggedList::<a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>) -&gt; {<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, <a href="#type-tagged_list" docgen-rel="seetype" docgen-href="#tagged_list/0">tagged_list()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_pair_with_default_strict-3">extract_pair_with_default_strict/3</a></h3>
+<div class="spec">
+<p><code>extract_pair_with_default_strict(KeyAtom::atom(), DefaultValue::<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, StrictTaggedList::<a href="#type-strict_tagged_list" docgen-rel="seetype" docgen-href="#strict_tagged_list/0">strict_tagged_list()</a>) -&gt; {<a href="#type-element" docgen-rel="seetype" docgen-href="#element/0">element()</a>, <a href="#type-strict_tagged_list" docgen-rel="seetype" docgen-href="#strict_tagged_list/0">strict_tagged_list()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_strict_tagged_list-1">is_strict_tagged_list/1</a></h3>
+<div class="spec">
+<p><code>is_strict_tagged_list(Term::term()) -&gt; true | {<a href="#type-invalid_strict_tagged_list_reason" docgen-rel="seetype" docgen-href="#invalid_strict_tagged_list_reason/0">invalid_strict_tagged_list_reason()</a>, FirstFaultyEntry::term()}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_tagged_list-1">is_tagged_list/1</a></h3>
+<div class="spec">
+<p><code>is_tagged_list(Term::term()) -&gt; true | {<a href="#type-invalid_tagged_list_reason" docgen-rel="seetype" docgen-href="#invalid_tagged_list_reason/0">invalid_tagged_list_reason()</a>, FirstFaultyEntry::term()}</code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

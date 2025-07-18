@@ -10,79 +10,13 @@
 <hr>
 
 <h1>Module const_bijective_topics</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This module allows to generate <b>modules sharing read-only, per-topic
- two-way (bijective) associative tables whose stored pairs can be read from any
- number (potentially extremely large) of readers very efficiently</b> (possibly 
-the most efficient way in Erlang), for each topic.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>This module allows to generate <b>modules sharing read-only, per-topic
- two-way (bijective) associative tables whose stored pairs can be read from any
- number (potentially extremely large) of readers very efficiently</b> (possibly 
-the most efficient way in Erlang), for each topic.</p>
-
- <p>Such modules gathering topic-based conversion tables are especially useful 
-when implementing conversions between external constants (e.g. the ones of a 
-graphical interface, or of a protocol) and ones defined by the current program 
-(possibly as convenient atoms), moreover with a low overhead. Consider relying 
-on the const_bijective_table module is a single (possibly large) table is to 
-be shared.</p>
-
- <p>Any number of topics (e.g. 'color', 'reference', 'city') can be declared, 
-whose pairs can be decided at runtime, from any source. Their elements can be 
-of any permanent (non-transient) type (not atoms only; the first elements can 
-be heterogeneous, they do not have to be of the same type, and the same of 
-course applies for the second elements). Using a transient type is bound to 
-result in a badarg. As two-way conversions are to be performed, for a given 
-set of values (first ones or second ones), there must be no duplicated 
-elements (otherwise no bijectivity can exist).</p>
-
- <p>These tables may be kept in-memory only (hence with the corresponding modules 
-being generated and used at runtime) and/or be generated and stored in an 
-actual BEAM file, for a single generation and later direct (re)loading(s) 
-thereof.</p>
-
- <p>No ETS table, replication (e.g. per-user table copy) or message sending is 
-involved: thanks to metaprogramming, a module is generated on-the-fly, 
-exporting two functions designed to access either of the elements of the 
-entries of interest.</p>
-
- <p>More precisely, a module name (e.g. 'foobar'), a list of topics (atoms)
- together with their respective list of <code>{any(), any()}</code> entries must be
- provided to the <code>const_bijective_topics:generate*/*</code> functions; for any given
- topic (e.g. 'packet_type'), any element E of any pair in the resulting table
- (e.g. 'discover_packet') in <code>{</code>discover_packet', <code>&lt;&lt;42,11&gt;&gt;</code>}') can then be
- accessed thanks to foobar:get_{first|second}_for_TOPIC/1 (e.g. discover_packet
- = foobar:get_first_for_packet_type(<code>&lt;&lt;42,11&gt;&gt;</code>)).</p>
-
- <p>For that, for each topic, two corresponding 1-arity functions are generated 
-and exported in that module, as if we were using a bijective_table() 
-underneath.</p>
-
- <p>No restriction applies to the elements stored (notably they may be all of 
-different types), except, at the leve of each topicn the absence of duplicates 
-between its first values and between its second ones.</p>
-
- <p>This is presumably the most efficient way of sharing constants in Erlang.</p>
-
- <p>However generating a module of the same name more than once should be done
- with care, as if a given module is generated three times (hence updated/loaded
- twice), the initial module would become 'current', then 'old', and then be
- removed. Any process that would linger in it would then be terminated (see
- <a href="http://www.erlang.org/doc/reference_manual/code_loading.html" target="_top"><code>http://www.erlang.org/doc/reference_manual/code_loading.html</code></a>). However, due 
-to the nature of these modules (just one-shot fully-qualified calls, no 
-recursion or message-waiting construct), this is not expected to happen.</p>
-
- Refer to:
- - const_bijective_topics_test.erl for an usage example and testing thereof
- - const_bijective_table.erl for a "single-topic" constant bijective table
- - bijective_table.erl for a runtime, mutable, term-based bijective table
- - const_table.erl, for a constant, "simple" (oneway) associative table
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
-<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></code></p>
+<p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path" docgen-rel="seetype" docgen-href="file_utils#any_directory_path/0">file_utils:any_directory_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-conversion_direction">conversion_direction()</a></h3>
@@ -90,102 +24,65 @@ recursion or message-waiting construct), this is not expected to happen.</p>
 
 
 <h3 class="typedecl"><a name="type-element_lookup">element_lookup()</a></h3>
-<p><code>element_lookup() = strict | maybe</code></p>
-<p><p> Returns 'undefined' if element not found 
-Tells how elements shall be looked up.</p>
-
- Note that selecting the 'maybe' element look-up is not recommended if either
- of the first and second sets contains the 'undefined' atom, as it leads to
- ambiguity.</p>
+<p><code>element_lookup() = strict | 'maybe'</code></p>
+<p> Returns 'undefined' if element not found</p>
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><code>entries() = [<a href="#type-entry">entry()</a>]</code></p>
-<p> Entries that can be fed to a const-bijective table.</p>
+<p><code>entries() = [<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><code>entry() = {<a href="#type-first_type">first_type()</a>, <a href="#type-second_type">second_type()</a>}</code></p>
-<p> An entry to be fed to a const-bijective table.</p>
+<p><code>entry() = {<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, <a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
-<p><code>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></code></p>
+<p><code>file_loc() = <a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
-<p><code>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></code></p>
+<p><code>file_name() = <a href="file_utils.html#type-file_name" docgen-rel="seetype" docgen-href="file_utils#file_name/0">file_utils:file_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-first_type">first_type()</a></h3>
-<p><code>first_type() = <a href="#type-permanent_term">permanent_term()</a></code></p>
-<p><p> Designates the first elements of the table pairs. 
-A module-based storage cannot hold transient terms.</p>
+<p><code>first_type() = <a href="#type-permanent_term" docgen-rel="seetype" docgen-href="#permanent_term/0">permanent_term()</a></code></p>
 
- A convention that may be used is to prefer setting as first elements the ones
- that are the most internal / higher level.</p>
 
 <h3 class="typedecl"><a name="type-form">form()</a></h3>
-<p><code>form() = <a href="ast_base.html#type-form">ast_base:form()</a></code></p>
+<p><code>form() = <a href="ast_base.html#type-form" docgen-rel="seetype" docgen-href="ast_base#form/0">ast_base:form()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
-<p><code>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></code></p>
+<p><code>module_name() = <a href="basic_utils.html#type-module_name" docgen-rel="seetype" docgen-href="basic_utils#module_name/0">basic_utils:module_name()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-permanent_term">permanent_term()</a></h3>
-<p><code>permanent_term() = <a href="type_utils.html#type-permanent_term">type_utils:permanent_term()</a></code></p>
+<p><code>permanent_term() = <a href="type_utils.html#type-permanent_term" docgen-rel="seetype" docgen-href="type_utils#permanent_term/0">type_utils:permanent_term()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-second_type">second_type()</a></h3>
-<p><code>second_type() = <a href="#type-permanent_term">permanent_term()</a></code></p>
-<p><p> Designates the second elements of the table pairs. 
-A module-based storage cannot hold transient terms.</p>
+<p><code>second_type() = <a href="#type-permanent_term" docgen-rel="seetype" docgen-href="#permanent_term/0">permanent_term()</a></code></p>
 
- A convention that may be used is to prefer setting as second elements the ones
- that are the most external / lower level.</p>
 
 <h3 class="typedecl"><a name="type-topic_name">topic_name()</a></h3>
 <p><code>topic_name() = atom()</code></p>
-<p><p> A topic name, designating a specific table shared by a generated module. 
-Example of such topic names: colour, bar_identifier, font_style.</p>
 
- These atom should be acceptable suffixes to a function name (e.g. not
- including spaces, dashes, etc.).</p>
 
 <h3 class="typedecl"><a name="type-topic_spec">topic_spec()</a></h3>
-<p><code>topic_spec(_FirstType, _SecondType) = <a href="#type-topic_spec">topic_spec()</a></code></p>
-<p><p> The specification of a topic: name, entries and type of element look-up.</p>
+<p><code>topic_spec(_FirstType, _SecondType) = <a href="#type-topic_spec" docgen-rel="seetype" docgen-href="#topic_spec/0">topic_spec()</a></code></p>
 
- <p>Types specified for clarity.</p>
-
- The 'strict' element look-up is the default one.</p>
 
 <h3 class="typedecl"><a name="type-topic_spec">topic_spec()</a></h3>
-<p><code>topic_spec() = {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>} | {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>, <a href="#type-element_lookup">element_lookup()</a>} | {<a href="#type-topic_name">topic_name()</a>, <a href="#type-entries">entries()</a>, <a href="#type-element_lookup">element_lookup()</a>, <a href="#type-conversion_direction">conversion_direction()</a>}</code></p>
-<p><p> The specification of a topic: name, entries, type of element look-up and 
-supported direction(s) in terms of conversion.</p>
+<p><code>topic_spec() = {<a href="#type-topic_name" docgen-rel="seetype" docgen-href="#topic_name/0">topic_name()</a>, <a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>} | {<a href="#type-topic_name" docgen-rel="seetype" docgen-href="#topic_name/0">topic_name()</a>, <a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, <a href="#type-element_lookup" docgen-rel="seetype" docgen-href="#element_lookup/0">element_lookup()</a>} | {<a href="#type-topic_name" docgen-rel="seetype" docgen-href="#topic_name/0">topic_name()</a>, <a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, <a href="#type-element_lookup" docgen-rel="seetype" docgen-href="#element_lookup/0">element_lookup()</a>, <a href="#type-conversion_direction" docgen-rel="seetype" docgen-href="#conversion_direction/0">conversion_direction()</a>}</code></p>
 
- Defaults:
-  - the 'strict' element look-up
-  - the 'both' conversion direction</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#generate_first_clauses-3">generate_first_clauses/3</a></td><td></td></tr>
-<tr><td valign="top"><a href="#generate_footer_form-1">generate_footer_form/1</a></td><td>Returns suitable footer forms.</td></tr>
-<tr><td valign="top"><a href="#generate_forms-5">generate_forms/5</a></td><td>Generates the forms corresponding to the specified first/second function
- names, entries and module, depending on the specified look-up.</td></tr>
-<tr><td valign="top"><a href="#generate_header_form-2">generate_header_form/2</a></td><td>Returns the header forms corresponding to the specified module, declared
- at the specified file location.</td></tr>
-<tr><td valign="top"><a href="#generate_in_file-2">generate_in_file/2</a></td><td>Generates in-file (a BEAM file created in the current directory) a module 
-sharing the specified entries by exporting suitably-generated get_first_for/1 
-and get_second_for/1 functions in order to access either element of the 
-recorded pairs.</td></tr>
-<tr><td valign="top"><a href="#generate_in_file-3">generate_in_file/3</a></td><td>Generates in-file (a BEAM file created in the specified directory) a 
-module sharing the specified entries by exporting suitably-generated 
-get_first_for/1 and get_second_for/1 functions in order to access either 
-element of the recorded pairs.</td></tr>
-<tr><td valign="top"><a href="#generate_in_memory-2">generate_in_memory/2</a></td><td>Generates in memory (only) and loads a module sharing bijectively the 
-specified entries for the specified topic by exporting suitably-generated 
-get_first_for_TOPIC/1 and get_second_for_TOPIC/1 functions in order to access 
-either element of the recorded pairs.</td></tr>
+<tr><td valign="top"><a href="#generate_footer_form-1">generate_footer_form/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_forms-5">generate_forms/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_header_form-2">generate_header_form/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_in_file-2">generate_in_file/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_in_file-3">generate_in_file/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_in_memory-2">generate_in_memory/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_second_clauses-3">generate_second_clauses/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_strict_calling_clauses-4">generate_strict_calling_clauses/4</a></td><td></td></tr>
 </table>
@@ -200,72 +97,39 @@ either element of the recorded pairs.</td></tr>
 
 <h3 class="function"><a name="generate_footer_form-1">generate_footer_form/1</a></h3>
 <div class="spec">
-<p><code>generate_footer_form(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></code><br></p>
+<p><code>generate_footer_form(FileLoc::<a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>) -&gt; <a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a></code><br></p>
 <p> </p>
-</div><p>Returns suitable footer forms.</p>
+</div>
 
 <h3 class="function"><a name="generate_forms-5">generate_forms/5</a></h3>
 <div class="spec">
-<p><code>generate_forms(TopicName::<a href="#type-topic_name">topic_name()</a>, Entries::<a href="#type-entries">entries()</a>, ElementLookup::<a href="#type-element_lookup">element_lookup()</a>, ConversionDirection::<a href="#type-conversion_direction">conversion_direction()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; [<a href="#type-form">form()</a>]</code><br></p>
+<p><code>generate_forms(TopicName::<a href="#type-topic_name" docgen-rel="seetype" docgen-href="#topic_name/0">topic_name()</a>, Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, ElementLookup::<a href="#type-element_lookup" docgen-rel="seetype" docgen-href="#element_lookup/0">element_lookup()</a>, ConversionDirection::<a href="#type-conversion_direction" docgen-rel="seetype" docgen-href="#conversion_direction/0">conversion_direction()</a>, FileLoc::<a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>) -&gt; [<a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a>]</code><br></p>
 <p> </p>
-</div><p>Generates the forms corresponding to the specified first/second function
- names, entries and module, depending on the specified look-up.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_header_form-2">generate_header_form/2</a></h3>
 <div class="spec">
-<p><code>generate_header_form(ModuleName::<a href="#type-module_name">module_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></code><br></p>
+<p><code>generate_header_form(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, FileLoc::<a href="#type-file_loc" docgen-rel="seetype" docgen-href="#file_loc/0">file_loc()</a>) -&gt; <a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a></code><br></p>
 <p> </p>
-</div><p>Returns the header forms corresponding to the specified module, declared
- at the specified file location.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_in_file-2">generate_in_file/2</a></h3>
 <div class="spec">
-<p><code>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
+<p><code>generate_in_file(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>) -&gt; <a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a></code><br></p>
 <p> </p>
-</div><p><p>Generates in-file (a BEAM file created in the current directory) a module 
-sharing the specified entries by exporting suitably-generated get_first_for/1 
-and get_second_for/1 functions in order to access either element of the 
-recorded pairs.</p>
-
- <p>For a clearer setting, generated modules may be named as such 
-(e.g. 'foobar_generated').</p>
-
- <p>The resulting module is not loaded by this function.</p>
-
- Returns the generated filename (not path), for any further reference.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_in_file-3">generate_in_file/3</a></h3>
 <div class="spec">
-<p><code>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec">topic_spec()</a>], TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_name">file_name()</a></code><br></p>
+<p><code>generate_in_file(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec" docgen-rel="seetype" docgen-href="#topic_spec/0">topic_spec()</a>], TargetDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>) -&gt; <a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a></code><br></p>
 <p> </p>
-</div><p><p>Generates in-file (a BEAM file created in the specified directory) a 
-module sharing the specified entries by exporting suitably-generated 
-get_first_for/1 and get_second_for/1 functions in order to access either 
-element of the recorded pairs.</p>
-
- <p>For a clearer setting, generated modules may be named as such 
-(e.g. 'foobar_generated').</p>
-
- <p>The resulting module is not loaded by this function.</p>
-
- Returns the generated filename (not path), for any further reference.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_in_memory-2">generate_in_memory/2</a></h3>
 <div class="spec">
-<p><code>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec">topic_spec()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>generate_in_memory(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, TopicSpecs::[<a href="#type-topic_spec" docgen-rel="seetype" docgen-href="#topic_spec/0">topic_spec()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Generates in memory (only) and loads a module sharing bijectively the 
-specified entries for the specified topic by exporting suitably-generated 
-get_first_for_TOPIC/1 and get_second_for_TOPIC/1 functions in order to access 
-either element of the recorded pairs.</p>
-
- Note that no actual module file is generated (e.g. no 'foobar.beam'), the
- operation remains fully in-memory.
-</p>
+</div>
 
 <h3 class="function"><a name="generate_second_clauses-3">generate_second_clauses/3</a></h3>
 <div class="spec">

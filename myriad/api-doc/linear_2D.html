@@ -10,293 +10,207 @@
 <hr>
 
 <h1>Module linear_2D</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>two-dimensional "linear"</b> facilities.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various <b>two-dimensional "linear"</b> facilities.</p>
-
- See <code>linear_2D_test.erl</code> for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-any_coordinate">any_coordinate()</a></h3>
-<p><code>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></code></p>
+<p><code>any_coordinate() = <a href="linear.html#type-any_coordinate" docgen-rel="seetype" docgen-href="linear#any_coordinate/0">linear:any_coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-any_point2">any_point2()</a></h3>
-<p><code>any_point2() = <a href="point2.html#type-any_point2">point2:any_point2()</a></code></p>
+<p><code>any_point2() = <a href="point2.html#type-any_point2" docgen-rel="seetype" docgen-href="point2#any_point2/0">point2:any_point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><code>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></code></p>
+<p><code>coordinate() = <a href="linear.html#type-coordinate" docgen-rel="seetype" docgen-href="linear#coordinate/0">linear:coordinate()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><code>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><code>dimensions() = <a href="#type-integer_rect_dimensions">integer_rect_dimensions()</a></code></p>
-<p> Shorter form of integer_rect_dimensions/0.</p>
+<p><code>dimensions() = <a href="#type-integer_rect_dimensions" docgen-rel="seetype" docgen-href="#integer_rect_dimensions/0">integer_rect_dimensions()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
-<p><code>distance() = <a href="linear.html#type-distance">linear:distance()</a></code></p>
+<p><code>distance() = <a href="linear.html#type-distance" docgen-rel="seetype" docgen-href="linear#distance/0">linear:distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><code>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></code></p>
+<p><code>factor() = <a href="math_utils.html#type-factor" docgen-rel="seetype" docgen-href="math_utils#factor/0">math_utils:factor()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-int_degrees">int_degrees()</a></h3>
-<p><code>int_degrees() = <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></code></p>
+<p><code>int_degrees() = <a href="unit_utils.html#type-int_degrees" docgen-rel="seetype" docgen-href="unit_utils#int_degrees/0">unit_utils:int_degrees()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_distance">integer_distance()</a></h3>
-<p><code>integer_distance() = <a href="linear.html#type-integer_distance">linear:integer_distance()</a></code></p>
+<p><code>integer_distance() = <a href="linear.html#type-integer_distance" docgen-rel="seetype" docgen-href="linear#integer_distance/0">linear:integer_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_point2">integer_point2()</a></h3>
-<p><code>integer_point2() = <a href="point2.html#type-integer_point2">point2:integer_point2()</a></code></p>
+<p><code>integer_point2() = <a href="point2.html#type-integer_point2" docgen-rel="seetype" docgen-href="point2#integer_point2/0">point2:integer_point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-integer_rect_dimensions">integer_rect_dimensions()</a></h3>
-<p><code>integer_rect_dimensions() = {Width::<a href="#type-integer_distance">integer_distance()</a>, Height::<a href="#type-integer_distance">integer_distance()</a>}</code></p>
-<p> Dimensions of a rectangular area, as integer distances.</p>
+<p><code>integer_rect_dimensions() = {Width::<a href="#type-integer_distance" docgen-rel="seetype" docgen-href="#integer_distance/0">integer_distance()</a>, Height::<a href="#type-integer_distance" docgen-rel="seetype" docgen-href="#integer_distance/0">integer_distance()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-line2">line2()</a></h3>
-<p><code>line2() = {A::<a href="#type-factor">factor()</a>, B::<a href="#type-factor">factor()</a>, C::<a href="#type-factor">factor()</a>}</code></p>
-<p> A 2D line, whose equation A.x + B.y + C =0, can be defined by its three
- factors {A,B,C}.</p>
+<p><code>line2() = {A::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>, B::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>, C::<a href="#type-factor" docgen-rel="seetype" docgen-href="#factor/0">factor()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-point2">point2()</a></h3>
-<p><code>point2() = <a href="point2.html#type-point2">point2:point2()</a></code></p>
+<p><code>point2() = <a href="point2.html#type-point2" docgen-rel="seetype" docgen-href="point2#point2/0">point2:point2()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
-<p><code>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></code></p>
+<p><code>radians() = <a href="unit_utils.html#type-radians" docgen-rel="seetype" docgen-href="unit_utils#radians/0">unit_utils:radians()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rect_dimensions">rect_dimensions()</a></h3>
-<p><code>rect_dimensions() = {Width::<a href="#type-distance">distance()</a>, Height::<a href="#type-distance">distance()</a>}</code></p>
-<p> Dimensions of a rectangular area, as floating-point coordinates.</p>
+<p><code>rect_dimensions() = {Width::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>, Height::<a href="#type-distance" docgen-rel="seetype" docgen-href="#distance/0">distance()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-shape">shape()</a></h3>
 <p><code>shape() = circle | rectangle | square | triangle | polygon</code></p>
-<p> A collection of 2D shapes.</p>
+
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
-<p><code>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></code></p>
+<p><code>square_distance() = <a href="linear.html#type-square_distance" docgen-rel="seetype" docgen-href="linear#square_distance/0">linear:square_distance()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-topology_type">topology_type()</a></h3>
 <p><code>topology_type() = points | lines | line_loop | line_strip | triangles | triangle_strip | triangle_fan</code></p>
-<p> A 2D topology type, typically of a primitive to render.</p>
+
 
 <h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
-<p><code>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></code></p>
+<p><code>vector2() = <a href="vector2.html#type-vector2" docgen-rel="seetype" docgen-href="vector2#vector2/0">vector2:vector2()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#abs_angle_deg-3">abs_angle_deg/3</a></td><td>Returns the angle, in canonical degrees, between the vector AB and AC.</td></tr>
-<tr><td valign="top"><a href="#abs_angle_rad-3">abs_angle_rad/3</a></td><td>Returns the angle, in radians in the range [0, Pi], between the vector AB 
-and AC.</td></tr>
-<tr><td valign="top"><a href="#angle_deg-3">angle_deg/3</a></td><td>Returns the signed (oriented) angle, in canonical degrees, between the 
-vector AB and AC.</td></tr>
-<tr><td valign="top"><a href="#angle_rad-3">angle_rad/3</a></td><td>Returns the signed (oriented) angle, in radians, between the vector AB 
-and AC.</td></tr>
-<tr><td valign="top"><a href="#compute_convex_hull-1">compute_convex_hull/1</a></td><td>Computes the convex hull corresponding to the specified list of points.</td></tr>
-<tr><td valign="top"><a href="#compute_max_overall_distance-1">compute_max_overall_distance/1</a></td><td>Computes the maximum distance between two points in the specified list of 
-points.</td></tr>
-<tr><td valign="top"><a href="#compute_smallest_enclosing_rectangle-1">compute_smallest_enclosing_rectangle/1</a></td><td>Computes the smallest rectangle that encloses the specified list of 
-points.</td></tr>
-<tr><td valign="top"><a href="#find_pivot-1">find_pivot/1</a></td><td>Finds the pivot, that is the leftmost point with the highest ordinate.</td></tr>
-<tr><td valign="top"><a href="#get_abscissa_for_ordinate-2">get_abscissa_for_ordinate/2</a></td><td>Returns the abscissa of a point on line L having Y for ordinate.</td></tr>
-<tr><td valign="top"><a href="#get_line-2">get_line/2</a></td><td>Returns the three coefficients {A,B,C} for the line passing by point P
- and being perpendicular to vector V, whose equation is A.x + B.y + C = 0.</td></tr>
-<tr><td valign="top"><a href="#get_roots_of_unit-1">get_roots_of_unit/1</a></td><td>Returns a list of points forming the nth roots of unity, in the unit
- circle centered on the origin, the first one being in the X axis.</td></tr>
-<tr><td valign="top"><a href="#get_roots_of_unit-2">get_roots_of_unit/2</a></td><td>Returns a list of points forming the nth roots of unity, in the unit
- circle centered on the origin, the first one making the specified angle with
- the X axis.</td></tr>
-<tr><td valign="top"><a href="#intersect-2">intersect/2</a></td><td>Returns the intersection of the two specified lines, if it is a point, 
-otherwise the 'no_point' atom (the intersection can be void, if the lines are 
-parallel but different, or a full line, if they are the same line).</td></tr>
-<tr><td valign="top"><a href="#is_obtuse-1">is_obtuse/1</a></td><td>Returns whether specified angle (in degrees, canonical form) is obtuse.</td></tr>
-<tr><td valign="top"><a href="#is_strictly_on_the_right-3">is_strictly_on_the_right/3</a></td><td>Returns true iff P is strictly on the right of the oriented segment going
- from P1 to P2.</td></tr>
-<tr><td valign="top"><a href="#sort_by_angle-2">sort_by_angle/2</a></td><td>Returns a list containing the points sorted according to an increasing 
-angle between the abscissa axis and the vector from the pivot to each of these 
-points.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#abs_angle_deg-3">abs_angle_deg/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#abs_angle_rad-3">abs_angle_rad/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#angle_deg-3">angle_deg/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#angle_rad-3">angle_rad/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compute_convex_hull-1">compute_convex_hull/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compute_max_overall_distance-1">compute_max_overall_distance/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#compute_smallest_enclosing_rectangle-1">compute_smallest_enclosing_rectangle/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find_pivot-1">find_pivot/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_abscissa_for_ordinate-2">get_abscissa_for_ordinate/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_line-2">get_line/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_roots_of_unit-1">get_roots_of_unit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_roots_of_unit-2">get_roots_of_unit/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#intersect-2">intersect/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_obtuse-1">is_obtuse/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_strictly_on_the_right-3">is_strictly_on_the_right/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sort_by_angle-2">sort_by_angle/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="abs_angle_deg-3">abs_angle_deg/3</a></h3>
 <div class="spec">
-<p><code>abs_angle_deg(A::<a href="#type-point2">point2()</a>, B::<a href="#type-point2">point2()</a>, C::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-int_degrees">int_degrees()</a></code><br></p><p><code>abs_angle_deg(A::<a href="#type-integer_point2">integer_point2()</a>, B::<a href="#type-integer_point2">integer_point2()</a>, C::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-int_degrees">int_degrees()</a></code><br></p>
+<p><code>abs_angle_deg(A::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, B::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, C::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-int_degrees" docgen-rel="seetype" docgen-href="#int_degrees/0">int_degrees()</a></code><br></p><p><code>abs_angle_deg(A::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, B::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, C::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>) -&gt; <a href="#type-int_degrees" docgen-rel="seetype" docgen-href="#int_degrees/0">int_degrees()</a></code><br></p>
 <p> </p>
 <p> </p>
-</div><p><p>Returns the angle, in canonical degrees, between the vector AB and AC.</p>
-
- Note: with this function we cannot tell whether one vector is ahead of the
- other, that is if we should use the returned angle or its opposite to go from
- AB to AC.
-</p>
+</div>
 
 <h3 class="function"><a name="abs_angle_rad-3">abs_angle_rad/3</a></h3>
 <div class="spec">
-<p><code>abs_angle_rad(A::<a href="#type-point2">point2()</a>, B::<a href="#type-point2">point2()</a>, C::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-radians">radians()</a></code><br></p><p><code>abs_angle_rad(A::<a href="#type-integer_point2">integer_point2()</a>, B::<a href="#type-integer_point2">integer_point2()</a>, C::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-radians">radians()</a></code><br></p>
+<p><code>abs_angle_rad(A::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, B::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, C::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a></code><br></p><p><code>abs_angle_rad(A::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, B::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, C::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>) -&gt; <a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a></code><br></p>
 <p> </p>
 <p> </p>
-</div><p><p>Returns the angle, in radians in the range [0, Pi], between the vector AB 
-and AC.</p>
-
- Note: with this function we cannot tell whether one vector is ahead of the
- other, ie if we should use the returned angle or its opposite to go from AB
- to AC.
-</p>
+</div>
 
 <h3 class="function"><a name="angle_deg-3">angle_deg/3</a></h3>
 <div class="spec">
-<p><code>angle_deg(A::<a href="#type-any_point2">any_point2()</a>, B::<a href="#type-any_point2">any_point2()</a>, C::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-int_degrees">int_degrees()</a></code><br></p>
+<p><code>angle_deg(A::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, B::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, C::<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>) -&gt; <a href="#type-int_degrees" docgen-rel="seetype" docgen-href="#int_degrees/0">int_degrees()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the signed (oriented) angle, in canonical degrees, between the 
-vector AB and AC.</p>
-
- Note: with this function we can tell that we must rotate counter-clockwise of
- the returned angle to go from AB to AC.
-</p>
+</div>
 
 <h3 class="function"><a name="angle_rad-3">angle_rad/3</a></h3>
 <div class="spec">
-<p><code>angle_rad(A::<a href="#type-point2">point2()</a>, B::<a href="#type-point2">point2()</a>, C::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-radians">radians()</a></code><br></p><p><code>angle_rad(A::<a href="#type-integer_point2">integer_point2()</a>, B::<a href="#type-integer_point2">integer_point2()</a>, C::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-radians">radians()</a></code><br></p>
+<p><code>angle_rad(A::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, B::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, C::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; <a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a></code><br></p><p><code>angle_rad(A::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, B::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, C::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>) -&gt; <a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a></code><br></p>
 <p> </p>
 <p> </p>
-</div><p><p>Returns the signed (oriented) angle, in radians, between the vector AB 
-and AC.</p>
-
- Note: with this function we can tell that we must rotate counter-clockwise of
- the returned angle to go from AB to AC.
-</p>
+</div>
 
 <h3 class="function"><a name="compute_convex_hull-1">compute_convex_hull/1</a></h3>
 <div class="spec">
-<p><code>compute_convex_hull(Points::[<a href="#type-any_point2">any_point2()</a>]) -&gt; [<a href="#type-any_point2">any_point2()</a>]</code><br></p>
+<p><code>compute_convex_hull(Points::[<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>]) -&gt; [<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Computes the convex hull corresponding to the specified list of points.</p>
-
- Returns a list of the points that define the hull.
-</p>
+</div>
 
 <h3 class="function"><a name="compute_max_overall_distance-1">compute_max_overall_distance/1</a></h3>
 <div class="spec">
-<p><code>compute_max_overall_distance(Points::[<a href="#type-any_point2">any_point2()</a>]) -&gt; {<a href="#type-any_point2">any_point2()</a>, <a href="#type-any_point2">any_point2()</a>, <a href="#type-square_distance">square_distance()</a>}</code><br></p>
+<p><code>compute_max_overall_distance(Points::[<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>]) -&gt; {<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, <a href="#type-square_distance" docgen-rel="seetype" docgen-href="#square_distance/0">square_distance()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Computes the maximum distance between two points in the specified list of 
-points.</p>
-
- <p>Returns {P1,P2,square_distance(P1,P2)} so that this (square) distance is 
-maximal among points.</p>
-
- We ensure that each internal edge is examined only once: when the distances
- between a given vertex V and all other vertices have been computed, V is
- removed from the list and a new maximum is searched within this subset.
-</p>
+</div>
 
 <h3 class="function"><a name="compute_smallest_enclosing_rectangle-1">compute_smallest_enclosing_rectangle/1</a></h3>
 <div class="spec">
-<p><code>compute_smallest_enclosing_rectangle(Points::[<a href="#type-any_point2">any_point2()</a>]) -&gt; {<a href="#type-any_point2">any_point2()</a>, <a href="#type-any_point2">any_point2()</a>}</code><br></p>
+<p><code>compute_smallest_enclosing_rectangle(Points::[<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>]) -&gt; {<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, <a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>}</code><br></p>
 <p> </p>
-</div><p><p>Computes the smallest rectangle that encloses the specified list of 
-points.</p>
-
- Returns {TopLeft, BottomRight}.
-</p>
+</div>
 
 <h3 class="function"><a name="find_pivot-1">find_pivot/1</a></h3>
 <div class="spec">
-<p><code>find_pivot(PointList::[<a href="#type-any_point2">any_point2()</a>]) -&gt; {<a href="#type-any_point2">any_point2()</a>, [<a href="#type-any_point2">any_point2()</a>]}</code><br></p>
+<p><code>find_pivot(PointList::[<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>]) -&gt; {<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>, [<a href="#type-any_point2" docgen-rel="seetype" docgen-href="#any_point2/0">any_point2()</a>]}</code><br></p>
 <p> </p>
-</div><p><p>Finds the pivot, that is the leftmost point with the highest ordinate.</p>
-
- <p>The point list is supposed not having duplicates.</p>
-
- Returns {Pivot, PivotLessList} where PivotLessList is the (unordered) input
- list, without the Pivot.
-</p>
+</div>
 
 <h3 class="function"><a name="get_abscissa_for_ordinate-2">get_abscissa_for_ordinate/2</a></h3>
 <div class="spec">
-<p><code>get_abscissa_for_ordinate(L::<a href="#type-line2">line2()</a>, Y::<a href="#type-any_coordinate">any_coordinate()</a>) -&gt; <a href="#type-coordinate">coordinate()</a></code><br></p>
+<p><code>get_abscissa_for_ordinate(L::<a href="#type-line2" docgen-rel="seetype" docgen-href="#line2/0">line2()</a>, Y::<a href="#type-any_coordinate" docgen-rel="seetype" docgen-href="#any_coordinate/0">any_coordinate()</a>) -&gt; <a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the abscissa of a point on line L having Y for ordinate.</p>
-
- Line L must not have for equation Y=constant (i.e. its A parameter must not be
- null).
-</p>
+</div>
 
 <h3 class="function"><a name="get_line-2">get_line/2</a></h3>
 <div class="spec">
-<p><code>get_line(P::<a href="#type-point2">point2()</a>, V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-line2">line2()</a></code><br></p>
+<p><code>get_line(P::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, V::<a href="#type-vector2" docgen-rel="seetype" docgen-href="#vector2/0">vector2()</a>) -&gt; <a href="#type-line2" docgen-rel="seetype" docgen-href="#line2/0">line2()</a></code><br></p>
 <p> </p>
-</div><p>Returns the three coefficients {A,B,C} for the line passing by point P
- and being perpendicular to vector V, whose equation is A.x + B.y + C = 0.
-</p>
+</div>
 
 <h3 class="function"><a name="get_roots_of_unit-1">get_roots_of_unit/1</a></h3>
 <div class="spec">
-<p><code>get_roots_of_unit(N::<a href="#type-count">count()</a>) -&gt; [<a href="#type-point2">point2()</a>]</code><br></p>
+<p><code>get_roots_of_unit(N::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns a list of points forming the nth roots of unity, in the unit
- circle centered on the origin, the first one being in the X axis.
-</p>
+</div>
 
 <h3 class="function"><a name="get_roots_of_unit-2">get_roots_of_unit/2</a></h3>
 <div class="spec">
-<p><code>get_roots_of_unit(N::<a href="#type-count">count()</a>, StartingAngle::<a href="#type-radians">radians()</a>) -&gt; [<a href="#type-point2">point2()</a>]</code><br></p>
+<p><code>get_roots_of_unit(N::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, StartingAngle::<a href="#type-radians" docgen-rel="seetype" docgen-href="#radians/0">radians()</a>) -&gt; [<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns a list of points forming the nth roots of unity, in the unit
- circle centered on the origin, the first one making the specified angle with
- the X axis.
-</p>
+</div>
 
 <h3 class="function"><a name="intersect-2">intersect/2</a></h3>
 <div class="spec">
-<p><code>intersect(L1::<a href="#type-line2">line2()</a>, L2::<a href="#type-line2">line2()</a>) -&gt; no_point | <a href="#type-point2">point2()</a></code><br></p>
+<p><code>intersect(L1::<a href="#type-line2" docgen-rel="seetype" docgen-href="#line2/0">line2()</a>, L2::<a href="#type-line2" docgen-rel="seetype" docgen-href="#line2/0">line2()</a>) -&gt; no_point | <a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the intersection of the two specified lines, if it is a point, 
-otherwise the 'no_point' atom (the intersection can be void, if the lines are 
-parallel but different, or a full line, if they are the same line).</p>
-
- First line has for equation A.x+B.y+C=0, second has for equation U.x+V.y+W=0.
-</p>
+</div>
 
 <h3 class="function"><a name="is_obtuse-1">is_obtuse/1</a></h3>
 <div class="spec">
-<p><code>is_obtuse(AngleInDegrees::<a href="#type-int_degrees">int_degrees()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_obtuse(AngleInDegrees::<a href="#type-int_degrees" docgen-rel="seetype" docgen-href="#int_degrees/0">int_degrees()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
-</div><p>Returns whether specified angle (in degrees, canonical form) is obtuse.</p>
+</div>
 
 <h3 class="function"><a name="is_strictly_on_the_right-3">is_strictly_on_the_right/3</a></h3>
 <div class="spec">
-<p><code>is_strictly_on_the_right(P::<a href="#type-point2">point2()</a>, P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; boolean()</code><br></p><p><code>is_strictly_on_the_right(P::<a href="#type-integer_point2">integer_point2()</a>, P1::<a href="#type-integer_point2">integer_point2()</a>, P2::<a href="#type-integer_point2">integer_point2()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_strictly_on_the_right(P::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P1::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>, P2::<a href="#type-point2" docgen-rel="seetype" docgen-href="#point2/0">point2()</a>) -&gt; boolean()</code><br></p><p><code>is_strictly_on_the_right(P::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, P1::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, P2::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 <p> </p>
-</div><p>Returns true iff P is strictly on the right of the oriented segment going
- from P1 to P2.
-</p>
+</div>
 
 <h3 class="function"><a name="sort_by_angle-2">sort_by_angle/2</a></h3>
 <div class="spec">
-<p><code>sort_by_angle(Pivot::<a href="#type-integer_point2">integer_point2()</a>, Points::[<a href="#type-integer_point2">integer_point2()</a>]) -&gt; [<a href="#type-integer_point2">integer_point2()</a>]</code><br></p>
+<p><code>sort_by_angle(Pivot::<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>, Points::[<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>]) -&gt; [<a href="#type-integer_point2" docgen-rel="seetype" docgen-href="#integer_point2/0">integer_point2()</a>]</code><br></p>
 <p> </p>
-</div><p><p>Returns a list containing the points sorted according to an increasing 
-angle between the abscissa axis and the vector from the pivot to each of these 
-points.</p>
-
- Note: all points having the same abscissa as the pivot, except the highest
- one, will be removed from the returned list.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

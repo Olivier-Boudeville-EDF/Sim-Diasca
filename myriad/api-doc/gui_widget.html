@@ -10,348 +10,251 @@
 <hr>
 
 <h1>Module gui_widget</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>widgets</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>widgets</b>.</p>
-
- <p>A widget is the most general form of graphical component.</p>
-
- Some very general functions are gathered here as well.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
-<p><code>color() = <a href="gui_color.html#type-color">gui_color:color()</a></code></p>
+<p><code>color() = <a href="gui_color.html#type-color" docgen-rel="seetype" docgen-href="gui_color#color/0">gui_color:color()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-control">control()</a></h3>
 <p><b>abstract datatype</b>: <code>control()</code></p>
-<p> A control is generally a small window that processes user input and/or
- displays one or more items of data.</p>
+
 
 <h3 class="typedecl"><a name="type-device_context">device_context()</a></h3>
-<p><code>device_context() = <a href="gui_render.html#type-device_context">gui_render:device_context()</a></code></p>
+<p><code>device_context() = <a href="gui_render.html#type-device_context" docgen-rel="seetype" docgen-href="gui_render#device_context/0">gui_render:device_context()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-font">font()</a></h3>
-<p><code>font() = <a href="gui_font.html#type-font">gui_font:font()</a></code></p>
+<p><code>font() = <a href="gui_font.html#type-font" docgen-rel="seetype" docgen-href="gui_font#font/0">gui_font:font()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_env_pid">gui_env_pid()</a></h3>
-<p><code>gui_env_pid() = <a href="gui.html#type-gui_env_pid">gui:gui_env_pid()</a></code></p>
+<p><code>gui_env_pid() = <a href="gui.html#type-gui_env_pid" docgen-rel="seetype" docgen-href="gui#gui_env_pid/0">gui:gui_env_pid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><code>label() = <a href="gui.html#type-label">gui:label()</a></code></p>
+<p><code>label() = <a href="gui.html#type-label" docgen-rel="seetype" docgen-href="gui#label/0">gui:label()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-size">size()</a></h3>
-<p><code>size() = <a href="gui.html#type-size">gui:size()</a></code></p>
+<p><code>size() = <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-sizer">sizer()</a></h3>
-<p><code>sizer() = <a href="gui_sizer.html#type-sizer">gui_sizer:sizer()</a></code></p>
+<p><code>sizer() = <a href="gui_sizer.html#type-sizer" docgen-rel="seetype" docgen-href="gui_sizer#sizer/0">gui_sizer:sizer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-widget">widget()</a></h3>
-<p><code>widget() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxWindow.html#type-wxWindow">wxWindow:wxWindow()</a> | <a href="gui_canvas.html#type-canvas">gui_canvas:canvas()</a></code></p>
-<p><p> Any kind of widget, that is graphical component; for example a button or a 
-canvas is a widget.</p>
+<p><code>widget() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxWindow.html#type-wxWindow" docgen-rel="seetype" docgen-href="wx:wxWindow#wxWindow/0">wxWindow:wxWindow()</a> | <a href="gui_canvas.html#type-canvas" docgen-rel="seetype" docgen-href="gui_canvas#canvas/0">gui_canvas:canvas()</a></code></p>
 
- <p>Represents any visible object on screen. All controls, top level windows, 
-buttons, etc. are widgets.</p>
 
- <p>Sizers and device contexts are not, however, as they do not appear on screen 
-themselves.</p>
+<h3 class="typedecl"><a name="type-widget_pid">widget_pid()</a></h3>
+<p><code>widget_pid() = pid()</code></p>
 
- Widget is a clearer naming than "window" (chosen by wx/WxWidgets), as not
- necessarily directly akin to a regular window.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified widget.</td></tr>
-<tr><td valign="top"><a href="#destruct-2">destruct/2</a></td><td>Destructs the specified widget, using the specified environment server.</td></tr>
-<tr><td valign="top"><a href="#destruct_direct-1">destruct_direct/1</a></td><td>Destructs the specified widget directly and basically, with no 
-synchronisation involved.</td></tr>
-<tr><td valign="top"><a href="#enable_repaint-1">enable_repaint/1</a></td><td>Updates the specified window-like object (e.g.</td></tr>
-<tr><td valign="top"><a href="#fit-1">fit/1</a></td><td>Fits the specified widget to its best size.</td></tr>
-<tr><td valign="top"><a href="#fit_to_sizer-2">fit_to_sizer/2</a></td><td>Resizes the specified widget so that its client area matches the minimal
- size of the specified sizer.</td></tr>
-<tr><td valign="top"><a href="#get_best_size-1">get_best_size/1</a></td><td>Returns the best size (as {Width,Height}) of the specified widget, that
- is its best acceptable minimal size.</td></tr>
-<tr><td valign="top"><a href="#get_client_size-1">get_client_size/1</a></td><td>Returns the client size (as {Width,Height}) of the specified widget, that
- is the actual size of the area that can be drawn upon (excluded menu, bars,
- etc.).</td></tr>
-<tr><td valign="top"><a href="#get_focused-0">get_focused/0</a></td><td>Returns the widget (if any) that has the current keyboard focus.</td></tr>
-<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size (as {Width,Height}) of the specified widget.</td></tr>
-<tr><td valign="top"><a href="#layout-1">layout/1</a></td><td>Lays out the children of this widget, using any associated sizer,
- otherwise does nothing (except if it is a top level window).</td></tr>
-<tr><td valign="top"><a href="#lock-1">lock/1</a></td><td>Locks the specified widget, so that direct access to its content can be 
-done, through the returned device context.</td></tr>
-<tr><td valign="top"><a href="#maximise_in_parent-1">maximise_in_parent/1</a></td><td>Maximises the specified widget (a specialised window, for example a
- panel) in its parent (adopting its maximum client size), and returns the new
- size of this widget.</td></tr>
-<tr><td valign="top"><a href="#refresh-1">refresh/1</a></td><td>Causes this widget, and all of its children recursively, to be repainted 
-during the next event loop iteration.</td></tr>
-<tr><td valign="top"><a href="#set_and_fit_to_sizer-2">set_and_fit_to_sizer/2</a></td><td>Associates the specified sizer to the specified window, and sets the size
- and minimal size of the window accordingly.</td></tr>
-<tr><td valign="top"><a href="#set_background_color-2">set_background_color/2</a></td><td>Sets the background color of the specified widget.</td></tr>
-<tr><td valign="top"><a href="#set_client_size-2">set_client_size/2</a></td><td>Sets the size of the client area of the specified widget.</td></tr>
-<tr><td valign="top"><a href="#set_focus-1">set_focus/1</a></td><td>Sets the specified widget to receive keyboard input, provided notably 
-that this type of widget can have the focus (e.g.</td></tr>
-<tr><td valign="top"><a href="#set_font-2">set_font/2</a></td><td>Sets the font to be used by the specified widget and its children.</td></tr>
-<tr><td valign="top"><a href="#set_font-4">set_font/4</a></td><td>Sets the font and color to be used by the specified widget (and its 
-children), then, if requested, destructs that font.</td></tr>
-<tr><td valign="top"><a href="#set_foreground_color-2">set_foreground_color/2</a></td><td>Sets the foreground color of the specified widget.</td></tr>
-<tr><td valign="top"><a href="#set_sizer-2">set_sizer/2</a></td><td>Associates the specified sizer to the specified widget.</td></tr>
-<tr><td valign="top"><a href="#set_tooltip-2">set_tooltip/2</a></td><td>Attaches a tooltip to the specified widget.</td></tr>
-<tr><td valign="top"><a href="#sync-1">sync/1</a></td><td>Synchronises the specified widget to the MyriadGUI loop, to ensure that 
-no past operation is still pending at its level.</td></tr>
-<tr><td valign="top"><a href="#unlock-1">unlock/1</a></td><td>Unlocks the specified widget, based on the specified device context
- obtained from a previous locking.</td></tr>
-<tr><td valign="top"><a href="#update-1">update/1</a></td><td>Repaints the invalidated area of the window and all of its children 
-recursively (this normally only happens when the flow of control returns to 
-the event loop).</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-2">destruct/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct_direct-1">destruct_direct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#enable_repaint-1">enable_repaint/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#fit-1">fit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#fit_to_sizer-2">fit_to_sizer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_best_size-1">get_best_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_client_size-1">get_client_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_enable_status-1">get_enable_status/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_focused-0">get_focused/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#layout-1">layout/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#lock-1">lock/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#maximise_in_parent-1">maximise_in_parent/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#refresh-1">refresh/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_and_fit_to_sizer-2">set_and_fit_to_sizer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_background_color-2">set_background_color/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_client_size-2">set_client_size/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_enable_status-2">set_enable_status/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_focus-1">set_focus/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_font-2">set_font/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_font-4">set_font/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_foreground_color-2">set_foreground_color/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_sizer-2">set_sizer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_tooltip-2">set_tooltip/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sync-1">sync/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unlock-1">unlock/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update-1">update/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><code>destruct(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>destruct(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Destructs the specified widget.</p>
+</div>
 
 <h3 class="function"><a name="destruct-2">destruct/2</a></h3>
 <div class="spec">
-<p><code>destruct(Widget::<a href="#type-widget">widget()</a>, GUIEnvPid::<a href="#type-gui_env_pid">gui_env_pid()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>destruct(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, GUIEnvPid::<a href="#type-gui_env_pid" docgen-rel="seetype" docgen-href="#gui_env_pid/0">gui_env_pid()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Destructs the specified widget, using the specified environment server.</p>
+</div>
 
 <h3 class="function"><a name="destruct_direct-1">destruct_direct/1</a></h3>
 <div class="spec">
-<p><code>destruct_direct(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>destruct_direct(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Destructs the specified widget directly and basically, with no 
-synchronisation involved.</p>
-
- Note however that this corresponds to the decrementing of its reference count,
- so an actual destruction may not happen immediately.
-</p>
+</div>
 
 <h3 class="function"><a name="enable_repaint-1">enable_repaint/1</a></h3>
 <div class="spec">
-<p><code>enable_repaint(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>enable_repaint(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Updates the specified window-like object (e.g. a canvas) so that its 
-client area can be painted.</p>
-
- <p>To be called from a repaint event handler.</p>
-
- <p>See <a href="https://www.erlang.org/doc/man/wxpaintdc#description" target="_top"><code>https://www.erlang.org/doc/man/wxpaintdc#description</code></a> for more details.</p>
-
- Based on our tests, does not seem strictly necessary.
-</p>
+</div>
 
 <h3 class="function"><a name="fit-1">fit/1</a></h3>
 <div class="spec">
-<p><code>fit(Canvas::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>fit(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Fits the specified widget to its best size.</p>
-
- Corresponds to setting its client size to its best one.
-</p>
+</div>
 
 <h3 class="function"><a name="fit_to_sizer-2">fit_to_sizer/2</a></h3>
 <div class="spec">
-<p><code>fit_to_sizer(Widget::<a href="#type-widget">widget()</a>, Sizer::<a href="#type-sizer">sizer()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>fit_to_sizer(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Sizer::<a href="#type-sizer" docgen-rel="seetype" docgen-href="#sizer/0">sizer()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Resizes the specified widget so that its client area matches the minimal
- size of the specified sizer.
-</p>
+</div>
 
 <h3 class="function"><a name="get_best_size-1">get_best_size/1</a></h3>
 <div class="spec">
-<p><code>get_best_size(Canvas::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-size">size()</a></code><br></p>
+<p><code>get_best_size(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the best size (as {Width,Height}) of the specified widget, that
- is its best acceptable minimal size.
-</p>
+</div>
 
 <h3 class="function"><a name="get_client_size-1">get_client_size/1</a></h3>
 <div class="spec">
-<p><code>get_client_size(Canvas::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-size">size()</a></code><br></p>
+<p><code>get_client_size(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the client size (as {Width,Height}) of the specified widget, that
- is the actual size of the area that can be drawn upon (excluded menu, bars,
- etc.).
-</p>
+</div>
+
+<h3 class="function"><a name="get_enable_status-1">get_enable_status/1</a></h3>
+<div class="spec">
+<p><code>get_enable_status(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="get_focused-0">get_focused/0</a></h3>
 <div class="spec">
-<p><code>get_focused() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-widget">widget()</a>)</code><br></p>
+<p><code>get_focused() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns the widget (if any) that has the current keyboard focus.</p>
-
- Refer to the 'Keyboard-related events' section of the gui_keyboard module for
- further information.
-</p>
+</div>
 
 <h3 class="function"><a name="get_size-1">get_size/1</a></h3>
 <div class="spec">
-<p><code>get_size(Canvas::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-size">size()</a></code><br></p>
+<p><code>get_size(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the size (as {Width,Height}) of the specified widget.</p>
+</div>
 
 <h3 class="function"><a name="layout-1">layout/1</a></h3>
 <div class="spec">
-<p><code>layout(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>layout(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Lays out the children of this widget, using any associated sizer,
- otherwise does nothing (except if it is a top level window).
-</p>
+</div>
 
 <h3 class="function"><a name="lock-1">lock/1</a></h3>
 <div class="spec">
-<p><code>lock(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-device_context">device_context()</a></code><br></p>
+<p><code>lock(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-device_context" docgen-rel="seetype" docgen-href="#device_context/0">device_context()</a></code><br></p>
 <p> </p>
-</div><p><p>Locks the specified widget, so that direct access to its content can be 
-done, through the returned device context.</p>
-
- Once the desired changes will have been made, this widget must be unlocked.
-</p>
+</div>
 
 <h3 class="function"><a name="maximise_in_parent-1">maximise_in_parent/1</a></h3>
 <div class="spec">
-<p><code>maximise_in_parent(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-size">size()</a></code><br></p>
+<p><code>maximise_in_parent(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a></code><br></p>
 <p> </p>
-</div><p>Maximises the specified widget (a specialised window, for example a
- panel) in its parent (adopting its maximum client size), and returns the new
- size of this widget.
-</p>
+</div>
 
 <h3 class="function"><a name="refresh-1">refresh/1</a></h3>
 <div class="spec">
-<p><code>refresh(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>refresh(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Causes this widget, and all of its children recursively, to be repainted 
-during the next event loop iteration.</p>
-
- If you need to update the widget immediately, use update/1 instead.
-</p>
+</div>
 
 <h3 class="function"><a name="set_and_fit_to_sizer-2">set_and_fit_to_sizer/2</a></h3>
 <div class="spec">
-<p><code>set_and_fit_to_sizer(Canvas::<a href="#type-widget">widget()</a>, Sizer::<a href="#type-sizer">sizer()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_and_fit_to_sizer(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Sizer::<a href="#type-sizer" docgen-rel="seetype" docgen-href="#sizer/0">sizer()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Associates the specified sizer to the specified window, and sets the size
- and minimal size of the window accordingly.
-</p>
+</div>
 
 <h3 class="function"><a name="set_background_color-2">set_background_color/2</a></h3>
 <div class="spec">
-<p><code>set_background_color(Canvas::<a href="#type-widget">widget()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_background_color(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Color::<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the background color of the specified widget.</p>
+</div>
 
 <h3 class="function"><a name="set_client_size-2">set_client_size/2</a></h3>
 <div class="spec">
-<p><code>set_client_size(Canvas::<a href="#type-widget">widget()</a>, Size::<a href="#type-size">size()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_client_size(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Size::<a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the size of the client area of the specified widget.</p>
+</div>
+
+<h3 class="function"><a name="set_enable_status-2">set_enable_status/2</a></h3>
+<div class="spec">
+<p><code>set_enable_status(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, DoEnable::boolean()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="set_focus-1">set_focus/1</a></h3>
 <div class="spec">
-<p><code>set_focus(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_focus(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the specified widget to receive keyboard input, provided notably 
-that this type of widget can have the focus (e.g. frame() cannot).</p>
-
- Refer to the 'Keyboard-related events' section of the gui_keyboard module for
- further information.
-</p>
+</div>
 
 <h3 class="function"><a name="set_font-2">set_font/2</a></h3>
 <div class="spec">
-<p><code>set_font(Widget::<a href="#type-widget">widget()</a>, Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_font(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Font::<a href="#type-font" docgen-rel="seetype" docgen-href="#font/0">font()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the font to be used by the specified widget and its children.</p>
+</div>
 
 <h3 class="function"><a name="set_font-4">set_font/4</a></h3>
 <div class="spec">
-<p><code>set_font(Widget::<a href="#type-widget">widget()</a>, Font::<a href="#type-font">font()</a>, Color::<a href="#type-color">color()</a>, DestructFont::boolean()) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_font(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Font::<a href="#type-font" docgen-rel="seetype" docgen-href="#font/0">font()</a>, Color::<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>, DestructFont::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the font and color to be used by the specified widget (and its 
-children), then, if requested, destructs that font.</p>
-
- A side-effect is that the foreground color gets set.
-</p>
+</div>
 
 <h3 class="function"><a name="set_foreground_color-2">set_foreground_color/2</a></h3>
 <div class="spec">
-<p><code>set_foreground_color(Canvas::<a href="#type-widget">widget()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_foreground_color(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Color::<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the foreground color of the specified widget.</p>
+</div>
 
 <h3 class="function"><a name="set_sizer-2">set_sizer/2</a></h3>
 <div class="spec">
-<p><code>set_sizer(Canvas::<a href="#type-widget">widget()</a>, Sizer::<a href="#type-sizer">sizer()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_sizer(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Sizer::<a href="#type-sizer" docgen-rel="seetype" docgen-href="#sizer/0">sizer()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Associates the specified sizer to the specified widget.</p>
-
- A sizer will not be taken into account as long as it is not associated to a
- widget (typically prior to showing that widget).
-</p>
+</div>
 
 <h3 class="function"><a name="set_tooltip-2">set_tooltip/2</a></h3>
 <div class="spec">
-<p><code>set_tooltip(Canvas::<a href="#type-widget">widget()</a>, Label::<a href="#type-label">label()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_tooltip(Canvas::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>, Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Attaches a tooltip to the specified widget.</p>
-
- For an unknown reason, works on panels but never on buttons (this is even the
- case for ex_button.erl).
-</p>
+</div>
 
 <h3 class="function"><a name="sync-1">sync/1</a></h3>
 <div class="spec">
-<p><code>sync(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-size">size()</a></code><br></p>
+<p><code>sync(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a></code><br></p>
 <p> </p>
-</div><p><p>Synchronises the specified widget to the MyriadGUI loop, to ensure that 
-no past operation is still pending at its level.</p>
-
- <p>Useful if there exists some means of interacting with the widget directly 
-(e.g. an OpenGL canvas, thanks to an OpenGL NIF) that could create a race 
-condition (e.g. presumably a message-based resizing immediately followed by a 
-direct OpenGL rendering: the rendering may actually happen before the 
-resizing).</p>
-
- See gui_opengl_{minimal,2D}_test:on_main_frame_resize/1 for further details;
- see also the synchroniseWithCaller message supported by the MyriadGUI loop.
-</p>
+</div>
 
 <h3 class="function"><a name="unlock-1">unlock/1</a></h3>
 <div class="spec">
-<p><code>unlock(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>unlock(DC::<a href="#type-device_context" docgen-rel="seetype" docgen-href="#device_context/0">device_context()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Unlocks the specified widget, based on the specified device context
- obtained from a previous locking.
-</p>
+</div>
 
 <h3 class="function"><a name="update-1">update/1</a></h3>
 <div class="spec">
-<p><code>update(Widget::<a href="#type-widget">widget()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>update(Widget::<a href="#type-widget" docgen-rel="seetype" docgen-href="#widget/0">widget()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Repaints the invalidated area of the window and all of its children 
-recursively (this normally only happens when the flow of control returns to 
-the event loop).</p>
-
- <p>Note that this function does not invalidate any area of the window, so nothing 
-happens if nothing has been invalidated (i.e. marked as requiring a redraw).</p>
-
- Use refresh/1 first if you want to "immediately" redraw the window
- unconditionally.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

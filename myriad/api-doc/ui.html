@@ -10,91 +10,69 @@
 <hr>
 
 <h1>Module ui</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Aggregates all code <b>transverse to the various actual UI
- backends</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Aggregates all code <b>transverse to the various actual UI
- backends</b>. This module shall be, if possible, directly used by programs, so 
-that they can at runtime select the best available UI backend for the context 
-at hand.</p>
-
- <p>See:
- - <code>text_ui_test.erl</code> for the test of the most basic text interface
- - <code>term_ui.erl</code> for a more advanced text interface (ncurses-based)
- - <code>gui.erl</code> for a graphical counterpart thereof</p>
-
- See also: <code>trace_utils.erl</code> for another kind of output.
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
-<p><code>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></code></p>
-
-
 <h3 class="typedecl"><a name="type-argument_table">argument_table()</a></h3>
-<p><code>argument_table() = <a href="shell_utils.html#type-argument_table">shell_utils:argument_table()</a></code></p>
+<p><code>argument_table() = <a href="cmd_line_utils.html#type-argument_table" docgen-rel="seetype" docgen-href="cmd_line_utils#argument_table/0">cmd_line_utils:argument_table()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-backtitle_entry">backtitle_entry()</a></h3>
-<p><code>backtitle_entry() = {backtitle, <a href="#type-title">title()</a>}</code></p>
-<p> For back-titles.</p>
+<p><code>backtitle_entry() = {backtitle, <a href="#type-title" docgen-rel="seetype" docgen-href="#title/0">title()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bin_title">bin_title()</a></h3>
-<p><code>bin_title() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> A (binary) title, typically of a document.</p>
+<p><code>bin_title() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-binary_choice">binary_choice()</a></h3>
 <p><code>binary_choice() = yes | no</code></p>
 
 
 <h3 class="typedecl"><a name="type-caption">caption()</a></h3>
-<p><code>caption() = <a href="#type-text">text()</a></code></p>
-<p> A caption, typically of a window.</p>
+<p><code>caption() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-choice_designator">choice_designator()</a></h3>
 <p><code>choice_designator() = term() | ui_cancel</code></p>
-<p><p> Designator of a choice (regardless of the choice labels, locales, etc.).</p>
 
- <p>(usually an atom, but possibly an integer or anything else)</p>
-
- Note that there is a reserved designator (i.e. one that shall never be
- specified among the user ones) that is the 'ui_cancel' atom, which is returned
- by a backend whenever the user chose to cancel the operation rather than
- selecting one of the available options.</p>
 
 <h3 class="typedecl"><a name="type-choice_element">choice_element()</a></h3>
-<p><code>choice_element() = {<a href="#type-choice_designator">choice_designator()</a>, <a href="#type-choice_text">choice_text()</a>}</code></p>
-<p> A description of an item of choice.</p>
+<p><code>choice_element() = {<a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a>, <a href="#type-choice_text" docgen-rel="seetype" docgen-href="#choice_text/0">choice_text()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-choice_index">choice_index()</a></h3>
-<p><code>choice_index() = <a href="basic_utils.html#type-count">basic_utils:count()</a></code></p>
-<p> The index of a choice (starting at 1).</p>
+<p><code>choice_index() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-choice_spec">choice_spec()</a></h3>
-<p><code>choice_spec() = [<a href="#type-choice_element">choice_element()</a>]</code></p>
-<p><p> A description of a choice offered to the user.</p>
+<p><code>choice_spec() = [<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>]</code></p>
 
- Useful to define the interface wanted and to interpret its outcome.</p>
 
 <h3 class="typedecl"><a name="type-choice_text">choice_text()</a></h3>
-<p><code>choice_text() = <a href="#type-text">text()</a></code></p>
-<p> The text of a choice.</p>
+<p><code>choice_text() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-common_entry">common_entry()</a></h3>
-<p><code>common_entry() = <a href="#type-backtitle_entry">backtitle_entry()</a> | <a href="#type-title_entry">title_entry()</a></code></p>
-<p> Parameter keys that are common to all dialogs.</p>
+<p><code>common_entry() = <a href="#type-backtitle_entry" docgen-rel="seetype" docgen-href="#backtitle_entry/0">backtitle_entry()</a> | <a href="#type-title_entry" docgen-rel="seetype" docgen-href="#title_entry/0">title_entry()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
-<p><code>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></code></p>
+<p><code>format_string() = <a href="text_utils.html#type-format_string" docgen-rel="seetype" docgen-href="text_utils#format_string/0">text_utils:format_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
-<p><code>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></code></p>
+<p><code>format_values() = <a href="text_utils.html#type-format_values" docgen-rel="seetype" docgen-href="text_utils#format_values/0">text_utils:format_values()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-help_info">help_info()</a></h3>
+<p><code>help_info() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-interactivity_mode">interactivity_mode()</a></h3>
@@ -102,678 +80,448 @@ at hand.</p>
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><code>label() = <a href="#type-text">text()</a></code></p>
-<p> A label, for example of a button.</p>
+<p><code>label() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><code>message() = <a href="#type-text">text()</a></code></p>
-<p> A message, typically displayed by a dialog, or sent as a trace.</p>
+<p><code>message() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-prompt">prompt()</a></h3>
-<p><code>prompt() = <a href="#type-text">text()</a></code></p>
-<p> A prompt, typically of an interpreter.</p>
+<p><code>prompt() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-setting_table">setting_table()</a></h3>
-<p><code>setting_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>)</code></p>
-<p> A table storing UI settings (either top-level or backend-specific).</p>
+<p><code>setting_table() = <a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table</a>(<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>, <a href="#type-ui_setting_value" docgen-rel="seetype" docgen-href="#ui_setting_value/0">ui_setting_value()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
-<p><code>text() = <a href="#type-any_string">any_string()</a></code></p>
-<p><p> Any text, as a plain or binary (Unicode, UTF-8) string.</p>
+<p><code>text() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/unicode.html#type-chardata" docgen-rel="seetype" docgen-href="stdlib:unicode#chardata/0">unicode:chardata()</a></code></p>
 
- Could usually be a more general (notably as recursive lists as such elements),
- and more complex for the user, unicode:chardata(), yet this would have to be
- systematically type-checked beforehand.</p>
 
 <h3 class="typedecl"><a name="type-title">title()</a></h3>
-<p><code>title() = <a href="#type-text">text()</a></code></p>
-<p> A title, typically of a document.</p>
+<p><code>title() = <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-title_entry">title_entry()</a></h3>
-<p><code>title_entry() = {title, <a href="#type-title">title()</a>}</code></p>
-<p> For (front) titles.</p>
+<p><code>title_entry() = {title, <a href="#type-title" docgen-rel="seetype" docgen-href="#title/0">title()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-ui_options">ui_options()</a></h3>
 <p><code>ui_options() = [any()]</code></p>
-<p> Options to initialise a user interface.</p>
+
 
 <h3 class="typedecl"><a name="type-ui_setting_entry">ui_setting_entry()</a></h3>
-<p><code>ui_setting_entry() = {<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>}</code></p>
-<p> For setting-specific entries.</p>
+<p><code>ui_setting_entry() = {<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>, <a href="#type-ui_setting_value" docgen-rel="seetype" docgen-href="#ui_setting_value/0">ui_setting_value()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-ui_setting_key">ui_setting_key()</a></h3>
 <p><code>ui_setting_key() = backtitle | title</code></p>
-<p> The known per-setting keys.</p>
+
 
 <h3 class="typedecl"><a name="type-ui_setting_value">ui_setting_value()</a></h3>
 <p><code>ui_setting_value() = term()</code></p>
-<p> The setting-specific values.</p>
+
 
 <h3 class="typedecl"><a name="type-ui_state">ui_state()</a></h3>
 <p><code>ui_state() = any()</code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_separation-0">add_separation/0</a></td><td>Adds a default separation between previous and next content.</td></tr>
-<tr><td valign="top"><a href="#ask_yes_no-1">ask_yes_no/1</a></td><td>Displays specified prompt, lets the user choose between two options,
- 'yes' and 'no' (the default option here), and returns that choice.</td></tr>
-<tr><td valign="top"><a href="#ask_yes_no-2">ask_yes_no/2</a></td><td>Displays specified prompt, lets the user choose between two options,
- "yes" and "no" (with specified default option), and returns that choice.</td></tr>
-<tr><td valign="top"><a href="#choose_designated_item-1">choose_designated_item/1</a></td><td>Selects, using a default prompt, an item among the specified ones 
-(comprising, for each, an internal designator and a text), and returns its 
-designator.</td></tr>
-<tr><td valign="top"><a href="#choose_designated_item-2">choose_designated_item/2</a></td><td>Selects, using specified prompt, an item among the specified ones 
-(comprising, for each, an internal designator and a text), and returns its 
-designator.</td></tr>
-<tr><td valign="top"><a href="#choose_designated_item-3">choose_designated_item/3</a></td><td>Selects, based on an explicit state, using the specified prompt, an item 
-among the specified ones (comprising, for each, an internal designator and a 
-text), and returns its designator.</td></tr>
-<tr><td valign="top"><a href="#choose_designated_item_with_default-2">choose_designated_item_with_default/2</a></td><td>Selects, based on an implicit state, using a default prompt, an item 
-among the specified ones (comprising, for each, a user-specified, internal, 
-designator and a text), with a default choix designator being specified, and 
-returns its designator.</td></tr>
-<tr><td valign="top"><a href="#choose_designated_item_with_default-3">choose_designated_item_with_default/3</a></td><td>Selects, based on an implicit state, using the specified prompt, an item 
-among the specified ones (comprising, for each, a user-specified, internal, 
-designator and a text), with a default choix designator being specified, and 
-returns its designator.</td></tr>
-<tr><td valign="top"><a href="#choose_designated_item_with_default-4">choose_designated_item_with_default/4</a></td><td>Selects, based on an explicit state, using the specified prompt, an item 
-among the specified ones (comprising, for each, a user-specified, internal, 
-designator and a text), with a default choix designator being specified, and 
-returns its designator.</td></tr>
-<tr><td valign="top"><a href="#choose_numbered_item-1">choose_numbered_item/1</a></td><td>Selects, based on an implicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</td></tr>
-<tr><td valign="top"><a href="#choose_numbered_item-2">choose_numbered_item/2</a></td><td>Selects, based on an explicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</td></tr>
-<tr><td valign="top"><a href="#choose_numbered_item-3">choose_numbered_item/3</a></td><td>Selects, based on an explicit state, using the specified prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</td></tr>
-<tr><td valign="top"><a href="#choose_numbered_item_with_default-2">choose_numbered_item_with_default/2</a></td><td>Selects, based on an implicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</td></tr>
-<tr><td valign="top"><a href="#choose_numbered_item_with_default-3">choose_numbered_item_with_default/3</a></td><td>Selects, based on an explicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</td></tr>
-<tr><td valign="top"><a href="#choose_numbered_item_with_default-4">choose_numbered_item_with_default/4</a></td><td>Selects, based on an explicit state, using the specified prompt and 
-default item, an item among the specified ones (specified as direct text, with 
-no specific designator provided), and returns its index.</td></tr>
-<tr><td valign="top"><a href="#clear-0">clear/0</a></td><td>Clears the interface.</td></tr>
-<tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays specified text, as a normal modal message.</td></tr>
-<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays specified formatted text, as a normal modal message.</td></tr>
-<tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td>Displays specified text, as an error message.</td></tr>
-<tr><td valign="top"><a href="#display_error-2">display_error/2</a></td><td>Displays specified formatted text, as an error message.</td></tr>
-<tr><td valign="top"><a href="#display_error_numbered_list-2">display_error_numbered_list/2</a></td><td>Displays in-order the items of the specified list, as an error message.</td></tr>
-<tr><td valign="top"><a href="#display_instant-1">display_instant/1</a></td><td>Displays specified text, as a normal non-modal message.</td></tr>
-<tr><td valign="top"><a href="#display_instant-2">display_instant/2</a></td><td>Displays specified formatted text, as a normal non-modal message.</td></tr>
-<tr><td valign="top"><a href="#display_numbered_list-2">display_numbered_list/2</a></td><td>Displays in-order the items of the specified list, as a normal modal
- message.</td></tr>
-<tr><td valign="top"><a href="#display_warning-1">display_warning/1</a></td><td>Displays specified text, as a warning message.</td></tr>
-<tr><td valign="top"><a href="#display_warning-2">display_warning/2</a></td><td>Displays specified formatted text, as a warning message.</td></tr>
-<tr><td valign="top"><a href="#get_setting-1">get_setting/1</a></td><td>Returns the value (if any) associated, in the (implicit) UI state, to the
- specified setting.</td></tr>
-<tr><td valign="top"><a href="#get_text-1">get_text/1</a></td><td>Returns the user-entered text after specified prompt, based on an 
-implicit state.</td></tr>
-<tr><td valign="top"><a href="#get_text-2">get_text/2</a></td><td>Returns the user-entered text after specified prompt, based on an 
-explicit state.</td></tr>
-<tr><td valign="top"><a href="#get_text_as_integer-1">get_text_as_integer/1</a></td><td>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an implicit state.</td></tr>
-<tr><td valign="top"><a href="#get_text_as_integer-2">get_text_as_integer/2</a></td><td>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an explicit state.</td></tr>
-<tr><td valign="top"><a href="#get_text_as_maybe_integer-1">get_text_as_maybe_integer/1</a></td><td>Returns the user-entered text (if any) after specified prompt, once 
-translated to (possibly) an integer, based on an implicit state.</td></tr>
-<tr><td valign="top"><a href="#get_text_as_maybe_integer-2">get_text_as_maybe_integer/2</a></td><td>Returns the user-entered text (if any) after specified prompt, once 
-translated to (possibly) an integer, based on an explicit state.</td></tr>
-<tr><td valign="top"><a href="#read_text_as_integer-1">read_text_as_integer/1</a></td><td>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an implicit state, prompting the user until a valid input 
-is obtained.</td></tr>
-<tr><td valign="top"><a href="#read_text_as_integer-2">read_text_as_integer/2</a></td><td>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an explicit state, prompting the user until a valid input 
-is obtained.</td></tr>
-<tr><td valign="top"><a href="#read_text_as_maybe_integer-1">read_text_as_maybe_integer/1</a></td><td>Returns the user-entered text after specified prompt, once translated to 
-an integer, prompting the user until a valid input is obtained: either a 
-string that resolves to an integer (then returned), or an empty string (then 
-returning 'undefined'), based on an implicit state.</td></tr>
-<tr><td valign="top"><a href="#read_text_as_maybe_integer-2">read_text_as_maybe_integer/2</a></td><td>Returns the user-entered text after specified prompt, once translated to 
-an integer, prompting the user until a valid input is obtained: either a 
-string that resolves to an integer (then returned), or an empty string (then 
-returning 'undefined'), based on an explicit state.</td></tr>
-<tr><td valign="top"><a href="#set-1">set/1</a></td><td>Sets specified UI settings.</td></tr>
-<tr><td valign="top"><a href="#set-2">set/2</a></td><td>Sets specified UI setting.</td></tr>
-<tr><td valign="top"><a href="#set_setting-2">set_setting/2</a></td><td>Sets the specified setting to the specified value, in the (implicit) UI
- state.</td></tr>
-<tr><td valign="top"><a href="#set_setting-3">set_setting/3</a></td><td>Sets the specified setting to the specified value, in the specified UI
- state.</td></tr>
-<tr><td valign="top"><a href="#set_settings-1">set_settings/1</a></td><td>Sets the specified settings to the specified values, in the (implicit) UI
- state.</td></tr>
-<tr><td valign="top"><a href="#set_settings-2">set_settings/2</a></td><td>Sets the specified settings to the specified values, in the specified UI
- state.</td></tr>
-<tr><td valign="top"><a href="#settings_to_string-1">settings_to_string/1</a></td><td>Returns a textual description of the specified setting table.</td></tr>
-<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts the UI with default settings.</td></tr>
-<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts the UI with specified settings, and returns the command-line 
-arguments once expurged of any of the known UI-related option (as an argument 
-table).</td></tr>
-<tr><td valign="top"><a href="#start-2">start/2</a></td><td>Starts the UI with specified table-based settings, and returns the 
-command-line arguments, still as a table, once expurged of any UI-related 
-option (as an argument table).</td></tr>
-<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the UI.</td></tr>
-<tr><td valign="top"><a href="#trace-1">trace/1</a></td><td>Traces specified status string, by displaying it, and possibly logging
- it.</td></tr>
-<tr><td valign="top"><a href="#trace-2">trace/2</a></td><td>Displays and logs specified formatted text.</td></tr>
-<tr><td valign="top"><a href="#unset-1">unset/1</a></td><td>Unsets specified UI setting(s).</td></tr>
-<tr><td valign="top"><a href="#unset_setting-1">unset_setting/1</a></td><td>Unsets the specified setting, in the (implicit) UI state.</td></tr>
-<tr><td valign="top"><a href="#unset_setting-2">unset_setting/2</a></td><td>Unsets the specified setting, in the specified UI state.</td></tr>
-<tr><td valign="top"><a href="#unset_settings-1">unset_settings/1</a></td><td>Unsets the specified settings, in the (implicit) UI state.</td></tr>
-<tr><td valign="top"><a href="#unset_settings-2">unset_settings/2</a></td><td>Unsets the specified settings, in the specified UI state.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_separation-0">add_separation/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ask_yes_no-1">ask_yes_no/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ask_yes_no-2">ask_yes_no/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_designated_item-1">choose_designated_item/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_designated_item-2">choose_designated_item/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_designated_item-3">choose_designated_item/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_designated_item_with_default-2">choose_designated_item_with_default/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_designated_item_with_default-3">choose_designated_item_with_default/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_designated_item_with_default-4">choose_designated_item_with_default/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item-1">choose_numbered_item/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item-2">choose_numbered_item/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item-3">choose_numbered_item/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item_with_default-2">choose_numbered_item_with_default/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item_with_default-3">choose_numbered_item_with_default/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item_with_default-4">choose_numbered_item_with_default/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#clear-0">clear/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display-1">display/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_error-2">display_error/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_error_numbered_list-2">display_error_numbered_list/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_instant-1">display_instant/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_instant-2">display_instant/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_numbered_list-2">display_numbered_list/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_warning-1">display_warning/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display_warning-2">display_warning/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_setting-1">get_setting/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_text-1">get_text/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_text-2">get_text/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_text_as_integer-1">get_text_as_integer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_text_as_integer-2">get_text_as_integer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_text_as_maybe_integer-1">get_text_as_maybe_integer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_text_as_maybe_integer-2">get_text_as_maybe_integer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#read_text_as_integer-1">read_text_as_integer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#read_text_as_integer-2">read_text_as_integer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#read_text_as_maybe_integer-1">read_text_as_maybe_integer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#read_text_as_maybe_integer-2">read_text_as_maybe_integer/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set-1">set/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set-2">set/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_setting-2">set_setting/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_setting-3">set_setting/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_settings-1">set_settings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_settings-2">set_settings/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#settings_to_string-1">settings_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start-2">start/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#trace-1">trace/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#trace-2">trace/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unset-1">unset/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unset_setting-1">unset_setting/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unset_setting-2">unset_setting/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unset_settings-1">unset_settings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unset_settings-2">unset_settings/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add_separation-0">add_separation/0</a></h3>
 <div class="spec">
-<p><code>add_separation() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>add_separation() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Adds a default separation between previous and next content.</p>
+</div>
 
 <h3 class="function"><a name="ask_yes_no-1">ask_yes_no/1</a></h3>
 <div class="spec">
-<p><code>ask_yes_no(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-binary_choice">binary_choice()</a></code><br></p>
+<p><code>ask_yes_no(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>) -&gt; <a href="#type-binary_choice" docgen-rel="seetype" docgen-href="#binary_choice/0">binary_choice()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified prompt, lets the user choose between two options,
- 'yes' and 'no' (the default option here), and returns that choice.
-</p>
+</div>
 
 <h3 class="function"><a name="ask_yes_no-2">ask_yes_no/2</a></h3>
 <div class="spec">
-<p><code>ask_yes_no(Prompt::<a href="#type-prompt">prompt()</a>, BinaryDefault::<a href="#type-binary_choice">binary_choice()</a>) -&gt; <a href="#type-binary_choice">binary_choice()</a></code><br></p>
+<p><code>ask_yes_no(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, BinaryDefault::<a href="#type-binary_choice" docgen-rel="seetype" docgen-href="#binary_choice/0">binary_choice()</a>) -&gt; <a href="#type-binary_choice" docgen-rel="seetype" docgen-href="#binary_choice/0">binary_choice()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified prompt, lets the user choose between two options,
- "yes" and "no" (with specified default option), and returns that choice.
-</p>
+</div>
 
 <h3 class="function"><a name="choose_designated_item-1">choose_designated_item/1</a></h3>
 <div class="spec">
-<p><code>choose_designated_item(Choices::[<a href="#type-choice_element">choice_element()</a>]) -&gt; <a href="#type-choice_designator">choice_designator()</a></code><br></p>
+<p><code>choose_designated_item(Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>]) -&gt; <a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, using a default prompt, an item among the specified ones 
-(comprising, for each, an internal designator and a text), and returns its 
-designator.</p>
-
- <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
-user prefer to cancel that operation.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="choose_designated_item-2">choose_designated_item/2</a></h3>
 <div class="spec">
-<p><code>choose_designated_item(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>]) -&gt; <a href="#type-choice_designator">choice_designator()</a></code><br></p>
+<p><code>choose_designated_item(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>]) -&gt; <a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, using specified prompt, an item among the specified ones 
-(comprising, for each, an internal designator and a text), and returns its 
-designator.</p>
-
- <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
-user prefer to cancel that operation.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="choose_designated_item-3">choose_designated_item/3</a></h3>
 <div class="spec">
-<p><code>choose_designated_item(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></code><br></p>
+<p><code>choose_designated_item(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an explicit state, using the specified prompt, an item 
-among the specified ones (comprising, for each, an internal designator and a 
-text), and returns its designator.</p>
-
- <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
-user prefer to cancel that operation.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="choose_designated_item_with_default-2">choose_designated_item_with_default/2</a></h3>
 <div class="spec">
-<p><code>choose_designated_item_with_default(Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></code><br></p>
+<p><code>choose_designated_item_with_default(Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a>) -&gt; <a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an implicit state, using a default prompt, an item 
-among the specified ones (comprising, for each, a user-specified, internal, 
-designator and a text), with a default choix designator being specified, and 
-returns its designator.</p>
-
- <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
-user prefer to cancel that operation.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="choose_designated_item_with_default-3">choose_designated_item_with_default/3</a></h3>
 <div class="spec">
-<p><code>choose_designated_item_with_default(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></code><br></p>
+<p><code>choose_designated_item_with_default(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a>) -&gt; <a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an implicit state, using the specified prompt, an item 
-among the specified ones (comprising, for each, a user-specified, internal, 
-designator and a text), with a default choix designator being specified, and 
-returns its designator.</p>
-
- <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
-user prefer to cancel that operation.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="choose_designated_item_with_default-4">choose_designated_item_with_default/4</a></h3>
 <div class="spec">
-<p><code>choose_designated_item_with_default(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></code><br></p>
+<p><code>choose_designated_item_with_default(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-choice_designator" docgen-rel="seetype" docgen-href="#choice_designator/0">choice_designator()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an explicit state, using the specified prompt, an item 
-among the specified ones (comprising, for each, a user-specified, internal, 
-designator and a text), with a default choix designator being specified, and 
-returns its designator.</p>
-
- <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
-user prefer to cancel that operation.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="choose_numbered_item-1">choose_numbered_item/1</a></h3>
 <div class="spec">
-<p><code>choose_numbered_item(Choices::[<a href="#type-choice_element">choice_element()</a>]) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p>
+<p><code>choose_numbered_item(Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>]) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an implicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</p>
-
- Note that index zero can also be returned, corresponding to the 'ui_cancel'
- atom, should the user prefer to cancel that operation.
-</p>
+</div>
 
 <h3 class="function"><a name="choose_numbered_item-2">choose_numbered_item/2</a></h3>
 <div class="spec">
-<p><code>choose_numbered_item(Choices::[<a href="#type-choice_element">choice_element()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p><p><code>choose_numbered_item(Choices::<a href="#type-prompt">prompt()</a>, UIState::[<a href="#type-choice_element">choice_element()</a>]) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p>
+<p><code>choose_numbered_item(Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p><p><code>choose_numbered_item(Choices::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, UIState::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>]) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p>
 <p> </p>
 <p> </p>
-</div><p><p>Selects, based on an explicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</p>
-
- Note that index zero can also be returned, corresponding to the 'ui_cancel'
- atom, should the user prefer to cancel that operation.
-</p>
+</div>
 
 <h3 class="function"><a name="choose_numbered_item-3">choose_numbered_item/3</a></h3>
 <div class="spec">
-<p><code>choose_numbered_item(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p>
+<p><code>choose_numbered_item(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an explicit state, using the specified prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</p>
-
- Note that index zero can also be returned, corresponding to the 'ui_cancel'
- atom, should the user prefer to cancel that operation.
-</p>
+</div>
 
 <h3 class="function"><a name="choose_numbered_item_with_default-2">choose_numbered_item_with_default/2</a></h3>
 <div class="spec">
-<p><code>choose_numbered_item_with_default(Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceIndex::<a href="#type-choice_index">choice_index()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p>
+<p><code>choose_numbered_item_with_default(Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], DefaultChoiceIndex::<a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a>) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an implicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</p>
-
- Note that index zero can also be returned, corresponding to the 'ui_cancel'
- atom, should the user prefer to cancel that operation.
-</p>
+</div>
 
 <h3 class="function"><a name="choose_numbered_item_with_default-3">choose_numbered_item_with_default/3</a></h3>
 <div class="spec">
-<p><code>choose_numbered_item_with_default(Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceIndex::<a href="#type-choice_index">choice_index()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p><p><code>choose_numbered_item_with_default(Choices::<a href="#type-prompt">prompt()</a>, DefaultChoiceIndex::[<a href="#type-choice_element">choice_element()</a>], UIState::<a href="#type-maybe">maybe</a>(<a href="#type-choice_index">choice_index()</a>)) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p>
+<p><code>choose_numbered_item_with_default(Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], DefaultChoiceIndex::<a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p><p><code>choose_numbered_item_with_default(Choices::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, DefaultChoiceIndex::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], UIState::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a>)) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p>
 <p> </p>
 <p> </p>
-</div><p><p>Selects, based on an explicit state, using a default prompt, an item 
-among the specified ones (specified as direct text, with no specific 
-designator provided), and returns its index.</p>
-
- <p>Selects, based on an implicit state, using the specified prompt and default 
-item, an item among the specified ones, and returns its index.</p>
-
- Note that index zero can also be returned, corresponding to the 'ui_cancel'
- atom, should the user prefer to cancel that operation.
-</p>
+</div>
 
 <h3 class="function"><a name="choose_numbered_item_with_default-4">choose_numbered_item_with_default/4</a></h3>
 <div class="spec">
-<p><code>choose_numbered_item_with_default(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceIndex::<a href="#type-maybe">maybe</a>(<a href="#type-choice_index">choice_index()</a>), UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></code><br></p>
+<p><code>choose_numbered_item_with_default(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, Choices::[<a href="#type-choice_element" docgen-rel="seetype" docgen-href="#choice_element/0">choice_element()</a>], DefaultChoiceIndex::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a>), UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-choice_index" docgen-rel="seetype" docgen-href="#choice_index/0">choice_index()</a></code><br></p>
 <p> </p>
-</div><p><p>Selects, based on an explicit state, using the specified prompt and 
-default item, an item among the specified ones (specified as direct text, with 
-no specific designator provided), and returns its index.</p>
-
- Note that index zero can also be returned, corresponding to the 'ui_cancel'
- atom, should the user prefer to cancel that operation.
-</p>
+</div>
 
 <h3 class="function"><a name="clear-0">clear/0</a></h3>
 <div class="spec">
-<p><code>clear() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>clear() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Clears the interface.</p>
+</div>
 
 <h3 class="function"><a name="display-1">display/1</a></h3>
 <div class="spec">
-<p><code>display(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display(Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Displays specified text, as a normal modal message.</p>
-
- Note: all types of quotes are allowed in the specified text.
-</p>
+</div>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><code>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified formatted text, as a normal modal message.</p>
+</div>
 
 <h3 class="function"><a name="display_error-1">display_error/1</a></h3>
 <div class="spec">
-<p><code>display_error(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_error(Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified text, as an error message.</p>
+</div>
 
 <h3 class="function"><a name="display_error-2">display_error/2</a></h3>
 <div class="spec">
-<p><code>display_error(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_error(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified formatted text, as an error message.</p>
+</div>
 
 <h3 class="function"><a name="display_error_numbered_list-2">display_error_numbered_list/2</a></h3>
 <div class="spec">
-<p><code>display_error_numbered_list(Label::<a href="#type-label">label()</a>, Lines::[<a href="#type-text">text()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_error_numbered_list(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Lines::[<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays in-order the items of the specified list, as an error message.</p>
+</div>
 
 <h3 class="function"><a name="display_instant-1">display_instant/1</a></h3>
 <div class="spec">
-<p><code>display_instant(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_instant(Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified text, as a normal non-modal message.</p>
+</div>
 
 <h3 class="function"><a name="display_instant-2">display_instant/2</a></h3>
 <div class="spec">
-<p><code>display_instant(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_instant(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified formatted text, as a normal non-modal message.</p>
+</div>
 
 <h3 class="function"><a name="display_numbered_list-2">display_numbered_list/2</a></h3>
 <div class="spec">
-<p><code>display_numbered_list(Label::<a href="#type-label">label()</a>, Lines::[<a href="#type-text">text()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_numbered_list(Label::<a href="#type-label" docgen-rel="seetype" docgen-href="#label/0">label()</a>, Lines::[<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays in-order the items of the specified list, as a normal modal
- message.
-</p>
+</div>
 
 <h3 class="function"><a name="display_warning-1">display_warning/1</a></h3>
 <div class="spec">
-<p><code>display_warning(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_warning(Text::<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Displays specified text, as a warning message.</p>
-
- Note: all types of quotes are allowed in the specified text.
-</p>
+</div>
 
 <h3 class="function"><a name="display_warning-2">display_warning/2</a></h3>
 <div class="spec">
-<p><code>display_warning(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>display_warning(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays specified formatted text, as a warning message.</p>
+</div>
 
 <h3 class="function"><a name="get_setting-1">get_setting/1</a></h3>
 <div class="spec">
-<p><code>get_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-ui_setting_value">ui_setting_value()</a>)</code><br></p>
+<p><code>get_setting(SettingKey::<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ui_setting_value" docgen-rel="seetype" docgen-href="#ui_setting_value/0">ui_setting_value()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the value (if any) associated, in the (implicit) UI state, to the
- specified setting.
-</p>
+</div>
 
 <h3 class="function"><a name="get_text-1">get_text/1</a></h3>
 <div class="spec">
-<p><code>get_text(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></code><br></p>
+<p><code>get_text(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, based on an 
-implicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="get_text-2">get_text/2</a></h3>
 <div class="spec">
-<p><code>get_text(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></code><br></p>
+<p><code>get_text(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, based on an 
-explicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="get_text_as_integer-1">get_text_as_integer/1</a></h3>
 <div class="spec">
-<p><code>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></code><br></p>
+<p><code>get_text_as_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an implicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="get_text_as_integer-2">get_text_as_integer/2</a></h3>
 <div class="spec">
-<p><code>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></code><br></p>
+<p><code>get_text_as_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an explicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="get_text_as_maybe_integer-1">get_text_as_maybe_integer/1</a></h3>
 <div class="spec">
-<p><code>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</code><br></p>
+<p><code>get_text_as_maybe_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text (if any) after specified prompt, once 
-translated to (possibly) an integer, based on an implicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="get_text_as_maybe_integer-2">get_text_as_maybe_integer/2</a></h3>
 <div class="spec">
-<p><code>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</code><br></p>
+<p><code>get_text_as_maybe_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text (if any) after specified prompt, once 
-translated to (possibly) an integer, based on an explicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="read_text_as_integer-1">read_text_as_integer/1</a></h3>
 <div class="spec">
-<p><code>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></code><br></p>
+<p><code>read_text_as_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an implicit state, prompting the user until a valid input 
-is obtained.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="read_text_as_integer-2">read_text_as_integer/2</a></h3>
 <div class="spec">
-<p><code>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></code><br></p>
+<p><code>read_text_as_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, once translated to 
-an integer, based on an explicit state, prompting the user until a valid input 
-is obtained.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="read_text_as_maybe_integer-1">read_text_as_maybe_integer/1</a></h3>
 <div class="spec">
-<p><code>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</code><br></p>
+<p><code>read_text_as_maybe_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, once translated to 
-an integer, prompting the user until a valid input is obtained: either a 
-string that resolves to an integer (then returned), or an empty string (then 
-returning 'undefined'), based on an implicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="read_text_as_maybe_integer-2">read_text_as_maybe_integer/2</a></h3>
 <div class="spec">
-<p><code>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</code><br></p>
+<p><code>read_text_as_maybe_integer(Prompt::<a href="#type-prompt" docgen-rel="seetype" docgen-href="#prompt/0">prompt()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>)</code><br></p>
 <p> </p>
-</div><p><p>Returns the user-entered text after specified prompt, once translated to 
-an integer, prompting the user until a valid input is obtained: either a 
-string that resolves to an integer (then returned), or an empty string (then 
-returning 'undefined'), based on an explicit state.</p>
-
- (const)
-</p>
+</div>
 
 <h3 class="function"><a name="set-1">set/1</a></h3>
 <div class="spec">
-<p><code>set(SettingEntries::[<a href="#type-ui_setting_entry">ui_setting_entry()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set(SettingEntries::[<a href="#type-ui_setting_entry" docgen-rel="seetype" docgen-href="#ui_setting_entry/0">ui_setting_entry()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets specified UI settings.</p>
+</div>
 
 <h3 class="function"><a name="set-2">set/2</a></h3>
 <div class="spec">
-<p><code>set(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value">ui_setting_value()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set(SettingKey::<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value" docgen-rel="seetype" docgen-href="#ui_setting_value/0">ui_setting_value()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets specified UI setting.</p>
+</div>
 
 <h3 class="function"><a name="set_setting-2">set_setting/2</a></h3>
 <div class="spec">
-<p><code>set_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value">ui_setting_value()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_setting(SettingKey::<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value" docgen-rel="seetype" docgen-href="#ui_setting_value/0">ui_setting_value()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified setting to the specified value, in the (implicit) UI
- state.
-</p>
+</div>
 
 <h3 class="function"><a name="set_setting-3">set_setting/3</a></h3>
 <div class="spec">
-<p><code>set_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value">ui_setting_value()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-ui_state">ui_state()</a></code><br></p>
+<p><code>set_setting(SettingKey::<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value" docgen-rel="seetype" docgen-href="#ui_setting_value/0">ui_setting_value()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified setting to the specified value, in the specified UI
- state.
-</p>
+</div>
 
 <h3 class="function"><a name="set_settings-1">set_settings/1</a></h3>
 <div class="spec">
-<p><code>set_settings(SettingEntries::[<a href="#type-ui_setting_entry">ui_setting_entry()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_settings(SettingEntries::[<a href="#type-ui_setting_entry" docgen-rel="seetype" docgen-href="#ui_setting_entry/0">ui_setting_entry()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified settings to the specified values, in the (implicit) UI
- state.
-</p>
+</div>
 
 <h3 class="function"><a name="set_settings-2">set_settings/2</a></h3>
 <div class="spec">
-<p><code>set_settings(SettingEntries::[<a href="#type-ui_setting_entry">ui_setting_entry()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-ui_state">ui_state()</a></code><br></p>
+<p><code>set_settings(SettingEntries::[<a href="#type-ui_setting_entry" docgen-rel="seetype" docgen-href="#ui_setting_entry/0">ui_setting_entry()</a>], UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a></code><br></p>
 <p> </p>
-</div><p>Sets the specified settings to the specified values, in the specified UI
- state.
-</p>
+</div>
 
 <h3 class="function"><a name="settings_to_string-1">settings_to_string/1</a></h3>
 <div class="spec">
-<p><code>settings_to_string(SettingTable::<a href="#type-setting_table">setting_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>settings_to_string(SettingTable::<a href="#type-setting_table" docgen-rel="seetype" docgen-href="#setting_table/0">setting_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified setting table.</p>
+</div>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><code>start() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>start() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Starts the UI with default settings.</p>
+</div>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><code>start(Options::<a href="#type-ui_options">ui_options()</a>) -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
+<p><code>start(Options::<a href="#type-ui_options" docgen-rel="seetype" docgen-href="#ui_options/0">ui_options()</a>) -&gt; <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts the UI with specified settings, and returns the command-line 
-arguments once expurged of any of the known UI-related option (as an argument 
-table).</p>
-
- Stores the corresponding state in the process dictionary.
-</p>
+</div>
 
 <h3 class="function"><a name="start-2">start/2</a></h3>
 <div class="spec">
-<p><code>start(Options::<a href="#type-ui_options">ui_options()</a>, ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-argument_table">argument_table()</a></code><br></p>
+<p><code>start(Options::<a href="#type-ui_options" docgen-rel="seetype" docgen-href="#ui_options/0">ui_options()</a>, ArgumentTable::<a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a>) -&gt; <a href="#type-argument_table" docgen-rel="seetype" docgen-href="#argument_table/0">argument_table()</a></code><br></p>
 <p> </p>
-</div><p><p>Starts the UI with specified table-based settings, and returns the 
-command-line arguments, still as a table, once expurged of any UI-related 
-option (as an argument table).</p>
-
- Stores the corresponding state in the process dictionary.
-</p>
+</div>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
-<p><code>stop() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>stop() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Stops the UI.</p>
+</div>
 
 <h3 class="function"><a name="trace-1">trace/1</a></h3>
 <div class="spec">
-<p><code>trace(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>trace(Message::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Traces specified status string, by displaying it, and possibly logging
- it.
-</p>
+</div>
 
 <h3 class="function"><a name="trace-2">trace/2</a></h3>
 <div class="spec">
-<p><code>trace(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>trace(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Displays and logs specified formatted text.</p>
+</div>
 
 <h3 class="function"><a name="unset-1">unset/1</a></h3>
 <div class="spec">
-<p><code>unset(SettingElement::[<a href="#type-ui_setting_key">ui_setting_key()</a>] | <a href="#type-ui_setting_key">ui_setting_key()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>unset(SettingElement::[<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>] | <a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Unsets specified UI setting(s).</p>
+</div>
 
 <h3 class="function"><a name="unset_setting-1">unset_setting/1</a></h3>
 <div class="spec">
-<p><code>unset_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>unset_setting(SettingKey::<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Unsets the specified setting, in the (implicit) UI state.</p>
+</div>
 
 <h3 class="function"><a name="unset_setting-2">unset_setting/2</a></h3>
 <div class="spec">
-<p><code>unset_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>unset_setting(SettingKey::<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>, UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Unsets the specified setting, in the specified UI state.</p>
+</div>
 
 <h3 class="function"><a name="unset_settings-1">unset_settings/1</a></h3>
 <div class="spec">
-<p><code>unset_settings(SettingKeys::[<a href="#type-ui_setting_key">ui_setting_key()</a>]) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>unset_settings(SettingKeys::[<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Unsets the specified settings, in the (implicit) UI state.</p>
+</div>
 
 <h3 class="function"><a name="unset_settings-2">unset_settings/2</a></h3>
 <div class="spec">
-<p><code>unset_settings(SettingKeys::[<a href="#type-ui_setting_key">ui_setting_key()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>unset_settings(SettingKeys::[<a href="#type-ui_setting_key" docgen-rel="seetype" docgen-href="#ui_setting_key/0">ui_setting_key()</a>], UIState::<a href="#type-ui_state" docgen-rel="seetype" docgen-href="#ui_state/0">ui_state()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Unsets the specified settings, in the specified UI state.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

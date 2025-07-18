@@ -10,42 +10,25 @@
 <hr>
 
 <h1>Module bijective_table</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Datastructure allowing to perform <b>bidirectional conversions between
- two sets</b>.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Datastructure allowing to perform <b>bidirectional conversions between
- two sets</b>.</p>
-
- <p>One can see it as a <code>[{first_type(), second_type()}]</code> associative table 
-allowing to transform any element of a set into its (unique) corresponding 
-element in the other one.</p>
-
- <p>See also const_bijective_table.erl for constant bijective tables that can be 
-requested from any number (potentially extremely large) of callers very 
-efficiently thanks to the generation (only in memory, or in file) of a 
-corresponding module.</p>
-
- Refer to:
- - bijective_table_test.erl for an usage example and testing thereof
- - const_bijective_table.erl for a constant, compile-time bijective table
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-bijective_table">bijective_table()</a></h3>
-<p><code>bijective_table(F, S) = {<a href="table.html#type-table">table:table</a>(F, S), <a href="table.html#type-table">table:table</a>(S, F)}</code></p>
-<p> Internally, two tables used, one for each direction of conversion.</p>
+<p><code>bijective_table(F, S) = {<a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table</a>(F, S), <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table</a>(S, F)}</code></p>
+
 
 <h3 class="typedecl"><a name="type-bijective_table">bijective_table()</a></h3>
-<p><code>bijective_table() = <a href="#type-bijective_table">bijective_table</a>(any(), any())</code></p>
+<p><code>bijective_table() = <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table</a>(<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, <a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><code>entries() = [<a href="#type-entry">entry()</a>]</code></p>
-<p> Entries that can be fed to a bijective table.</p>
+<p><code>entries() = [<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>]</code></p>
+
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
-<p><code>entry() = {<a href="#type-first_type">first_type()</a>, <a href="#type-second_type">second_type()</a>}</code></p>
+<p><code>entry() = {<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, <a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-first_type">first_type()</a></h3>
@@ -57,195 +40,132 @@ corresponding module.</p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td>Adds the specified entries in the specified bijective table, possibly
- overwriting any already-existing entries, and returns this enriched table.</td></tr>
-<tr><td valign="top"><a href="#add_entry-2">add_entry/2</a></td><td>Adds the specified entry in the specified bijective table, possibly
- overwriting any already-existing entry, and returns this enriched table.</td></tr>
-<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td>Adds the specified (pair of) corresponding elements in the specified
- bijective table, possibly overwriting any already-existing entry, and returns
- this enriched table.</td></tr>
-<tr><td valign="top"><a href="#add_new_entries-2">add_new_entries/2</a></td><td>Adds the specified entries in the specified bijective table, none of the
- element of the pairs expected to be already registered, and returns this
- enriched table.</td></tr>
-<tr><td valign="top"><a href="#add_new_entry-2">add_new_entry/2</a></td><td>Adds the specified entry in the specified bijective table, none of the
- pair element expected to be already registered, and returns this enriched
- table.</td></tr>
-<tr><td valign="top"><a href="#add_new_entry-3">add_new_entry/3</a></td><td>Adds the specified (pair of) corresponding elements in the specified 
-bijective table, none expected to be already registered, and returns this 
-enriched table.</td></tr>
-<tr><td valign="top"><a href="#get_first_elements_for-2">get_first_elements_for/2</a></td><td>Returns the elements of the first type that correspond to the specified
- elements of the second type.</td></tr>
-<tr><td valign="top"><a href="#get_first_for-2">get_first_for/2</a></td><td>Returns the element of the first type that corresponds to the specified
- element of the second type.</td></tr>
-<tr><td valign="top"><a href="#get_maybe_first_for-2">get_maybe_first_for/2</a></td><td>Returns the element of the first type (if any) that corresponds to the
- specified element of the second type.</td></tr>
-<tr><td valign="top"><a href="#get_maybe_second_for-2">get_maybe_second_for/2</a></td><td>Returns the element of the second type (if any) that corresponds to the
- specified element of the first type.</td></tr>
-<tr><td valign="top"><a href="#get_second_elements_for-2">get_second_elements_for/2</a></td><td>Returns the elements of the first type that correspond to the specified
- elements of the first type.</td></tr>
-<tr><td valign="top"><a href="#get_second_for-2">get_second_for/2</a></td><td>Returns the element of the second type that corresponds to the specified
- element of the first type.</td></tr>
-<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new, empty bijective table.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a new bijective table allowing a two-way conversion between
- the specified (initial) entries.</td></tr>
-<tr><td valign="top"><a href="#remove_entry_by_first-2">remove_entry_by_first/2</a></td><td>Removes the specified entry, as designated by its first element, from the 
-specified bijective table.</td></tr>
-<tr><td valign="top"><a href="#remove_entry_by_second-2">remove_entry_by_second/2</a></td><td>Removes the specified entry, as designated by its second element, from 
-the specified bijective table.</td></tr>
-<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified bijective table.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_entry-2">add_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_new_entries-2">add_new_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_new_entry-2">add_new_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_new_entry-3">add_new_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_first_elements_for-2">get_first_elements_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_first_for-2">get_first_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_maybe_first_for-2">get_maybe_first_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_maybe_second_for-2">get_maybe_second_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_second_elements_for-2">get_second_elements_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_second_for-2">get_second_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_entry_by_first-2">remove_entry_by_first/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_entry_by_second-2">remove_entry_by_second/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="add_entries-2">add_entries/2</a></h3>
 <div class="spec">
-<p><code>add_entries(Entries::<a href="#type-entries">entries()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>add_entries(Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified entries in the specified bijective table, possibly
- overwriting any already-existing entries, and returns this enriched table.
-</p>
+</div>
 
 <h3 class="function"><a name="add_entry-2">add_entry/2</a></h3>
 <div class="spec">
-<p><code>add_entry(Entry::<a href="#type-entry">entry()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>add_entry(Entry::<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified entry in the specified bijective table, possibly
- overwriting any already-existing entry, and returns this enriched table.
-</p>
+</div>
 
 <h3 class="function"><a name="add_entry-3">add_entry/3</a></h3>
 <div class="spec">
-<p><code>add_entry(First::<a href="#type-first_type">first_type()</a>, Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>add_entry(First::<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, Second::<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified (pair of) corresponding elements in the specified
- bijective table, possibly overwriting any already-existing entry, and returns
- this enriched table.
-</p>
+</div>
 
 <h3 class="function"><a name="add_new_entries-2">add_new_entries/2</a></h3>
 <div class="spec">
-<p><code>add_new_entries(Entries::<a href="#type-entries">entries()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>add_new_entries(Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified entries in the specified bijective table, none of the
- element of the pairs expected to be already registered, and returns this
- enriched table.
-</p>
+</div>
 
 <h3 class="function"><a name="add_new_entry-2">add_new_entry/2</a></h3>
 <div class="spec">
-<p><code>add_new_entry(Entry::<a href="#type-entry">entry()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>add_new_entry(Entry::<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p>Adds the specified entry in the specified bijective table, none of the
- pair element expected to be already registered, and returns this enriched
- table.
-</p>
+</div>
 
 <h3 class="function"><a name="add_new_entry-3">add_new_entry/3</a></h3>
 <div class="spec">
-<p><code>add_new_entry(First::<a href="#type-first_type">first_type()</a>, Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>add_new_entry(First::<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, Second::<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p><p>Adds the specified (pair of) corresponding elements in the specified 
-bijective table, none expected to be already registered, and returns this 
-enriched table.</p>
-
- Throws an exception should an element happened to be already registered.
-</p>
+</div>
 
 <h3 class="function"><a name="get_first_elements_for-2">get_first_elements_for/2</a></h3>
 <div class="spec">
-<p><code>get_first_elements_for(SecondElems::[<a href="#type-second_type">second_type()</a>], BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; [<a href="#type-first_type">first_type()</a>]</code><br></p>
+<p><code>get_first_elements_for(SecondElems::[<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>], BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; [<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the elements of the first type that correspond to the specified
- elements of the second type.
-</p>
+</div>
 
 <h3 class="function"><a name="get_first_for-2">get_first_for/2</a></h3>
 <div class="spec">
-<p><code>get_first_for(Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-first_type">first_type()</a></code><br></p>
+<p><code>get_first_for(Second::<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a></code><br></p>
 <p> </p>
-</div><p>Returns the element of the first type that corresponds to the specified
- element of the second type.
-</p>
+</div>
 
 <h3 class="function"><a name="get_maybe_first_for-2">get_maybe_first_for/2</a></h3>
 <div class="spec">
-<p><code>get_maybe_first_for(Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-first_type">first_type()</a>)</code><br></p>
+<p><code>get_maybe_first_for(Second::<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the element of the first type (if any) that corresponds to the
- specified element of the second type.
-</p>
+</div>
 
 <h3 class="function"><a name="get_maybe_second_for-2">get_maybe_second_for/2</a></h3>
 <div class="spec">
-<p><code>get_maybe_second_for(First::<a href="#type-first_type">first_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-second_type">second_type()</a>)</code><br></p>
+<p><code>get_maybe_second_for(First::<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>)</code><br></p>
 <p> </p>
-</div><p>Returns the element of the second type (if any) that corresponds to the
- specified element of the first type.
-</p>
+</div>
 
 <h3 class="function"><a name="get_second_elements_for-2">get_second_elements_for/2</a></h3>
 <div class="spec">
-<p><code>get_second_elements_for(FirstElems::[<a href="#type-first_type">first_type()</a>], BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; [<a href="#type-second_type">second_type()</a>]</code><br></p>
+<p><code>get_second_elements_for(FirstElems::[<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>], BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; [<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>]</code><br></p>
 <p> </p>
-</div><p>Returns the elements of the first type that correspond to the specified
- elements of the first type.
-</p>
+</div>
 
 <h3 class="function"><a name="get_second_for-2">get_second_for/2</a></h3>
 <div class="spec">
-<p><code>get_second_for(First::<a href="#type-first_type">first_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-second_type">second_type()</a></code><br></p>
+<p><code>get_second_for(First::<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a></code><br></p>
 <p> </p>
-</div><p>Returns the element of the second type that corresponds to the specified
- element of the first type.
-</p>
+</div>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>
 <div class="spec">
-<p><code>new() -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>new() -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, empty bijective table.</p>
+</div>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
-<p><code>new(InitialEntries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>new(InitialEntries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new bijective table allowing a two-way conversion between
- the specified (initial) entries.
-</p>
+</div>
 
 <h3 class="function"><a name="remove_entry_by_first-2">remove_entry_by_first/2</a></h3>
 <div class="spec">
-<p><code>remove_entry_by_first(First::<a href="#type-first_type">first_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>remove_entry_by_first(First::<a href="#type-first_type" docgen-rel="seetype" docgen-href="#first_type/0">first_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p><p>Removes the specified entry, as designated by its first element, from the 
-specified bijective table.</p>
-
- <p>Throws an exception if the corresponding entry is not found.</p>
-
- Returns an updated table.
-</p>
+</div>
 
 <h3 class="function"><a name="remove_entry_by_second-2">remove_entry_by_second/2</a></h3>
 <div class="spec">
-<p><code>remove_entry_by_second(Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></code><br></p>
+<p><code>remove_entry_by_second(Second::<a href="#type-second_type" docgen-rel="seetype" docgen-href="#second_type/0">second_type()</a>, BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a></code><br></p>
 <p> </p>
-</div><p><p>Removes the specified entry, as designated by its second element, from 
-the specified bijective table.</p>
-
- <p>Throws an exception if the corresponding entry is not found.</p>
-
- Returns an updated table.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(BijTable::<a href="#type-bijective_table" docgen-rel="seetype" docgen-href="#bijective_table/0">bijective_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified bijective table.</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

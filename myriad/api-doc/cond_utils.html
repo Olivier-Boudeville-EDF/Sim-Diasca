@@ -10,268 +10,131 @@
 <hr>
 
 <h1>Module cond_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Management of <b>conditional compilation</b> - like generalised,
- limitation-less macros.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2>Management of <b>conditional compilation</b> - like generalised,
- limitation-less macros.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-body">body()</a></h3>
 <p><code>body() = any()</code></p>
-<p> A non-empty sequence (not a list) of expressions, expressed as a begin/end
- block expression.</p>
+
 
 <h3 class="typedecl"><a name="type-expression">expression()</a></h3>
 <p><code>expression() = any()</code></p>
-<p><p> An expression (possibly a body) that is conditionally enabled.</p>
 
- Note that, if wanting to enable conditionally not a single expression but a
- body (i.e. a sequence of expressions), a begin/end block must be specified
- (*not* a list of expressions, which evaluates to the list itself, not to the
- value of the last expression).</p>
+
+<h3 class="typedecl"><a name="type-option">option()</a></h3>
+<p><code>option(T) = <a href="type_utils.html#type-option" docgen-rel="seetype" docgen-href="type_utils#option/0">type_utils:option</a>(T)</code></p>
+
 
 <h3 class="typedecl"><a name="type-token">token()</a></h3>
 <p><code>token() = atom()</code></p>
-<p><p> A token (defined through the command-line), whose definition enables the 
-conditional execution of associated code.</p>
 
- For example a 'debug_gui' token would enable, if defined, associated code,
- like in: cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).</p>
 
 <h3 class="typedecl"><a name="type-token_expr_table">token_expr_table()</a></h3>
-<p><code>token_expr_table() = [{<a href="#type-token">token()</a>, <a href="#type-expression">expression()</a>}]</code></p>
-<p> A table used to associate an expression to a token value.</p>
+<p><code>token_expr_table() = [{<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, <a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>}]</code></p>
+
 
 <h3 class="typedecl"><a name="type-token_table">token_table()</a></h3>
-<p><code>token_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-token">token()</a>, <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(term()))</code></p>
-<p> Table to establish easily whether a token has been defined and, if yes, a
- value (if any; otherwise it is set to 'undefined') that has been associated to
- it.</p>
+<p><code>token_table() = <a href="map_hashtable.html#type-map_hashtable" docgen-rel="seetype" docgen-href="map_hashtable#map_hashtable/0">map_hashtable:map_hashtable</a>(<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(term()))</code></p>
+
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
 <p><code>value() = term()</code></p>
-<p> An (immediate) value associated to a token can actually of various types
- (e.g. atom, integer; as a form of course), as translated by the compiler.</p>
+
 
 <h3 class="typedecl"><a name="type-void">void()</a></h3>
-<p><code>void() = <a href="basic_utils.html#type-void">basic_utils:void()</a></code></p>
+<p><code>void() = <a href="type_utils.html#type-void" docgen-rel="seetype" docgen-href="type_utils#void/0">type_utils:void()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#assert-1">assert/1</a></td><td>If in debug mode, asserts that the specified expression is true, 
-that is evaluates it at runtime and matches it with the atom 'true'.</td></tr>
-<tr><td valign="top"><a href="#assert-2">assert/2</a></td><td>If the specified token has been defined through the command-line, asserts 
-that the specified expression is true, ithat is evaluates it at runtime and 
-matches it with the atom 'true'.</td></tr>
-<tr><td valign="top"><a href="#assert-3">assert/3</a></td><td>If the specified token has been defined through the command-line and set 
-to the specified value, asserts that the specified expression is true, that is 
-evaluates it at runtime and matches it with the atom 'true'.</td></tr>
-<tr><td valign="top"><a href="#get_token_table_from-1">get_token_table_from/1</a></td><td>Returns the tokens declared among the compile options.</td></tr>
-<tr><td valign="top"><a href="#if_debug-1">if_debug/1</a></td><td>Includes conditionally the specified expression (possibly a body), which
- is enabled iff the debug mode has been set (that is iff the
- 'myriad_debug_mode' token has been defined through the command-line).</td></tr>
-<tr><td valign="top"><a href="#if_defined-2">if_defined/2</a></td><td>Includes conditionally the specified expression (possibly a body) iff the 
-specified token has been specified.</td></tr>
-<tr><td valign="top"><a href="#if_defined-3">if_defined/3</a></td><td>Includes conditionally one of the specified expressions (possibly 
-bodies), depending on whether the specified token has been defined through the 
-command-line.</td></tr>
-<tr><td valign="top"><a href="#if_set_to-3">if_set_to/3</a></td><td>Includes conditionally one of the specified expressions (possibly 
-bodies), depending on whether the specified token has been defined through the 
-command-line *and* has been set to the specified (immediate) value.</td></tr>
-<tr><td valign="top"><a href="#if_set_to-4">if_set_to/4</a></td><td>Includes conditionally one of the specified expressions (possibly 
-bodies), depending on whether the specified token has been defined through the 
-command-line *and* has been set to the specified (immediate) value.</td></tr>
-<tr><td valign="top"><a href="#switch_execution_target-2">switch_execution_target/2</a></td><td>Includes conditionally either of the specified expressions (possibly 
-bodies), depending on whether the execution target has been defined through 
-the command-line:.</td></tr>
-<tr><td valign="top"><a href="#switch_set_to-2">switch_set_to/2</a></td><td>Includes conditionally one of the specified expressions (possibly bodies) 
-listed in the token-expression table, depending on whether the specified token 
-has been defined through the command-line *and* has been set to one of the 
-specified (immediate) values.</td></tr>
-<tr><td valign="top"><a href="#switch_set_to-3">switch_set_to/3</a></td><td>Includes conditionally one of the specified expressions (possibly bodies) 
-listed in the token-expression table, depending on whether the specified token 
-has been defined through the command-line *and* has been set to one of the 
-specified (immediate) values.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#assert-1">assert/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assert-2">assert/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assert-3">assert/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_token_table_from-1">get_token_table_from/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#if_debug-1">if_debug/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#if_defined-2">if_defined/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#if_defined-3">if_defined/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#if_set_to-3">if_set_to/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#if_set_to-4">if_set_to/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#switch_execution_target-2">switch_execution_target/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#switch_set_to-2">switch_set_to/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#switch_set_to-3">switch_set_to/3</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="assert-1">assert/1</a></h3>
 <div class="spec">
-<p><code>assert(Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assert(Expression::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>If in debug mode, asserts that the specified expression is true, 
-that is evaluates it at runtime and matches it with the atom 'true'.</p>
-
- In debug mode (i.e. when the 'myriad_debug_mode' token has been defined), and
- only in that mode, the check will be done (at runtime), and possibly will fail
- by throwing a {assertion_failed, Other} exception, where Other is the actual
- (non-true) value breaking that assertion (of course the usual stacktrace with
- in-source locations will be available).
-</p>
+</div>
 
 <h3 class="function"><a name="assert-2">assert/2</a></h3>
 <div class="spec">
-<p><code>assert(Token::<a href="#type-token">token()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assert(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, Expression::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>If the specified token has been defined through the command-line, asserts 
-that the specified expression is true, ithat is evaluates it at runtime and 
-matches it with the atom 'true'.</p>
-
- See assert/1 for use and caveats.
-</p>
+</div>
 
 <h3 class="function"><a name="assert-3">assert/3</a></h3>
 <div class="spec">
-<p><code>assert(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assert(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, Expression::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>If the specified token has been defined through the command-line and set 
-to the specified value, asserts that the specified expression is true, that is 
-evaluates it at runtime and matches it with the atom 'true'.</p>
-
- See assert/1 for use and caveats.
-</p>
+</div>
 
 <h3 class="function"><a name="get_token_table_from-1">get_token_table_from/1</a></h3>
 <div class="spec">
-<p><code>get_token_table_from(OptionTable::<a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>) -&gt; <a href="#type-token_table">token_table()</a></code><br></p>
+<p><code>get_token_table_from(OptionTable::<a href="ast_info.html#type-compile_option_table" docgen-rel="seetype" docgen-href="ast_info#compile_option_table/0">ast_info:compile_option_table()</a>) -&gt; <a href="#type-token_table" docgen-rel="seetype" docgen-href="#token_table/0">token_table()</a></code><br></p>
 <p> </p>
-</div><p>Returns the tokens declared among the compile options.</p>
+</div>
 
 <h3 class="function"><a name="if_debug-1">if_debug/1</a></h3>
 <div class="spec">
-<p><code>if_debug(ExpressionIfDebug::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>if_debug(ExpressionIfDebug::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Includes conditionally the specified expression (possibly a body), which
- is enabled iff the debug mode has been set (that is iff the
- 'myriad_debug_mode' token has been defined through the command-line).
-</p>
+</div>
 
 <h3 class="function"><a name="if_defined-2">if_defined/2</a></h3>
 <div class="spec">
-<p><code>if_defined(Token::<a href="#type-token">token()</a>, ExpressionIfDefined::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>if_defined(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, ExpressionIfDefined::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Includes conditionally the specified expression (possibly a body) iff the 
-specified token has been specified.</p>
-
- <p>It is enabled iff its token has been defined through the command-line, in 
-which case the specified expression is injected (otherwise it is simply 
-dismissed as a whole).</p>
-
- <p>Note: the first parameter, Token, must be an immediate value, an atom (not 
-even a variable whose value happens to be an atom).</p>
-
- <p>So 'cond_utils:if_defined(hello, [...])' will be accepted, while even 
-'A=hello, cond_utils:if_defined(A, [...])' will be rejected.</p>
-
- <p>As for the second parameter, it shall be *directly* either a single expression 
-or a body thereof; for example 'cond_utils:if_defined(myriad_debug_mode, 
-_MyExpr=[...])' would be rejected.</p>
-
- <p>Finally, should the relevant token not be defined, the corresponding 
-expression is dismissed as a whole, which may lead variables only mentioned in 
-said expression to be reported as unused.</p>
-
- For example: 'A=1, cond_utils:if_defined(non_defined_token, [A=1,...])' will
- report that variable 'A' is unused.
-</p>
+</div>
 
 <h3 class="function"><a name="if_defined-3">if_defined/3</a></h3>
 <div class="spec">
-<p><code>if_defined(Token::<a href="#type-token">token()</a>, ExpressionIfDefined::<a href="#type-expression">expression()</a>, ExpressionIfNotDefined::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>if_defined(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, ExpressionIfDefined::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>, ExpressionIfNotDefined::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Includes conditionally one of the specified expressions (possibly 
-bodies), depending on whether the specified token has been defined through the 
-command-line.</p>
-
- <p>If the token has been defined, the expression is injected, otherwise the 
-second is.</p>
-
- See if_defined/2 for use and caveats.
-</p>
+</div>
 
 <h3 class="function"><a name="if_set_to-3">if_set_to/3</a></h3>
 <div class="spec">
-<p><code>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionIfSetTo::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>if_set_to(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, ExpressionIfSetTo::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Includes conditionally one of the specified expressions (possibly 
-bodies), depending on whether the specified token has been defined through the 
-command-line *and* has been set to the specified (immediate) value.</p>
-
- <p>The specified expression is injected iff the token has been defined and set to 
-the specified value.</p>
-
- See if_defined/2 for use and caveats.
-</p>
+</div>
 
 <h3 class="function"><a name="if_set_to-4">if_set_to/4</a></h3>
 <div class="spec">
-<p><code>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionIfMatching::<a href="#type-expression">expression()</a>, ExpressionOtherwise::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>if_set_to(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, ExpressionIfMatching::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>, ExpressionOtherwise::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Includes conditionally one of the specified expressions (possibly 
-bodies), depending on whether the specified token has been defined through the 
-command-line *and* has been set to the specified (immediate) value.</p>
-
- <p>If the token has been defined and set to the specified value, the first 
-expression is injected, otherwise (different value or not defined) the second 
-is.</p>
-
- See if_defined/2 for use and caveats.
-</p>
+</div>
 
 <h3 class="function"><a name="switch_execution_target-2">switch_execution_target/2</a></h3>
 <div class="spec">
-<p><code>switch_execution_target(ExprIfInDevMode::<a href="#type-expression">expression()</a>, ExprIfProdMode::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>switch_execution_target(ExprIfInDevMode::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>, ExprIfProdMode::<a href="#type-expression" docgen-rel="seetype" docgen-href="#expression/0">expression()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Includes conditionally either of the specified expressions (possibly 
-bodies), depending on whether the execution target has been defined through 
-the command-line:</p>
-
- <p>- if the actual execution target is development 
-(i.e. exec_target_is_production is not defined), then the first specified 
-expression will be inserted</p>
-
- - otherwise the second specified expression will be inserted
-</p>
+</div>
 
 <h3 class="function"><a name="switch_set_to-2">switch_set_to/2</a></h3>
 <div class="spec">
-<p><code>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>switch_set_to(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, TokenExprTable::<a href="#type-token_expr_table" docgen-rel="seetype" docgen-href="#token_expr_table/0">token_expr_table()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Includes conditionally one of the specified expressions (possibly bodies) 
-listed in the token-expression table, depending on whether the specified token 
-has been defined through the command-line *and* has been set to one of the 
-specified (immediate) values.</p>
-
- <p>If the token has been defined and set to one the values specified in the 
-table, the expression associated to this value is injected.</p>
-
- <p>Otherwise (token not set, or set to a value that is not listed), a 
-compilation-time error is raised.</p>
-
- See if_defined/2 for use and caveats.
-</p>
+</div>
 
 <h3 class="function"><a name="switch_set_to-3">switch_set_to/3</a></h3>
 <div class="spec">
-<p><code>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>, DefaultTokenValue::<a href="#type-value">value()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>switch_set_to(Token::<a href="#type-token" docgen-rel="seetype" docgen-href="#token/0">token()</a>, TokenExprTable::<a href="#type-token_expr_table" docgen-rel="seetype" docgen-href="#token_expr_table/0">token_expr_table()</a>, DefaultTokenValue::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Includes conditionally one of the specified expressions (possibly bodies) 
-listed in the token-expression table, depending on whether the specified token 
-has been defined through the command-line *and* has been set to one of the 
-specified (immediate) values.</p>
-
- <p>If the token has been defined and set to one the values specified in the 
-table, the expression associated to this value is injected.</p>
-
- <p>Otherwise (token not set, or set to a value not listed), the specified default 
-token value (expected to be referenced in the table) applies.</p>
-
- See if_defined/2 for use and caveats.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

@@ -23,7 +23,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2015-2024 EDF R&amp;D</p>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2015-2025 EDF R&amp;D</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body"><p class="first">olivier (dot) boudeville (at) edf (dot) fr</p>
@@ -35,10 +35,10 @@
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body"><p class="first">March 2015</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Tuesday, February 13, 2024</p>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Friday, July 18, 2025</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.7</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.8</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body"><p class="first">Stable</p>
@@ -268,11 +268,11 @@
 <h3><a class="toc-backref" href="#id74">Deployment Settings</a></h3>
 <p>The <tt class="docutils literal">deployment_settings</tt> record allows to set precisely the <strong>computing hosts</strong> involved in the execution of that simulation case.</p>
 <p>Sim-Diasca can indeed run a simulation on the user host only (the computer on which it is run), yet it is a <em>distributed</em> engine - so a single simulation can be also run on a <em>set</em> of computers (potentially dozens of nodes of a high-performance computing cluster).</p>
-<p>For our simulation case to be able to run indifferently either on a single host or on multiple ones, the <tt class="docutils literal">computing_hosts</tt> field will be set to request the engine to check first whether a text file, named here <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.txt</span></tt>, can be found. The purpose of this file is to list the host names of all the potential computers that may be involved in the simulation <a class="footnote-reference" href="#id16" id="id15">[8]</a>.</p>
+<p>For our simulation case to be able to run indifferently either on a single host or on multiple ones, the <tt class="docutils literal">computing_hosts</tt> field will be set to request the engine to check first whether a text file, named here <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.etf</span></tt>, can be found. The purpose of this file is to list the host names of all the potential computers that may be involved in the simulation <a class="footnote-reference" href="#id16" id="id15">[8]</a>.</p>
 <table class="docutils footnote" frame="void" id="id16" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id15">[8]</a></td><td>Please refer to the section 19.2 of the <em>Sim-Diasca Technical Manual</em> for its actual syntax (hostnames but also per-host usernames can be specified), or look directly to <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates-sample.txt</span></tt>, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/conf</span></tt> directory.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id15">[8]</a></td><td>Please refer to the section 19.2 of the <em>Sim-Diasca Technical Manual</em> for its actual syntax (hostnames but also per-host usernames can be specified), or look directly to <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates-sample.etf</span></tt>, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/conf</span></tt> directory.</td></tr>
 </tbody>
 </table>
 <p>If this host file is found, the engine will look-up and try to use as many of the host candidates listed there as possible (depending on their availability and on the checking of various prerequisites).</p>
@@ -280,7 +280,7 @@
 <p>So the definition for this field of the <tt class="docutils literal">deployment_settings</tt> record boils down to:</p>
 <pre class="code erlang literal-block">
 <span class="n">computing_hosts</span> <span class="o">=</span> <span class="p">{</span><span class="n">use_host_file_otherwise_local</span><span class="p">,</span>
-                     <span class="s">&quot;sim-diasca-host-candidates.txt&quot;</span><span class="p">}</span>
+                   <span class="s">&quot;sim-diasca-host-candidates.etf&quot;</span><span class="p">}</span>
 </pre>
 <p>That same <tt class="docutils literal">deployment_settings</tt> record is also the place where we can define <strong>the simulation elements</strong> (code and data) beyond the mere engine <strong>that shall be deployed</strong> on the computing nodes. This includes typically the binary files corresponding to the implementation of the models and scenarios <a class="footnote-reference" href="#id18" id="id17">[9]</a>, possibly with any set of data files they might rely upon.</p>
 <table class="docutils footnote" frame="void" id="id18" rules="none">
@@ -298,7 +298,7 @@
 <pre class="code erlang literal-block">
 <span class="nv">DeploymentSettings</span> <span class="o">=</span> <span class="nl">#deployment_settings</span><span class="p">{</span>
     <span class="n">computing_hosts</span> <span class="o">=</span> <span class="p">{</span><span class="n">use_host_file_otherwise_local</span><span class="p">,</span>
-                   <span class="s">&quot;sim-diasca-host-candidates.txt&quot;</span><span class="p">},</span>
+                       <span class="s">&quot;sim-diasca-host-candidates.etf&quot;</span><span class="p">},</span>
     <span class="n">additional_elements_to_deploy</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span><span class="s">&quot;.&quot;</span><span class="p">,</span><span class="n">code</span><span class="p">}</span> <span class="p">]</span>
 <span class="p">}</span>
 </pre>

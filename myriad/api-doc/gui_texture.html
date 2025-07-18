@@ -10,57 +10,58 @@
 <hr>
 
 <h1>Module gui_texture</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for the <b>support of (OpenGL)
- textures</b>, mostly 2D ones, either old-style (compatibility one) or
- according to current, modern OpenGL.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2>Gathering of various facilities for the <b>support of (OpenGL)
- textures</b>, mostly 2D ones, either old-style (compatibility one) or
- according to current, modern OpenGL.
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
+<h3 class="typedecl"><a name="type-any_image_path">any_image_path()</a></h3>
+<p><code>any_image_path() = <a href="gui_image.html#type-any_image_path" docgen-rel="seetype" docgen-href="gui_image#any_image_path/0">gui_image:any_image_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_image_path">bin_image_path()</a></h3>
+<p><code>bin_image_path() = <a href="gui_image.html#type-bin_image_path" docgen-rel="seetype" docgen-href="gui_image#bin_image_path/0">gui_image:bin_image_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-brush">brush()</a></h3>
-<p><code>brush() = <a href="gui_render.html#type-brush">gui_render:brush()</a></code></p>
+<p><code>brush() = <a href="gui_render.html#type-brush" docgen-rel="seetype" docgen-href="gui_render#brush/0">gui_render:brush()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><code>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></code></p>
+<p><code>byte_size() = <a href="system_utils.html#type-byte_size" docgen-rel="seetype" docgen-href="system_utils#byte_size/0">system_utils:byte_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color_buffer">color_buffer()</a></h3>
-<p><code>color_buffer() = <a href="gui_color.html#type-color_buffer">gui_color:color_buffer()</a></code></p>
+<p><code>color_buffer() = <a href="gui_color.html#type-color_buffer" docgen-rel="seetype" docgen-href="gui_color#color_buffer/0">gui_color:color_buffer()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
-<p><code>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></code></p>
+<p><code>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal" docgen-rel="seetype" docgen-href="gui_color#color_by_decimal/0">gui_color:color_by_decimal()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><code>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></code></p>
+<p><code>coordinate() = <a href="gui.html#type-coordinate" docgen-rel="seetype" docgen-href="gui#coordinate/0">gui:coordinate()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><code>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></code></p>
+<p><code>dimensions() = <a href="gui.html#type-dimensions" docgen-rel="seetype" docgen-href="gui#dimensions/0">gui:dimensions()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-enum">enum()</a></h3>
-<p><code>enum() = <a href="gui_opengl.html#type-enum">gui_opengl:enum()</a></code></p>
+<p><code>enum() = <a href="gui_opengl.html#type-enum" docgen-rel="seetype" docgen-href="gui_opengl#enum/0">gui_opengl:enum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-font">font()</a></h3>
-<p><code>font() = <a href="gui_font.html#type-font">gui_font:font()</a></code></p>
+<p><code>font() = <a href="gui_font.html#type-font" docgen-rel="seetype" docgen-href="gui_font#font/0">gui_font:font()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gl_color_format">gl_color_format()</a></h3>
 <p><code>gl_color_format() = 1 | 2 | 3 | 4 | 6406 | 32827 | 32828 | 32829 | 32830 | 6409 | 32831 | 32832 | 32833 | 32834 | 6410 | 32835 | 32836 | 32837 | 32838 | 32839 | 32840 | 32841 | 32842 | 32843 | 32844 | 32845 | 10768 | 6407 | 32847 | 32848 | 32849 | 32850 | 32851 | 32852 | 6408 | 32853 | 32854 | 32855 | 32856 | 32857 | 32858 | 32859</code></p>
-<p> An OpenGL color format (e.g. ?GL_RGBA), which specifies the number of color
- components in a texture.</p>
+
 
 <h3 class="typedecl"><a name="type-gl_mipmap_filtering_mode">gl_mipmap_filtering_mode()</a></h3>
 <p><code>gl_mipmap_filtering_mode() = 9984 | 9985 | 9986 | 9987</code></p>
@@ -68,10 +69,10 @@
 
 <h3 class="typedecl"><a name="type-gl_pixel_format">gl_pixel_format()</a></h3>
 <p><code>gl_pixel_format() = 6400 | 6403 | 6404 | 6405 | 6406 | 6407 | 6408 | 6409 | 6410</code></p>
-<p> A format of a pixel data.</p>
+
 
 <h3 class="typedecl"><a name="type-gl_texture_filtering_mode">gl_texture_filtering_mode()</a></h3>
-<p><code>gl_texture_filtering_mode() = 9728 | 9729 | <a href="#type-enum">enum()</a></code></p>
+<p><code>gl_texture_filtering_mode() = 9728 | 9729 | <a href="#type-enum" docgen-rel="seetype" docgen-href="#enum/0">enum()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-gl_texture_wrapping_mode">gl_texture_wrapping_mode()</a></h3>
@@ -79,137 +80,123 @@
 
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
-<p><code>height() = <a href="gui.html#type-height">gui:height()</a></code></p>
+<p><code>height() = <a href="gui.html#type-height" docgen-rel="seetype" docgen-href="gui#height/0">gui:height()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-image">image()</a></h3>
-<p><code>image() = <a href="gui_image.html#type-image">gui_image:image()</a></code></p>
+<p><code>image() = <a href="gui_image.html#type-image" docgen-rel="seetype" docgen-href="gui_image#image/0">gui_image:image()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-image_format">image_format()</a></h3>
-<p><code>image_format() = <a href="gui_image.html#type-image_format">gui_image:image_format()</a></code></p>
+<p><code>image_format() = <a href="gui_image.html#type-image_format" docgen-rel="seetype" docgen-href="gui_image#image_format/0">gui_image:image_format()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
-<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</code></p>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
 
 
 <h3 class="typedecl"><a name="type-mipmap_level">mipmap_level()</a></h3>
 <p><code>mipmap_level() = non_neg_integer()</code></p>
-<p><p> Uses to designate a level of scale regarding a given texture.</p>
 
- <p>A mipmap is a collection of texture images in which each subsequent texture is 
-twice as small compared to the previous one. Use gl:generateMipmap/1 to 
-generate scaled down version of a given texture.</p>
-
- 0 is the base level (full, original size).</p>
 
 <h3 class="typedecl"><a name="type-pixel_format">pixel_format()</a></h3>
-<p><code>pixel_format() = <a href="gui_color.html#type-pixel_format">gui_color:pixel_format()</a></code></p>
+<p><code>pixel_format() = <a href="gui_color.html#type-pixel_format" docgen-rel="seetype" docgen-href="gui_color#pixel_format/0">gui_color:pixel_format()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
-<p><code>position() = <a href="gui.html#type-position">gui:position()</a></code></p>
+<p><code>position() = <a href="gui.html#type-position" docgen-rel="seetype" docgen-href="gui#position/0">gui:position()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-texture">texture()</a></h3>
-<p><code>texture() = #texture{id = <a href="gui_texture.html#type-texture_id">gui_texture:texture_id()</a>, width = <a href="gui.html#type-length">gui:length()</a>, height = <a href="gui.html#type-length">gui:length()</a>, min_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, min_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>}</code></p>
-<p> Information regarding a (2D) texture.</p>
+<p><code>texture() = #texture{id = <a href="gui_texture.html#type-texture_id" docgen-rel="seetype" docgen-href="gui_texture#texture_id/0">gui_texture:texture_id()</a>, width = <a href="gui.html#type-length" docgen-rel="seetype" docgen-href="gui#length/0">gui:length()</a>, height = <a href="gui.html#type-length" docgen-rel="seetype" docgen-href="gui#length/0">gui:length()</a>, min_x = <a href="gui_opengl.html#type-length_factor" docgen-rel="seetype" docgen-href="gui_opengl#length_factor/0">gui_opengl:length_factor()</a>, min_y = <a href="gui_opengl.html#type-length_factor" docgen-rel="seetype" docgen-href="gui_opengl#length_factor/0">gui_opengl:length_factor()</a>, max_x = <a href="gui_opengl.html#type-length_factor" docgen-rel="seetype" docgen-href="gui_opengl#length_factor/0">gui_opengl:length_factor()</a>, max_y = <a href="gui_opengl.html#type-length_factor" docgen-rel="seetype" docgen-href="gui_opengl#length_factor/0">gui_opengl:length_factor()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-texture_cache">texture_cache()</a></h3>
+<p><code>texture_cache() = #texture_cache{texture_table = <a href="gui_texture.html#type-texture_table" docgen-rel="seetype" docgen-href="gui_texture#texture_table/0">gui_texture:texture_table()</a>, next_spec_id = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>}</code></p>
+
 
 <h3 class="typedecl"><a name="type-texture_dimension">texture_dimension()</a></h3>
 <p><code>texture_dimension() = 3552 | 3553 | 32879</code></p>
-<p><p> The dimensionality of a texture.</p>
 
- Most textures are 2D ones.</p>
+
+<h3 class="typedecl"><a name="type-texture_entry">texture_entry()</a></h3>
+<p><code>texture_entry() = {<a href="#type-texture_spec_id" docgen-rel="seetype" docgen-href="#texture_spec_id/0">texture_spec_id()</a>, <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-image" docgen-rel="seetype" docgen-href="#image/0">image()</a>), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>)}</code></p>
+
 
 <h3 class="typedecl"><a name="type-texture_id">texture_id()</a></h3>
 <p><code>texture_id() = non_neg_integer()</code></p>
-<p> An OpenGL texture "name" (meant to be unique), an identifier thereof.</p>
+
+
+<h3 class="typedecl"><a name="type-texture_spec">texture_spec()</a></h3>
+<p><code>texture_spec() = <a href="#type-bin_image_path" docgen-rel="seetype" docgen-href="#bin_image_path/0">bin_image_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-texture_spec_id">texture_spec_id()</a></h3>
+<p><code>texture_spec_id() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-texture_table">texture_table()</a></h3>
+<p><code>texture_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-texture_spec_id" docgen-rel="seetype" docgen-href="#texture_spec_id/0">texture_spec_id()</a>, <a href="#type-texture_entry" docgen-rel="seetype" docgen-href="#texture_entry/0">texture_entry()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-texture_unit">texture_unit()</a></h3>
-<p><code>texture_unit() = <a href="#type-enum">enum()</a></code></p>
-<p> Actually ?GL_TEXTUREn, where n is an integer
- in [0, ?GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS-1]
- (the initial value is GL_TEXTURE0)</p>
+<p><code>texture_unit() = <a href="#type-enum" docgen-rel="seetype" docgen-href="#enum/0">enum()</a></code></p>
+<p> i.e. non_neg_integer().</p>
+
+<h3 class="typedecl"><a name="type-user_texture_spec">user_texture_spec()</a></h3>
+<p><code>user_texture_spec() = <a href="#type-any_image_path" docgen-rel="seetype" docgen-href="#any_image_path/0">any_image_path()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-uv_coordinate">uv_coordinate()</a></h3>
 <p><code>uv_coordinate() = float()</code></p>
-<p><p> A texture UV (or {S,T}) coordinate. They do not depend on resolution, and 
-generally are in [0.0, 1.0]. They are used to sample the source image (texels) 
-in order to fill a given polygon to texture with corresponding pixels / 
-fragments.</p>
 
- OpenGL expects the 0.0 coordinate on the Y axis to be on the bottom side of
- the image, yet images usually have 0.0 at the top of this axis, so images may
- have to be flipped upside-down first, when loaded.</p>
 
 <h3 class="typedecl"><a name="type-uv_point">uv_point()</a></h3>
-<p><code>uv_point() = {<a href="#type-uv_coordinate">uv_coordinate()</a>, <a href="#type-uv_coordinate">uv_coordinate()</a>}</code></p>
-<p><p> Designates a point in a (2D) texture; not a vector per se.</p>
+<p><code>uv_point() = {<a href="#type-uv_coordinate" docgen-rel="seetype" docgen-href="#uv_coordinate/0">uv_coordinate()</a>, <a href="#type-uv_coordinate" docgen-rel="seetype" docgen-href="#uv_coordinate/0">uv_coordinate()</a>}</code></p>
 
- <p>Texture coordinates start at {0.0, 0.0} for the lower left corner of a 
-texture image to {1.0, 1.0} for its upper right corner.</p>
-
- The fragment shader interpolates the texture coordinates for each fragment.</p>
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
-<p><code>width() = <a href="gui.html#type-width">gui:width()</a></code></p>
+<p><code>width() = <a href="gui.html#type-width" docgen-rel="seetype" docgen-href="gui#width/0">gui:width()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_basic_settings_on_current-0">apply_basic_settings_on_current/0</a></td><td>Sets basic parameters on the currently active (2D) texture.</td></tr>
-<tr><td valign="top"><a href="#assign_current-4">assign_current/4</a></td><td>Assigns the specified settings and buffer to the currently active (2D)
- texture, and applies basic settings on it.</td></tr>
-<tr><td valign="top"><a href="#create_from_image-1">create_from_image/1</a></td><td>Creates a texture from the specified image instance, applies the default 
-texture settings on it, and makes it the currently active texture.</td></tr>
-<tr><td valign="top"><a href="#create_from_image-2">create_from_image/2</a></td><td>Creates a texture from the specified image instance, flipping its Y-axis 
-according to OpenGL conventions, generating mipmaps if requested, applies the 
-default texture settings on it, and makes it the currently active texture.</td></tr>
-<tr><td valign="top"><a href="#create_from_text-4">create_from_text/4</a></td><td>Creates a texture corresponding to the specified text, rendered with the
- specified font, brush and color, applies the default texture settings on it,
- and makes it the currently active texture.</td></tr>
-<tr><td valign="top"><a href="#create_from_text-5">create_from_text/5</a></td><td>Creates a texture corresponding to the specified text, rendered with the
- specified font, brush and color, flipping it vertically (upside down) if
- requested, applies the default texture settings on it, and makes it the
- currently active texture.</td></tr>
-<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs (that is: deletes) the specified texture(s).</td></tr>
-<tr><td valign="top"><a href="#generate_id-0">generate_id/0</a></td><td>Returns a new, unique, texture identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_mipmaps-0">generate_mipmaps/0</a></td><td>Generates mipmaps for the currently active (2D) texture.</td></tr>
-<tr><td valign="top"><a href="#generate_mipmaps-1">generate_mipmaps/1</a></td><td>Generates mipmaps for the currently active texture.</td></tr>
-<tr><td valign="top"><a href="#generate_mipmaps_for_id-1">generate_mipmaps_for_id/1</a></td><td>Generates mipmaps for the texture whose identifier is specified.</td></tr>
-<tr><td valign="top"><a href="#get_color_buffer-1">get_color_buffer/1</a></td><td>Returns the RGB or RGBA color buffer corresponding to the specified 
-image.</td></tr>
-<tr><td valign="top"><a href="#get_color_buffer-3">get_color_buffer/3</a></td><td>Returns the RGB or RGBA color buffer corresponding to the specified 
-image, once padded according to the specified current and target dimensions.</td></tr>
-<tr><td valign="top"><a href="#get_dimensions-1">get_dimensions/1</a></td><td>Returns texture dimensions that are suitable for a (2D) content of the
- specified dimensions.</td></tr>
-<tr><td valign="top"><a href="#get_dimensions-2">get_dimensions/2</a></td><td>Returns texture dimensions that are suitable for a (2D) content of the
- specified dimensions.</td></tr>
-<tr><td valign="top"><a href="#get_pixel_size-1">get_pixel_size/1</a></td><td>Returns the number of bytes used by each pixel of the specified GL
- format.</td></tr>
-<tr><td valign="top"><a href="#gl_pixel_format_to_pixel_format-1">gl_pixel_format_to_pixel_format/1</a></td><td>Returns our "standard" pixel format corresponding to the specified GL
- one.</td></tr>
-<tr><td valign="top"><a href="#load_from_file-1">load_from_file/1</a></td><td>Creates a texture from the specified image file, applies the default 
-texture settings on it, and makes it the currently active texture.</td></tr>
-<tr><td valign="top"><a href="#load_from_file-2">load_from_file/2</a></td><td>Creates a texture from the specified image file of the specified type,
- applies the default texture settings on it, and makes it the currently active
- texture.</td></tr>
-<tr><td valign="top"><a href="#recalibrate_coordinates_for-2">recalibrate_coordinates_for/2</a></td><td>Recalibrates the specified logical texture coordinates, supposed to
- correspond to the original texture, to the specified one, which is typically
- padded, hence of different dimensions.</td></tr>
-<tr><td valign="top"><a href="#render-2">render/2</a></td><td>Renders the specified texture, at the specified position.</td></tr>
-<tr><td valign="top"><a href="#render-3">render/3</a></td><td>Renders the specified texture, at the specified position.</td></tr>
-<tr><td valign="top"><a href="#set_as_current-1">set_as_current/1</a></td><td>Sets the specified (2D) texture as the currently active one.</td></tr>
-<tr><td valign="top"><a href="#set_as_current_from_id-1">set_as_current_from_id/1</a></td><td>Sets the specified (2D) texture identifier as the currently active 
-one.</td></tr>
-<tr><td valign="top"><a href="#set_basic_general_settings-0">set_basic_general_settings/0</a></td><td>Sets basic, general parameters regarding (2D) textures.</td></tr>
-<tr><td valign="top"><a href="#set_current_texture_unit-1">set_current_texture_unit/1</a></td><td>Sets the current texture unit.</td></tr>
-<tr><td valign="top"><a href="#set_new_as_current-0">set_new_as_current/0</a></td><td>Creates a texture identifier, sets it as the currently active (2D) one,
- and returns it.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_basic_settings_on_current-0">apply_basic_settings_on_current/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assign_current-4">assign_current/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#cache_to_string-1">cache_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_texture_coordinate_pair-1">check_texture_coordinate_pair/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_cache-0">create_cache/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_from_image-1">create_from_image/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_from_image-2">create_from_image/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_from_text-4">create_from_text/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create_from_text-5">create_from_text/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_texture-2">declare_texture/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_id-0">generate_id/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_mipmaps-0">generate_mipmaps/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_mipmaps-1">generate_mipmaps/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#generate_mipmaps_for_id-1">generate_mipmaps_for_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_color_buffer-1">get_color_buffer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_color_buffer-3">get_color_buffer/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dimensions-1">get_dimensions/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dimensions-2">get_dimensions/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_pixel_size-1">get_pixel_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_texture-2">get_texture/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_texture_spec-2">get_texture_spec/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#gl_pixel_format_to_pixel_format-1">gl_pixel_format_to_pixel_format/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#load_from_file-1">load_from_file/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#load_from_file-2">load_from_file/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#recalibrate_coordinates_for-2">recalibrate_coordinates_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render-2">render/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#render-3">render/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_as_current-1">set_as_current/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_as_current_from_id-1">set_as_current_from_id/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_basic_general_settings-0">set_basic_general_settings/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_current_texture_unit-1">set_current_texture_unit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_new_as_current-0">set_new_as_current/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
 </table>
 
@@ -217,246 +204,205 @@ one.</td></tr>
 
 <h3 class="function"><a name="apply_basic_settings_on_current-0">apply_basic_settings_on_current/0</a></h3>
 <div class="spec">
-<p><code>apply_basic_settings_on_current() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>apply_basic_settings_on_current() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets basic parameters on the currently active (2D) texture.</p>
-
- Refer to set_basic_general_settings/0 for overall settings (transverse to all
- texture instances).
-</p>
+</div>
 
 <h3 class="function"><a name="assign_current-4">assign_current/4</a></h3>
 <div class="spec">
-<p><code>assign_current(TexWidth::<a href="#type-width">width()</a>, TexHeight::<a href="#type-height">height()</a>, PixelFormat::<a href="#type-gl_pixel_format">gl_pixel_format()</a>, ColorBuffer::<a href="#type-color_buffer">color_buffer()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>assign_current(TexWidth::<a href="#type-width" docgen-rel="seetype" docgen-href="#width/0">width()</a>, TexHeight::<a href="#type-height" docgen-rel="seetype" docgen-href="#height/0">height()</a>, PixelFormat::<a href="#type-gl_pixel_format" docgen-rel="seetype" docgen-href="#gl_pixel_format/0">gl_pixel_format()</a>, ColorBuffer::<a href="#type-color_buffer" docgen-rel="seetype" docgen-href="#color_buffer/0">color_buffer()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Assigns the specified settings and buffer to the currently active (2D)
- texture, and applies basic settings on it.
-</p>
+</div>
+
+<h3 class="function"><a name="cache_to_string-1">cache_to_string/1</a></h3>
+<div class="spec">
+<p><code>cache_to_string(Texture_cache::<a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_texture_coordinate_pair-1">check_texture_coordinate_pair/1</a></h3>
+<div class="spec">
+<p><code>check_texture_coordinate_pair(P::term()) -&gt; <a href="#type-uv_point" docgen-rel="seetype" docgen-href="#uv_point/0">uv_point()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create_cache-0">create_cache/0</a></h3>
+<div class="spec">
+<p><code>create_cache() -&gt; <a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="create_from_image-1">create_from_image/1</a></h3>
 <div class="spec">
-<p><code>create_from_image(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-texture">texture()</a></code><br></p>
+<p><code>create_from_image(Image::<a href="#type-image" docgen-rel="seetype" docgen-href="#image/0">image()</a>) -&gt; <a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a texture from the specified image instance, applies the default 
-texture settings on it, and makes it the currently active texture.</p>
-
- <p>The image instance is safe to be deallocated afterwards.</p>
-
- Mipmaps are automatically generated.
-</p>
+</div>
 
 <h3 class="function"><a name="create_from_image-2">create_from_image/2</a></h3>
 <div class="spec">
-<p><code>create_from_image(Image::<a href="#type-image">image()</a>, GenMipmaps::boolean()) -&gt; <a href="#type-texture">texture()</a></code><br></p>
+<p><code>create_from_image(Image::<a href="#type-image" docgen-rel="seetype" docgen-href="#image/0">image()</a>, GenMipmaps::boolean()) -&gt; <a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a texture from the specified image instance, flipping its Y-axis 
-according to OpenGL conventions, generating mipmaps if requested, applies the 
-default texture settings on it, and makes it the currently active texture.</p>
-
- The image instance is safe to be deallocated afterwards.
-</p>
+</div>
 
 <h3 class="function"><a name="create_from_text-4">create_from_text/4</a></h3>
 <div class="spec">
-<p><code>create_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-texture">texture()</a></code><br></p>
+<p><code>create_from_text(Text::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, Font::<a href="#type-font" docgen-rel="seetype" docgen-href="#font/0">font()</a>, Brush::<a href="#type-brush" docgen-rel="seetype" docgen-href="#brush/0">brush()</a>, Color::<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>) -&gt; <a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a></code><br></p>
 <p> </p>
-</div><p>Creates a texture corresponding to the specified text, rendered with the
- specified font, brush and color, applies the default texture settings on it,
- and makes it the currently active texture.
-</p>
+</div>
 
 <h3 class="function"><a name="create_from_text-5">create_from_text/5</a></h3>
 <div class="spec">
-<p><code>create_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, TextColor::<a href="#type-color_by_decimal">color_by_decimal()</a>, Flip::boolean()) -&gt; <a href="#type-texture">texture()</a></code><br></p>
+<p><code>create_from_text(Text::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, Font::<a href="#type-font" docgen-rel="seetype" docgen-href="#font/0">font()</a>, Brush::<a href="#type-brush" docgen-rel="seetype" docgen-href="#brush/0">brush()</a>, TextColor::<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>, Flip::boolean()) -&gt; <a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a></code><br></p>
 <p> </p>
-</div><p>Creates a texture corresponding to the specified text, rendered with the
- specified font, brush and color, flipping it vertically (upside down) if
- requested, applies the default texture settings on it, and makes it the
- currently active texture.
-</p>
+</div>
+
+<h3 class="function"><a name="declare_texture-2">declare_texture/2</a></h3>
+<div class="spec">
+<p><code>declare_texture(UserTexPathSpec::<a href="#type-user_texture_spec" docgen-rel="seetype" docgen-href="#user_texture_spec/0">user_texture_spec()</a>, TexCache::<a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>) -&gt; {<a href="#type-texture_spec_id" docgen-rel="seetype" docgen-href="#texture_spec_id/0">texture_spec_id()</a>, <a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>}</code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><code>destruct(Textures::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-texture">texture()</a>)) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>destruct(Textures::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>)) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Destructs (that is: deletes) the specified texture(s).</p>
+</div>
 
 <h3 class="function"><a name="generate_id-0">generate_id/0</a></h3>
 <div class="spec">
-<p><code>generate_id() -&gt; <a href="#type-texture_id">texture_id()</a></code><br></p>
+<p><code>generate_id() -&gt; <a href="#type-texture_id" docgen-rel="seetype" docgen-href="#texture_id/0">texture_id()</a></code><br></p>
 <p> </p>
-</div><p>Returns a new, unique, texture identifier.</p>
+</div>
 
 <h3 class="function"><a name="generate_mipmaps-0">generate_mipmaps/0</a></h3>
 <div class="spec">
-<p><code>generate_mipmaps() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>generate_mipmaps() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Generates mipmaps for the currently active (2D) texture.</p>
+</div>
 
 <h3 class="function"><a name="generate_mipmaps-1">generate_mipmaps/1</a></h3>
 <div class="spec">
-<p><code>generate_mipmaps(TexDim::<a href="#type-texture_dimension">texture_dimension()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>generate_mipmaps(TexDim::<a href="#type-texture_dimension" docgen-rel="seetype" docgen-href="#texture_dimension/0">texture_dimension()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Generates mipmaps for the currently active texture.</p>
+</div>
 
 <h3 class="function"><a name="generate_mipmaps_for_id-1">generate_mipmaps_for_id/1</a></h3>
 <div class="spec">
-<p><code>generate_mipmaps_for_id(TextureId::<a href="#type-texture_id">texture_id()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>generate_mipmaps_for_id(TextureId::<a href="#type-texture_id" docgen-rel="seetype" docgen-href="#texture_id/0">texture_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Generates mipmaps for the texture whose identifier is specified.</p>
+</div>
 
 <h3 class="function"><a name="get_color_buffer-1">get_color_buffer/1</a></h3>
 <div class="spec">
-<p><code>get_color_buffer(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-color_buffer">color_buffer()</a></code><br></p>
+<p><code>get_color_buffer(Image::<a href="#type-image" docgen-rel="seetype" docgen-href="#image/0">image()</a>) -&gt; <a href="#type-color_buffer" docgen-rel="seetype" docgen-href="#color_buffer/0">color_buffer()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the RGB or RGBA color buffer corresponding to the specified 
-image.</p>
-
- The returned buffer shall be "const", in the sense of being neither
- deallocated nor assigned to any image.
-</p>
+</div>
 
 <h3 class="function"><a name="get_color_buffer-3">get_color_buffer/3</a></h3>
 <div class="spec">
-<p><code>get_color_buffer(Image::<a href="#type-image">image()</a>, CurrentDimensions::<a href="#type-dimensions">dimensions()</a>, TargetDimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-color_buffer">color_buffer()</a></code><br></p>
+<p><code>get_color_buffer(Image::<a href="#type-image" docgen-rel="seetype" docgen-href="#image/0">image()</a>, CurrentDimensions::<a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a>, TargetDimensions::<a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a>) -&gt; <a href="#type-color_buffer" docgen-rel="seetype" docgen-href="#color_buffer/0">color_buffer()</a></code><br></p>
 <p> </p>
-</div><p><p>Returns the RGB or RGBA color buffer corresponding to the specified 
-image, once padded according to the specified current and target dimensions.</p>
-
- The returned buffer shall be "const", in the sense of being neither
- deallocated nor assigned to any image.
-</p>
+</div>
 
 <h3 class="function"><a name="get_dimensions-1">get_dimensions/1</a></h3>
 <div class="spec">
-<p><code>get_dimensions(Dims::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
+<p><code>get_dimensions(Dims::<a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a>) -&gt; <a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a></code><br></p>
 <p> </p>
-</div><p>Returns texture dimensions that are suitable for a (2D) content of the
- specified dimensions.
-</p>
+</div>
 
 <h3 class="function"><a name="get_dimensions-2">get_dimensions/2</a></h3>
 <div class="spec">
-<p><code>get_dimensions(Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></code><br></p>
+<p><code>get_dimensions(Width::<a href="#type-width" docgen-rel="seetype" docgen-href="#width/0">width()</a>, Height::<a href="#type-height" docgen-rel="seetype" docgen-href="#height/0">height()</a>) -&gt; <a href="#type-dimensions" docgen-rel="seetype" docgen-href="#dimensions/0">dimensions()</a></code><br></p>
 <p> </p>
-</div><p>Returns texture dimensions that are suitable for a (2D) content of the
- specified dimensions.
-</p>
+</div>
 
 <h3 class="function"><a name="get_pixel_size-1">get_pixel_size/1</a></h3>
 <div class="spec">
-<p><code>get_pixel_size(GLPixFormat::<a href="#type-gl_pixel_format">gl_pixel_format()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></code><br></p>
+<p><code>get_pixel_size(GLPixFormat::<a href="#type-gl_pixel_format" docgen-rel="seetype" docgen-href="#gl_pixel_format/0">gl_pixel_format()</a>) -&gt; <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a></code><br></p>
 <p> </p>
-</div><p>Returns the number of bytes used by each pixel of the specified GL
- format.
-</p>
+</div>
+
+<h3 class="function"><a name="get_texture-2">get_texture/2</a></h3>
+<div class="spec">
+<p><code>get_texture(SpecId::<a href="#type-texture_spec_id" docgen-rel="seetype" docgen-href="#texture_spec_id/0">texture_spec_id()</a>, TexCache::<a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>) -&gt; {<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>, <a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_texture_spec-2">get_texture_spec/2</a></h3>
+<div class="spec">
+<p><code>get_texture_spec(SpecId::<a href="#type-texture_spec_id" docgen-rel="seetype" docgen-href="#texture_spec_id/0">texture_spec_id()</a>, Texture_cache::<a href="#type-texture_cache" docgen-rel="seetype" docgen-href="#texture_cache/0">texture_cache()</a>) -&gt; <a href="#type-texture_spec" docgen-rel="seetype" docgen-href="#texture_spec/0">texture_spec()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="gl_pixel_format_to_pixel_format-1">gl_pixel_format_to_pixel_format/1</a></h3>
 <div class="spec">
-<p><code>gl_pixel_format_to_pixel_format(GLPixFormat::<a href="#type-gl_pixel_format">gl_pixel_format()</a>) -&gt; <a href="#type-pixel_format">pixel_format()</a></code><br></p>
+<p><code>gl_pixel_format_to_pixel_format(GLPixFormat::<a href="#type-gl_pixel_format" docgen-rel="seetype" docgen-href="#gl_pixel_format/0">gl_pixel_format()</a>) -&gt; <a href="#type-pixel_format" docgen-rel="seetype" docgen-href="#pixel_format/0">pixel_format()</a></code><br></p>
 <p> </p>
-</div><p>Returns our "standard" pixel format corresponding to the specified GL
- one.
-</p>
+</div>
 
 <h3 class="function"><a name="load_from_file-1">load_from_file/1</a></h3>
 <div class="spec">
-<p><code>load_from_file(ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></code><br></p>
+<p><code>load_from_file(ImagePath::<a href="#type-any_image_path" docgen-rel="seetype" docgen-href="#any_image_path/0">any_image_path()</a>) -&gt; <a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a></code><br></p>
 <p> </p>
-</div><p><p>Creates a texture from the specified image file, applies the default 
-texture settings on it, and makes it the currently active texture.</p>
-
- Prefer load_from_file/2 if applicable.
-</p>
+</div>
 
 <h3 class="function"><a name="load_from_file-2">load_from_file/2</a></h3>
 <div class="spec">
-<p><code>load_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></code><br></p>
+<p><code>load_from_file(ImageFormat::<a href="#type-image_format" docgen-rel="seetype" docgen-href="#image_format/0">image_format()</a>, ImagePath::<a href="#type-any_image_path" docgen-rel="seetype" docgen-href="#any_image_path/0">any_image_path()</a>) -&gt; <a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a></code><br></p>
 <p> </p>
-</div><p>Creates a texture from the specified image file of the specified type,
- applies the default texture settings on it, and makes it the currently active
- texture.
-</p>
+</div>
 
 <h3 class="function"><a name="recalibrate_coordinates_for-2">recalibrate_coordinates_for/2</a></h3>
 <div class="spec">
-<p><code>recalibrate_coordinates_for(TexCoords::[<a href="#type-uv_point">uv_point()</a>], Texture::<a href="#type-texture">texture()</a>) -&gt; [<a href="#type-uv_point">uv_point()</a>]</code><br></p>
+<p><code>recalibrate_coordinates_for(TexCoords::[<a href="#type-uv_point" docgen-rel="seetype" docgen-href="#uv_point/0">uv_point()</a>], Texture::<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>) -&gt; [<a href="#type-uv_point" docgen-rel="seetype" docgen-href="#uv_point/0">uv_point()</a>]</code><br></p>
 <p> </p>
-</div><p>Recalibrates the specified logical texture coordinates, supposed to
- correspond to the original texture, to the specified one, which is typically
- padded, hence of different dimensions.
-</p>
+</div>
 
 <h3 class="function"><a name="render-2">render/2</a></h3>
 <div class="spec">
-<p><code>render(Texture::<a href="#type-texture">texture()</a>, Pos::<a href="#type-position">position()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>render(Texture::<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>, Pos::<a href="#type-position" docgen-rel="seetype" docgen-href="#position/0">position()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Renders the specified texture, at the specified position.</p>
+</div>
 
 <h3 class="function"><a name="render-3">render/3</a></h3>
 <div class="spec">
-<p><code>render(Texture::<a href="#type-texture">texture()</a>, Xp::<a href="#type-coordinate">coordinate()</a>, Yp::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>render(Texture::<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>, Xp::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>, Yp::<a href="#type-coordinate" docgen-rel="seetype" docgen-href="#coordinate/0">coordinate()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p>Renders the specified texture, at the specified position.</p>
+</div>
 
 <h3 class="function"><a name="set_as_current-1">set_as_current/1</a></h3>
 <div class="spec">
-<p><code>set_as_current(Texture::<a href="#type-texture">texture()</a>) -&gt; <a href="#type-texture_id">texture_id()</a></code><br></p>
+<p><code>set_as_current(Texture::<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>) -&gt; <a href="#type-texture_id" docgen-rel="seetype" docgen-href="#texture_id/0">texture_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the specified (2D) texture as the currently active one.</p>
-
- Returns, if useful, its identifier.
-</p>
+</div>
 
 <h3 class="function"><a name="set_as_current_from_id-1">set_as_current_from_id/1</a></h3>
 <div class="spec">
-<p><code>set_as_current_from_id(TextureId::<a href="#type-texture_id">texture_id()</a>) -&gt; <a href="#type-texture_id">texture_id()</a></code><br></p>
+<p><code>set_as_current_from_id(TextureId::<a href="#type-texture_id" docgen-rel="seetype" docgen-href="#texture_id/0">texture_id()</a>) -&gt; <a href="#type-texture_id" docgen-rel="seetype" docgen-href="#texture_id/0">texture_id()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the specified (2D) texture identifier as the currently active 
-one.</p>
-
- <p>From now on, all operations done regarding (2D) textures (that is the 
-?GL_TEXTURE_2D target) will be applied to this texture, that moreover will be 
-registered in the currently active texture unit.</p>
-
- <p>Lower-level, defined to centralise calls.</p>
-
- Returns, if useful, the specified identifier.
-</p>
+</div>
 
 <h3 class="function"><a name="set_basic_general_settings-0">set_basic_general_settings/0</a></h3>
 <div class="spec">
-<p><code>set_basic_general_settings() -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_basic_general_settings() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets basic, general parameters regarding (2D) textures.</p>
-
- Refer to apply_basic_settings_on_current/0 to define basic settings to a given
- texture instance.
-</p>
+</div>
 
 <h3 class="function"><a name="set_current_texture_unit-1">set_current_texture_unit/1</a></h3>
 <div class="spec">
-<p><code>set_current_texture_unit(TexUnit::<a href="#type-texture_unit">texture_unit()</a>) -&gt; <a href="#type-void">void()</a></code><br></p>
+<p><code>set_current_texture_unit(TexUnit::<a href="#type-texture_unit" docgen-rel="seetype" docgen-href="#texture_unit/0">texture_unit()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
-</div><p><p>Sets the current texture unit.</p>
-
- <p>The next texture that will be set current will be associated to this texture 
-unit.</p>
-
- The initial (default) value is ?GL_TEXTURE0.
-</p>
+</div>
 
 <h3 class="function"><a name="set_new_as_current-0">set_new_as_current/0</a></h3>
 <div class="spec">
-<p><code>set_new_as_current() -&gt; <a href="#type-texture_id">texture_id()</a></code><br></p>
+<p><code>set_new_as_current() -&gt; <a href="#type-texture_id" docgen-rel="seetype" docgen-href="#texture_id/0">texture_id()</a></code><br></p>
 <p> </p>
-</div><p>Creates a texture identifier, sets it as the currently active (2D) one,
- and returns it.
-</p>
+</div>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><code>to_string(Texture::<a href="#type-texture">texture()</a>) -&gt; <a href="#type-ustring">ustring()</a></code><br></p>
+<p><code>to_string(Texture::<a href="#type-texture" docgen-rel="seetype" docgen-href="#texture/0">texture()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

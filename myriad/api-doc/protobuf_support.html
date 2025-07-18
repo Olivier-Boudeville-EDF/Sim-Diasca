@@ -10,90 +10,65 @@
 <hr>
 
 <h1>Module protobuf_support</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Support for the <b>Protocol Buffer</b> facilities, a.k.a.
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
 
-
-<h2><a name="description">Description</a></h2><p>Support for the <b>Protocol Buffer</b> facilities, a.k.a. Protobuf.</p>
-
- <p>We generally prefer using the proto3 version (rather than the proto2 one).</p>
-
- See protobuf_support_test.erl for the corresponding test, and
- http://myriad.esperide.org/#about-protobuf for further information.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-bin_package_name">bin_package_name()</a></h3>
-<p><code>bin_package_name() = <a href="#type-bin_string">bin_string()</a></code></p>
-<p> The name of a Protobuf package, as a binary string, such as the user-defined
- <code>&lt;&lt;"myriad.protobuf.test"&gt;&gt;</code> one.</p>
+<p><code>bin_package_name() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
-<p><code>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></code></p>
+<p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><code>message() = <a href="type_utils.html#type-record">type_utils:record()</a></code></p>
-<p> A (non-serialised, i.e. as an Erlang term) message instance.</p>
+<p><code>message() = <a href="type_utils.html#type-record" docgen-rel="seetype" docgen-href="type_utils#record/0">type_utils:record()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-message_type">message_type()</a></h3>
 <p><code>message_type() = atom()</code></p>
-<p><p> The name of a type of Protobuf messages, as defined in a specification file.</p>
 
- <p>For example, if defining a "Person" message type in a "myriad.protobuf.test" 
-package, the resulting record is #myriad_protobuf_test_person{}, corresponding 
-to a myriad_protobuf_test_person() type.</p>
-
- See myriad_example.proto for a test example.</p>
 
 <h3 class="typedecl"><a name="type-package_name">package_name()</a></h3>
-<p><code>package_name() = <a href="#type-ustring">ustring()</a></code></p>
-<p> The name of a Protobuf package, as a plain string, such as the user-defined
- "myriad.protobuf.test" one.</p>
+<p><code>package_name() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-serialisation">serialisation()</a></h3>
 <p><code>serialisation() = binary()</code></p>
-<p> A binary, serialised form, expected to contain Protobuff messages respecting
- our conventions.</p>
+
 
 <h3 class="typedecl"><a name="type-spec_file_path">spec_file_path()</a></h3>
-<p><code>spec_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></code></p>
-<p> A path to a Protobuf specification file respecting our conventions (e.g.
- "/home/joe/foobar.proto").</p>
+<p><code>spec_file_path() = <a href="file_utils.html#type-any_file_path" docgen-rel="seetype" docgen-href="file_utils#any_file_path/0">file_utils:any_file_path()</a></code></p>
+
 
 <h3 class="typedecl"><a name="type-spec_name">spec_name()</a></h3>
 <p><code>spec_name() = atom()</code></p>
-<p> The name of a Protobuf specification (e.g. foobar), corresponding both to a
- specification file (e.g. "foobar.proto") and the corresponding module name
- generated from it ('foobar').</p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><code>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></code></p>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#decode-3">decode/3</a></td><td>Decodes specified serialised form into a message of specified type, as
- defined in specified specification.</td></tr>
-<tr><td valign="top"><a href="#encode-2">encode/2</a></td><td>Encodes specified message (record instance) defined in specified
- specification, and returns the corresponding serialised form.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#decode-3">decode/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#encode-2">encode/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="decode-3">decode/3</a></h3>
 <div class="spec">
-<p><code>decode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageType::<a href="#type-message_type">message_type()</a>, BinSerialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; <a href="#type-message">message()</a></code><br></p>
+<p><code>decode(SpecName::<a href="#type-spec_name" docgen-rel="seetype" docgen-href="#spec_name/0">spec_name()</a>, MessageType::<a href="#type-message_type" docgen-rel="seetype" docgen-href="#message_type/0">message_type()</a>, BinSerialisation::<a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a>) -&gt; <a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a></code><br></p>
 <p> </p>
-</div><p>Decodes specified serialised form into a message of specified type, as
- defined in specified specification.
-</p>
+</div>
 
 <h3 class="function"><a name="encode-2">encode/2</a></h3>
 <div class="spec">
-<p><code>encode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageTerm::<a href="#type-message">message()</a>) -&gt; <a href="#type-serialisation">serialisation()</a></code><br></p>
+<p><code>encode(SpecName::<a href="#type-spec_name" docgen-rel="seetype" docgen-href="#spec_name/0">spec_name()</a>, MessageTerm::<a href="#type-message" docgen-rel="seetype" docgen-href="#message/0">message()</a>) -&gt; <a href="#type-serialisation" docgen-rel="seetype" docgen-href="#serialisation/0">serialisation()</a></code><br></p>
 <p> </p>
-</div><p>Encodes specified message (record instance) defined in specified
- specification, and returns the corresponding serialised form.
-</p>
+</div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
